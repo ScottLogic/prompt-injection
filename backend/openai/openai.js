@@ -71,6 +71,11 @@ async function chatGptCallFunction(functionCall) {
 
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion();
+    // check for another function call
+    if (reply.function_call) {
+      // recursively call the function and get a new reply
+      reply = await chatGptCallFunction(reply.function_call);
+    }
   } else {
     console.error("Unknown function: " + functionName);
   }
