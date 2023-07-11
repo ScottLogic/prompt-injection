@@ -2,6 +2,7 @@ const { Configuration, OpenAIApi } = require("openai");
 
 let configuration = null;
 let openai = null;
+const chatGptMessages = [];
 
 function initOpenAi() {
   configuration = new Configuration({
@@ -11,12 +12,21 @@ function initOpenAi() {
 }
 
 async function chatGptSendMessage(message) {
+  // add message to chat
+  chatGptMessages.push({ role: "user", content: message });
   const chat_completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
-    messages: [{ role: "user", content: message }],
+    messages: chatGptMessages,
   });
-  console.log(chat_completion.data);
-  return chat_completion.data.choices[0].message.content;
+  const reply = chat_completion.data.choices[0].message;
+  // add reply to chat
+  chatGptMessages.push(reply);
+  // return the reply content
+  return reply.content;
 }
 
-module.exports = { initOpenAi, chatGptSendMessage };
+function clearMessages() {
+  chatGptMessages.length = 0;
+}
+
+module.exports = { initOpenAi, chatGptSendMessage, clearMessages };

@@ -1,6 +1,6 @@
 // Importing express module
 const express = require("express");
-const { chatGptSendMessage } = require("./openai/openai");
+const { chatGptSendMessage, clearMessages } = require("./openai/openai");
 const router = express.Router();
 
 // Handling request using router
@@ -9,7 +9,7 @@ router.get("/", (req, res, next) => {
 });
 
 // Chat to ChatGPT
-router.post("/chat", async (req, res, next) => {
+router.post("/openai/chat", async (req, res, next) => {
   const message = req.body?.message;
   if (message) {
     // get the chatGPT reply
@@ -25,6 +25,12 @@ router.post("/chat", async (req, res, next) => {
     res.statusCode = 400;
     res.send("Missing message");
   }
+});
+
+// Clear the ChatGPT messages
+router.post("/openai/clear", (req, res, next) => {
+  clearMessages();
+  res.send("ChatGPT messages cleared");
 });
 
 // Importing the router
