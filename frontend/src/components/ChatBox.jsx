@@ -37,7 +37,7 @@ function ChatBox() {
 
   return (
     <div id="chat-box">
-      <ChatBoxFeed messages={messages} key={messages.length} />
+      <ChatBoxFeed messages={messages} />
       <div id="chat-box-input">
         <input
           type="text"
