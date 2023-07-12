@@ -1,0 +1,8 @@
+#chat-box-feed {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 1px;
+  overflow: auto;
+  padding: 0 32px;
+}

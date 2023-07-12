@@ -1,6 +1,7 @@
 const express = require("express");
 const router = require("./router");
 const dotenv = require("dotenv");
+const cors = require("cors");
 const { initOpenAi } = require("./openai/openai");
 
 dotenv.config();
@@ -15,6 +16,18 @@ app.use(express.json());
 
 // initialise openai
 initOpenAi();
+
+app.use(cors());
+app.options("*", cors());
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 app.use("/", router);
 app.listen(port, () => {
