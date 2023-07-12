@@ -1,31 +1,32 @@
+import React, { useState } from "react";
+
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
 
-const messages = [
-  { message: "hello", isUser: true },
-  { message: "world", isUser: false },
-  {
-    message:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    isUser: true,
-  },
-  {
-    message:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    isUser: false,
-  },
-  { message: "hello", isUser: true },
-  { message: "world", isUser: false },
-  { message: "hello", isUser: true },
-  { message: "world", isUser: false },
-];
-
 function ChatBox() {
+  const [messages, setMessages] = useState([]);
+
+  const onKeyUpValue = (event) => {
+    if (event.key === "Enter") {
+      // get the message
+      const message = event.target.value;
+      // add it to the list of messages
+      setMessages((messages) => [...messages, { message, isUser: true }]);
+      // clear the input
+      event.target.value = "";
+    }
+  };
+
   return (
     <div id="chat-box">
-      <ChatBoxFeed messages={messages} />
+      <ChatBoxFeed messages={messages} key={messages.length} />
       <div id="chat-box-input">
-        <input type="text" placeholder="Chat to ChatGPT..." />
+        <input
+          type="text"
+          placeholder="Chat to ChatGPT..."
+          autoFocus
+          onKeyUp={onKeyUpValue.bind(this)}
+        />
       </div>
     </div>
   );

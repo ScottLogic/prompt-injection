@@ -6,7 +6,11 @@ function ChatBoxFeed(props) {
     <div id="chat-box-feed">
       {props.messages.map((message, index) => {
         return (
-          <ChatBoxMessage message={message.message} isUser={message.isUser} />
+          <ChatBoxMessage
+            message={message.message}
+            isUser={message.isUser}
+            key={index}
+          />
         );
       })}
     </div>
