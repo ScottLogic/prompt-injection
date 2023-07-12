@@ -1,0 +1,17 @@
+#chat-box {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  position: absolute;
+  bottom: 64px;
+}
+
+input {
+  width: 90%;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0 20px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
