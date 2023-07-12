@@ -1,0 +1,23 @@
+.chat-box-message {
+  border-color: #888;
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 1px;
+  margin-top: 16px;
+  padding: 8px;
+  max-width: 85%;
+}
+
+.chat-box-message-ai {
+  background-color: #efe;
+  float: right;
+  margin-left: auto;
+  text-align: right;
+}
+
+.chat-box-message-user {
+  background-color: #eef;
+  float: left;
+  margin-right: auto;
+  text-align: left;
+}
