@@ -15,6 +15,10 @@ function ChatBox(props) {
   useEffect(() => {
     // clear remote messages
     clearOpenAiChat();
+    // get sent emails
+    getSentEmails().then((sentEmails) => {
+      props.setEmails(sentEmails);
+    });
   }, []);
 
   const clearClicked = () => {
