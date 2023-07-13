@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
@@ -6,6 +6,12 @@ import { clearOpenAiChat, openAiSendMessage } from "../service/openai";
 
 function ChatBox() {
   const [messages, setMessages] = useState([]);
+
+  // called on mount
+  useEffect(() => {
+    // clear remote messages
+    clearOpenAiChat();
+  }, []);
 
   const clearClicked = () => {
     // clear local messages
