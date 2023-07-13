@@ -4,7 +4,7 @@ import ChatBoxMessage from "./ChatBoxMessage";
 function ChatBoxFeed(props) {
   return (
     <div id="chat-box-feed">
-      {props.messages.map((message, index) => {
+      {props.messages.toReversed().map((message, index) => {
         return (
           <ChatBoxMessage
             message={message.message}

@@ -1,12 +1,18 @@
 #main-area {
   display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+#centre-area {
+  display: flex;
   flex-direction: column;
   border-width: 0px 1px;
   border-style: solid;
   border-color: #ccc;
   position: relative;
   height: 100%;
-  width: 500px;
+  width: 40%;
   margin: 0 auto;
   text-align: center;
 }
@@ -20,3 +26,19 @@ h1 {
   height: 100%;
 }
 
+.side-bar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 30%;
+}
+
+.side-bar-header {
+  border-color: #ccc;
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  margin: 40px;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+  text-align: center;
+}

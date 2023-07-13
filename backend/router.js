@@ -1,11 +1,23 @@
 // Importing express module
 const express = require("express");
+const { clearEmails, getSentEmails } = require("./email/email");
 const { chatGptSendMessage, clearMessages } = require("./openai/openai");
 const router = express.Router();
 
 // Handling request using router
 router.get("/", (req, res, next) => {
   res.send("Hello world");
+});
+
+// Clear sent emails
+router.post("/email/clear", (req, res, next) => {
+  clearEmails();
+  res.send("Sent emails cleared");
+});
+
+// Get sent emails
+router.get("/email/get", (req, res, next) => {
+  res.send(getSentEmails());
 });
 
 // Chat to ChatGPT
