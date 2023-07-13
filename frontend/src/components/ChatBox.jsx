@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
@@ -7,6 +7,12 @@ import { clearOpenAiChat, openAiSendMessage } from "../service/openai";
 function ChatBox() {
   const [messages, setMessages] = useState([]);
 
+  // called on mount
+  useEffect(() => {
+    // clear remote messages
+    clearOpenAiChat();
+  }, []);
+
   const clearClicked = () => {
     // clear local messages
     setMessages([]);
@@ -14,7 +20,7 @@ function ChatBox() {
     clearOpenAiChat();
   };
 
-  const onKeyUpValue = async (event) => {
+  const sendChatMessage = async (event) => {
     if (event.key === "Enter") {
       // get the message
       const message = event.target.value;
@@ -44,7 +50,7 @@ function ChatBox() {
             type="text"
             placeholder="Chat to ChatGPT..."
             autoFocus
-            onKeyUp={onKeyUpValue.bind(this)}
+            onKeyUp={sendChatMessage.bind(this)}
           />
         </div>
         <div id="chat-box-button" onClick={clearClicked.bind(this)}>
