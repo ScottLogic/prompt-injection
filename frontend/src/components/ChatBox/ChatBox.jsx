@@ -61,7 +61,7 @@ function ChatBox(props) {
         <div id="chat-box-input">
           <input
             type="text"
-            placeholder="Chat to ChatGPT..."
+            placeholder="chat to chatgpt..."
             autoFocus
             onKeyUp={sendChatMessage.bind(this)}
           />
