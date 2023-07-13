@@ -2,10 +2,17 @@ import React, { useState } from "react";
 
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
-import { openAiChat } from "../service/openai";
+import { clearOpenAiChat, openAiSendMessage } from "../service/openai";
 
 function ChatBox() {
   const [messages, setMessages] = useState([]);
+
+  const clearClicked = () => {
+    // clear local messages
+    setMessages([]);
+    // clear remote messages
+    clearOpenAiChat();
+  };
 
   const onKeyUpValue = async (event) => {
     if (event.key === "Enter") {
@@ -19,7 +26,7 @@ function ChatBox() {
       // clear the input
       event.target.value = "";
 
-      const reply = await openAiChat(message);
+      const reply = await openAiSendMessage(message);
       // add it to the list of messages
       setMessages((messages) => [
         ...messages,
@@ -31,13 +38,18 @@ function ChatBox() {
   return (
     <div id="chat-box">
       <ChatBoxFeed messages={messages} />
-      <div id="chat-box-input">
-        <input
-          type="text"
-          placeholder="Chat to ChatGPT..."
-          autoFocus
-          onKeyUp={onKeyUpValue.bind(this)}
-        />
+      <div id="chat-box-footer">
+        <div id="chat-box-input">
+          <input
+            type="text"
+            placeholder="Chat to ChatGPT..."
+            autoFocus
+            onKeyUp={onKeyUpValue.bind(this)}
+          />
+        </div>
+        <div id="chat-box-button" onClick={clearClicked.bind(this)}>
+          <button>clear</button>
+        </div>
       </div>
     </div>
   );

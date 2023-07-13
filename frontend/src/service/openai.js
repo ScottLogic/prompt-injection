@@ -1,5 +1,14 @@
-async function openAiChat(message) {
-  const response = await fetch("http://localhost:3001/openai/chat", {
+const URL = "http://localhost:3001/openai/";
+
+async function clearOpenAiChat() {
+  const response = await fetch(URL + "clear", {
+    method: "POST",
+  });
+  return response.status === 200;
+}
+
+async function openAiSendMessage(message) {
+  const response = await fetch(URL + "chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -10,4 +19,4 @@ async function openAiChat(message) {
   return data;
 }
 
-export { openAiChat };
+export { clearOpenAiChat, openAiSendMessage };
