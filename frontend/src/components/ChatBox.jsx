@@ -20,7 +20,7 @@ function ChatBox() {
     clearOpenAiChat();
   };
 
-  const onKeyUpValue = async (event) => {
+  const sendChatMessage = async (event) => {
     if (event.key === "Enter") {
       // get the message
       const message = event.target.value;
@@ -50,7 +50,7 @@ function ChatBox() {
             type="text"
             placeholder="Chat to ChatGPT..."
             autoFocus
-            onKeyUp={onKeyUpValue.bind(this)}
+            onKeyUp={sendChatMessage.bind(this)}
           />
         </div>
         <div id="chat-box-button" onClick={clearClicked.bind(this)}>
