@@ -2,15 +2,23 @@ import React, { useEffect, useState } from "react";
 
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
-import { clearOpenAiChat, openAiSendMessage } from "../service/openai";
+import {
+  clearOpenAiChat,
+  openAiSendMessage,
+} from "../../service/openaiService";
+import { getSentEmails } from "../../service/emailService";
 
-function ChatBox() {
+function ChatBox(props) {
   const [messages, setMessages] = useState([]);
 
   // called on mount
   useEffect(() => {
     // clear remote messages
     clearOpenAiChat();
+    // get sent emails
+    getSentEmails().then((sentEmails) => {
+      props.setEmails(sentEmails);
+    });
   }, []);
 
   const clearClicked = () => {
@@ -38,6 +46,11 @@ function ChatBox() {
         ...messages,
         { message: reply, isUser: false },
       ]);
+
+      // get sent emails
+      const sentEmails = await getSentEmails();
+      // update emails
+      props.setEmails(sentEmails);
     }
   };
 

@@ -1,0 +1,24 @@
+#email-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#email-box-header {
+  border-color: #ccc;
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  margin: 40px;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+#email-box-feed {
+  display: flex;
+  flex-direction: column-reverse;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 40px;
+  padding-bottom: 40px;
+}
