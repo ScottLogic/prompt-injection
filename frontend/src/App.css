@@ -27,6 +27,18 @@ h1 {
 }
 
 .side-bar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: 30%;
 }
 
+.side-bar-header {
+  border-color: #ccc;
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  margin: 40px;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+  text-align: center;
+}

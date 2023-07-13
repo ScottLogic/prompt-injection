@@ -9,12 +9,15 @@ function App() {
 
   return (
     <span id="main-area">
-      <div class="side-bar"></div>
+      <div class="side-bar">
+        <div class="side-bar-header">defence mechanisms</div>
+      </div>
       <div id="centre-area">
         <Header />
         <ChatBox setEmails={setEmails} />
       </div>
       <div class="side-bar">
+        <div class="side-bar-header">sent emails</div>
         <EmailBox emails={emails} />
       </div>
     </span>
@@ -22,4 +25,3 @@ function App() {
 }
 
 export default App;
-
