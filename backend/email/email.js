@@ -1,4 +1,16 @@
+const sentEmails = [];
+
+function clearEmails() {
+  sentEmails.length = 0;
+}
+
+function getSentEmails() {
+  return sentEmails;
+}
+
 function sendEmail(email, subject, message) {
+  // add to the list of sent emails
+  sentEmails.push({ address: email, subject: subject, content: message });
   response =
     "Sending email to " +
     email +
@@ -10,4 +22,4 @@ function sendEmail(email, subject, message) {
   return response;
 }
 
-module.exports = { sendEmail };
+module.exports = { clearEmails, getSentEmails, sendEmail };

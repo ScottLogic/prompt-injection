@@ -1,12 +1,18 @@
 #main-area {
   display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+#centre-area {
+  display: flex;
   flex-direction: column;
   border-width: 0px 1px;
   border-style: solid;
   border-color: #ccc;
   position: relative;
   height: 100%;
-  width: 500px;
+  width: 40%;
   margin: 0 auto;
   text-align: center;
 }
@@ -18,5 +24,9 @@ h1 {
 
 #root {
   height: 100%;
+}
+
+.side-bar {
+  width: 30%;
 }
 
