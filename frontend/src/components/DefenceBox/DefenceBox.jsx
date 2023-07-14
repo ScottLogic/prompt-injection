@@ -51,6 +51,7 @@ function DefenceBox(props) {
       const newDefences = defences.map((defence) => {
         if (defence.id === defenceId) {
           defence.isActive = true;
+          defence.isTriggered = false;
         }
         return defence;
       });
@@ -64,6 +65,7 @@ function DefenceBox(props) {
       const newDefences = defences.map((defence) => {
         if (defence.id === defenceId) {
           defence.isActive = false;
+          defence.isTriggered = false;
         }
         return defence;
       });
