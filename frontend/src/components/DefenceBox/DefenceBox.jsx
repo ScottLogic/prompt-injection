@@ -21,16 +21,16 @@ function DefenceBox() {
   useEffect(() => {
     // fetch defences from backend
     getDefenceStatus().then((defenceStatus) => {
-      const newDefences = defences.map((defence) => {
-        const matchingDefence = defenceStatus.find((defence) => {
-          return defence.id === defence.id;
+      const newDefences = defences.map((localDefence) => {
+        const matchingDefence = defenceStatus.find((remoteDefence) => {
+          return localDefence.id === remoteDefence.id;
         });
-        defence.isActive = matchingDefence.isActive;
-        return defence;
+        localDefence.isActive = matchingDefence.isActive;
+        return localDefence;
       });
       setDefences(newDefences);
     });
-  }, []);
+  });
 
   const setDefenceActive = (defenceId) => {
     activateDefence(defenceId).then(() => {
