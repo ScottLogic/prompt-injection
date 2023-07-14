@@ -1,5 +1,6 @@
 import "./App.css";
 import ChatBox from "./components/ChatBox/ChatBox";
+import DefenceBox from "./components/DefenceBox/DefenceBox";
 import EmailBox from "./components/EmailBox/EmailBox";
 import Header from "./components/Header";
 import { useState } from "react";
@@ -11,6 +12,7 @@ function App() {
     <span id="main-area">
       <div class="side-bar">
         <div class="side-bar-header">defence mechanisms</div>
+        <DefenceBox />
       </div>
       <div id="centre-area">
         <Header />
