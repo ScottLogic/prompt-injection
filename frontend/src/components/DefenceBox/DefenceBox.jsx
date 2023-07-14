@@ -7,7 +7,7 @@ import {
   deactivateDefence,
 } from "../../service/defenceService";
 
-function DefenceBox() {
+function DefenceBox(props) {
   // list of defence mechanisms
   const [defences, setDefences] = useState([
     {
@@ -15,9 +15,11 @@ function DefenceBox() {
       id: "CHARACTER_LIMIT",
       info: "limit the number of characters in the user input. this is a form of prompt validation.",
       isActive: false,
+      isTriggered: false,
     },
   ]);
 
+  // called on mount
   useEffect(() => {
     // fetch defences from backend
     getDefenceStatus().then((defenceStatus) => {
@@ -31,6 +33,17 @@ function DefenceBox() {
       setDefences(newDefences);
     });
   }, []);
+
+  // update triggered defences
+  useEffect(() => {
+    console.log("updating triggered defences: ", props.triggeredDefences);
+    // update state
+    const newDefences = defences.map((defence) => {
+      defence.isTriggered = props.triggeredDefences.includes(defence.id);
+      return defence;
+    });
+    setDefences(newDefences);
+  }, [props.triggeredDefences]);
 
   const setDefenceActive = (defenceId) => {
     activateDefence(defenceId).then(() => {
@@ -68,6 +81,7 @@ function DefenceBox() {
             id={defence.id}
             info={defence.info}
             isActive={defence.isActive}
+            isTriggered={defence.isTriggered}
             setDefenceActive={setDefenceActive}
             setDefenceInactive={setDefenceInactive}
           />

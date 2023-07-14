@@ -1,11 +1,11 @@
 .defence-mechanism {
-  background-color: #fff;
   border-color: #ccc;
   border-radius: 8px;
   border-style: solid;
   border-width: 1px;
   padding: 6px;
   margin-bottom: 8px;
+  cursor: default;
 }
 
 .defence-active {
@@ -34,7 +34,6 @@
   width: 20px;
   background-color: #ddd;
   color: #444;
-  cursor: default;
 }
 
 .defence-mechanism-info span {
@@ -48,4 +47,28 @@
   border-width: 1px 0 0 0;
   font-size: 14px;
   margin-top: 4px;
+}
+
+@keyframes flash-red-active {
+  0% {
+    background-color: #eef;
+  }
+  50% {
+    background-color: #fdd;
+  }
+  100% {
+    background-color: #eef;
+  }
+}
+
+@keyframes flash-red-inactive {
+  0% {
+    background-color: #fff;
+  }
+  50% {
+    background-color: #fdd;
+  }
+  100% {
+    background-color: #fff;
+  }
 }

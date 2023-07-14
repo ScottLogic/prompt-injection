@@ -60,6 +60,7 @@ router.post("/openai/chat", async (req, res, next) => {
     // get the chatGPT reply
     try {
       const reply = await chatGptSendMessage(message);
+      console.log(reply);
       res.send(reply);
     } catch (error) {
       console.log(error);

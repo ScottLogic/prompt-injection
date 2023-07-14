@@ -46,6 +46,8 @@ function ChatBox(props) {
         ...messages,
         { isUser: false, message: reply.reply, defenceInfo: reply.defenceInfo },
       ]);
+      // update triggered defences
+      props.updateTriggeredDefences(reply.defenceInfo.triggeredDefences);
 
       // get sent emails
       const sentEmails = await getSentEmails();
