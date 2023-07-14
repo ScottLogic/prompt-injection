@@ -1,5 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { sendEmail } = require("../email/email");
+const { sendEmail } = require("./email");
 
 // OpenAI configuration
 let configuration = null;

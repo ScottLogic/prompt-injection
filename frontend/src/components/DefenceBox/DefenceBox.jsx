@@ -5,6 +5,7 @@ function DefenceBox() {
   const defences = [
     {
       name: "character limit",
+      id: "CHARACTER_LIMIT",
       info: "limit the number of characters in the user input. this is a form of prompt validation.",
     },
   ];
@@ -15,8 +16,9 @@ function DefenceBox() {
         return (
           <DefenceMechanism
             name={defence.name}
+            id={defence.id}
             info={defence.info}
-            key={index}
+            key={defence.id}
           />
         );
       })}
