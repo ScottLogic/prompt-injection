@@ -19,7 +19,7 @@ function ChatBox(props) {
     getSentEmails().then((sentEmails) => {
       props.setEmails(sentEmails);
     });
-  });
+  }, []);
 
   const clearClicked = () => {
     // clear local messages

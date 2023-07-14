@@ -30,7 +30,7 @@ function DefenceBox() {
       });
       setDefences(newDefences);
     });
-  });
+  }, []);
 
   const setDefenceActive = (defenceId) => {
     activateDefence(defenceId).then(() => {
