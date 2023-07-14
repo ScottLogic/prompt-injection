@@ -2,25 +2,31 @@ import "./DefenceMechanism.css";
 import React from "react";
 
 function DefenceMechanism(props) {
+  const [isDefenceActive, setIsDefenceActive] = React.useState(false);
   const [isInfoBoxVisible, setIsInfoBoxVisible] = React.useState(false);
-
-  // only show the info box when the user hovers over the info span
-  const showInfoBox = () => {
-    setIsInfoBoxVisible(true);
-  };
-  const hideInfoBox = () => {
-    setIsInfoBoxVisible(false);
-  };
 
   return (
     <span>
-      <div className="defence-mechanism">
+      <div
+        className={
+          isDefenceActive
+            ? "defence-mechanism defence-active"
+            : "defence-mechanism"
+        }
+        onClick={() => {
+          setIsDefenceActive(!isDefenceActive);
+        }}
+      >
         <div className="defence-mechanism-header">
           <span className="defence-mechanism-name">{props.name}</span>
           <span
             className="defence-mechanism-info"
-            onMouseOver={showInfoBox.bind(this)}
-            onMouseLeave={hideInfoBox.bind(this)}
+            onMouseOver={() => {
+              setIsInfoBoxVisible(true);
+            }}
+            onMouseLeave={() => {
+              setIsInfoBoxVisible(false);
+            }}
           >
             <span>?</span>
           </span>

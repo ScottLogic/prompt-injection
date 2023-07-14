@@ -1,10 +1,20 @@
 .defence-mechanism {
+  background-color: #fff;
   border-color: #ccc;
   border-radius: 8px;
   border-style: solid;
   border-width: 1px;
   padding: 6px;
   margin-bottom: 8px;
+}
+
+.defence-active {
+  background-color: #efe;
+}
+
+.defence-mechanism:hover {
+  border-color: #444;
+  border-width: 2px;
 }
 
 .defence-mechanism-header {
