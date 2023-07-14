@@ -44,7 +44,7 @@ function ChatBox(props) {
       // add it to the list of messages
       setMessages((messages) => [
         ...messages,
-        { message: reply, isUser: false },
+        { isUser: false, message: reply.reply, defenceInfo: reply.defenceInfo },
       ]);
 
       // get sent emails

@@ -1,4 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
+const { isDefenceActive } = require("./defence");
 const { sendEmail } = require("./email");
 
 // OpenAI configuration
@@ -99,6 +100,21 @@ async function chatGptChatCompletion() {
 }
 
 async function chatGptSendMessage(message) {
+  // keep track of any triggered defences
+  const defenceInfo = { blocked: false, triggeredDefences: [] };
+  // check if the message is too long
+  if (message.length > 280) {
+    // add the defence to the list of triggered defences
+    defenceInfo.triggeredDefences.push("CHARACTER_LIMIT");
+    // check if the defence is active
+    if (isDefenceActive("CHARACTER_LIMIT")) {
+      // block the message
+      defenceInfo.blocked = true;
+      // return the defence info
+      return { reply: "Message is too long", defenceInfo: defenceInfo };
+    }
+  }
+
   // add message to chat
   chatGptMessages.push({ role: "user", content: message });
   let reply = await chatGptChatCompletion();
@@ -110,7 +126,7 @@ async function chatGptSendMessage(message) {
   }
 
   // return the reply content
-  return reply.content;
+  return { reply: reply.content, defenceInfo: defenceInfo };
 }
 
 // clear chat history

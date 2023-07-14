@@ -29,4 +29,18 @@ function getDefences() {
   return defences;
 }
 
-module.exports = { activateDefence, deactivateDefence, getDefences };
+// get the status of a single defence
+function isDefenceActive(id) {
+  const defence = defences.find((defence) => defence.id === id);
+  if (defence) {
+    return defence.isActive;
+  }
+  return false;
+}
+
+module.exports = {
+  activateDefence,
+  deactivateDefence,
+  getDefences,
+  isDefenceActive,
+};
