@@ -3,7 +3,7 @@ const express = require("express");
 const {
   activateDefence,
   deactivateDefence,
-  isDefenceActive,
+  getDefences,
 } = require("./defence");
 const { clearEmails, getSentEmails } = require("./email");
 const { chatGptSendMessage, clearMessages } = require("./openai");
@@ -37,18 +37,9 @@ router.post("/defence/deactivate", (req, res, next) => {
   }
 });
 
-// Get the status of a defence
+// Get the status of all defences
 router.get("/defence/status", (req, res, next) => {
-  // id of the defence
-  const defenceId = req.query?.defenceId;
-  if (defenceId) {
-    // check if the defence is active
-    const isActive = isDefenceActive(defenceId);
-    res.send({ isActive });
-  } else {
-    res.statusCode = 400;
-    res.send("Missing defenceId");
-  }
+  res.send(getDefences());
 });
 
 // Clear sent emails

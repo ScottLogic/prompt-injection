@@ -10,16 +10,16 @@ function App() {
 
   return (
     <span id="main-area">
-      <div class="side-bar">
-        <div class="side-bar-header">defence mechanisms</div>
+      <div className="side-bar">
+        <div className="side-bar-header">defence mechanisms</div>
         <DefenceBox />
       </div>
       <div id="centre-area">
         <Header />
         <ChatBox setEmails={setEmails} />
       </div>
-      <div class="side-bar">
-        <div class="side-bar-header">sent emails</div>
+      <div className="side-bar">
+        <div className="side-bar-header">sent emails</div>
         <EmailBox emails={emails} />
       </div>
     </span>

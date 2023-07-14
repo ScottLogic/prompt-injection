@@ -2,19 +2,20 @@ import "./DefenceMechanism.css";
 import React from "react";
 
 function DefenceMechanism(props) {
-  const [isDefenceActive, setIsDefenceActive] = React.useState(false);
   const [isInfoBoxVisible, setIsInfoBoxVisible] = React.useState(false);
 
   return (
     <span>
       <div
         className={
-          isDefenceActive
+          props.isActive
             ? "defence-mechanism defence-active"
             : "defence-mechanism"
         }
         onClick={() => {
-          setIsDefenceActive(!isDefenceActive);
+          props.isActive
+            ? props.setDefenceInactive(props.id)
+            : props.setDefenceActive(props.id);
         }}
       >
         <div className="defence-mechanism-header">

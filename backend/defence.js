@@ -24,13 +24,9 @@ function deactivateDefence(id) {
   return defence;
 }
 
-// check if a defence is active
-function isDefenceActive(id) {
-  const defence = defences.find((defence) => defence.id === id);
-  if (defence) {
-    return defence.isActive;
-  }
-  return false;
+// get the status of all defences
+function getDefences() {
+  return defences;
 }
 
-module.exports = { activateDefence, deactivateDefence, isDefenceActive };
+module.exports = { activateDefence, deactivateDefence, getDefences };
