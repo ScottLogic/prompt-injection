@@ -17,6 +17,13 @@ function DefenceBox(props) {
       isActive: false,
       isTriggered: false,
     },
+    {
+      name: "random sequence enclosure",
+      id: "RANDOM_SEQUENCE_ENCLOUSURE",
+      info: "enclose the prompt between a random string. this is a form of prompt validation.", 
+      isActive: false,
+      isTriggered: false,
+    },
   ]);
 
   // called on mount
