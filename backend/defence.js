@@ -4,6 +4,10 @@ const defences = [
     id: "CHARACTER_LIMIT",
     isActive: false,
   },
+  {
+    id: "RANDOM_SEQUENCE_ENCLOSURE",
+    isActive: false,  
+  },
 ];
 
 // activate a defence
