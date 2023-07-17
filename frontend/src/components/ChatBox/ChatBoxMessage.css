@@ -8,11 +8,22 @@
   max-width: 85%;
 }
 
+.blocked {
+  background-color: #fee;
+}
+
 .chat-box-message-ai {
-  background-color: #efe;
   float: right;
   margin-left: auto;
   text-align: right;
+}
+
+.chat-box-message-blocked {
+  background-color: #fee;
+}
+
+.chat-box-message-ok {
+  background-color: #efe;
 }
 
 .chat-box-message-user {

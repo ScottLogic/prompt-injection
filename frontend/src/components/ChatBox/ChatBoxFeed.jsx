@@ -7,9 +7,10 @@ function ChatBoxFeed(props) {
       {props.messages.toReversed().map((message, index) => {
         return (
           <ChatBoxMessage
-            message={message.message}
-            isUser={message.isUser}
             key={index}
+            defenceInfo={message.defenceInfo}
+            isUser={message.isUser}
+            message={message.message}
           />
         );
       })}

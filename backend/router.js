@@ -1,12 +1,45 @@
 // Importing express module
 const express = require("express");
-const { clearEmails, getSentEmails } = require("./email/email");
-const { chatGptSendMessage, clearMessages } = require("./openai/openai");
+const {
+  activateDefence,
+  deactivateDefence,
+  getDefences,
+} = require("./defence");
+const { clearEmails, getSentEmails } = require("./email");
+const { chatGptSendMessage, clearMessages } = require("./openai");
 const router = express.Router();
 
-// Handling request using router
-router.get("/", (req, res, next) => {
-  res.send("Hello world");
+// Activate a defence
+router.post("/defence/activate", (req, res, next) => {
+  // id of the defence
+  const defenceId = req.body?.defenceId;
+  if (defenceId) {
+    // activate the defence
+    const defence = activateDefence(defenceId);
+    res.send(defence);
+  } else {
+    res.statusCode = 400;
+    res.send("Missing defenceId");
+  }
+});
+
+// Deactivate a defence
+router.post("/defence/deactivate", (req, res, next) => {
+  // id of the defence
+  const defenceId = req.body?.defenceId;
+  if (defenceId) {
+    // deactivate the defence
+    const defence = deactivateDefence(defenceId);
+    res.send(defence);
+  } else {
+    res.statusCode = 400;
+    res.send("Missing defenceId");
+  }
+});
+
+// Get the status of all defences
+router.get("/defence/status", (req, res, next) => {
+  res.send(getDefences());
 });
 
 // Clear sent emails
@@ -27,6 +60,7 @@ router.post("/openai/chat", async (req, res, next) => {
     // get the chatGPT reply
     try {
       const reply = await chatGptSendMessage(message);
+      console.log(reply);
       res.send(reply);
     } catch (error) {
       console.log(error);

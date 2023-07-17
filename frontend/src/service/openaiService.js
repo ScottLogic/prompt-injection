@@ -15,7 +15,8 @@ async function openAiSendMessage(message) {
     },
     body: JSON.stringify({ message }),
   });
-  const data = await response.text();
+  const data = await response.json();
+  console.log(data);
   return data;
 }
 

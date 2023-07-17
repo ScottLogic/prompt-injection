@@ -44,8 +44,10 @@ function ChatBox(props) {
       // add it to the list of messages
       setMessages((messages) => [
         ...messages,
-        { message: reply, isUser: false },
+        { isUser: false, message: reply.reply, defenceInfo: reply.defenceInfo },
       ]);
+      // update triggered defences
+      props.updateTriggeredDefences(reply.defenceInfo.triggeredDefences);
 
       // get sent emails
       const sentEmails = await getSentEmails();
