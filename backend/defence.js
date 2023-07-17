@@ -42,9 +42,33 @@ function isDefenceActive(id) {
   return false;
 }
 
+function generate_random_string(string_length){
+  let random_string = '';
+  let random_ascii;
+  for(let i = 0; i < string_length; i++) {
+      random_ascii = Math.floor((Math.random() * 25) + 97);
+      random_string += String.fromCharCode(random_ascii)
+  }
+  return random_string
+}
+
+// apply defence string transformations to original message 
+function transformMessage(message){
+  if (isDefenceActive("RANDOM_SEQUENCE_ENCLOSURE")){
+    console.debug("Random Sequence Enclosure defence active. ");
+    const randomString = generate_random_string(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH);
+    const introText = process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT
+    transformedMessage = introText.concat(randomString, " {{ ", message, " }} ", randomString);
+    return transformedMessage; 
+  } else {
+    return message;
+  }
+}
+
 module.exports = {
   activateDefence,
   deactivateDefence,
   getDefences,
   isDefenceActive,
+  transformMessage
 };
