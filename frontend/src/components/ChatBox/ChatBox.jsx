@@ -7,6 +7,7 @@ import {
   openAiSendMessage,
 } from "../../service/openaiService";
 import { getSentEmails } from "../../service/emailService";
+import { transformInputPrompt } from "../../service/defenceService";
 
 function ChatBox(props) {
   const [messages, setMessages] = useState([]);
@@ -32,15 +33,28 @@ function ChatBox(props) {
     if (event.key === "Enter") {
       // get the message
       const message = event.target.value;
-      // add it to the list of messages
+      // apply defense transformations to the input
+      const transformedMessage = await transformInputPrompt(message);
+      console.log("transformedMessage = ", transformedMessage);
+
+      const isTransformed = transformedMessage !== message;
+
+      // if input has been edited, add both messages to the list of messages. otherwise add original message only
       setMessages((messages) => [
         ...messages,
-        { message: message, isUser: true },
+        { message: message, isUser: true, isOriginalMessage: true},
       ]);
+      if (isTransformed){
+        setMessages((messages) => [
+          ...messages,
+          { message: transformedMessage, isUser: true, isOriginalMessage: false},
+        ]);
+      }
+      
       // clear the input
       event.target.value = "";
 
-      const reply = await openAiSendMessage(message);
+      const reply = await openAiSendMessage(transformedMessage);
       // add it to the list of messages
       setMessages((messages) => [
         ...messages,

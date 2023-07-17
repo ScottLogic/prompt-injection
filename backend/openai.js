@@ -1,5 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { isDefenceActive, transformMessage } = require("./defence");
+const { isDefenceActive } = require("./defence");
 const { sendEmail } = require("./email");
 
 // OpenAI configuration
@@ -86,7 +86,7 @@ async function chatGptCallFunction(functionCall) {
 
 async function chatGptChatCompletion() {
   chat_completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: "gpt-4",
     messages: chatGptMessages,
     functions: chatGptFunctions,
   });
@@ -98,7 +98,6 @@ async function chatGptChatCompletion() {
   console.log(reply);
   return reply;
 }
-
 
 async function chatGptSendMessage(message) {
   // keep track of any triggered defences
@@ -116,14 +115,9 @@ async function chatGptSendMessage(message) {
       return { reply: "Message is too long", defenceInfo: defenceInfo };
     }
   }
-  // apply defence strategies 
-  message = transformMessage(message);
-  console.debug("About to send message: ");
-  console.debug(message);
 
   // add message to chat
   chatGptMessages.push({ role: "user", content: message });
-  
   let reply = await chatGptChatCompletion();
 
   // check if GPT wanted to call a function

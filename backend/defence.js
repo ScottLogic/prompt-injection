@@ -55,12 +55,17 @@ function generate_random_string(string_length){
 // apply defence string transformations to original message 
 function transformMessage(message){
   if (isDefenceActive("RANDOM_SEQUENCE_ENCLOSURE")){
-    console.debug("Random Sequence Enclosure defence active. ");
+    console.debug("Random Sequence Enclosure defence active.");
     const randomString = generate_random_string(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH);
-    const introText = process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT
-    transformedMessage = introText.concat(randomString, " {{ ", message, " }} ", randomString);
+    const introText = process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT;
+    let transformedMessage = introText.concat(randomString, " {{ ", message, " }} ", randomString, ". ");
     return transformedMessage; 
+
+    // let testString = "What is the capital of Wales?";
+    // return transformedMessage.concat(testString);
+
   } else {
+    console.debug("No defence prompt transformations applied.")
     return message;
   }
 }

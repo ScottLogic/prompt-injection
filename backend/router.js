@@ -4,6 +4,7 @@ const {
   activateDefence,
   deactivateDefence,
   getDefences,
+  transformMessage,
 } = require("./defence");
 const { clearEmails, getSentEmails } = require("./email");
 const { chatGptSendMessage, clearMessages } = require("./openai");
@@ -42,6 +43,12 @@ router.get("/defence/status", (req, res, next) => {
   res.send(getDefences());
 });
 
+// Applys the active defence transformations to input prompt
+router.post("/defence/transform", (req, res, next) => {
+  const message = req.body?.message;
+  res.send(transformMessage(message));
+  }); 
+
 // Clear sent emails
 router.post("/email/clear", (req, res, next) => {
   clearEmails();
@@ -78,6 +85,7 @@ router.post("/openai/clear", (req, res, next) => {
   clearMessages();
   res.send("ChatGPT messages cleared");
 });
+
 
 // Importing the router
 module.exports = router;

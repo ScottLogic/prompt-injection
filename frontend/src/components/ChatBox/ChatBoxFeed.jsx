@@ -11,6 +11,7 @@ function ChatBoxFeed(props) {
             defenceInfo={message.defenceInfo}
             isUser={message.isUser}
             message={message.message}
+            isOriginalMessage={message.isOriginalMessage}
           />
         );
       })}
