@@ -20,7 +20,7 @@ function DefenceBox(props) {
     {
       name: "random sequence enclosure",
       id: "RANDOM_SEQUENCE_ENCLOSURE",
-      info: "enclose the prompt between a random string and instruct bot to only follow. this is a form of prompt validation.", 
+      info: "enclose the prompt between a random string and instruct bot to only follow enclosed instructions. this is a form of prompt validation.", 
       isActive: false,
       isTriggered: false,
     },

@@ -100,7 +100,6 @@ async function chatGptChatCompletion() {
 }
 
 async function chatGptSendMessage(message) {
-  var transformedMessage = ""; 
   // keep track of any triggered defences
   const defenceInfo = { blocked: false, triggeredDefences: [] };
   // check if the message is too long
@@ -115,6 +114,7 @@ async function chatGptSendMessage(message) {
       return { reply: "Message is too long", defenceInfo: defenceInfo };
     }
   }
+
   // add message to chat
   chatGptMessages.push({ role: "user", content: message });
   
