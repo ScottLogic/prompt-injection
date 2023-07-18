@@ -115,9 +115,9 @@ async function chatGptSendMessage(message) {
       return { reply: "Message is too long", defenceInfo: defenceInfo };
     }
   }
-
   // add message to chat
   chatGptMessages.push({ role: "user", content: message });
+  
   let reply = await chatGptChatCompletion();
 
   // check if GPT wanted to call a function

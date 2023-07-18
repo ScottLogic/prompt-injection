@@ -32,3 +32,11 @@
   margin-right: auto;
   text-align: left;
 }
+
+.chat-box-message-user-transformed {
+  background-color: rgb(252 229 255);
+    float: left;
+  float: left;
+  margin-right: auto;
+  text-align: left;
+}
