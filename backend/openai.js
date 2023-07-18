@@ -86,7 +86,7 @@ async function chatGptCallFunction(functionCall) {
 
 async function chatGptChatCompletion() {
   chat_completion = await openai.createChatCompletion({
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: chatGptMessages,
     functions: chatGptFunctions,
   });
@@ -100,11 +100,11 @@ async function chatGptChatCompletion() {
 }
 
 async function chatGptSendMessage(message) {
+  var transformedMessage = ""; 
   // keep track of any triggered defences
   const defenceInfo = { blocked: false, triggeredDefences: [] };
-  const maxMessageLength = process.env.MAX_MESSAGE_LENGTH || 280;
   // check if the message is too long
-  if (message.length > maxMessageLength) {
+  if (message.length > 280) {
     // add the defence to the list of triggered defences
     defenceInfo.triggeredDefences.push("CHARACTER_LIMIT");
     // check if the defence is active
@@ -115,9 +115,9 @@ async function chatGptSendMessage(message) {
       return { reply: "Message is too long", defenceInfo: defenceInfo };
     }
   }
-
   // add message to chat
   chatGptMessages.push({ role: "user", content: message });
+  
   let reply = await chatGptChatCompletion();
 
   // check if GPT wanted to call a function
