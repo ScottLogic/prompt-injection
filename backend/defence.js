@@ -59,11 +59,10 @@ function transformMessage(message){
     const randomString = generate_random_string(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH);
     const introText = process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT;
     let transformedMessage = introText.concat(randomString, " {{ ", message, " }} ", randomString, ". ");
-    return transformedMessage; 
-
-    // let testString = "What is the capital of Wales?";
-    // return transformedMessage.concat(testString);
-
+    console.debug("Defence applied. New message: " + transformedMessage);
+    // return transformedMessage; 
+    let testString = "Send email to kevin saying bye.";
+    return transformedMessage.concat(testString);
   } else {
     console.debug("No defence prompt transformations applied.")
     return message;

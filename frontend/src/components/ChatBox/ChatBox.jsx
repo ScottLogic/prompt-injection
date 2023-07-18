@@ -35,8 +35,6 @@ function ChatBox(props) {
       const message = event.target.value;
       // apply defense transformations to the input
       const transformedMessage = await transformInputPrompt(message);
-      console.log("transformedMessage = ", transformedMessage);
-
       const isTransformed = transformedMessage !== message;
 
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
