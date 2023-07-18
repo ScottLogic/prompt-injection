@@ -10,6 +10,7 @@ import { getSentEmails } from "../../service/emailService";
 import { transformInputPrompt, detectTriggeredDefences } from "../../service/defenceService";
 
 function ChatBox(props) {
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [messages, setMessages] = useState([]);
 
   // called on mount
@@ -30,7 +31,8 @@ function ChatBox(props) {
   };
 
   const sendChatMessage = async (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !isSendingMessage) {
+      setIsSendingMessage(true);
       // get the message
       const message = event.target.value;
       // apply defense transformations to the input
@@ -40,19 +42,23 @@ function ChatBox(props) {
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       setMessages((messages) => [
         ...messages,
-        { message: message, isUser: true, isOriginalMessage: true},
+        { message: message, isUser: true, isOriginalMessage: true },
       ]);
-      if (isTransformed){
+      if (isTransformed) {
         setMessages((messages) => [
           ...messages,
-          { message: transformedMessage, isUser: true, isOriginalMessage: false},
+          {
+            message: transformedMessage,
+            isUser: true,
+            isOriginalMessage: false,
+          },
         ]);
       }
       // clear the input
       event.target.value = "";
 
       // check if original input triggers any defence mechanisms
-      const triggeredDefenceCheck = await detectTriggeredDefences(message)
+      const triggeredDefenceCheck = await detectTriggeredDefences(transformedMessage)
       const defenceInfo = triggeredDefenceCheck.defenceInfo;
 
       let reply;
@@ -71,6 +77,9 @@ function ChatBox(props) {
       ]);
       // update triggered defences
       props.updateTriggeredDefences(defenceInfo.triggeredDefences);
+
+      // we have the message reply
+      setIsSendingMessage(false);
 
       // get sent emails
       const sentEmails = await getSentEmails();
