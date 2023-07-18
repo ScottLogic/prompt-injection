@@ -1,5 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { isDefenceActive, detectTriggeredDefences } = require("./defence");
+const { isDefenceActive } = require("./defence");
 const { sendEmail } = require("./email");
 
 // OpenAI configuration
@@ -80,7 +80,6 @@ async function chatGptCallFunction(functionCall) {
   } else {
     console.error("Unknown function: " + functionName);
   }
-
   return reply;
 }
 
@@ -102,7 +101,7 @@ async function chatGptChatCompletion() {
 async function chatGptSendMessage(message) {
   // add message to chat
   chatGptMessages.push({ role: "user", content: message });
-  
+
   let reply = await chatGptChatCompletion();
 
   // check if GPT wanted to call a function
@@ -111,7 +110,7 @@ async function chatGptSendMessage(message) {
     reply = await chatGptCallFunction(reply.function_call);
   }
   // return the reply content
-  return reply.content;
+  return { reply: reply.content };
 }
 
 // clear chat history

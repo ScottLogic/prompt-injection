@@ -53,7 +53,6 @@ router.post("/defence/transform", (req, res, next) => {
 // Get the status of all defences
 router.post("/defence/detect", (req, res, next) => {
   const message = req.body?.message;
-  console.log("message: " + message);
   res.send(detectTriggeredDefences(message));
 });  
 

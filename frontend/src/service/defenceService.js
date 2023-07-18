@@ -46,14 +46,14 @@ async function transformInputPrompt(message) {
 }
 
 async function detectTriggeredDefences(message) {
-    const response = await fetch(URL + "detect", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message }),
-    });
-    return response.json();
-  }
+  const response = await fetch(URL + "detect", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ message }),
+  });
+  return response.json();
+}
 
-export { getDefenceStatus, activateDefence, deactivateDefence, transformInputPrompt, detectTriggeredDefences};
+export { getDefenceStatus, activateDefence, deactivateDefence, transformInputPrompt, detectTriggeredDefences };
