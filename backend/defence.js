@@ -56,6 +56,15 @@ function generate_random_string(string_length){
   return random_string
 }
 
+// apply random sequence enclosure defense to input message
+function transformRandomSequenceEnclosure(message){
+  console.debug("Random Sequence Enclosure defence active.");
+  const randomString = generate_random_string(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH);
+  const introText = process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT;
+  const transformedMessage = introText.concat(randomString, " {{ ", message, " }} ", randomString, ". ");
+  return transformedMessage; 
+}
+
 // function to escape XML characters in user input to prevent hacking with XML tagging on 
 function escapeXml(unsafe) {
   return unsafe.replace(/[<>&'"]/g, function (c) {
@@ -69,27 +78,30 @@ function escapeXml(unsafe) {
   });
 }
 
-// apply defence string transformations to original message 
+// apply XML tagging defence to input message
+function transformXmlTagging(message){
+  console.debug("XML Tagging defence active.");
+  const openTag = "<user_input>";
+  const closeTag = "</user_input>";
+  const transformedMessage = openTag.concat(escapeXml(message), closeTag);
+  return transformedMessage;
+}
+
+//apply defence string transformations to original message 
 function transformMessage(message){
   let transformedMessage = message;
   if (isDefenceActive("RANDOM_SEQUENCE_ENCLOSURE")){
-    console.debug("Random Sequence Enclosure defence active.");
-    const randomString = generate_random_string(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH);
-    const introText = process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT;
-    transformedMessage = introText.concat(randomString, " {{ ", transformedMessage, " }} ", randomString, ". ");
-    console.debug("Defence applied. New message: " + transformedMessage);
-    
-  } if (isDefenceActive("XML_TAGGING")){
-    
-      console.debug("XML Tagging defence active.");
-      let openTag = "<user_input>";
-      let closeTag = "</user_input>";
-      transformedMessage = openTag.concat(escapeXml(transformedMessage), closeTag);
-      console.debug("Defence applied. New message: " + transformedMessage);
+    transformedMessage = transformRandomSequenceEnclosure(transformedMessage);
+  } 
+  if (isDefenceActive("XML_TAGGING")){
+    transformedMessage = transformXmlTagging(transformedMessage);
+  } 
+  if (message == transformedMessage){
+    console.debug("No defences applied. Message unchanged.");
   } else {
-    console.debug("No defence prompt transformations applied.")
+    console.debug("Defences applied. Transformed message: " + transformedMessage);
   }
-  return transformedMessage;
+    return transformedMessage;
 }
 
 module.exports = {
