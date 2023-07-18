@@ -7,7 +7,7 @@ import {
   openAiSendMessage,
 } from "../../service/openaiService";
 import { getSentEmails } from "../../service/emailService";
-import { transformInputPrompt } from "../../service/defenceService";
+import { transformInputPrompt, detectTriggeredDefences } from "../../service/defenceService";
 
 function ChatBox(props) {
   const [isSendingMessage, setIsSendingMessage] = useState(false);
@@ -54,18 +54,30 @@ function ChatBox(props) {
           },
         ]);
       }
-
       // clear the input
       event.target.value = "";
 
-      const reply = await openAiSendMessage(transformedMessage);
+      // check if original input triggers any defence mechanisms
+      const triggeredDefenceCheck = await detectTriggeredDefences(transformedMessage)
+      const defenceInfo = triggeredDefenceCheck.defenceInfo;
+
+      let reply;
+      // if the defence info is blocked, set reply to blocked message
+      if (defenceInfo.blocked){
+        reply = triggeredDefenceCheck;
+      } else {
+        // if not blocked, send the message to chatgpt and get reply 
+       reply = await openAiSendMessage(transformedMessage);
+      }
+
       // add it to the list of messages
       setMessages((messages) => [
         ...messages,
-        { isUser: false, message: reply.reply, defenceInfo: reply.defenceInfo },
+        { isUser: false, message: reply.reply, defenceInfo: defenceInfo },
       ]);
       // update triggered defences
-      props.updateTriggeredDefences(reply.defenceInfo.triggeredDefences);
+      props.updateTriggeredDefences(defenceInfo.triggeredDefences);
+
       // we have the message reply
       setIsSendingMessage(false);
 

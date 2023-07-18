@@ -24,6 +24,14 @@ function DefenceBox(props) {
       isActive: false,
       isTriggered: false,
     },
+    {
+      name: "xml tagging", 
+      id: "XML_TAGGING",
+      info: "enclose the users prompt between <user_input> tags and escapes xml characters in raw input. this is a form of prompt validation.",
+      isActive: false,
+      isTriggered: false,
+  }, 
+
   ]);
 
   // called on mount

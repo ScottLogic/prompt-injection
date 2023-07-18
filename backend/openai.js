@@ -80,7 +80,6 @@ async function chatGptCallFunction(functionCall) {
   } else {
     console.error("Unknown function: " + functionName);
   }
-
   return reply;
 }
 
@@ -100,24 +99,9 @@ async function chatGptChatCompletion() {
 }
 
 async function chatGptSendMessage(message) {
-  // keep track of any triggered defences
-  const defenceInfo = { blocked: false, triggeredDefences: [] };
-  const maxMessageLength = process.env.MAX_MESSAGE_LENGTH || 280;
-  // check if the message is too long
-  if (message.length > maxMessageLength) {
-    // add the defence to the list of triggered defences
-    defenceInfo.triggeredDefences.push("CHARACTER_LIMIT");
-    // check if the defence is active
-    if (isDefenceActive("CHARACTER_LIMIT")) {
-      // block the message
-      defenceInfo.blocked = true;
-      // return the defence info
-      return { reply: "Message is too long", defenceInfo: defenceInfo };
-    }
-  }
   // add message to chat
   chatGptMessages.push({ role: "user", content: message });
-  
+
   let reply = await chatGptChatCompletion();
 
   // check if GPT wanted to call a function
@@ -125,9 +109,8 @@ async function chatGptSendMessage(message) {
     // call the function and get a new reply
     reply = await chatGptCallFunction(reply.function_call);
   }
-
   // return the reply content
-  return { reply: reply.content, defenceInfo: defenceInfo };
+  return { reply: reply.content };
 }
 
 // clear chat history
