@@ -48,6 +48,8 @@ function ChatBox(props) {
           { message: transformedMessage, isUser: true, isOriginalMessage: false},
         ]);
       }
+
+      // detect if message is allowed or blocked 
       
       // clear the input
       event.target.value = "";

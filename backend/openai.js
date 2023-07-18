@@ -1,5 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { isDefenceActive } = require("./defence");
+const { isDefenceActive, detectTriggeredDefences } = require("./defence");
 const { sendEmail } = require("./email");
 
 // OpenAI configuration
@@ -86,7 +86,7 @@ async function chatGptCallFunction(functionCall) {
 
 async function chatGptChatCompletion() {
   chat_completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: "gpt-4",
     messages: chatGptMessages,
     functions: chatGptFunctions,
   });
@@ -100,19 +100,12 @@ async function chatGptChatCompletion() {
 }
 
 async function chatGptSendMessage(message) {
-  // keep track of any triggered defences
-  const defenceInfo = { blocked: false, triggeredDefences: [] };
-  // check if the message is too long
-  if (message.length > 280) {
-    // add the defence to the list of triggered defences
-    defenceInfo.triggeredDefences.push("CHARACTER_LIMIT");
-    // check if the defence is active
-    if (isDefenceActive("CHARACTER_LIMIT")) {
-      // block the message
-      defenceInfo.blocked = true;
-      // return the defence info
-      return { reply: "Message is too long", defenceInfo: defenceInfo };
-    }
+
+  // check for triggered defences in message
+  const triggeredDefenceCheck = await detectTriggeredDefences(message);
+  const defenceInfo = triggeredDefenceCheck.defenceInfo;
+  if (defenceInfo.blocked){
+    return triggeredDefenceCheck;
   }
 
   // add message to chat

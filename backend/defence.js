@@ -80,9 +80,11 @@ function escapeXml(unsafe) {
 // apply XML tagging defence to input message
 function transformXmlTagging(message){
   console.debug("XML Tagging defence active.");
+  // detect if user input contains XML 
+  const safeXml = escapeXml(message);
   const openTag = "<user_input>";
   const closeTag = "</user_input>";
-  const transformedMessage = openTag.concat(escapeXml(message), closeTag);
+  const transformedMessage = openTag.concat(safeXml, closeTag);
   return transformedMessage;
 }
 
@@ -103,10 +105,44 @@ function transformMessage(message){
     return transformedMessage;
 }
 
+// detects triggered defences in message and blocks the message if necessary 
+async function detectTriggeredDefences(message) {
+  
+  // keep track of any triggered defences
+  const defenceInfo = { blocked: false, triggeredDefences: [] };
+  const maxMessageLength = process.env.MAX_MESSAGE_LENGTH || 280;
+  // check if the message is too long
+  if (message.length > maxMessageLength) {
+    console.debug("CHARACTER_LIMIT defence triggered.");
+    // add the defence to the list of triggered defences
+    defenceInfo.triggeredDefences.push("CHARACTER_LIMIT");
+    // check if the defence is active
+    if (isDefenceActive("CHARACTER_LIMIT")) {
+      // block the message
+      defenceInfo.blocked = true;
+      // return the defence info
+      return { reply: "Message is too long", defenceInfo: defenceInfo };
+    }
+  }
+
+    // check if message contains XML tags
+    const safeXmlMessage = escapeXml(message);
+    console.debug("message =".concat(message, " safeXmlMessage = ", safeXmlMessage));
+    if (message !== safeXmlMessage){
+      console.debug("XML_TAGGING defence triggered.");
+        // add the defence to the list of triggered defences
+        defenceInfo.triggeredDefences.push("XML_TAGGING");
+    }  return { reply: null, defenceInfo: defenceInfo };
+  }
+
+
+
+
 module.exports = {
   activateDefence,
   deactivateDefence,
   getDefences,
   isDefenceActive,
-  transformMessage
+  transformMessage, 
+  detectTriggeredDefences
 };
