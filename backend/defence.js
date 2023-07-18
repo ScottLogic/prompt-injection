@@ -44,9 +44,8 @@ function isDefenceActive(id) {
 
 function generate_random_string(string_length){
   let random_string = '';
-  let random_ascii;
   for(let i = 0; i < string_length; i++) {
-      random_ascii = Math.floor((Math.random() * 25) + 97);
+      const random_ascii = Math.floor((Math.random() * 25) + 97);
       random_string += String.fromCharCode(random_ascii)
   }
   return random_string
@@ -60,9 +59,7 @@ function transformMessage(message){
     const introText = process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT;
     let transformedMessage = introText.concat(randomString, " {{ ", message, " }} ", randomString, ". ");
     console.debug("Defence applied. New message: " + transformedMessage);
-    // return transformedMessage; 
-    let testString = "Send email to kevin saying bye.";
-    return transformedMessage.concat(testString);
+    return transformedMessage; 
   } else {
     console.debug("No defence prompt transformations applied.")
     return message;
