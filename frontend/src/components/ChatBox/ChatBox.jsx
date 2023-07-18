@@ -10,6 +10,7 @@ import { getSentEmails } from "../../service/emailService";
 import { transformInputPrompt } from "../../service/defenceService";
 
 function ChatBox(props) {
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [messages, setMessages] = useState([]);
 
   // called on mount
@@ -30,7 +31,8 @@ function ChatBox(props) {
   };
 
   const sendChatMessage = async (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !isSendingMessage) {
+      setIsSendingMessage(true);
       // get the message
       const message = event.target.value;
       // apply defense transformations to the input
@@ -40,15 +42,19 @@ function ChatBox(props) {
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       setMessages((messages) => [
         ...messages,
-        { message: message, isUser: true, isOriginalMessage: true},
+        { message: message, isUser: true, isOriginalMessage: true },
       ]);
-      if (isTransformed){
+      if (isTransformed) {
         setMessages((messages) => [
           ...messages,
-          { message: transformedMessage, isUser: true, isOriginalMessage: false},
+          {
+            message: transformedMessage,
+            isUser: true,
+            isOriginalMessage: false,
+          },
         ]);
       }
-      
+
       // clear the input
       event.target.value = "";
 
@@ -60,6 +66,8 @@ function ChatBox(props) {
       ]);
       // update triggered defences
       props.updateTriggeredDefences(reply.defenceInfo.triggeredDefences);
+      // we have the message reply
+      setIsSendingMessage(false);
 
       // get sent emails
       const sentEmails = await getSentEmails();
