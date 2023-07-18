@@ -100,11 +100,11 @@ async function chatGptChatCompletion() {
 }
 
 async function chatGptSendMessage(message) {
-  var transformedMessage = ""; 
   // keep track of any triggered defences
   const defenceInfo = { blocked: false, triggeredDefences: [] };
+  const maxMessageLength = process.env.MAX_MESSAGE_LENGTH || 280;
   // check if the message is too long
-  if (message.length > 280) {
+  if (message.length > maxMessageLength) {
     // add the defence to the list of triggered defences
     defenceInfo.triggeredDefences.push("CHARACTER_LIMIT");
     // check if the defence is active
