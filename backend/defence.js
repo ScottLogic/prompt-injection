@@ -106,7 +106,7 @@ function transformMessage(message){
 }
 
 // detects triggered defences in message and blocks the message if necessary 
-async function detectTriggeredDefences(message) {
+function detectTriggeredDefences(message) {
   
   // keep track of any triggered defences
   const defenceInfo = { blocked: false, triggeredDefences: [] };
@@ -132,7 +132,8 @@ async function detectTriggeredDefences(message) {
       console.debug("XML_TAGGING defence triggered.");
         // add the defence to the list of triggered defences
         defenceInfo.triggeredDefences.push("XML_TAGGING");
-    }  return { reply: null, defenceInfo: defenceInfo };
+    }  
+    return { reply: null, defenceInfo: defenceInfo };
   }
 
 

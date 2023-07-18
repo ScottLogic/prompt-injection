@@ -5,6 +5,7 @@ const {
   deactivateDefence,
   getDefences,
   transformMessage,
+  detectTriggeredDefences, 
 } = require("./defence");
 const { clearEmails, getSentEmails } = require("./email");
 const { chatGptSendMessage, clearMessages } = require("./openai");
@@ -48,6 +49,13 @@ router.post("/defence/transform", (req, res, next) => {
   const message = req.body?.message;
   res.send(transformMessage(message));
   }); 
+
+// Get the status of all defences
+router.post("/defence/detect", (req, res, next) => {
+  const message = req.body?.message;
+  console.log("message: " + message);
+  res.send(detectTriggeredDefences(message));
+});  
 
 // Clear sent emails
 router.post("/email/clear", (req, res, next) => {

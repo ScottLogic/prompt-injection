@@ -100,14 +100,6 @@ async function chatGptChatCompletion() {
 }
 
 async function chatGptSendMessage(message) {
-
-  // check for triggered defences in message
-  const triggeredDefenceCheck = await detectTriggeredDefences(message);
-  const defenceInfo = triggeredDefenceCheck.defenceInfo;
-  if (defenceInfo.blocked){
-    return triggeredDefenceCheck;
-  }
-
   // add message to chat
   chatGptMessages.push({ role: "user", content: message });
   
@@ -118,9 +110,8 @@ async function chatGptSendMessage(message) {
     // call the function and get a new reply
     reply = await chatGptCallFunction(reply.function_call);
   }
-
   // return the reply content
-  return { reply: reply.content, defenceInfo: defenceInfo };
+  return reply.content;
 }
 
 // clear chat history
