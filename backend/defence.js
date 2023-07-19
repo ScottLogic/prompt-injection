@@ -2,6 +2,7 @@
 const defenceEnums = [
   "CHARACTER_LIMIT",
   "RANDOM_SEQUENCE_ENCLOSURE",
+  "SYSTEM_ROLE",
   "XML_TAGGING",
   "EMAIL_WHITELIST"
 ];
