@@ -6,7 +6,7 @@ const { sendEmail } = require("./email");
 let configuration = null;
 let openai = null;
 // chat history
-const chatGptMessages = [];
+let chatGptMessages = [];
 // functions available to ChatGPT
 const chatGptFunctions = [
   {
@@ -25,7 +25,7 @@ const chatGptFunctions = [
         },
         message: {
           type: "string",
-          description: "The message of the email",
+          description: "The body of the email",
         },
       },
       required: ["email", "subject", "message"],
@@ -84,6 +84,23 @@ async function chatGptCallFunction(functionCall) {
 }
 
 async function chatGptChatCompletion() {
+  // check if we need to set a system role
+  if (isDefenceActive("SYSTEM_ROLE")) {
+    // check to see if there's already a system role
+    if (!chatGptMessages.find((message) => message.role === "system")) {
+      // add the system role to the start of the chat history
+      chatGptMessages.unshift({
+        role: "system",
+        content: process.env.SYSTEM_ROLE,
+      });
+    }
+  } else {
+    // remove the system role from the chat history
+    chatGptMessages = chatGptMessages.filter(
+      (message) => message.role !== "system"
+    );
+  }
+
   chat_completion = await openai.createChatCompletion({
     model: "gpt-4",
     messages: chatGptMessages,
@@ -94,7 +111,7 @@ async function chatGptChatCompletion() {
   // add the reply to the chat history
   chatGptMessages.push(reply);
   // log and return the reply
-  console.log(reply);
+  console.table(chatGptMessages);
   return reply;
 }
 
@@ -115,7 +132,7 @@ async function chatGptSendMessage(message) {
 
 // clear chat history
 function clearMessages() {
-  chatGptMessages.length = 0;
+  chatGptMessages = [];
 }
 
 module.exports = { initOpenAi, chatGptSendMessage, clearMessages };
