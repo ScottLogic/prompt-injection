@@ -31,6 +31,20 @@ const chatGptFunctions = [
       required: ["email", "subject", "message"],
     },
   },
+  {
+    name: "getEmailWhitelist",
+    description: "Get the list of whitelisted email addresses allowed to send emails to",
+    parameters: {
+      type: "object",
+      properties: {
+        returnAll: {
+          type: "boolean",
+          description: "Whether to return all email addresses or just the domains",
+          default: true
+        }
+      }
+    }
+  },
 ];
 
 function initOpenAi() {
@@ -48,6 +62,8 @@ function isChatGptFunction(functionName) {
 async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefences: [], blocked: false }) {
   let reply = null;
 
+  console.log("chatGptCallFunction called");
+
   // get the function name
   const functionName = functionCall.name;
 
@@ -61,7 +77,7 @@ async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefenc
     if (functionName === "sendEmail") {
       // if email whitelist defence active, check email before allowing send
       if (isDefenceActive("EMAIL_WHITELIST")) {
-        console.debug("Email whitelist defence active");
+        console.debug("Email whitelist defence active. ");
         if (emailInWhitelist(params.email)) {
           sendEmail(params.email, params.subject, params.message);
           response = "Email sent";
@@ -77,7 +93,9 @@ async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefenc
         response = "Email sent";
       }
     }
-
+    if (functionName == "getEmailWhitelist"){
+      response = getEmailWhitelist(params.returnAll);
+    }
     // add function call to chat
     chatGptMessages.push({
       role: "function",
@@ -98,8 +116,17 @@ async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefenc
   } else {
     console.error("Unknown function: " + functionName);
   }
-  console.log("chatGptCallFunction reply= " + reply +  "defenceInfo= " + JSON.stringify(defenceInfo));  
   return { reply, defenceInfo };
+}
+
+// return the whitelist of emails and domains, or domains only
+function getEmailWhitelist(returnAll){
+  const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
+  const emailDomainWhitelist = emailWhitelist.filter(email => email.startsWith("@"));
+  if (returnAll){
+    return "Whitelisted emails and domains are: " + emailWhitelist;
+  } 
+  return "Whitelisted domains are: " + emailDomainWhitelist;
 }
 
 async function chatGptChatCompletion() {
@@ -127,6 +154,7 @@ async function chatGptSendMessage(message) {
 
   // check if GPT wanted to call a function
   if (reply.function_call) {
+
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(reply.function_call);
     return {reply: functionCallReply.reply.content, defenceInfo: functionCallReply.defenceInfo};
