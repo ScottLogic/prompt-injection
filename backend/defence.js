@@ -1,22 +1,14 @@
 // keep track of active defences as flags
-const defences = [
-  {
-    id: "CHARACTER_LIMIT",
-    isActive: false,
-  },
-  {
-    id: "RANDOM_SEQUENCE_ENCLOSURE",
-    isActive: false,
-  },
-  {
-    id: "XML_TAGGING",
-    isActive: false,
-  },
-  {
-    id: "EMAIL_WHITELIST",
-    isActive: false,
-  }
+const defenceEnums = [
+  "CHARACTER_LIMIT",
+  "RANDOM_SEQUENCE_ENCLOSURE",
+  "XML_TAGGING",
+  "EMAIL_WHITELIST"
 ];
+// all defences start inactive
+const defences = defenceEnums.map((defence) => {
+  return { id: defence, isActive: false };
+});
 
 // activate a defence
 function activateDefence(id) {
@@ -51,32 +43,46 @@ function isDefenceActive(id) {
 }
 
 function generate_random_string(string_length) {
-  let random_string = '';
+  let random_string = "";
   for (let i = 0; i < string_length; i++) {
-    const random_ascii = Math.floor((Math.random() * 25) + 97);
-    random_string += String.fromCharCode(random_ascii)
+    const random_ascii = Math.floor(Math.random() * 25 + 97);
+    random_string += String.fromCharCode(random_ascii);
   }
-  return random_string
+  return random_string;
 }
 
 // apply random sequence enclosure defense to input message
 function transformRandomSequenceEnclosure(message) {
   console.debug("Random Sequence Enclosure defence active.");
-  const randomString = generate_random_string(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH);
+  const randomString = generate_random_string(
+    process.env.RANDOM_SEQ_ENCLOSURE_LENGTH
+  );
   const introText = process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT;
-  const transformedMessage = introText.concat(randomString, " {{ ", message, " }} ", randomString, ". ");
+  const transformedMessage = introText.concat(
+    randomString,
+    " {{ ",
+    message,
+    " }} ",
+    randomString,
+    ". "
+  );
   return transformedMessage;
 }
 
-// function to escape XML characters in user input to prevent hacking with XML tagging on 
+// function to escape XML characters in user input to prevent hacking with XML tagging on
 function escapeXml(unsafe) {
   return unsafe.replace(/[<>&'"]/g, function (c) {
     switch (c) {
-      case '<': return '&lt;';
-      case '>': return '&gt;';
-      case '&': return '&amp;';
-      case '\'': return '&apos;';
-      case '"': return '&quot;';
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case "&":
+        return "&amp;";
+      case "'":
+        return "&apos;";
+      case '"':
+        return "&quot;";
     }
   });
 }
@@ -90,7 +96,7 @@ function transformXmlTagging(message) {
   return transformedMessage;
 }
 
-//apply defence string transformations to original message 
+//apply defence string transformations to original message
 function transformMessage(message) {
   let transformedMessage = message;
   if (isDefenceActive("RANDOM_SEQUENCE_ENCLOSURE")) {
@@ -102,7 +108,9 @@ function transformMessage(message) {
   if (message == transformedMessage) {
     console.debug("No defences applied. Message unchanged.");
   } else {
-    console.debug("Defences applied. Transformed message: " + transformedMessage);
+    console.debug(
+      "Defences applied. Transformed message: " + transformedMessage
+    );
   }
   return transformedMessage;
 }
