@@ -11,6 +11,10 @@ const defences = [
   {
     id: "XML_TAGGING",
     isActive: false,
+  },
+  {
+    id: "EMAIL_WHITELIST",
+    isActive: false,
   }
 ];
 
@@ -103,7 +107,13 @@ function transformMessage(message) {
   return transformedMessage;
 }
 
-// detects triggered defences in message and blocks the message if necessary 
+// check if email is in whitelist
+function emailInWhitelist(emailAddress){
+  const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
+  return emailWhitelist.includes(emailAddress);
+}
+
+// detects triggered defences in original message and blocks the message if necessary 
 function detectTriggeredDefences(message) {
   // keep track of any triggered defences
   const defenceInfo = { blocked: false, triggeredDefences: [] };
@@ -137,5 +147,6 @@ module.exports = {
   getDefences,
   isDefenceActive,
   transformMessage,
-  detectTriggeredDefences
+  detectTriggeredDefences,
+  emailInWhitelist
 };

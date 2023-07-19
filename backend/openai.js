@@ -1,5 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { isDefenceActive } = require("./defence");
+const { isDefenceActive, emailInWhitelist } = require("./defence");
 const { sendEmail } = require("./email");
 
 // OpenAI configuration
@@ -47,6 +47,7 @@ function isChatGptFunction(functionName) {
 
 async function chatGptCallFunction(functionCall) {
   reply = null;
+  const defenceInfo = { blocked: false, triggeredDefences: [] };
 
   // get the function name
   functionName = functionCall.name;
@@ -58,11 +59,25 @@ async function chatGptCallFunction(functionCall) {
 
     // call the function
     if (functionName === "sendEmail") {
-      sendEmail(params.email, params.subject, params.message);
-      // we always send the email because it's a stub
-      response = "Email sent";
-    }
-
+      
+      // if email whitelist defence active, check email before allowing send  
+      if (isDefenceActive("EMAIL_WHITELIST")) {
+        console.debug("Email whitelist defence active");
+        if (emailInWhitelist(params.email)) {
+          sendEmail(params.email, params.subject, params.message);
+          response = "Email sent";
+        } else {
+          // if email is not whitelisted, do not send email 
+          response = "Cannot send to this email as it is not whitelisted";
+          defenceInfo.triggeredDefences.push("CHARACTER_LIMIT");
+          // defenceInfo.blocked = true;
+        }
+      } else {
+        // if not active, always send email
+        sendEmail(params.email, params.subject, params.message);
+        response = "Email sent";
+    } 
+  }
     // add function call to chat
     chatGptMessages.push({
       role: "function",
