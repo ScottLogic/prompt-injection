@@ -1,6 +1,6 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { isDefenceActive } = require("./defence");
-const { sendEmail } = require("./email");
+const { isDefenceActive, isEmailInWhitelist } = require("./defence");
+const { sendEmail, getEmailWhitelist } = require("./email");
 
 // OpenAI configuration
 let configuration = null;
@@ -31,6 +31,14 @@ const chatGptFunctions = [
       required: ["email", "subject", "message"],
     },
   },
+  {
+    name: "getEmailWhitelist",
+    description: "Get the list of whitelisted email addresses allowed to send emails to",
+    parameters: {
+      type: "object",
+      properties: {}
+      }
+    }
 ];
 
 function initOpenAi() {
@@ -45,11 +53,12 @@ function isChatGptFunction(functionName) {
   return chatGptFunctions.find((func) => func.name === functionName);
 }
 
-async function chatGptCallFunction(functionCall) {
-  reply = null;
+async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefences: [], blocked: false }) {
+  let reply = null;
 
   // get the function name
-  functionName = functionCall.name;
+  const functionName = functionCall.name;
+
   // check if we know the function
   if (isChatGptFunction(functionName)) {
     // get the function parameters
@@ -58,11 +67,25 @@ async function chatGptCallFunction(functionCall) {
 
     // call the function
     if (functionName === "sendEmail") {
-      sendEmail(params.email, params.subject, params.message);
-      // we always send the email because it's a stub
-      response = "Email sent";
+      if (isEmailInWhitelist(params.email)) {
+        response = sendEmail(params.email, params.subject, params.message);
+      } else {
+        // trigger email defence even if it is not active
+        defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
+        if (isDefenceActive("EMAIL_WHITELIST")) {
+          // do not send email if defence is on and set to blocked
+          response = "Cannot send to this email as it is not whitelisted";
+          defenceInfo.blocked = true;
+        } else {
+          // send email if defence is not active
+          response = sendEmail(params.email, params.subject, params.message);
+        }
+      }
     }
 
+    if (functionName == "getEmailWhitelist"){
+      response = getEmailWhitelist();
+    }
     // add function call to chat
     chatGptMessages.push({
       role: "function",
@@ -72,15 +95,18 @@ async function chatGptCallFunction(functionCall) {
 
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion();
+
     // check for another function call
     if (reply.function_call) {
-      // recursively call the function and get a new reply
-      reply = await chatGptCallFunction(reply.function_call);
+      // recursively call the function and get a new reply, passing the updated defenceInfo
+      const { reply: recursiveReply, defenceInfo: updatedDefenceInfo } = await chatGptCallFunction(reply.function_call, defenceInfo);
+      reply = recursiveReply;
+      defenceInfo = updatedDefenceInfo;
     }
   } else {
     console.error("Unknown function: " + functionName);
   }
-  return reply;
+  return { reply, defenceInfo };
 }
 
 async function chatGptChatCompletion() {
@@ -99,6 +125,8 @@ async function chatGptChatCompletion() {
 }
 
 async function chatGptSendMessage(message) {
+  // init defence info 
+  let defenceInfo = { triggeredDefences: [], blocked: false };
   // add message to chat
   chatGptMessages.push({ role: "user", content: message });
 
@@ -106,11 +134,13 @@ async function chatGptSendMessage(message) {
 
   // check if GPT wanted to call a function
   if (reply.function_call) {
-    // call the function and get a new reply
-    reply = await chatGptCallFunction(reply.function_call);
+
+    // call the function and get a new reply and defence info from
+    const functionCallReply = await chatGptCallFunction(reply.function_call);
+    return {reply: functionCallReply.reply.content, defenceInfo: functionCallReply.defenceInfo};
   }
   // return the reply content
-  return { reply: reply.content };
+  return { reply: reply.content, defenceInfo: defenceInfo };
 }
 
 // clear chat history
