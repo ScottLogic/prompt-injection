@@ -1,22 +1,14 @@
 // keep track of active defences as flags
-const defences = [
-  {
-    id: "CHARACTER_LIMIT",
-    isActive: false,
-  },
-  {
-    id: "RANDOM_SEQUENCE_ENCLOSURE",
-    isActive: false,
-  },
-  {
-    id: "SYSTEM_ROLE",
-    isActive: false,
-  },
-  {
-    id: "XML_TAGGING",
-    isActive: false,
-  },
+const defenceEnums = [
+  "CHARACTER_LIMIT",
+  "RANDOM_SEQUENCE_ENCLOSURE",
+  "SYSTEM_ROLE",
+  "XML_TAGGING",
 ];
+// all defences start inactive
+const defences = defenceEnums.map((defence) => {
+  return { id: defence, isActive: false };
+});
 
 // activate a defence
 function activateDefence(id) {
