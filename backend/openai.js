@@ -111,7 +111,7 @@ async function chatGptChatCompletion() {
   // add the reply to the chat history
   chatGptMessages.push(reply);
   // log and return the reply
-  console.table(chatGptMessages);
+  console.log(chatGptMessages);
   return reply;
 }
 
