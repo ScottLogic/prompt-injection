@@ -36,15 +36,9 @@ const chatGptFunctions = [
     description: "Get the list of whitelisted email addresses allowed to send emails to",
     parameters: {
       type: "object",
-      properties: {
-        returnAll: {
-          type: "boolean",
-          description: "Whether to return all email addresses or just the domains",
-          default: true
-        }
+      properties: {}
       }
     }
-  },
 ];
 
 function initOpenAi() {
@@ -90,7 +84,7 @@ async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefenc
     }
 
     if (functionName == "getEmailWhitelist"){
-      response = getEmailWhitelist(params.returnAll);
+      response = getEmailWhitelist();
     }
     // add function call to chat
     chatGptMessages.push({
@@ -146,7 +140,7 @@ async function chatGptSendMessage(message) {
     return {reply: functionCallReply.reply.content, defenceInfo: functionCallReply.defenceInfo};
   }
   // return the reply content
-  return { reply: reply.content, defenceInfo: {} };
+  return { reply: reply.content, defenceInfo: defenceInfo };
 }
 
 // clear chat history

@@ -23,13 +23,9 @@ function sendEmail(email, subject, message) {
 }
 
 // return the whitelist of emails and domains, or domains only
-function getEmailWhitelist(returnAll){
+function getEmailWhitelist(){
   const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
-  const emailDomainWhitelist = emailWhitelist.filter(email => email.startsWith("@"));
-  if (returnAll){
-    return "Whitelisted emails and domains are: " + emailWhitelist;
-  } 
-  return "Whitelisted domains are: " + emailDomainWhitelist;
+  return "Whitelisted emails and domains are: " + emailWhitelist;
 }
 
 module.exports = { clearEmails, getSentEmails, sendEmail, getEmailWhitelist };
