@@ -116,7 +116,7 @@ function transformMessage(message) {
 }
 
 // check if email is in whitelist
-function emailInWhitelist(emailAddress){
+function isEmailInWhitelist(emailAddress){
   // get the domain from email
   const emailAddressDomain = emailAddress.split("@")[1];
   const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
@@ -168,5 +168,5 @@ module.exports = {
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,
-  emailInWhitelist
+  isEmailInWhitelist
 };

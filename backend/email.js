@@ -22,4 +22,14 @@ function sendEmail(email, subject, message) {
   return response;
 }
 
-module.exports = { clearEmails, getSentEmails, sendEmail };
+// return the whitelist of emails and domains, or domains only
+function getEmailWhitelist(returnAll){
+  const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
+  const emailDomainWhitelist = emailWhitelist.filter(email => email.startsWith("@"));
+  if (returnAll){
+    return "Whitelisted emails and domains are: " + emailWhitelist;
+  } 
+  return "Whitelisted domains are: " + emailDomainWhitelist;
+}
+
+module.exports = { clearEmails, getSentEmails, sendEmail, getEmailWhitelist };

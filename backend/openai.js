@@ -1,6 +1,6 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { isDefenceActive, emailInWhitelist } = require("./defence");
-const { sendEmail } = require("./email");
+const { isDefenceActive, isEmailInWhitelist } = require("./defence");
+const { sendEmail, getEmailWhitelist } = require("./email");
 
 // OpenAI configuration
 let configuration = null;
@@ -62,8 +62,6 @@ function isChatGptFunction(functionName) {
 async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefences: [], blocked: false }) {
   let reply = null;
 
-  console.log("chatGptCallFunction called");
-
   // get the function name
   const functionName = functionCall.name;
 
@@ -75,24 +73,22 @@ async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefenc
 
     // call the function
     if (functionName === "sendEmail") {
-      // if email whitelist defence active, check email before allowing send
-      if (isDefenceActive("EMAIL_WHITELIST")) {
-        console.debug("Email whitelist defence active. ");
-        if (emailInWhitelist(params.email)) {
-          sendEmail(params.email, params.subject, params.message);
-          response = "Email sent";
-        } else {
-          // if email is not whitelisted, do not send email
-          response = "Cannot send to this email as it is not whitelisted";
-          defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
-          defenceInfo.blocked = true;
-        }
+      if (isEmailInWhitelist(params.email)) {
+        response = sendEmail(params.email, params.subject, params.message);
       } else {
-        // if not active, always send email
-        sendEmail(params.email, params.subject, params.message);
-        response = "Email sent";
+        // trigger email defence even if it is not active
+        defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
+        if (isDefenceActive("EMAIL_WHITELIST")) {
+          // do not send email if defence is on and set to blocked
+          response = "Cannot send to this email as it is not whitelisted";
+          defenceInfo.blocked = true;
+        } else {
+          // send email if defence is not active
+          response = sendEmail(params.email, params.subject, params.message);
+        }
       }
     }
+
     if (functionName == "getEmailWhitelist"){
       response = getEmailWhitelist(params.returnAll);
     }
@@ -117,16 +113,6 @@ async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefenc
     console.error("Unknown function: " + functionName);
   }
   return { reply, defenceInfo };
-}
-
-// return the whitelist of emails and domains, or domains only
-function getEmailWhitelist(returnAll){
-  const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
-  const emailDomainWhitelist = emailWhitelist.filter(email => email.startsWith("@"));
-  if (returnAll){
-    return "Whitelisted emails and domains are: " + emailWhitelist;
-  } 
-  return "Whitelisted domains are: " + emailDomainWhitelist;
 }
 
 async function chatGptChatCompletion() {
