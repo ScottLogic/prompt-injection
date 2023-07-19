@@ -59,17 +59,21 @@ function ChatBox(props) {
 
       // check if original input triggers any defence mechanisms
       const triggeredDefenceCheck = await detectTriggeredDefences(transformedMessage)
+      // defence info from the user input
       const defenceInfo = triggeredDefenceCheck.defenceInfo;
 
       let reply;
-      // if the defence info is blocked, set reply to blocked message
+      // if the user input is blocked, set reply to blocked message
       if (defenceInfo.blocked){
         reply = triggeredDefenceCheck;
       } else {
         // if not blocked, send the message to chatgpt and get reply 
        reply = await openAiSendMessage(transformedMessage);
+       
+       // update the defence info with the reply info
+       defenceInfo.blocked = reply.defenceInfo.blocked;
+       defenceInfo.triggeredDefences = defenceInfo.triggeredDefences.concat(reply.defenceInfo.triggeredDefences);
       }
-
       // add it to the list of messages
       setMessages((messages) => [
         ...messages,

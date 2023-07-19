@@ -19,6 +19,11 @@ const DEFENCES = [
     id: "XML_TAGGING",
     info: "enclose the users prompt between <user_input> tags and escapes xml characters in raw input. this is a form of prompt validation.",
   },
+  {
+    name: "email whitelist",
+    id: "EMAIL_WHITELIST",
+    info: "only allow emails to those on a whitelist. they can be full email addresses, or domains in the format '*@scottlogic.com'",
+  }
 ];
 
 export default DEFENCES;
