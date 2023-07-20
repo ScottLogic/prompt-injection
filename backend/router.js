@@ -69,11 +69,6 @@ router.get("/email/get", (req, res, next) => {
 
 // Chat to ChatGPT
 router.post("/openai/chat", async (req, res, next) => {
-  // establish chat history
-  if (!req.session.chatHistory) {
-    req.session.chatHistory = [];
-  }
-
   const message = req.body?.message;
   if (message) {
     // get the chatGPT reply

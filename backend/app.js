@@ -33,6 +33,21 @@ app.use(
   })
 );
 
+app.use(function (req, res, next) {
+  // initialise session variables
+  if (!req.session.chatHistory) {
+    req.session.chatHistory = [];
+  }
+  if (!req.session.sentEmails) {
+    req.session.sentEmails = [];
+  }
+  if (!req.session.defences) {
+    req.session.defences = [];
+  }
+
+  next();
+});
+
 app.use("/", router);
 app.listen(port, () => {
   console.log("Server is running on port: " + port);
