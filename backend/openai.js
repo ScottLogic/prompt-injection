@@ -52,7 +52,7 @@ function isChatGptFunction(functionName) {
   return chatGptFunctions.find((func) => func.name === functionName);
 }
 
-async function chatGptCallFunction(functionCall, session, defenceInfo) {
+async function chatGptCallFunction(functionCall, defenceInfo, session) {
   // get the function name
   const functionName = functionCall.name;
 
@@ -95,7 +95,7 @@ async function chatGptCallFunction(functionCall, session, defenceInfo) {
     if (reply.function_call) {
       // recursively call the function and get a new reply, passing the updated defenceInfo
       const { reply: recursiveReply, defenceInfo: updatedDefenceInfo } =
-        await chatGptCallFunction(reply.function_call, session, defenceInfo);
+        await chatGptCallFunction(reply.function_call, defenceInfo, session);
       reply = recursiveReply;
       defenceInfo = updatedDefenceInfo;
     }
@@ -150,8 +150,8 @@ async function chatGptSendMessage(message, session) {
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
       reply.function_call,
-      session,
-      defenceInfo
+      defenceInfo,
+      session
     );
     replyInfo = {
       reply: functionCallReply.reply.content,
