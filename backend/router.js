@@ -5,10 +5,10 @@ const {
   deactivateDefence,
   getDefences,
   transformMessage,
-  detectTriggeredDefences, 
+  detectTriggeredDefences,
 } = require("./defence");
 const { clearEmails, getSentEmails } = require("./email");
-const { chatGptSendMessage, clearMessages } = require("./openai");
+const { chatGptSendMessage } = require("./openai");
 const router = express.Router();
 
 // Activate a defence
@@ -48,13 +48,13 @@ router.get("/defence/status", (req, res, next) => {
 router.post("/defence/transform", (req, res, next) => {
   const message = req.body?.message;
   res.send(transformMessage(message));
-  }); 
+});
 
 // Get the status of all defences
 router.post("/defence/detect", (req, res, next) => {
   const message = req.body?.message;
   res.send(detectTriggeredDefences(message));
-});  
+});
 
 // Clear sent emails
 router.post("/email/clear", (req, res, next) => {
@@ -69,11 +69,16 @@ router.get("/email/get", (req, res, next) => {
 
 // Chat to ChatGPT
 router.post("/openai/chat", async (req, res, next) => {
+  // establish chat history
+  if (!req.session.chatHistory) {
+    req.session.chatHistory = [];
+  }
+
   const message = req.body?.message;
   if (message) {
     // get the chatGPT reply
     try {
-      const reply = await chatGptSendMessage(message);
+      const reply = await chatGptSendMessage(message, req.session);
       console.log(reply);
       res.send(reply);
     } catch (error) {
@@ -89,10 +94,9 @@ router.post("/openai/chat", async (req, res, next) => {
 
 // Clear the ChatGPT messages
 router.post("/openai/clear", (req, res, next) => {
-  clearMessages();
+  req.session.chatHistory = [];
   res.send("ChatGPT messages cleared");
 });
-
 
 // Importing the router
 module.exports = router;

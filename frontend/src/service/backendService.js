@@ -2,6 +2,7 @@ const URL = "http://localhost:3001/";
 
 async function sendRequest(path, method, headers, body) {
   const init = {
+    credentials: "include",
     method: method,
   };
   if (headers) {

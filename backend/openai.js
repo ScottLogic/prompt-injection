@@ -5,8 +5,6 @@ const { sendEmail, getEmailWhitelist } = require("./email");
 // OpenAI configuration
 let configuration = null;
 let openai = null;
-// chat history
-let chatGptMessages = [];
 // functions available to ChatGPT
 const chatGptFunctions = [
   {
@@ -33,12 +31,13 @@ const chatGptFunctions = [
   },
   {
     name: "getEmailWhitelist",
-    description: "Get the list of whitelisted email addresses allowed to send emails to",
+    description:
+      "Get the list of whitelisted email addresses allowed to send emails to",
     parameters: {
       type: "object",
-      properties: {}
-      }
-    }
+      properties: {},
+    },
+  },
 ];
 
 function initOpenAi() {
@@ -53,9 +52,7 @@ function isChatGptFunction(functionName) {
   return chatGptFunctions.find((func) => func.name === functionName);
 }
 
-async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefences: [], blocked: false }) {
-  let reply = null;
-
+async function chatGptCallFunction(functionCall, session, defenceInfo) {
   // get the function name
   const functionName = functionCall.name;
 
@@ -81,25 +78,24 @@ async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefenc
           response = sendEmail(params.email, params.subject, params.message);
         }
       }
-    }
-
-    if (functionName == "getEmailWhitelist"){
+    } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist();
     }
     // add function call to chat
-    chatGptMessages.push({
+    session.chatHistory.push({
       role: "function",
       content: response,
       name: functionName,
     });
 
     // get a new reply from ChatGPT now that the function has been called
-    reply = await chatGptChatCompletion();
+    let reply = await chatGptChatCompletion(session);
 
     // check for another function call
     if (reply.function_call) {
       // recursively call the function and get a new reply, passing the updated defenceInfo
-      const { reply: recursiveReply, defenceInfo: updatedDefenceInfo } = await chatGptCallFunction(reply.function_call, defenceInfo);
+      const { reply: recursiveReply, defenceInfo: updatedDefenceInfo } =
+        await chatGptCallFunction(reply.function_call, session, defenceInfo);
       reply = recursiveReply;
       defenceInfo = updatedDefenceInfo;
     }
@@ -109,60 +105,65 @@ async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefenc
   return { reply, defenceInfo };
 }
 
-async function chatGptChatCompletion() {
+async function chatGptChatCompletion(session) {
   // check if we need to set a system role
   if (isDefenceActive("SYSTEM_ROLE")) {
     // check to see if there's already a system role
-    if (!chatGptMessages.find((message) => message.role === "system")) {
+    if (!session.chatHistory.find((message) => message.role === "system")) {
       // add the system role to the start of the chat history
-      chatGptMessages.unshift({
+      session.chatHistory.unshift({
         role: "system",
         content: process.env.SYSTEM_ROLE,
       });
     }
   } else {
     // remove the system role from the chat history
-    chatGptMessages = chatGptMessages.filter(
+    session.chatHistory = session.chatHistory.filter(
       (message) => message.role !== "system"
     );
   }
 
   chat_completion = await openai.createChatCompletion({
     model: "gpt-4",
-    messages: chatGptMessages,
+    messages: session.chatHistory,
     functions: chatGptFunctions,
   });
   // get the reply
   reply = chat_completion.data.choices[0].message;
   // add the reply to the chat history
-  chatGptMessages.push(reply);
-  // log and return the reply
-  console.log(chatGptMessages);
+  session.chatHistory.push(reply);
   return reply;
 }
 
-async function chatGptSendMessage(message) {
-  // init defence info 
+async function chatGptSendMessage(message, session) {
+  // init defence info
   let defenceInfo = { triggeredDefences: [], blocked: false };
-  // add message to chat
-  chatGptMessages.push({ role: "user", content: message });
+  // add user message to chat
+  session.chatHistory.push({ role: "user", content: message });
 
-  let reply = await chatGptChatCompletion();
+  let reply = await chatGptChatCompletion(session);
+  console.log(reply);
 
+  let replyInfo = null;
   // check if GPT wanted to call a function
   if (reply.function_call) {
-
     // call the function and get a new reply and defence info from
-    const functionCallReply = await chatGptCallFunction(reply.function_call);
-    return {reply: functionCallReply.reply.content, defenceInfo: functionCallReply.defenceInfo};
+    const functionCallReply = await chatGptCallFunction(
+      reply.function_call,
+      session,
+      defenceInfo
+    );
+    replyInfo = {
+      reply: functionCallReply.reply.content,
+      defenceInfo: functionCallReply.defenceInfo,
+    };
+  } else {
+    replyInfo = { reply: reply.content, defenceInfo: defenceInfo };
   }
+  // log the entire chat history so far
+  console.log(session.chatHistory);
   // return the reply content
-  return { reply: reply.content, defenceInfo: defenceInfo };
+  return replyInfo;
 }
 
-// clear chat history
-function clearMessages() {
-  chatGptMessages = [];
-}
-
-module.exports = { initOpenAi, chatGptSendMessage, clearMessages };
+module.exports = { initOpenAi, chatGptSendMessage };
