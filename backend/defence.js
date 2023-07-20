@@ -4,7 +4,7 @@ const defenceEnums = [
   "RANDOM_SEQUENCE_ENCLOSURE",
   "SYSTEM_ROLE",
   "XML_TAGGING",
-  "EMAIL_WHITELIST"
+  "EMAIL_WHITELIST",
 ];
 // all defences start inactive
 const defences = defenceEnums.map((defence) => {
@@ -123,25 +123,7 @@ function transformMessage(message) {
   return transformedMessage;
 }
 
-// check if email is in whitelist
-function isEmailInWhitelist(emailAddress) {
-  // get the domain from email
-  const emailAddressDomain = emailAddress.split("@")[1];
-  const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
-  // find email domains in whitelist (start with @)
-  const emailDomainWhitelist = emailWhitelist.filter(email => email.startsWith("@"));
-
-  // check if the users email domain is in the domain whitelist
-  for (let i = 0; i < emailDomainWhitelist.length; i++) {
-    if (emailAddressDomain.endsWith(emailDomainWhitelist[i].substring(1))) {
-      return true;
-    }
-  }
-  // otherwise check if their full email is whitelisted
-  return emailWhitelist.includes(emailAddress);
-}
-
-// detects triggered defences in original message and blocks the message if necessary 
+// detects triggered defences in original message and blocks the message if necessary
 function detectTriggeredDefences(message) {
   // keep track of any triggered defences
   const defenceInfo = { blocked: false, triggeredDefences: [] };
@@ -175,5 +157,4 @@ module.exports = {
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,
-  isEmailInWhitelist
 };

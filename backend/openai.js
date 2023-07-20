@@ -1,6 +1,6 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { isDefenceActive, isEmailInWhitelist } = require("./defence");
-const { sendEmail, getEmailWhitelist } = require("./email");
+const { isDefenceActive } = require("./defence");
+const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
 
 // OpenAI configuration
 let configuration = null;
