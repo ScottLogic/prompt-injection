@@ -1,59 +1,70 @@
-const URL = "http://localhost:3001/defence/";
+import { sendRequest } from "./backendService";
+
+const PATH = "defence/";
 
 async function getDefenceStatus() {
-  const response = await fetch(URL + "status", {
-    method: "GET",
-  });
+  const response = await sendRequest(PATH + "status", "GET");
   const data = await response.json();
   return data;
 }
 
 async function activateDefence(id) {
-  const response = await fetch(URL + "activate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ defenceId: id }),
-  });
+  const response = await sendRequest(
+    PATH + "activate",
+    "POST",
+    { "Content-Type": "application/json" },
+    JSON.stringify({ defenceId: id })
+  );
   return response.status === 200;
 }
 
 async function deactivateDefence(id) {
-  const response = await fetch(URL + "deactivate", {
-    method: "POST",
-    headers: {
+  const response = await sendRequest(
+    PATH + "deactivate",
+    "POST",
+    {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ defenceId: id }),
-  });
+    JSON.stringify({ defenceId: id })
+  );
   return response.status === 200;
 }
 
 async function transformInputPrompt(message) {
-  const response = await fetch(URL + "transform", {
-    method: "POST",
-    headers: {
+  const response = await sendRequest(
+    PATH + "transform",
+    "POST",
+    {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ message }),
-  });
+    JSON.stringify({ message })
+  );
   // convert from readable stream
-  return response.body.getReader().read().then((result) => {
-    const decoder = new TextDecoder("utf-8");
-    return decoder.decode(result.value);
-  });
+  return response.body
+    .getReader()
+    .read()
+    .then((result) => {
+      const decoder = new TextDecoder("utf-8");
+      return decoder.decode(result.value);
+    });
 }
 
 async function detectTriggeredDefences(message) {
-  const response = await fetch(URL + "detect", {
-    method: "POST",
-    headers: {
+  const response = await sendRequest(
+    PATH + "detect",
+    "POST",
+    {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ message }),
-  });
+    JSON.stringify({ message })
+  );
   return response.json();
 }
 
-export { getDefenceStatus, activateDefence, deactivateDefence, transformInputPrompt, detectTriggeredDefences };
+export {
+  getDefenceStatus,
+  activateDefence,
+  deactivateDefence,
+  transformInputPrompt,
+  detectTriggeredDefences,
+};
