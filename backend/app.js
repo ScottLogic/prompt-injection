@@ -41,8 +41,8 @@ app.use(function (req, res, next) {
   if (!req.session.sentEmails) {
     req.session.sentEmails = [];
   }
-  if (!req.session.defences) {
-    req.session.defences = [];
+  if (!req.session.activeDefences) {
+    req.session.activeDefences = [];
   }
 
   next();

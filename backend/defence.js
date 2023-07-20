@@ -1,46 +1,22 @@
-// keep track of active defences as flags
-const defenceEnums = [
-  "CHARACTER_LIMIT",
-  "RANDOM_SEQUENCE_ENCLOSURE",
-  "SYSTEM_ROLE",
-  "XML_TAGGING",
-  "EMAIL_WHITELIST",
-];
-// all defences start inactive
-const defences = defenceEnums.map((defence) => {
-  return { id: defence, isActive: false };
-});
-
 // activate a defence
-function activateDefence(id) {
-  const defence = defences.find((defence) => defence.id === id);
-  if (defence) {
-    defence.isActive = true;
+function activateDefence(id, activeDefences) {
+  // add to the list of active defences if it's not already there
+  if (!activeDefences.find((defence) => defence === id)) {
+    activeDefences.push(id);
   }
-  return defence;
+  // return the updated list of defences
+  return activeDefences;
 }
 
 // deactivate a defence
-function deactivateDefence(id) {
-  const defence = defences.find((defence) => defence.id === id);
-  if (defence) {
-    defence.isActive = false;
-  }
-  return defence;
-}
-
-// get the status of all defences
-function getDefences() {
-  return defences;
+function deactivateDefence(id, activeDefences) {
+  // return the updated list of defences
+  return activeDefences.filter((defence) => defence !== id);
 }
 
 // get the status of a single defence
-function isDefenceActive(id) {
-  const defence = defences.find((defence) => defence.id === id);
-  if (defence) {
-    return defence.isActive;
-  }
-  return false;
+function isDefenceActive(id, activeDefences) {
+  return activeDefences.find((defence) => defence === id);
 }
 
 function generate_random_string(string_length) {
@@ -105,12 +81,12 @@ function transformXmlTagging(message) {
 }
 
 //apply defence string transformations to original message
-function transformMessage(message) {
+function transformMessage(message, activeDefences) {
   let transformedMessage = message;
-  if (isDefenceActive("RANDOM_SEQUENCE_ENCLOSURE")) {
+  if (isDefenceActive("RANDOM_SEQUENCE_ENCLOSURE", activeDefences)) {
     transformedMessage = transformRandomSequenceEnclosure(transformedMessage);
   }
-  if (isDefenceActive("XML_TAGGING")) {
+  if (isDefenceActive("XML_TAGGING", activeDefences)) {
     transformedMessage = transformXmlTagging(transformedMessage);
   }
   if (message == transformedMessage) {
@@ -124,7 +100,7 @@ function transformMessage(message) {
 }
 
 // detects triggered defences in original message and blocks the message if necessary
-function detectTriggeredDefences(message) {
+function detectTriggeredDefences(message, activeDefences) {
   // keep track of any triggered defences
   const defenceInfo = { blocked: false, triggeredDefences: [] };
   const maxMessageLength = process.env.MAX_MESSAGE_LENGTH || 280;
@@ -134,7 +110,7 @@ function detectTriggeredDefences(message) {
     // add the defence to the list of triggered defences
     defenceInfo.triggeredDefences.push("CHARACTER_LIMIT");
     // check if the defence is active
-    if (isDefenceActive("CHARACTER_LIMIT")) {
+    if (isDefenceActive("CHARACTER_LIMIT", activeDefences)) {
       // block the message
       defenceInfo.blocked = true;
       // return the defence info
@@ -153,7 +129,6 @@ function detectTriggeredDefences(message) {
 module.exports = {
   activateDefence,
   deactivateDefence,
-  getDefences,
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,

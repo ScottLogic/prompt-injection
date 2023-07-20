@@ -2,7 +2,7 @@ import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
 
-async function getDefenceStatus() {
+async function getActiveDefences() {
   const response = await sendRequest(PATH + "status", "GET");
   const data = await response.json();
   return data;
@@ -62,7 +62,7 @@ async function detectTriggeredDefences(message) {
 }
 
 export {
-  getDefenceStatus,
+  getActiveDefences,
   activateDefence,
   deactivateDefence,
   transformInputPrompt,

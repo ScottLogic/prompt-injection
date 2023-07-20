@@ -71,7 +71,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
       } else {
         // trigger email defence even if it is not active
         defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
-        if (isDefenceActive("EMAIL_WHITELIST")) {
+        if (isDefenceActive("EMAIL_WHITELIST", session.activeDefences)) {
           // do not send email if defence is on and set to blocked
           response = "Cannot send to this email as it is not whitelisted";
           defenceInfo.blocked = true;
@@ -105,7 +105,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
 
 async function chatGptChatCompletion(session) {
   // check if we need to set a system role
-  if (isDefenceActive("SYSTEM_ROLE")) {
+  if (isDefenceActive("SYSTEM_ROLE", session.activeDefences)) {
     // check to see if there's already a system role
     if (!session.chatHistory.find((message) => message.role === "system")) {
       // add the system role to the start of the chat history
