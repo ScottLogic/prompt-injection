@@ -52,7 +52,8 @@ function isChatGptFunction(functionName) {
   return chatGptFunctions.find((func) => func.name === functionName);
 }
 
-async function chatGptCallFunction(functionCall, defenceInfo, session) {
+async function chatGptCallFunction(functionCall, defenceInfo) {
+  let reply = null;
   // get the function name
   const functionName = functionCall.name;
 
@@ -81,24 +82,11 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
     } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist();
     }
-    // add function call to chat
-    session.chatHistory.push({
+    reply = {
       role: "function",
       content: response,
       name: functionName,
-    });
-
-    // get a new reply from ChatGPT now that the function has been called
-    let reply = await chatGptChatCompletion(session);
-
-    // check for another function call
-    if (reply.function_call) {
-      // recursively call the function and get a new reply, passing the updated defenceInfo
-      const { reply: recursiveReply, defenceInfo: updatedDefenceInfo } =
-        await chatGptCallFunction(reply.function_call, defenceInfo, session);
-      reply = recursiveReply;
-      defenceInfo = updatedDefenceInfo;
-    }
+    };
   } else {
     console.error("Unknown function: " + functionName);
   }
@@ -130,8 +118,6 @@ async function chatGptChatCompletion(session) {
   });
   // get the reply
   reply = chat_completion.data.choices[0].message;
-  // add the reply to the chat history
-  session.chatHistory.push(reply);
   return reply;
 }
 
@@ -142,28 +128,27 @@ async function chatGptSendMessage(message, session) {
   session.chatHistory.push({ role: "user", content: message });
 
   let reply = await chatGptChatCompletion(session);
-  console.log(reply);
-
-  let replyInfo = null;
   // check if GPT wanted to call a function
-  if (reply.function_call) {
+  while (reply.function_call) {
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
       reply.function_call,
-      defenceInfo,
-      session
+      defenceInfo
     );
-    replyInfo = {
-      reply: functionCallReply.reply.content,
-      defenceInfo: functionCallReply.defenceInfo,
-    };
-  } else {
-    replyInfo = { reply: reply.content, defenceInfo: defenceInfo };
+    // add the function call to the chat history
+    session.chatHistory.push(functionCallReply.reply);
+    // update the defence info
+    defenceInfo = functionCallReply.defenceInfo;
+    // get a new reply from ChatGPT now that the function has been called
+    reply = await chatGptChatCompletion(session);
   }
+  // add the ai reply to the chat history
+  session.chatHistory.push(reply);
+
   // log the entire chat history so far
   console.log(session.chatHistory);
   // return the reply content
-  return replyInfo;
+  return { reply: reply.content, defenceInfo: defenceInfo };
 }
 
 module.exports = { initOpenAi, chatGptSendMessage };
