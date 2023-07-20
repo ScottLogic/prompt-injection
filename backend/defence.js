@@ -88,6 +88,13 @@ function escapeXml(unsafe) {
   });
 }
 
+// function to detect any XML tags in user input
+function detectXMLTags(input) {
+  const tagRegex = /<\/?[a-zA-Z][\w\-]*(?:\b[^>]*\/\s*|[^>]*>|[?]>)/g;
+  const foundTags = input.match(tagRegex) || [];
+  return foundTags.length > 0;
+}
+
 // apply XML tagging defence to input message
 function transformXmlTagging(message) {
   console.debug("XML Tagging defence active.");
@@ -117,7 +124,7 @@ function transformMessage(message) {
 }
 
 // check if email is in whitelist
-function isEmailInWhitelist(emailAddress){
+function isEmailInWhitelist(emailAddress) {
   // get the domain from email
   const emailAddressDomain = emailAddress.split("@")[1];
   const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
@@ -153,8 +160,7 @@ function detectTriggeredDefences(message) {
     }
   }
   // check if message contains XML tags
-  const safeXmlMessage = escapeXml(message);
-  if (message !== safeXmlMessage) {
+  if (detectXMLTags(message)) {
     console.debug("XML_TAGGING defence triggered.");
     // add the defence to the list of triggered defences
     defenceInfo.triggeredDefences.push("XML_TAGGING");
