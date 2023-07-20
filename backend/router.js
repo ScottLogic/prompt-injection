@@ -9,6 +9,7 @@ const {
 } = require("./defence");
 const { clearEmails, getSentEmails } = require("./email");
 const { chatGptSendMessage, clearMessages } = require("./openai");
+const { getDocuments, queryDocuments } = require("./documents");
 const router = express.Router();
 
 // Activate a defence
@@ -93,6 +94,33 @@ router.post("/openai/clear", (req, res, next) => {
   res.send("ChatGPT messages cleared");
 });
 
+
+// read the documents
+router.get("/documents/read", async (req, res, next) => {
+  const documents = await getDocuments(); 
+  res.send(documents);
+});
+
+
+// ask a question about the documents
+router.post("/documents/ask", async (req, res, next) => {
+  const message = req.body?.message;
+  if (message) {
+    // get the chatGPT reply
+    try {
+      const reply = await queryDocuments(message);
+      console.log(reply);
+      res.send(reply);
+    } catch (error) {
+      console.log(error);
+      res.statusCode = 500;
+      res.send("Failed to get reply");
+    }
+  } else {
+    res.statusCode = 400;
+    res.send("Missing message");
+  }
+});
 
 // Importing the router
 module.exports = router;
