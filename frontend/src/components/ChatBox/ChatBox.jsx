@@ -58,7 +58,7 @@ function ChatBox(props) {
       event.target.value = "";
 
       // check if original input triggers any defence mechanisms
-      const triggeredDefenceCheck = await detectTriggeredDefences(transformedMessage)
+      const triggeredDefenceCheck = await detectTriggeredDefences(message)
       // defence info from the user input
       const defenceInfo = triggeredDefenceCheck.defenceInfo;
 
