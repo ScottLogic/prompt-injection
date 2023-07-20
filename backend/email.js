@@ -1,11 +1,7 @@
-const sentEmails = [];
-
-function clearEmails() {
-  sentEmails.length = 0;
-}
-
-function getSentEmails() {
-  return sentEmails;
+// return the whitelist of emails and domains, or domains only
+function getEmailWhitelist() {
+  const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
+  return "Whitelisted emails and domains are: " + emailWhitelist;
 }
 
 // check if email is in whitelist
@@ -28,30 +24,24 @@ function isEmailInWhitelist(emailAddress) {
   return emailWhitelist.includes(emailAddress);
 }
 
-function sendEmail(email, subject, message) {
+function sendEmail(address, subject, body, session) {
   // add to the list of sent emails
-  sentEmails.push({ address: email, subject: subject, content: message });
-  response =
-    "Sending email to " +
-    email +
+  const email = { address: address, subject: subject, content: body };
+  const response =
+    "Email sent to " +
+    address +
     " with subject " +
     subject +
-    " and message " +
-    message;
+    " and body " +
+    body;
   console.log(response);
+  // add the sent email to the session
+  session.sentEmails.push(email);
   return response;
 }
 
-// return the whitelist of emails and domains, or domains only
-function getEmailWhitelist() {
-  const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
-  return "Whitelisted emails and domains are: " + emailWhitelist;
-}
-
 module.exports = {
-  clearEmails,
-  getSentEmails,
+  getEmailWhitelist,
   isEmailInWhitelist,
   sendEmail,
-  getEmailWhitelist,
 };

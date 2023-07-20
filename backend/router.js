@@ -7,7 +7,6 @@ const {
   transformMessage,
   detectTriggeredDefences,
 } = require("./defence");
-const { clearEmails, getSentEmails } = require("./email");
 const { chatGptSendMessage } = require("./openai");
 const router = express.Router();
 
@@ -56,15 +55,9 @@ router.post("/defence/detect", (req, res, next) => {
   res.send(detectTriggeredDefences(message));
 });
 
-// Clear sent emails
-router.post("/email/clear", (req, res, next) => {
-  clearEmails();
-  res.send("Sent emails cleared");
-});
-
 // Get sent emails
 router.get("/email/get", (req, res, next) => {
-  res.send(getSentEmails());
+  res.send(req.session.sentEmails);
 });
 
 // Chat to ChatGPT

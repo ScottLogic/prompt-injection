@@ -13,7 +13,7 @@ const chatGptFunctions = [
     parameters: {
       type: "object",
       properties: {
-        email: {
+        address: {
           type: "string",
           description: "The email address to send the email to",
         },
@@ -21,12 +21,12 @@ const chatGptFunctions = [
           type: "string",
           description: "The subject of the email",
         },
-        message: {
+        body: {
           type: "string",
           description: "The body of the email",
         },
       },
-      required: ["email", "subject", "message"],
+      required: ["address", "subject", "body"],
     },
   },
   {
@@ -52,7 +52,7 @@ function isChatGptFunction(functionName) {
   return chatGptFunctions.find((func) => func.name === functionName);
 }
 
-async function chatGptCallFunction(functionCall, defenceInfo) {
+async function chatGptCallFunction(functionCall, defenceInfo, session) {
   let reply = null;
   // get the function name
   const functionName = functionCall.name;
@@ -65,8 +65,9 @@ async function chatGptCallFunction(functionCall, defenceInfo) {
 
     // call the function
     if (functionName === "sendEmail") {
-      if (isEmailInWhitelist(params.email)) {
-        response = sendEmail(params.email, params.subject, params.message);
+      let isAllowedToSendEmail = false;
+      if (isEmailInWhitelist(params.address)) {
+        isAllowedToSendEmail = true;
       } else {
         // trigger email defence even if it is not active
         defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
@@ -76,8 +77,17 @@ async function chatGptCallFunction(functionCall, defenceInfo) {
           defenceInfo.blocked = true;
         } else {
           // send email if defence is not active
-          response = sendEmail(params.email, params.subject, params.message);
+          isAllowedToSendEmail = true;
         }
+      }
+
+      if (isAllowedToSendEmail) {
+        response = sendEmail(
+          params.address,
+          params.subject,
+          params.body,
+          session
+        );
       }
     } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist();
@@ -133,7 +143,8 @@ async function chatGptSendMessage(message, session) {
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
       reply.function_call,
-      defenceInfo
+      defenceInfo,
+      session
     );
     // add the function call to the chat history
     session.chatHistory.push(functionCallReply.reply);
