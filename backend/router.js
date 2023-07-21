@@ -48,12 +48,6 @@ router.get("/defence/status", (req, res, next) => {
   res.send(req.session.activeDefences);
 });
 
-// Applys the active defence transformations to input prompt
-router.post("/defence/transform", (req, res, next) => {
-  const message = req.body?.message;
-  res.send(transformMessage(message, req.session.activeDefences));
-});
-
 // Get sent emails
 router.get("/email/get", (req, res, next) => {
   res.send(req.session.sentEmails);
@@ -61,33 +55,56 @@ router.get("/email/get", (req, res, next) => {
 
 // Chat to ChatGPT
 router.post("/openai/chat", async (req, res, next) => {
+  // set reply params
+  let reply = "";
+  let defenceInfo = { blocked: false, triggeredDefences: [] };
+  let transformedMessage = "";
+  // parse out the message
   const message = req.body?.message;
   if (message) {
+    transformedMessage = message;
     // see if this message triggers any defences
-    let reply = detectTriggeredDefences(message, req.session.activeDefences);
-    if (!reply.defenceInfo.blocked) {
-      const defenceInfo = reply.defenceInfo;
+    const detectReply = detectTriggeredDefences(
+      message,
+      req.session.activeDefences
+    );
+    reply = detectReply.reply;
+    defenceInfo = detectReply.defenceInfo;
+    // if blocked, send the response
+    if (!defenceInfo.blocked) {
+      // transform the message according to active defences
+      transformedMessage = transformMessage(
+        message,
+        req.session.activeDefences
+      );
       // get the chatGPT reply
       try {
-        reply = await chatGptSendMessage(message, req.session);
+        const openAiReply = await chatGptSendMessage(
+          transformedMessage,
+          req.session
+        );
+        reply = openAiReply.reply;
         // combine triggered defences
-        reply.defenceInfo.triggeredDefences = [
+        defenceInfo.triggeredDefences = [
           ...defenceInfo.triggeredDefences,
-          ...reply.defenceInfo.triggeredDefences,
+          ...openAiReply.defenceInfo.triggeredDefences,
         ];
       } catch (error) {
         console.log(error);
         res.statusCode = 500;
-        res.send("Failed to get chatGPT reply");
-        return;
+        reply = "Failed to get chatGPT reply";
       }
     }
-    console.log(reply);
-    res.send(reply);
   } else {
     res.statusCode = 400;
-    res.send("Missing message");
+    reply = "Missing message";
+    console.error(reply);
   }
+  // construct response
+  const response = { reply, defenceInfo, transformedMessage };
+  // log and send the reply with defence info
+  console.log(response);
+  res.send(response);
 });
 
 // Clear the ChatGPT messages

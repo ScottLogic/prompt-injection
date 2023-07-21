@@ -30,28 +30,4 @@ async function deactivateDefence(id) {
   return response.status === 200;
 }
 
-async function transformInputPrompt(message) {
-  const response = await sendRequest(
-    PATH + "transform",
-    "POST",
-    {
-      "Content-Type": "application/json",
-    },
-    JSON.stringify({ message })
-  );
-  // convert from readable stream
-  return response.body
-    .getReader()
-    .read()
-    .then((result) => {
-      const decoder = new TextDecoder("utf-8");
-      return decoder.decode(result.value);
-    });
-}
-
-export {
-  getActiveDefences,
-  activateDefence,
-  deactivateDefence,
-  transformInputPrompt,
-};
+export { getActiveDefences, activateDefence, deactivateDefence };
