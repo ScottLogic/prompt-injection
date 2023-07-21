@@ -160,8 +160,6 @@ function detectTriggeredDefences(message) {
     }
   }
 
-  console.debug("detectTriggeredDefences = " + message);
-
   // check if message contains XML tags
   if (detectXMLTags(message)) {
     console.debug("XML_TAGGING defence triggered.");

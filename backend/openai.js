@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const { isDefenceActive, isEmailInWhitelist } = require("./defence");
 const { sendEmail, getEmailWhitelist } = require("./email");
-
+const { queryDocuments } = require("./documents");
 // OpenAI configuration
 let configuration = null;
 let openai = null;
@@ -38,7 +38,20 @@ const chatGptFunctions = [
       type: "object",
       properties: {}
       }
-    }
+    },
+    {
+      name: "askQuestion",
+      description: "Ask a question about the documents",
+      parameters: {
+        type: "object",
+        properties: {
+          question: {
+            type: "string",
+            description: "The question asked about the documents",
+          }
+        }
+      }
+    },
 ];
 
 function initOpenAi() {
@@ -46,8 +59,6 @@ function initOpenAi() {
     apiKey: process.env.OPENAI_API_KEY,
   });
   openai = new OpenAIApi(configuration);
-
-  console.debug("OpenAI initialised, api key: " + process.env.OPENAI_API_KEY);
 }
 
 // returns true if the function is in the list of functions available to ChatGPT
@@ -88,6 +99,12 @@ async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefenc
     if (functionName == "getEmailWhitelist"){
       response = getEmailWhitelist();
     }
+
+    if (functionName == "askQuestion"){
+      // if asking a question, call the queryDocuments
+      response = await queryDocuments(params.question);
+    }
+
     // add function call to chat
     chatGptMessages.push({
       role: "function",
@@ -112,6 +129,7 @@ async function chatGptCallFunction(functionCall, defenceInfo = { triggeredDefenc
 }
 
 async function chatGptChatCompletion() {
+
   // check if we need to set a system role
   if (isDefenceActive("SYSTEM_ROLE")) {
     // check to see if there's already a system role
@@ -142,6 +160,7 @@ async function chatGptChatCompletion() {
   console.log(chatGptMessages);
   return reply;
 }
+
 
 async function chatGptSendMessage(message) {
   // init defence info 

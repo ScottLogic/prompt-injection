@@ -3,7 +3,7 @@ const router = require("./router");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const { initOpenAi } = require("./openai");
-const { initConversationalModel, initQAModel } = require("./documents");
+const { initQAModel } = require("./documents");
 
 dotenv.config();
 
@@ -18,9 +18,8 @@ app.use(express.json());
 // initialise openai
 initOpenAi();
 
-// initalise chain 
-initConversationalModel();
-// initQAModel();
+// initalise document QA chain 
+initQAModel();
 
 app.use(cors());
 app.options("*", cors());

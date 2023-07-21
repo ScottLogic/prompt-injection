@@ -2,7 +2,6 @@ const { TextLoader } = require("langchain/document_loaders/fs/text");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { MemoryVectorStore } = require("langchain/vectorstores/memory");
-// const { HNSWLib } = require("langchain/vectorstores/hnswlib");
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 const { RetrievalQAChain, ConversationalRetrievalQAChain } = require("langchain/chains");
 const { PromptTemplate } = require("langchain/prompts");
@@ -57,11 +56,10 @@ async function initQAModel() {
 }
 
 async function queryDocumentsQAModel(question) {
-
     const response = await chain.call({
         query: question,
     });
-    return response;
+    return response.text;
 }
 
 // Conversational Chain - ask the chat model a question about the documents with memory
@@ -128,20 +126,20 @@ async function initConversationalModel() {
 
 async function queryDocumentsConversationalModel(question) {
     const response = await chain.call({ question: question });
-    return response;
+    return response.text;
 }
 
 async function queryDocuments(question) {
     // conversational model
-    return queryDocumentsConversationalModel(question);
+    // return queryDocumentsConversationalModel(question);
 
     // question answer model
-    // return queryDocumentsQAModel(question);
+    return queryDocumentsQAModel(question);
 }
 
 module.exports = {
     getDocuments,
     queryDocuments,
     initConversationalModel,
-    initQAModel
+    initQAModel,
 };
