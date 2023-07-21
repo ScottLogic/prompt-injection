@@ -46,6 +46,8 @@ function initOpenAi() {
     apiKey: process.env.OPENAI_API_KEY,
   });
   openai = new OpenAIApi(configuration);
+
+  console.debug("OpenAI initialised, api key: " + process.env.OPENAI_API_KEY);
 }
 
 // returns true if the function is in the list of functions available to ChatGPT
