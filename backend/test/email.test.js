@@ -1,4 +1,8 @@
-const { getEmailWhitelist, isEmailInWhitelist, sendEmail } = require("./email");
+const {
+  getEmailWhitelist,
+  isEmailInWhitelist,
+  sendEmail,
+} = require("../src/email");
 
 test("GIVEN email is ready to be sent WHEN email is sent THEN session list is updated", () => {
   const address = "bob@example.com";
