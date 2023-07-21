@@ -18,7 +18,7 @@ app.use(express.json());
 // initialise openai
 initOpenAi();
 
-// initalise document QA chain 
+// initalise document Question Answer chain 
 initQAModel();
 
 app.use(cors());
