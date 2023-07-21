@@ -1,16 +1,14 @@
-const URL = "http://localhost:3001/email/";
+import { sendRequest } from "./backendService";
+
+const PATH = "email/";
 
 async function clearEmails() {
-  const response = await fetch(URL + "clear", {
-    method: "POST",
-  });
+  const response = await sendRequest(PATH + "clear", "POST");
   return response.status === 200;
 }
 
 async function getSentEmails() {
-  const response = await fetch(URL + "get", {
-    method: "GET",
-  });
+  const response = await sendRequest(PATH + "get", "GET");
   const data = await response.json();
   return data;
 }
