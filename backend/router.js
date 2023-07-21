@@ -54,12 +54,6 @@ router.post("/defence/transform", (req, res, next) => {
   res.send(transformMessage(message, req.session.activeDefences));
 });
 
-// Get the status of all defences
-router.post("/defence/detect", (req, res, next) => {
-  const message = req.body?.message;
-  res.send(detectTriggeredDefences(message, req.session.activeDefences));
-});
-
 // Get sent emails
 router.get("/email/get", (req, res, next) => {
   res.send(req.session.sentEmails);
@@ -69,16 +63,27 @@ router.get("/email/get", (req, res, next) => {
 router.post("/openai/chat", async (req, res, next) => {
   const message = req.body?.message;
   if (message) {
-    // get the chatGPT reply
-    try {
-      const reply = await chatGptSendMessage(message, req.session);
-      console.log(reply);
-      res.send(reply);
-    } catch (error) {
-      console.log(error);
-      res.statusCode = 500;
-      res.send("Failed to get chatGPT reply");
+    // see if this message triggers any defences
+    let reply = detectTriggeredDefences(message, req.session.activeDefences);
+    if (!reply.defenceInfo.blocked) {
+      const defenceInfo = reply.defenceInfo;
+      // get the chatGPT reply
+      try {
+        reply = await chatGptSendMessage(message, req.session);
+        // combine triggered defences
+        reply.defenceInfo.triggeredDefences = [
+          ...defenceInfo.triggeredDefences,
+          ...reply.defenceInfo.triggeredDefences,
+        ];
+      } catch (error) {
+        console.log(error);
+        res.statusCode = 500;
+        res.send("Failed to get chatGPT reply");
+        return;
+      }
     }
+    console.log(reply);
+    res.send(reply);
   } else {
     res.statusCode = 400;
     res.send("Missing message");

@@ -49,22 +49,9 @@ async function transformInputPrompt(message) {
     });
 }
 
-async function detectTriggeredDefences(message) {
-  const response = await sendRequest(
-    PATH + "detect",
-    "POST",
-    {
-      "Content-Type": "application/json",
-    },
-    JSON.stringify({ message })
-  );
-  return response.json();
-}
-
 export {
   getActiveDefences,
   activateDefence,
   deactivateDefence,
   transformInputPrompt,
-  detectTriggeredDefences,
 };
