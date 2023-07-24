@@ -18,7 +18,7 @@
       "type": "node",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\backend\\app.js"
+      "program": "${workspaceFolder}\\backend\\src\\app.js"
     }
   ]
 }
