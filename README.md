@@ -15,7 +15,7 @@ npm install
 ## Setup
 Copy the example environment file `.env.exmaple` and rename it to `.env`.
 
-Copy your OpenAI API key into the `.env` file. 
+Copy your [OpenAI API key](https://platform.openai.com/account/api-keys) into the `.env` file. 
 
 ## Deploy
 This project includes a VS Code launch file, so the project can be deployed from there if VS Code is used. Otherwise the code can be run manually:
