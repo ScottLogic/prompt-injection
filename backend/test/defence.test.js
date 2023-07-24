@@ -94,3 +94,86 @@ test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
   // expect the message to be surrounded by XML tags
   expect(transformedMessage).toBe("<user_input>" + message + "</user_input>");
 });
+
+test("GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered", () => {
+  // set max message length
+  process.env.MAX_MESSAGE_LENGTH = 280;
+  const message = "Hello";
+  const activeDefences = [];
+  const { reply, defenceInfo } = detectTriggeredDefences(
+    message,
+    activeDefences
+  );
+  expect(reply).toBe(null);
+  expect(defenceInfo.blocked).toBe(false);
+  expect(defenceInfo.triggeredDefences.length).toBe(0);
+});
+
+test(
+  "GIVEN CHARACTER_LIMIT defence is active AND message is too long " +
+    "WHEN detecting triggered defences " +
+    "THEN CHARACTER_LIMIT defence is triggered AND the message is blocked",
+  () => {
+    // set max message length
+    process.env.MAX_MESSAGE_LENGTH = 3;
+    const message = "Hello";
+    const activeDefences = ["CHARACTER_LIMIT"];
+    const { reply, defenceInfo } = detectTriggeredDefences(
+      message,
+      activeDefences
+    );
+    expect(reply).toBe("Message is too long");
+    expect(defenceInfo.blocked).toBe(true);
+    expect(defenceInfo.triggeredDefences).toContain("CHARACTER_LIMIT");
+  }
+);
+
+test(
+  "GIVEN CHARACTER_LIMIT defence is active AND message is not too long " +
+    "WHEN detecting triggered defences " +
+    "THEN CHARACTER_LIMIT defence is not triggered AND the message is not blocked",
+  () => {
+    // set max message length
+    process.env.MAX_MESSAGE_LENGTH = 280;
+    const message = "Hello";
+    const activeDefences = ["CHARACTER_LIMIT"];
+    const { reply, defenceInfo } = detectTriggeredDefences(
+      message,
+      activeDefences
+    );
+    expect(reply).toBe(null);
+    expect(defenceInfo.blocked).toBe(false);
+    expect(defenceInfo.triggeredDefences.length).toBe(0);
+  }
+);
+
+test(
+  "GIVEN CHARACTER_LIMIT defence is not active AND message is too long " +
+    "WHEN detecting triggered defences " +
+    "THEN CHARACTER_LIMIT defence is triggered AND the message is not blocked",
+  () => {
+    // set max message length
+    process.env.MAX_MESSAGE_LENGTH = 3;
+    const message = "Hello";
+    const activeDefences = [];
+    const { reply, defenceInfo } = detectTriggeredDefences(
+      message,
+      activeDefences
+    );
+    expect(reply).toBe(null);
+    expect(defenceInfo.blocked).toBe(false);
+    expect(defenceInfo.triggeredDefences).toContain("CHARACTER_LIMIT");
+  }
+);
+
+test("GIVEN message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is triggered", () => {
+  const message = "<Hello>";
+  const activeDefences = [];
+  const { reply, defenceInfo } = detectTriggeredDefences(
+    message,
+    activeDefences
+  );
+  expect(reply).toBe(null);
+  expect(defenceInfo.blocked).toBe(false);
+  expect(defenceInfo.triggeredDefences).toContain("XML_TAGGING");
+});
