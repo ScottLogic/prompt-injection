@@ -7,7 +7,6 @@ import {
   openAiSendMessage,
 } from "../../service/openaiService";
 import { getSentEmails } from "../../service/emailService";
-import { transformInputPrompt, detectTriggeredDefences } from "../../service/defenceService";
 
 function ChatBox(props) {
   const [isSendingMessage, setIsSendingMessage] = useState(false);
@@ -35,15 +34,19 @@ function ChatBox(props) {
       setIsSendingMessage(true);
       // get the message
       const message = event.target.value;
-      // apply defense transformations to the input
-      const transformedMessage = await transformInputPrompt(message);
-      const isTransformed = transformedMessage !== message;
 
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       setMessages((messages) => [
         ...messages,
         { message: message, isUser: true, isOriginalMessage: true },
       ]);
+      // clear the input
+      event.target.value = "";
+
+      const reply = await openAiSendMessage(message);
+      const transformedMessage = reply.transformedMessage;
+      const isTransformed = transformedMessage !== message;
+      // add the transformed message to the chat box if it is different from the original message
       if (isTransformed) {
         setMessages((messages) => [
           ...messages,
@@ -54,33 +57,13 @@ function ChatBox(props) {
           },
         ]);
       }
-      // clear the input
-      event.target.value = "";
-
-      // check if original input triggers any defence mechanisms
-      const triggeredDefenceCheck = await detectTriggeredDefences(message)
-      // defence info from the user input
-      const defenceInfo = triggeredDefenceCheck.defenceInfo;
-
-      let reply;
-      // if the user input is blocked, set reply to blocked message
-      if (defenceInfo.blocked){
-        reply = triggeredDefenceCheck;
-      } else {
-        // if not blocked, send the message to chatgpt and get reply 
-       reply = await openAiSendMessage(transformedMessage);
-       
-       // update the defence info with the reply info
-       defenceInfo.blocked = reply.defenceInfo.blocked;
-       defenceInfo.triggeredDefences = defenceInfo.triggeredDefences.concat(reply.defenceInfo.triggeredDefences);
-      }
       // add it to the list of messages
       setMessages((messages) => [
         ...messages,
-        { isUser: false, message: reply.reply, defenceInfo: defenceInfo },
+        { isUser: false, message: reply.reply, defenceInfo: reply.defenceInfo },
       ]);
       // update triggered defences
-      props.updateTriggeredDefences(defenceInfo.triggeredDefences);
+      props.updateTriggeredDefences(reply.defenceInfo.triggeredDefences);
 
       // we have the message reply
       setIsSendingMessage(false);
