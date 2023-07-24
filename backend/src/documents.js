@@ -14,7 +14,7 @@ let chain = null;
 
 // load the documents from filesystem
 async function getDocuments() {
-    const loader = new DirectoryLoader("documents",
+    const loader = new DirectoryLoader(process.env.DOCUMENT_FOLDER,
         {
             ".pdf": (path) => new PDFLoader(path),
             ".txt": (path) => new TextLoader(path),

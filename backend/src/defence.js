@@ -16,7 +16,7 @@ function deactivateDefence(id, activeDefences) {
 
 // get the status of a single defence
 function isDefenceActive(id, activeDefences) {
-  return activeDefences.find((defence) => defence === id);
+  return activeDefences.find((defence) => defence === id) ? true : false;
 }
 
 function generate_random_string(string_length) {
