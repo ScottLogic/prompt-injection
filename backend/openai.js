@@ -108,6 +108,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
     }
 
     if (functionName == "askQuestion"){
+      console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
       response = await queryDocuments(params.question);
     }
