@@ -13,7 +13,7 @@ npm install
 ```
 
 ## Setup
-Copy the example environment file `.env.exmaple` and rename it to `.env`.
+Copy the example environment file `.env.example` and rename it to `.env`.
 
 Copy your [OpenAI API key](https://platform.openai.com/account/api-keys) into the `.env` file. 
 
