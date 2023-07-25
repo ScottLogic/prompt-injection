@@ -1,11 +1,13 @@
 {
   "dependencies": {
     "cors": "^2.8.5",
+    "d3-dsv": "^2.0.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "langchain": "^0.0.113",
     "openai": "^3.3.0",
+    "pdf-parse": "^1.1.1",
     "react": "^18.2.0"
   },
   "devDependencies": {

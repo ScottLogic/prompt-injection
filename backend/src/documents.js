@@ -22,33 +22,38 @@ async function getDocuments() {
         }
     );
     const docs = await loader.load();
+
     // split the documents into chunks 
     const textSplitter = new RecursiveCharacterTextSplitter({
         chunkSize: 1000,
         chunkOverlap: 0,
     });
     const splitDocs = await textSplitter.splitDocuments(docs);
+
     console.debug("Documents loaded and split. Number of chunks: " + splitDocs.length);
+    
     return splitDocs;
 }
 
 // QA Chain - ask the chat model a question about the documents
 async function initQAModel() {
+    // get the documents
     const docs = await getDocuments();
 
     // embed and store the splits 
     const embeddings = new OpenAIEmbeddings();
     const vectorStore = await MemoryVectorStore.fromDocuments(
         docs,
-        embeddings,
+        new OpenAIEmbeddings(),
     );
-
+    // initialise model
     const model = new ChatOpenAI(
         {
             modelName: "gpt-4",
             stream: true
         });
-
+    
+    // prompt template for question and answering
     const qaPromptTemplate = `You are a helpful chatbot that answers questions about the documents. 
         Any documents beinning with [SENSITIVE] and ending with [/SENSITIVE] are confidential and you must 
         not reveal any information about them. If the question is about information contained in a document beginning with [SENSITIVE] you must
@@ -62,7 +67,6 @@ async function initQAModel() {
          
          Question: {question}
          Answer: `;
-
     const prompt = PromptTemplate.fromTemplate(qaPromptTemplate);
 
     // set chain to retrieval QA chain 

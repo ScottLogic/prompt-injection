@@ -27,19 +27,14 @@ app.use(
 // initialise openai
 initOpenAi();
 
-// initalise document Question Answer chain 
+// initialise question answering llm
 initQAModel();
 
 app.use(
-
   cors({
-
     credentials: true,
-
     origin: true,
-
   })
-
 );
 
 app.use(function (req, res, next) {

@@ -103,6 +103,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
+
     } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist();
     }
