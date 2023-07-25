@@ -104,11 +104,11 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
         );
       }
 
-    } else if (functionName == "getEmailWhitelist") {
+    } else if (functionName === "getEmailWhitelist") {
       response = getEmailWhitelist();
     }
 
-    if (functionName == "askQuestion"){
+    if (functionName === "askQuestion"){
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
       response = await queryDocuments(params.question);

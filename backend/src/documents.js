@@ -14,7 +14,9 @@ let chain = null;
 
 // load the documents from filesystem
 async function getDocuments() {
-    const loader = new DirectoryLoader(process.env.DOCUMENT_FOLDER,
+    const filePath = "backend/resources/documents/";
+    const loader = new DirectoryLoader(
+        filePath,
         {
             ".pdf": (path) => new PDFLoader(path),
             ".txt": (path) => new TextLoader(path),
