@@ -41,3 +41,12 @@ npm run dev
 cd frontend/
 npm start
 ```
+
+## Test
+
+### Backend
+
+```
+cd backend/
+npm run test
+```
