@@ -28,12 +28,18 @@ test("GIVEN email is ready to be sent WHEN email is sent THEN session list is up
   expect(session.sentEmails[0].content).toBe(body);
 });
 
-test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist THEN list is returned", () => {
+test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist AND whitelist defense on THEN list is returned", () => {
   process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
-  const whitelist = getEmailWhitelist();
-  expect(whitelist).toBe(
-    "Whitelisted emails and domains are: " + process.env.EMAIL_WHITELIST
-  );
+  const isDefenceActive = true; 
+  const whitelist = getEmailWhitelist(isDefenceActive);
+  expect(whitelist).toBe("The whitelisted emails and domains are: "+ process.env.EMAIL_WHITELIST);
+});
+
+test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist AND whitelist defense off THEN text is returned", () => {
+  process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
+  const isDefenceActive = false; 
+  const whitelist = getEmailWhitelist(isDefenceActive);
+  expect(whitelist).toBe("As the email whitelist defence is not active, any email address can be emailed.");
 });
 
 test("GIVEN email is not in whitelist WHEN checking whitelist THEN false is returned", () => {

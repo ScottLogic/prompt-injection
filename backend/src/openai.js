@@ -32,7 +32,7 @@ const chatGptFunctions = [
   {
     name: "getEmailWhitelist",
     description:
-      "Get the list of whitelisted email addresses allowed to send emails to",
+      "user asks who is on the email whitelist and the system replies with the list of emails. if the email whitelist defence is not active then user should be able to email anyone. ",
     parameters: {
       type: "object",
       properties: {},
@@ -61,6 +61,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
   if (isChatGptFunction(functionName)) {
     // get the function parameters
     const params = JSON.parse(functionCall.arguments);
+    console.debug("Function call: " + functionName);
     let response = null;
 
     // call the function
@@ -89,8 +90,9 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
+      
     } else if (functionName == "getEmailWhitelist") {
-      response = getEmailWhitelist();
+      response = getEmailWhitelist(isDefenceActive("EMAIL_WHITELIST", session.activeDefences));
     }
     reply = {
       role: "function",
