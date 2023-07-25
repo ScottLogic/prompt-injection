@@ -32,7 +32,7 @@ This project includes a VS Code launch file, so the project can be deployed from
 
 ```
 cd backend/
-node app.js
+npm run dev
 ```
 
 ### Frontend

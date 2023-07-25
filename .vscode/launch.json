@@ -15,10 +15,12 @@
     },
     {
       "name": "Launch Backend",
-      "type": "node",
       "request": "launch",
+      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\backend\\src\\app.js"
+      "type": "node",
+      "cwd": "${workspaceFolder}\\backend"
     }
   ]
 }
