@@ -1,14 +1,13 @@
-
 // return the whitelist of emails and domains, or domains only
 function getEmailWhitelist(defenseActive) {
   const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
 
   // if not active, tell the user they can email anyone
-  if (!defenseActive){
+  if (!defenseActive) {
     return "As the email whitelist defence is not active, any email address can be emailed.";
   } else {
     // otherwise tell them who they can email
-    return "The whitelisted emails and domains are: "+ emailWhitelist;
+    return "The whitelisted emails and domains are: " + emailWhitelist;
   }
 }
 
@@ -45,7 +44,10 @@ function sendEmail(address, subject, body, session) {
   console.log(response);
   // add the sent email to the session
   session.sentEmails.push(email);
-  return response;
+  const result = {
+    isEmailSent: true,
+  };
+  return JSON.stringify(result);
 }
 
 module.exports = {
