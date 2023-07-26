@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const { isDefenceActive } = require("./defence");
 const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
-const { queryDocuments } = require("./documents");
+const { queryDocuments, askPromptEvaluationModel } = require("./langchain");
 
 // OpenAI configuration
 let configuration = null;
@@ -163,6 +163,18 @@ async function chatGptSendMessage(message, session) {
   let defenceInfo = { triggeredDefences: [], blocked: false };
   // add user message to chat
   session.chatHistory.push({ role: "user", content: message });
+
+  // check if LLM defence is active and evaluate 
+  if (isDefenceActive("LLM_EVALUATION", session.activeDefences)) {
+    console.debug("LLM defence active.");
+    const evalRepsonse = await askPromptEvaluationModel(message);
+    if (evalRepsonse === "yes") {
+      defenceInfo.triggeredDefences.push("LLM_EVALUATION");
+      defenceInfo.blocked = true;
+      const evalResponse = "Message blocked by the prompt injection evaluator.";
+      return { reply: evalResponse, defenceInfo: defenceInfo };
+    }
+  }
 
   let reply = await chatGptChatCompletion(session);
   // check if GPT wanted to call a function
