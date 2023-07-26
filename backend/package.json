@@ -12,5 +12,10 @@
   },
   "devDependencies": {
     "jest": "^29.6.1"
+  },
+  "scripts": {
+    "dev": "node ./src/app.js",
+    "test": "jest"
   }
 }
+

@@ -1,12 +1,18 @@
 # prompt-injection
+
 Application which investigates defensive measures against prompt injection attacks on an LLM, with a focus on the exposure of external tools.
 
 ## Install
-### Project and Backend
+
+### Backend
+
 ```
+cd backend/
 npm install
 ```
+
 ### Frontend
+
 ```
 cd frontend/
 npm install
@@ -14,7 +20,7 @@ npm install
 
 ## Setup
 ### Environment file
-1. Copy the example environment file `.env.example` and rename it to `.env`.
+1. Copy the example environment file `.env.example` in the backend directory and rename it to `.env`.
 1. Replace the OPENAI_API_KEY value in the `.env` file with your [OpenAI API key](https://platform.openai.com/account/api-keys).
 1. Replace the SESSION_SECRET value with a [random UUID](https://www.uuidgenerator.net/).
 
@@ -30,13 +36,28 @@ npm install
 | SESSION_SECRET                  | YOUR_SESSION_SECRET | A secret string used to set up the backend user session. |
 
 ## Deploy
+
 This project includes a VS Code launch file, so the project can be deployed from there if VS Code is used. Otherwise the code can be run manually:
+
 ### Backend
+
 ```
-node backend/app.js
+cd backend/
+npm run dev
 ```
+
 ### Frontend
+
 ```
 cd frontend/
 npm start
+```
+
+## Test
+
+### Backend
+
+```
+cd backend/
+npm run test
 ```
