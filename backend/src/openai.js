@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const { isDefenceActive } = require("./defence");
 const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
-const { queryDocuments, askPromptEvaluationModel } = require("./langchain");
+const { queryDocuments, queryPromptEvaluationModel } = require("./langchain");
 
 // OpenAI configuration
 let configuration = null;
@@ -32,8 +32,7 @@ const chatGptFunctions = [
   },
   {
     name: "getEmailWhitelist",
-    description:
-      "Get the list of whitelisted email addresses allowed to send emails to",
+    description: "user asks who is on the email whitelist and the system replies with the list of emails. if the email whitelist defence is not active then user should be able to email anyone. ",
     parameters: {
       type: "object",
       properties: {}
@@ -164,15 +163,15 @@ async function chatGptSendMessage(message, session) {
   // add user message to chat
   session.chatHistory.push({ role: "user", content: message });
 
-  // check if LLM defence is active and evaluate 
-  if (isDefenceActive("LLM_EVALUATION", session.activeDefences)) {
-    console.debug("LLM defence active.");
-    const evalRepsonse = await askPromptEvaluationModel(message);
-    if (evalRepsonse === "yes") {
+  // evaluate the message for prompt injection
+  const evalRepsonse = await queryPromptEvaluationModel(message);
+  if (evalRepsonse === "yes") {
       defenceInfo.triggeredDefences.push("LLM_EVALUATION");
-      defenceInfo.blocked = true;
-      const evalResponse = "Message blocked by the prompt injection evaluator.";
-      return { reply: evalResponse, defenceInfo: defenceInfo };
+      if (isDefenceActive("LLM_EVALUATION", session.activeDefences)) {
+        console.debug("LLM defence active.");
+        defenceInfo.blocked = true;
+        const evalResponse = "Message blocked by the prompt injection evaluator.";
+        return { reply: evalResponse, defenceInfo: defenceInfo };
     }
   }
 

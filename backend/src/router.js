@@ -83,12 +83,16 @@ router.post("/openai/chat", async (req, res, next) => {
           transformedMessage,
           req.session
         );
+        
         reply = openAiReply.reply;
         // combine triggered defences
         defenceInfo.triggeredDefences = [
           ...defenceInfo.triggeredDefences,
           ...openAiReply.defenceInfo.triggeredDefences,
         ];
+        // combine blocked 
+        defenceInfo.blocked = defenceInfo.blocked || openAiReply.defenceInfo.blocked;
+
       } catch (error) {
         console.log(error);
         res.statusCode = 500;
