@@ -144,14 +144,18 @@ async function chatGptChatCompletion(session) {
     );
   }
 
+  // make sure openai has been initialised
+  if (!openai) {
+    throw new Error("OpenAI has not been initialised");
+  }
+
   chat_completion = await openai.createChatCompletion({
     model: "gpt-4",
     messages: session.chatHistory,
     functions: chatGptFunctions,
   });
   // get the reply
-  reply = chat_completion.data.choices[0].message;
-  return reply;
+  return chat_completion.data.choices[0].message;
 }
 
 async function chatGptSendMessage(message, session) {
