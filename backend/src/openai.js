@@ -1,6 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const { isDefenceActive } = require("./defence");
 const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
+const { queryDocuments } = require("./documents");
 
 // OpenAI configuration
 let configuration = null;
@@ -35,9 +36,22 @@ const chatGptFunctions = [
       "Get the list of whitelisted email addresses allowed to send emails to",
     parameters: {
       type: "object",
-      properties: {},
+      properties: {}
+      }
     },
-  },
+    {
+      name: "askQuestion",
+      description: "Ask a question about the documents",
+      parameters: {
+        type: "object",
+        properties: {
+          question: {
+            type: "string",
+            description: "The question asked about the documents",
+          }
+        }
+      }
+    },
 ];
 
 function initOpenAi() {
@@ -89,9 +103,18 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-    } else if (functionName == "getEmailWhitelist") {
+
+    } else if (functionName === "getEmailWhitelist") {
       response = getEmailWhitelist();
     }
+
+    if (functionName === "askQuestion"){
+      console.debug("Asking question: " + params.question);
+      // if asking a question, call the queryDocuments
+      response = await queryDocuments(params.question);
+    }
+
+    // add function call to chat
     reply = {
       role: "function",
       content: response,

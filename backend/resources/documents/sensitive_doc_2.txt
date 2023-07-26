@@ -1,0 +1,7 @@
+[SENSITIVE]
+
+Jane is getting a 20% raise this year.
+William is getting a raise from 100000 to 101000 this year.
+Kevin is getting a raise of £4000 this year. 
+
+[/SENSITIVE]
