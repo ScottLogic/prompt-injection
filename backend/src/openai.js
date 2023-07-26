@@ -164,8 +164,8 @@ async function chatGptSendMessage(message, session) {
   session.chatHistory.push({ role: "user", content: message });
 
   // evaluate the message for prompt injection
-  const evalRepsonse = await queryPromptEvaluationModel(message);
-  if (evalRepsonse === "yes") {
+  const isPromptInjection = await queryPromptEvaluationModel(message);
+  if (isPromptInjection) {
       defenceInfo.triggeredDefences.push("LLM_EVALUATION");
       if (isDefenceActive("LLM_EVALUATION", session.activeDefences)) {
         console.debug("LLM defence active.");

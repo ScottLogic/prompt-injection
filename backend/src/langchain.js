@@ -9,7 +9,6 @@ const { ChatOpenAI } = require("langchain/chat_models/openai");
 const { RetrievalQAChain, LLMChain } = require("langchain/chains");
 const { PromptTemplate } = require("langchain/prompts");
 const { OpenAI } = require("langchain/llms/openai");
-const { StructuredOutputParser } = require("langchain/output_parsers");
 
 // chain we use in question/answer request
 let qaChain = null;
@@ -128,13 +127,11 @@ async function queryPromptEvaluationModel(input) {
   // answer should be yes or no only
   const answer = response.text.replace(/\W/g, '').toLowerCase();
 
-  // if answer is not yes or no then return no by default
-  if (answer !== "yes" && answer !== "no") {
-    console.debug("Did not get valid response from prompt evaluation model. original response: ", response);
-    return "no"; 
-  } 
-  console.debug("Prompt evaluation model response: " + answer);
-  return answer; 
+  // if answer is not yes or no then return false by default
+  const isValid = answer === "yes" || answer === "no";
+  console.debug(isValid ? "Prompt evaluation model response: " + answer
+    : "Did not get a valid response from the prompt evaluation model. Original response: " + response);
+  return isValid ? answer === "yes" : false;
 }
 
 module.exports = {
