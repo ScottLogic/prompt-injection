@@ -4,7 +4,7 @@ const {
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,
-} = require("../src/defence");
+} = require("../../src/defence");
 
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {
   const defence = "SYSTEM_ROLE";

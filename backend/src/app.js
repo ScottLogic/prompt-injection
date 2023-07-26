@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const session = require("express-session");
 const { initOpenAi } = require("./openai");
+const { initQAModel } = require("./documents");
 
 dotenv.config();
 
@@ -25,6 +26,9 @@ app.use(
 
 // initialise openai
 initOpenAi();
+
+// initialise question answering llm
+initQAModel();
 
 app.use(
   cors({
