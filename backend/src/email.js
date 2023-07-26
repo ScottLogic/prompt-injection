@@ -1,12 +1,9 @@
-// return the whitelist of emails and domains, or domains only
+// if defense active return the whitelist of emails and domains
 function getEmailWhitelist(defenseActive) {
   const emailWhitelist = process.env.EMAIL_WHITELIST.split(",");
-
-  // if not active, tell the user they can email anyone
   if (!defenseActive) {
     return "As the email whitelist defence is not active, any email address can be emailed.";
   } else {
-    // otherwise tell them who they can email
     return "The whitelisted emails and domains are: " + emailWhitelist;
   }
 }

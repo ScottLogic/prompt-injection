@@ -117,6 +117,7 @@ function detectTriggeredDefences(message, activeDefences) {
       return { reply: "Message is too long", defenceInfo: defenceInfo };
     }
   }
+
   // check if message contains XML tags
   if (detectXMLTags(message)) {
     console.debug("XML_TAGGING defence triggered.");
