@@ -192,9 +192,13 @@ test("GIVEN message contains XML tags WHEN detecting triggered defences THEN XML
 test("GIVEN setting max message length WHEN configuring defence THEN defence is configured", () => {
   const defence = "CHARACTER_LIMIT";
   const defences = [
-    { id: defence, isActive: true, configuration: { maxMessageLength: 20 } },
+    {
+      id: defence,
+      isActive: true,
+      configuration: [{ id: "maxMessageLength", value: 20 }],
+    },
   ];
-  const configuration = { maxMessageLength: 10 };
+  const configuration = [{ id: "maxMessageLength", value: 10 }];
   const updatedDefences = configureDefence(defence, defences, configuration);
   expect(updatedDefences).toContainEqual({
     id: defence,

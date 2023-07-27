@@ -35,13 +35,11 @@ function DefenceBox(props) {
         localDefence.isActive = matchingRemoteDefence.isActive;
         // set each configuration value
         if (matchingRemoteDefence.configuration && localDefence.configuration) {
-          // loop over remote configuration values
           matchingRemoteDefence.configuration.forEach((configEntry, index) => {
             // get the matching configuration in the local defence
             const matchingConfig = localDefence.configuration.find((config) => {
               return config.id === configEntry.id;
             });
-            // set the value
             matchingConfig.value = configEntry.value;
           });
         }
