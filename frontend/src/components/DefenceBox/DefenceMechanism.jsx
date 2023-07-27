@@ -1,5 +1,6 @@
 import "./DefenceMechanism.css";
 import React from "react";
+import DefenceConfiguration from "./DefenceConfiguration";
 
 function DefenceMechanism(props) {
   const [isInfoBoxVisible, setIsInfoBoxVisible] = React.useState(false);
@@ -52,7 +53,14 @@ function DefenceMechanism(props) {
           <span className="defence-mechanism-name">{props.defence.name}</span>
         </div>
         {isInfoBoxVisible ? (
-          <div className="defence-mechanism-info-box">{props.defence.info}</div>
+          <div className="defence-mechanism-info-box">
+            <div>{props.defence.info}</div>
+            <div className="defence-mechanism-configuration">
+              {props.defence.configuration?.map((config, index) => {
+                return <DefenceConfiguration key={config.id} config={config} />;
+              })}
+            </div>
+          </div>
         ) : null}
       </div>
     </span>
