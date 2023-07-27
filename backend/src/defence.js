@@ -29,6 +29,13 @@ function deactivateDefence(id, defences) {
   );
 }
 
+function configureDefence(id, defences, configuration) {
+  // return the updated list of defences
+  return defences.map((defence) =>
+    defence.id === id ? { ...defence, configuration: configuration } : defence
+  );
+}
+
 function getMaxMessageLength(defences) {
   const maxMessageLength = defences.find(
     (defence) => defence.id === "CHARACTER_LIMIT"
@@ -152,6 +159,7 @@ function detectTriggeredDefences(message, defences) {
 
 module.exports = {
   activateDefence,
+  configureDefence,
   deactivateDefence,
   getInitialDefences,
   isDefenceActive,

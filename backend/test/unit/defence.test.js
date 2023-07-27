@@ -1,6 +1,7 @@
 const {
   activateDefence,
   deactivateDefence,
+  configureDefence,
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,
@@ -177,4 +178,18 @@ test("GIVEN message contains XML tags WHEN detecting triggered defences THEN XML
   expect(reply).toBe(null);
   expect(defenceInfo.blocked).toBe(false);
   expect(defenceInfo.triggeredDefences).toContain("XML_TAGGING");
+});
+
+test("GIVEN setting max message length WHEN configuring defence THEN defence is configured", () => {
+  const defence = "CHARACTER_LIMIT";
+  const defences = [
+    { id: defence, isActive: true, configuration: { maxMessageLength: 20 } },
+  ];
+  const configuration = { maxMessageLength: 10 };
+  const updatedDefences = configureDefence(defence, defences, configuration);
+  expect(updatedDefences).toContainEqual({
+    id: defence,
+    isActive: true,
+    configuration: configuration,
+  });
 });

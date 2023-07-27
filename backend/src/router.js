@@ -37,6 +37,25 @@ router.post("/defence/deactivate", (req, res, next) => {
   }
 });
 
+// Configure a defence
+router.post("/defence/configure", (req, res, next) => {
+  // id of the defence
+  const defenceId = req.body?.defenceId;
+  const configuration = req.body?.configuration;
+  if (defenceId && configuration) {
+    // configure the defence
+    req.session.defences = configureDefence(
+      defenceId,
+      req.session.defences,
+      configuration
+    );
+    res.send("Defence configured");
+  } else {
+    res.statusCode = 400;
+    res.send("Missing defenceId or configuration");
+  }
+});
+
 // Get the status of all defences
 router.get("/defence/status", (req, res, next) => {
   res.send(req.session.defences);
