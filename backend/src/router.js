@@ -15,10 +15,7 @@ router.post("/defence/activate", (req, res, next) => {
   const defenceId = req.body?.defenceId;
   if (defenceId) {
     // activate the defence
-    req.session.activeDefences = activateDefence(
-      defenceId,
-      req.session.activeDefences
-    );
+    req.session.defences = activateDefence(defenceId, req.session.defences);
     res.send("Defence activated");
   } else {
     res.statusCode = 400;
@@ -32,10 +29,7 @@ router.post("/defence/deactivate", (req, res, next) => {
   const defenceId = req.body?.defenceId;
   if (defenceId) {
     // deactivate the defence
-    req.session.activeDefences = deactivateDefence(
-      defenceId,
-      req.session.activeDefences
-    );
+    req.session.defences = deactivateDefence(defenceId, req.session.defences);
     res.send("Defence deactivated");
   } else {
     res.statusCode = 400;
@@ -45,7 +39,7 @@ router.post("/defence/deactivate", (req, res, next) => {
 
 // Get the status of all defences
 router.get("/defence/status", (req, res, next) => {
-  res.send(req.session.activeDefences);
+  res.send(req.session.defences);
 });
 
 // Get sent emails
@@ -64,19 +58,13 @@ router.post("/openai/chat", async (req, res, next) => {
   if (message) {
     transformedMessage = message;
     // see if this message triggers any defences
-    const detectReply = detectTriggeredDefences(
-      message,
-      req.session.activeDefences
-    );
+    const detectReply = detectTriggeredDefences(message, req.session.defences);
     reply = detectReply.reply;
     defenceInfo = detectReply.defenceInfo;
     // if blocked, send the response
     if (!defenceInfo.blocked) {
       // transform the message according to active defences
-      transformedMessage = transformMessage(
-        message,
-        req.session.activeDefences
-      );
+      transformedMessage = transformMessage(message, req.session.defences);
       // get the chatGPT reply
       try {
         const openAiReply = await chatGptSendMessage(

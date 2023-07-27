@@ -5,6 +5,7 @@ const cors = require("cors");
 const session = require("express-session");
 const { initOpenAi } = require("./openai");
 const { initQAModel } = require("./documents");
+const { getInitialDefences } = require("./defence");
 
 dotenv.config();
 
@@ -45,8 +46,8 @@ app.use(function (req, res, next) {
   if (!req.session.sentEmails) {
     req.session.sentEmails = [];
   }
-  if (!req.session.activeDefences) {
-    req.session.activeDefences = [];
+  if (!req.session.defences) {
+    req.session.defences = getInitialDefences();
   }
 
   next();

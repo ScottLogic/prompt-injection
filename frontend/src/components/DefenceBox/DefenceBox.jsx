@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./DefenceBox.css";
 import DefenceMechanism from "./DefenceMechanism";
 import {
-  getActiveDefences,
+  getDefences,
   activateDefence,
   deactivateDefence,
 } from "../../service/defenceService";
@@ -14,6 +14,7 @@ function DefenceBox(props) {
     DEFENCES.map((defence) => {
       return {
         ...defence,
+        configuration: {},
         isActive: false,
         isTriggered: false,
       };
@@ -23,11 +24,13 @@ function DefenceBox(props) {
   // called on mount
   useEffect(() => {
     // fetch defences from backend
-    getActiveDefences().then((activeDefences) => {
+    getDefences().then((remoteDefences) => {
       const newDefences = defences.map((localDefence) => {
-        localDefence.isActive = activeDefences.find((remoteDefence) => {
-          return localDefence.id === remoteDefence;
+        const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
+          return localDefence.id === remoteDefence.id;
         });
+        localDefence.isActive = matchingRemoteDefence.isActive;
+        localDefence.configuration = matchingRemoteDefence.configuration;
         return localDefence;
       });
       setDefences(newDefences);
