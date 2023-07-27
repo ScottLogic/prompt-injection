@@ -15,6 +15,12 @@ function DefenceMechanism(props) {
             ? "defence-mechanism defence-active"
             : "defence-mechanism"
         }
+        onMouseOver={() => {
+          setIsInfoBoxVisible(true);
+        }}
+        onMouseLeave={() => {
+          setIsInfoBoxVisible(false);
+        }}
         style={
           props.defence.isTriggered
             ? props.defence.isActive
@@ -44,17 +50,6 @@ function DefenceMechanism(props) {
       >
         <div className="defence-mechanism-header">
           <span className="defence-mechanism-name">{props.defence.name}</span>
-          <span
-            className="defence-mechanism-info"
-            onMouseOver={() => {
-              setIsInfoBoxVisible(true);
-            }}
-            onMouseLeave={() => {
-              setIsInfoBoxVisible(false);
-            }}
-          >
-            <span>?</span>
-          </span>
         </div>
         {isInfoBoxVisible ? (
           <div className="defence-mechanism-info-box">{props.defence.info}</div>
