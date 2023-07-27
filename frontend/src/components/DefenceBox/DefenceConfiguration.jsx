@@ -12,6 +12,7 @@ function DefenceConfiguration(props) {
         className="defence-configuration-value"
         placeholder={props.config.value}
         onKeyUp={setConfiguration.bind(this)}
+        onClick={(event) => event.stopPropagation()}
       ></input>
     </div>
   );
