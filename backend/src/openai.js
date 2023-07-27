@@ -40,7 +40,7 @@ const chatGptFunctions = [
     },
     {
       name: "askQuestion",
-      description: "Ask a question about the documents",
+      description: "Ask a question about the documents containing company info. ",
       parameters: {
         type: "object",
         properties: {
@@ -111,7 +111,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
     if (functionName === "askQuestion"){
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
-      response = await queryDocuments(params.question);
+      response = (await queryDocuments(params.question)).reply;
     }
 
     // add function call to chat
@@ -165,13 +165,13 @@ async function chatGptSendMessage(message, session) {
   session.chatHistory.push({ role: "user", content: message });
 
   // evaluate the message for prompt injection
-  const isPromptInjection = await queryPromptEvaluationModel(message);
-  if (isPromptInjection) {
+  const evalPrompt = await queryPromptEvaluationModel(message);
+  if (evalPrompt.isMalicious) {
       defenceInfo.triggeredDefences.push("LLM_EVALUATION");
       if (isDefenceActive("LLM_EVALUATION", session.activeDefences)) {
         console.debug("LLM defence active.");
         defenceInfo.blocked = true;
-        const evalResponse = "Message blocked by the prompt injection evaluator.";
+        const evalResponse = "Message blocked by the malicious prompt evaluator." + evalPrompt.reason;
         return { reply: evalResponse, defenceInfo: defenceInfo };
     }
   }
@@ -189,8 +189,10 @@ async function chatGptSendMessage(message, session) {
     session.chatHistory.push(functionCallReply.reply);
     // update the defence info
     defenceInfo = functionCallReply.defenceInfo;
+  
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion(session);
+
   }
   // add the ai reply to the chat history
   session.chatHistory.push(reply);
