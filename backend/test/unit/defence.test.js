@@ -115,9 +115,12 @@ test(
       {
         id: "CHARACTER_LIMIT",
         isActive: true,
-        configuration: {
-          maxMessageLength: 3,
-        },
+        configuration: [
+          {
+            id: "maxMessageLength",
+            value: 3,
+          },
+        ],
       },
     ];
     const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
@@ -137,9 +140,12 @@ test(
       {
         id: "CHARACTER_LIMIT",
         isActive: true,
-        configuration: {
-          maxMessageLength: 280,
-        },
+        configuration: [
+          {
+            id: "maxMessageLength",
+            value: 280,
+          },
+        ],
       },
     ];
     const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
@@ -159,9 +165,12 @@ test(
       {
         id: "CHARACTER_LIMIT",
         isActive: false,
-        configuration: {
-          maxMessageLength: 3,
-        },
+        configuration: [
+          {
+            id: "maxMessageLength",
+            value: 3,
+          },
+        ],
       },
     ];
     const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
