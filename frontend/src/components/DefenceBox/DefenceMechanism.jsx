@@ -11,13 +11,13 @@ function DefenceMechanism(props) {
     <span>
       <div
         className={
-          props.isActive
+          props.defence.isActive
             ? "defence-mechanism defence-active"
             : "defence-mechanism"
         }
         style={
-          props.isTriggered
-            ? props.isActive
+          props.defence.isTriggered
+            ? props.defence.isActive
               ? {
                   animation:
                     "flash-red-active " +
@@ -37,13 +37,13 @@ function DefenceMechanism(props) {
             : { animation: "none" }
         }
         onClick={() => {
-          props.isActive
-            ? props.setDefenceInactive(props.id)
-            : props.setDefenceActive(props.id);
+          props.defence.isActive
+            ? props.setDefenceInactive(props.defence.id)
+            : props.setDefenceActive(props.defence.id);
         }}
       >
         <div className="defence-mechanism-header">
-          <span className="defence-mechanism-name">{props.name}</span>
+          <span className="defence-mechanism-name">{props.defence.name}</span>
           <span
             className="defence-mechanism-info"
             onMouseOver={() => {
@@ -57,7 +57,7 @@ function DefenceMechanism(props) {
           </span>
         </div>
         {isInfoBoxVisible ? (
-          <div className="defence-mechanism-info-box">{props.info}</div>
+          <div className="defence-mechanism-info-box">{props.defence.info}</div>
         ) : null}
       </div>
     </span>

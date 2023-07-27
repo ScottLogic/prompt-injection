@@ -14,9 +14,11 @@ function DefenceBox(props) {
     DEFENCES.map((defence) => {
       return {
         ...defence,
-        configuration: {},
         isActive: false,
         isTriggered: false,
+        configuration: defence.configuration?.map((config) => {
+          return { ...config, value: "" };
+        }),
       };
     })
   );
@@ -30,7 +32,20 @@ function DefenceBox(props) {
           return localDefence.id === remoteDefence.id;
         });
         localDefence.isActive = matchingRemoteDefence.isActive;
-        localDefence.configuration = matchingRemoteDefence.configuration;
+        // set each configuration value
+        if (matchingRemoteDefence.configuration && localDefence.configuration) {
+          // get each key value configuration pair in the remote defence
+          for (const [key, value] of Object.entries(
+            matchingRemoteDefence.configuration
+          )) {
+            // get the matching configuration in the local defence
+            const matchingConfig = localDefence.configuration.find((config) => {
+              return config.id === key;
+            });
+            // set the value
+            matchingConfig.value = value;
+          }
+        }
         return localDefence;
       });
       setDefences(newDefences);
@@ -82,11 +97,7 @@ function DefenceBox(props) {
         return (
           <DefenceMechanism
             key={defence.id}
-            name={defence.name}
-            id={defence.id}
-            info={defence.info}
-            isActive={defence.isActive}
-            isTriggered={defence.isTriggered}
+            defence={defence}
             setDefenceActive={setDefenceActive}
             setDefenceInactive={setDefenceInactive}
           />

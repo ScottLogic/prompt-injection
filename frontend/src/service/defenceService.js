@@ -30,4 +30,16 @@ async function deactivateDefence(id) {
   return response.status === 200;
 }
 
-export { getDefences, activateDefence, deactivateDefence };
+async function configureDefence(id, configuration) {
+  const response = await sendRequest(
+    PATH + "configure",
+    "POST",
+    {
+      "Content-Type": "application/json",
+    },
+    JSON.stringify({ defenceId: id, configuration: configuration })
+  );
+  return response.status === 200;
+}
+
+export { getDefences, activateDefence, deactivateDefence, configureDefence };
