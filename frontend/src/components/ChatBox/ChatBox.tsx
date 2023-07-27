@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from "react";
-
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
 import {
+  OpenAIMessage,
+  OpenAIResponse,
   clearOpenAiChat,
   openAiSendMessage,
 } from "../../service/openaiService";
-import { getSentEmails } from "../../service/emailService";
+import { OpenAIEmail, getSentEmails } from "../../service/emailService";
 
-function ChatBox(props) {
-  const [isSendingMessage, setIsSendingMessage] = useState(false);
-  const [messages, setMessages] = useState([]);
+function ChatBox(
+  this: any,
+  {
+    setEmails,
+    updateTriggeredDefences,
+  }: {
+    setEmails: (emails: any) => void;
+    updateTriggeredDefences: (defences: string[]) => void;
+  }
+) {
+  const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
+  const [messages, setMessages] = useState<OpenAIMessage[]>([]);
 
   // called on mount
   useEffect(() => {
@@ -18,9 +28,9 @@ function ChatBox(props) {
     clearOpenAiChat();
     // get sent emails
     getSentEmails().then((sentEmails) => {
-      props.setEmails(sentEmails);
+      setEmails(sentEmails);
     });
-  }, []);
+  }, [setEmails]);
 
   const clearClicked = () => {
     // clear local messages
@@ -29,26 +39,28 @@ function ChatBox(props) {
     clearOpenAiChat();
   };
 
-  const sendChatMessage = async (event) => {
-    if (event.key === "Enter" && !isSendingMessage) {
+  const sendChatMessage = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter" && event.target !== null && !isSendingMessage) {
       setIsSendingMessage(true);
       // get the message
-      const message = event.target.value;
+      const message = event.currentTarget.value;
 
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
-      setMessages((messages) => [
+      setMessages((messages: OpenAIMessage[]) => [
         ...messages,
         { message: message, isUser: true, isOriginalMessage: true },
       ]);
       // clear the input
-      event.target.value = "";
+      event.currentTarget.value = "";
 
-      const reply = await openAiSendMessage(message);
-      const transformedMessage = reply.transformedMessage;
+      const response: OpenAIResponse = await openAiSendMessage(message);
+      const transformedMessage = response.transformedMessage;
       const isTransformed = transformedMessage !== message;
       // add the transformed message to the chat box if it is different from the original message
       if (isTransformed) {
-        setMessages((messages) => [
+        setMessages((messages: OpenAIMessage[]) => [
           ...messages,
           {
             message: transformedMessage,
@@ -58,20 +70,25 @@ function ChatBox(props) {
         ]);
       }
       // add it to the list of messages
-      setMessages((messages) => [
+      setMessages((messages: OpenAIMessage[]) => [
         ...messages,
-        { isUser: false, message: reply.reply, defenceInfo: reply.defenceInfo },
+        {
+          isUser: false,
+          message: response.reply,
+          defenceInfo: response.defenceInfo,
+          isOriginalMessage: true,
+        },
       ]);
       // update triggered defences
-      props.updateTriggeredDefences(reply.defenceInfo.triggeredDefences);
+      updateTriggeredDefences(response.defenceInfo.triggeredDefences);
 
       // we have the message reply
       setIsSendingMessage(false);
 
       // get sent emails
-      const sentEmails = await getSentEmails();
+      const sentEmails: OpenAIEmail[] = await getSentEmails();
       // update emails
-      props.setEmails(sentEmails);
+      setEmails(sentEmails);
     }
   };
 
