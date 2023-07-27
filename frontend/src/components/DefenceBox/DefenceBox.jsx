@@ -5,6 +5,7 @@ import {
   getDefences,
   activateDefence,
   deactivateDefence,
+  configureDefence,
 } from "../../service/defenceService";
 import DEFENCES from "../../Defences";
 
@@ -34,17 +35,15 @@ function DefenceBox(props) {
         localDefence.isActive = matchingRemoteDefence.isActive;
         // set each configuration value
         if (matchingRemoteDefence.configuration && localDefence.configuration) {
-          // get each key value configuration pair in the remote defence
-          for (const [key, value] of Object.entries(
-            matchingRemoteDefence.configuration
-          )) {
+          // loop over remote configuration values
+          matchingRemoteDefence.configuration.forEach((configEntry, index) => {
             // get the matching configuration in the local defence
             const matchingConfig = localDefence.configuration.find((config) => {
-              return config.id === key;
+              return config.id === configEntry.id;
             });
             // set the value
-            matchingConfig.value = value;
-          }
+            matchingConfig.value = configEntry.value;
+          });
         }
         return localDefence;
       });
@@ -91,6 +90,19 @@ function DefenceBox(props) {
     });
   };
 
+  const setDefenceConfiguration = (defenceId, configuration) => {
+    configureDefence(defenceId, configuration).then(() => {
+      // update state
+      const newDefences = defences.map((defence) => {
+        if (defence.id === defenceId) {
+          defence.configuration = configuration;
+        }
+        return defence;
+      });
+      setDefences(newDefences);
+    });
+  };
+
   return (
     <div id="defence-box">
       {defences.map((defence, index) => {
@@ -100,6 +112,7 @@ function DefenceBox(props) {
             defence={defence}
             setDefenceActive={setDefenceActive}
             setDefenceInactive={setDefenceInactive}
+            setDefenceConfiguration={setDefenceConfiguration}
           />
         );
       })}

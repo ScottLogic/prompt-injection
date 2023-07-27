@@ -8,6 +8,16 @@ function DefenceMechanism(props) {
   const ANIMATION_FLASH_TIME_SECONDS = 1;
   const ANIMATION_FLASH_REPEAT = 3;
 
+  const setConfigurationValue = (configId, value) => {
+    const newConfiguration = props.defence.configuration.map((config) => {
+      if (config.id === configId) {
+        config.value = value;
+      }
+      return config;
+    });
+    props.setDefenceConfiguration(props.defence.id, newConfiguration);
+  };
+
   return (
     <span>
       <div
@@ -57,7 +67,13 @@ function DefenceMechanism(props) {
             <div>{props.defence.info}</div>
             <div className="defence-mechanism-configuration">
               {props.defence.configuration?.map((config, index) => {
-                return <DefenceConfiguration key={config.id} config={config} />;
+                return (
+                  <DefenceConfiguration
+                    key={config.id}
+                    config={config}
+                    setConfigurationValue={setConfigurationValue}
+                  />
+                );
               })}
             </div>
           </div>

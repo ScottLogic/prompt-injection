@@ -1,10 +1,17 @@
 function DefenceConfiguration(props) {
+  const setConfiguration = (event) => {
+    if (event.key === "Enter") {
+      props.setConfigurationValue(props.config.id, event.target.value);
+    }
+  };
+
   return (
     <div>
       <span className="defence-configuration-name">{props.config.name} </span>
       <input
         className="defence-configuration-value"
-        value={props.config.value}
+        placeholder={props.config.value}
+        onKeyUp={setConfiguration.bind(this)}
       ></input>
     </div>
   );

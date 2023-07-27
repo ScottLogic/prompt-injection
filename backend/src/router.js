@@ -1,13 +1,13 @@
-// Importing express module
 const express = require("express");
+const { chatGptSendMessage } = require("./openai");
+const router = express.Router();
 const {
   activateDefence,
   deactivateDefence,
+  configureDefence,
   transformMessage,
   detectTriggeredDefences,
 } = require("./defence");
-const { chatGptSendMessage } = require("./openai");
-const router = express.Router();
 
 // Activate a defence
 router.post("/defence/activate", (req, res, next) => {

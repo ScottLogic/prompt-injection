@@ -2,9 +2,12 @@ function getInitialDefences() {
   const defences = [
     {
       id: "CHARACTER_LIMIT",
-      configuration: {
-        maxMessageLength: process.env.MAX_MESSAGE_LENGTH || 280,
-      },
+      configuration: [
+        {
+          id: "maxMessageLength",
+          value: process.env.MAX_MESSAGE_LENGTH || 280,
+        },
+      ],
     },
     { id: "RANDOM_SEQUENCE_ENCLOSURE" },
     { id: "XML_TAGGING" },
@@ -37,9 +40,9 @@ function configureDefence(id, defences, configuration) {
 }
 
 function getMaxMessageLength(defences) {
-  const maxMessageLength = defences.find(
-    (defence) => defence.id === "CHARACTER_LIMIT"
-  )?.configuration?.maxMessageLength;
+  const maxMessageLength = defences
+    .find((defence) => defence.id === "CHARACTER_LIMIT")
+    ?.configuration?.find((config) => config.id === "maxMessageLength")?.value;
   return maxMessageLength || 280;
 }
 
