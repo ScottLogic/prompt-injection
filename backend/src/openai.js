@@ -32,7 +32,7 @@ const chatGptFunctions = [
   },
   {
     name: "getEmailWhitelist",
-    description: "user asks who is on the email whitelist and the system replies with the list of emails. if the email whitelist defence is not active then user should be able to email anyone. ",
+    description: "user asks who is on the email whitelist and the system replies with the list of emails.",
     parameters: {
       type: "object",
       properties: {}
