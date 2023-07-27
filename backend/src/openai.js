@@ -74,6 +74,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
   if (isChatGptFunction(functionName)) {
     // get the function parameters
     const params = JSON.parse(functionCall.arguments);
+    console.debug("Function call: " + functionName);
     let response = null;
 
     // call the function
@@ -102,9 +103,9 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-
+      
     } else if (functionName === "getEmailWhitelist") {
-      response = getEmailWhitelist();
+      response = getEmailWhitelist(isDefenceActive("EMAIL_WHITELIST", session.activeDefences));
     }
 
     if (functionName === "askQuestion"){
