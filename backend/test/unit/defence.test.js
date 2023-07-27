@@ -96,8 +96,6 @@ test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
 });
 
 test("GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered", () => {
-  // set max message length
-  process.env.MAX_MESSAGE_LENGTH = 280;
   const message = "Hello";
   const defences = [];
   const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
@@ -111,10 +109,16 @@ test(
     "WHEN detecting triggered defences " +
     "THEN CHARACTER_LIMIT defence is triggered AND the message is blocked",
   () => {
-    // set max message length
-    process.env.MAX_MESSAGE_LENGTH = 3;
     const message = "Hello";
-    const defences = [{ id: "CHARACTER_LIMIT", isActive: true }];
+    const defences = [
+      {
+        id: "CHARACTER_LIMIT",
+        isActive: true,
+        configuration: {
+          maxMessageLength: 3,
+        },
+      },
+    ];
     const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
     expect(reply).toBe("Message is too long");
     expect(defenceInfo.blocked).toBe(true);
@@ -127,10 +131,16 @@ test(
     "WHEN detecting triggered defences " +
     "THEN CHARACTER_LIMIT defence is not triggered AND the message is not blocked",
   () => {
-    // set max message length
-    process.env.MAX_MESSAGE_LENGTH = 280;
     const message = "Hello";
-    const defences = [{ id: "CHARACTER_LIMIT", isActive: true }];
+    const defences = [
+      {
+        id: "CHARACTER_LIMIT",
+        isActive: true,
+        configuration: {
+          maxMessageLength: 280,
+        },
+      },
+    ];
     const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
     expect(reply).toBe(null);
     expect(defenceInfo.blocked).toBe(false);
@@ -143,10 +153,16 @@ test(
     "WHEN detecting triggered defences " +
     "THEN CHARACTER_LIMIT defence is triggered AND the message is not blocked",
   () => {
-    // set max message length
-    process.env.MAX_MESSAGE_LENGTH = 3;
     const message = "Hello";
-    const defences = [{ id: "CHARACTER_LIMIT", isActive: false }];
+    const defences = [
+      {
+        id: "CHARACTER_LIMIT",
+        isActive: false,
+        configuration: {
+          maxMessageLength: 3,
+        },
+      },
+    ];
     const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
     expect(reply).toBe(null);
     expect(defenceInfo.blocked).toBe(false);

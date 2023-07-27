@@ -1,6 +1,11 @@
 function getInitialDefences() {
   const defences = [
-    { id: "CHARACTER_LIMIT" },
+    {
+      id: "CHARACTER_LIMIT",
+      configuration: {
+        maxMessageLength: process.env.MAX_MESSAGE_LENGTH || 280,
+      },
+    },
     { id: "RANDOM_SEQUENCE_ENCLOSURE" },
     { id: "XML_TAGGING" },
     { id: "EMAIL_WHITELIST" },
@@ -22,6 +27,13 @@ function deactivateDefence(id, defences) {
   return defences.map((defence) =>
     defence.id === id ? { ...defence, isActive: false } : defence
   );
+}
+
+function getMaxMessageLength(defences) {
+  const maxMessageLength = defences.find(
+    (defence) => defence.id === "CHARACTER_LIMIT"
+  )?.configuration?.maxMessageLength;
+  return maxMessageLength || 280;
 }
 
 function isDefenceActive(id, defences) {
@@ -114,7 +126,7 @@ function transformMessage(message, defences) {
 function detectTriggeredDefences(message, defences) {
   // keep track of any triggered defences
   const defenceInfo = { blocked: false, triggeredDefences: [] };
-  const maxMessageLength = process.env.MAX_MESSAGE_LENGTH || 280;
+  const maxMessageLength = getMaxMessageLength(defences);
   // check if the message is too long
   if (message.length > maxMessageLength) {
     console.debug("CHARACTER_LIMIT defence triggered.");
