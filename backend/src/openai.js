@@ -167,7 +167,7 @@ async function chatGptSendMessage(message, session) {
   if (evalPrompt.isMalicious) {
       defenceInfo.triggeredDefences.push("LLM_EVALUATION");
       if (isDefenceActive("LLM_EVALUATION", session.activeDefences)) {
-        console.debug("LLM defence active.");
+        console.debug("LLM evalutation defence active.");
         defenceInfo.blocked = true;
         const evalResponse = "Message blocked by the malicious prompt evaluator." + evalPrompt.reason;
         return { reply: evalResponse, defenceInfo: defenceInfo };
