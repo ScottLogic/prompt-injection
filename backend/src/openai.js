@@ -161,8 +161,6 @@ async function chatGptChatCompletion(session) {
 async function chatGptSendMessage(message, session) {
   // init defence info
   let defenceInfo = { triggeredDefences: [], blocked: false };
-  // add user message to chat
-  session.chatHistory.push({ role: "user", content: message });
 
   // evaluate the message for prompt injection
   const evalPrompt = await queryPromptEvaluationModel(message);
@@ -175,6 +173,8 @@ async function chatGptSendMessage(message, session) {
         return { reply: evalResponse, defenceInfo: defenceInfo };
     }
   }
+  // add user message to chat
+  session.chatHistory.push({ role: "user", content: message });
 
   let reply = await chatGptChatCompletion(session);
   // check if GPT wanted to call a function

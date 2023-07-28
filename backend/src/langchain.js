@@ -9,8 +9,8 @@ const { ChatOpenAI } = require("langchain/chat_models/openai");
 const { RetrievalQAChain, LLMChain, SequentialChain } = require("langchain/chains");
 const { PromptTemplate } = require("langchain/prompts");
 const { OpenAI } = require("langchain/llms/openai");
-
 const { retrievalQATemplate, promptInjectionEvalTemplate, maliciousPromptTemplate } = require("./promptTemplates");
+
 // chain we use in question/answer request
 let qaChain = null;
 
@@ -118,21 +118,18 @@ async function queryPromptEvaluationModel(input) {
   const promptInjectionEval = formatEvaluationOutput(response.promptInjectionEval);
   const maliciousInputEval = formatEvaluationOutput(response.maliciousInputEval);
 
-  console.debug("promptInjectionEval: " + JSON.stringify(promptInjectionEval));
-  console.debug("maliciousInputEval: " + JSON.stringify(maliciousInputEval));
+  console.debug("Prompt injection eval: " + JSON.stringify(promptInjectionEval));
+  console.debug("Malicious input eval: " + JSON.stringify(maliciousInputEval));
 
-  if (promptInjectionEval.isMalicious) {
-    if (maliciousInputEval.isMalicious) {
-      // both models say yes, combine reason
-      return { isMalicious: true, reason: promptInjectionEval.reason + " & " + maliciousInputEval.reason };
-    }
-    return { isMalicious: true, reason: promptInjectionEval.reason };
-  } else {
-    if (maliciousInputEval.isMalicious){
+  // if both are malicious, combine reason
+  if (promptInjectionEval.isMalicious && maliciousInputEval.isMalicious) {
+    return { isMalicious: true, reason: `${promptInjectionEval.reason} & ${maliciousInputEval.reason}` };
+  } else if (promptInjectionEval.isMalicious) {
+      return { isMalicious: true, reason: promptInjectionEval.reason };
+  } else if (maliciousInputEval.isMalicious) {
       return { isMalicious: true, reason: maliciousInputEval.reason };
-    }
-  }
-  return {isMalicious: false, reason: ""}
+}
+return { isMalicious: false, reason: "" };
 }
 
 // format the evaluation model output. text should be a Yes or No answer followed by a reason
