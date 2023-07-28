@@ -23,7 +23,12 @@ const DEFENCES = [
     name: "email whitelist",
     id: "EMAIL_WHITELIST",
     info: "only allow emails to those on a whitelist. they can be full email addresses, or domains in the format '*@scottlogic.com'",
-  }
-];
+  },
+  {
+    name: "llm evaluation",
+    id: "LLM_EVALUATION",
+    info: "Use language model to evaluate user prompt for malicious content.",
+
+  }];
 
 export default DEFENCES;
