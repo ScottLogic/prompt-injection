@@ -3,6 +3,12 @@ const DEFENCES = [
     name: "character limit",
     id: "CHARACTER_LIMIT",
     info: "limit the number of characters in the user input. this is a form of prompt validation.",
+    configuration: [
+      {
+        name: "max message length",
+        id: "maxMessageLength",
+      },
+    ],
   },
   {
     name: "random sequence enclosure",
@@ -23,7 +29,7 @@ const DEFENCES = [
     name: "email whitelist",
     id: "EMAIL_WHITELIST",
     info: "only allow emails to those on a whitelist. they can be full email addresses, or domains in the format '*@scottlogic.com'",
-  }
+  },
 ];
 
 export default DEFENCES;

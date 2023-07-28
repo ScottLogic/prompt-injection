@@ -36,22 +36,22 @@ const chatGptFunctions = [
       "user asks who is on the email whitelist and the system replies with the list of emails. if the email whitelist defence is not active then user should be able to email anyone. ",
     parameters: {
       type: "object",
-      properties: {}
-      }
+      properties: {},
     },
-    {
-      name: "askQuestion",
-      description: "Ask a question about the documents",
-      parameters: {
-        type: "object",
-        properties: {
-          question: {
-            type: "string",
-            description: "The question asked about the documents",
-          }
-        }
-      }
+  },
+  {
+    name: "askQuestion",
+    description: "Ask a question about the documents",
+    parameters: {
+      type: "object",
+      properties: {
+        question: {
+          type: "string",
+          description: "The question asked about the documents",
+        },
+      },
     },
+  },
 ];
 
 function initOpenAi() {
@@ -86,7 +86,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
       } else {
         // trigger email defence even if it is not active
         defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
-        if (isDefenceActive("EMAIL_WHITELIST", session.activeDefences)) {
+        if (isDefenceActive("EMAIL_WHITELIST", session.defences)) {
           // do not send email if defence is on and set to blocked
           response = "Cannot send to this email as it is not whitelisted";
           defenceInfo.blocked = true;
@@ -104,12 +104,13 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-      
     } else if (functionName == "getEmailWhitelist") {
-      response = getEmailWhitelist(isDefenceActive("EMAIL_WHITELIST", session.activeDefences));
+      response = getEmailWhitelist(
+        isDefenceActive("EMAIL_WHITELIST", session.defences)
+      );
     }
 
-    if (functionName === "askQuestion"){
+    if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
       response = await queryDocuments(params.question);
@@ -129,7 +130,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
 
 async function chatGptChatCompletion(session) {
   // check if we need to set a system role
-  if (isDefenceActive("SYSTEM_ROLE", session.activeDefences)) {
+  if (isDefenceActive("SYSTEM_ROLE", session.defences)) {
     // check to see if there's already a system role
     if (!session.chatHistory.find((message) => message.role === "system")) {
       // add the system role to the start of the chat history

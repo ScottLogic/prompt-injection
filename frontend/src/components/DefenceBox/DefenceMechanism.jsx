@@ -1,5 +1,6 @@
 import "./DefenceMechanism.css";
 import React from "react";
+import DefenceConfiguration from "./DefenceConfiguration";
 
 function DefenceMechanism(props) {
   const [isInfoBoxVisible, setIsInfoBoxVisible] = React.useState(false);
@@ -7,17 +8,33 @@ function DefenceMechanism(props) {
   const ANIMATION_FLASH_TIME_SECONDS = 1;
   const ANIMATION_FLASH_REPEAT = 3;
 
+  const setConfigurationValue = (configId, value) => {
+    const newConfiguration = props.defence.configuration.map((config) => {
+      if (config.id === configId) {
+        config.value = value;
+      }
+      return config;
+    });
+    props.setDefenceConfiguration(props.defence.id, newConfiguration);
+  };
+
   return (
     <span>
       <div
         className={
-          props.isActive
+          props.defence.isActive
             ? "defence-mechanism defence-active"
             : "defence-mechanism"
         }
+        onMouseOver={() => {
+          setIsInfoBoxVisible(true);
+        }}
+        onMouseLeave={() => {
+          setIsInfoBoxVisible(false);
+        }}
         style={
-          props.isTriggered
-            ? props.isActive
+          props.defence.isTriggered
+            ? props.defence.isActive
               ? {
                   animation:
                     "flash-red-active " +
@@ -37,27 +54,29 @@ function DefenceMechanism(props) {
             : { animation: "none" }
         }
         onClick={() => {
-          props.isActive
-            ? props.setDefenceInactive(props.id)
-            : props.setDefenceActive(props.id);
+          props.defence.isActive
+            ? props.setDefenceInactive(props.defence.id)
+            : props.setDefenceActive(props.defence.id);
         }}
       >
         <div className="defence-mechanism-header">
-          <span className="defence-mechanism-name">{props.name}</span>
-          <span
-            className="defence-mechanism-info"
-            onMouseOver={() => {
-              setIsInfoBoxVisible(true);
-            }}
-            onMouseLeave={() => {
-              setIsInfoBoxVisible(false);
-            }}
-          >
-            <span>?</span>
-          </span>
+          <span className="defence-mechanism-name">{props.defence.name}</span>
         </div>
         {isInfoBoxVisible ? (
-          <div className="defence-mechanism-info-box">{props.info}</div>
+          <div className="defence-mechanism-info-box">
+            <div>{props.defence.info}</div>
+            <div className="defence-mechanism-configuration">
+              {props.defence.configuration?.map((config, index) => {
+                return (
+                  <DefenceConfiguration
+                    key={config.id}
+                    config={config}
+                    setConfigurationValue={setConfigurationValue}
+                  />
+                );
+              })}
+            </div>
+          </div>
         ) : null}
       </div>
     </span>

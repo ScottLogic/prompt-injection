@@ -49,6 +49,14 @@
   margin-top: 4px;
 }
 
+.defence-mechanism-configuration {
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px 0 0 0;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
 @keyframes flash-red-active {
   0% {
     background-color: #eef;

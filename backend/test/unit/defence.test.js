@@ -1,6 +1,7 @@
 const {
   activateDefence,
   deactivateDefence,
+  configureDefence,
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,
@@ -8,56 +9,56 @@ const {
 
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {
   const defence = "SYSTEM_ROLE";
-  const activeDefences = [];
-  const updatedActiveDefences = activateDefence(defence, activeDefences);
-  expect(updatedActiveDefences).toContain(defence);
+  const defences = [{ id: defence, isActive: false }];
+  const updatedActiveDefences = activateDefence(defence, defences);
+  expect(updatedActiveDefences).toContainEqual({ id: defence, isActive: true });
 });
 
 test("GIVEN defence is active WHEN activating defence THEN defence is active", () => {
   const defence = "SYSTEM_ROLE";
-  const activeDefences = [defence];
-  const updatedActiveDefences = activateDefence(defence, activeDefences);
-  expect(updatedActiveDefences).toContain(defence);
+  const defences = [{ id: defence, isActive: true }];
+  const updatedActiveDefences = activateDefence(defence, defences);
+  expect(updatedActiveDefences).toContainEqual({ id: defence, isActive: true });
 });
 
 test("GIVEN defence is active WHEN deactivating defence THEN defence is not active", () => {
   const defence = "SYSTEM_ROLE";
-  const activeDefences = [defence];
-  const updatedActiveDefences = deactivateDefence(defence, activeDefences);
+  const defences = [{ id: defence, isActive: true }];
+  const updatedActiveDefences = deactivateDefence(defence, defences);
   expect(updatedActiveDefences).not.toContain(defence);
 });
 
 test("GIVEN defence is not active WHEN deactivating defence THEN defence is not active", () => {
   const defence = "SYSTEM_ROLE";
-  const activeDefences = [];
-  const updatedActiveDefences = deactivateDefence(defence, activeDefences);
+  const defences = [{ id: defence, isActive: false }];
+  const updatedActiveDefences = deactivateDefence(defence, defences);
   expect(updatedActiveDefences).not.toContain(defence);
 });
 
 test("GIVEN defence is active WHEN checking if defence is active THEN return true", () => {
   const defence = "SYSTEM_ROLE";
-  const activeDefences = [defence];
-  const isActive = isDefenceActive(defence, activeDefences);
+  const defences = [{ id: defence, isActive: true }];
+  const isActive = isDefenceActive(defence, defences);
   expect(isActive).toBe(true);
 });
 
 test("GIVEN defence is not active WHEN checking if defence is active THEN return false", () => {
   const defence = "SYSTEM_ROLE";
-  const activeDefences = [];
-  const isActive = isDefenceActive(defence, activeDefences);
+  const defences = [{ id: defence, isActive: false }];
+  const isActive = isDefenceActive(defence, defences);
   expect(isActive).toBe(false);
 });
 
 test("GIVEN no defences are active WHEN transforming message THEN message is not transformed", () => {
   const message = "Hello";
-  const activeDefences = [];
-  const transformedMessage = transformMessage(message, activeDefences);
+  const defences = [];
+  const transformedMessage = transformMessage(message, defences);
   expect(transformedMessage).toBe(message);
 });
 
 test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming message THEN message is transformed", () => {
   const message = "Hello";
-  const activeDefences = ["RANDOM_SEQUENCE_ENCLOSURE"];
+  const defences = [{ id: "RANDOM_SEQUENCE_ENCLOSURE", isActive: true }];
   // set RSE prompt
   process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT = "RSE_PRE_PROMPT ";
   // set RSE length
@@ -74,7 +75,7 @@ test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
       process.env.RANDOM_SEQ_ENCLOSURE_LENGTH +
       "})\\. $"
   );
-  const transformedMessage = transformMessage(message, activeDefences);
+  const transformedMessage = transformMessage(message, defences);
   // check the transformed message matches the regex
   const res = transformedMessage.match(regex);
   // expect there to be a match
@@ -89,21 +90,16 @@ test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
 
 test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed", () => {
   const message = "Hello";
-  const activeDefences = ["XML_TAGGING"];
-  const transformedMessage = transformMessage(message, activeDefences);
+  const defences = [{ id: "XML_TAGGING", isActive: true }];
+  const transformedMessage = transformMessage(message, defences);
   // expect the message to be surrounded by XML tags
   expect(transformedMessage).toBe("<user_input>" + message + "</user_input>");
 });
 
 test("GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered", () => {
-  // set max message length
-  process.env.MAX_MESSAGE_LENGTH = 280;
   const message = "Hello";
-  const activeDefences = [];
-  const { reply, defenceInfo } = detectTriggeredDefences(
-    message,
-    activeDefences
-  );
+  const defences = [];
+  const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
   expect(reply).toBe(null);
   expect(defenceInfo.blocked).toBe(false);
   expect(defenceInfo.triggeredDefences.length).toBe(0);
@@ -114,14 +110,20 @@ test(
     "WHEN detecting triggered defences " +
     "THEN CHARACTER_LIMIT defence is triggered AND the message is blocked",
   () => {
-    // set max message length
-    process.env.MAX_MESSAGE_LENGTH = 3;
     const message = "Hello";
-    const activeDefences = ["CHARACTER_LIMIT"];
-    const { reply, defenceInfo } = detectTriggeredDefences(
-      message,
-      activeDefences
-    );
+    const defences = [
+      {
+        id: "CHARACTER_LIMIT",
+        isActive: true,
+        configuration: [
+          {
+            id: "maxMessageLength",
+            value: 3,
+          },
+        ],
+      },
+    ];
+    const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
     expect(reply).toBe("Message is too long");
     expect(defenceInfo.blocked).toBe(true);
     expect(defenceInfo.triggeredDefences).toContain("CHARACTER_LIMIT");
@@ -133,14 +135,20 @@ test(
     "WHEN detecting triggered defences " +
     "THEN CHARACTER_LIMIT defence is not triggered AND the message is not blocked",
   () => {
-    // set max message length
-    process.env.MAX_MESSAGE_LENGTH = 280;
     const message = "Hello";
-    const activeDefences = ["CHARACTER_LIMIT"];
-    const { reply, defenceInfo } = detectTriggeredDefences(
-      message,
-      activeDefences
-    );
+    const defences = [
+      {
+        id: "CHARACTER_LIMIT",
+        isActive: true,
+        configuration: [
+          {
+            id: "maxMessageLength",
+            value: 280,
+          },
+        ],
+      },
+    ];
+    const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
     expect(reply).toBe(null);
     expect(defenceInfo.blocked).toBe(false);
     expect(defenceInfo.triggeredDefences.length).toBe(0);
@@ -152,14 +160,20 @@ test(
     "WHEN detecting triggered defences " +
     "THEN CHARACTER_LIMIT defence is triggered AND the message is not blocked",
   () => {
-    // set max message length
-    process.env.MAX_MESSAGE_LENGTH = 3;
     const message = "Hello";
-    const activeDefences = [];
-    const { reply, defenceInfo } = detectTriggeredDefences(
-      message,
-      activeDefences
-    );
+    const defences = [
+      {
+        id: "CHARACTER_LIMIT",
+        isActive: false,
+        configuration: [
+          {
+            id: "maxMessageLength",
+            value: 3,
+          },
+        ],
+      },
+    ];
+    const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
     expect(reply).toBe(null);
     expect(defenceInfo.blocked).toBe(false);
     expect(defenceInfo.triggeredDefences).toContain("CHARACTER_LIMIT");
@@ -168,12 +182,27 @@ test(
 
 test("GIVEN message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is triggered", () => {
   const message = "<Hello>";
-  const activeDefences = [];
-  const { reply, defenceInfo } = detectTriggeredDefences(
-    message,
-    activeDefences
-  );
+  const defences = [];
+  const { reply, defenceInfo } = detectTriggeredDefences(message, defences);
   expect(reply).toBe(null);
   expect(defenceInfo.blocked).toBe(false);
   expect(defenceInfo.triggeredDefences).toContain("XML_TAGGING");
+});
+
+test("GIVEN setting max message length WHEN configuring defence THEN defence is configured", () => {
+  const defence = "CHARACTER_LIMIT";
+  const defences = [
+    {
+      id: defence,
+      isActive: true,
+      configuration: [{ id: "maxMessageLength", value: 20 }],
+    },
+  ];
+  const configuration = [{ id: "maxMessageLength", value: 10 }];
+  const updatedDefences = configureDefence(defence, defences, configuration);
+  expect(updatedDefences).toContainEqual({
+    id: defence,
+    isActive: true,
+    configuration: configuration,
+  });
 });

@@ -2,7 +2,7 @@ import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
 
-async function getActiveDefences() {
+async function getDefences() {
   const response = await sendRequest(PATH + "status", "GET");
   const data = await response.json();
   return data;
@@ -30,4 +30,16 @@ async function deactivateDefence(id) {
   return response.status === 200;
 }
 
-export { getActiveDefences, activateDefence, deactivateDefence };
+async function configureDefence(id, configuration) {
+  const response = await sendRequest(
+    PATH + "configure",
+    "POST",
+    {
+      "Content-Type": "application/json",
+    },
+    JSON.stringify({ defenceId: id, configuration: configuration })
+  );
+  return response.status === 200;
+}
+
+export { getDefences, activateDefence, deactivateDefence, configureDefence };
