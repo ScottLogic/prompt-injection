@@ -5,6 +5,7 @@ const cors = require("cors");
 const session = require("express-session");
 const { initOpenAi } = require("./openai");
 const { initQAModel } = require("./documents");
+const { getInitialDefences } = require("./defence");
 
 dotenv.config();
 
@@ -15,14 +16,20 @@ const port = process.env.PORT || 3001;
 const app = express();
 // for parsing application/json
 app.use(express.json());
+
 // use session
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+const sess = {
+  secret: process.env.SESSION_SECRET,
+  name: "prompt-injection.sid",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {},
+};
+// serve secure cookies in production
+if (app.get("env") === "production") {
+  sess.cookie.secure = true;
+}
+app.use(session(sess));
 
 // initialise openai
 initOpenAi();
