@@ -5,7 +5,6 @@ const cors = require("cors");
 const session = require("express-session");
 const { initOpenAi } = require("./openai");
 const { initQAModel } = require("./documents");
-const { getInitialDefences } = require("./defence");
 
 dotenv.config();
 
