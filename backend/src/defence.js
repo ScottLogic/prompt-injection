@@ -11,7 +11,14 @@ function getInitialDefences() {
     },
     { id: "RANDOM_SEQUENCE_ENCLOSURE" },
     { id: "XML_TAGGING" },
-    { id: "EMAIL_WHITELIST" },
+    { id: "EMAIL_WHITELIST", 
+      configuration: [
+        {
+          id: "whitelist", 
+          value: process.env.EMAIL_WHITELIST,
+        },
+       ]
+      },
     { id: "SYSTEM_ROLE" },
   ];
   // make all defences inactive by default and return
@@ -44,6 +51,13 @@ function getMaxMessageLength(defences) {
     .find((defence) => defence.id === "CHARACTER_LIMIT")
     ?.configuration?.find((config) => config.id === "maxMessageLength")?.value;
   return maxMessageLength || 280;
+}
+
+function getEmailWhitelistVar(defences) {
+  const whitelist = defences
+    .find((defence) => defence.id === "EMAIL_WHITELIST")
+    ?.configuration?.find((config) => config.id === "whitelist")?.value;
+  return whitelist || "" ;
 }
 
 function isDefenceActive(id, defences) {
@@ -168,4 +182,5 @@ module.exports = {
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,
+  getEmailWhitelistVar,
 };

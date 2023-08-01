@@ -298,7 +298,7 @@ test(
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      defences: [{ id: "EMAIL_WHITELIST", isActive: false }],
+      defences: [{ id: "EMAIL_WHITELIST", isActive: false, configutation: [{ id: "whitelist", value: ""}]}],
       chatHistory: [],
       sentEmails: [],
     };
@@ -370,7 +370,7 @@ test(
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      defences: [{ id: "EMAIL_WHITELIST", isActive: true }],
+      defences: [{ id: "EMAIL_WHITELIST", isActive: true, configutation: [{ id: "whitelist", value: ""}] }],
       chatHistory: [],
       sentEmails: [],
     };
@@ -439,7 +439,7 @@ test(
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      defences: ["EMAIL_WHITELIST"],
+      defences: [{ id: "EMAIL_WHITELIST", isActive: true, configuration: [{ id: "whitelist", value: "bob@example.com"}] }],
       chatHistory: [],
       sentEmails: [],
     };
@@ -510,7 +510,7 @@ test(
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      defences: [{ id: "EMAIL_WHITELIST", isActive: false }],
+      defences: [{ id: "EMAIL_WHITELIST", isActive: false, configuration: [{ id: "whitelist", value: "bob@example.com" }] }],
       chatHistory: [],
       sentEmails: [],
     };
