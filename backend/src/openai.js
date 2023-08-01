@@ -37,21 +37,21 @@ const chatGptFunctions = [
     parameters: {
       type: "object",
       properties: {}
-      }
-    },
-    {
-      name: "askQuestion",
-      description: "Ask a question about the documents with company information. ",
-      parameters: {
-        type: "object",
-        properties: {
-          question: {
-            type: "string",
-            description: "The question asked about the documents",
-          }
+    }
+  },
+  {
+    name: "askQuestion",
+    description: "Ask a question about the documents with company information. ",
+    parameters: {
+      type: "object",
+      properties: {
+        question: {
+          type: "string",
+          description: "The question asked about the documents",
         }
       }
-    },
+    }
+  },
 ];
 
 function initOpenAi() {
@@ -104,12 +104,12 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-      
+
     } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist(isDefenceActive("EMAIL_WHITELIST", session.activeDefences));
     }
 
-    if (functionName === "askQuestion"){
+    if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
       response = await queryDocuments(params.question);
