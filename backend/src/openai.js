@@ -33,7 +33,7 @@ const chatGptFunctions = [
   {
     name: "getEmailWhitelist",
     description:
-      "user asks who is on the email whitelist and the system replies with the list of emails. if the email whitelist defence is not active then user should be able to email anyone. ",
+      "user asks who is on the email whitelist and the system replies with the list of emails. ",
     parameters: {
       type: "object",
       properties: {}
@@ -41,7 +41,7 @@ const chatGptFunctions = [
     },
     {
       name: "askQuestion",
-      description: "Ask a question about the documents",
+      description: "Ask a question about the documents with company information. ",
       parameters: {
         type: "object",
         properties: {
@@ -168,6 +168,8 @@ async function chatGptSendMessage(message, session) {
   let reply = await chatGptChatCompletion(session);
   // check if GPT wanted to call a function
   while (reply.function_call) {
+    session.chatHistory.push(reply);
+
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
       reply.function_call,
