@@ -28,7 +28,6 @@ function App() {
 
         <div className="side-bar-header">openai api key</div>
         <ApiKeyBox />
-
       </div>
       <div id="centre-area">
         <Header />

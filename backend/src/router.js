@@ -134,7 +134,6 @@ router.post("/openai/apiKey", async (req, res, next) => {
 
 // Get API key
 router.get("/openai/apiKey", (req, res, next) => {
-  console.log("getting api key", req.session.apiKey);
   res.send(req.session.apiKey);
 });
 

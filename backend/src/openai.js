@@ -78,8 +78,9 @@ async function setOpenAiApiKey(session, apiKey) {
     return true;
   } else {
     // set to empty in case it was previously set
+    console.debug("Invalid API key. Cannot initialise OpenAI models");
     session.apiKey = "";
-    console.debug("Invalid API key. Not initialising OpenAI or QA model.");
+    openai = null;
     return false;
   }
 }

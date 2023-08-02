@@ -23,13 +23,13 @@ function ApiKeyBox(this: any) {
   ) => {
     if (event.key === "Enter" && event.target !== null) {
       const apiKey = event.currentTarget.value;
-      console.log("Setting api key: ", apiKey);
-
       const response: OpenAIAPIKeyValid = await setOpenAIApiKey(apiKey);
       if (response.isValid) {
+        console.log("API key validated and set");
         setIsValidated(true);
         setIsInvalidated(false);
       } else {
+        console.log("Invalid API key");
         setIsValidated(false);
         setIsInvalidated(true);
       }
@@ -39,15 +39,16 @@ function ApiKeyBox(this: any) {
 
   // get the api ke from the backend on refresh
   useEffect(() => {
-    const fetchApiKey = async () => {
+    const getApiKey = async () => {
       const storedApiKey = await getOpenAIApiKey();
       if (storedApiKey) {
+        console.log("Retrieved previous set api key");
         setApiKey(storedApiKey);
         // if the key is stored from the backend it is valid
         setIsValidated(true);
       }
     };
-    fetchApiKey();
+    getApiKey();
   }, []);
 
   return (
