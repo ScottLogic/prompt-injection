@@ -4,6 +4,7 @@
   border-style: solid;
   border-width: 1px;
   padding: 6px;
+  margin: 1px;
   margin-bottom: 8px;
   cursor: default;
 }
@@ -11,6 +12,8 @@
 .strategy-mechanism:hover {
   border-color: #444;
   border-width: 2px;
+  margin: 0px;
+  margin-bottom: 7px;
 }
 
 .strategy-mechanism-header {
