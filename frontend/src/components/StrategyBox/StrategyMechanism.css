@@ -1,0 +1,46 @@
+.strategy-mechanism {
+  border-color: #ccc;
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 1px;
+  padding: 6px;
+  margin-bottom: 8px;
+  cursor: default;
+}
+
+.strategy-mechanism:hover {
+  border-color: #444;
+  border-width: 2px;
+}
+
+.strategy-mechanism-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.strategy-mechanism-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: #ccc;
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 1px;
+  height: 20px;
+  width: 20px;
+  background-color: #ddd;
+  color: #444;
+}
+
+.strategy-mechanism-info span {
+  position: relative;
+  bottom: 1px;
+}
+
+.strategy-mechanism-info-box {
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px 0 0 0;
+  font-size: 14px;
+  margin-top: 4px;
+}

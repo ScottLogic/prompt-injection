@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./DefenceBox.css";
+import "../StrategyBox/StrategyBox.css";
 import DefenceMechanism from "./DefenceMechanism";
 import {
   getActiveDefences,
@@ -74,7 +74,7 @@ function DefenceBox(props) {
   };
 
   return (
-    <div id="defence-box">
+    <div id="strategy-box">
       {defences.map((defence, index) => {
         return (
           <DefenceMechanism

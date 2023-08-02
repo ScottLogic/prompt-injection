@@ -22,6 +22,7 @@ function App() {
       <div className="side-bar">
         <div className="side-bar-header">defence mechanisms</div>
         <DefenceBox key={defenceBoxKey} triggeredDefences={triggeredDefences} />
+        <div className="side-bar-header">attack tactics</div>
       </div>
       <div id="centre-area">
         <Header />

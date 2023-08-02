@@ -1,4 +1,5 @@
 import "./DefenceMechanism.css";
+import "../StrategyBox/StrategyMechanism.css";
 import React from "react";
 
 function DefenceMechanism(props) {
@@ -12,8 +13,8 @@ function DefenceMechanism(props) {
       <div
         className={
           props.isActive
-            ? "defence-mechanism defence-active"
-            : "defence-mechanism"
+            ? "strategy-mechanism defence-active"
+            : "strategy-mechanism"
         }
         style={
           props.isTriggered
@@ -42,10 +43,10 @@ function DefenceMechanism(props) {
             : props.setDefenceActive(props.id);
         }}
       >
-        <div className="defence-mechanism-header">
+        <div className="strategy-mechanism-header">
           <span className="defence-mechanism-name">{props.name}</span>
           <span
-            className="defence-mechanism-info"
+            className="strategy-mechanism-info"
             onMouseOver={() => {
               setIsInfoBoxVisible(true);
             }}
@@ -57,7 +58,7 @@ function DefenceMechanism(props) {
           </span>
         </div>
         {isInfoBoxVisible ? (
-          <div className="defence-mechanism-info-box">{props.info}</div>
+          <div className="strategy-mechanism-info-box">{props.info}</div>
         ) : null}
       </div>
     </span>
