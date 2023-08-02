@@ -44,7 +44,7 @@ function DefenceMechanism(props) {
         }}
       >
         <div className="strategy-mechanism-header">
-          <span className="defence-mechanism-name">{props.name}</span>
+          <span>{props.name}</span>
           <span
             className="strategy-mechanism-info"
             onMouseOver={() => {
