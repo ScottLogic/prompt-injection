@@ -24,12 +24,6 @@ app.use(
   })
 );
 
-// initialise openai
-initOpenAi();
-
-// initialise question answering llm
-initQAModel();
-
 app.use(
   cors({
     credentials: true,
@@ -38,6 +32,7 @@ app.use(
 );
 
 app.use(function (req, res, next) {
+
   // initialise session variables
   if (!req.session.chatHistory) {
     req.session.chatHistory = [];

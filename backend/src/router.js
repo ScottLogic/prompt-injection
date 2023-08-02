@@ -90,12 +90,12 @@ router.post("/openai/chat", async (req, res, next) => {
           ...openAiReply.defenceInfo.triggeredDefences,
         ];
       } catch (error) {
-        console.log(error);
         if (error.response.status == 401){
           res.statusCode = 401;
           reply = "Please enter a valid OpenAI API key to chat to me!"
         } else {
           res.statusCode = 500;
+          console.log(error);
           reply = "Failed to get chatGPT reply";
         }
       }

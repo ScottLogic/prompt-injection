@@ -38,7 +38,6 @@ const openAiSendMessage = async (message: string): Promise<OpenAIResponse> => {
 };
 
 const setOpenAIApiKey = async (apiKey: string): Promise<boolean> => {
-  console.log("setOpenAIApiKey called");
   const response = await sendRequest(
     PATH + "apiKey",
     "POST",

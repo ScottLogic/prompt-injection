@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const { isDefenceActive } = require("./defence");
 const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
-const { queryDocuments } = require("./documents");
+const { initQAModel, queryDocuments } = require("./documents");
 
 // OpenAI configuration
 let configuration = null;
@@ -37,41 +37,57 @@ const chatGptFunctions = [
     parameters: {
       type: "object",
       properties: {}
-      }
-    },
-    {
-      name: "askQuestion",
-      description: "Ask a question about the documents",
-      parameters: {
-        type: "object",
-        properties: {
-          question: {
-            type: "string",
-            description: "The question asked about the documents",
-          }
+    }
+  },
+  {
+    name: "askQuestion",
+    description: "Ask a question about the documents",
+    parameters: {
+      type: "object",
+      properties: {
+        question: {
+          type: "string",
+          description: "The question asked about the documents",
         }
       }
-    },
+    }
+  },
 ];
 
-function initOpenAi() {//#endregion
-
-  configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  openai = new OpenAIApi(configuration);
+// test the api key works with the model
+async function validateApiKey(apiKey) {
+  try {
+    const testOpenAI = new OpenAIApi(new Configuration({ apiKey: apiKey }));
+    const response = await testOpenAI.createChatCompletion({
+      model: "gpt-4",
+      messages: [{ role: "user", content: "this is a test prompt" }],
+      });
+    return true; 
+  }
+  catch (error) {
+    return false; 
+  }
 }
 
-
-function setOpenAiApiKey(session){
-  const apiKey = session.apiKey;
-  console.debug("setting openai api key = ", apiKey);
-  configuration = new Configuration({
-    apiKey: apiKey,
-  });
-  openai = new OpenAIApi(configuration);
+async function setOpenAiApiKey(session) {
+  // reinitialise all models with the new key
+  // check if the key is valid
+  if (await validateApiKey(session.apiKey)){
+    console.debug("Setting API key and initialising models");
+    initOpenAi(session);
+    initQAModel(session);
+  } else {
+    console.debug("Invalid API key. Not initialising OpenAI or QA model.");
+  }
 }
 
+function initOpenAi(session) {
+  configuration = new Configuration({
+    apiKey: session.apiKey,
+  });
+  openai = new OpenAIApi(configuration);
+  console.debug("OpenAI initialised");
+}
 
 // returns true if the function is in the list of functions available to ChatGPT
 function isChatGptFunction(functionName) {
@@ -116,12 +132,12 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-      
+
     } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist(isDefenceActive("EMAIL_WHITELIST", session.activeDefences));
     }
 
-    if (functionName === "askQuestion"){
+    if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
       response = await queryDocuments(params.question);
@@ -159,7 +175,8 @@ async function chatGptChatCompletion(session) {
 
   // make sure openai has been initialised
   if (!openai) {
-    throw new Error("OpenAI has not been initialised");
+    console.debug("OpenAI not initialised with api key");
+    return { role: 'assistant', content: "Please enter a valid OpenAI API key to chat to me!" }
   }
 
   chat_completion = await openai.createChatCompletion({
@@ -167,6 +184,7 @@ async function chatGptChatCompletion(session) {
     messages: session.chatHistory,
     functions: chatGptFunctions,
   });
+
   // get the reply
   return chat_completion.data.choices[0].message;
 }
@@ -202,4 +220,4 @@ async function chatGptSendMessage(message, session) {
   return { reply: reply.content, defenceInfo: defenceInfo };
 }
 
-module.exports = { initOpenAi, chatGptSendMessage, setOpenAiApiKey  };
+module.exports = { initOpenAi, chatGptSendMessage, setOpenAiApiKey };

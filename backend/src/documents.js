@@ -28,29 +28,31 @@ async function getDocuments() {
     chunkOverlap: 0,
   });
   const splitDocs = await textSplitter.splitDocuments(docs);
-
-  console.debug(
-    "Documents loaded and split. Number of chunks: " + splitDocs.length
-  );
-
   return splitDocs;
 }
 
 // QA Chain - ask the chat model a question about the documents
-async function initQAModel() {
+async function initQAModel(session) {
+
+  if (!session.apiKey){
+    console.debug("No apiKey set to initialise QA model.");
+    return; 
+  }
+
   // get the documents
   const docs = await getDocuments();
 
   // embed and store the splits
-  const embeddings = new OpenAIEmbeddings();
+  const embeddings = new OpenAIEmbeddings({openAIApiKey: session.apiKey});
   const vectorStore = await MemoryVectorStore.fromDocuments(
     docs,
-    new OpenAIEmbeddings()
+    embeddings,
   );
   // initialise model
   const model = new ChatOpenAI({
     modelName: "gpt-4",
     stream: true,
+    openAIApiKey: session.apiKey,
   });
 
   // prompt template for question and answering
@@ -73,7 +75,7 @@ async function initQAModel() {
   chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
     prompt: prompt,
   });
-  console.debug("QA Retrieval chain initialised.");
+  console.debug("QA Retrieval chain initialised");
 }
 
 // ask the question and return models answer
