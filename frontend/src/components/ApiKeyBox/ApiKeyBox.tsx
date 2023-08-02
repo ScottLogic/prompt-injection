@@ -1,42 +1,78 @@
 // ApiKeyBox.tsx
 
-import React, { useState, useEffect } from 'react';
-import { setOpenAIApiKey } from "../../service/openaiService";
+import React, { useState, useEffect } from "react";
+import {
+  setOpenAIApiKey,
+  getOpenAIApiKey,
+  OpenAIAPIKeyValid,
+} from "../../service/openaiService";
 import "./ApiKeyBox.css";
 
-function ApiKeyBox(
-  this: any,
-) {
+function ApiKeyBox(this: any) {
+  const [apiKey, setApiKey] = useState<string>("");
+  const [isValidated, setIsValidated] = useState<boolean>(false);
+  const [isInvalidated, setIsInvalidated] = useState<boolean>(false);
 
-  const [apiKey, setKey] = useState<string>("");
+  const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const apiKey = event.target.value;
+    setApiKey(apiKey);
+  };
 
-  const handleApiKeyChange = async (
+  const handleApiKeySubmit = async (
     event: React.KeyboardEvent<HTMLInputElement>
   ) => {
-      if (event.key === "Enter" && event.target !== null) {
+    if (event.key === "Enter" && event.target !== null) {
       const apiKey = event.currentTarget.value;
       console.log("Setting api key: ", apiKey);
-      setKey(apiKey);
-      setOpenAIApiKey(apiKey);
+
+      const response: OpenAIAPIKeyValid = await setOpenAIApiKey(apiKey);
+      if (response.isValid) {
+        setIsValidated(true);
+        setIsInvalidated(false);
+      } else {
+        setIsValidated(false);
+        setIsInvalidated(true);
+      }
+      setApiKey(apiKey);
     }
   };
 
-  // useEffect(() => {
-  //   // set the session variable
-  //   setOpenAIApiKey(apiKey);
+  // get the api ke from the backend on refresh
+  useEffect(() => {
+    const fetchApiKey = async () => {
+      const storedApiKey = await getOpenAIApiKey();
+      if (storedApiKey) {
+        setApiKey(storedApiKey);
+        // if the key is stored from the backend it is valid
+        setIsValidated(true);
+      }
+    };
+    fetchApiKey();
+  }, []);
 
-  // }, []);
-
-
-return (
-  <div id="api-key-box">
-    <input id="api-key-input"
-      type="text"
-      placeholder="enter your API key here.."
-      onKeyUp={handleApiKeyChange.bind(this)}
-    />
-  </div>
-);
-};
+  return (
+    <div id="api-key-box">
+      <input
+        id="api-key-input"
+        className={`api-key-input ${isValidated ? "validated" : ""} ${
+          isInvalidated ? "invalidated" : ""
+        }`}
+        type="text"
+        value={apiKey}
+        placeholder="enter your API key here.."
+        onChange={handleApiKeyChange}
+        onKeyUp={handleApiKeySubmit.bind(this)}
+      />
+      <div className="status-text">
+        {isValidated &&
+          !isInvalidated &&
+          "API key validated and OpenAI model ready to chat!"}
+        {!isValidated &&
+          isInvalidated &&
+          "Invalid API key. Check your api keys at https://platform.openai.com/account/api-keys"}
+      </div>
+    </div>
+  );
+}
 
 export default ApiKeyBox;

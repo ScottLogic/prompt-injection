@@ -5,4 +5,22 @@
 
 #api-key-input {
   width: 90%;
+  padding: 10px;
 }
+
+.status-text {
+  position: relative;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.invalidated {
+  background-color: #fdd;
+}
+
+.validated {
+  background-color: #efe;
+}
+
+

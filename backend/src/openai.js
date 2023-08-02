@@ -36,8 +36,8 @@ const chatGptFunctions = [
       "user asks who is on the email whitelist and the system replies with the list of emails. if the email whitelist defence is not active then user should be able to email anyone. ",
     parameters: {
       type: "object",
-      properties: {}
-    }
+      properties: {},
+    },
   },
   {
     name: "askQuestion",
@@ -48,9 +48,9 @@ const chatGptFunctions = [
         question: {
           type: "string",
           description: "The question asked about the documents",
-        }
-      }
-    }
+        },
+      },
+    },
   },
 ];
 
@@ -61,23 +61,26 @@ async function validateApiKey(apiKey) {
     const response = await testOpenAI.createChatCompletion({
       model: "gpt-4",
       messages: [{ role: "user", content: "this is a test prompt" }],
-      });
-    return true; 
-  }
-  catch (error) {
-    return false; 
+    });
+    return true;
+  } catch (error) {
+    return false;
   }
 }
 
-async function setOpenAiApiKey(session) {
-  // reinitialise all models with the new key
-  // check if the key is valid
-  if (await validateApiKey(session.apiKey)){
+async function setOpenAiApiKey(session, apiKey) {
+  // initialise all models with the new key
+  if (await validateApiKey(apiKey)) {
     console.debug("Setting API key and initialising models");
+    session.apiKey = apiKey;
     initOpenAi(session);
     initQAModel(session);
+    return true;
   } else {
+    // set to empty in case it was previously set
+    session.apiKey = "";
     console.debug("Invalid API key. Not initialising OpenAI or QA model.");
+    return false;
   }
 }
 
@@ -132,9 +135,10 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-
     } else if (functionName == "getEmailWhitelist") {
-      response = getEmailWhitelist(isDefenceActive("EMAIL_WHITELIST", session.activeDefences));
+      response = getEmailWhitelist(
+        isDefenceActive("EMAIL_WHITELIST", session.activeDefences)
+      );
     }
 
     if (functionName === "askQuestion") {
@@ -176,7 +180,10 @@ async function chatGptChatCompletion(session) {
   // make sure openai has been initialised
   if (!openai) {
     console.debug("OpenAI not initialised with api key");
-    return { role: 'assistant', content: "Please enter a valid OpenAI API key to chat to me!" }
+    return {
+      role: "assistant",
+      content: "Please enter a valid OpenAI API key to chat to me!",
+    };
   }
 
   chat_completion = await openai.createChatCompletion({

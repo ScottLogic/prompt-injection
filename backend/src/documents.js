@@ -33,21 +33,17 @@ async function getDocuments() {
 
 // QA Chain - ask the chat model a question about the documents
 async function initQAModel(session) {
-
-  if (!session.apiKey){
+  if (!session.apiKey) {
     console.debug("No apiKey set to initialise QA model.");
-    return; 
+    return;
   }
 
   // get the documents
   const docs = await getDocuments();
 
   // embed and store the splits
-  const embeddings = new OpenAIEmbeddings({openAIApiKey: session.apiKey});
-  const vectorStore = await MemoryVectorStore.fromDocuments(
-    docs,
-    embeddings,
-  );
+  const embeddings = new OpenAIEmbeddings({ openAIApiKey: session.apiKey });
+  const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
   // initialise model
   const model = new ChatOpenAI({
     modelName: "gpt-4",

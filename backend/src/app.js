@@ -3,9 +3,6 @@ const router = require("./router");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const session = require("express-session");
-const { initOpenAi } = require("./openai");
-const { initQAModel } = require("./documents");
-
 dotenv.config();
 
 // by default runs on port 3001
