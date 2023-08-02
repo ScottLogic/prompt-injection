@@ -54,12 +54,24 @@ const chatGptFunctions = [
     },
 ];
 
-function initOpenAi() {
+function initOpenAi() {//#endregion
+
   configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   });
   openai = new OpenAIApi(configuration);
 }
+
+
+function setOpenAiApiKey(session){
+  const apiKey = session.apiKey;
+  console.debug("setting openai api key = ", apiKey);
+  configuration = new Configuration({
+    apiKey: apiKey,
+  });
+  openai = new OpenAIApi(configuration);
+}
+
 
 // returns true if the function is in the list of functions available to ChatGPT
 function isChatGptFunction(functionName) {
@@ -190,4 +202,4 @@ async function chatGptSendMessage(message, session) {
   return { reply: reply.content, defenceInfo: defenceInfo };
 }
 
-module.exports = { initOpenAi, chatGptSendMessage };
+module.exports = { initOpenAi, chatGptSendMessage, setOpenAiApiKey  };

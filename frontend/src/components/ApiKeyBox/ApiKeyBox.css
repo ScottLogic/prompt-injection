@@ -1,0 +1,8 @@
+#api-key-box {
+  padding: 16px 32px;
+  position: relative;
+}
+
+#api-key-input {
+  width: 90%;
+}

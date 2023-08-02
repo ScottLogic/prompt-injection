@@ -6,7 +6,7 @@ const {
   transformMessage,
   detectTriggeredDefences,
 } = require("./defence");
-const { chatGptSendMessage } = require("./openai");
+const { chatGptSendMessage, setOpenAiApiKey  } = require("./openai");
 const router = express.Router();
 
 // Activate a defence
@@ -91,8 +91,13 @@ router.post("/openai/chat", async (req, res, next) => {
         ];
       } catch (error) {
         console.log(error);
-        res.statusCode = 500;
-        reply = "Failed to get chatGPT reply";
+        if (error.response.status == 401){
+          res.statusCode = 401;
+          reply = "Please enter a valid OpenAI API key to chat to me!"
+        } else {
+          res.statusCode = 500;
+          reply = "Failed to get chatGPT reply";
+        }
       }
     }
   } else {
@@ -111,6 +116,19 @@ router.post("/openai/chat", async (req, res, next) => {
 router.post("/openai/clear", (req, res, next) => {
   req.session.chatHistory = [];
   res.send("ChatGPT messages cleared");
+});
+
+// Set API key
+router.post("/openai/apiKey", (req, res, next) => {
+  const apiKey  = req.body?.apiKey;
+  if (apiKey) {
+    req.session.apiKey = apiKey;
+    setOpenAiApiKey(req.session);
+    res.send("API key set");
+  } else {
+    res.statusCode = 400;
+    res.send("Invalid API key");    
+  }
 });
 
 // Importing the router

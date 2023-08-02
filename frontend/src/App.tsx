@@ -6,6 +6,7 @@ import EmailBox from "./components/EmailBox/EmailBox";
 import Header from "./components/Header";
 import { useState } from "react";
 import { OpenAIEmail } from "./service/emailService";
+import ApiKeyBox from "./components/ApiKeyBox/ApiKeyBox";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
@@ -24,6 +25,10 @@ function App() {
       <div className="side-bar">
         <div className="side-bar-header">defence mechanisms</div>
         <DefenceBox key={defenceBoxKey} triggeredDefences={triggeredDefences} />
+
+        <div className="side-bar-header">openai api key</div>
+        <ApiKeyBox />
+
       </div>
       <div id="centre-area">
         <Header />

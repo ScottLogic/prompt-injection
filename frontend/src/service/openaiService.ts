@@ -37,5 +37,16 @@ const openAiSendMessage = async (message: string): Promise<OpenAIResponse> => {
   return data;
 };
 
-export { clearOpenAiChat, openAiSendMessage };
+const setOpenAIApiKey = async (apiKey: string): Promise<boolean> => {
+  console.log("setOpenAIApiKey called");
+  const response = await sendRequest(
+    PATH + "apiKey",
+    "POST",
+    { "Content-Type": "application/json" },
+    JSON.stringify({ apiKey })
+  );
+  return response.status === 200;
+};
+
+export { clearOpenAiChat, openAiSendMessage, setOpenAIApiKey };
 export type { OpenAIMessage, OpenAIResponse };
