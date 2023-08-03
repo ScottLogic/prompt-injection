@@ -1,9 +1,8 @@
-import React from "react";
-import SentEmail from "./SentEmail";
 import "./EmailBox.css";
-import { OpenAIEmail } from "../../service/emailService";
+import SentEmail from "./SentEmail";
+import { EmailInfo } from "../../models/email";
 
-function EmailBox({ emails }: { emails: OpenAIEmail[] }) {
+function EmailBox({ emails }: { emails: EmailInfo[] }) {
   return (
     <div id="email-box-feed">
       {[...emails].reverse().map((email, index) => {
