@@ -1,11 +1,7 @@
 // ApiKeyBox.tsx
 
 import React, { useState, useEffect } from "react";
-import {
-  setOpenAIApiKey,
-  getOpenAIApiKey,
-  OpenAIAPIKeyValid,
-} from "../../service/openaiService";
+import { setOpenAIApiKey, getOpenAIApiKey } from "../../service/openaiService";
 import "./ApiKeyBox.css";
 
 function ApiKeyBox(this: any) {
@@ -23,8 +19,9 @@ function ApiKeyBox(this: any) {
   ) => {
     if (event.key === "Enter" && event.target !== null) {
       const apiKey = event.currentTarget.value;
-      const response: OpenAIAPIKeyValid = await setOpenAIApiKey(apiKey);
-      if (response.isValid) {
+      // returns true if successful
+      const response = await setOpenAIApiKey(apiKey);
+      if (response) {
         console.log("API key validated and set");
         setIsValidated(true);
         setIsInvalidated(false);
@@ -37,7 +34,7 @@ function ApiKeyBox(this: any) {
     }
   };
 
-  // get the api ke from the backend on refresh
+  // get the api key from the backend on refresh
   useEffect(() => {
     const getApiKey = async () => {
       const storedApiKey = await getOpenAIApiKey();

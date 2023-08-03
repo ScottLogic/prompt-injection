@@ -20,10 +20,6 @@ interface OpenAIResponse {
   transformedMessage: string;
 }
 
-interface OpenAIAPIKeyValid {
-  isValid: boolean;
-}
-
 const clearOpenAiChat = async (): Promise<boolean> => {
   const response = await sendRequest(PATH + "clear", "POST");
   return response.status === 200;
@@ -41,14 +37,14 @@ const openAiSendMessage = async (message: string): Promise<OpenAIResponse> => {
   return data;
 };
 
-const setOpenAIApiKey = async (apiKey: string): Promise<OpenAIAPIKeyValid> => {
+const setOpenAIApiKey = async (apiKey: string): Promise<boolean> => {
   const response = await sendRequest(
     PATH + "apiKey",
     "POST",
     { "Content-Type": "application/json" },
     JSON.stringify({ apiKey })
   );
-  return {isValid: response.status === 200};
+  return response.status === 200;
 };
 
 const getOpenAIApiKey = async (): Promise<string> => {
@@ -58,4 +54,4 @@ const getOpenAIApiKey = async (): Promise<string> => {
 };
 
 export { clearOpenAiChat, openAiSendMessage, setOpenAIApiKey, getOpenAIApiKey };
-export type { OpenAIMessage, OpenAIResponse, OpenAIAPIKeyValid };
+export type { OpenAIMessage, OpenAIResponse };
