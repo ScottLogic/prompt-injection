@@ -11,6 +11,7 @@ class DefenceInfo {
     this.id = id;
     this.name = name;
     this.info = info;
+    // each defence starts off as inactive and not triggered
     this.isActive = false;
     this.isTriggered = false;
   }
