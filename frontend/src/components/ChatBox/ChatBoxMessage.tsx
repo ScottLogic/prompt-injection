@@ -1,8 +1,7 @@
-import React from "react";
-import { OpenAIMessage } from "../../service/openaiService";
+import { ChatMessage } from "../../service/chatService";
 import "./ChatBoxMessage.css";
 
-function ChatBoxMessage({ message }: { message: OpenAIMessage }) {
+function ChatBoxMessage({ message }: { message: ChatMessage }) {
   return (
     <div
       className={

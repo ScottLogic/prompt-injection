@@ -2,7 +2,7 @@ import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
 
-interface OpenAIDefence {
+interface DefenceInfo {
   name: string;
   id: string;
   info: string;
@@ -18,7 +18,7 @@ enum DEFENCE_TYPES {
   EMAIL_WHITELIST = "EMAIL_WHITELIST",
 }
 
-const DEFENCE_DETAILS: OpenAIDefence[] = [
+const DEFENCE_DETAILS: DefenceInfo[] = [
   {
     id: DEFENCE_TYPES.CHARACTER_LIMIT,
     name: "Character Limit",
@@ -80,4 +80,4 @@ export {
   activateDefence,
   deactivateDefence,
 };
-export type { OpenAIDefence };
+export type { DefenceInfo };

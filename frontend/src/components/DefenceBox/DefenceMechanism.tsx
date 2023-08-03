@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { OpenAIDefence } from "../../service/defenceService";
+import { DefenceInfo } from "../../service/defenceService";
 import "./DefenceMechanism.css";
 
 const ANIMATION_FLASH_TIME_SECONDS = 1;
@@ -12,7 +12,7 @@ function DefenceMechanism({
   setDefenceInactive,
 }: {
   key: number;
-  defenceDetail: OpenAIDefence;
+  defenceDetail: DefenceInfo;
   setDefenceActive: (defenceId: string) => void;
   setDefenceInactive: (defenceId: string) => void;
 }) {

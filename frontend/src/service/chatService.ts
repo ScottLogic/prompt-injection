@@ -2,30 +2,30 @@ import { sendRequest } from "./backendService";
 
 const PATH = "openai/";
 
-interface OpenAIDefenceInfo {
+interface ChatDefenceReport {
   blocked: boolean;
   triggeredDefences: string[];
 }
 
-interface OpenAIMessage {
+interface ChatMessage {
   isUser: boolean;
-  defenceInfo?: OpenAIDefenceInfo;
+  defenceInfo?: ChatDefenceReport;
   message: string;
   isOriginalMessage: boolean;
 }
 
-interface OpenAIResponse {
+interface ChatResponse {
   reply: string;
-  defenceInfo: OpenAIDefenceInfo;
+  defenceInfo: ChatDefenceReport;
   transformedMessage: string;
 }
 
-const clearOpenAiChat = async (): Promise<boolean> => {
+const clearChat = async (): Promise<boolean> => {
   const response = await sendRequest(PATH + "clear", "POST");
   return response.status === 200;
 };
 
-const openAiSendMessage = async (message: string): Promise<OpenAIResponse> => {
+const sendMessage = async (message: string): Promise<ChatResponse> => {
   const response = await sendRequest(
     PATH + "chat",
     "POST",
@@ -37,5 +37,5 @@ const openAiSendMessage = async (message: string): Promise<OpenAIResponse> => {
   return data;
 };
 
-export { clearOpenAiChat, openAiSendMessage };
-export type { OpenAIMessage, OpenAIResponse };
+export { clearChat, sendMessage };
+export type { ChatMessage, ChatResponse };

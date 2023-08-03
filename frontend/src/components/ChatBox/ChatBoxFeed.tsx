@@ -1,9 +1,9 @@
 import React from "react";
-import { OpenAIMessage } from "../../service/openaiService";
+import { ChatMessage } from "../../service/chatService";
 import "./ChatBoxFeed.css";
 import ChatBoxMessage from "./ChatBoxMessage";
 
-function ChatBoxFeed({ messages }: { messages: OpenAIMessage[] }) {
+function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
   return (
     <div id="chat-box-feed">
       {[...messages].reverse().map((message, index) => {
