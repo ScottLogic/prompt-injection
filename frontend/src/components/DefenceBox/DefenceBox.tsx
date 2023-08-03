@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import "./DefenceBox.css";
 import DefenceMechanism from "./DefenceMechanism";
@@ -6,8 +5,8 @@ import {
   getActiveDefences,
   activateDefence,
   deactivateDefence,
-  DEFENCE_DETAILS,
 } from "../../service/defenceService";
+import { DEFENCE_DETAILS } from "../../Defences";
 
 function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
   // list of defence mechanisms
