@@ -1,6 +1,5 @@
-import React from "react";
-import { EmailInfo } from "../../service/emailService";
 import "./SentEmail.css";
+import { EmailInfo } from "../../models/email";
 
 function SentEmail({
   emailDetails,

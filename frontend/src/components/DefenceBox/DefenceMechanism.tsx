@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DefenceInfo } from "../../Defences";
+import { DefenceInfo } from "../../models/defence";
 import "./DefenceMechanism.css";
 
 const ANIMATION_FLASH_TIME_SECONDS = 1;

@@ -1,4 +1,4 @@
-import { ChatMessage } from "../../service/chatService";
+import { ChatMessage } from "../../models/chat";
 import "./ChatBoxMessage.css";
 
 function ChatBoxMessage({ message }: { message: ChatMessage }) {

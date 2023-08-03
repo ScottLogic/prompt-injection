@@ -1,12 +1,7 @@
 import { sendRequest } from "./backendService";
+import { EmailInfo } from "../models/email";
 
 const PATH = "email/";
-
-interface EmailInfo {
-  address: string;
-  subject: string;
-  content: string;
-}
 
 const clearEmails = async (): Promise<boolean> => {
   const response = await sendRequest(PATH + "clear", "POST");
@@ -20,4 +15,3 @@ const getSentEmails = async (): Promise<EmailInfo[]> => {
 };
 
 export { clearEmails, getSentEmails };
-export type { EmailInfo };

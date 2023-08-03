@@ -1,11 +1,10 @@
-import React from "react";
 import "./App.css";
 import ChatBox from "./components/ChatBox/ChatBox";
 import DefenceBox from "./components/DefenceBox/DefenceBox";
 import EmailBox from "./components/EmailBox/EmailBox";
 import Header from "./components/Header";
 import { useState } from "react";
-import { EmailInfo } from "./service/emailService";
+import { EmailInfo } from "./models/email";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);

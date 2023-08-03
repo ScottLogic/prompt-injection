@@ -1,6 +1,5 @@
-import React from "react";
-import { ChatMessage } from "../../service/chatService";
 import "./ChatBoxFeed.css";
+import { ChatMessage } from "../../models/chat";
 import ChatBoxMessage from "./ChatBoxMessage";
 
 function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {

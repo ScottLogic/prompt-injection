@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
-import {
-  ChatMessage,
-  ChatResponse,
-  clearChat,
-  sendMessage,
-} from "../../service/chatService";
-import { EmailInfo, getSentEmails } from "../../service/emailService";
+import { clearChat, sendMessage } from "../../service/chatService";
+import { getSentEmails } from "../../service/emailService";
+import { ChatMessage, ChatResponse } from "../../models/chat";
+import { EmailInfo } from "../../models/email";
 
 function ChatBox(
   this: any,

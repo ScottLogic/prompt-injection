@@ -1,24 +1,7 @@
 import { sendRequest } from "./backendService";
+import { ChatResponse } from "../models/chat";
 
 const PATH = "openai/";
-
-interface ChatDefenceReport {
-  blocked: boolean;
-  triggeredDefences: string[];
-}
-
-interface ChatMessage {
-  isUser: boolean;
-  defenceInfo?: ChatDefenceReport;
-  message: string;
-  isOriginalMessage: boolean;
-}
-
-interface ChatResponse {
-  reply: string;
-  defenceInfo: ChatDefenceReport;
-  transformedMessage: string;
-}
 
 const clearChat = async (): Promise<boolean> => {
   const response = await sendRequest(PATH + "clear", "POST");
@@ -38,4 +21,3 @@ const sendMessage = async (message: string): Promise<ChatResponse> => {
 };
 
 export { clearChat, sendMessage };
-export type { ChatMessage, ChatResponse };

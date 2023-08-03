@@ -1,7 +1,6 @@
-import React from "react";
-import SentEmail from "./SentEmail";
 import "./EmailBox.css";
-import { EmailInfo } from "../../service/emailService";
+import SentEmail from "./SentEmail";
+import { EmailInfo } from "../../models/email";
 
 function EmailBox({ emails }: { emails: EmailInfo[] }) {
   return (

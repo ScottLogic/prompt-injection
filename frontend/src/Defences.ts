@@ -1,26 +1,4 @@
-class DefenceInfo {
-  constructor(id: DEFENCE_TYPES, name: string, info: string) {
-    this.id = id;
-    this.name = name;
-    this.info = info;
-    this.isActive = false;
-    this.isTriggered = false;
-  }
-
-  id: DEFENCE_TYPES;
-  name: string;
-  info: string;
-  isActive: boolean;
-  isTriggered: boolean;
-}
-
-enum DEFENCE_TYPES {
-  CHARACTER_LIMIT = "CHARACTER_LIMIT",
-  RANDOM_SEQUENCE_ENCLOSURE = "RANDOM_SEQUENCE_ENCLOSURE",
-  SYSTEM_ROLE = "SYSTEM_ROLE",
-  XML_TAGGING = "XML_TAGGING",
-  EMAIL_WHITELIST = "EMAIL_WHITELIST",
-}
+import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 
 const DEFENCE_DETAILS: DefenceInfo[] = [
   new DefenceInfo(
@@ -51,4 +29,3 @@ const DEFENCE_DETAILS: DefenceInfo[] = [
 ];
 
 export { DEFENCE_DETAILS };
-export type { DefenceInfo };
