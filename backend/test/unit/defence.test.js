@@ -233,3 +233,29 @@ test("GIVEN a new system role has been set WHEN getting system role THEN return 
   systemRole = getSystemRole(defences);
   expect(systemRole).toBe("new system role");
 });
+
+test("GIVEN setting email whitelist WHEN configuring defence THEN defence is configured", () => {
+  const defence = "EMAIL_WHITELIST";
+  const defences = [
+    {
+      id: defence,
+      isActive: true,
+      configuration: [
+        {
+          id: "whitelist",
+          value: "someone@example.com,someone_else@example.com",
+        },
+      ],
+    },
+  ];
+
+  const configuration = [
+    { id: "whitelist", value: "someone@example.com,someone_else@example.com" },
+  ];
+  const updatedDefences = configureDefence(defence, defences, configuration);
+  expect(updatedDefences).toContainEqual({
+    id: defence,
+    isActive: true,
+    configuration: configuration,
+  });
+});

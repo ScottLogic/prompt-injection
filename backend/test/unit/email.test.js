@@ -1,5 +1,5 @@
 const {
-  getEmailWhitelist,
+  askEmailWhitelist,
   isEmailInWhitelist,
   sendEmail,
 } = require("../../src/email");
@@ -23,8 +23,19 @@ test("GIVEN email is ready to be sent WHEN email is sent THEN session list is up
 
 test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist AND whitelist defense on THEN list is returned", () => {
   process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
-  const isDefenceActive = true;
-  const whitelist = getEmailWhitelist(isDefenceActive);
+  const defences = [
+    {
+      id: "EMAIL_WHITELIST",
+      isActive: true,
+      configuration: [
+        {
+          id: "whitelist",
+          value: "bob@example.com,kate@example.com",
+        },
+      ],
+    },
+  ];
+  const whitelist = askEmailWhitelist(defences);
   expect(whitelist).toBe(
     "The whitelisted emails and domains are: " + process.env.EMAIL_WHITELIST
   );
@@ -32,23 +43,58 @@ test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist A
 
 test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist AND whitelist defense off THEN text is returned", () => {
   process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
-  const isDefenceActive = false;
-  const whitelist = getEmailWhitelist(isDefenceActive);
-  expect(whitelist).toBe(
+  const defences = [
+    {
+      id: "EMAIL_WHITELIST",
+      isActive: false,
+      configuration: [
+        {
+          id: "whitelist",
+          value: "bob@example.com,kate@example.com",
+        },
+      ],
+    },
+  ];  
+  const response = askEmailWhitelist(defences);
+  expect(response).toBe(
     "As the email whitelist defence is not active, any email address can be emailed."
   );
 });
 
 test("GIVEN email is not in whitelist WHEN checking whitelist THEN false is returned", () => {
   process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
+  const defences = [
+    {
+      id: "EMAIL_WHITELIST",
+      isActive: true,
+      configuration: [
+        {
+          id: "whitelist",
+          value: "bob@example.com,kate@example.com",
+        },
+      ],
+    },
+  ];
   const address = "malicious@user.com";
-  const isWhitelisted = isEmailInWhitelist(address);
+  const isWhitelisted = isEmailInWhitelist(address, defences);
   expect(isWhitelisted).toBe(false);
 });
 
 test("GIVEN email is in whitelist WHEN checking whitelist THEN true is returned", () => {
   process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
+  const defences = [
+    {
+      id: "EMAIL_WHITELIST",
+      isActive: true,
+      configuration: [
+        {
+          id: "whitelist",
+          value: "bob@example.com,kate@example.com",
+        },
+      ],
+    },
+  ];
   const address = "bob@example.com";
-  const isWhitelisted = isEmailInWhitelist(address);
+  const isWhitelisted = isEmailInWhitelist(address,defences);
   expect(isWhitelisted).toBe(true);
 });
