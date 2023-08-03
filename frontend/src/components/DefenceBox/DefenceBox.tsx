@@ -26,7 +26,7 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
     // fetch defences from backend
     getActiveDefences().then((activeDefences) => {
       const newDefencesDetails = defenceDetails.map((defencesDetail) => {
-        defencesDetail.isActive = activeDefences.includes(defencesDetail.type);
+        defencesDetail.isActive = activeDefences.includes(defencesDetail.id);
         return defencesDetail;
       });
       setDefenceDetails(newDefencesDetails);
@@ -39,9 +39,7 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
     console.log("updating triggered defences: ", triggeredDefences);
     // update state
     const newDefences = defenceDetails.map((defenceDetail) => {
-      defenceDetail.isTriggered = triggeredDefences.includes(
-        defenceDetail.type
-      );
+      defenceDetail.isTriggered = triggeredDefences.includes(defenceDetail.id);
       return defenceDetail;
     });
     setDefenceDetails(newDefences);
@@ -52,7 +50,7 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
     activateDefence(defenceType).then(() => {
       // update state
       const newDefenceDetails = defenceDetails.map((defenceDetail) => {
-        if (defenceDetail.type === defenceType) {
+        if (defenceDetail.id === defenceType) {
           defenceDetail.isActive = true;
           defenceDetail.isTriggered = false;
         }
@@ -66,7 +64,7 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
     deactivateDefence(defenceType).then(() => {
       // update state
       const newDefenceDetails = defenceDetails.map((defenceDetail) => {
-        if (defenceDetail.type === defenceType) {
+        if (defenceDetail.id === defenceType) {
           defenceDetail.isActive = false;
           defenceDetail.isTriggered = false;
         }

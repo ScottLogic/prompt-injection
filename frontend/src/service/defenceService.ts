@@ -4,7 +4,7 @@ const PATH = "defence/";
 
 interface OpenAIDefence {
   name: string;
-  type: string;
+  id: string;
   info: string;
   isActive?: boolean;
   isTriggered?: boolean;
@@ -18,38 +18,30 @@ enum DEFENCE_TYPES {
   EMAIL_WHITELIST = "EMAIL_WHITELIST",
 }
 
-enum DEFENCE_NAMES {
-  CHARACTER_LIMIT = "Character Limit",
-  RANDOM_SEQUENCE_ENCLOSURE = "Random Sequence Enclosure",
-  SYSTEM_ROLE = "System Role",
-  XML_TAGGING = "XML Tagging",
-  EMAIL_WHITELIST = "Email Whitelist",
-}
-
 const DEFENCE_DETAILS: OpenAIDefence[] = [
   {
-    name: DEFENCE_NAMES.CHARACTER_LIMIT,
-    type: DEFENCE_TYPES.CHARACTER_LIMIT,
+    id: DEFENCE_TYPES.CHARACTER_LIMIT,
+    name: "Character Limit",
     info: "Limit the number of characters in the user input. This is a form of prompt validation.",
   },
   {
-    name: DEFENCE_NAMES.RANDOM_SEQUENCE_ENCLOSURE,
-    type: DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
+    id: DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
+    name: "Random Sequence Enclosure",
     info: "Enclose the prompt between a random string and instruct bot to only follow enclosed instructions. This is a form of prompt validation.",
   },
   {
-    name: DEFENCE_NAMES.SYSTEM_ROLE,
-    type: DEFENCE_TYPES.SYSTEM_ROLE,
+    id: DEFENCE_TYPES.SYSTEM_ROLE,
+    name: "System Role",
     info: "Tell the chat bot to follow a specific role.",
   },
   {
-    name: DEFENCE_NAMES.XML_TAGGING,
-    type: DEFENCE_TYPES.XML_TAGGING,
+    id: DEFENCE_TYPES.XML_TAGGING,
+    name: "XML Tagging",
     info: "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input. This is a form of prompt validation.",
   },
   {
-    name: DEFENCE_NAMES.EMAIL_WHITELIST,
-    type: DEFENCE_TYPES.EMAIL_WHITELIST,
+    id: DEFENCE_TYPES.EMAIL_WHITELIST,
+    name: "Email Whitelist",
     info: "Only allow emails to those on a whitelist. They can be full email addresses, or domains in the format '*@scottlogic.com'",
   },
 ];
@@ -60,24 +52,24 @@ const getActiveDefences = async (): Promise<string[]> => {
   return data;
 };
 
-const activateDefence = async (type: string): Promise<boolean> => {
+const activateDefence = async (id: string): Promise<boolean> => {
   const response = await sendRequest(
     PATH + "activate",
     "POST",
     { "Content-Type": "application/json" },
-    JSON.stringify({ defenceId: type })
+    JSON.stringify({ defenceId: id })
   );
   return response.status === 200;
 };
 
-const deactivateDefence = async (type: string): Promise<boolean> => {
+const deactivateDefence = async (id: string): Promise<boolean> => {
   const response = await sendRequest(
     PATH + "deactivate",
     "POST",
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ defenceId: type })
+    JSON.stringify({ defenceId: id })
   );
   return response.status === 200;
 };

@@ -50,8 +50,8 @@ function DefenceMechanism({
         }
         onClick={() => {
           defenceDetail.isActive
-            ? setDefenceInactive(defenceDetail.type)
-            : setDefenceActive(defenceDetail.type);
+            ? setDefenceInactive(defenceDetail.id)
+            : setDefenceActive(defenceDetail.id);
         }}
       >
         <div className="defence-mechanism-header">
