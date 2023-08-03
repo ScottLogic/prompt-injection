@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import "./DefenceBox.css";
 import DefenceMechanism from "./DefenceMechanism";
 import {
-  getActiveDefences,
+  getDefences,
   activateDefence,
   deactivateDefence,
+  configureDefence,
 } from "../../service/defenceService";
 import DEFENCES from "../../Defences";
 
@@ -16,6 +17,9 @@ function DefenceBox(props) {
         ...defence,
         isActive: false,
         isTriggered: false,
+        configuration: defence.configuration?.map((config) => {
+          return { ...config, value: "" };
+        }),
       };
     })
   );
@@ -23,11 +27,22 @@ function DefenceBox(props) {
   // called on mount
   useEffect(() => {
     // fetch defences from backend
-    getActiveDefences().then((activeDefences) => {
+    getDefences().then((remoteDefences) => {
       const newDefences = defences.map((localDefence) => {
-        localDefence.isActive = activeDefences.find((remoteDefence) => {
-          return localDefence.id === remoteDefence;
+        const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
+          return localDefence.id === remoteDefence.id;
         });
+        localDefence.isActive = matchingRemoteDefence.isActive;
+        // set each configuration value
+        if (matchingRemoteDefence.configuration && localDefence.configuration) {
+          matchingRemoteDefence.configuration.forEach((configEntry, index) => {
+            // get the matching configuration in the local defence
+            const matchingConfig = localDefence.configuration.find((config) => {
+              return config.id === configEntry.id;
+            });
+            matchingConfig.value = configEntry.value;
+          });
+        }
         return localDefence;
       });
       setDefences(newDefences);
@@ -73,19 +88,29 @@ function DefenceBox(props) {
     });
   };
 
+  const setDefenceConfiguration = (defenceId, configuration) => {
+    configureDefence(defenceId, configuration).then(() => {
+      // update state
+      const newDefences = defences.map((defence) => {
+        if (defence.id === defenceId) {
+          defence.configuration = configuration;
+        }
+        return defence;
+      });
+      setDefences(newDefences);
+    });
+  };
+
   return (
     <div id="defence-box">
       {defences.map((defence, index) => {
         return (
           <DefenceMechanism
             key={defence.id}
-            name={defence.name}
-            id={defence.id}
-            info={defence.info}
-            isActive={defence.isActive}
-            isTriggered={defence.isTriggered}
+            defence={defence}
             setDefenceActive={setDefenceActive}
             setDefenceInactive={setDefenceInactive}
+            setDefenceConfiguration={setDefenceConfiguration}
           />
         );
       })}
