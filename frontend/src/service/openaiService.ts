@@ -37,5 +37,22 @@ const openAiSendMessage = async (message: string): Promise<OpenAIResponse> => {
   return data;
 };
 
-export { clearOpenAiChat, openAiSendMessage };
+const setGptModel = async (model: string): Promise<boolean> => {
+  console.log("Setting gpt model to " + model);
+  const response = await sendRequest(
+    PATH + "model",
+    "POST",
+    { "Content-Type": "application/json" },
+    JSON.stringify({ model })
+  );
+  return response.status === 200;
+};
+
+const getGptModel = async (): Promise<string> => {
+  const response = await sendRequest(PATH + "model", "GET");
+  const data = await response.text();
+  return data;
+};
+
+export { clearOpenAiChat, openAiSendMessage, setGptModel, getGptModel };
 export type { OpenAIMessage, OpenAIResponse };

@@ -1,16 +1,30 @@
 #model-selection-box {
     padding: 1px 32px;
     position: relative;
+}
+
+#model-selection-row {
     display: flex;
     align-items: center;
 }
 
-#model-selection-box p {
+#model-selection-info {
+    align-items: center;
+    text-align: center;
+}
+
+#model-selection-info p {
+    margin: 0;
+    padding: 0;
+}
+
+#model-selection-row p {
     margin-right: 10px;
+    padding: 0;
 }
 
 #model-selection-menu {
-    width: 40%;
+    width: 50%;
     padding: 5px;
     margin-right: 10px;
 }

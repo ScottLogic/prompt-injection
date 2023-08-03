@@ -6,7 +6,7 @@ const {
   transformMessage,
   detectTriggeredDefences,
 } = require("./defence");
-const { chatGptSendMessage } = require("./openai");
+const { chatGptSendMessage, setGptModel } = require("./openai");
 const router = express.Router();
 
 // Activate a defence
@@ -111,6 +111,19 @@ router.post("/openai/chat", async (req, res, next) => {
 router.post("/openai/clear", (req, res, next) => {
   req.session.chatHistory = [];
   res.send("ChatGPT messages cleared");
+});
+
+// Set the ChatGPT model
+router.post("/openai/model", (req, res, next) => {
+  const model = req.body?.model;
+  if (model) {
+    setGptModel(req.session, model);
+    res.send("ChatGPT model set. ");
+  }
+});
+
+router.get("/openai/model", (req, res, next) => {
+  res.send(req.session.gptModel);
 });
 
 // Importing the router

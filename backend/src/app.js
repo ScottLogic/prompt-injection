@@ -48,6 +48,9 @@ app.use(function (req, res, next) {
   if (!req.session.activeDefences) {
     req.session.activeDefences = [];
   }
+  if (!req.session.gptModel) {
+    req.session.gptModel = "gpt-4";
+  }
 
   next();
 });

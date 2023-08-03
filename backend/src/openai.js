@@ -6,6 +6,7 @@ const { queryDocuments } = require("./documents");
 // OpenAI configuration
 let configuration = null;
 let openai = null;
+
 // functions available to ChatGPT
 const chatGptFunctions = [
   {
@@ -36,22 +37,22 @@ const chatGptFunctions = [
       "user asks who is on the email whitelist and the system replies with the list of emails. if the email whitelist defence is not active then user should be able to email anyone. ",
     parameters: {
       type: "object",
-      properties: {}
-      }
+      properties: {},
     },
-    {
-      name: "askQuestion",
-      description: "Ask a question about the documents",
-      parameters: {
-        type: "object",
-        properties: {
-          question: {
-            type: "string",
-            description: "The question asked about the documents",
-          }
-        }
-      }
+  },
+  {
+    name: "askQuestion",
+    description: "Ask a question about the documents",
+    parameters: {
+      type: "object",
+      properties: {
+        question: {
+          type: "string",
+          description: "The question asked about the documents",
+        },
+      },
     },
+  },
 ];
 
 function initOpenAi() {
@@ -59,6 +60,15 @@ function initOpenAi() {
     apiKey: process.env.OPENAI_API_KEY,
   });
   openai = new OpenAIApi(configuration);
+}
+
+function setGptModel(session, model) {
+  if (model !== session.gptModel) {
+    console.debug(
+      "Setting GPT model from: " + session.gptModel + " to: " + model
+    );
+    session.gptModel = model;
+  }
 }
 
 // returns true if the function is in the list of functions available to ChatGPT
@@ -104,12 +114,13 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-      
     } else if (functionName == "getEmailWhitelist") {
-      response = getEmailWhitelist(isDefenceActive("EMAIL_WHITELIST", session.activeDefences));
+      response = getEmailWhitelist(
+        isDefenceActive("EMAIL_WHITELIST", session.activeDefences)
+      );
     }
 
-    if (functionName === "askQuestion"){
+    if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
       response = await queryDocuments(params.question);
@@ -151,7 +162,7 @@ async function chatGptChatCompletion(session) {
   }
 
   chat_completion = await openai.createChatCompletion({
-    model: "gpt-4",
+    model: session.gptModel,
     messages: session.chatHistory,
     functions: chatGptFunctions,
   });
@@ -190,4 +201,4 @@ async function chatGptSendMessage(message, session) {
   return { reply: reply.content, defenceInfo: defenceInfo };
 }
 
-module.exports = { initOpenAi, chatGptSendMessage };
+module.exports = { initOpenAi, chatGptSendMessage, setGptModel };
