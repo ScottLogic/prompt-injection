@@ -12,6 +12,7 @@ function ChatBoxMessage(props) {
           ? "chat-box-message chat-box-message-ai chat-box-message-blocked"
           : "chat-box-message chat-box-message-ai chat-box-message-ok"
       }
+      lang="en"
     >
       {(props.isUser && props.isOriginalMessage && <b>Input: </b>) ||
         (props.isUser && !props.isOriginalMessage && <b>Edited: </b>)}
