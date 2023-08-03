@@ -4,6 +4,7 @@ import ChatBox from "./components/ChatBox/ChatBox";
 import DefenceBox from "./components/DefenceBox/DefenceBox";
 import EmailBox from "./components/EmailBox/EmailBox";
 import Header from "./components/Header";
+import ModelSelectionBox from "./components/ModelSelectionBox/ModelSelectionBox";
 import { useState } from "react";
 import { OpenAIEmail } from "./service/emailService";
 
@@ -24,6 +25,9 @@ function App() {
       <div className="side-bar">
         <div className="side-bar-header">defence mechanisms</div>
         <DefenceBox key={defenceBoxKey} triggeredDefences={triggeredDefences} />
+
+        <div className="side-bar-header">model selection</div>
+        <ModelSelectionBox />
       </div>
       <div id="centre-area">
         <Header />
