@@ -14,6 +14,16 @@ const DEFENCES = [
     name: "random sequence enclosure",
     id: "RANDOM_SEQUENCE_ENCLOSURE",
     info: "enclose the prompt between a random string and instruct bot to only follow enclosed instructions. this is a form of prompt validation.",
+    configuration: [
+      {
+        name: "pre-prompt",
+        id: "prePrompt",
+      },
+      {
+        name: "length",
+        id: "length",
+      },
+    ],
   },
   {
     name: "system role",
@@ -35,11 +45,12 @@ const DEFENCES = [
     name: "email whitelist",
     id: "EMAIL_WHITELIST",
     info: "only allow emails to those on a whitelist. they can be full email addresses, or domains in the format '*@scottlogic.com'",
-    configuration: [{
-      name: "email whitelist",
-      id: "whitelist",
-    }]
-
+    configuration: [
+      {
+        name: "email whitelist",
+        id: "whitelist",
+      },
+    ],
   },
 ];
 

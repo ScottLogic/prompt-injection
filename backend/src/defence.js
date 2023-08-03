@@ -9,7 +9,19 @@ function getInitialDefences() {
         },
       ],
     },
-    { id: "RANDOM_SEQUENCE_ENCLOSURE" },
+    {
+      id: "RANDOM_SEQUENCE_ENCLOSURE",
+      configuration: [
+        {
+          id: "prePrompt",
+          value: process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT || "",
+        },
+        {
+          id: "length",
+          value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH || 10,
+        },
+      ],
+    },
     { id: "XML_TAGGING" },
     {
       id: "EMAIL_WHITELIST",
@@ -62,6 +74,20 @@ function getMaxMessageLength(defences) {
   return maxMessageLength || 280;
 }
 
+function getRandomSequenceEnclosurePrePrompt(defences) {
+  const prePrompt = defences
+    .find((defence) => defence.id === "RANDOM_SEQUENCE_ENCLOSURE")
+    ?.configuration?.find((config) => config.id === "prePrompt")?.value;
+  return prePrompt || "";
+}
+
+function getRandomSequenceEnclosureLength(defences) {
+  const length = defences
+    .find((defence) => defence.id === "RANDOM_SEQUENCE_ENCLOSURE")
+    ?.configuration?.find((config) => config.id === "length")?.value;
+  return length || 10;
+}
+
 function getSystemRole(defences) {
   const systemRole = defences
     .find((defence) => defence.id === "SYSTEM_ROLE")
@@ -92,12 +118,12 @@ function generate_random_string(string_length) {
 }
 
 // apply random sequence enclosure defense to input message
-function transformRandomSequenceEnclosure(message) {
+function transformRandomSequenceEnclosure(message, defences) {
   console.debug("Random Sequence Enclosure defence active.");
   const randomString = generate_random_string(
-    process.env.RANDOM_SEQ_ENCLOSURE_LENGTH
+    getRandomSequenceEnclosureLength(defences)
   );
-  const introText = process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT;
+  const introText = getRandomSequenceEnclosurePrePrompt(defences);
   const transformedMessage = introText.concat(
     randomString,
     " {{ ",
@@ -147,7 +173,10 @@ function transformXmlTagging(message) {
 function transformMessage(message, defences) {
   let transformedMessage = message;
   if (isDefenceActive("RANDOM_SEQUENCE_ENCLOSURE", defences)) {
-    transformedMessage = transformRandomSequenceEnclosure(transformedMessage);
+    transformedMessage = transformRandomSequenceEnclosure(
+      transformedMessage,
+      defences
+    );
   }
   if (isDefenceActive("XML_TAGGING", defences)) {
     transformedMessage = transformXmlTagging(transformedMessage);

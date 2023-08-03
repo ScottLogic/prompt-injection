@@ -59,12 +59,16 @@ test("GIVEN no defences are active WHEN transforming message THEN message is not
 });
 
 test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming message THEN message is transformed", () => {
-  const message = "Hello";
-  const defences = [{ id: "RANDOM_SEQUENCE_ENCLOSURE", isActive: true }];
   // set RSE prompt
   process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT = "RSE_PRE_PROMPT ";
   // set RSE length
   process.env.RANDOM_SEQ_ENCLOSURE_LENGTH = 20;
+
+  const message = "Hello";
+  let defences = getInitialDefences();
+  // activate RSE defence
+  defences = activateDefence("RANDOM_SEQUENCE_ENCLOSURE", defences);
+
   // regex to match the transformed message with
   const regex = new RegExp(
     "^" +
@@ -257,5 +261,25 @@ test("GIVEN setting email whitelist WHEN configuring defence THEN defence is con
     id: defence,
     isActive: true,
     configuration: configuration,
+  });
+});
+
+test("GIVEN user configures random sequence enclosure WHEN configuring defence THEN defence is configured", () => {
+  let defences = getInitialDefences();
+  const newPrePrompt = "new pre prompt";
+  const newLength = 100;
+  // configure RSE length
+  defences = configureDefence("RANDOM_SEQUENCE_ENCLOSURE", defences, [
+    { id: "length", value: newLength },
+    { id: "prePrompt", value: newPrePrompt },
+  ]);
+  // expect the RSE length to be updated
+  expect(defences).toContainEqual({
+    id: "RANDOM_SEQUENCE_ENCLOSURE",
+    isActive: false,
+    configuration: [
+      { id: "length", value: newLength },
+      { id: "prePrompt", value: newPrePrompt },
+    ],
   });
 });
