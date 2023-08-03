@@ -13,8 +13,8 @@ function DefenceMechanism(props) {
       <div
         className={
           props.isActive
-            ? "strategy-mechanism defence-active"
-            : "strategy-mechanism"
+            ? "strategy-mechanism defence-mechanism defence-active"
+            : "strategy-mechanism defence-mechanism"
         }
         style={
           props.isTriggered

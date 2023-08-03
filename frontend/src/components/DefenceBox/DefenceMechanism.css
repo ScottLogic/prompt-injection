@@ -2,6 +2,13 @@
   background-color: #eef;
 }
 
+.defence-mechanism:hover {
+  border-color: #444;
+  border-width: 2px;
+  margin: 0px;
+  margin-bottom: 7px;
+}
+
 @keyframes flash-red-active {
   0% {
     background-color: #eef;
