@@ -15,7 +15,7 @@ function ChatBox(
     setEmails,
     updateTriggeredDefences,
   }: {
-    setEmails: (emails: any) => void;
+    setEmails: (emails: OpenAIEmail[]) => void;
     updateTriggeredDefences: (defences: string[]) => void;
   }
 ) {
