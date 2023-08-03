@@ -228,4 +228,9 @@ async function chatGptSendMessage(message, session) {
   return { reply: reply.content, defenceInfo: defenceInfo };
 }
 
-module.exports = { initOpenAi, chatGptSendMessage, setOpenAiApiKey };
+module.exports = {
+  initOpenAi,
+  chatGptSendMessage,
+  setOpenAiApiKey,
+  validateApiKey,
+};
