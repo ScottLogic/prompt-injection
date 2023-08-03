@@ -1,7 +1,12 @@
 const URL = "http://localhost:3001/";
 
-async function sendRequest(path, method, headers, body) {
-  const init = {
+const sendRequest = async (
+  path: string,
+  method: string,
+  headers?: HeadersInit,
+  body?: BodyInit
+): Promise<Response> => {
+  const init: RequestInit = {
     credentials: "include",
     method: method,
   };
@@ -11,8 +16,8 @@ async function sendRequest(path, method, headers, body) {
   if (body) {
     init.body = body;
   }
-  const response = await fetch(URL + path, init);
+  const response: Response = await fetch(URL + path, init);
   return response;
-}
+};
 
 export { sendRequest };
