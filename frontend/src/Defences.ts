@@ -1,9 +1,17 @@
-interface DefenceInfo {
+class DefenceInfo {
+  constructor(id: DEFENCE_TYPES, name: string, info: string) {
+    this.id = id;
+    this.name = name;
+    this.info = info;
+    this.isActive = false;
+    this.isTriggered = false;
+  }
+
+  id: DEFENCE_TYPES;
   name: string;
-  id: string;
   info: string;
-  isActive?: boolean;
-  isTriggered?: boolean;
+  isActive: boolean;
+  isTriggered: boolean;
 }
 
 enum DEFENCE_TYPES {
@@ -15,31 +23,31 @@ enum DEFENCE_TYPES {
 }
 
 const DEFENCE_DETAILS: DefenceInfo[] = [
-  {
-    id: DEFENCE_TYPES.CHARACTER_LIMIT,
-    name: "Character Limit",
-    info: "Limit the number of characters in the user input. This is a form of prompt validation.",
-  },
-  {
-    id: DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-    name: "Random Sequence Enclosure",
-    info: "Enclose the prompt between a random string and instruct bot to only follow enclosed instructions. This is a form of prompt validation.",
-  },
-  {
-    id: DEFENCE_TYPES.SYSTEM_ROLE,
-    name: "System Role",
-    info: "Tell the chat bot to follow a specific role.",
-  },
-  {
-    id: DEFENCE_TYPES.XML_TAGGING,
-    name: "XML Tagging",
-    info: "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input. This is a form of prompt validation.",
-  },
-  {
-    id: DEFENCE_TYPES.EMAIL_WHITELIST,
-    name: "Email Whitelist",
-    info: "Only allow emails to those on a whitelist. They can be full email addresses, or domains in the format '*@scottlogic.com'",
-  },
+  new DefenceInfo(
+    DEFENCE_TYPES.CHARACTER_LIMIT,
+    "Character Limit",
+    "Limit the number of characters in the user input. This is a form of prompt validation."
+  ),
+  new DefenceInfo(
+    DEFENCE_TYPES.EMAIL_WHITELIST,
+    "Email Whitelist",
+    "Only allow emails to those on a whitelist. They can be full email addresses, or domains in the format '*@scottlogic.com'"
+  ),
+  new DefenceInfo(
+    DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
+    "Random Sequence Enclosure",
+    "Enclose the prompt between a random string and instruct bot to only follow enclosed instructions. This is a form of prompt validation."
+  ),
+  new DefenceInfo(
+    DEFENCE_TYPES.SYSTEM_ROLE,
+    "System Role",
+    "Tell the chat bot to follow a specific role."
+  ),
+  new DefenceInfo(
+    DEFENCE_TYPES.XML_TAGGING,
+    "XML Tagging",
+    "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input. This is a form of prompt validation."
+  ),
 ];
 
 export { DEFENCE_DETAILS };

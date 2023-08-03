@@ -10,15 +10,7 @@ import { DEFENCE_DETAILS } from "../../Defences";
 
 function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
   // list of defence mechanisms
-  const [defenceDetails, setDefenceDetails] = useState(
-    DEFENCE_DETAILS.map((defence) => {
-      return {
-        ...defence,
-        isActive: false,
-        isTriggered: false,
-      };
-    })
-  );
+  const [defenceDetails, setDefenceDetails] = useState(DEFENCE_DETAILS);
 
   // called on mount
   useEffect(() => {
