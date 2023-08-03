@@ -12,7 +12,15 @@ function getInitialDefences() {
     { id: "RANDOM_SEQUENCE_ENCLOSURE" },
     { id: "XML_TAGGING" },
     { id: "EMAIL_WHITELIST" },
-    { id: "SYSTEM_ROLE" },
+    {
+      id: "SYSTEM_ROLE",
+      configuration: [
+        {
+          id: "systemRole",
+          value: process.env.SYSTEM_ROLE || "",
+        },
+      ],
+    },
   ];
   // make all defences inactive by default and return
   return defences.map((defence) => ({ ...defence, isActive: false }));
@@ -44,6 +52,13 @@ function getMaxMessageLength(defences) {
     .find((defence) => defence.id === "CHARACTER_LIMIT")
     ?.configuration?.find((config) => config.id === "maxMessageLength")?.value;
   return maxMessageLength || 280;
+}
+
+function getSystemRole(defences) {
+  const systemRole = defences
+    .find((defence) => defence.id === "SYSTEM_ROLE")
+    ?.configuration?.find((config) => config.id === "systemRole")?.value;
+  return systemRole || "";
 }
 
 function isDefenceActive(id, defences) {
@@ -165,6 +180,7 @@ module.exports = {
   configureDefence,
   deactivateDefence,
   getInitialDefences,
+  getSystemRole,
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,

@@ -2,9 +2,11 @@ const {
   activateDefence,
   deactivateDefence,
   configureDefence,
+  getSystemRole,
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,
+  getInitialDefences,
 } = require("../../src/defence");
 
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {
@@ -205,4 +207,29 @@ test("GIVEN setting max message length WHEN configuring defence THEN defence is 
     isActive: true,
     configuration: configuration,
   });
+});
+
+test("GIVEN system role has not been configured WHEN getting system role THEN return empty string", () => {
+  const defences = getInitialDefences();
+  const systemRole = getSystemRole(defences);
+  expect(systemRole).toBe("");
+});
+
+test("GIVEN system role has been configured WHEN getting system role THEN return system role", () => {
+  process.env.SYSTEM_ROLE = "system role";
+  const defences = getInitialDefences();
+  const systemRole = getSystemRole(defences);
+  expect(systemRole).toBe("system role");
+});
+
+test("GIVEN a new system role has been set WHEN getting system role THEN return new system role", () => {
+  process.env.SYSTEM_ROLE = "system role";
+  let defences = getInitialDefences();
+  let systemRole = getSystemRole(defences);
+  expect(systemRole).toBe("system role");
+  defences = configureDefence("SYSTEM_ROLE", defences, [
+    { id: "systemRole", value: "new system role" },
+  ]);
+  systemRole = getSystemRole(defences);
+  expect(systemRole).toBe("new system role");
 });

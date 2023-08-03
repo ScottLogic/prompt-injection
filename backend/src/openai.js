@@ -1,5 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { isDefenceActive } = require("./defence");
+const { isDefenceActive, getSystemRole } = require("./defence");
 const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
 const { queryDocuments } = require("./documents");
 
@@ -136,7 +136,7 @@ async function chatGptChatCompletion(session) {
       // add the system role to the start of the chat history
       session.chatHistory.unshift({
         role: "system",
-        content: process.env.SYSTEM_ROLE,
+        content: getSystemRole(session.defences),
       });
     }
   } else {

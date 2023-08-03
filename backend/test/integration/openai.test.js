@@ -1,3 +1,4 @@
+const { activateDefence, getInitialDefences } = require("../../src/defence");
 const { initOpenAi, chatGptSendMessage } = require("../../src/openai");
 const { OpenAIApi } = require("openai");
 
@@ -63,15 +64,16 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
 });
 
 test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to chat history", async () => {
+  // set the system role prompt
+  process.env.SYSTEM_ROLE = "You are a helpful assistant";
+
   const message = "Hello";
   const session = {
-    defences: [{ id: "SYSTEM_ROLE", isActive: true }],
+    defences: getInitialDefences(),
     chatHistory: [],
     sentEmails: [],
   };
-
-  // set the system role prompt
-  process.env.SYSTEM_ROLE = "You are a helpful assistant";
+  session.defences = activateDefence("SYSTEM_ROLE", session.defences);
 
   // Mock the createChatCompletion function
   mockCreateChatCompletion.mockResolvedValueOnce({
@@ -108,9 +110,12 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
 });
 
 test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to the start of the chat history", async () => {
+  // set the system role prompt
+  process.env.SYSTEM_ROLE = "You are a helpful assistant";
+
   const message = "Hello";
   const session = {
-    defences: [{ id: "SYSTEM_ROLE", isActive: true }],
+    defences: getInitialDefences(),
     // add in some chat history
     chatHistory: [
       {
@@ -124,9 +129,8 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
     ],
     sentEmails: [],
   };
-
-  // set the system role prompt
-  process.env.SYSTEM_ROLE = "You are a helpful assistant";
+  // activate the SYSTEM_ROLE defence
+  session.defences = activateDefence("SYSTEM_ROLE", session.defences);
 
   // Mock the createChatCompletion function
   mockCreateChatCompletion.mockResolvedValueOnce({

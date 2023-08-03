@@ -19,6 +19,12 @@ const DEFENCES = [
     name: "system role",
     id: "SYSTEM_ROLE",
     info: "tell the chat bot to follow a specific role.",
+    configuration: [
+      {
+        name: "system role",
+        id: "systemRole",
+      },
+    ],
   },
   {
     name: "xml tagging",
