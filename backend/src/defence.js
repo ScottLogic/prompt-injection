@@ -67,39 +67,31 @@ function configureDefence(id, defences, configuration) {
   );
 }
 
+function getConfigValue(defences, defenceId, configId, defaultValue) {
+  const configValue = defences
+    .find((defence) => defence.id === defenceId)
+    ?.configuration?.find((config) => config.id === configId)?.value;
+  return configValue || defaultValue;
+}
+
 function getMaxMessageLength(defences) {
-  const maxMessageLength = defences
-    .find((defence) => defence.id === "CHARACTER_LIMIT")
-    ?.configuration?.find((config) => config.id === "maxMessageLength")?.value;
-  return maxMessageLength || 280;
+  return getConfigValue(defences, "CHARACTER_LIMIT", "maxMessageLength", 280);
 }
 
 function getRandomSequenceEnclosurePrePrompt(defences) {
-  const prePrompt = defences
-    .find((defence) => defence.id === "RANDOM_SEQUENCE_ENCLOSURE")
-    ?.configuration?.find((config) => config.id === "prePrompt")?.value;
-  return prePrompt || "";
+  return getConfigValue(defences, "RANDOM_SEQUENCE_ENCLOSURE", "prePrompt", "");
 }
 
 function getRandomSequenceEnclosureLength(defences) {
-  const length = defences
-    .find((defence) => defence.id === "RANDOM_SEQUENCE_ENCLOSURE")
-    ?.configuration?.find((config) => config.id === "length")?.value;
-  return length || 10;
+  return getConfigValue(defences, "RANDOM_SEQUENCE_ENCLOSURE", "length", 10);
 }
 
 function getSystemRole(defences) {
-  const systemRole = defences
-    .find((defence) => defence.id === "SYSTEM_ROLE")
-    ?.configuration?.find((config) => config.id === "systemRole")?.value;
-  return systemRole || "";
+  return getConfigValue(defences, "SYSTEM_ROLE", "systemRole", "");
 }
 
 function getEmailWhitelistVar(defences) {
-  const whitelist = defences
-    .find((defence) => defence.id === "EMAIL_WHITELIST")
-    ?.configuration?.find((config) => config.id === "whitelist")?.value;
-  return whitelist || "";
+  return getConfigValue(defences, "EMAIL_WHITELIST", "whitelist", "");
 }
 
 function isDefenceActive(id, defences) {
