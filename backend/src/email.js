@@ -1,10 +1,9 @@
-const { getEmailWhitelistVar } = require("./defence.js");
-const { isDefenceActive } = require("./defence");
+const { getEmailWhitelistVar, isDefenceActive } = require("./defence.js");
 
-// return the whitelist variable 
+// return the whitelist variable
 function getEmailWhitelistValues(defences) {
   const emailWhitelist = getEmailWhitelistVar(defences);
-  return emailWhitelist.split(",").map(c => c.trim());
+  return emailWhitelist.split(",").map((c) => c.trim());
 }
 
 // if defense active return the whitelist of emails and domains
@@ -12,7 +11,10 @@ function askEmailWhitelist(defences) {
   if (!isDefenceActive("EMAIL_WHITELIST", defences)) {
     return "As the email whitelist defence is not active, any email address can be emailed.";
   } else {
-    return "The whitelisted emails and domains are: " + getEmailWhitelistValues(defences);
+    return (
+      "The whitelisted emails and domains are: " +
+      getEmailWhitelistValues(defences)
+    );
   }
 }
 
@@ -21,7 +23,7 @@ function isEmailInWhitelist(emailAddress, defences) {
   // get the domain from email
   const emailAddressDomain = emailAddress.split("@")[1];
   const emailWhitelist = getEmailWhitelistValues(defences);
-  
+
   // find email domains in whitelist (start with @)
   const emailDomainWhitelist = emailWhitelist.filter((email) =>
     email.startsWith("@")
