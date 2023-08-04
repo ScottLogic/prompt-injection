@@ -3,6 +3,7 @@ import "./App.css";
 import ChatBox from "./components/ChatBox/ChatBox";
 import DefenceBox from "./components/DefenceBox/DefenceBox";
 import EmailBox from "./components/EmailBox/EmailBox";
+import ApiKeyBox from "./components/ApiKeyBox/ApiKeyBox";
 import Header from "./components/Header";
 import { useState } from "react";
 import { EmailInfo } from "./models/email";
