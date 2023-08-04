@@ -6,11 +6,11 @@ import EmailBox from "./components/EmailBox/EmailBox";
 import Header from "./components/Header";
 import ModelSelectionBox from "./components/ModelSelectionBox/ModelSelectionBox";
 import { useState } from "react";
-import { OpenAIEmail } from "./service/emailService";
+import { EmailInfo } from "./models/email";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
-  const [emails, setEmails] = useState<OpenAIEmail[]>([]);
+  const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
 
   const updateTriggeredDefences = (defenceDetails: string[]) => {

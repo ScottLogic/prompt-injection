@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
-import {
-  OpenAIMessage,
-  OpenAIResponse,
-  clearOpenAiChat,
-  openAiSendMessage,
-} from "../../service/openaiService";
-import { OpenAIEmail, getSentEmails } from "../../service/emailService";
+import { clearChat, sendMessage } from "../../service/chatService";
+import { getSentEmails } from "../../service/emailService";
+import { ChatMessage, ChatResponse } from "../../models/chat";
+import { EmailInfo } from "../../models/email";
 
 function ChatBox(
   this: any,
@@ -15,17 +12,17 @@ function ChatBox(
     setEmails,
     updateTriggeredDefences,
   }: {
-    setEmails: (emails: any) => void;
+    setEmails: (emails: EmailInfo[]) => void;
     updateTriggeredDefences: (defences: string[]) => void;
   }
 ) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
-  const [messages, setMessages] = useState<OpenAIMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   // called on mount
   useEffect(() => {
     // clear remote messages
-    clearOpenAiChat();
+    clearChat();
     // get sent emails
     getSentEmails().then((sentEmails) => {
       setEmails(sentEmails);
@@ -36,7 +33,7 @@ function ChatBox(
     // clear local messages
     setMessages([]);
     // clear remote messages
-    clearOpenAiChat();
+    clearChat();
   };
 
   const sendChatMessage = async (
@@ -48,19 +45,19 @@ function ChatBox(
       const message = event.currentTarget.value;
 
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
-      setMessages((messages: OpenAIMessage[]) => [
+      setMessages((messages: ChatMessage[]) => [
         ...messages,
         { message: message, isUser: true, isOriginalMessage: true },
       ]);
       // clear the input
       event.currentTarget.value = "";
 
-      const response: OpenAIResponse = await openAiSendMessage(message);
+      const response: ChatResponse = await sendMessage(message);
       const transformedMessage = response.transformedMessage;
       const isTransformed = transformedMessage !== message;
       // add the transformed message to the chat box if it is different from the original message
       if (isTransformed) {
-        setMessages((messages: OpenAIMessage[]) => [
+        setMessages((messages: ChatMessage[]) => [
           ...messages,
           {
             message: transformedMessage,
@@ -70,7 +67,7 @@ function ChatBox(
         ]);
       }
       // add it to the list of messages
-      setMessages((messages: OpenAIMessage[]) => [
+      setMessages((messages: ChatMessage[]) => [
         ...messages,
         {
           isUser: false,
@@ -86,7 +83,7 @@ function ChatBox(
       setIsSendingMessage(false);
 
       // get sent emails
-      const sentEmails: OpenAIEmail[] = await getSentEmails();
+      const sentEmails: EmailInfo[] = await getSentEmails();
       // update emails
       setEmails(sentEmails);
     }

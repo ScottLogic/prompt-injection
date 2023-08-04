@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { OpenAIDefence } from "../../service/defenceService";
+import { useState } from "react";
+import { DefenceInfo } from "../../models/defence";
 import "./DefenceMechanism.css";
 
 const ANIMATION_FLASH_TIME_SECONDS = 1;
@@ -12,7 +12,7 @@ function DefenceMechanism({
   setDefenceInactive,
 }: {
   key: number;
-  defenceDetail: OpenAIDefence;
+  defenceDetail: DefenceInfo;
   setDefenceActive: (defenceId: string) => void;
   setDefenceInactive: (defenceId: string) => void;
 }) {
@@ -50,8 +50,8 @@ function DefenceMechanism({
         }
         onClick={() => {
           defenceDetail.isActive
-            ? setDefenceInactive(defenceDetail.type)
-            : setDefenceActive(defenceDetail.type);
+            ? setDefenceInactive(defenceDetail.id)
+            : setDefenceActive(defenceDetail.id);
         }}
       >
         <div className="defence-mechanism-header">

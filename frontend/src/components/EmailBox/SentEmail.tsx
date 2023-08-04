@@ -1,12 +1,11 @@
-import React from "react";
-import { OpenAIEmail } from "../../service/emailService";
 import "./SentEmail.css";
+import { EmailInfo } from "../../models/email";
 
 function SentEmail({
   emailDetails,
   key,
 }: {
-  emailDetails: OpenAIEmail;
+  emailDetails: EmailInfo;
   key: number;
 }) {
   return (
