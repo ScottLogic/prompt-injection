@@ -1,9 +1,0 @@
-[SENSITIVE]
-
-Bill earned £200,000 in 2018.
-Jane's salary is £30,000.
-Kevin earns £100,000 a year.
-Karen's hair is blonde. 
-Bill's height in 5'9.
-
-[/SENSITIVE]

@@ -1,0 +1,11 @@
+Project ABB 
+
+Brief: Build a new website for a fintech startup. Tech stack is React frontend and Typescript backend.
+
+Estimated cost: £15000
+
+Time scale: December 2023 - August 2024
+
+Assigned: Sally, Kevin
+
+Product owner: Sally

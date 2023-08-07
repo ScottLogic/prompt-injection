@@ -36,22 +36,22 @@ const chatGptFunctions = [
       "user asks who is on the email whitelist and the system replies with the list of emails. if the email whitelist defence is not active then user should be able to email anyone. ",
     parameters: {
       type: "object",
-      properties: {}
-      }
+      properties: {},
     },
-    {
-      name: "askQuestion",
-      description: "Ask a question about the documents",
-      parameters: {
-        type: "object",
-        properties: {
-          question: {
-            type: "string",
-            description: "The question asked about the documents",
-          }
-        }
-      }
+  },
+  {
+    name: "askQuestion",
+    description: "Ask a question about the documents with company infomration",
+    parameters: {
+      type: "object",
+      properties: {
+        question: {
+          type: "string",
+          description: "The question asked about the documents",
+        },
+      },
     },
+  },
 ];
 
 function initOpenAi() {
@@ -104,12 +104,13 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-      
     } else if (functionName == "getEmailWhitelist") {
-      response = getEmailWhitelist(isDefenceActive("EMAIL_WHITELIST", session.activeDefences));
+      response = getEmailWhitelist(
+        isDefenceActive("EMAIL_WHITELIST", session.activeDefences)
+      );
     }
 
-    if (functionName === "askQuestion"){
+    if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
       response = await queryDocuments(params.question);
@@ -168,6 +169,8 @@ async function chatGptSendMessage(message, session) {
   let reply = await chatGptChatCompletion(session);
   // check if GPT wanted to call a function
   while (reply.function_call) {
+    session.chatHistory.push(reply);
+
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
       reply.function_call,

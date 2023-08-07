@@ -1,0 +1,10 @@
+The Glasgow office is at 100 West George Street.
+The company earned £2 million in 2020.
+The company earned £2.5 million in 2021.
+The company earned £3 million in 2022.
+Head count as of 2023: 104
+Planned promotions of 2023: sally, brian, susan
+Planned dismissals 2023: Jane, Kevin
+Susan is getting a 20% raise.
+Brian is getting a 10% raise. 
+Sally is getting a 15% raise.
