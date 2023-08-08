@@ -37,7 +37,6 @@ const getOpenAIApiKey = async (): Promise<string> => {
 };
 
 const setGptModel = async (model: string): Promise<boolean> => {
-  console.log("Setting gpt model to " + model);
   const response = await sendRequest(
     PATH + "model",
     "POST",

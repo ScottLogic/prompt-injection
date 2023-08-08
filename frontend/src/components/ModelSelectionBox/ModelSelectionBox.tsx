@@ -1,7 +1,7 @@
 // Path: frontend\src\components\ModelSelectionBox\ModelSelectionBox.tsx
 import React, { useEffect, useState } from "react";
 import "./ModelSelectionBox.css";
-import { setGptModel, getGptModel } from "../../service/openaiService";
+import { setGptModel, getGptModel } from "../../service/chatService";
 import { CHAT_MODELS } from "../../models/chat";
 
 // return a drop down menu with the models
@@ -11,11 +11,16 @@ function ModelSelectionBox() {
   // model in use by the app
   const [modelInUse, setModelInUse] = useState("gpt-4");
 
+  const [errorChangingModel, setErrorChangingModel] = useState(false);
+
   // handle button click to log the selected model
   const submitSelectedModel = async () => {
     console.log("selected model: " + selectedModel);
     if (await setGptModel(selectedModel)) {
       setModelInUse(selectedModel);
+      setErrorChangingModel(false);
+    } else {
+      setErrorChangingModel(true);
     }
   };
 
@@ -55,10 +60,18 @@ function ModelSelectionBox() {
           Choose
         </button>
       </div>
+
       <div id="model-selection-info">
-        <p>
-          You are chatting to model: <b> {modelInUse}</b>
-        </p>
+        {errorChangingModel ? (
+          <p id="error">
+            Could not change model. You are still chatting to:
+            <b> {modelInUse} </b>
+          </p>
+        ) : (
+          <p>
+            You are chatting to model: <b> {modelInUse}</b>
+          </p>
+        )}
       </div>
     </div>
   );

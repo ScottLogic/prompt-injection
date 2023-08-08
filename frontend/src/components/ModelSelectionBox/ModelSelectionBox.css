@@ -19,10 +19,14 @@
     color:cadetblue
 }
 
-#model-selection-row p {
-    margin-right: 10px;
-    padding: 0;
+#p error {
+    color: red;
 }
+
+#model-selection-info  {
+
+}
+
 
 #model-selection-menu {
     width: 60%;

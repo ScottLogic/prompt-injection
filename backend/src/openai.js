@@ -63,7 +63,6 @@ const chatGptFunctions = [
 
 // test the api key works with the model
 async function validateApiKey(apiKey, gptModel) {
-  console.debug("Validating API key: " + apiKey + " with model: " + gptModel);
   try {
     const testOpenAI = new OpenAIApi(new Configuration({ apiKey: apiKey }));
     const response = await testOpenAI.createChatCompletion({
@@ -110,8 +109,10 @@ async function setGptModel(session, model) {
         "Setting GPT model from: " + session.gptModel + " to: " + model
       );
       session.gptModel = model;
+      return true;
     } else {
       console.debug("Could not validate apiKey with model=" + model);
+      return false;
     }
   }
 }

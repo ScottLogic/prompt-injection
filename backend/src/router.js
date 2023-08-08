@@ -154,11 +154,14 @@ router.get("/openai/apiKey", (req, res, next) => {
 });
 
 // Set the ChatGPT model
-router.post("/openai/model", (req, res, next) => {
+router.post("/openai/model", async (req, res, next) => {
   const model = req.body?.model;
   if (model) {
-    setGptModel(req.session, model);
-    res.send("ChatGPT model set. ");
+    if (await setGptModel(req.session, model)) {
+      res.status(200).send("ChatGPT model set. ");
+    } else {
+      res.status(401).send("Could not set model");
+    }
   }
 });
 
