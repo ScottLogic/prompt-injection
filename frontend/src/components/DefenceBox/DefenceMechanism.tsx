@@ -5,13 +5,11 @@ import "../StrategyBox/StrategyMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
 
 function DefenceMechanism({
-  key,
   defenceDetail,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
 }: {
-  key: number;
   defenceDetail: DefenceInfo;
   setDefenceActive: (defenceId: string) => void;
   setDefenceInactive: (defenceId: string) => void;
@@ -35,7 +33,6 @@ function DefenceMechanism({
   return (
     <span>
       <div
-        key={key}
         className={
           defenceDetail.isActive
             ? "strategy-mechanism defence-mechanism defence-active"
