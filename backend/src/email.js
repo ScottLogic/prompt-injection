@@ -41,10 +41,7 @@ function sendEmail(address, subject, body, session) {
   console.log(response);
   // add the sent email to the session
   session.sentEmails.push(email);
-  const result = {
-    isEmailSent: true,
-  };
-  return JSON.stringify(result);
+  return response;
 }
 
 module.exports = {
