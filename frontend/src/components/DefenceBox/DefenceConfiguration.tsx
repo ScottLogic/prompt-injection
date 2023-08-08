@@ -1,4 +1,6 @@
+import "./DefenceConfiguration.css";
 import { DefenceConfig } from "../../models/defence";
+import ContentEditable from "react-contenteditable";
 
 function DefenceConfiguration(
   this: any,
@@ -18,15 +20,14 @@ function DefenceConfiguration(
 
   return (
     <div>
-      <span className="defence-config-name">{config.name} </span>
-      <input
+      <span className="defence-config-name">{config.name}: </span>
+      <ContentEditable
         className="defence-config-value"
-        type="text"
-        title="Press enter to save"
-        defaultValue={config.value}
+        html={config.value}
         onKeyUp={setConfiguration.bind(this)}
         onClick={(event) => event.stopPropagation()}
-      ></input>
+        onChange={() => {}}
+      />
     </div>
   );
 }

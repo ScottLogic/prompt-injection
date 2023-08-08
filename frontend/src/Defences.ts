@@ -5,13 +5,13 @@ const DEFENCE_DETAILS: DefenceInfo[] = [
     DEFENCE_TYPES.CHARACTER_LIMIT,
     "Character Limit",
     "Limit the number of characters in the user input. This is a form of prompt validation.",
-    [new DefenceConfig("maxMessageLength", "max Message Length")]
+    [new DefenceConfig("maxMessageLength", "max message length")]
   ),
   new DefenceInfo(
     DEFENCE_TYPES.EMAIL_WHITELIST,
     "Email Whitelist",
     "Only allow emails to those on a whitelist. They can be full email addresses, or domains in the format '*@scottlogic.com'",
-    [new DefenceConfig("whitelist", "email Whitelist")]
+    [new DefenceConfig("whitelist", "email whitelist")]
   ),
   new DefenceInfo(
     DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
