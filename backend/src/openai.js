@@ -1,7 +1,12 @@
 const { Configuration, OpenAIApi } = require("openai");
 const { isDefenceActive } = require("./defence");
 const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
-const { queryDocuments, queryPromptEvaluationModel } = require("./langchain");
+const {
+  initQAModel,
+  initPromptEvaluationModel,
+  queryDocuments,
+  queryPromptEvaluationModel,
+} = require("./langchain");
 
 // OpenAI configuration
 let configuration = null;
@@ -55,11 +60,44 @@ const chatGptFunctions = [
   },
 ];
 
-function initOpenAi() {
+// test the api key works with the model
+async function validateApiKey(apiKey) {
+  try {
+    const testOpenAI = new OpenAIApi(new Configuration({ apiKey: apiKey }));
+    const response = await testOpenAI.createChatCompletion({
+      model: "gpt-4",
+      messages: [{ role: "user", content: "this is a test prompt" }],
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+async function setOpenAiApiKey(session, apiKey) {
+  // initialise all models with the new key
+  if (await validateApiKey(apiKey)) {
+    console.debug("Setting API key and initialising models");
+    session.apiKey = apiKey;
+    initOpenAi(session);
+    initQAModel(session);
+    initPromptEvaluationModel(session);
+    return true;
+  } else {
+    // set to empty in case it was previously set
+    console.debug("Invalid API key. Cannot initialise OpenAI models");
+    session.apiKey = "";
+    openai = null;
+    return false;
+  }
+}
+
+function initOpenAi(session) {
   configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: session.apiKey,
   });
   openai = new OpenAIApi(configuration);
+  console.debug("OpenAI initialised");
 }
 
 // returns true if the function is in the list of functions available to ChatGPT
@@ -149,7 +187,11 @@ async function chatGptChatCompletion(session) {
 
   // make sure openai has been initialised
   if (!openai) {
-    throw new Error("OpenAI has not been initialised");
+    console.debug("OpenAI not initialised with api key");
+    return {
+      role: "assistant",
+      content: "Please enter a valid OpenAI API key to chat to me!",
+    };
   }
 
   chat_completion = await openai.createChatCompletion({
@@ -157,6 +199,7 @@ async function chatGptChatCompletion(session) {
     messages: session.chatHistory,
     functions: chatGptFunctions,
   });
+
   // get the reply
   return chat_completion.data.choices[0].message;
 }
@@ -209,4 +252,9 @@ async function chatGptSendMessage(message, session) {
   return { reply: reply.content, defenceInfo: defenceInfo };
 }
 
-module.exports = { initOpenAi, chatGptSendMessage };
+module.exports = {
+  initOpenAi,
+  chatGptSendMessage,
+  setOpenAiApiKey,
+  validateApiKey,
+};
