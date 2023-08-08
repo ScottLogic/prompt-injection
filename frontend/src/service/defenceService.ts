@@ -2,13 +2,13 @@ import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
 
-async function getActiveDefences() {
+const getActiveDefences = async (): Promise<string[]> => {
   const response = await sendRequest(PATH + "status", "GET");
   const data = await response.json();
   return data;
-}
+};
 
-async function activateDefence(id) {
+const activateDefence = async (id: string): Promise<boolean> => {
   const response = await sendRequest(
     PATH + "activate",
     "POST",
@@ -16,9 +16,9 @@ async function activateDefence(id) {
     JSON.stringify({ defenceId: id })
   );
   return response.status === 200;
-}
+};
 
-async function deactivateDefence(id) {
+const deactivateDefence = async (id: string): Promise<boolean> => {
   const response = await sendRequest(
     PATH + "deactivate",
     "POST",
@@ -28,6 +28,6 @@ async function deactivateDefence(id) {
     JSON.stringify({ defenceId: id })
   );
   return response.status === 200;
-}
+};
 
 export { getActiveDefences, activateDefence, deactivateDefence };

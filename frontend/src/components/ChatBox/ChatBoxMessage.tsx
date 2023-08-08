@@ -1,21 +1,22 @@
+import { ChatMessage } from "../../models/chat";
 import "./ChatBoxMessage.css";
 
-function ChatBoxMessage(props) {
+function ChatBoxMessage({ message }: { message: ChatMessage }) {
   return (
     <div
       className={
-        props.isUser
-          ? props.isOriginalMessage
+        message.isUser
+          ? message.isOriginalMessage
             ? "chat-box-message chat-box-message-user"
             : "chat-box-message chat-box-message-user-transformed"
-          : props.defenceInfo.blocked
+          : message.defenceInfo?.blocked
           ? "chat-box-message chat-box-message-ai chat-box-message-blocked"
           : "chat-box-message chat-box-message-ai chat-box-message-ok"
       }
     >
-      {(props.isUser && props.isOriginalMessage && <b>Input: </b>) ||
-        (props.isUser && !props.isOriginalMessage && <b>Edited: </b>)}
-      {props.message}
+      {(message.isUser && message.isOriginalMessage && <b>Input: </b>) ||
+        (message.isUser && !message.isOriginalMessage && <b>Edited: </b>)}
+      {message.message}
     </div>
   );
 }
