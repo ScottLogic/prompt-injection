@@ -13,6 +13,7 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
           ? "chat-box-message chat-box-message-ai chat-box-message-blocked"
           : "chat-box-message chat-box-message-ai chat-box-message-ok"
       }
+      lang="en"
     >
       {(message.isUser && message.isOriginalMessage && <b>Input: </b>) ||
         (message.isUser && !message.isOriginalMessage && <b>Edited: </b>)}

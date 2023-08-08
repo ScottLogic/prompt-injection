@@ -6,6 +6,11 @@
   margin-top: 16px;
   padding: 8px;
   max-width: 85%;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+  word-wrap: break-word;
 }
 
 .blocked {
@@ -35,7 +40,7 @@
 
 .chat-box-message-user-transformed {
   background-color: rgb(252 229 255);
-    float: left;
+  float: left;
   float: left;
   margin-right: auto;
   text-align: left;
