@@ -1,13 +1,15 @@
 // ApiKeyBox.tsx
 
 import React, { useState, useEffect } from "react";
-import { setOpenAIApiKey, getOpenAIApiKey } from "../../service/openaiService";
+import { setOpenAIApiKey, getOpenAIApiKey } from "../../service/chatService";
+import { BiHide, BiShowAlt } from "react-icons/bi";
 import "./ApiKeyBox.css";
 
 function ApiKeyBox(this: any) {
   const [apiKey, setApiKey] = useState<string>("");
   const [isValidated, setIsValidated] = useState<boolean>(false);
   const [isInvalidated, setIsInvalidated] = useState<boolean>(false);
+  const [keyDisplayed, setKeyDisplayed] = useState<boolean>(false);
 
   const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const apiKey = event.target.value;
@@ -34,6 +36,11 @@ function ApiKeyBox(this: any) {
     }
   };
 
+  // show or hide the api key
+  const toggleDisplayKey = () => {
+    setKeyDisplayed(!keyDisplayed);
+  };
+
   // get the api key from the backend on refresh
   useEffect(() => {
     const getApiKey = async () => {
@@ -55,12 +62,16 @@ function ApiKeyBox(this: any) {
         className={`api-key-input ${isValidated ? "validated" : ""} ${
           isInvalidated ? "invalidated" : ""
         }`}
-        type="text"
+        type={keyDisplayed ? "text" : "password"}
         value={apiKey}
         placeholder="enter your API key here.."
         onChange={handleApiKeyChange}
         onKeyUp={handleApiKeySubmit.bind(this)}
       />
+      <span id="viewKey" onClick={toggleDisplayKey}>
+        {keyDisplayed ? <BiHide /> : <BiShowAlt />}
+      </span>
+
       <div className="status-text">
         {isValidated &&
           !isInvalidated &&

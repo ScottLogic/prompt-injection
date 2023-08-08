@@ -4,10 +4,17 @@
   box-sizing: border-box;
 }
 
-#api-key-input {
-  width: 100%;
+#api-key-box input {
+  width: 90%;
   padding-top: 10px;
-  padding-bottom: 10px;}
+  padding-bottom: 10px;
+  margin-right: 10px;
+}
+
+#viewKey {
+  color:grey;
+  font-size: 16px;
+}
 
 .status-text {
   position: relative;
