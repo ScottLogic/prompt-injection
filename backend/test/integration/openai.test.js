@@ -1,4 +1,4 @@
-const { beforeEach } = require("node:test");
+const { activateDefence, getInitialDefences } = require("../../src/defence");
 const { initOpenAi, chatGptSendMessage } = require("../../src/openai");
 const { OpenAIApi } = require("openai");
 const { queryPromptEvaluationModel } = require("../../src/langchain");
@@ -26,7 +26,7 @@ beforeEach(() => {
 test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", async () => {
   const message = "Hello";
   const session = {
-    activeDefences: [],
+    defences: [],
     chatHistory: [],
     sentEmails: [],
     apiKey: "",
@@ -41,7 +41,7 @@ test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", a
 test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", async () => {
   const message = "Hello";
   const session = {
-    activeDefences: [],
+    defences: [],
     chatHistory: [],
     sentEmails: [],
     apiKey: "sk-12345",
@@ -79,16 +79,17 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
 });
 
 test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to chat history", async () => {
+  // set the system role prompt
+  process.env.SYSTEM_ROLE = "You are a helpful assistant";
+
   const message = "Hello";
   const session = {
-    activeDefences: ["SYSTEM_ROLE"],
+    defences: getInitialDefences(),
     chatHistory: [],
     sentEmails: [],
     apiKey: "sk-12345",
   };
-
-  // set the system role prompt
-  process.env.SYSTEM_ROLE = "You are a helpful assistant";
+  session.defences = activateDefence("SYSTEM_ROLE", session.defences);
 
   // Mock the createChatCompletion function
   mockCreateChatCompletion.mockResolvedValueOnce({
@@ -125,9 +126,12 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
 });
 
 test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to the start of the chat history", async () => {
+  // set the system role prompt
+  process.env.SYSTEM_ROLE = "You are a helpful assistant";
+
   const message = "Hello";
   const session = {
-    activeDefences: ["SYSTEM_ROLE"],
+    defences: getInitialDefences(),
     // add in some chat history
     chatHistory: [
       {
@@ -142,9 +146,8 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
     sentEmails: [],
     apiKey: "sk-12345",
   };
-
-  // set the system role prompt
-  process.env.SYSTEM_ROLE = "You are a helpful assistant";
+  // activate the SYSTEM_ROLE defence
+  session.defences = activateDefence("SYSTEM_ROLE", session.defences);
 
   // Mock the createChatCompletion function
   mockCreateChatCompletion.mockResolvedValueOnce({
@@ -188,7 +191,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
 test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system role is removed from the chat history", async () => {
   const message = "Hello";
   const session = {
-    activeDefences: [],
+    defences: [{ id: "SYSTEM_ROLE", isActive: false }],
     // add in some chat history with a system role
     chatHistory: [
       {
@@ -251,7 +254,7 @@ test(
   async () => {
     const message = "Hello";
     const session = {
-      activeDefences: ["SYSTEM_ROLE"],
+      defences: [{ id: "SYSTEM_ROLE", isActive: true }],
       // add in some chat history with a system role
       chatHistory: [
         {
@@ -312,13 +315,19 @@ test(
 );
 
 test(
-  "GIVEN the assistant sends an email AND EMAIL_WHITELIST is not active AND email is not in the whitelist" +
+  "GIVEN the assistant sends an email AND EMAIL_WHITELIST is inactive AND email is not in the whitelist" +
     "WHEN sending message " +
     "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is triggered",
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      activeDefences: [],
+      defences: [
+        {
+          id: "EMAIL_WHITELIST",
+          isActive: false,
+          configutation: [{ id: "whitelist", value: "" }],
+        },
+      ],
       chatHistory: [],
       sentEmails: [],
       apiKey: "sk-12345",
@@ -391,7 +400,13 @@ test(
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      activeDefences: ["EMAIL_WHITELIST"],
+      defences: [
+        {
+          id: "EMAIL_WHITELIST",
+          isActive: true,
+          configutation: [{ id: "whitelist", value: "" }],
+        },
+      ],
       chatHistory: [],
       sentEmails: [],
       apiKey: "sk-12345",
@@ -461,7 +476,13 @@ test(
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      activeDefences: ["EMAIL_WHITELIST"],
+      defences: [
+        {
+          id: "EMAIL_WHITELIST",
+          isActive: true,
+          config: [{ id: "whitelist", value: "bob@example.com" }],
+        },
+      ],
       chatHistory: [],
       sentEmails: [],
       apiKey: "sk-12345",
@@ -527,13 +548,19 @@ test(
 );
 
 test(
-  "GIVEN the assistant sends an email AND EMAIL_WHITELIST is not active AND email is in the whitelist" +
+  "GIVEN the assistant sends an email AND EMAIL_WHITELIST is inactive AND email is in the whitelist" +
     "WHEN sending message " +
     "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is not triggered",
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      activeDefences: [],
+      defences: [
+        {
+          id: "EMAIL_WHITELIST",
+          isActive: false,
+          config: [{ id: "whitelist", value: "bob@example.com" }],
+        },
+      ],
       chatHistory: [],
       sentEmails: [],
       apiKey: "sk-12345",

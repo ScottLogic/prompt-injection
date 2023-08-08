@@ -3,6 +3,8 @@ const router = require("./router");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const session = require("express-session");
+
+const { getInitialDefences } = require("./defence");
 const { setOpenAiApiKey } = require("./openai");
 
 dotenv.config();
@@ -47,8 +49,8 @@ app.use(function (req, res, next) {
   if (!req.session.sentEmails) {
     req.session.sentEmails = [];
   }
-  if (!req.session.activeDefences) {
-    req.session.activeDefences = [];
+  if (!req.session.defences) {
+    req.session.defences = getInitialDefences();
   }
   if (!req.session.apiKey) {
     req.session.apiKey = envOpenAiKey || "";

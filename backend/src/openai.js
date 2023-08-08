@@ -1,6 +1,6 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { isDefenceActive } = require("./defence");
-const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
+const { isDefenceActive, getSystemRole } = require("./defence");
+const { sendEmail, askEmailWhitelist, isEmailInWhitelist } = require("./email");
 const {
   initQAModel,
   initPromptEvaluationModel,
@@ -8,8 +8,8 @@ const {
   queryPromptEvaluationModel,
 } = require("./langchain");
 
-// OpenAI configuration
-let configuration = null;
+// OpenAI config
+let config = null;
 let openai = null;
 
 // functions available to ChatGPT
@@ -37,7 +37,7 @@ const chatGptFunctions = [
     },
   },
   {
-    name: "getEmailWhitelist",
+    name: "askEmailWhitelist",
     description:
       "user asks who is on the email whitelist and the system replies with the list of emails.",
     parameters: {
@@ -136,12 +136,12 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
     // call the function
     if (functionName === "sendEmail") {
       let isAllowedToSendEmail = false;
-      if (isEmailInWhitelist(params.address)) {
+      if (isEmailInWhitelist(params.address, session.defences)) {
         isAllowedToSendEmail = true;
       } else {
         // trigger email defence even if it is not active
         defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
-        if (isDefenceActive("EMAIL_WHITELIST", session.activeDefences)) {
+        if (isDefenceActive("EMAIL_WHITELIST", session.defences)) {
           // do not send email if defence is on and set to blocked
           response = "Cannot send to this email as it is not whitelisted";
           defenceInfo.blocked = true;
@@ -184,13 +184,13 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
 
 async function chatGptChatCompletion(session) {
   // check if we need to set a system role
-  if (isDefenceActive("SYSTEM_ROLE", session.activeDefences)) {
+  if (isDefenceActive("SYSTEM_ROLE", session.defences)) {
     // check to see if there's already a system role
     if (!session.chatHistory.find((message) => message.role === "system")) {
       // add the system role to the start of the chat history
       session.chatHistory.unshift({
         role: "system",
-        content: process.env.SYSTEM_ROLE,
+        content: getSystemRole(session.defences),
       });
     }
   } else {

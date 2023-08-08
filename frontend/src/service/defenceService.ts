@@ -1,14 +1,15 @@
+import { DefenceConfig, DefenceInfo } from "../models/defence";
 import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
 
-const getActiveDefences = async (): Promise<string[]> => {
+async function getDefences(): Promise<DefenceInfo[]> {
   const response = await sendRequest(PATH + "status", "GET");
   const data = await response.json();
   return data;
-};
+}
 
-const activateDefence = async (id: string): Promise<boolean> => {
+async function activateDefence(id: string): Promise<boolean> {
   const response = await sendRequest(
     PATH + "activate",
     "POST",
@@ -16,9 +17,9 @@ const activateDefence = async (id: string): Promise<boolean> => {
     JSON.stringify({ defenceId: id })
   );
   return response.status === 200;
-};
+}
 
-const deactivateDefence = async (id: string): Promise<boolean> => {
+async function deactivateDefence(id: string): Promise<boolean> {
   const response = await sendRequest(
     PATH + "deactivate",
     "POST",
@@ -28,6 +29,18 @@ const deactivateDefence = async (id: string): Promise<boolean> => {
     JSON.stringify({ defenceId: id })
   );
   return response.status === 200;
-};
+}
 
-export { getActiveDefences, activateDefence, deactivateDefence };
+async function configureDefence(id: string, config: DefenceConfig[]) {
+  const response = await sendRequest(
+    PATH + "configure",
+    "POST",
+    {
+      "Content-Type": "application/json",
+    },
+    JSON.stringify({ defenceId: id, config: config })
+  );
+  return response.status === 200;
+}
+
+export { getDefences, activateDefence, deactivateDefence, configureDefence };
