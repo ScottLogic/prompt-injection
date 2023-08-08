@@ -1,13 +1,14 @@
 import { sendRequest } from "./backendService";
+import { ChatResponse } from "../models/chat";
 
 const PATH = "openai/";
 
-async function clearOpenAiChat() {
+const clearChat = async (): Promise<boolean> => {
   const response = await sendRequest(PATH + "clear", "POST");
   return response.status === 200;
-}
+};
 
-async function openAiSendMessage(message) {
+const sendMessage = async (message: string): Promise<ChatResponse> => {
   const response = await sendRequest(
     PATH + "chat",
     "POST",
@@ -17,6 +18,6 @@ async function openAiSendMessage(message) {
   const data = await response.json();
   console.log(data);
   return data;
-}
+};
 
-export { clearOpenAiChat, openAiSendMessage };
+export { clearChat, sendMessage };
