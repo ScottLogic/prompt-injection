@@ -21,7 +21,9 @@ function DefenceConfiguration(
       <span className="defence-config-name">{config.name} </span>
       <input
         className="defence-config-value"
-        placeholder={config.value}
+        type="text"
+        title="Press enter to save"
+        defaultValue={config.value}
         onKeyUp={setConfiguration.bind(this)}
         onClick={(event) => event.stopPropagation()}
       ></input>
