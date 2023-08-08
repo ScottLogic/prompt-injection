@@ -32,25 +32,27 @@ const chatGptFunctions = [
   },
   {
     name: "getEmailWhitelist",
-    description: "user asks who is on the email whitelist and the system replies with the list of emails.",
+    description:
+      "user asks who is on the email whitelist and the system replies with the list of emails.",
     parameters: {
       type: "object",
-      properties: {}
-      }
+      properties: {},
     },
-    {
-      name: "askQuestion",
-      description: "Ask a question about the documents containing company info. ",
-      parameters: {
-        type: "object",
-        properties: {
-          question: {
-            type: "string",
-            description: "The question asked about the documents",
-          }
-        }
-      }
+  },
+  {
+    name: "askQuestion",
+    description:
+      "Ask a question about the documents with company information. ",
+    parameters: {
+      type: "object",
+      properties: {
+        question: {
+          type: "string",
+          description: "The question asked about the documents",
+        },
+      },
     },
+  },
 ];
 
 function initOpenAi() {
@@ -103,12 +105,13 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-      
     } else if (functionName === "getEmailWhitelist") {
-      response = getEmailWhitelist(isDefenceActive("EMAIL_WHITELIST", session.activeDefences));
+      response = getEmailWhitelist(
+        isDefenceActive("EMAIL_WHITELIST", session.activeDefences)
+      );
     }
 
-    if (functionName === "askQuestion"){
+    if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
       response = (await queryDocuments(params.question)).reply;
@@ -165,12 +168,14 @@ async function chatGptSendMessage(message, session) {
   // evaluate the message for prompt injection
   const evalPrompt = await queryPromptEvaluationModel(message);
   if (evalPrompt.isMalicious) {
-      defenceInfo.triggeredDefences.push("LLM_EVALUATION");
-      if (isDefenceActive("LLM_EVALUATION", session.activeDefences)) {
-        console.debug("LLM evalutation defence active.");
-        defenceInfo.blocked = true;
-        const evalResponse = "Message blocked by the malicious prompt evaluator." + evalPrompt.reason;
-        return { reply: evalResponse, defenceInfo: defenceInfo };
+    defenceInfo.triggeredDefences.push("LLM_EVALUATION");
+    if (isDefenceActive("LLM_EVALUATION", session.activeDefences)) {
+      console.debug("LLM evalutation defence active.");
+      defenceInfo.blocked = true;
+      const evalResponse =
+        "Message blocked by the malicious prompt evaluator." +
+        evalPrompt.reason;
+      return { reply: evalResponse, defenceInfo: defenceInfo };
     }
   }
   // add user message to chat
@@ -179,6 +184,8 @@ async function chatGptSendMessage(message, session) {
   let reply = await chatGptChatCompletion(session);
   // check if GPT wanted to call a function
   while (reply.function_call) {
+    session.chatHistory.push(reply);
+
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
       reply.function_call,
@@ -189,10 +196,9 @@ async function chatGptSendMessage(message, session) {
     session.chatHistory.push(functionCallReply.reply);
     // update the defence info
     defenceInfo = functionCallReply.defenceInfo;
-  
+
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion(session);
-
   }
   // add the ai reply to the chat history
   session.chatHistory.push(reply);
