@@ -77,7 +77,7 @@ function DefenceMechanism({
         {isInfoBoxVisible ? (
           <div className="strategy-mechanism-info-box">
             <div>{defenceDetail.info}</div>
-            <div className="defence-mechanism-configuration">
+            <div className="defence-mechanism-config">
               {defenceDetail.config?.map((config, index) => {
                 return (
                   <DefenceConfiguration

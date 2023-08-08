@@ -24,10 +24,10 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
         });
         if (matchingRemoteDefence) {
           localDefence.isActive = matchingRemoteDefence.isActive;
-          // set each configuration value
+          // set each config value
           if (matchingRemoteDefence.config && localDefence.config) {
             matchingRemoteDefence.config.forEach((configEntry, index) => {
-              // get the matching configuration in the local defence
+              // get the matching config in the local defence
               const matchingConfig = localDefence.config.find((config) => {
                 return config.id === configEntry.id;
               });
@@ -85,13 +85,13 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
 
   const setDefenceConfiguration = (
     defenceId: string,
-    configuration: DefenceConfig[]
+    config: DefenceConfig[]
   ) => {
-    configureDefence(defenceId, configuration).then(() => {
+    configureDefence(defenceId, config).then(() => {
       // update state
       const newDefences = defenceDetails.map((defence) => {
         if (defence.id === defenceId) {
-          defence.config = configuration;
+          defence.config = config;
         }
         return defence;
       });

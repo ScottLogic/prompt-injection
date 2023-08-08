@@ -470,7 +470,7 @@ test(
         {
           id: "EMAIL_WHITELIST",
           isActive: true,
-          configuration: [{ id: "whitelist", value: "bob@example.com" }],
+          config: [{ id: "whitelist", value: "bob@example.com" }],
         },
       ],
       chatHistory: [],
@@ -547,7 +547,7 @@ test(
         {
           id: "EMAIL_WHITELIST",
           isActive: false,
-          configuration: [{ id: "whitelist", value: "bob@example.com" }],
+          config: [{ id: "whitelist", value: "bob@example.com" }],
         },
       ],
       chatHistory: [],

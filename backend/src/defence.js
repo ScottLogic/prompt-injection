@@ -2,7 +2,7 @@ function getInitialDefences() {
   const defences = [
     {
       id: "CHARACTER_LIMIT",
-      configuration: [
+      config: [
         {
           id: "maxMessageLength",
           value: process.env.MAX_MESSAGE_LENGTH || 280,
@@ -11,7 +11,7 @@ function getInitialDefences() {
     },
     {
       id: "RANDOM_SEQUENCE_ENCLOSURE",
-      configuration: [
+      config: [
         {
           id: "prePrompt",
           value: process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT || "",
@@ -25,7 +25,7 @@ function getInitialDefences() {
     { id: "XML_TAGGING" },
     {
       id: "EMAIL_WHITELIST",
-      configuration: [
+      config: [
         {
           id: "whitelist",
           value: process.env.EMAIL_WHITELIST,
@@ -34,7 +34,7 @@ function getInitialDefences() {
     },
     {
       id: "SYSTEM_ROLE",
-      configuration: [
+      config: [
         {
           id: "systemRole",
           value: process.env.SYSTEM_ROLE || "",
@@ -60,17 +60,17 @@ function deactivateDefence(id, defences) {
   );
 }
 
-function configureDefence(id, defences, configuration) {
+function configureDefence(id, defences, config) {
   // return the updated list of defences
   return defences.map((defence) =>
-    defence.id === id ? { ...defence, configuration: configuration } : defence
+    defence.id === id ? { ...defence, config: config } : defence
   );
 }
 
 function getConfigValue(defences, defenceId, configId, defaultValue) {
   const configValue = defences
     .find((defence) => defence.id === defenceId)
-    ?.configuration?.find((config) => config.id === configId)?.value;
+    ?.config?.find((config) => config.id === configId)?.value;
   return configValue || defaultValue;
 }
 
@@ -210,7 +210,6 @@ function detectTriggeredDefences(message, defences) {
   }
   return { reply: null, defenceInfo: defenceInfo };
 }
-
 
 module.exports = {
   activateDefence,

@@ -41,18 +41,18 @@ router.post("/defence/deactivate", (req, res, next) => {
 router.post("/defence/configure", (req, res, next) => {
   // id of the defence
   const defenceId = req.body?.defenceId;
-  const configuration = req.body?.configuration;
-  if (defenceId && configuration) {
+  const config = req.body?.config;
+  if (defenceId && config) {
     // configure the defence
     req.session.defences = configureDefence(
       defenceId,
       req.session.defences,
-      configuration
+      config
     );
     res.send("Defence configured");
   } else {
     res.statusCode = 400;
-    res.send("Missing defenceId or configuration");
+    res.send("Missing defenceId or config");
   }
 });
 
@@ -90,16 +90,16 @@ router.post("/openai/chat", async (req, res, next) => {
           transformedMessage,
           req.session
         );
-        
+
         reply = openAiReply.reply;
         // combine triggered defences
         defenceInfo.triggeredDefences = [
           ...defenceInfo.triggeredDefences,
           ...openAiReply.defenceInfo.triggeredDefences,
         ];
-        // combine blocked 
-        defenceInfo.blocked = defenceInfo.blocked || openAiReply.defenceInfo.blocked;
-
+        // combine blocked
+        defenceInfo.blocked =
+          defenceInfo.blocked || openAiReply.defenceInfo.blocked;
       } catch (error) {
         console.log(error);
         res.statusCode = 500;

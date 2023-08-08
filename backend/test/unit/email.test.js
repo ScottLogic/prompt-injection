@@ -13,13 +13,19 @@ test("GIVEN email is ready to be sent WHEN email is sent THEN session list is up
   };
   const response = sendEmail(address, subject, body, session);
   // check the response
-  expect(response).toBe("Email sent to " +  address + " with subject " +
-    subject +  " and body " + body);
-// check the sent email has been added to the session
-expect(session.sentEmails.length).toBe(1);
-expect(session.sentEmails[0].address).toBe(address);
-expect(session.sentEmails[0].subject).toBe(subject);
-expect(session.sentEmails[0].content).toBe(body);
+  expect(response).toBe(
+    "Email sent to " +
+      address +
+      " with subject " +
+      subject +
+      " and body " +
+      body
+  );
+  // check the sent email has been added to the session
+  expect(session.sentEmails.length).toBe(1);
+  expect(session.sentEmails[0].address).toBe(address);
+  expect(session.sentEmails[0].subject).toBe(subject);
+  expect(session.sentEmails[0].content).toBe(body);
 });
 
 test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist AND whitelist defense on THEN list is returned", () => {
@@ -28,7 +34,7 @@ test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist A
     {
       id: "EMAIL_WHITELIST",
       isActive: true,
-      configuration: [
+      config: [
         {
           id: "whitelist",
           value: "bob@example.com,kate@example.com",
@@ -48,14 +54,14 @@ test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist A
     {
       id: "EMAIL_WHITELIST",
       isActive: false,
-      configuration: [
+      config: [
         {
           id: "whitelist",
           value: "bob@example.com,kate@example.com",
         },
       ],
     },
-  ];  
+  ];
   const response = askEmailWhitelist(defences);
   expect(response).toBe(
     "As the email whitelist defence is not active, any email address can be emailed."
@@ -68,7 +74,7 @@ test("GIVEN email is not in whitelist WHEN checking whitelist THEN false is retu
     {
       id: "EMAIL_WHITELIST",
       isActive: true,
-      configuration: [
+      config: [
         {
           id: "whitelist",
           value: "bob@example.com,kate@example.com",
@@ -87,7 +93,7 @@ test("GIVEN email is in whitelist WHEN checking whitelist THEN true is returned"
     {
       id: "EMAIL_WHITELIST",
       isActive: true,
-      configuration: [
+      config: [
         {
           id: "whitelist",
           value: "bob@example.com,kate@example.com",
@@ -96,6 +102,6 @@ test("GIVEN email is in whitelist WHEN checking whitelist THEN true is returned"
     },
   ];
   const address = "bob@example.com";
-  const isWhitelisted = isEmailInWhitelist(address,defences);
+  const isWhitelisted = isEmailInWhitelist(address, defences);
   expect(isWhitelisted).toBe(true);
 });

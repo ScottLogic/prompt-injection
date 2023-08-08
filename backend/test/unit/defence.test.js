@@ -121,7 +121,7 @@ test(
       {
         id: "CHARACTER_LIMIT",
         isActive: true,
-        configuration: [
+        config: [
           {
             id: "maxMessageLength",
             value: 3,
@@ -146,7 +146,7 @@ test(
       {
         id: "CHARACTER_LIMIT",
         isActive: true,
-        configuration: [
+        config: [
           {
             id: "maxMessageLength",
             value: 280,
@@ -171,7 +171,7 @@ test(
       {
         id: "CHARACTER_LIMIT",
         isActive: false,
-        configuration: [
+        config: [
           {
             id: "maxMessageLength",
             value: 3,
@@ -201,15 +201,15 @@ test("GIVEN setting max message length WHEN configuring defence THEN defence is 
     {
       id: defence,
       isActive: true,
-      configuration: [{ id: "maxMessageLength", value: 20 }],
+      config: [{ id: "maxMessageLength", value: 20 }],
     },
   ];
-  const configuration = [{ id: "maxMessageLength", value: 10 }];
-  const updatedDefences = configureDefence(defence, defences, configuration);
+  const config = [{ id: "maxMessageLength", value: 10 }];
+  const updatedDefences = configureDefence(defence, defences, config);
   expect(updatedDefences).toContainEqual({
     id: defence,
     isActive: true,
-    configuration: configuration,
+    config: config,
   });
 });
 
@@ -244,7 +244,7 @@ test("GIVEN setting email whitelist WHEN configuring defence THEN defence is con
     {
       id: defence,
       isActive: true,
-      configuration: [
+      config: [
         {
           id: "whitelist",
           value: "someone@example.com,someone_else@example.com",
@@ -253,14 +253,14 @@ test("GIVEN setting email whitelist WHEN configuring defence THEN defence is con
     },
   ];
 
-  const configuration = [
+  const config = [
     { id: "whitelist", value: "someone@example.com,someone_else@example.com" },
   ];
-  const updatedDefences = configureDefence(defence, defences, configuration);
+  const updatedDefences = configureDefence(defence, defences, config);
   expect(updatedDefences).toContainEqual({
     id: defence,
     isActive: true,
-    configuration: configuration,
+    config: config,
   });
 });
 
@@ -277,7 +277,7 @@ test("GIVEN user configures random sequence enclosure WHEN configuring defence T
   expect(defences).toContainEqual({
     id: "RANDOM_SEQUENCE_ENCLOSURE",
     isActive: false,
-    configuration: [
+    config: [
       { id: "length", value: newLength },
       { id: "prePrompt", value: newPrePrompt },
     ],

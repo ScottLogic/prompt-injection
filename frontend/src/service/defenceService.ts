@@ -31,14 +31,14 @@ async function deactivateDefence(id: string): Promise<boolean> {
   return response.status === 200;
 }
 
-async function configureDefence(id: string, configuration: DefenceConfig[]) {
+async function configureDefence(id: string, config: DefenceConfig[]) {
   const response = await sendRequest(
     PATH + "configure",
     "POST",
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ defenceId: id, configuration: configuration })
+    JSON.stringify({ defenceId: id, config: config })
   );
   return response.status === 200;
 }

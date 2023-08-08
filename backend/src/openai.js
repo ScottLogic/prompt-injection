@@ -3,8 +3,8 @@ const { isDefenceActive, getSystemRole } = require("./defence");
 const { sendEmail, askEmailWhitelist, isEmailInWhitelist } = require("./email");
 const { queryDocuments, queryPromptEvaluationModel } = require("./langchain");
 
-// OpenAI configuration
-let configuration = null;
+// OpenAI config
+let config = null;
 let openai = null;
 // functions available to ChatGPT
 const chatGptFunctions = [
@@ -56,10 +56,10 @@ const chatGptFunctions = [
 ];
 
 function initOpenAi() {
-  configuration = new Configuration({
+  config = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   });
-  openai = new OpenAIApi(configuration);
+  openai = new OpenAIApi(config);
 }
 
 // returns true if the function is in the list of functions available to ChatGPT

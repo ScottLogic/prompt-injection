@@ -18,9 +18,9 @@ function DefenceConfiguration(
 
   return (
     <div>
-      <span className="defence-configuration-name">{config.name} </span>
+      <span className="defence-config-name">{config.name} </span>
       <input
-        className="defence-configuration-value"
+        className="defence-config-value"
         placeholder={config.value}
         onKeyUp={setConfiguration.bind(this)}
         onClick={(event) => event.stopPropagation()}
