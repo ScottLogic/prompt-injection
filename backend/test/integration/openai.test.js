@@ -29,9 +29,12 @@ test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", a
     defences: [],
     chatHistory: [],
     sentEmails: [],
+    apiKey: "",
   };
-  await expect(chatGptSendMessage(message, session)).rejects.toThrow(
-    "OpenAI has not been initialised"
+  const reply = await chatGptSendMessage(message, session);
+  expect(reply).toBeDefined();
+  expect(reply.reply).toBe(
+    "Please enter a valid OpenAI API key to chat to me!"
   );
 });
 
@@ -41,6 +44,7 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
     defences: [],
     chatHistory: [],
     sentEmails: [],
+    apiKey: "sk-12345",
   };
 
   // Mock the createChatCompletion function
@@ -58,7 +62,7 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
   });
 
   // initialise OpenAI
-  initOpenAi();
+  initOpenAi(session);
   // send the message
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
@@ -83,6 +87,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
     defences: getInitialDefences(),
     chatHistory: [],
     sentEmails: [],
+    apiKey: "sk-12345",
   };
   session.defences = activateDefence("SYSTEM_ROLE", session.defences);
 
@@ -101,7 +106,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   });
 
   // initialise OpenAI
-  initOpenAi();
+  initOpenAi(session);
   // send the message
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
@@ -139,6 +144,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
       },
     ],
     sentEmails: [],
+    apiKey: "sk-12345",
   };
   // activate the SYSTEM_ROLE defence
   session.defences = activateDefence("SYSTEM_ROLE", session.defences);
@@ -158,7 +164,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   });
 
   // initialise OpenAI
-  initOpenAi();
+  initOpenAi(session);
   // send the message
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
@@ -202,6 +208,7 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
       },
     ],
     sentEmails: [],
+    apiKey: "sk-12345",
   };
 
   // Mock the createChatCompletion function
@@ -219,7 +226,7 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
   });
 
   // initialise OpenAI
-  initOpenAi();
+  initOpenAi(session);
   // send the message
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
@@ -264,6 +271,7 @@ test(
         },
       ],
       sentEmails: [],
+      apiKey: "sk-12345",
     };
 
     // Mock the createChatCompletion function
@@ -281,7 +289,7 @@ test(
     });
 
     // initialise OpenAI
-    initOpenAi();
+    initOpenAi(session);
     // send the message
     const reply = await chatGptSendMessage(message, session);
     expect(reply).toBeDefined();
@@ -322,6 +330,7 @@ test(
       ],
       chatHistory: [],
       sentEmails: [],
+      apiKey: "sk-12345",
     };
 
     // set email whitelist
@@ -362,7 +371,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi();
+    initOpenAi(session);
     // send the message
     const reply = await chatGptSendMessage(message, session);
 
@@ -400,6 +409,7 @@ test(
       ],
       chatHistory: [],
       sentEmails: [],
+      apiKey: "sk-12345",
     };
 
     // set email whitelist
@@ -440,7 +450,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi();
+    initOpenAi(session);
     // send the message
     const reply = await chatGptSendMessage(message, session);
 
@@ -475,6 +485,7 @@ test(
       ],
       chatHistory: [],
       sentEmails: [],
+      apiKey: "sk-12345",
     };
 
     // set email whitelist
@@ -515,7 +526,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi();
+    initOpenAi(session);
     // send the message
     const reply = await chatGptSendMessage(message, session);
 
@@ -552,6 +563,7 @@ test(
       ],
       chatHistory: [],
       sentEmails: [],
+      apiKey: "sk-12345",
     };
 
     // set email whitelist
@@ -592,7 +604,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi();
+    initOpenAi(session);
     // send the message
     const reply = await chatGptSendMessage(message, session);
 
