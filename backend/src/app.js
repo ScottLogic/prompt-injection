@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const session = require("express-session");
 const { initOpenAi } = require("./openai");
-const { initQAModel } = require("./documents");
+const { initQAModel, initPromptEvaluationModel } = require("./langchain");
 
 dotenv.config();
 
@@ -24,11 +24,14 @@ app.use(
   })
 );
 
-// initialise openai
+// main model for chat 
 initOpenAi();
 
-// initialise question answering llm
+// model for question answering of documenents
 initQAModel();
+
+// model for LLM prompt evaluation
+initPromptEvaluationModel();
 
 app.use(
   cors({

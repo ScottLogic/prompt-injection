@@ -26,6 +26,11 @@ const DEFENCE_DETAILS: DefenceInfo[] = [
     "XML Tagging",
     "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input. This is a form of prompt validation."
   ),
+  new DefenceInfo(
+    DEFENCE_TYPES.LLM_EVALUATION,
+    "LLM Evaluation",
+    "Use an LLM to evaluate the user input for malicious content or prompt injection. "
+  ),
 ];
 
 export { DEFENCE_DETAILS };
