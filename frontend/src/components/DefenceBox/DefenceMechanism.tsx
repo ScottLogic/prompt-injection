@@ -1,33 +1,49 @@
 import { useState } from "react";
-import { DefenceInfo } from "../../models/defence";
+import { DefenceConfig, DefenceInfo } from "../../models/defence";
 import "./DefenceMechanism.css";
 import "../StrategyBox/StrategyMechanism.css";
-
-const ANIMATION_FLASH_TIME_SECONDS = 1;
-const ANIMATION_FLASH_REPEAT = 3;
+import DefenceConfiguration from "./DefenceConfiguration";
 
 function DefenceMechanism({
-  key,
   defenceDetail,
   setDefenceActive,
   setDefenceInactive,
+  setDefenceConfiguration,
 }: {
-  key: number;
   defenceDetail: DefenceInfo;
   setDefenceActive: (defenceId: string) => void;
   setDefenceInactive: (defenceId: string) => void;
+  setDefenceConfiguration: (defenceId: string, config: DefenceConfig[]) => void;
 }) {
   const [isInfoBoxVisible, setIsInfoBoxVisible] = useState<boolean>(false);
+
+  const ANIMATION_FLASH_TIME_SECONDS = 1;
+  const ANIMATION_FLASH_REPEAT = 3;
+
+  const setConfigurationValue = (configId: string, value: string) => {
+    const newConfiguration = defenceDetail.config.map((config) => {
+      if (config.id === configId) {
+        config.value = value;
+      }
+      return config;
+    });
+    setDefenceConfiguration(defenceDetail.id, newConfiguration);
+  };
 
   return (
     <span>
       <div
-        key={key}
         className={
           defenceDetail.isActive
             ? "strategy-mechanism defence-mechanism defence-active"
             : "strategy-mechanism defence-mechanism"
         }
+        onMouseOver={() => {
+          setIsInfoBoxVisible(true);
+        }}
+        onMouseLeave={() => {
+          setIsInfoBoxVisible(false);
+        }}
         style={
           defenceDetail.isTriggered
             ? defenceDetail.isActive
@@ -57,21 +73,21 @@ function DefenceMechanism({
       >
         <div className="strategy-mechanism-header">
           <span>{defenceDetail.name}</span>
-          <span
-            className="strategy-mechanism-info"
-            onMouseOver={() => {
-              setIsInfoBoxVisible(true);
-            }}
-            onMouseLeave={() => {
-              setIsInfoBoxVisible(false);
-            }}
-          >
-            <span>?</span>
-          </span>
         </div>
         {isInfoBoxVisible ? (
           <div className="strategy-mechanism-info-box">
-            {defenceDetail.info}
+            <div>{defenceDetail.info}</div>
+            <div className="defence-mechanism-config">
+              {defenceDetail.config?.map((config, index) => {
+                return (
+                  <DefenceConfiguration
+                    key={config.id}
+                    config={config}
+                    setConfigurationValue={setConfigurationValue}
+                  />
+                );
+              })}
+            </div>
           </div>
         ) : null}
       </div>
