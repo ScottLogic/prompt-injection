@@ -1,5 +1,7 @@
+const { beforeEach } = require("node:test");
 const { initOpenAi, chatGptSendMessage } = require("../../src/openai");
 const { OpenAIApi } = require("openai");
+const { queryPromptEvaluationModel } = require("../../src/langchain");
 
 // Mock the OpenAIApi module
 jest.mock("openai");
@@ -11,7 +13,17 @@ OpenAIApi.mockImplementation(() => {
   };
 });
 
-test("GIVEN OpenAI not initialised WHEN sending message THEN enter api key reply is returned", async () => {
+// bypass the prompt evaluation model
+jest.mock("../../src/langchain");
+const mockEvalReturn = jest.fn();
+queryPromptEvaluationModel.mockImplementation(() => {
+  return mockEvalReturn;
+});
+beforeEach(() => {
+  mockEvalReturn.mockResolvedValueOnce({ isMalicious: false, reason: "" });
+});
+
+test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", async () => {
   const message = "Hello";
   const session = {
     activeDefences: [],

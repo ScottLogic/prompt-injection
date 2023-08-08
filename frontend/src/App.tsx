@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import AttackBox from "./components/AttackBox/AttackBox";
 import ChatBox from "./components/ChatBox/ChatBox";
 import DefenceBox from "./components/DefenceBox/DefenceBox";
 import EmailBox from "./components/EmailBox/EmailBox";
@@ -25,7 +26,8 @@ function App() {
       <div className="side-bar">
         <div className="side-bar-header">defence mechanisms</div>
         <DefenceBox key={defenceBoxKey} triggeredDefences={triggeredDefences} />
-
+        <div className="side-bar-header">attack mechanisms</div>
+        <AttackBox />
         <div className="side-bar-header">openai api key</div>
         <ApiKeyBox />
       </div>

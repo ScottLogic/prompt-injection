@@ -4,7 +4,7 @@ const {
   setOpenAiApiKey,
   initOpenAi,
 } = require("../../src/openai");
-const { initQAModel } = require("../../src/documents");
+const { initQAModel } = require("../../src/langchain");
 
 // Mock the OpenAIApi module
 jest.mock("openai");
@@ -25,7 +25,7 @@ jest.mock("../../src/openai", () => {
   };
 });
 
-jest.mock("../../src/documents");
+jest.mock("../../src/langchain");
 initQAModel.mockImplementation(() => {
   return {
     initQAModel: jest.fn(),

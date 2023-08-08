@@ -5,7 +5,7 @@ const { MemoryVectorStore } = require("langchain/vectorstores/memory");
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 const { RetrievalQAChain } = require("langchain/chains");
 const { PromptTemplate } = require("langchain/prompts");
-const { getDocuments } = require("../../src/documents");
+const { getDocuments } = require("../../src/langchain");
 
 // mock the directory loader 
 jest.mock("langchain/document_loaders/fs/directory");

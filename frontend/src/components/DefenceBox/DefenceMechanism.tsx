@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DefenceInfo } from "../../models/defence";
 import "./DefenceMechanism.css";
+import "../StrategyBox/StrategyMechanism.css";
 
 const ANIMATION_FLASH_TIME_SECONDS = 1;
 const ANIMATION_FLASH_REPEAT = 3;
@@ -24,8 +25,8 @@ function DefenceMechanism({
         key={key}
         className={
           defenceDetail.isActive
-            ? "defence-mechanism defence-active"
-            : "defence-mechanism"
+            ? "strategy-mechanism defence-mechanism defence-active"
+            : "strategy-mechanism defence-mechanism"
         }
         style={
           defenceDetail.isTriggered
@@ -54,10 +55,10 @@ function DefenceMechanism({
             : setDefenceActive(defenceDetail.id);
         }}
       >
-        <div className="defence-mechanism-header">
-          <span className="defence-mechanism-name">{defenceDetail.name}</span>
+        <div className="strategy-mechanism-header">
+          <span>{defenceDetail.name}</span>
           <span
-            className="defence-mechanism-info"
+            className="strategy-mechanism-info"
             onMouseOver={() => {
               setIsInfoBoxVisible(true);
             }}
@@ -69,7 +70,9 @@ function DefenceMechanism({
           </span>
         </div>
         {isInfoBoxVisible ? (
-          <div className="defence-mechanism-info-box">{defenceDetail.info}</div>
+          <div className="strategy-mechanism-info-box">
+            {defenceDetail.info}
+          </div>
         ) : null}
       </div>
     </span>
