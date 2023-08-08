@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import "./ModelSelectionBox.css";
 import { setGptModel, getGptModel } from "../../service/openaiService";
-import { MODELS } from "../../Models";
+import { CHAT_MODELS } from "../../models/chat";
 
 // return a drop down menu with the models
 function ModelSelectionBox() {
@@ -30,6 +30,8 @@ function ModelSelectionBox() {
     getModel();
   }, []);
 
+  const chatModelOptions = Object.values(CHAT_MODELS);
+
   // return a drop down menu with the models
   return (
     <div id="model-selection-box">
@@ -41,7 +43,7 @@ function ModelSelectionBox() {
           onChange={(e) => setSelectedModel(e.target.value)}
           placeholder={modelInUse}
         >
-          {MODELS.map((model) => (
+          {chatModelOptions.map((model) => (
             <option value={model}>{model}</option>
           ))}
           ;
