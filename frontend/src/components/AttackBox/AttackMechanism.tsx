@@ -1,14 +1,15 @@
+import { AttackInfo } from "../../models/attack";
 import "../StrategyBox/StrategyMechanism.css";
 import React from "react";
 
-function DefenceMechanism(props) {
+function DefenceMechanism({ attack }: { attack: AttackInfo }) {
   const [isInfoBoxVisible, setIsInfoBoxVisible] = React.useState(false);
 
   return (
     <span>
       <div className="strategy-mechanism">
         <div className="strategy-mechanism-header">
-          <span>{props.attack.name}</span>
+          <span>{attack.name}</span>
           <span
             className="strategy-mechanism-info"
             onMouseOver={() => {
@@ -22,7 +23,7 @@ function DefenceMechanism(props) {
           </span>
         </div>
         {isInfoBoxVisible ? (
-          <div className="strategy-mechanism-info-box">{props.attack.info}</div>
+          <div className="strategy-mechanism-info-box">{attack.info}</div>
         ) : null}
       </div>
     </span>
