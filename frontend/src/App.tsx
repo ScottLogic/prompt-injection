@@ -1,18 +1,20 @@
 import "./App.css";
+import AttackBox from "./components/AttackBox/AttackBox";
 import ChatBox from "./components/ChatBox/ChatBox";
 import DefenceBox from "./components/DefenceBox/DefenceBox";
 import EmailBox from "./components/EmailBox/EmailBox";
 import Header from "./components/Header";
 import { useState } from "react";
+import { EmailInfo } from "./models/email";
 
 function App() {
-  const [defenceBoxKey, setDefenceBoxKey] = useState(0);
-  const [emails, setEmails] = useState([]);
-  const [triggeredDefences, setTriggeredDefences] = useState([]);
+  const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
+  const [emails, setEmails] = useState<EmailInfo[]>([]);
+  const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
 
-  const updateTriggeredDefences = (defences) => {
+  const updateTriggeredDefences = (defenceDetails: string[]) => {
     // set the new triggered defences
-    setTriggeredDefences(defences);
+    setTriggeredDefences(defenceDetails);
     // update the key of the defence box to force a re-render
     setDefenceBoxKey(defenceBoxKey + 1);
   };
@@ -22,6 +24,8 @@ function App() {
       <div className="side-bar">
         <div className="side-bar-header">defence mechanisms</div>
         <DefenceBox key={defenceBoxKey} triggeredDefences={triggeredDefences} />
+        <div className="side-bar-header">attack mechanisms</div>
+        <AttackBox />
       </div>
       <div id="centre-area">
         <Header />

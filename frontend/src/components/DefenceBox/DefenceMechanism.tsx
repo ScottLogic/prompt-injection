@@ -1,30 +1,45 @@
+import { useState } from "react";
+import { DefenceConfig, DefenceInfo } from "../../models/defence";
 import "./DefenceMechanism.css";
-import React from "react";
+import "../StrategyBox/StrategyMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
 
-function DefenceMechanism(props) {
-  const [isInfoBoxVisible, setIsInfoBoxVisible] = React.useState(false);
+function DefenceMechanism({
+  key,
+  defenceDetail,
+  setDefenceActive,
+  setDefenceInactive,
+  setDefenceConfiguration,
+}: {
+  key: number;
+  defenceDetail: DefenceInfo;
+  setDefenceActive: (defenceId: string) => void;
+  setDefenceInactive: (defenceId: string) => void;
+  setDefenceConfiguration: (defenceId: string, config: DefenceConfig[]) => void;
+}) {
+  const [isInfoBoxVisible, setIsInfoBoxVisible] = useState<boolean>(false);
 
   const ANIMATION_FLASH_TIME_SECONDS = 1;
   const ANIMATION_FLASH_REPEAT = 3;
 
-  const setConfigurationValue = (configId, value) => {
-    const newConfiguration = props.defence.configuration.map((config) => {
+  const setConfigurationValue = (configId: string, value: string) => {
+    const newConfiguration = defenceDetail.config.map((config) => {
       if (config.id === configId) {
         config.value = value;
       }
       return config;
     });
-    props.setDefenceConfiguration(props.defence.id, newConfiguration);
+    setDefenceConfiguration(defenceDetail.id, newConfiguration);
   };
 
   return (
     <span>
       <div
+        key={key}
         className={
-          props.defence.isActive
-            ? "defence-mechanism defence-active"
-            : "defence-mechanism"
+          defenceDetail.isActive
+            ? "strategy-mechanism defence-mechanism defence-active"
+            : "strategy-mechanism defence-mechanism"
         }
         onMouseOver={() => {
           setIsInfoBoxVisible(true);
@@ -33,8 +48,8 @@ function DefenceMechanism(props) {
           setIsInfoBoxVisible(false);
         }}
         style={
-          props.defence.isTriggered
-            ? props.defence.isActive
+          defenceDetail.isTriggered
+            ? defenceDetail.isActive
               ? {
                   animation:
                     "flash-red-active " +
@@ -54,19 +69,19 @@ function DefenceMechanism(props) {
             : { animation: "none" }
         }
         onClick={() => {
-          props.defence.isActive
-            ? props.setDefenceInactive(props.defence.id)
-            : props.setDefenceActive(props.defence.id);
+          defenceDetail.isActive
+            ? setDefenceInactive(defenceDetail.id)
+            : setDefenceActive(defenceDetail.id);
         }}
       >
-        <div className="defence-mechanism-header">
-          <span className="defence-mechanism-name">{props.defence.name}</span>
+        <div className="strategy-mechanism-header">
+          <span>{defenceDetail.name}</span>
         </div>
         {isInfoBoxVisible ? (
-          <div className="defence-mechanism-info-box">
-            <div>{props.defence.info}</div>
+          <div className="strategy-mechanism-info-box">
+            <div>{defenceDetail.info}</div>
             <div className="defence-mechanism-configuration">
-              {props.defence.configuration?.map((config, index) => {
+              {defenceDetail.config?.map((config, index) => {
                 return (
                   <DefenceConfiguration
                     key={config.id}

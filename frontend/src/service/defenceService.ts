@@ -1,14 +1,15 @@
+import { DefenceConfig, DefenceInfo } from "../models/defence";
 import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
 
-async function getDefences() {
+async function getDefences(): Promise<DefenceInfo[]> {
   const response = await sendRequest(PATH + "status", "GET");
   const data = await response.json();
   return data;
 }
 
-async function activateDefence(id) {
+async function activateDefence(id: string): Promise<boolean> {
   const response = await sendRequest(
     PATH + "activate",
     "POST",
@@ -18,7 +19,7 @@ async function activateDefence(id) {
   return response.status === 200;
 }
 
-async function deactivateDefence(id) {
+async function deactivateDefence(id: string): Promise<boolean> {
   const response = await sendRequest(
     PATH + "deactivate",
     "POST",
@@ -30,7 +31,7 @@ async function deactivateDefence(id) {
   return response.status === 200;
 }
 
-async function configureDefence(id, configuration) {
+async function configureDefence(id: string, configuration: DefenceConfig[]) {
   const response = await sendRequest(
     PATH + "configure",
     "POST",

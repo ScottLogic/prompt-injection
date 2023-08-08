@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const { isDefenceActive, getSystemRole } = require("./defence");
 const { sendEmail, askEmailWhitelist, isEmailInWhitelist } = require("./email");
-const { queryDocuments } = require("./documents");
+const { queryDocuments, queryPromptEvaluationModel } = require("./langchain");
 
 // OpenAI configuration
 let configuration = null;
@@ -33,7 +33,7 @@ const chatGptFunctions = [
   {
     name: "askEmailWhitelist",
     description:
-      "user asks who is on the email whitelist and the system replies with the list of emails. if the email whitelist defence is not active then user should be able to email anyone. ",
+      "user asks who is on the email whitelist and the system replies with the list of emails.",
     parameters: {
       type: "object",
       properties: {},
@@ -41,7 +41,8 @@ const chatGptFunctions = [
   },
   {
     name: "askQuestion",
-    description: "Ask a question about the documents",
+    description:
+      "Ask a question about the documents with company information. ",
     parameters: {
       type: "object",
       properties: {
@@ -111,7 +112,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
     if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
-      response = await queryDocuments(params.question);
+      response = (await queryDocuments(params.question)).reply;
     }
 
     // add function call to chat
@@ -161,12 +162,28 @@ async function chatGptChatCompletion(session) {
 async function chatGptSendMessage(message, session) {
   // init defence info
   let defenceInfo = { triggeredDefences: [], blocked: false };
+
+  // evaluate the message for prompt injection
+  const evalPrompt = await queryPromptEvaluationModel(message);
+  if (evalPrompt.isMalicious) {
+    defenceInfo.triggeredDefences.push("LLM_EVALUATION");
+    if (isDefenceActive("LLM_EVALUATION", session.activeDefences)) {
+      console.debug("LLM evalutation defence active.");
+      defenceInfo.blocked = true;
+      const evalResponse =
+        "Message blocked by the malicious prompt evaluator." +
+        evalPrompt.reason;
+      return { reply: evalResponse, defenceInfo: defenceInfo };
+    }
+  }
   // add user message to chat
   session.chatHistory.push({ role: "user", content: message });
 
   let reply = await chatGptChatCompletion(session);
   // check if GPT wanted to call a function
   while (reply.function_call) {
+    session.chatHistory.push(reply);
+
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
       reply.function_call,
@@ -177,6 +194,7 @@ async function chatGptSendMessage(message, session) {
     session.chatHistory.push(functionCallReply.reply);
     // update the defence info
     defenceInfo = functionCallReply.defenceInfo;
+
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion(session);
   }

@@ -211,6 +211,7 @@ function detectTriggeredDefences(message, defences) {
   return { reply: null, defenceInfo: defenceInfo };
 }
 
+
 module.exports = {
   activateDefence,
   configureDefence,
