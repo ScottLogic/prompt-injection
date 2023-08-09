@@ -1,0 +1,39 @@
+#model-selection-box {
+    padding: 1px 32px;
+    position: relative;
+}
+
+#model-selection-row {
+    display: flex;
+    align-items: center;
+}
+
+#model-selection-info {
+    align-items: center;
+    text-align: center;
+}
+
+#model-selection-info p {
+    margin: 0;
+    padding: 0;
+    color:cadetblue
+}
+
+#p error {
+    color: red;
+}
+
+#model-selection-info  {
+
+}
+
+
+#model-selection-menu {
+    width: 60%;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+#model-selection-button {
+    padding: 5px;
+}

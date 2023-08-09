@@ -11,6 +11,7 @@ const {
 // OpenAI config
 let config = null;
 let openai = null;
+
 // functions available to ChatGPT
 const chatGptFunctions = [
   {
@@ -60,30 +61,24 @@ const chatGptFunctions = [
   },
 ];
 
-function initOpenAi() {
-  config = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  openai = new OpenAIApi(config);
-}
-
 // test the api key works with the model
-async function validateApiKey(apiKey) {
+async function validateApiKey(apiKey, gptModel) {
   try {
     const testOpenAI = new OpenAIApi(new Configuration({ apiKey: apiKey }));
     const response = await testOpenAI.createChatCompletion({
-      model: "gpt-4",
+      model: gptModel,
       messages: [{ role: "user", content: "this is a test prompt" }],
     });
     return true;
   } catch (error) {
+    console.error("Error validating API key: " + error);
     return false;
   }
 }
 
 async function setOpenAiApiKey(session, apiKey) {
   // initialise all models with the new key
-  if (await validateApiKey(apiKey)) {
+  if (await validateApiKey(apiKey, session.gptModel)) {
     console.debug("Setting API key and initialising models");
     session.apiKey = apiKey;
     initOpenAi(session);
@@ -96,6 +91,29 @@ async function setOpenAiApiKey(session, apiKey) {
     session.apiKey = "";
     openai = null;
     return false;
+  }
+}
+
+function initOpenAi(session) {
+  configuration = new Configuration({
+    apiKey: session.apiKey,
+  });
+  openai = new OpenAIApi(configuration);
+  console.debug("OpenAI initialised");
+}
+
+async function setGptModel(session, model) {
+  if (model !== session.gptModel) {
+    if (await validateApiKey(session.apiKey, model)) {
+      console.debug(
+        "Setting GPT model from: " + session.gptModel + " to: " + model
+      );
+      session.gptModel = model;
+      return true;
+    } else {
+      console.debug("Could not validate apiKey with model=" + model);
+      return false;
+    }
   }
 }
 
@@ -142,10 +160,11 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-    } else if (functionName == "askEmailWhitelist") {
-      response = askEmailWhitelist(session.defences);
+    } else if (functionName == "getEmailWhitelist") {
+      response = getEmailWhitelist(
+        isDefenceActive("EMAIL_WHITELIST", session.activeDefences)
+      );
     }
-
     if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
@@ -192,7 +211,7 @@ async function chatGptChatCompletion(session) {
   }
 
   chat_completion = await openai.createChatCompletion({
-    model: "gpt-4",
+    model: session.gptModel,
     messages: session.chatHistory,
     functions: chatGptFunctions,
   });
@@ -254,4 +273,5 @@ module.exports = {
   chatGptSendMessage,
   setOpenAiApiKey,
   validateApiKey,
+  setGptModel,
 };

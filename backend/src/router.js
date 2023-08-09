@@ -1,6 +1,4 @@
 const express = require("express");
-const router = express.Router();
-
 const {
   activateDefence,
   deactivateDefence,
@@ -8,7 +6,12 @@ const {
   transformMessage,
   detectTriggeredDefences,
 } = require("./defence");
-const { chatGptSendMessage, setOpenAiApiKey } = require("./openai");
+const {
+  chatGptSendMessage,
+  setOpenAiApiKey,
+  setGptModel,
+} = require("./openai");
+const router = express.Router();
 
 // Activate a defence
 router.post("/defence/activate", (req, res, next) => {
@@ -148,6 +151,22 @@ router.post("/openai/apiKey", async (req, res, next) => {
 // Get API key
 router.get("/openai/apiKey", (req, res, next) => {
   res.send(req.session.apiKey);
+});
+
+// Set the ChatGPT model
+router.post("/openai/model", async (req, res, next) => {
+  const model = req.body?.model;
+  if (model) {
+    if (await setGptModel(req.session, model)) {
+      res.status(200).send("ChatGPT model set. ");
+    } else {
+      res.status(401).send("Could not set model");
+    }
+  }
+});
+
+router.get("/openai/model", (req, res, next) => {
+  res.send(req.session.gptModel);
 });
 
 // Importing the router

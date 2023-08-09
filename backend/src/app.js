@@ -14,6 +14,9 @@ const port = process.env.PORT || 3001;
 
 const envOpenAiKey = process.env.OPENAI_API_KEY;
 
+// use default model
+const defaultModel = "gpt-4";
+
 // Creating express server
 const app = express();
 // for parsing application/json
@@ -55,6 +58,9 @@ app.use(function (req, res, next) {
   if (!req.session.apiKey) {
     req.session.apiKey = envOpenAiKey || "";
   }
+  if (!req.session.gptModel) {
+    req.session.gptModel = defaultModel;
+  }
   next();
 });
 
@@ -65,6 +71,7 @@ app.listen(port, () => {
   // for dev purposes only - set the API key from the environment variable
   if (envOpenAiKey) {
     console.debug("Initializing models with API key from environment variable");
-    setOpenAiApiKey({ apiKey: "" }, process.env.OPENAI_API_KEY);
+    const defaultSession = { apiKey: "", gptModel: defaultModel };
+    setOpenAiApiKey(defaultSession, process.env.OPENAI_API_KEY);
   }
 });
