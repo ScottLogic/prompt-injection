@@ -20,4 +20,43 @@ const sendMessage = async (message: string): Promise<ChatResponse> => {
   return data;
 };
 
-export { clearChat, sendMessage };
+const setOpenAIApiKey = async (apiKey: string): Promise<boolean> => {
+  const response = await sendRequest(
+    PATH + "apiKey",
+    "POST",
+    { "Content-Type": "application/json" },
+    JSON.stringify({ apiKey })
+  );
+  return response.status === 200;
+};
+
+const getOpenAIApiKey = async (): Promise<string> => {
+  const response = await sendRequest(PATH + "apiKey", "GET");
+  const data = await response.text();
+  return data;
+};
+
+const setGptModel = async (model: string): Promise<boolean> => {
+  const response = await sendRequest(
+    PATH + "model",
+    "POST",
+    { "Content-Type": "application/json" },
+    JSON.stringify({ model })
+  );
+  return response.status === 200;
+};
+
+const getGptModel = async (): Promise<string> => {
+  const response = await sendRequest(PATH + "model", "GET");
+  const data = await response.text();
+  return data;
+};
+
+export {
+  clearChat,
+  sendMessage,
+  setOpenAIApiKey,
+  getOpenAIApiKey,
+  getGptModel,
+  setGptModel,
+};

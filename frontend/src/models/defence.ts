@@ -7,11 +7,29 @@ enum DEFENCE_TYPES {
   LLM_EVALUATION = "LLM_EVALUATION",
 }
 
+class DefenceConfig {
+  constructor(id: string, name: string) {
+    this.id = id;
+    this.name = name;
+    this.value = "";
+  }
+
+  id: string;
+  name: string;
+  value: string;
+}
+
 class DefenceInfo {
-  constructor(id: DEFENCE_TYPES, name: string, info: string) {
+  constructor(
+    id: DEFENCE_TYPES,
+    name: string,
+    info: string,
+    config: DefenceConfig[]
+  ) {
     this.id = id;
     this.name = name;
     this.info = info;
+    this.config = config;
     // each defence starts off as inactive and not triggered
     this.isActive = false;
     this.isTriggered = false;
@@ -20,8 +38,9 @@ class DefenceInfo {
   id: DEFENCE_TYPES;
   name: string;
   info: string;
+  config: DefenceConfig[];
   isActive: boolean;
   isTriggered: boolean;
 }
 
-export { DEFENCE_TYPES, DefenceInfo };
+export { DEFENCE_TYPES, DefenceConfig, DefenceInfo };

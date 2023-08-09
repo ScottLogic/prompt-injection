@@ -1,11 +1,17 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { isDefenceActive } = require("./defence");
-const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
-const { queryDocuments, queryPromptEvaluationModel } = require("./langchain");
+const { isDefenceActive, getSystemRole } = require("./defence");
+const { sendEmail, askEmailWhitelist, isEmailInWhitelist } = require("./email");
+const {
+  initQAModel,
+  initPromptEvaluationModel,
+  queryDocuments,
+  queryPromptEvaluationModel,
+} = require("./langchain");
 
-// OpenAI configuration
-let configuration = null;
+// OpenAI config
+let config = null;
 let openai = null;
+
 // functions available to ChatGPT
 const chatGptFunctions = [
   {
@@ -31,7 +37,7 @@ const chatGptFunctions = [
     },
   },
   {
-    name: "getEmailWhitelist",
+    name: "askEmailWhitelist",
     description:
       "user asks who is on the email whitelist and the system replies with the list of emails.",
     parameters: {
@@ -42,7 +48,7 @@ const chatGptFunctions = [
   {
     name: "askQuestion",
     description:
-      "Ask a question about the documents containing company information ",
+      "Ask a question about the documents with company information. ",
     parameters: {
       type: "object",
       properties: {
@@ -55,11 +61,60 @@ const chatGptFunctions = [
   },
 ];
 
-function initOpenAi() {
+// test the api key works with the model
+async function validateApiKey(apiKey, gptModel) {
+  try {
+    const testOpenAI = new OpenAIApi(new Configuration({ apiKey: apiKey }));
+    const response = await testOpenAI.createChatCompletion({
+      model: gptModel,
+      messages: [{ role: "user", content: "this is a test prompt" }],
+    });
+    return true;
+  } catch (error) {
+    console.error("Error validating API key: " + error);
+    return false;
+  }
+}
+
+async function setOpenAiApiKey(session, apiKey) {
+  // initialise all models with the new key
+  if (await validateApiKey(apiKey, session.gptModel)) {
+    console.debug("Setting API key and initialising models");
+    session.apiKey = apiKey;
+    initOpenAi(session);
+    initQAModel(session);
+    initPromptEvaluationModel(session);
+    return true;
+  } else {
+    // set to empty in case it was previously set
+    console.debug("Invalid API key. Cannot initialise OpenAI models");
+    session.apiKey = "";
+    openai = null;
+    return false;
+  }
+}
+
+function initOpenAi(session) {
   configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: session.apiKey,
   });
   openai = new OpenAIApi(configuration);
+  console.debug("OpenAI initialised");
+}
+
+async function setGptModel(session, model) {
+  if (model !== session.gptModel) {
+    if (await validateApiKey(session.apiKey, model)) {
+      console.debug(
+        "Setting GPT model from: " + session.gptModel + " to: " + model
+      );
+      session.gptModel = model;
+      return true;
+    } else {
+      console.debug("Could not validate apiKey with model=" + model);
+      return false;
+    }
+  }
 }
 
 // returns true if the function is in the list of functions available to ChatGPT
@@ -82,12 +137,12 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
     // call the function
     if (functionName === "sendEmail") {
       let isAllowedToSendEmail = false;
-      if (isEmailInWhitelist(params.address)) {
+      if (isEmailInWhitelist(params.address, session.defences)) {
         isAllowedToSendEmail = true;
       } else {
         // trigger email defence even if it is not active
         defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
-        if (isDefenceActive("EMAIL_WHITELIST", session.activeDefences)) {
+        if (isDefenceActive("EMAIL_WHITELIST", session.defences)) {
           // do not send email if defence is on and set to blocked
           response = "Cannot send to this email as it is not whitelisted";
           defenceInfo.blocked = true;
@@ -105,12 +160,11 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
           session
         );
       }
-    } else if (functionName === "getEmailWhitelist") {
+    } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist(
         isDefenceActive("EMAIL_WHITELIST", session.activeDefences)
       );
     }
-
     if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
@@ -131,13 +185,13 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
 
 async function chatGptChatCompletion(session) {
   // check if we need to set a system role
-  if (isDefenceActive("SYSTEM_ROLE", session.activeDefences)) {
+  if (isDefenceActive("SYSTEM_ROLE", session.defences)) {
     // check to see if there's already a system role
     if (!session.chatHistory.find((message) => message.role === "system")) {
       // add the system role to the start of the chat history
       session.chatHistory.unshift({
         role: "system",
-        content: process.env.SYSTEM_ROLE,
+        content: getSystemRole(session.defences),
       });
     }
   } else {
@@ -149,14 +203,19 @@ async function chatGptChatCompletion(session) {
 
   // make sure openai has been initialised
   if (!openai) {
-    throw new Error("OpenAI has not been initialised");
+    console.debug("OpenAI not initialised with api key");
+    return {
+      role: "assistant",
+      content: "Please enter a valid OpenAI API key to chat to me!",
+    };
   }
 
   chat_completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: session.gptModel,
     messages: session.chatHistory,
     functions: chatGptFunctions,
   });
+
   // get the reply
   return chat_completion.data.choices[0].message;
 }
@@ -209,4 +268,10 @@ async function chatGptSendMessage(message, session) {
   return { reply: reply.content, defenceInfo: defenceInfo };
 }
 
-module.exports = { initOpenAi, chatGptSendMessage };
+module.exports = {
+  initOpenAi,
+  chatGptSendMessage,
+  setOpenAiApiKey,
+  validateApiKey,
+  setGptModel,
+};

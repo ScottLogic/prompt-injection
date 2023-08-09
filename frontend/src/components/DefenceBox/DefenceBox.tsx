@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import "./DefenceBox.css";
+import "../StrategyBox/StrategyBox.css";
 import DefenceMechanism from "./DefenceMechanism";
 import {
-  getActiveDefences,
+  getDefences,
   activateDefence,
   deactivateDefence,
+  configureDefence,
 } from "../../service/defenceService";
 import { DEFENCE_DETAILS } from "../../Defences";
+import { DefenceConfig } from "../../models/defence";
 
 function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
   // list of defence mechanisms
@@ -15,14 +17,30 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
   // called on mount
   useEffect(() => {
     // fetch defences from backend
-    getActiveDefences().then((activeDefences) => {
-      const newDefencesDetails = defenceDetails.map((defencesDetail) => {
-        defencesDetail.isActive = activeDefences.includes(defencesDetail.id);
-        return defencesDetail;
+    getDefences().then((remoteDefences) => {
+      const newDefences = defenceDetails.map((localDefence) => {
+        const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
+          return localDefence.id === remoteDefence.id;
+        });
+        if (matchingRemoteDefence) {
+          localDefence.isActive = matchingRemoteDefence.isActive;
+          // set each config value
+          if (matchingRemoteDefence.config && localDefence.config) {
+            matchingRemoteDefence.config.forEach((configEntry, index) => {
+              // get the matching config in the local defence
+              const matchingConfig = localDefence.config.find((config) => {
+                return config.id === configEntry.id;
+              });
+              if (matchingConfig) {
+                matchingConfig.value = configEntry.value;
+              }
+            });
+          }
+        }
+        return localDefence;
       });
-      setDefenceDetails(newDefencesDetails);
+      setDefenceDetails(newDefences);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // update triggered defences
@@ -65,12 +83,28 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
     });
   };
 
+  const setDefenceConfiguration = (
+    defenceId: string,
+    config: DefenceConfig[]
+  ) => {
+    configureDefence(defenceId, config).then(() => {
+      // update state
+      const newDefences = defenceDetails.map((defence) => {
+        if (defence.id === defenceId) {
+          defence.config = config;
+        }
+        return defence;
+      });
+      setDefenceDetails(newDefences);
+    });
+  };
+
   useEffect(() => {
     console.log("defenceDetails: ", defenceDetails);
   }, [defenceDetails]);
 
   return (
-    <div id="defence-box">
+    <div id="strategy-box">
       {defenceDetails.map((defenceDetail, index) => {
         return (
           <DefenceMechanism
@@ -78,6 +112,7 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
             defenceDetail={defenceDetail}
             setDefenceActive={setDefenceActive}
             setDefenceInactive={setDefenceInactive}
+            setDefenceConfiguration={setDefenceConfiguration}
           />
         );
       })}

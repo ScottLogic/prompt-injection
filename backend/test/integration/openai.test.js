@@ -1,7 +1,7 @@
-const { beforeEach } = require("node:test");
+const { activateDefence, getInitialDefences } = require("../../src/defence");
 const { initOpenAi, chatGptSendMessage } = require("../../src/openai");
 const { OpenAIApi } = require("openai");
-const { queryPromptEvaluationModel } = require("../../src/langchain")
+const { queryPromptEvaluationModel } = require("../../src/langchain");
 
 // Mock the OpenAIApi module
 jest.mock("openai");
@@ -14,34 +14,37 @@ OpenAIApi.mockImplementation(() => {
 });
 
 // bypass the prompt evaluation model
-jest.mock('../../src/langchain')
+jest.mock("../../src/langchain");
 const mockEvalReturn = jest.fn();
 queryPromptEvaluationModel.mockImplementation(() => {
   return mockEvalReturn;
 });
-beforeEach(() => { 
-  mockEvalReturn.mockResolvedValueOnce({isMalicious: false, reason: ""});
-});
 
+beforeEach(() => {
+  mockEvalReturn.mockResolvedValueOnce({ isMalicious: false, reason: "" });
+});
 
 test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", async () => {
   const message = "Hello";
   const session = {
-    activeDefences: [],
     chatHistory: [],
     sentEmails: [],
+    apiKey: "",
   };
-  await expect(chatGptSendMessage(message, session)).rejects.toThrow(
-    "OpenAI has not been initialised"
+  const reply = await chatGptSendMessage(message, session);
+  expect(reply).toBeDefined();
+  expect(reply.reply).toBe(
+    "Please enter a valid OpenAI API key to chat to me!"
   );
 });
 
 test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", async () => {
   const message = "Hello";
   const session = {
-    activeDefences: [],
+    defences: [],
     chatHistory: [],
     sentEmails: [],
+    apiKey: "sk-12345",
   };
 
   // Mock the createChatCompletion function
@@ -59,7 +62,7 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
   });
 
   // initialise OpenAI
-  initOpenAi();
+  initOpenAi(session);
   // send the message
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
@@ -76,15 +79,17 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
 });
 
 test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to chat history", async () => {
-  const message = "Hello";
-  const session = {
-    activeDefences: ["SYSTEM_ROLE"],
-    chatHistory: [],
-    sentEmails: [],
-  };
-
   // set the system role prompt
   process.env.SYSTEM_ROLE = "You are a helpful assistant";
+
+  const message = "Hello";
+  const session = {
+    defences: getInitialDefences(),
+    chatHistory: [],
+    sentEmails: [],
+    apiKey: "sk-12345",
+  };
+  session.defences = activateDefence("SYSTEM_ROLE", session.defences);
 
   // Mock the createChatCompletion function
   mockCreateChatCompletion.mockResolvedValueOnce({
@@ -101,7 +106,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   });
 
   // initialise OpenAI
-  initOpenAi();
+  initOpenAi(session);
   // send the message
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
@@ -121,9 +126,12 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
 });
 
 test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to the start of the chat history", async () => {
+  // set the system role prompt
+  process.env.SYSTEM_ROLE = "You are a helpful assistant";
+
   const message = "Hello";
   const session = {
-    activeDefences: ["SYSTEM_ROLE"],
+    defences: getInitialDefences(),
     // add in some chat history
     chatHistory: [
       {
@@ -136,10 +144,10 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
       },
     ],
     sentEmails: [],
+    apiKey: "sk-12345",
   };
-
-  // set the system role prompt
-  process.env.SYSTEM_ROLE = "You are a helpful assistant";
+  // activate the SYSTEM_ROLE defence
+  session.defences = activateDefence("SYSTEM_ROLE", session.defences);
 
   // Mock the createChatCompletion function
   mockCreateChatCompletion.mockResolvedValueOnce({
@@ -156,7 +164,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   });
 
   // initialise OpenAI
-  initOpenAi();
+  initOpenAi(session);
   // send the message
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
@@ -183,7 +191,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
 test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system role is removed from the chat history", async () => {
   const message = "Hello";
   const session = {
-    activeDefences: [],
+    defences: [{ id: "SYSTEM_ROLE", isActive: false }],
     // add in some chat history with a system role
     chatHistory: [
       {
@@ -200,6 +208,7 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
       },
     ],
     sentEmails: [],
+    apiKey: "sk-12345",
   };
 
   // Mock the createChatCompletion function
@@ -217,7 +226,7 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
   });
 
   // initialise OpenAI
-  initOpenAi();
+  initOpenAi(session);
   // send the message
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
@@ -245,7 +254,7 @@ test(
   async () => {
     const message = "Hello";
     const session = {
-      activeDefences: ["SYSTEM_ROLE"],
+      defences: [{ id: "SYSTEM_ROLE", isActive: true }],
       // add in some chat history with a system role
       chatHistory: [
         {
@@ -262,6 +271,7 @@ test(
         },
       ],
       sentEmails: [],
+      apiKey: "sk-12345",
     };
 
     // Mock the createChatCompletion function
@@ -279,7 +289,7 @@ test(
     });
 
     // initialise OpenAI
-    initOpenAi();
+    initOpenAi(session);
     // send the message
     const reply = await chatGptSendMessage(message, session);
     expect(reply).toBeDefined();
@@ -305,15 +315,22 @@ test(
 );
 
 test(
-  "GIVEN the assistant sends an email AND EMAIL_WHITELIST is not active AND email is not in the whitelist" +
+  "GIVEN the assistant sends an email AND EMAIL_WHITELIST is inactive AND email is not in the whitelist" +
     "WHEN sending message " +
     "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is triggered",
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      activeDefences: [],
+      defences: [
+        {
+          id: "EMAIL_WHITELIST",
+          isActive: false,
+          configutation: [{ id: "whitelist", value: "" }],
+        },
+      ],
       chatHistory: [],
       sentEmails: [],
+      apiKey: "sk-12345",
     };
 
     // set email whitelist
@@ -354,7 +371,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi();
+    initOpenAi(session);
     // send the message
     const reply = await chatGptSendMessage(message, session);
 
@@ -383,9 +400,16 @@ test(
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      activeDefences: ["EMAIL_WHITELIST"],
+      defences: [
+        {
+          id: "EMAIL_WHITELIST",
+          isActive: true,
+          configutation: [{ id: "whitelist", value: "" }],
+        },
+      ],
       chatHistory: [],
       sentEmails: [],
+      apiKey: "sk-12345",
     };
 
     // set email whitelist
@@ -426,7 +450,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi();
+    initOpenAi(session);
     // send the message
     const reply = await chatGptSendMessage(message, session);
 
@@ -452,9 +476,16 @@ test(
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      activeDefences: ["EMAIL_WHITELIST"],
+      defences: [
+        {
+          id: "EMAIL_WHITELIST",
+          isActive: true,
+          config: [{ id: "whitelist", value: "bob@example.com" }],
+        },
+      ],
       chatHistory: [],
       sentEmails: [],
+      apiKey: "sk-12345",
     };
 
     // set email whitelist
@@ -495,7 +526,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi();
+    initOpenAi(session);
     // send the message
     const reply = await chatGptSendMessage(message, session);
 
@@ -517,15 +548,22 @@ test(
 );
 
 test(
-  "GIVEN the assistant sends an email AND EMAIL_WHITELIST is not active AND email is in the whitelist" +
+  "GIVEN the assistant sends an email AND EMAIL_WHITELIST is inactive AND email is in the whitelist" +
     "WHEN sending message " +
     "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is not triggered",
   async () => {
     const message = "Send an email to bob@example.com saying hi";
     const session = {
-      activeDefences: [],
+      defences: [
+        {
+          id: "EMAIL_WHITELIST",
+          isActive: false,
+          config: [{ id: "whitelist", value: "bob@example.com" }],
+        },
+      ],
       chatHistory: [],
       sentEmails: [],
+      apiKey: "sk-12345",
     };
 
     // set email whitelist
@@ -566,7 +604,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi();
+    initOpenAi(session);
     // send the message
     const reply = await chatGptSendMessage(message, session);
 
