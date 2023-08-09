@@ -162,7 +162,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
       }
     } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist(
-        isDefenceActive("EMAIL_WHITELIST", session.activeDefences)
+        isDefenceActive("EMAIL_WHITELIST", session.defences)
       );
     }
     if (functionName === "askQuestion") {
@@ -228,7 +228,7 @@ async function chatGptSendMessage(message, session) {
   const evalPrompt = await queryPromptEvaluationModel(message);
   if (evalPrompt.isMalicious) {
     defenceInfo.triggeredDefences.push("LLM_EVALUATION");
-    if (isDefenceActive("LLM_EVALUATION", session.activeDefences)) {
+    if (isDefenceActive("LLM_EVALUATION", session.defences)) {
       console.debug("LLM evalutation defence active.");
       defenceInfo.blocked = true;
       const evalResponse =
