@@ -40,11 +40,6 @@ const DEFENCE_DETAILS: DefenceInfo[] = [
     "Use an LLM to evaluate the user input for malicious content or prompt injection. ",
     []
   ),
-  new DefenceInfo(
-    DEFENCE_TYPES.LLM_EVALUATION,
-    "LLM Evaluation",
-    "Use a LLM to evaluate the user input for malicious content or prompt injection. "
-  ),
 ];
 
 export { DEFENCE_DETAILS };

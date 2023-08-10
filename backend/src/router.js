@@ -105,7 +105,7 @@ router.post("/openai/chat", async (req, res, next) => {
           defenceInfo.blocked || openAiReply.defenceInfo.blocked;
       } catch (error) {
         console.log(error);
-        if (error.response.status == 401) {
+        if (error.response?.status == 401) {
           res.statusCode = 401;
           reply = "Please enter a valid OpenAI API key to chat to me!";
         } else {

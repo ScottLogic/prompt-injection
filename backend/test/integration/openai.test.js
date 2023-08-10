@@ -30,6 +30,7 @@ test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", a
     chatHistory: [],
     sentEmails: [],
     apiKey: "",
+    gptModel: "gpt-4",
   };
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
@@ -45,6 +46,7 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
     chatHistory: [],
     sentEmails: [],
     apiKey: "sk-12345",
+    gptModel: "gpt-4",
   };
 
   // Mock the createChatCompletion function
