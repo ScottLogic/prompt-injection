@@ -94,7 +94,6 @@ router.post("/openai/chat", async (req, res, next) => {
           transformedMessage,
           req.session
         );
-
         reply = openAiReply.reply;
         // combine triggered defences
         defenceInfo.triggeredDefences = [

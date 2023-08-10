@@ -3,9 +3,9 @@ const router = require("./router");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const session = require("express-session");
-
+const { initOpenAi, setOpenAiApiKey } = require("./openai");
+const { initQAModel, initPromptEvaluationModel } = require("./langchain");
 const { getInitialDefences } = require("./defence");
-const { setOpenAiApiKey } = require("./openai");
 
 dotenv.config();
 

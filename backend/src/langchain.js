@@ -71,7 +71,6 @@ async function initQAModel(session) {
   qaChain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
     prompt: qaPrompt,
   });
-  console.debug("QA Retrieval chain initialised");
 }
 
 // initialise the prompt evaluation model

@@ -19,6 +19,7 @@ const mockEvalReturn = jest.fn();
 queryPromptEvaluationModel.mockImplementation(() => {
   return mockEvalReturn;
 });
+
 beforeEach(() => {
   mockEvalReturn.mockResolvedValueOnce({ isMalicious: false, reason: "" });
 });
@@ -26,11 +27,13 @@ beforeEach(() => {
 test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", async () => {
   const message = "Hello";
   const session = {
-    defences: [],
     chatHistory: [],
     sentEmails: [],
     apiKey: "",
+    gptModel: "gpt-4",
+    defences: [],
   };
+
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
   expect(reply.reply).toBe(
@@ -45,6 +48,7 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
     chatHistory: [],
     sentEmails: [],
     apiKey: "sk-12345",
+    gptModel: "gpt-4",
   };
 
   // Mock the createChatCompletion function

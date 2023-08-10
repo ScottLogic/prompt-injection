@@ -41,6 +41,7 @@ function getInitialDefences() {
         },
       ],
     },
+    { id: "LLM_EVALUATION" },
   ];
   // make all defences inactive by default and return
   return defences.map((defence) => ({ ...defence, isActive: false }));
