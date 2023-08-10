@@ -31,7 +31,9 @@ test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", a
     sentEmails: [],
     apiKey: "",
     gptModel: "gpt-4",
+    defences: [],
   };
+
   const reply = await chatGptSendMessage(message, session);
   expect(reply).toBeDefined();
   expect(reply.reply).toBe(
