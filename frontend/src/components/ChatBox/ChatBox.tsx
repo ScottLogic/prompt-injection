@@ -3,26 +3,33 @@ import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
 import { clearChat, sendMessage } from "../../service/chatService";
 import { getSentEmails } from "../../service/emailService";
-import { ChatMessage, ChatResponse } from "../../models/chat";
+import {
+  CHAT_MESSAGE_TYPE,
+  ChatMessage,
+  ChatResponse,
+} from "../../models/chat";
 import { EmailInfo } from "../../models/email";
 
 function ChatBox(
   this: any,
   {
+    messages,
     setEmails,
     updateTriggeredDefences,
+    addChatMessage,
+    clearMessages,
   }: {
+    messages: ChatMessage[];
     setEmails: (emails: EmailInfo[]) => void;
     updateTriggeredDefences: (defences: string[]) => void;
+    addChatMessage: (message: ChatMessage) => void;
+    clearMessages: () => void;
   }
 ) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   // called on mount
   useEffect(() => {
-    // clear remote messages
-    clearChat();
     // get sent emails
     getSentEmails().then((sentEmails) => {
       setEmails(sentEmails);
@@ -31,7 +38,7 @@ function ChatBox(
 
   const clearClicked = () => {
     // clear local messages
-    setMessages([]);
+    clearMessages();
     // clear remote messages
     clearChat();
   };
@@ -45,10 +52,11 @@ function ChatBox(
       const message = event.currentTarget.value;
 
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
-      setMessages((messages: ChatMessage[]) => [
-        ...messages,
-        { message: message, isUser: true, isOriginalMessage: true },
-      ]);
+      addChatMessage({
+        message: message,
+        type: CHAT_MESSAGE_TYPE.USER,
+        isOriginalMessage: true,
+      });
       // clear the input
       event.currentTarget.value = "";
 
@@ -57,25 +65,19 @@ function ChatBox(
       const isTransformed = transformedMessage !== message;
       // add the transformed message to the chat box if it is different from the original message
       if (isTransformed) {
-        setMessages((messages: ChatMessage[]) => [
-          ...messages,
-          {
-            message: transformedMessage,
-            isUser: true,
-            isOriginalMessage: false,
-          },
-        ]);
+        addChatMessage({
+          message: transformedMessage,
+          type: CHAT_MESSAGE_TYPE.USER,
+          isOriginalMessage: false,
+        });
       }
       // add it to the list of messages
-      setMessages((messages: ChatMessage[]) => [
-        ...messages,
-        {
-          isUser: false,
-          message: response.reply,
-          defenceInfo: response.defenceInfo,
-          isOriginalMessage: true,
-        },
-      ]);
+      addChatMessage({
+        type: CHAT_MESSAGE_TYPE.BOT,
+        message: response.reply,
+        defenceInfo: response.defenceInfo,
+        isOriginalMessage: true,
+      });
       // update triggered defences
       updateTriggeredDefences(response.defenceInfo.triggeredDefences);
 
