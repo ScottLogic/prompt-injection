@@ -8,9 +8,17 @@ import {
   configureDefence,
 } from "../../service/defenceService";
 import { DEFENCE_DETAILS } from "../../Defences";
-import { DefenceConfig } from "../../models/defence";
+import { DefenceConfig, DefenceInfo } from "../../models/defence";
 
-function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
+function DefenceBox({
+  triggeredDefences,
+  defenceActivated,
+  defenceDeactivated,
+}: {
+  triggeredDefences: string[];
+  defenceActivated: (defenceInfo: DefenceInfo) => void;
+  defenceDeactivated: (defenceInfo: DefenceInfo) => void;
+}) {
   // list of defence mechanisms
   const [defenceDetails, setDefenceDetails] = useState(DEFENCE_DETAILS);
 
@@ -45,7 +53,6 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
 
   // update triggered defences
   useEffect(() => {
-    console.log("updating triggered defences: ", triggeredDefences);
     // update state
     const newDefences = defenceDetails.map((defenceDetail) => {
       defenceDetail.isTriggered = triggeredDefences.includes(defenceDetail.id);
@@ -62,6 +69,7 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
         if (defenceDetail.id === defenceType) {
           defenceDetail.isActive = true;
           defenceDetail.isTriggered = false;
+          defenceActivated(defenceDetail);
         }
         return defenceDetail;
       });
@@ -76,6 +84,7 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
         if (defenceDetail.id === defenceType) {
           defenceDetail.isActive = false;
           defenceDetail.isTriggered = false;
+          defenceDeactivated(defenceDetail);
         }
         return defenceDetail;
       });
@@ -98,10 +107,6 @@ function DefenceBox({ triggeredDefences }: { triggeredDefences: string[] }) {
       setDefenceDetails(newDefences);
     });
   };
-
-  useEffect(() => {
-    console.log("defenceDetails: ", defenceDetails);
-  }, [defenceDetails]);
 
   return (
     <div id="strategy-box">

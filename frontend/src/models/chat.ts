@@ -1,3 +1,5 @@
+import { type } from "@testing-library/user-event/dist/type";
+
 enum CHAT_MODELS {
   GPT_4 = "gpt-4",
   GPT_4_0613 = "gpt-4-0613",
@@ -9,16 +11,22 @@ enum CHAT_MODELS {
   GPT_3_5_TURBO_16K_0613 = "gpt-3.5-turbo-16k-0613",
 }
 
+enum CHAT_MESSAGE_TYPE {
+  BOT,
+  INFO,
+  USER,
+}
+
 interface ChatDefenceReport {
   blocked: boolean;
   triggeredDefences: string[];
 }
 
 interface ChatMessage {
-  isUser: boolean;
   defenceInfo?: ChatDefenceReport;
   message: string;
   isOriginalMessage: boolean;
+  type: CHAT_MESSAGE_TYPE;
 }
 
 interface ChatResponse {
@@ -28,4 +36,4 @@ interface ChatResponse {
 }
 
 export type { ChatMessage, ChatResponse };
-export { CHAT_MODELS };
+export { CHAT_MODELS, CHAT_MESSAGE_TYPE };

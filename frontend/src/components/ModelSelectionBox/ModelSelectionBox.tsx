@@ -49,7 +49,9 @@ function ModelSelectionBox() {
           placeholder={modelInUse}
         >
           {chatModelOptions.map((model) => (
-            <option value={model}>{model}</option>
+            <option key={model} value={model}>
+              {model}
+            </option>
           ))}
           ;
         </select>
