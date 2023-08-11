@@ -194,10 +194,9 @@ router.get("/phase/completed", (req, res, next) => {
 
 router.post("/phase/completed", (req, res, next) => {
   const phase = req.body?.phase;
-  console.log("POST setting completed phase: ", phase);
   if (phase) {
     req.session.phases = setPhaseCompleted(req.session, phase);
-    res.send("Phase complete set");
+    res.send("Phase complete status set");
   } else {
     res.statusCode = 400;
     res.send("Missing phase");

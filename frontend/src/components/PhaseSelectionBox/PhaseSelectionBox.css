@@ -2,9 +2,8 @@
     padding: 16px 32px;
     position: relative;
     display: flex;
-        justify-content: center;
-        /* Horizontally center-aligns items */
-        align-items: center;
+    justify-content: center;
+    align-items: center;
 }
 
 .phase-selection-button {
@@ -14,4 +13,5 @@
 
 .selected {
     color: white;
+    background-color: rgb(0, 153, 255);
 }

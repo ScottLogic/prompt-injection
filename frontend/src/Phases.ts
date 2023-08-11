@@ -6,8 +6,8 @@ const DEFAULT_SANDBOX_PHASE: Phase = new Phase(
   "app sandbox. ask the model questions and try get sensitive information",
   "preamble",
   "path_to_documents",
-  true,
-  false
+  false,
+  true
 );
 
 const PHASES: Phase[] = [
