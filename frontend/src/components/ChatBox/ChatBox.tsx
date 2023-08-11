@@ -3,7 +3,11 @@ import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
 import { clearChat, sendMessage } from "../../service/chatService";
 import { getSentEmails } from "../../service/emailService";
-import { ChatMessage, ChatResponse } from "../../models/chat";
+import {
+  CHAT_MESSAGE_TYPE,
+  ChatMessage,
+  ChatResponse,
+} from "../../models/chat";
 import { EmailInfo } from "../../models/email";
 
 function ChatBox(
@@ -47,7 +51,11 @@ function ChatBox(
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       setMessages((messages: ChatMessage[]) => [
         ...messages,
-        { message: message, isUser: true, isOriginalMessage: true },
+        {
+          message: message,
+          type: CHAT_MESSAGE_TYPE.USER,
+          isOriginalMessage: true,
+        },
       ]);
       // clear the input
       event.currentTarget.value = "";
@@ -61,7 +69,7 @@ function ChatBox(
           ...messages,
           {
             message: transformedMessage,
-            isUser: true,
+            type: CHAT_MESSAGE_TYPE.USER,
             isOriginalMessage: false,
           },
         ]);
@@ -70,7 +78,7 @@ function ChatBox(
       setMessages((messages: ChatMessage[]) => [
         ...messages,
         {
-          isUser: false,
+          type: CHAT_MESSAGE_TYPE.BOT,
           message: response.reply,
           defenceInfo: response.defenceInfo,
           isOriginalMessage: true,

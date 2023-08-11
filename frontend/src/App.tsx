@@ -1,4 +1,5 @@
-import React from "react";
+import { useState } from "react";
+
 import "./App.css";
 import AttackBox from "./components/AttackBox/AttackBox";
 import ChatBox from "./components/ChatBox/ChatBox";
@@ -7,7 +8,6 @@ import EmailBox from "./components/EmailBox/EmailBox";
 import ApiKeyBox from "./components/ApiKeyBox/ApiKeyBox";
 import Header from "./components/Header";
 import ModelSelectionBox from "./components/ModelSelectionBox/ModelSelectionBox";
-import { useState } from "react";
 import { EmailInfo } from "./models/email";
 
 function App() {
