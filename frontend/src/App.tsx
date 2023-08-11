@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { useEffect } from "react";
 import "./App.css";
 import AttackBox from "./components/AttackBox/AttackBox";
 import ChatBox from "./components/ChatBox/ChatBox";
@@ -12,12 +12,17 @@ import ModelSelectionBox from "./components/ModelSelectionBox/ModelSelectionBox"
 import { EmailInfo } from "./models/email";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
 import { DefenceInfo } from "./models/defence";
+import { getCompletedPhases } from "./service/phaseService";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
+
+  // start on sandbox mode
+  const [currentPhase, setCurrentPhase] = useState<number>(0);
+  const [numCompletedPhases, setNumCompletedPhases] = useState<number>(0);
 
   const updateTriggeredDefences = (defenceDetails: string[]) => {
     // set the new triggered defences
@@ -51,6 +56,12 @@ function App() {
     const infoMessage = `${defenceInfo.name} defence deactivated`;
     addInfoMessage(infoMessage.toLowerCase());
   };
+  // called on mount
+  useEffect(() => {
+    getCompletedPhases().then((numCompletedPhases) => {
+      setNumCompletedPhases(numCompletedPhases);
+    });
+  }, []);
 
   return (
     <span id="main-area">
@@ -74,6 +85,8 @@ function App() {
         <Header />
         <ChatBox
           messages={messages}
+          currentPhase={currentPhase}
+          setNumCompletedPhases={setNumCompletedPhases}
           setEmails={setEmails}
           updateTriggeredDefences={updateTriggeredDefences}
           addChatMessage={addChatMessage}
@@ -82,7 +95,11 @@ function App() {
       </div>
       <div className="side-bar">
         <div className="side-bar-header">phases</div>
-        <PhaseSelectionBox />
+        <PhaseSelectionBox
+          currentPhase={currentPhase}
+          numCompletedPhases={numCompletedPhases}
+          setCurrentPhase={setCurrentPhase}
+        />
         <div className="side-bar-header">sent emails</div>
         <EmailBox emails={emails} />
       </div>
