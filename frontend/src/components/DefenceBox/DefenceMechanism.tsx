@@ -77,17 +77,19 @@ function DefenceMechanism({
         {isInfoBoxVisible ? (
           <div className="strategy-mechanism-info-box">
             <div>{defenceDetail.info}</div>
-            <div className="defence-mechanism-config">
-              {defenceDetail.config?.map((config, index) => {
-                return (
-                  <DefenceConfiguration
-                    key={config.id}
-                    config={config}
-                    setConfigurationValue={setConfigurationValue}
-                  />
-                );
-              })}
-            </div>
+            {defenceDetail.config ? (
+              <div className="defence-mechanism-config">
+                {defenceDetail.config.map((config, index) => {
+                  return (
+                    <DefenceConfiguration
+                      key={config.id}
+                      config={config}
+                      setConfigurationValue={setConfigurationValue}
+                    />
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>

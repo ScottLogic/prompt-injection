@@ -53,7 +53,6 @@ function DefenceBox({
 
   // update triggered defences
   useEffect(() => {
-    console.log("updating triggered defences: ", triggeredDefences);
     // update state
     const newDefences = defenceDetails.map((defenceDetail) => {
       defenceDetail.isTriggered = triggeredDefences.includes(defenceDetail.id);
@@ -108,10 +107,6 @@ function DefenceBox({
       setDefenceDetails(newDefences);
     });
   };
-
-  useEffect(() => {
-    console.log("defenceDetails: ", defenceDetails);
-  }, [defenceDetails]);
 
   return (
     <div id="strategy-box">
