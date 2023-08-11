@@ -25,6 +25,7 @@ function App() {
     setDefenceBoxKey(defenceBoxKey + 1);
   };
 
+  // methods to modify messages
   const addChatMessage = (message: ChatMessage) => {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
   };
@@ -39,6 +40,8 @@ function App() {
     setMessages([]);
   };
 
+  // methods to be called when defences are (de)activated
+  // this adds an info message to the chat
   const defenceActivated = (defenceInfo: DefenceInfo) => {
     const infoMessage = `${defenceInfo.name} defence activated`;
     addInfoMessage(infoMessage.toLowerCase());
