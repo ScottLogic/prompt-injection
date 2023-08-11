@@ -12,9 +12,10 @@ function DefenceConfiguration(
     setConfigurationValue: (configId: string, value: string) => void;
   }
 ) {
-  const setConfiguration = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const setConfiguration = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter") {
-      setConfigurationValue(config.id, event.currentTarget.value);
+      const value = event.currentTarget.innerText.trim();
+      setConfigurationValue(config.id, value);
     }
   };
 
