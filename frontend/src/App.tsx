@@ -9,10 +9,13 @@ import ApiKeyBox from "./components/ApiKeyBox/ApiKeyBox";
 import Header from "./components/Header";
 import ModelSelectionBox from "./components/ModelSelectionBox/ModelSelectionBox";
 import { EmailInfo } from "./models/email";
+import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
+import { DefenceInfo } from "./models/defence";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
 
   const updateTriggeredDefences = (defenceDetails: string[]) => {
@@ -22,11 +25,39 @@ function App() {
     setDefenceBoxKey(defenceBoxKey + 1);
   };
 
+  const addChatMessage = (message: ChatMessage) => {
+    setMessages((messages: ChatMessage[]) => [...messages, message]);
+  };
+  const addInfoMessage = (message: string) => {
+    addChatMessage({
+      message: message,
+      type: CHAT_MESSAGE_TYPE.INFO,
+      isOriginalMessage: true,
+    });
+  };
+  const clearMessages = () => {
+    setMessages([]);
+  };
+
+  const defenceActivated = (defenceInfo: DefenceInfo) => {
+    const infoMessage = `${defenceInfo.name} defence activated`;
+    addInfoMessage(infoMessage.toLowerCase());
+  };
+  const defenceDeactivated = (defenceInfo: DefenceInfo) => {
+    const infoMessage = `${defenceInfo.name} defence deactivated`;
+    addInfoMessage(infoMessage.toLowerCase());
+  };
+
   return (
     <span id="main-area">
       <div className="side-bar">
         <div className="side-bar-header">defence mechanisms</div>
-        <DefenceBox key={defenceBoxKey} triggeredDefences={triggeredDefences} />
+        <DefenceBox
+          key={defenceBoxKey}
+          triggeredDefences={triggeredDefences}
+          defenceActivated={defenceActivated}
+          defenceDeactivated={defenceDeactivated}
+        />
 
         <div className="side-bar-header">attack mechanisms</div>
         <AttackBox />
@@ -38,8 +69,11 @@ function App() {
       <div id="centre-area">
         <Header />
         <ChatBox
+          messages={messages}
           setEmails={setEmails}
           updateTriggeredDefences={updateTriggeredDefences}
+          addChatMessage={addChatMessage}
+          clearMessages={clearMessages}
         />
       </div>
       <div className="side-bar">
