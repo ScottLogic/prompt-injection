@@ -5,31 +5,13 @@ enum PHASE_NAMES {
   SANDBOX = "sandbox",
 }
 
-// phase data for the frontend
-class Phase {
-  constructor(
-    name: PHASE_NAMES,
-    index: number,
-    info: string,
-    preamble: string,
-    path_to_documents: string,
-    isComplete: boolean,
-    isCurrent: boolean
-  ) {
-    this.name = name;
-    this.index = index;
-    this.info = info;
-    this.preamble = preamble;
-    this.path_to_documents = path_to_documents;
-    this.isCurrent = isCurrent;
-    this.isComplete = isComplete;
-  }
-  name: PHASE_NAMES;
-  index: number;
-  info: string;
+interface Phase {
+  id: PHASE_NAMES;
+  name: string;
   preamble: string;
-  path_to_documents: string;
   isCurrent: boolean;
   isComplete: boolean;
 }
-export { PHASE_NAMES, Phase };
+
+export { PHASE_NAMES };
+export type { Phase };

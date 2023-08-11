@@ -5,7 +5,6 @@ const cors = require("cors");
 const session = require("express-session");
 const { setOpenAiApiKey } = require("./openai");
 const { getInitialDefences } = require("./defence");
-const { getPhases } = require("./phase");
 
 dotenv.config();
 
@@ -61,8 +60,8 @@ app.use(function (req, res, next) {
   if (!req.session.gptModel) {
     req.session.gptModel = defaultModel;
   }
-  if (!req.session.phases) {
-    req.session.phases = getPhases();
+  if (!req.session.numPhasesCompleted) {
+    req.session.numPhasesCompleted = 0;
   }
   next();
 });
