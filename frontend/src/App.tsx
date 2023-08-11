@@ -5,6 +5,7 @@ import ChatBox from "./components/ChatBox/ChatBox";
 import DefenceBox from "./components/DefenceBox/DefenceBox";
 import EmailBox from "./components/EmailBox/EmailBox";
 import ApiKeyBox from "./components/ApiKeyBox/ApiKeyBox";
+import PhaseSelectionBox from "./components/PhaseSelectionBox/PhaseSelectionBox";
 import Header from "./components/Header";
 import ModelSelectionBox from "./components/ModelSelectionBox/ModelSelectionBox";
 import { useState } from "react";
@@ -43,6 +44,8 @@ function App() {
         />
       </div>
       <div className="side-bar">
+        <div className="side-bar-header">phases</div>
+        <PhaseSelectionBox />
         <div className="side-bar-header">sent emails</div>
         <EmailBox emails={emails} />
       </div>

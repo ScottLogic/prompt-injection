@@ -11,6 +11,12 @@ const {
   setOpenAiApiKey,
   setGptModel,
 } = require("./openai");
+const {
+  getCurrentPhase,
+  switchCurrentPhase,
+  getCompletedPhases,
+  setPhaseCompleted,
+} = require("./phase");
 const router = express.Router();
 
 // Activate a defence
@@ -166,6 +172,36 @@ router.post("/openai/model", async (req, res, next) => {
 
 router.get("/openai/model", (req, res, next) => {
   res.send(req.session.gptModel);
+});
+
+router.post("/phase/current", (req, res, next) => {
+  const phase = req.body?.phase;
+  if (phase) {
+    req.session.phases = switchCurrentPhase(req.session, phase);
+    res.status(200).send("Phase set to " + req.session.phases);
+  } else {
+    res.status(400).send("Missing phase");
+  }
+});
+
+router.get("/phase/current", (req, res, next) => {
+  res.send(getCurrentPhase(req.session));
+});
+
+router.get("/phase/completed", (req, res, next) => {
+  res.send(getCompletedPhases(req.session));
+});
+
+router.post("/phase/completed", (req, res, next) => {
+  const phase = req.body?.phase;
+  console.log("POST setting completed phase: ", phase);
+  if (phase) {
+    req.session.phases = setPhaseCompleted(req.session, phase);
+    res.send("Phase complete set");
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
 // Importing the router
