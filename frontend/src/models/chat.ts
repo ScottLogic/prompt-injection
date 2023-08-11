@@ -24,6 +24,7 @@ interface ChatMessage {
 interface ChatResponse {
   reply: string;
   defenceInfo: ChatDefenceReport;
+  numPhasesCompleted: number;
   transformedMessage: string;
 }
 

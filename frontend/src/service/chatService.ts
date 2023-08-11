@@ -8,12 +8,15 @@ const clearChat = async (): Promise<boolean> => {
   return response.status === 200;
 };
 
-const sendMessage = async (message: string): Promise<ChatResponse> => {
+const sendMessage = async (
+  message: string,
+  currentPhase: number
+): Promise<ChatResponse> => {
   const response = await sendRequest(
     PATH + "chat",
     "POST",
     { "Content-Type": "application/json" },
-    JSON.stringify({ message })
+    JSON.stringify({ message, currentPhase })
   );
   const data = await response.json();
   console.log(data);

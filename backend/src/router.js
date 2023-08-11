@@ -78,6 +78,13 @@ router.post("/openai/chat", async (req, res, next) => {
   let transformedMessage = "";
   // parse out the message
   const message = req.body?.message;
+  const currentPhase = req.body?.currentPhase;
+
+  // TODO remove, this is just for demonstration purposes
+  if (currentPhase) {
+    console.log("Current phase " + currentPhase);
+  }
+
   if (message) {
     transformedMessage = message;
     // see if this message triggers any defences
@@ -120,8 +127,21 @@ router.post("/openai/chat", async (req, res, next) => {
     reply = "Missing message";
     console.error(reply);
   }
+
+  // TODO remove, this is just for demonstration purposes
+  let numPhasesCompleted = req.session.numPhasesCompleted;
+  if (numPhasesCompleted < 3) {
+    numPhasesCompleted++;
+    req.session.numPhasesCompleted = numPhasesCompleted;
+  }
+
   // construct response
-  const response = { reply, defenceInfo, transformedMessage };
+  const response = {
+    reply,
+    defenceInfo,
+    transformedMessage,
+    numPhasesCompleted,
+  };
   // log and send the reply with defence info
   console.log(response);
   res.send(response);

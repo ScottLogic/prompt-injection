@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import AttackBox from "./components/AttackBox/AttackBox";
 import ChatBox from "./components/ChatBox/ChatBox";
@@ -10,11 +10,16 @@ import Header from "./components/Header";
 import ModelSelectionBox from "./components/ModelSelectionBox/ModelSelectionBox";
 import { useState } from "react";
 import { EmailInfo } from "./models/email";
+import { getCompletedPhases } from "./service/phaseService";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
+
+  // start on sandbox mode
+  const [currentPhase, setCurrentPhase] = useState<number>(0);
+  const [numCompletedPhases, setNumCompletedPhases] = useState<number>(0);
 
   const updateTriggeredDefences = (defenceDetails: string[]) => {
     // set the new triggered defences
@@ -22,6 +27,13 @@ function App() {
     // update the key of the defence box to force a re-render
     setDefenceBoxKey(defenceBoxKey + 1);
   };
+
+  // called on mount
+  useEffect(() => {
+    getCompletedPhases().then((numCompletedPhases) => {
+      setNumCompletedPhases(numCompletedPhases);
+    });
+  }, []);
 
   return (
     <span id="main-area">
@@ -39,13 +51,19 @@ function App() {
       <div id="centre-area">
         <Header />
         <ChatBox
+          currentPhase={currentPhase}
+          setNumCompletedPhases={setNumCompletedPhases}
           setEmails={setEmails}
           updateTriggeredDefences={updateTriggeredDefences}
         />
       </div>
       <div className="side-bar">
         <div className="side-bar-header">phases</div>
-        <PhaseSelectionBox />
+        <PhaseSelectionBox
+          currentPhase={currentPhase}
+          numCompletedPhases={numCompletedPhases}
+          setCurrentPhase={setCurrentPhase}
+        />
         <div className="side-bar-header">sent emails</div>
         <EmailBox emails={emails} />
       </div>
