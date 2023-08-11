@@ -9,9 +9,13 @@ import { EmailInfo } from "../../models/email";
 function ChatBox(
   this: any,
   {
+    currentPhase,
+    setNumCompletedPhases,
     setEmails,
     updateTriggeredDefences,
   }: {
+    currentPhase: number;
+    setNumCompletedPhases: (numCompletedPhases: number) => void;
     setEmails: (emails: EmailInfo[]) => void;
     updateTriggeredDefences: (defences: string[]) => void;
   }
@@ -52,7 +56,8 @@ function ChatBox(
       // clear the input
       event.currentTarget.value = "";
 
-      const response: ChatResponse = await sendMessage(message);
+      const response: ChatResponse = await sendMessage(message, currentPhase);
+      setNumCompletedPhases(response.numPhasesCompleted);
       const transformedMessage = response.transformedMessage;
       const isTransformed = transformedMessage !== message;
       // add the transformed message to the chat box if it is different from the original message
