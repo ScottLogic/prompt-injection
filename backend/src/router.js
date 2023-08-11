@@ -81,9 +81,7 @@ router.post("/openai/chat", async (req, res, next) => {
   const currentPhase = req.body?.currentPhase;
 
   // TODO remove, this is just for demonstration purposes
-  if (currentPhase) {
-    console.log("Current phase " + currentPhase);
-  }
+  console.log("Current phase " + currentPhase);
 
   if (message) {
     transformedMessage = message;
@@ -130,8 +128,8 @@ router.post("/openai/chat", async (req, res, next) => {
 
   // TODO remove, this is just for demonstration purposes
   let numPhasesCompleted = req.session.numPhasesCompleted;
-  if (numPhasesCompleted < 3) {
-    numPhasesCompleted++;
+  if (numPhasesCompleted < 3 && currentPhase === numPhasesCompleted) {
+    numPhasesCompleted = currentPhase + 1;
     req.session.numPhasesCompleted = numPhasesCompleted;
   }
 
