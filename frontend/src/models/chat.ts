@@ -15,7 +15,7 @@ enum CHAT_MESSAGE_TYPE {
   BOT,
   INFO,
   USER,
-  PREAMBLE,
+  PHASE_INFO,
 }
 
 interface ChatDefenceReport {

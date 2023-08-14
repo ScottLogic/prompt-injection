@@ -48,7 +48,7 @@ const chatGptFunctions = [
   {
     name: "askQuestion",
     description:
-      "Ask a question about the documents with company information. ",
+      "Ask a question about the documents with company and project information ",
     parameters: {
       type: "object",
       properties: {
@@ -71,7 +71,7 @@ async function validateApiKey(apiKey, gptModel) {
     });
     return true;
   } catch (error) {
-    console.error("Error validating API key: " + error);
+    console.debug("Error validating API key: " + error);
     return false;
   }
 }

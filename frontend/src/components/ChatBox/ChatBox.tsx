@@ -96,9 +96,9 @@ function ChatBox(
 
       if (response.wonPhase) {
         addChatMessage({
-          type: CHAT_MESSAGE_TYPE.PREAMBLE,
+          type: CHAT_MESSAGE_TYPE.PHASE_INFO,
           message:
-            "Congratulations! You have completed this phase. Please click the next phase to proceed.",
+            "Congratulations! You have completed this phase. Please click on the next phase to continue.",
           defenceInfo: response.defenceInfo,
           isOriginalMessage: true,
         });

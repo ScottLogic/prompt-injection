@@ -53,6 +53,7 @@ function sendEmail(address, subject, body, session, currentPhase) {
   // add the sent email to the session
   session.sentEmails.push(email);
   const wonPhase = checkPhaseWinCondition(email, currentPhase);
+
   return { response: response, wonPhase: wonPhase };
 }
 
