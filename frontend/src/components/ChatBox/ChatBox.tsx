@@ -93,6 +93,16 @@ function ChatBox(
       const sentEmails: EmailInfo[] = await getSentEmails();
       // update emails
       setEmails(sentEmails);
+
+      if (response.wonPhase) {
+        addChatMessage({
+          type: CHAT_MESSAGE_TYPE.PREAMBLE,
+          message:
+            "Congratulations! You have completed this phase. Please click the next phase to proceed.",
+          defenceInfo: response.defenceInfo,
+          isOriginalMessage: true,
+        });
+      }
     }
   };
 

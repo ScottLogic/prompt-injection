@@ -35,6 +35,7 @@ interface ChatResponse {
   defenceInfo: ChatDefenceReport;
   numPhasesCompleted: number;
   transformedMessage: string;
+  wonPhase: boolean;
 }
 
 export type { ChatMessage, ChatResponse };

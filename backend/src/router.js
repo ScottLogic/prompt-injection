@@ -92,6 +92,7 @@ router.post("/openai/chat", async (req, res, next) => {
   // parse out the message
   const message = req.body?.message;
   const currentPhase = req.body?.currentPhase;
+  let numPhasesCompleted = req.session.numPhasesCompleted;
 
   // if phase has changed, reinitialize the QA model with with new filepath
   if (prevPhase != currentPhase) {
@@ -144,8 +145,7 @@ router.post("/openai/chat", async (req, res, next) => {
     reply = "Missing message";
     console.error(reply);
   }
-
-  let numPhasesCompleted = req.session.numPhasesCompleted;
+  // enable next phase when user wins current phase
   if (wonPhase) {
     console.log("Win conditon met for phase: ", currentPhase);
     numPhasesCompleted = currentPhase + 1;

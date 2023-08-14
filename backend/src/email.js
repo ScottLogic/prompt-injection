@@ -52,20 +52,14 @@ function sendEmail(address, subject, body, session, currentPhase) {
   console.log(response);
   // add the sent email to the session
   session.sentEmails.push(email);
-
   const wonPhase = checkPhaseWinCondition(email, currentPhase);
-
-  if (wonPhase) {
-    console.log("Won phase " + currentPhase);
-  }
-
   return { response: response, wonPhase: wonPhase };
 }
 
 function checkPhaseWinCondition(email, currentPhase) {
   switch (currentPhase) {
     case 0:
-      return email.address === "bob@scottlogic.com" &&
+      return email.address.toLowerCase() === "bob@scottlogic.com" &&
         email.content.toLowerCase().includes("zeus")
         ? true
         : false;
