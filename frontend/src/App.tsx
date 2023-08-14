@@ -13,6 +13,9 @@ import { EmailInfo } from "./models/email";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
 import { DefenceInfo } from "./models/defence";
 import { getCompletedPhases } from "./service/phaseService";
+import { clearEmails } from "./service/emailService";
+import { clearChat } from "./service/chatService";
+import { PHASES } from "./Phases";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
@@ -21,7 +24,7 @@ function App() {
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
 
   // start on sandbox mode
-  const [currentPhase, setCurrentPhase] = useState<number>(0);
+  const [currentPhase, setCurrentPhase] = useState<number>(3);
   const [numCompletedPhases, setNumCompletedPhases] = useState<number>(0);
 
   const updateTriggeredDefences = (defenceDetails: string[]) => {
@@ -42,8 +45,33 @@ function App() {
       isOriginalMessage: true,
     });
   };
+  const addPhasePreambleMessage = (message: string) => {
+    addChatMessage({
+      message: message,
+      type: CHAT_MESSAGE_TYPE.PREAMBLE,
+      isOriginalMessage: true,
+    });
+  };
+
   const clearMessages = () => {
     setMessages([]);
+  };
+
+  const clearEmailBox = () => {
+    setEmails([]);
+    clearEmails();
+  };
+
+  const setNewPhase = (newPhase: number) => {
+    // reset emails and messages from front and backend
+    clearChat();
+    clearMessages();
+    clearEmailBox();
+    setCurrentPhase(newPhase);
+
+    // add the preamble to the chat
+    const preambleMessage = PHASES[newPhase].preamble;
+    addPhasePreambleMessage(preambleMessage.toLowerCase());
   };
 
   // methods to be called when defences are (de)activated
@@ -61,6 +89,10 @@ function App() {
     getCompletedPhases().then((numCompletedPhases) => {
       setNumCompletedPhases(numCompletedPhases);
     });
+    // get the default sandbox preamble
+    clearMessages();
+    const preambleMessage = PHASES[currentPhase].preamble;
+    addPhasePreambleMessage(preambleMessage.toLowerCase());
   }, []);
 
   return (
@@ -98,7 +130,7 @@ function App() {
         <PhaseSelectionBox
           currentPhase={currentPhase}
           numCompletedPhases={numCompletedPhases}
-          setCurrentPhase={setCurrentPhase}
+          setNewPhase={setNewPhase}
         />
         <div className="side-bar-header">sent emails</div>
         <EmailBox emails={emails} />

@@ -5,7 +5,9 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
   return (
     <div
       className={
-        message.type === CHAT_MESSAGE_TYPE.USER
+        message.type === CHAT_MESSAGE_TYPE.PREAMBLE
+          ? "chat-box-message chat-box-message-preamble"
+          : message.type === CHAT_MESSAGE_TYPE.USER
           ? message.isOriginalMessage
             ? "chat-box-message chat-box-message-user"
             : "chat-box-message chat-box-message-user-transformed"

@@ -45,3 +45,9 @@
   margin-right: auto;
   text-align: left;
 }
+
+.chat-box-message-preamble {
+    float: right;
+    margin-left: auto;
+    background-color: rgb(255, 255, 230);
+}
