@@ -86,6 +86,9 @@ router.post("/openai/chat", async (req, res, next) => {
   let reply = "";
   let defenceInfo = { blocked: false, triggeredDefences: [] };
   let transformedMessage = "";
+
+  // whether the phase has been won by sending correct email
+  let wonPhase = false;
   // parse out the message
   const message = req.body?.message;
   const currentPhase = req.body?.currentPhase;
@@ -113,6 +116,8 @@ router.post("/openai/chat", async (req, res, next) => {
           req.session,
           currentPhase
         );
+        wonPhase = openAiReply.wonPhase;
+
         reply = openAiReply.reply;
         // combine triggered defences
         defenceInfo.triggeredDefences = [
@@ -140,19 +145,19 @@ router.post("/openai/chat", async (req, res, next) => {
     console.error(reply);
   }
 
-  // TODO remove, this is just for demonstration purposes
   let numPhasesCompleted = req.session.numPhasesCompleted;
-  if (numPhasesCompleted < 3 && currentPhase === numPhasesCompleted) {
+  if (wonPhase) {
+    console.log("Win conditon met for phase: ", currentPhase);
     numPhasesCompleted = currentPhase + 1;
     req.session.numPhasesCompleted = numPhasesCompleted;
   }
-
   // construct response
   const response = {
     reply,
     defenceInfo,
     transformedMessage,
     numPhasesCompleted,
+    wonPhase,
   };
   // log and send the reply with defence info
   console.log(response);

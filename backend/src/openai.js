@@ -122,8 +122,14 @@ function isChatGptFunction(functionName) {
   return chatGptFunctions.find((func) => func.name === functionName);
 }
 
-async function chatGptCallFunction(functionCall, defenceInfo, session) {
+async function chatGptCallFunction(
+  functionCall,
+  defenceInfo,
+  currentPhase,
+  session
+) {
   let reply = null;
+  let wonPhase = null;
   // get the function name
   const functionName = functionCall.name;
 
@@ -153,12 +159,15 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
       }
 
       if (isAllowedToSendEmail) {
-        response = sendEmail(
+        const emailResponse = sendEmail(
           params.address,
           params.subject,
           params.body,
-          session
+          session,
+          currentPhase
         );
+        response = emailResponse.response;
+        wonPhase = emailResponse.wonPhase;
       }
     } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist(session.defences);
@@ -178,7 +187,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
   } else {
     console.error("Unknown function: " + functionName);
   }
-  return { reply, defenceInfo };
+  return { reply, wonPhase, defenceInfo };
 }
 
 async function chatGptChatCompletion(session, currentPhase) {
@@ -222,6 +231,7 @@ async function chatGptChatCompletion(session, currentPhase) {
 async function chatGptSendMessage(message, session, currentPhase) {
   // init defence info
   let defenceInfo = { triggeredDefences: [], blocked: false };
+  let wonPhase = false;
 
   // evaluate the message for prompt injection
   const evalPrompt = await queryPromptEvaluationModel(message);
@@ -248,8 +258,10 @@ async function chatGptSendMessage(message, session, currentPhase) {
     const functionCallReply = await chatGptCallFunction(
       reply.function_call,
       defenceInfo,
+      currentPhase,
       session
     );
+    wonPhase = functionCallReply.wonPhase;
     // add the function call to the chat history
     session.chatHistory.push(functionCallReply.reply);
     // update the defence info
@@ -264,7 +276,11 @@ async function chatGptSendMessage(message, session, currentPhase) {
   // log the entire chat history so far
   console.log(session.chatHistory);
   // return the reply content
-  return { reply: reply.content, defenceInfo: defenceInfo };
+  return {
+    reply: reply.content,
+    wonPhase: wonPhase,
+    defenceInfo: defenceInfo,
+  };
 }
 
 module.exports = {
