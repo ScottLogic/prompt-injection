@@ -54,7 +54,8 @@ function App() {
   };
 
   const clearMessages = () => {
-    setMessages([]);
+    // resetting the current phase will also reset the messages
+    setNewPhase(currentPhase);
   };
 
   const clearEmailBox = () => {
@@ -65,8 +66,9 @@ function App() {
   const setNewPhase = (newPhase: number) => {
     // reset emails and messages from front and backend
     clearChat();
-    clearMessages();
     clearEmailBox();
+    // clear frontend messages
+    setMessages([]);
     setCurrentPhase(newPhase);
 
     // add the preamble to the chat
@@ -89,10 +91,7 @@ function App() {
     getCompletedPhases().then((numCompletedPhases) => {
       setNumCompletedPhases(numCompletedPhases);
     });
-    // get the default sandbox preamble
-    clearMessages();
-    const preambleMessage = PHASES[currentPhase].preamble;
-    addPhasePreambleMessage(preambleMessage.toLowerCase());
+    setNewPhase(currentPhase);
   }, []);
 
   return (
