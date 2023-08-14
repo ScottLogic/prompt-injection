@@ -11,7 +11,11 @@ const {
   setOpenAiApiKey,
   setGptModel,
 } = require("./openai");
+const { initQAModel } = require("./langchain");
 const router = express.Router();
+
+// keep track of phase change to reinitialze models
+let prevPhase = 3;
 
 // Activate a defence
 router.post("/defence/activate", (req, res, next) => {
@@ -86,8 +90,11 @@ router.post("/openai/chat", async (req, res, next) => {
   const message = req.body?.message;
   const currentPhase = req.body?.currentPhase;
 
-  // TODO remove, this is just for demonstration purposes
-  console.log("Current phase " + currentPhase);
+  // if phase has changed, reinitialize the QA model with with new filepath
+  if (prevPhase != currentPhase) {
+    prevPhase = currentPhase;
+    initQAModel(req.session, currentPhase);
+  }
 
   if (message) {
     transformedMessage = message;

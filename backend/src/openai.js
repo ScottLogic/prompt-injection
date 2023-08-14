@@ -82,7 +82,7 @@ async function setOpenAiApiKey(session, apiKey) {
     console.debug("Setting API key and initialising models");
     session.apiKey = apiKey;
     initOpenAi(session);
-    initQAModel(session);
+    initQAModel(session, 3);
     initPromptEvaluationModel(session);
     return true;
   } else {

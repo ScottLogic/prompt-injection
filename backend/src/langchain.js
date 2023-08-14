@@ -25,9 +25,24 @@ let qaChain = null;
 // chain we use in prompt evaluation request
 let promptEvaluationChain = null;
 
+function getFilepath(currentPhase) {
+  let filePath = "resources/documents/";
+  switch (currentPhase) {
+    case 0:
+      return (filePath += "phase_0/");
+    case 1:
+      return (filePath += "phase_1/");
+    case 2:
+      return (filePath += "phase_2/");
+    default:
+      return (filePath += "common/");
+  }
+}
+
 // load the documents from filesystem
-async function getDocuments() {
-  const filePath = "resources/documents/";
+async function getDocuments(filePath) {
+  console.debug("Loading documents from: " + filePath);
+
   const loader = new DirectoryLoader(filePath, {
     ".pdf": (path) => new PDFLoader(path),
     ".txt": (path) => new TextLoader(path),
@@ -45,13 +60,13 @@ async function getDocuments() {
 }
 
 // QA Chain - ask the chat model a question about the documents
-async function initQAModel(session) {
+async function initQAModel(session, currentPhase) {
   if (!session.apiKey) {
     console.debug("No apiKey set to initialise QA model");
     return;
   }
   // get the documents
-  const docs = await getDocuments();
+  const docs = await getDocuments(getFilepath(currentPhase));
 
   // embed and store the splits
   const embeddings = new OpenAIEmbeddings({ openAIApiKey: session.apiKey });
