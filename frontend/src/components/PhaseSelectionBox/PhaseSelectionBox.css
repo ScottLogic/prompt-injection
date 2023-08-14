@@ -1,0 +1,17 @@
+#phase-selection-box {
+    padding: 16px 32px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.phase-selection-button {
+    margin: 5px;
+    padding: 5px 5px;
+}
+
+.selected {
+    color: white;
+    background-color: rgb(0, 153, 255);
+}

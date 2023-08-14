@@ -14,12 +14,16 @@ function ChatBox(
   this: any,
   {
     messages,
+    currentPhase,
+    setNumCompletedPhases,
     setEmails,
     updateTriggeredDefences,
     addChatMessage,
     clearMessages,
   }: {
     messages: ChatMessage[];
+    currentPhase: number;
+    setNumCompletedPhases: (numCompletedPhases: number) => void;
     setEmails: (emails: EmailInfo[]) => void;
     updateTriggeredDefences: (defences: string[]) => void;
     addChatMessage: (message: ChatMessage) => void;
@@ -60,7 +64,8 @@ function ChatBox(
       // clear the input
       event.currentTarget.value = "";
 
-      const response: ChatResponse = await sendMessage(message);
+      const response: ChatResponse = await sendMessage(message, currentPhase);
+      setNumCompletedPhases(response.numPhasesCompleted);
       const transformedMessage = response.transformedMessage;
       const isTransformed = transformedMessage !== message;
       // add the transformed message to the chat box if it is different from the original message
