@@ -54,7 +54,10 @@ function App() {
   };
 
   const clearMessages = () => {
-    setMessages([]);
+    // clear all messages but the preamble
+    setMessages(
+      messages.filter((message) => message.type === CHAT_MESSAGE_TYPE.PREAMBLE)
+    );
   };
 
   const clearEmailBox = () => {
