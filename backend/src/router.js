@@ -70,6 +70,12 @@ router.get("/email/get", (req, res, next) => {
   res.send(req.session.sentEmails);
 });
 
+// clear emails
+router.post("/email/clear", (req, res, next) => {
+  req.session.sentEmails = [];
+  res.send("Emails cleared");
+});
+
 // Chat to ChatGPT
 router.post("/openai/chat", async (req, res, next) => {
   // set reply params
