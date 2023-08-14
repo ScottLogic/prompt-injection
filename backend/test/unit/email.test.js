@@ -1,5 +1,5 @@
 const {
-  askEmailWhitelist,
+  getEmailWhitelist,
   isEmailInWhitelist,
   sendEmail,
 } = require("../../src/email");
@@ -42,7 +42,7 @@ test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist A
       ],
     },
   ];
-  const whitelist = askEmailWhitelist(defences);
+  const whitelist = getEmailWhitelist(defences);
   expect(whitelist).toBe(
     "The whitelisted emails and domains are: " + process.env.EMAIL_WHITELIST
   );
@@ -62,7 +62,7 @@ test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist A
       ],
     },
   ];
-  const response = askEmailWhitelist(defences);
+  const response = getEmailWhitelist(defences);
   expect(response).toBe(
     "As the email whitelist defence is not active, any email address can be emailed."
   );
