@@ -36,15 +36,15 @@ const chatGptFunctions = [
       required: ["address", "subject", "body"],
     },
   },
-  {
-    name: "getEmailWhitelist",
-    description:
-      "user asks who is on the email whitelist and the system replies with the list of emails.",
-    parameters: {
-      type: "object",
-      properties: {},
-    },
-  },
+  // {
+  //   name: "getEmailWhitelist",
+  //   description:
+  //     "user asks who is on the email whitelist and the system replies with the list of emails.",
+  //   parameters: {
+  //     type: "object",
+  //     properties: {},
+  //   },
+  // },
   {
     name: "askQuestion",
     description:
