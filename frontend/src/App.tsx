@@ -45,7 +45,6 @@ function App() {
       isOriginalMessage: true,
     });
   };
-
   const addPhasePreambleMessage = (message: string) => {
     addChatMessage({
       message: message,
@@ -60,7 +59,6 @@ function App() {
 
   const clearEmailBox = () => {
     setEmails([]);
-    // clear
     clearEmails();
   };
 
@@ -73,7 +71,6 @@ function App() {
 
     // add the preamble to the chat
     const preambleMessage = PHASES[newPhase].preamble;
-
     addPhasePreambleMessage(preambleMessage.toLowerCase());
   };
 
@@ -92,6 +89,10 @@ function App() {
     getCompletedPhases().then((numCompletedPhases) => {
       setNumCompletedPhases(numCompletedPhases);
     });
+    // get the default sandbox preamble
+    clearMessages();
+    const preambleMessage = PHASES[currentPhase].preamble;
+    addPhasePreambleMessage(preambleMessage.toLowerCase());
   }, []);
 
   return (

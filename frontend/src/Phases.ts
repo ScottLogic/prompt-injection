@@ -12,14 +12,14 @@ const PHASES: Phase[] = [
   {
     id: PHASE_NAMES.PHASE_1,
     name: "phase 1",
-    preamble: "phase 1 preamble placeholder [PLACEHOLDER]",
+    preamble: "phase 1 preamble [PLACEHOLDER]",
     isComplete: false,
     isCurrent: false,
   },
   {
     id: PHASE_NAMES.PHASE_2,
     name: "phase 2",
-    preamble: "phase 2 preamble placeholder [PLACEHOLDER]",
+    preamble: "phase 2 preamble [PLACEHOLDER]",
     isComplete: false,
     isCurrent: false,
   },
