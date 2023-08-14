@@ -46,6 +46,17 @@ function App() {
     setMessages([]);
   };
 
+  const clearEmails = () => {
+    setEmails([]);
+  };
+
+  const setNewPhase = (newPhase: number) => {
+    console.log("setting a new phase", newPhase);
+    clearMessages();
+    clearEmails();
+    setCurrentPhase(newPhase);
+  };
+
   // methods to be called when defences are (de)activated
   // this adds an info message to the chat
   const defenceActivated = (defenceInfo: DefenceInfo) => {
@@ -98,7 +109,7 @@ function App() {
         <PhaseSelectionBox
           currentPhase={currentPhase}
           numCompletedPhases={numCompletedPhases}
-          setCurrentPhase={setCurrentPhase}
+          setNewPhase={setNewPhase}
         />
         <div className="side-bar-header">sent emails</div>
         <EmailBox emails={emails} />

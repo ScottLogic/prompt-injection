@@ -3,25 +3,24 @@ import { Phase } from "../../models/phase";
 import { PHASES } from "../../Phases";
 
 import "./PhaseSelectionBox.css";
-import { getCompletedPhases } from "../../service/phaseService";
 
 function PhaseSelectionBox(
   this: any,
   {
     currentPhase,
     numCompletedPhases,
-    setCurrentPhase,
+    setNewPhase,
   }: {
     currentPhase: number;
     numCompletedPhases: number;
-    setCurrentPhase: (newPhase: number) => void;
+    setNewPhase: (newPhase: number) => void;
   }
 ) {
   const handlePhaseChange = async (index: number) => {
     if (index !== currentPhase) {
       const newPhase = index;
       console.log(`Changing phase to ${newPhase}`);
-      setCurrentPhase(newPhase);
+      setNewPhase(newPhase);
     }
   };
 
