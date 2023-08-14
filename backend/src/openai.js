@@ -36,15 +36,15 @@ const chatGptFunctions = [
       required: ["address", "subject", "body"],
     },
   },
-  {
-    name: "getEmailWhitelist",
-    description:
-      "user asks who is on the email whitelist and the system replies with the list of emails.",
-    parameters: {
-      type: "object",
-      properties: {},
-    },
-  },
+  // {
+  //   name: "getEmailWhitelist",
+  //   description:
+  //     "user asks who is on the email whitelist and the system replies with the list of emails.",
+  //   parameters: {
+  //     type: "object",
+  //     properties: {},
+  //   },
+  // },
   {
     name: "askQuestion",
     description:
@@ -82,7 +82,7 @@ async function setOpenAiApiKey(session, apiKey) {
     console.debug("Setting API key and initialising models");
     session.apiKey = apiKey;
     initOpenAi(session);
-    initQAModel(session);
+    initQAModel(session, 3);
     initPromptEvaluationModel(session);
     return true;
   } else {

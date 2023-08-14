@@ -31,6 +31,7 @@ h1 {
   flex-direction: column;
   height: 100%;
   width: 30%;
+  overflow-y: auto;
 }
 
 .side-bar-header {

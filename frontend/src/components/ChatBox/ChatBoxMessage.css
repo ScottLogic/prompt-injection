@@ -10,6 +10,7 @@
   -moz-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
+  white-space: pre-wrap;
   word-wrap: break-word;
 }
 
@@ -47,7 +48,7 @@
 }
 
 .chat-box-message-preamble {
-    float: right;
-    margin-left: auto;
-    background-color: rgb(255, 255, 230);
+  float: right;
+  margin-left: auto;
+  background-color: rgb(255, 255, 230);
 }
