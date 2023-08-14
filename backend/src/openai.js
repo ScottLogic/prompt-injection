@@ -1,6 +1,6 @@
 const { Configuration, OpenAIApi } = require("openai");
 const { isDefenceActive, getSystemRole } = require("./defence");
-const { sendEmail, askEmailWhitelist, isEmailInWhitelist } = require("./email");
+const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
 const {
   initQAModel,
   initPromptEvaluationModel,
@@ -37,7 +37,7 @@ const chatGptFunctions = [
     },
   },
   {
-    name: "askEmailWhitelist",
+    name: "getEmailWhitelist",
     description:
       "user asks who is on the email whitelist and the system replies with the list of emails.",
     parameters: {
@@ -161,9 +161,7 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
         );
       }
     } else if (functionName == "getEmailWhitelist") {
-      response = getEmailWhitelist(
-        isDefenceActive("EMAIL_WHITELIST", session.defences)
-      );
+      response = getEmailWhitelist(session.defences);
     }
     if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
