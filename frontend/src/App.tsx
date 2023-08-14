@@ -13,6 +13,9 @@ import { EmailInfo } from "./models/email";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
 import { DefenceInfo } from "./models/defence";
 import { getCompletedPhases } from "./service/phaseService";
+import { clearEmails } from "./service/emailService";
+import { clearChat } from "./service/chatService";
+import { PHASES } from "./Phases";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
@@ -21,7 +24,7 @@ function App() {
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
 
   // start on sandbox mode
-  const [currentPhase, setCurrentPhase] = useState<number>(0);
+  const [currentPhase, setCurrentPhase] = useState<number>(3);
   const [numCompletedPhases, setNumCompletedPhases] = useState<number>(0);
 
   const updateTriggeredDefences = (defenceDetails: string[]) => {
@@ -42,19 +45,36 @@ function App() {
       isOriginalMessage: true,
     });
   };
+
+  const addPhasePreambleMessage = (message: string) => {
+    addChatMessage({
+      message: message,
+      type: CHAT_MESSAGE_TYPE.PREAMBLE,
+      isOriginalMessage: true,
+    });
+  };
+
   const clearMessages = () => {
     setMessages([]);
   };
 
-  const clearEmails = () => {
+  const clearEmailBox = () => {
     setEmails([]);
+    // clear
+    clearEmails();
   };
 
   const setNewPhase = (newPhase: number) => {
-    console.log("setting a new phase", newPhase);
+    // reset emails and messages from front and backend
+    clearChat();
     clearMessages();
-    clearEmails();
+    clearEmailBox();
     setCurrentPhase(newPhase);
+
+    // add the preamble to the chat
+    const preambleMessage = PHASES[newPhase].preamble;
+
+    addPhasePreambleMessage(preambleMessage.toLowerCase());
   };
 
   // methods to be called when defences are (de)activated
