@@ -87,8 +87,17 @@ function getRandomSequenceEnclosureLength(defences) {
   return getConfigValue(defences, "RANDOM_SEQUENCE_ENCLOSURE", "length", 10);
 }
 
-function getSystemRole(defences) {
-  return getConfigValue(defences, "SYSTEM_ROLE", "systemRole", "");
+function getSystemRole(defences, currentPhase) {
+  switch (currentPhase) {
+    case 0:
+      return process.env.SYSTEM_ROLE_PHASE_0 || "";
+    case 1:
+      return process.env.SYSTEM_ROLE_PHASE_1 || "";
+    case 2:
+      return process.env.SYSTEM_ROLE_PHASE_2 || "";
+    default:
+      return getConfigValue(defences, "SYSTEM_ROLE", "systemRole", "");
+  }
 }
 
 function getEmailWhitelistVar(defences) {

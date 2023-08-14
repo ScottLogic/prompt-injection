@@ -181,15 +181,16 @@ async function chatGptCallFunction(functionCall, defenceInfo, session) {
   return { reply, defenceInfo };
 }
 
-async function chatGptChatCompletion(session) {
+async function chatGptChatCompletion(session, currentPhase) {
   // check if we need to set a system role
-  if (isDefenceActive("SYSTEM_ROLE", session.defences)) {
+  // system role is always active on phases
+  if (currentPhase <= 2 || isDefenceActive("SYSTEM_ROLE", session.defences)) {
     // check to see if there's already a system role
     if (!session.chatHistory.find((message) => message.role === "system")) {
       // add the system role to the start of the chat history
       session.chatHistory.unshift({
         role: "system",
-        content: getSystemRole(session.defences),
+        content: getSystemRole(session.defences, currentPhase),
       });
     }
   } else {
@@ -218,7 +219,7 @@ async function chatGptChatCompletion(session) {
   return chat_completion.data.choices[0].message;
 }
 
-async function chatGptSendMessage(message, session) {
+async function chatGptSendMessage(message, session, currentPhase) {
   // init defence info
   let defenceInfo = { triggeredDefences: [], blocked: false };
 
@@ -238,7 +239,7 @@ async function chatGptSendMessage(message, session) {
   // add user message to chat
   session.chatHistory.push({ role: "user", content: message });
 
-  let reply = await chatGptChatCompletion(session);
+  let reply = await chatGptChatCompletion(session, currentPhase);
   // check if GPT wanted to call a function
   while (reply.function_call) {
     session.chatHistory.push(reply);
@@ -255,7 +256,7 @@ async function chatGptSendMessage(message, session) {
     defenceInfo = functionCallReply.defenceInfo;
 
     // get a new reply from ChatGPT now that the function has been called
-    reply = await chatGptChatCompletion(session);
+    reply = await chatGptChatCompletion(session, currentPhase);
   }
   // add the ai reply to the chat history
   session.chatHistory.push(reply);

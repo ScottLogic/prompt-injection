@@ -103,7 +103,8 @@ router.post("/openai/chat", async (req, res, next) => {
       try {
         const openAiReply = await chatGptSendMessage(
           transformedMessage,
-          req.session
+          req.session,
+          currentPhase
         );
         reply = openAiReply.reply;
         // combine triggered defences
