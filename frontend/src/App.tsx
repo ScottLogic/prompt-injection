@@ -98,20 +98,18 @@ function App() {
   return (
     <span id="main-area">
       <div className="side-bar">
-        <div className="side-bar-header">defence mechanisms</div>
-        <DefenceBox
-          key={defenceBoxKey}
-          triggeredDefences={triggeredDefences}
-          defenceActivated={defenceActivated}
-          defenceDeactivated={defenceDeactivated}
-        />
-
-        <div className="side-bar-header">attack mechanisms</div>
-        <AttackBox />
-        <div className="side-bar-header">openai api key</div>
-        <ApiKeyBox />
-        <div className="side-bar-header">model selection</div>
-        <ModelSelectionBox />
+        {/* hide components when in phase 0 */}
+        {currentPhase !== 0 && (
+          <DefenceBox
+            key={defenceBoxKey}
+            triggeredDefences={triggeredDefences}
+            defenceActivated={defenceActivated}
+            defenceDeactivated={defenceDeactivated}
+          />
+        )}
+        {currentPhase !== 0 && <AttackBox />}
+        {currentPhase !== 0 && <ApiKeyBox />}
+        {currentPhase !== 0 && <ModelSelectionBox />}
       </div>
       <div id="centre-area">
         <Header />
@@ -126,13 +124,11 @@ function App() {
         />
       </div>
       <div className="side-bar">
-        <div className="side-bar-header">phases</div>
         <PhaseSelectionBox
           currentPhase={currentPhase}
           numCompletedPhases={numCompletedPhases}
           setNewPhase={setNewPhase}
         />
-        <div className="side-bar-header">sent emails</div>
         <EmailBox emails={emails} />
       </div>
     </span>

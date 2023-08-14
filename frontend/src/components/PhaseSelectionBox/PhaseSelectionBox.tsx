@@ -25,22 +25,25 @@ function PhaseSelectionBox(
   };
 
   return (
-    <div id="phase-selection-box">
-      {PHASES.map((phase: Phase, index: number) => {
-        return (
-          <button
-            className={`phase-selection-button ${
-              index === currentPhase ? "selected" : ""
-            }`}
-            key={phase.name}
-            onClick={() => handlePhaseChange(index)}
-            disabled={index !== numCompletedPhases && index !== 3}
-          >
-            {phase.name}
-          </button>
-        );
-      })}
-    </div>
+    <span>
+      <div className="side-bar-header">phases</div>
+      <div id="phase-selection-box">
+        {PHASES.map((phase: Phase, index: number) => {
+          return (
+            <button
+              className={`phase-selection-button ${
+                index === currentPhase ? "selected" : ""
+              }`}
+              key={phase.name}
+              onClick={() => handlePhaseChange(index)}
+              disabled={index !== numCompletedPhases && index !== 3}
+            >
+              {phase.name}
+            </button>
+          );
+        })}
+      </div>
+    </span>
   );
 }
 

@@ -40,6 +40,7 @@ function ModelSelectionBox() {
   // return a drop down menu with the models
   return (
     <div id="model-selection-box">
+      <div className="side-bar-header">model selection</div>
       <div id="model-selection-row">
         <p>Select a model: </p>
         <select

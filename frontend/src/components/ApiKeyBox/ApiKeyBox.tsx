@@ -57,6 +57,7 @@ function ApiKeyBox(this: any) {
 
   return (
     <div id="api-key-box">
+      <div className="side-bar-header">openai api key</div>
       <input
         id="api-key-input"
         className={`api-key-input ${isValidated ? "validated" : ""} ${
