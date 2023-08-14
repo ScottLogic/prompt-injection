@@ -7,7 +7,7 @@ function getEmailWhitelistValues(defences) {
 }
 
 // if defense active return the whitelist of emails and domains
-function askEmailWhitelist(defences) {
+function getEmailWhitelist(defences) {
   if (!isDefenceActive("EMAIL_WHITELIST", defences)) {
     return "As the email whitelist defence is not active, any email address can be emailed.";
   } else {
@@ -56,7 +56,7 @@ function sendEmail(address, subject, body, session) {
 }
 
 module.exports = {
-  askEmailWhitelist,
+  getEmailWhitelist,
   isEmailInWhitelist,
   sendEmail,
 };
