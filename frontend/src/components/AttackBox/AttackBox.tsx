@@ -5,6 +5,7 @@ import ATTACKS from "../../Attacks";
 function AttackBox() {
   return (
     <div id="strategy-box">
+      <div className="side-bar-header">attack mechanisms</div>
       {ATTACKS.map((attack, index) => {
         return <AttackMechanism key={attack.id} attack={attack} />;
       })}
