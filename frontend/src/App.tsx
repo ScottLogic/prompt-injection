@@ -97,8 +97,8 @@ function App() {
   return (
     <span id="main-area">
       <div className="side-bar">
-        {/* hide components when in phase 0 */}
-        {currentPhase !== 0 && (
+        {/* hide defence box on phases 0 and 1 */}
+        {currentPhase >= 2 && (
           <DefenceBox
             key={defenceBoxKey}
             triggeredDefences={triggeredDefences}
@@ -106,9 +106,10 @@ function App() {
             defenceDeactivated={defenceDeactivated}
           />
         )}
+        {/* hide attack box on phase 0 only */}
         {currentPhase !== 0 && <AttackBox />}
-        {currentPhase !== 0 && <ApiKeyBox />}
-        {currentPhase !== 0 && <ModelSelectionBox />}
+        {/* hide model selection box on phases 0 and 1 */}
+        {currentPhase >= 2 && <ModelSelectionBox />}
       </div>
       <div id="centre-area">
         <Header />
