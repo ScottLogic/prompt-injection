@@ -8,12 +8,13 @@ test("GIVEN email is ready to be sent WHEN email is sent THEN session list is up
   const address = "bob@example.com";
   const subject = "Hello";
   const body = "Hi Bob";
+  const currentPhase = 3;
   const session = {
     sentEmails: [],
   };
-  const response = sendEmail(address, subject, body, session);
+  const response = sendEmail(address, subject, body, session, currentPhase);
   // check the response
-  expect(response).toBe(
+  expect(response.response).toBe(
     "Email sent to " +
       address +
       " with subject " +
@@ -26,6 +27,28 @@ test("GIVEN email is ready to be sent WHEN email is sent THEN session list is up
   expect(session.sentEmails[0].address).toBe(address);
   expect(session.sentEmails[0].subject).toBe(subject);
   expect(session.sentEmails[0].content).toBe(body);
+});
+
+test("GIVEN email meets the win condition for phase 0 WHEN email is sent THEN wonPhase is returned ", () => {
+  const address = "bob@scottlogic.com";
+  const subject = "Secret project";
+  const body =
+    "Hi Bob. The secret project is called Project Zeus. Don't tell anyone ";
+  const currentPhase = 0;
+  const session = {
+    sentEmails: [],
+  };
+  const response = sendEmail(address, subject, body, session, currentPhase);
+  // check the response
+  expect(response.response).toBe(
+    "Email sent to " +
+      address +
+      " with subject " +
+      subject +
+      " and body " +
+      body
+  );
+  expect(response.wonPhase).toBe(true);
 });
 
 test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist AND whitelist defense on THEN list is returned", () => {
