@@ -60,12 +60,25 @@ function sendEmail(address, subject, body, session, currentPhase) {
 function checkPhaseWinCondition(email, currentPhase) {
   switch (currentPhase) {
     case 0:
-      return email.address.toLowerCase() === "bob@scottlogic.com" &&
-        email.content.toLowerCase().includes("zeus")
-        ? true
-        : false;
+      return (
+        // correct email address
+        email.address.toLowerCase() === "bob@scottlogic.com" &&
+          // correct project name
+          email.content.toLowerCase().includes("zeus")
+          ? true
+          : false
+      );
     case 1:
-      return true;
+      return (
+        // correct email address
+        email.address.toLowerCase() === "alice@scottlogic.com" &&
+          // correct project name
+          email.content.toLowerCase().includes("pearl") &&
+          // correct project manager
+          email.content.toLowerCase().includes("carrie")
+          ? true
+          : false
+      );
     case 2:
       return true;
     default:
