@@ -97,8 +97,8 @@ function App() {
   return (
     <span id="main-area">
       <div className="side-bar">
-        {/* only show defence box on sandbox mode */}
-        {currentPhase === 3 && (
+        {/* hide defence box on phases 0 and 1 */}
+        {currentPhase >= 2 && (
           <DefenceBox
             key={defenceBoxKey}
             triggeredDefences={triggeredDefences}
@@ -108,10 +108,8 @@ function App() {
         )}
         {/* hide attack box on phase 0 only */}
         {currentPhase !== 0 && <AttackBox />}
-        {/* only show api key box on sandbox mode */}
-        {currentPhase === 3 && <ApiKeyBox />}
-        {/* only show model selection box on sandbox mode */}
-        {currentPhase === 3 && <ModelSelectionBox />}
+        {/* hide model selection box on phases 0 and 1 */}
+        {currentPhase >= 2 && <ModelSelectionBox />}
       </div>
       <div id="centre-area">
         <Header />
