@@ -72,8 +72,6 @@ function checkPhaseWinCondition(email, currentPhase) {
       return (
         // correct email address
         email.address.toLowerCase() === "alice@scottlogic.com" &&
-          // correct project name
-          email.content.toLowerCase().includes("pearl") &&
           // correct project manager
           email.content.toLowerCase().includes("carrie")
           ? true
