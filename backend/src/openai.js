@@ -234,18 +234,22 @@ async function chatGptSendMessage(message, session, currentPhase) {
   let wonPhase = false;
 
   // evaluate the message for prompt injection
-  const evalPrompt = await queryPromptEvaluationModel(message);
-  if (evalPrompt.isMalicious) {
-    defenceInfo.triggeredDefences.push("LLM_EVALUATION");
-    if (isDefenceActive("LLM_EVALUATION", session.defences)) {
-      console.debug("LLM evalutation defence active.");
-      defenceInfo.blocked = true;
-      const evalResponse =
-        "Message blocked by the malicious prompt evaluator." +
-        evalPrompt.reason;
-      return { reply: evalResponse, defenceInfo: defenceInfo };
+  // to speed up replies, only do this on phases where defences are active
+  if (currentPhase >= 2) {
+    const evalPrompt = await queryPromptEvaluationModel(message);
+    if (evalPrompt.isMalicious) {
+      defenceInfo.triggeredDefences.push("LLM_EVALUATION");
+      if (isDefenceActive("LLM_EVALUATION", session.defences)) {
+        console.debug("LLM evalutation defence active.");
+        defenceInfo.blocked = true;
+        const evalResponse =
+          "Message blocked by the malicious prompt evaluator." +
+          evalPrompt.reason;
+        return { reply: evalResponse, defenceInfo: defenceInfo };
+      }
     }
   }
+
   // add user message to chat
   session.chatHistory.push({ role: "user", content: message });
 
