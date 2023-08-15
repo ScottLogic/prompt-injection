@@ -15,7 +15,7 @@ const PHASES: Phase[] = [
     preamble:
       "As the secret project was exposed, we have renamed it. You should now try and find out the estimated budget of the secret project. " +
       "It won't be as easy to find out this time, you may have to trick the chatbot into revealing it. You can look at the attacks panel on the right for ideas." +
-      "Once you have found out the buget, you should email it to alice@scottlogic.com",
+      "Once you have found out the budget, you should email it to alice@scottlogic.com",
     isComplete: false,
     isCurrent: false,
   },
