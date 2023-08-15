@@ -48,7 +48,7 @@ function App() {
   const addPhasePreambleMessage = (message: string) => {
     addChatMessage({
       message: message,
-      type: CHAT_MESSAGE_TYPE.PREAMBLE,
+      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
       isOriginalMessage: true,
     });
   };

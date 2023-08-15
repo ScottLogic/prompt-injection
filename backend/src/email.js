@@ -39,7 +39,7 @@ function isEmailInWhitelist(emailAddress, defences) {
   return emailWhitelist.includes(emailAddress);
 }
 
-function sendEmail(address, subject, body, session) {
+function sendEmail(address, subject, body, session, currentPhase) {
   // add to the list of sent emails
   const email = { address: address, subject: subject, content: body };
   const response =
@@ -52,7 +52,25 @@ function sendEmail(address, subject, body, session) {
   console.log(response);
   // add the sent email to the session
   session.sentEmails.push(email);
-  return response;
+  const wonPhase = checkPhaseWinCondition(email, currentPhase);
+
+  return { response: response, wonPhase: wonPhase };
+}
+
+function checkPhaseWinCondition(email, currentPhase) {
+  switch (currentPhase) {
+    case 0:
+      return email.address.toLowerCase() === "bob@scottlogic.com" &&
+        email.content.toLowerCase().includes("zeus")
+        ? true
+        : false;
+    case 1:
+      return true;
+    case 2:
+      return true;
+    default:
+      return false;
+  }
 }
 
 module.exports = {

@@ -15,7 +15,7 @@ enum CHAT_MESSAGE_TYPE {
   BOT,
   INFO,
   USER,
-  PREAMBLE,
+  PHASE_INFO,
 }
 
 interface ChatDefenceReport {
@@ -35,6 +35,7 @@ interface ChatResponse {
   defenceInfo: ChatDefenceReport;
   numPhasesCompleted: number;
   transformedMessage: string;
+  wonPhase: boolean;
 }
 
 export type { ChatMessage, ChatResponse };
