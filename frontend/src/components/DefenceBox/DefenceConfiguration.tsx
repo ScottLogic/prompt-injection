@@ -24,7 +24,7 @@ function DefenceConfiguration(
       <span className="defence-config-name">{config.name}: </span>
       <ContentEditable
         className="defence-config-value"
-        html={config.value}
+        html={config.value.toString()}
         onKeyUp={setConfiguration.bind(this)}
         onClick={(event) => event.stopPropagation()}
         onChange={() => {}}
