@@ -1,5 +1,4 @@
 import { CHAT_MESSAGE_TYPE } from "../../models/chat";
-import { FaTimes } from "react-icons/fa";
 import "./ChatBoxInfoText.css";
 
 function ChatBoxInfoText({
@@ -17,7 +16,7 @@ function ChatBoxInfoText({
           : "chat-box-info-text"
       }
     >
-      {<FaTimes />} {text}
+      {text}
     </div>
   );
 }
