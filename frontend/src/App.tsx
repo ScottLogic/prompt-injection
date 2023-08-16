@@ -15,6 +15,7 @@ import { getCompletedPhases } from "./service/phaseService";
 import { clearEmails } from "./service/emailService";
 import { clearChat } from "./service/chatService";
 import { PHASES } from "./Phases";
+import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
 import { DEFENCE_DETAILS } from "./Defences";
 
 function App() {
@@ -129,8 +130,10 @@ function App() {
             defenceDeactivated={defenceDeactivated}
           />
         )}
-        {/* hide attack box on phase 0 only */}
-        {currentPhase !== 0 && <AttackBox />}
+        {/* show reduced set of attacks on phase 1 */}
+        {currentPhase === 1 && <AttackBox attacks={ATTACKS_PHASE_1} />}
+        {/* show all attacks on phase 2 and sandbox */}
+        {currentPhase >= 2 && <AttackBox attacks={ATTACKS_ALL} />}
         {/* hide model selection box on phases 0 and 1 */}
         {currentPhase >= 2 && <ModelSelectionBox />}
       </div>
