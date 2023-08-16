@@ -61,7 +61,7 @@ app.use(function (req, res, next) {
     req.session.gptModel = defaultModel;
   }
   if (!req.session.numPhasesCompleted) {
-    req.session.numPhasesCompleted = 1;
+    req.session.numPhasesCompleted = 0;
   }
   next();
 });
