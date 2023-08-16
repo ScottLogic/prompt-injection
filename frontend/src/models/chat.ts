@@ -16,6 +16,7 @@ enum CHAT_MESSAGE_TYPE {
   INFO,
   USER,
   PHASE_INFO,
+  DEFENCE_TRIGGERED,
 }
 
 interface ChatDefenceReport {

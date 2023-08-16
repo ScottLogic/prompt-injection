@@ -139,7 +139,7 @@ function transformRandomSequenceEnclosure(message, defences) {
 
 // function to escape XML characters in user input to prevent hacking with XML tagging on
 function escapeXml(unsafe) {
-  return unsafe.replace(/[<>&'"]/g, function (c) {
+  return unsafe?.replace(/[<>&'"]/g, function (c) {
     switch (c) {
       case "<":
         return "&lt;";

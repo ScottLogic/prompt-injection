@@ -189,7 +189,7 @@ function formatEvaluationOutput(response) {
   try {
     // split response on first full stop or comma
     const splitResponse = response.split(/\.|,/);
-    const answer = splitResponse[0].replace(/\W/g, "").toLowerCase();
+    const answer = splitResponse[0]?.replace(/\W/g, "").toLowerCase();
     const reason = splitResponse[1];
     return {
       isMalicious: answer === "yes",

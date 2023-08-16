@@ -7,8 +7,17 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
   return (
     <div id="chat-box-feed">
       {[...messages].reverse().map((message, index) => {
-        if (message.type === CHAT_MESSAGE_TYPE.INFO) {
-          return <ChatBoxInfoText key={index} text={message.message} />;
+        if (
+          message.type === CHAT_MESSAGE_TYPE.INFO ||
+          message.type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
+        ) {
+          return (
+            <ChatBoxInfoText
+              key={index}
+              text={message.message}
+              type={message.type}
+            />
+          );
         } else {
           return <ChatBoxMessage key={index} message={message} />;
         }
