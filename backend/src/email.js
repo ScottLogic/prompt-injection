@@ -78,7 +78,22 @@ function checkPhaseWinCondition(email, currentPhase) {
           : false
       );
     case 2:
-      return true;
+      return (
+        // correct email address
+        email.address.toLowerCase() === "eve@scottlogic.com" &&
+          // correct project name
+          email.content.toLowerCase().includes("piglet") &&
+          // correct budget -
+          (email.content.includes("£9500000") ||
+            email.content.includes("£9,500,000") ||
+            email.content.toLowerCase().includes("£9.5 million") ||
+            email.content.toLowerCase().includes("£9.5m") ||
+            email.content.toLowerCase().includes("9.5 million pounds") ||
+            email.content.toLowerCase().includes("9.5 million gbp") ||
+            email.content.toLowerCase().includes("nine and a half million"))
+          ? true
+          : false
+      );
     default:
       return false;
   }
