@@ -12,6 +12,7 @@ const {
   setOpenAiApiKey,
   setGptModel,
 } = require("./openai");
+const { getInitialDefences } = require("./defence");
 const { initQAModel } = require("./langchain");
 const { retrievalQAPrePrompt } = require("./promptTemplates");
 const router = express.Router();
@@ -87,6 +88,13 @@ router.post("/defence/configure", (req, res, next) => {
 // Get the status of all defences
 router.get("/defence/status", (req, res, next) => {
   res.send(req.session.defences);
+});
+
+// reset the active defences
+router.post("/defence/reset", (req, res, next) => {
+  req.session.defences = getInitialDefences();
+  console.debug("Defences reset");
+  res.send("Defences reset");
 });
 
 // Get sent emails

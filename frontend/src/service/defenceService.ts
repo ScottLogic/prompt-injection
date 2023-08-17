@@ -71,4 +71,15 @@ function validateDefence(id: string, configName: string, config: string) {
   }
 }
 
-export { getDefences, activateDefence, deactivateDefence, configureDefence };
+async function resetActiveDefences() {
+  const response = await sendRequest(PATH + "reset", "POST");
+  return response.status === 200;
+}
+
+export {
+  getDefences,
+  activateDefence,
+  deactivateDefence,
+  configureDefence,
+  resetActiveDefences,
+};
