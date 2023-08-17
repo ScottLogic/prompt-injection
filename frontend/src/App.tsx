@@ -135,7 +135,7 @@ function App() {
         {/* show all attacks on phase 2 and sandbox */}
         {currentPhase >= 2 && <AttackBox attacks={ATTACKS_ALL} />}
         {/* hide model selection box on phases 0 and 1 */}
-        {currentPhase >= 2 && <ModelSelectionBox />}
+        {currentPhase > 2 && <ModelSelectionBox />}
       </div>
       <div id="centre-area">
         <Header />
