@@ -40,6 +40,12 @@ const DEFENCE_DETAILS: DefenceInfo[] = [
     "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input. This is a form of prompt validation.",
     []
   ),
+  new DefenceInfo(
+    DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
+    "QA LLM instructions",
+    "Currently the chatbot speaks to a separate Question/Answering LLM to retrieve information on documents. The QA LLM will reveal all information to the chatbot, who will then decide whether to reveal to the user. This defence adds an instructional pre-prompt to the QA LLM to not reveal certain sensitive information to the chatbot.",
+    [new DefenceConfig("prePrompt", "pre-prompt")]
+  ),
 ];
 
 export { DEFENCE_DETAILS };
