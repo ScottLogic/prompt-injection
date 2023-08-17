@@ -39,6 +39,10 @@ function DefenceMechanism({
         setConfigValidated(configured);
       }
     );
+    // hide the message after 3 seconds
+    setTimeout(() => {
+      setIsConfigured(false);
+    }, 3000);
   };
 
   return (
