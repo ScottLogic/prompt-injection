@@ -1,7 +1,7 @@
 import { Session } from "express-session";
-import { getEmailWhitelistVar, isDefenceActive } from "./defence.js";
 import { DefenceInfo } from "./models/defence";
 import { EmailInfo, EmailResponse } from "./models/email";
+import { getEmailWhitelistVar, isDefenceActive } from "./defence";
 
 // return the whitelist variable
 const getEmailWhitelistValues = (defences: DefenceInfo[]): string[] => {

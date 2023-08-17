@@ -6,8 +6,22 @@ import session from "express-session";
 import { getInitialDefences } from "./defence";
 import { setOpenAiApiKey } from "./openai";
 import { router } from "./router";
+import { ChatCompletionRequestMessage } from "openai";
+import { EmailInfo } from "./models/email";
+import { DefenceInfo } from "./models/defence";
 
 dotenv.config();
+
+declare module "express-session" {
+  interface Session {
+    chatHistory: ChatCompletionRequestMessage[];
+    sentEmails: EmailInfo[];
+    defences: DefenceInfo[];
+    apiKey: string;
+    gptModel: string;
+    numPhasesCompleted: number;
+  }
+}
 
 // by default runs on port 3001
 const port = process.env.PORT || String(3001);
