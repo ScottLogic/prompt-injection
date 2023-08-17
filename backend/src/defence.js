@@ -115,7 +115,7 @@ function getEmailWhitelistVar(defences) {
   return getConfigValue(defences, "EMAIL_WHITELIST", "whitelist", "");
 }
 
-function getQaLlmPrePrompt(defences) {
+function getQALLMprePrompt(defences) {
   return getConfigValue(defences, "QA_LLM_INSTRUCTIONS", "prePrompt", "");
 }
 
@@ -242,7 +242,7 @@ module.exports = {
   deactivateDefence,
   getInitialDefences,
   getSystemRole,
-  getQaLlmPrePrompt,
+  getQALLMprePrompt,
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,

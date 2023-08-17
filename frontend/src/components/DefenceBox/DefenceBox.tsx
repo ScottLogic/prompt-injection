@@ -23,7 +23,6 @@ function DefenceBox({
   // list of defence mechanisms
   const [defenceDetails, setDefenceDetails] = useState(defences);
 
-  // Update the defenceDetails whenever defences prop changes
   useEffect(() => {
     setDefenceDetails(defences);
   }, [defences]);

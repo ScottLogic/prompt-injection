@@ -90,7 +90,7 @@ async function initQAModel(session, currentPhase, prePrompt) {
   });
 
   // prompt template for question and answering
-  const qaPrompt = getPromptTemplate(prePrompt);
+  const qaPrompt = getQAPromptTemplate(prePrompt);
 
   // set chain to retrieval QA chain
   qaChain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {

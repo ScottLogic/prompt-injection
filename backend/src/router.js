@@ -5,7 +5,7 @@ const {
   configureDefence,
   transformMessage,
   detectTriggeredDefences,
-  getQaLlmPrePrompt,
+  getQALLMprePrompt,
 } = require("./defence");
 const {
   chatGptSendMessage,
@@ -35,7 +35,7 @@ router.post("/defence/activate", (req, res, next) => {
       initQAModel(
         req.session,
         req.session.currentPhase,
-        getQaLlmPrePrompt(req.session.defences)
+        getQALLMprePrompt(req.session.defences)
       );
     }
 
