@@ -1,10 +1,6 @@
-const { OpenAIApi } = require("openai");
-const {
-  validateApiKey,
-  setOpenAiApiKey,
-  initOpenAi,
-} = require("../../src/openai");
-const { initQAModel } = require("../../src/langchain");
+import { OpenAIApi } from "openai";
+import { validateApiKey, setOpenAiApiKey } from "../../src/openai";
+import { initQAModel } from "../../src/langchain";
 
 // Mock the OpenAIApi module
 jest.mock("openai");

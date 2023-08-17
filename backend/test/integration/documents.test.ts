@@ -1,12 +1,12 @@
-const { DirectoryLoader } = require("langchain/document_loaders/fs/directory");
-const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
-const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
-const { MemoryVectorStore } = require("langchain/vectorstores/memory");
-const { ChatOpenAI } = require("langchain/chat_models/openai");
-const { RetrievalQAChain } = require("langchain/chains");
-const { PromptTemplate } = require("langchain/prompts");
-const { getDocuments } = require("../../src/langchain");
-const { CHAT_MODELS } = require("../../src/models/chat");
+import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { RetrievalQAChain } from "langchain/chains";
+import { PromptTemplate } from "langchain/prompts";
+import { getDocuments } from "../../src/langchain";
+import { CHAT_MODELS } from "../../src/models/chat";
 
 // mock the directory loader
 jest.mock("langchain/document_loaders/fs/directory");

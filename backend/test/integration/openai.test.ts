@@ -1,7 +1,7 @@
-const { activateDefence, getInitialDefences } = require("../../src/defence");
-const { initOpenAi, chatGptSendMessage } = require("../../src/openai");
-const { OpenAIApi } = require("openai");
-const { queryPromptEvaluationModel } = require("../../src/langchain");
+import { activateDefence, getInitialDefences } from "../../src/defence";
+import { initOpenAi, chatGptSendMessage } from "../../src/openai";
+import { OpenAIApi } from "openai";
+import { queryPromptEvaluationModel } from "../../src/langchain";
 
 // Mock the OpenAIApi module
 jest.mock("openai");

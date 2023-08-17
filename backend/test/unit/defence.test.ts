@@ -1,4 +1,4 @@
-const {
+import {
   activateDefence,
   deactivateDefence,
   configureDefence,
@@ -7,24 +7,26 @@ const {
   transformMessage,
   detectTriggeredDefences,
   getInitialDefences,
-} = require("../../src/defence");
+} from "../../src/defence";
+import { DefenceInfo } from "../../src/models/defence";
 
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {
   const defence = "SYSTEM_ROLE";
-  const defences = [{ id: defence, isActive: false }];
+  const defences: DefenceInfo[] = getInitialDefences();
   const updatedActiveDefences = activateDefence(defence, defences);
   expect(updatedActiveDefences).toContainEqual({ id: defence, isActive: true });
 });
 
 test("GIVEN defence is active WHEN activating defence THEN defence is active", () => {
   const defence = "SYSTEM_ROLE";
-  const defences = [{ id: defence, isActive: true }];
+  const defences: DefenceInfo[] = getInitialDefences();
   const updatedActiveDefences = activateDefence(defence, defences);
   expect(updatedActiveDefences).toContainEqual({ id: defence, isActive: true });
 });
 
 test("GIVEN defence is active WHEN deactivating defence THEN defence is not active", () => {
   const defence = "SYSTEM_ROLE";
+  const defences: DefenceInfo[] = getInitialDefences();
   const defences = [{ id: defence, isActive: true }];
   const updatedActiveDefences = deactivateDefence(defence, defences);
   expect(updatedActiveDefences).not.toContain(defence);
