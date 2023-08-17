@@ -5,7 +5,6 @@ import AttackBox from "./components/AttackBox/AttackBox";
 import ChatBox from "./components/ChatBox/ChatBox";
 import DefenceBox from "./components/DefenceBox/DefenceBox";
 import EmailBox from "./components/EmailBox/EmailBox";
-import ApiKeyBox from "./components/ApiKeyBox/ApiKeyBox";
 import PhaseSelectionBox from "./components/PhaseSelectionBox/PhaseSelectionBox";
 import Header from "./components/Header";
 import ModelSelectionBox from "./components/ModelSelectionBox/ModelSelectionBox";
@@ -16,11 +15,14 @@ import { getCompletedPhases } from "./service/phaseService";
 import { clearEmails } from "./service/emailService";
 import { clearChat } from "./service/chatService";
 import { PHASES } from "./Phases";
+import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
+import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [defencesToShow, setDefencesToShow] = useState<DefenceInfo[]>([]);
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
 
   // start on sandbox mode
@@ -32,6 +34,11 @@ function App() {
     setTriggeredDefences(defenceDetails);
     // update the key of the defence box to force a re-render
     setDefenceBoxKey(defenceBoxKey + 1);
+
+    // add a message to the chat
+    defenceDetails.forEach((defence) => {
+      defenceTriggered(defence);
+    });
   };
 
   // methods to modify messages
@@ -42,6 +49,14 @@ function App() {
     addChatMessage({
       message: message,
       type: CHAT_MESSAGE_TYPE.INFO,
+      isOriginalMessage: true,
+    });
+  };
+
+  const addDefenceTriggeredMessage = (message: string) => {
+    addChatMessage({
+      message: message,
+      type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
       isOriginalMessage: true,
     });
   };
@@ -74,6 +89,11 @@ function App() {
     // add the preamble to the chat
     const preambleMessage = PHASES[newPhase].preamble;
     addPhasePreambleMessage(preambleMessage.toLowerCase());
+
+    // choose appropriate defences to display
+    newPhase === 2
+      ? setDefencesToShow(DEFENCE_DETAILS_PHASE)
+      : setDefencesToShow(DEFENCE_DETAILS_ALL);
   };
 
   // methods to be called when defences are (de)activated
@@ -86,6 +106,16 @@ function App() {
     const infoMessage = `${defenceInfo.name} defence deactivated`;
     addInfoMessage(infoMessage.toLowerCase());
   };
+
+  //a add a message to the chat when a defence is triggered
+  const defenceTriggered = (id: String) => {
+    const defenceInfo = DEFENCE_DETAILS_ALL.find(
+      (defence) => defence.id === id
+    )?.name;
+    const infoMessage = `${defenceInfo} defence triggered`;
+    addDefenceTriggeredMessage(infoMessage.toLowerCase());
+  };
+
   // called on mount
   useEffect(() => {
     getCompletedPhases().then((numCompletedPhases) => {
@@ -101,15 +131,18 @@ function App() {
         {currentPhase >= 2 && (
           <DefenceBox
             key={defenceBoxKey}
+            defences={defencesToShow}
             triggeredDefences={triggeredDefences}
             defenceActivated={defenceActivated}
             defenceDeactivated={defenceDeactivated}
           />
         )}
-        {/* hide attack box on phase 0 only */}
-        {currentPhase !== 0 && <AttackBox />}
+        {/* show reduced set of attacks on phase 1 */}
+        {currentPhase === 1 && <AttackBox attacks={ATTACKS_PHASE_1} />}
+        {/* show all attacks on phase 2 and sandbox */}
+        {currentPhase >= 2 && <AttackBox attacks={ATTACKS_ALL} />}
         {/* hide model selection box on phases 0 and 1 */}
-        {currentPhase >= 2 && <ModelSelectionBox />}
+        {currentPhase > 2 && <ModelSelectionBox />}
       </div>
       <div id="centre-area">
         <Header />

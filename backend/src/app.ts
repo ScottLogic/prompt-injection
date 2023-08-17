@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import session from "express-session";
 
-import { getInitialDefences } from "./defence";
+import { getInitialDefences, getQALLMprePrompt } from "./defence";
 import { setOpenAiApiKey } from "./openai";
 import { router } from "./router";
 import { ChatCompletionRequestMessage } from "openai";
@@ -26,9 +26,6 @@ declare module "express-session" {
 
 // by default runs on port 3001
 const port = process.env.PORT || String(3001);
-
-const envOpenAiKey = process.env.OPENAI_API_KEY;
-
 // use default model
 const defaultModel = CHAT_MODELS.GPT_4;
 
@@ -77,7 +74,7 @@ app.use((req, res, next) => {
     req.session.defences = getInitialDefences();
   }
   if (!req.session.apiKey) {
-    req.session.apiKey = envOpenAiKey || "";
+    req.session.apiKey = process.env.OPENAI_API_KEY || "";
   }
   if (!req.session.gptModel) {
     req.session.gptModel = defaultModel;
@@ -93,8 +90,10 @@ app.listen(port, () => {
   console.log("Server is running on port: " + port);
 
   // for dev purposes only - set the API key from the environment variable
-  if (envOpenAiKey) {
+  const envOpenAiKey = process.env.OPENAI_API_KEY;
+  const prePrompt = getQALLMprePrompt(getInitialDefences());
+  if (envOpenAiKey && prePrompt) {
     console.debug("Initializing models with API key from environment variable");
-    setOpenAiApiKey(envOpenAiKey, defaultModel);
+    setOpenAiApiKey(envOpenAiKey, 3, defaultModel, prePrompt);
   }
 });

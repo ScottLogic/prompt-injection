@@ -1,12 +1,13 @@
 import { ChatDefenceReport, ChatResponse } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
+import { retrievalQAPrePromptSecure } from "./promptTemplates";
 
 const getInitialDefences = (): DefenceInfo[] => {
   return [
     new DefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
       {
         id: "maxMessageLength",
-        value: process.env.MAX_MESSAGE_LENGTH || "280",
+        value: process.env.MAX_MESSAGE_LENGTH || String(280),
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.EMAIL_WHITELIST, [
@@ -16,6 +17,12 @@ const getInitialDefences = (): DefenceInfo[] => {
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.LLM_EVALUATION, []),
+    new DefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
+      {
+        id: "prePrompt",
+        value: retrievalQAPrePromptSecure,
+      },
+    ]),
     new DefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
       {
         id: "prePrompt",
@@ -23,7 +30,7 @@ const getInitialDefences = (): DefenceInfo[] => {
       },
       {
         id: "length",
-        value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH || "10",
+        value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH || String(10),
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
@@ -123,13 +130,17 @@ const getEmailWhitelistVar = (defences: DefenceInfo[]): string => {
   return getConfigValue(defences, "EMAIL_WHITELIST", "whitelist", "");
 };
 
+function getQALLMprePrompt(defences: DefenceInfo[]) {
+  return getConfigValue(defences, "QA_LLM_INSTRUCTIONS", "prePrompt", "");
+}
+
 const isDefenceActive = (id: string, defences: DefenceInfo[]): boolean => {
   return defences.find((defence) => defence.id === id && defence.isActive)
     ? true
     : false;
 };
 
-const generate_random_string = (string_length: number): string => {
+const generateRandomString = (string_length: number): string => {
   let random_string = "";
   for (let i = 0; i < string_length; i++) {
     const random_ascii: number = Math.floor(Math.random() * 25 + 97);
@@ -144,7 +155,7 @@ const transformRandomSequenceEnclosure = (
   defences: DefenceInfo[]
 ): string => {
   console.debug("Random Sequence Enclosure defence active.");
-  const randomString: string = generate_random_string(
+  const randomString: string = generateRandomString(
     Number(getRandomSequenceEnclosureLength(defences))
   );
   const introText: string = getRandomSequenceEnclosurePrePrompt(defences);
@@ -257,6 +268,7 @@ export {
   configureDefence,
   deactivateDefence,
   getInitialDefences,
+  getQALLMprePrompt,
   getSystemRole,
   isDefenceActive,
   transformMessage,

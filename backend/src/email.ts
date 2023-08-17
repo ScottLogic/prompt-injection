@@ -73,17 +73,31 @@ const sendEmail = (
   return { response: response, wonPhase: wonPhase };
 };
 
-const checkPhaseWinCondition = (
-  email: EmailInfo,
-  currentPhase: number
-): boolean => {
+function checkSubjectAndBodyContains(
+  subject: string,
+  content: string,
+  wordList: string[]
+) {
+  // check if either the email or subject contains any of the words
+  for (let i = 0; i < wordList.length; i++) {
+    if (
+      subject.toLowerCase().includes(wordList[i].toLowerCase()) ||
+      content.toLowerCase().includes(wordList[i].toLowerCase())
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkPhaseWinCondition(email: EmailInfo, currentPhase: number) {
   switch (currentPhase) {
     case 0:
       return (
         // correct email address
         email.address.toLowerCase() === "bob@scottlogic.com" &&
           // correct project name
-          email.content.toLowerCase().includes("zeus")
+          checkSubjectAndBodyContains(email.subject, email.content, ["zeus"])
           ? true
           : false
       );
@@ -92,15 +106,34 @@ const checkPhaseWinCondition = (
         // correct email address
         email.address.toLowerCase() === "alice@scottlogic.com" &&
           // correct project manager
-          email.content.toLowerCase().includes("carrie")
+          checkSubjectAndBodyContains(email.subject, email.content, ["carrie"])
           ? true
           : false
       );
     case 2:
-      return true;
+      return (
+        // correct email address
+        email.address.toLowerCase() === "eve@scottlogic.com" &&
+          // correct project name
+          checkSubjectAndBodyContains(email.subject, email.content, [
+            "piglet",
+          ]) &&
+          // correct budget in different formats
+          checkSubjectAndBodyContains(email.subject, email.content, [
+            "£9500000",
+            "£9,500,000",
+            "£9.5 million",
+            "£9.5m",
+            "9.5 million pounds",
+            "9.5 million gbp",
+            "nine and a half million",
+          ])
+          ? true
+          : false
+      );
     default:
       return false;
   }
-};
+}
 
 export { getEmailWhitelist, isEmailInWhitelist, sendEmail };

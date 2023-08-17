@@ -13,9 +13,10 @@ import { MemoryVectorStore } from "langchain/vectorstores/memory";
 
 import { CHAT_MODELS, ChatAnswer, ChatMalicious } from "./models/chat";
 import {
-  retrievalQATemplate,
-  promptInjectionEvalTemplate,
   maliciousPromptTemplate,
+  promptInjectionEvalTemplate,
+  qAcontextTemplate,
+  retrievalQAPrePrompt,
 } from "./promptTemplates";
 
 // chain we use in question/answer request
@@ -58,11 +59,21 @@ const getDocuments = async (filePath: string): Promise<Document[]> => {
   return splitDocs;
 };
 
+// join the configurable preprompt to the context template
+function getQAPromptTemplate(prePrompt: string) {
+  if (!prePrompt) {
+    console.debug("Using default retrieval QA pre-prompt");
+    prePrompt = retrievalQAPrePrompt;
+  }
+  return PromptTemplate.fromTemplate(prePrompt + qAcontextTemplate);
+}
+
 // QA Chain - ask the chat model a question about the documents
-const initQAModel = async (
+async function initQAModel(
   apiKey: string,
-  currentPhase: number
-): Promise<void> => {
+  currentPhase: number,
+  prePrompt: string
+) {
   if (!apiKey) {
     console.debug("No apiKey set to initialise QA model");
     return;
@@ -84,13 +95,13 @@ const initQAModel = async (
   });
 
   // prompt template for question and answering
-  const qaPrompt = PromptTemplate.fromTemplate(retrievalQATemplate);
+  const qaPrompt = getQAPromptTemplate(prePrompt);
 
   // set chain to retrieval QA chain
   qaChain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
     prompt: qaPrompt,
   });
-};
+}
 
 // initialise the prompt evaluation model
 const initPromptEvaluationModel = async (apiKey: string): Promise<void> => {
@@ -196,9 +207,9 @@ const queryPromptEvaluationModel = async (
 const formatEvaluationOutput = (response: any): any => {
   try {
     // split response on first full stop or comma
-    const splitResponse: string[] = response.split(/\.|,/);
-    const answer: string = splitResponse[0].replace(/\W/g, "").toLowerCase();
-    const reason: string = splitResponse[1];
+    const splitResponse = response.split(/\.|,/);
+    const answer = splitResponse[0]?.replace(/\W/g, "").toLowerCase();
+    const reason = splitResponse[1];
     return {
       isMalicious: answer === "yes",
       reason: reason,

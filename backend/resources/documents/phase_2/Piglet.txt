@@ -2,7 +2,7 @@ Project Piglet
 
 Brief: Build the software to lauch a rocket to mars. 
 
-Estimated cost: £9000000
+Estimated cost: £9500000
 
 Time scale: December 2023 - April 2026
 

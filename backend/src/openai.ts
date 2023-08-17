@@ -92,13 +92,15 @@ const validateApiKey = async (
 
 const setOpenAiApiKey = async (
   apiKey: string,
-  gptModel: string
+  currentPhase: number,
+  gptModel: string,
+  prePrompt: string
 ): Promise<boolean> => {
   // initialise all models with the new key
   if (await validateApiKey(apiKey, gptModel)) {
     console.debug("Setting API key and initialising models");
     initOpenAi(apiKey);
-    initQAModel(apiKey, 3);
+    initQAModel(apiKey, currentPhase, prePrompt);
     initPromptEvaluationModel(apiKey);
     return true;
   } else {
