@@ -9,6 +9,7 @@ import {
 import { EmailResponse } from "./models/email";
 import {
   ChatCompletionRequestMessage,
+  ChatCompletionRequestMessageFunctionCall,
   ChatCompletionResponseMessage,
   Configuration,
   OpenAIApi,
@@ -141,7 +142,7 @@ const isChatGptFunction = (functionName: string) => {
 };
 
 const chatGptCallFunction = async (
-  functionCall: any,
+  functionCall: ChatCompletionRequestMessageFunctionCall,
   defenceInfo: ChatDefenceReport,
   currentPhase: number,
   session: Session
@@ -149,12 +150,14 @@ const chatGptCallFunction = async (
   let reply: ChatCompletionRequestMessage | null = null;
   let wonPhase: boolean | null = null;
   // get the function name
-  const functionName: string = functionCall.name;
+  const functionName: string = functionCall.name || "";
 
   // check if we know the function
   if (isChatGptFunction(functionName)) {
     // get the function parameters
-    const params = JSON.parse(functionCall.arguments);
+    const params = functionCall.arguments
+      ? JSON.parse(functionCall.arguments)
+      : {};
     console.debug("Function call: " + functionName);
     let response: string = "";
 
