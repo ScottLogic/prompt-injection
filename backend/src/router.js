@@ -27,9 +27,11 @@ router.post("/defence/activate", (req, res, next) => {
     // activate the defence
     req.session.defences = activateDefence(defenceId, req.session.defences);
 
-    // qa llm model defence activation requires re-initializing qa model
+    // need to re-initialize QA model when turned on
     if (defenceId === "QA_LLM_INSTRUCTIONS") {
-      console.debug("QA LLM Evaluation defence - reinitializing QA Model");
+      console.debug(
+        "Activating qa llm instruction defence - reinitializing qa model"
+      );
       initQAModel(
         req.session,
         req.session.currentPhase,
@@ -53,6 +55,7 @@ router.post("/defence/deactivate", (req, res, next) => {
     req.session.defences = deactivateDefence(defenceId, req.session.defences);
 
     if (defenceId === "QA_LLM_INSTRUCTIONS") {
+      console.debug("Resetting QA model with default prompt");
       initQAModel(req.session, req.session.currentPhase);
     }
     res.send("Defence deactivated");

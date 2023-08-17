@@ -18,7 +18,6 @@ const {
   retrievalQAPrePrompt,
   promptInjectionEvalTemplate,
   maliciousPromptTemplate,
-  retrievalQATemplate,
 } = require("./promptTemplates");
 
 // chain we use in question/answer request
@@ -62,9 +61,9 @@ async function getDocuments(filePath) {
 }
 
 // join the configurable preprompt to the context template
-function getPromptTemplate(prePrompt) {
+function getQAPromptTemplate(prePrompt) {
   if (!prePrompt) {
-    console.debug("Using default prePrompt");
+    console.debug("Using default retrieval QA pre-prompt");
     prePrompt = retrievalQAPrePrompt;
   }
   return PromptTemplate.fromTemplate(prePrompt + qAcontextTemplate);

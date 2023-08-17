@@ -16,12 +16,13 @@ import { clearEmails } from "./service/emailService";
 import { clearChat } from "./service/chatService";
 import { PHASES } from "./Phases";
 import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
-import { DEFENCE_DETAILS } from "./Defences";
+import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [defencesToShow, setDefencesToShow] = useState(DEFENCE_DETAILS_ALL);
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
 
   // start on sandbox mode
@@ -88,6 +89,11 @@ function App() {
     // add the preamble to the chat
     const preambleMessage = PHASES[newPhase].preamble;
     addPhasePreambleMessage(preambleMessage.toLowerCase());
+
+    // choose appropriate defences to display
+    newPhase === 2
+      ? setDefencesToShow(DEFENCE_DETAILS_PHASE)
+      : setDefencesToShow(DEFENCE_DETAILS_ALL);
   };
 
   // methods to be called when defences are (de)activated
@@ -103,7 +109,7 @@ function App() {
 
   //a add a message to the chat when a defence is triggered
   const defenceTriggered = (id: String) => {
-    const defenceInfo = DEFENCE_DETAILS.find(
+    const defenceInfo = DEFENCE_DETAILS_ALL.find(
       (defence) => defence.id === id
     )?.name;
     const infoMessage = `${defenceInfo} defence triggered`;
@@ -125,6 +131,7 @@ function App() {
         {currentPhase >= 2 && (
           <DefenceBox
             key={defenceBoxKey}
+            defences={defencesToShow}
             triggeredDefences={triggeredDefences}
             defenceActivated={defenceActivated}
             defenceDeactivated={defenceDeactivated}

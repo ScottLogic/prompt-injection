@@ -1,6 +1,6 @@
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 
-const DEFENCE_DETAILS: DefenceInfo[] = [
+const DEFENCE_DETAILS_PHASE: DefenceInfo[] = [
   new DefenceInfo(
     DEFENCE_TYPES.CHARACTER_LIMIT,
     "Character Limit",
@@ -40,6 +40,10 @@ const DEFENCE_DETAILS: DefenceInfo[] = [
     "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input. This is a form of prompt validation.",
     []
   ),
+];
+
+const DEFENCE_DETAILS_ALL: DefenceInfo[] = [
+  ...DEFENCE_DETAILS_PHASE,
   new DefenceInfo(
     DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
     "QA LLM instructions",
@@ -48,4 +52,4 @@ const DEFENCE_DETAILS: DefenceInfo[] = [
   ),
 ];
 
-export { DEFENCE_DETAILS };
+export { DEFENCE_DETAILS_PHASE, DEFENCE_DETAILS_ALL };
