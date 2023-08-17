@@ -16,6 +16,7 @@ import { clearEmails } from "./service/emailService";
 import { clearChat } from "./service/chatService";
 import { PHASES } from "./Phases";
 import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
+import { DEFENCE_DETAILS } from "./Defences";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
@@ -32,6 +33,11 @@ function App() {
     setTriggeredDefences(defenceDetails);
     // update the key of the defence box to force a re-render
     setDefenceBoxKey(defenceBoxKey + 1);
+
+    // add a message to the chat
+    defenceDetails.forEach((defence) => {
+      defenceTriggered(defence);
+    });
   };
 
   // methods to modify messages
@@ -42,6 +48,14 @@ function App() {
     addChatMessage({
       message: message,
       type: CHAT_MESSAGE_TYPE.INFO,
+      isOriginalMessage: true,
+    });
+  };
+
+  const addDefenceTriggeredMessage = (message: string) => {
+    addChatMessage({
+      message: message,
+      type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
       isOriginalMessage: true,
     });
   };
@@ -86,6 +100,16 @@ function App() {
     const infoMessage = `${defenceInfo.name} defence deactivated`;
     addInfoMessage(infoMessage.toLowerCase());
   };
+
+  //a add a message to the chat when a defence is triggered
+  const defenceTriggered = (id: String) => {
+    const defenceInfo = DEFENCE_DETAILS.find(
+      (defence) => defence.id === id
+    )?.name;
+    const infoMessage = `${defenceInfo} defence triggered`;
+    addDefenceTriggeredMessage(infoMessage.toLowerCase());
+  };
+
   // called on mount
   useEffect(() => {
     getCompletedPhases().then((numCompletedPhases) => {
