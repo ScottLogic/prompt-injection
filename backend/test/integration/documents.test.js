@@ -6,8 +6,9 @@ const { ChatOpenAI } = require("langchain/chat_models/openai");
 const { RetrievalQAChain } = require("langchain/chains");
 const { PromptTemplate } = require("langchain/prompts");
 const { getDocuments } = require("../../src/langchain");
+const { CHAT_MODELS } = require("../../src/models/chat");
 
-// mock the directory loader 
+// mock the directory loader
 jest.mock("langchain/document_loaders/fs/directory");
 const mockLoaderLoad = jest.fn();
 DirectoryLoader.mockImplementation(() => {
@@ -22,7 +23,7 @@ const mockSplitterSplitDocuments = jest.fn();
 RecursiveCharacterTextSplitter.mockImplementation(() => {
   return {
     splitDocuments: mockSplitterSplitDocuments,
-  }
+  };
 });
 
 // mock the memory vector store
@@ -38,7 +39,7 @@ const mockEmbeddings = jest.fn();
 OpenAIEmbeddings.mockImplementation(() => {
   return {
     embedDocuments: ["23456", "23456", "23456"],
-  }
+  };
 });
 
 // mock the chat model
@@ -47,12 +48,12 @@ const mockChatOpenAI = jest.fn();
 ChatOpenAI.mockImplementation(() => {
   return {
     openAIApiKey: "key",
-  }
+  };
 });
 
-// mock the retrieval QA chain 
+// mock the retrieval QA chain
 jest.mock("langchain/chains");
-const mockRetrievalQAChain = new RetrievalQAChain({ "model": "gpt-4" });
+const mockRetrievalQAChain = new RetrievalQAChain({ model: CHAT_MODELS.GPT_4 });
 RetrievalQAChain.fromLLM.mockImplementation(() => {
   return mockRetrievalQAChain;
 });
@@ -61,14 +62,21 @@ RetrievalQAChain.fromLLM.mockImplementation(() => {
 jest.mock("langchain/prompts");
 PromptTemplate.fromTemplate.mockImplementation(() => {
   return {
-    prompt: "You are a helpful chatbot who answers questions about the documents",
-  }
+    prompt:
+      "You are a helpful chatbot who answers questions about the documents",
+  };
 });
 
 test("get documents loads files and splits into chunks", async () => {
-  mockLoaderLoad.mockResolvedValueOnce(
-    ["Bob is the CEO. He earns 30000 a year.", "Karen is getting a raise of 20%."])
-  mockSplitterSplitDocuments.mockResolvedValueOnce(["Bob is the CEO.", "He earns 30000 a year.", "Karen is getting a raise of 20%."]);
+  mockLoaderLoad.mockResolvedValueOnce([
+    "Bob is the CEO. He earns 30000 a year.",
+    "Karen is getting a raise of 20%.",
+  ]);
+  mockSplitterSplitDocuments.mockResolvedValueOnce([
+    "Bob is the CEO.",
+    "He earns 30000 a year.",
+    "Karen is getting a raise of 20%.",
+  ]);
   const documents = await getDocuments();
   expect(documents.length).toBe(3);
   expect(mockLoaderLoad).toHaveBeenCalledTimes(1);
@@ -78,9 +86,8 @@ test("get documents loads files and splits into chunks", async () => {
   mockSplitterSplitDocuments.mockRestore();
 });
 
-
 test("initQAModel loads documents and creates a QA chain", async () => {
-  // to be implemented 
+  // to be implemented
 });
 
 test("queryDocuments calls the QA chain and returns a text response", async () => {

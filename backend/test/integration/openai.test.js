@@ -30,7 +30,7 @@ test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", a
     chatHistory: [],
     sentEmails: [],
     apiKey: "",
-    gptModel: "gpt-4",
+    gptModel: CHAT_MODELS.GPT_4,
     defences: [],
   };
 
@@ -48,7 +48,7 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
     chatHistory: [],
     sentEmails: [],
     apiKey: "sk-12345",
-    gptModel: "gpt-4",
+    gptModel: CHAT_MODELS.GPT_4,
   };
 
   // Mock the createChatCompletion function

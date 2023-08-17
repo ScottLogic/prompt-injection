@@ -1,5 +1,5 @@
 import { sendRequest } from "./backendService";
-import { ChatResponse } from "../models/chat";
+import { CHAT_MODELS, ChatResponse } from "../models/chat";
 
 const PATH = "openai/";
 
@@ -49,10 +49,10 @@ const setGptModel = async (model: string): Promise<boolean> => {
   return response.status === 200;
 };
 
-const getGptModel = async (): Promise<string> => {
+const getGptModel = async (): Promise<CHAT_MODELS> => {
   const response = await sendRequest(PATH + "model", "GET");
-  const data = await response.text();
-  return data;
+  const modelStr = await response.text();
+  return <CHAT_MODELS>modelStr;
 };
 
 export {

@@ -11,7 +11,7 @@ import { PromptTemplate } from "langchain/prompts";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 
-import { ChatAnswer, ChatMalicious } from "./models/chat";
+import { CHAT_MODELS, ChatAnswer, ChatMalicious } from "./models/chat";
 import {
   retrievalQATemplate,
   promptInjectionEvalTemplate,
@@ -78,7 +78,7 @@ const initQAModel = async (
 
   // initialise model
   const model = new ChatOpenAI({
-    modelName: "gpt-4",
+    modelName: CHAT_MODELS.GPT_4,
     streaming: true,
     openAIApiKey: apiKey,
   });
@@ -106,7 +106,7 @@ const initPromptEvaluationModel = async (apiKey: string): Promise<void> => {
 
   const promptInjectionChain = new LLMChain({
     llm: new OpenAI({
-      modelName: "gpt-3.5-turbo",
+      modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
       openAIApiKey: apiKey,
     }),
@@ -120,7 +120,7 @@ const initPromptEvaluationModel = async (apiKey: string): Promise<void> => {
   );
   const maliciousInputChain = new LLMChain({
     llm: new OpenAI({
-      modelName: "gpt-3.5-turbo",
+      modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
       openAIApiKey: apiKey,
     }),

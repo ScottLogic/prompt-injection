@@ -1,5 +1,3 @@
-import { type } from "@testing-library/user-event/dist/type";
-
 enum CHAT_MODELS {
   GPT_4 = "gpt-4",
   GPT_4_0613 = "gpt-4-0613",

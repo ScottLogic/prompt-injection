@@ -9,6 +9,7 @@ import { router } from "./router";
 import { ChatCompletionRequestMessage } from "openai";
 import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
+import { CHAT_MODELS } from "./models/chat";
 
 dotenv.config();
 
@@ -29,7 +30,7 @@ const port = process.env.PORT || String(3001);
 const envOpenAiKey = process.env.OPENAI_API_KEY;
 
 // use default model
-const defaultModel = "gpt-4";
+const defaultModel = CHAT_MODELS.GPT_4;
 
 // Creating express server
 const app = express();
