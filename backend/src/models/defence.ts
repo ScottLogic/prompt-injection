@@ -7,12 +7,7 @@ enum DEFENCE_TYPES {
   XML_TAGGING = "XML_TAGGING",
 }
 
-class DefenceConfig {
-  constructor(id: string) {
-    this.id = id;
-    this.value = "";
-  }
-
+interface DefenceConfig {
   id: string;
   value: string;
 }
@@ -32,4 +27,5 @@ class DefenceInfo {
   isTriggered: boolean;
 }
 
-export { DEFENCE_TYPES, DefenceConfig, DefenceInfo };
+export { DEFENCE_TYPES, DefenceInfo };
+export type { DefenceConfig };

@@ -4,18 +4,33 @@ import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 const getInitialDefences = (): DefenceInfo[] => {
   return [
     new DefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
-      new DefenceConfig("maxMessageLength"),
+      {
+        id: "maxMessageLength",
+        value: process.env.MAX_MESSAGE_LENGTH || "280",
+      },
     ]),
     new DefenceInfo(DEFENCE_TYPES.EMAIL_WHITELIST, [
-      new DefenceConfig("whitelist"),
+      {
+        id: "whitelist",
+        value: process.env.EMAIL_WHITELIST || "",
+      },
     ]),
     new DefenceInfo(DEFENCE_TYPES.LLM_EVALUATION, []),
     new DefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
-      new DefenceConfig("prePrompt"),
-      new DefenceConfig("length"),
+      {
+        id: "prePrompt",
+        value: process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT || "",
+      },
+      {
+        id: "length",
+        value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH || "10",
+      },
     ]),
     new DefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
-      new DefenceConfig("systemRole"),
+      {
+        id: "systemRole",
+        value: process.env.SYSTEM_ROLE || "",
+      },
     ]),
     new DefenceInfo(DEFENCE_TYPES.XML_TAGGING, []),
   ];
