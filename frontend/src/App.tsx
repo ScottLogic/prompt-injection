@@ -22,7 +22,8 @@ function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [defencesToShow, setDefencesToShow] = useState<DefenceInfo[]>([]);
+  const [defencesToShow, setDefencesToShow] =
+    useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
 
   // start on sandbox mode
