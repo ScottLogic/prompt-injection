@@ -109,7 +109,8 @@ router.post("/openai/chat", async (req, res) => {
   // set reply params
   let reply: string = "";
   let defenceInfo: ChatDefenceReport = {
-    blocked: false,
+    blockedReason: "",
+    isBlocked: false,
     triggeredDefences: [],
   };
   let transformedMessage: string = "";
@@ -131,10 +132,9 @@ router.post("/openai/chat", async (req, res) => {
     transformedMessage = message;
     // see if this message triggers any defences
     const detectReply = detectTriggeredDefences(message, req.session.defences);
-    reply = detectReply.reply;
-    defenceInfo = detectReply.defenceInfo;
+    defenceInfo = detectReply;
     // if blocked, send the response
-    if (!defenceInfo.blocked) {
+    if (!defenceInfo.isBlocked) {
       // transform the message according to active defences
       transformedMessage = transformMessage(message, req.session.defences);
       // get the chatGPT reply
@@ -154,8 +154,8 @@ router.post("/openai/chat", async (req, res) => {
             ...openAiReply.defenceInfo.triggeredDefences,
           ];
           // combine blocked
-          defenceInfo.blocked =
-            defenceInfo.blocked || openAiReply.defenceInfo.blocked;
+          defenceInfo.isBlocked =
+            defenceInfo.isBlocked || openAiReply.defenceInfo.isBlocked;
         }
       } catch (error: any) {
         console.log(error);

@@ -174,8 +174,9 @@ const chatGptCallFunction = async (
         defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
         if (isDefenceActive("EMAIL_WHITELIST", session.defences)) {
           // do not send email if defence is on and set to blocked
-          response = "Cannot send to this email as it is not whitelisted";
-          defenceInfo.blocked = true;
+          defenceInfo.isBlocked = true;
+          defenceInfo.blockedReason =
+            "Cannot send to this email as it is not whitelisted";
         } else {
           // send email if defence is not active
           isAllowedToSendEmail = true;
@@ -272,8 +273,9 @@ const chatGptSendMessage = async (
 ): Promise<ChatResponse | null> => {
   // init defence info
   let defenceInfo: ChatDefenceReport = {
+    blockedReason: "",
+    isBlocked: false,
     triggeredDefences: [],
-    blocked: false,
   };
   let wonPhase: boolean | undefined | null = false;
 
@@ -285,11 +287,11 @@ const chatGptSendMessage = async (
       defenceInfo.triggeredDefences.push("LLM_EVALUATION");
       if (isDefenceActive("LLM_EVALUATION", session.defences)) {
         console.debug("LLM evalutation defence active.");
-        defenceInfo.blocked = true;
-        const evalResponse =
+        defenceInfo.isBlocked = true;
+        defenceInfo.blockedReason =
           "Message blocked by the malicious prompt evaluator." +
           evalPrompt.reason;
-        return { reply: evalResponse, defenceInfo: defenceInfo };
+        return { reply: defenceInfo.blockedReason, defenceInfo: defenceInfo };
       }
     }
   }

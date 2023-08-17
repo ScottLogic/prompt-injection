@@ -1,4 +1,4 @@
-import { ChatDefenceReport, ChatResponse } from "./models/chat";
+import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { retrievalQAPrePromptSecure } from "./promptTemplates";
 
@@ -236,10 +236,11 @@ const transformMessage = (message: string, defences: DefenceInfo[]): string => {
 const detectTriggeredDefences = (
   message: string,
   defences: DefenceInfo[]
-): ChatResponse => {
+): ChatDefenceReport => {
   // keep track of any triggered defences
   const defenceReport: ChatDefenceReport = {
-    blocked: false,
+    blockedReason: "",
+    isBlocked: false,
     triggeredDefences: [],
   };
   const maxMessageLength: number = Number(getMaxMessageLength(defences));
@@ -251,9 +252,10 @@ const detectTriggeredDefences = (
     // check if the defence is active
     if (isDefenceActive("CHARACTER_LIMIT", defences)) {
       // block the message
-      defenceReport.blocked = true;
+      defenceReport.isBlocked = true;
+      defenceReport.blockedReason = "Message is too long";
       // return the defence info
-      return { reply: "Message is too long", defenceInfo: defenceReport };
+      return defenceReport;
     }
   }
 
@@ -263,7 +265,7 @@ const detectTriggeredDefences = (
     // add the defence to the list of triggered defences
     defenceReport.triggeredDefences.push("XML_TAGGING");
   }
-  return { reply: "", defenceInfo: defenceReport };
+  return defenceReport;
 };
 
 export {
