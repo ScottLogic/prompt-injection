@@ -177,10 +177,10 @@ const queryPromptEvaluationModel = async (
     prompt: input,
   });
 
-  const promptInjectionEval: any = formatEvaluationOutput(
+  const promptInjectionEval = formatEvaluationOutput(
     response.promptInjectionEval
   );
-  const maliciousInputEval: any = formatEvaluationOutput(
+  const maliciousInputEval = formatEvaluationOutput(
     response.maliciousInputEval
   );
 
@@ -204,7 +204,7 @@ const queryPromptEvaluationModel = async (
 };
 
 // format the evaluation model output. text should be a Yes or No answer followed by a reason
-const formatEvaluationOutput = (response: any): any => {
+const formatEvaluationOutput = (response: string) => {
   try {
     // split response on first full stop or comma
     const splitResponse = response.split(/\.|,/);
@@ -219,7 +219,7 @@ const formatEvaluationOutput = (response: any): any => {
     console.error(error);
     console.debug(
       "Did not get a valid response from the prompt evaluation model. Original response: " +
-        response.text
+        response
     );
     return { isMalicious: false, reason: "" };
   }

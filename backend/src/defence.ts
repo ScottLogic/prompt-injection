@@ -171,8 +171,9 @@ const transformRandomSequenceEnclosure = (
 };
 
 // function to escape XML characters in user input to prevent hacking with XML tagging on
-const escapeXml = (unsafe: any): string => {
-  return unsafe.replace(/[<>&'"]/g, function (c: any) {
+const escapeXml = (unsafe: string): string => {
+  unsafe.replace;
+  return unsafe.replace(/[<>&'"]/g, function (c: string): string {
     switch (c) {
       case "<":
         return "&lt;";
@@ -184,14 +185,16 @@ const escapeXml = (unsafe: any): string => {
         return "&apos;";
       case '"':
         return "&quot;";
+      default:
+        return c;
     }
   });
 };
 
 // function to detect any XML tags in user input
-const detectXMLTags = (input: any): boolean => {
+const detectXMLTags = (input: string): boolean => {
   const tagRegex: RegExp = /<\/?[a-zA-Z][\w\-]*(?:\b[^>]*\/\s*|[^>]*>|[?]>)/g;
-  const foundTags: any[] = input.match(tagRegex) || [];
+  const foundTags: string[] = input.match(tagRegex) || [];
   return foundTags.length > 0;
 };
 
