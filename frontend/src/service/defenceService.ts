@@ -65,7 +65,7 @@ function validateDefence(id: string, configName: string, config: string) {
     case "RANDOM_SEQUENCE_ENCLOSURE":
       return configName === "length"
         ? validateNumberConfig(config)
-        : validateNumberConfig(config);
+        : validateStringConfig(config);
     default:
       return validateStringConfig(config);
   }
