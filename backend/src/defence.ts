@@ -1,5 +1,5 @@
-import { ChatDefenceReport, ChatResponse } from "./types/chat";
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./types/defence";
+import { ChatDefenceReport, ChatResponse } from "./models/chat";
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 
 const getInitialDefences = (): DefenceInfo[] => {
   return [
@@ -44,7 +44,7 @@ const deactivateDefence = (
 const configureDefence = (
   id: string,
   defences: DefenceInfo[],
-  config: DefenceConfig
+  config: DefenceConfig[]
 ) => {
   // return the updated list of defences
   return defences.map((defence) =>
@@ -237,7 +237,7 @@ const detectTriggeredDefences = (
   return { reply: "", defenceInfo: defenceReport };
 };
 
-module.exports = {
+export {
   activateDefence,
   configureDefence,
   deactivateDefence,

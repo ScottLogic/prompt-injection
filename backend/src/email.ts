@@ -1,8 +1,7 @@
-import { DefenceInfo } from "./types/defence";
-import { EmailInfo, EmailResponse } from "./types/email";
-import { Session } from "./types/session";
-
-const { getEmailWhitelistVar, isDefenceActive } = require("./defence.js");
+import { Session } from "express-session";
+import { getEmailWhitelistVar, isDefenceActive } from "./defence.js";
+import { DefenceInfo } from "./models/defence";
+import { EmailInfo, EmailResponse } from "./models/email";
 
 // return the whitelist variable
 const getEmailWhitelistValues = (defences: DefenceInfo[]): string[] => {
@@ -104,8 +103,4 @@ const checkPhaseWinCondition = (
   }
 };
 
-module.exports = {
-  getEmailWhitelist,
-  isEmailInWhitelist,
-  sendEmail,
-};
+export { getEmailWhitelist, isEmailInWhitelist, sendEmail };

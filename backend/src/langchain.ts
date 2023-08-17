@@ -1,34 +1,28 @@
-import { ChatAnswer, ChatMalicious } from "./types/chat";
-import { Session } from "./types/session";
+import { RetrievalQAChain, LLMChain, SequentialChain } from "langchain/chains";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { Document } from "langchain/document";
+import { CSVLoader } from "langchain/document_loaders/fs/csv";
+import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
+import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { TextLoader } from "langchain/document_loaders/fs/text";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { OpenAI } from "langchain/llms/openai";
+import { PromptTemplate } from "langchain/prompts";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
 
-const { TextLoader } = require("langchain/document_loaders/fs/text");
-const { PDFLoader } = require("langchain/document_loaders/fs/pdf");
-const { CSVLoader } = require("langchain/document_loaders/fs/csv");
-const { DirectoryLoader } = require("langchain/document_loaders/fs/directory");
-const { Document } = require("langchain/document");
-const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
-const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
-const { MemoryVectorStore } = require("langchain/vectorstores/memory");
-const { ChatOpenAI } = require("langchain/chat_models/openai");
-const {
-  ChainValues,
-  RetrievalQAChain,
-  LLMChain,
-  SequentialChain,
-} = require("langchain/chains");
-const { PromptTemplate } = require("langchain/prompts");
-const { OpenAI } = require("langchain/llms/openai");
-const {
+import { ChatAnswer, ChatMalicious } from "./models/chat";
+import {
   retrievalQATemplate,
   promptInjectionEvalTemplate,
   maliciousPromptTemplate,
-} = require("./promptTemplates");
+} from "./promptTemplates";
 
 // chain we use in question/answer request
-let qaChain: typeof RetrievalQAChain = null;
+let qaChain: RetrievalQAChain | null = null;
 
 // chain we use in prompt evaluation request
-let promptEvaluationChain: typeof SequentialChain = null;
+let promptEvaluationChain: SequentialChain | null = null;
 
 const getFilepath = (currentPhase: number): string => {
   let filePath = "resources/documents/";
@@ -45,59 +39,52 @@ const getFilepath = (currentPhase: number): string => {
 };
 
 // load the documents from filesystem
-const getDocuments = async (filePath: string): Promise<(typeof Document)[]> => {
+const getDocuments = async (filePath: string): Promise<Document[]> => {
   console.debug("Loading documents from: " + filePath);
 
-  const loader: typeof DirectoryLoader = new DirectoryLoader(filePath, {
+  const loader: DirectoryLoader = new DirectoryLoader(filePath, {
     ".pdf": (path: string) => new PDFLoader(path),
     ".txt": (path: string) => new TextLoader(path),
     ".csv": (path: string) => new CSVLoader(path),
   });
-  const docs: (typeof Document)[] = await loader.load();
+  const docs = await loader.load();
 
   // split the documents into chunks
-  const textSplitter: typeof RecursiveCharacterTextSplitter =
-    new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
-      chunkOverlap: 0,
-    });
-  const splitDocs: (typeof Document)[] = await textSplitter.splitDocuments(
-    docs
-  );
+  const textSplitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 1000,
+    chunkOverlap: 0,
+  });
+  const splitDocs = await textSplitter.splitDocuments(docs);
   return splitDocs;
 };
 
 // QA Chain - ask the chat model a question about the documents
 const initQAModel = async (
-  session: Session,
+  apiKey: string,
   currentPhase: number
 ): Promise<void> => {
-  if (!session.apiKey) {
+  if (!apiKey) {
     console.debug("No apiKey set to initialise QA model");
     return;
   }
   // get the documents
-  const docs: (typeof Document)[] = await getDocuments(
-    getFilepath(currentPhase)
-  );
+  const docs: Document[] = await getDocuments(getFilepath(currentPhase));
 
   // embed and store the splits
-  const embeddings: typeof OpenAIEmbeddings = new OpenAIEmbeddings({
-    openAIApiKey: session.apiKey,
+  const embeddings = new OpenAIEmbeddings({
+    openAIApiKey: apiKey,
   });
-  const vectorStore: typeof MemoryVectorStore =
-    await MemoryVectorStore.fromDocuments(docs, embeddings);
+  const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
 
   // initialise model
-  const model: typeof ChatOpenAI = new ChatOpenAI({
+  const model = new ChatOpenAI({
     modelName: "gpt-4",
-    stream: true,
-    openAIApiKey: session.apiKey,
+    streaming: true,
+    openAIApiKey: apiKey,
   });
 
   // prompt template for question and answering
-  const qaPrompt: typeof PromptTemplate =
-    PromptTemplate.fromTemplate(retrievalQATemplate);
+  const qaPrompt = PromptTemplate.fromTemplate(retrievalQATemplate);
 
   // set chain to retrieval QA chain
   qaChain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
@@ -106,34 +93,36 @@ const initQAModel = async (
 };
 
 // initialise the prompt evaluation model
-const initPromptEvaluationModel = async (session: Session): Promise<void> => {
-  if (!session.apiKey) {
+const initPromptEvaluationModel = async (apiKey: string): Promise<void> => {
+  if (!apiKey) {
     console.debug("No apiKey set to initialise prompt evaluation model");
     return;
   }
 
   // create chain to detect prompt injection
-  const promptInjectionPrompt: typeof PromptTemplate =
-    PromptTemplate.fromTemplate(promptInjectionEvalTemplate);
+  const promptInjectionPrompt = PromptTemplate.fromTemplate(
+    promptInjectionEvalTemplate
+  );
 
-  const promptInjectionChain: typeof LLMChain = new LLMChain({
+  const promptInjectionChain = new LLMChain({
     llm: new OpenAI({
-      model: "gpt-3.5-turbo",
+      modelName: "gpt-3.5-turbo",
       temperature: 0,
-      openAIApiKey: session.apiKey,
+      openAIApiKey: apiKey,
     }),
     prompt: promptInjectionPrompt,
     outputKey: "promptInjectionEval",
   });
 
   // create chain to detect malicious prompts
-  const maliciousInputPrompt: typeof PromptTemplate =
-    PromptTemplate.fromTemplate(maliciousPromptTemplate);
-  const maliciousInputChain: typeof LLMChain = new LLMChain({
+  const maliciousInputPrompt = PromptTemplate.fromTemplate(
+    maliciousPromptTemplate
+  );
+  const maliciousInputChain = new LLMChain({
     llm: new OpenAI({
-      model: "gpt-3.5-turbo",
+      modelName: "gpt-3.5-turbo",
       temperature: 0,
-      openAIApiKey: session.apiKey,
+      openAIApiKey: apiKey,
     }),
     prompt: maliciousInputPrompt,
     outputKey: "maliciousInputEval",
@@ -153,7 +142,7 @@ const queryDocuments = async (question: string): Promise<ChatAnswer> => {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
   }
-  const response: typeof ChainValues = await qaChain.call({
+  const response = await qaChain.call({
     query: question,
   });
   console.debug("QA model response: " + response.text);
@@ -173,7 +162,7 @@ const queryPromptEvaluationModel = async (
     return { isMalicious: false, reason: "" };
   }
 
-  const response: typeof ChainValues = await promptEvaluationChain.call({
+  const response = await promptEvaluationChain.call({
     prompt: input,
   });
 
@@ -225,7 +214,7 @@ const formatEvaluationOutput = (response: any): any => {
   }
 };
 
-module.exports = {
+export {
   getDocuments,
   initQAModel,
   initPromptEvaluationModel,

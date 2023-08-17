@@ -1,3 +1,5 @@
+import { ChatCompletionRequestMessage } from "openai";
+
 enum CHAT_MODELS {
   GPT_4 = "gpt-4",
   GPT_4_0613 = "gpt-4-0613",
@@ -31,13 +33,6 @@ interface ChatMalicious {
   reason: string;
 }
 
-interface ChatCompletion {
-  role: string;
-  content: string;
-  name?: string;
-  function_call?: any;
-}
-
 interface ChatMessage {
   defenceInfo?: ChatDefenceReport;
   message: string;
@@ -48,7 +43,7 @@ interface ChatMessage {
 interface ChatResponse {
   reply: string;
   defenceInfo: ChatDefenceReport;
-  completion?: ChatCompletion;
+  completion?: ChatCompletionRequestMessage;
   numPhasesCompleted?: number;
   transformedMessage?: string;
   wonPhase?: boolean | null;
@@ -57,7 +52,6 @@ interface ChatResponse {
 export type {
   ChatAnswer,
   ChatDefenceReport,
-  ChatCompletion,
   ChatMalicious,
   ChatMessage,
   ChatResponse,

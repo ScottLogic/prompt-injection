@@ -1,32 +1,30 @@
-import { Request, Response } from "./types/dto";
+import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import session from "express-session";
 
-const express = require("express");
-const { Application } = require("express");
-const router = require("./router");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const session = require("express-session");
-const { setOpenAiApiKey } = require("./openai");
-const { getInitialDefences } = require("./defence");
+import { getInitialDefences } from "./defence";
+import { setOpenAiApiKey } from "./openai";
+import { router } from "./router";
 
 dotenv.config();
 
 // by default runs on port 3001
-const port: string = process.env.PORT || String(3001);
+const port = process.env.PORT || String(3001);
 
-const envOpenAiKey: string | undefined = process.env.OPENAI_API_KEY;
+const envOpenAiKey = process.env.OPENAI_API_KEY;
 
 // use default model
-const defaultModel: string = "gpt-4";
+const defaultModel = "gpt-4";
 
 // Creating express server
-const app: typeof Application = express();
+const app = express();
 // for parsing application/json
 app.use(express.json());
 
 // use session
-const express_session: typeof session = {
-  secret: process.env.SESSION_SECRET,
+const express_session: session.SessionOptions = {
+  secret: process.env.SESSION_SECRET || "secret",
   name: "prompt-injection.sid",
   resave: false,
   saveUninitialized: true,
@@ -37,7 +35,11 @@ const express_session: typeof session = {
 
 // serve secure cookies in production
 if (app.get("env") === "production") {
-  express_session.cookie.secure = true;
+  if (!express_session.cookie) {
+    express_session.cookie = { secure: true };
+  } else {
+    express_session.cookie.secure = true;
+  }
 }
 app.use(session(express_session));
 
@@ -48,7 +50,7 @@ app.use(
   })
 );
 
-app.use((req: Request, res: Response, next: () => {}) => {
+app.use((req, res, next) => {
   // initialise session variables
   if (!req.session.chatHistory) {
     req.session.chatHistory = [];
@@ -78,7 +80,6 @@ app.listen(port, () => {
   // for dev purposes only - set the API key from the environment variable
   if (envOpenAiKey) {
     console.debug("Initializing models with API key from environment variable");
-    const defaultSession = { apiKey: "", gptModel: defaultModel };
-    setOpenAiApiKey(defaultSession, process.env.OPENAI_API_KEY);
+    setOpenAiApiKey(envOpenAiKey, defaultModel);
   }
 });

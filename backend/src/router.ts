@@ -1,28 +1,26 @@
-import { ChatDefenceReport, ChatResponse } from "./types/chat";
-import { DefenceConfig } from "./types/defence";
-import { Request, Response } from "./types/dto";
+import express from "express";
 
-const express = require("express");
-const {
+import {
   activateDefence,
   deactivateDefence,
   configureDefence,
   transformMessage,
   detectTriggeredDefences,
-} = require("./defence");
-const {
-  chatGptSendMessage,
-  setOpenAiApiKey,
-  setGptModel,
-} = require("./openai");
-const { initQAModel } = require("./langchain");
-const router: any = express.Router();
+} from "./defence";
+import { initQAModel } from "./langchain";
+import { ChatDefenceReport, ChatResponse } from "./models/chat";
+import { DefenceConfig } from "./models/defence";
+import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
+import { Session } from "inspector";
+import { SessionData } from "express-session";
+
+const router = express.Router();
 
 // keep track of phase change to reinitialze models
-let prevPhase: number = 3;
+let prevPhase = 3;
 
 // Activate a defence
-router.post("/defence/activate", (req: Request, res: Response) => {
+router.post("/defence/activate", (req, res) => {
   // id of the defence
   const defenceId: string = req.body?.defenceId;
   if (defenceId) {
@@ -36,7 +34,7 @@ router.post("/defence/activate", (req: Request, res: Response) => {
 });
 
 // Deactivate a defence
-router.post("/defence/deactivate", (req: Request, res: Response) => {
+router.post("/defence/deactivate", (req, res) => {
   // id of the defence
   const defenceId: string = req.body?.defenceId;
   if (defenceId) {
@@ -50,7 +48,7 @@ router.post("/defence/deactivate", (req: Request, res: Response) => {
 });
 
 // Configure a defence
-router.post("/defence/configure", (req: Request, res: Response) => {
+router.post("/defence/configure", (req, res) => {
   // id of the defence
   const defenceId: string = req.body?.defenceId;
   const config: DefenceConfig[] = req.body?.config;
@@ -69,23 +67,23 @@ router.post("/defence/configure", (req: Request, res: Response) => {
 });
 
 // Get the status of all defences
-router.get("/defence/status", (req: Request, res: Response) => {
+router.get("/defence/status", (req, res) => {
   res.send(req.session.defences);
 });
 
 // Get sent emails
-router.get("/email/get", (req: Request, res: Response) => {
+router.get("/email/get", (req, res) => {
   res.send(req.session.sentEmails);
 });
 
 // clear emails
-router.post("/email/clear", (req: Request, res: Response) => {
+router.post("/email/clear", (req, res) => {
   req.session.sentEmails = [];
   res.send("Emails cleared");
 });
 
 // Chat to ChatGPT
-router.post("/openai/chat", async (req: Request, res: Response) => {
+router.post("/openai/chat", async (req, res) => {
   // set reply params
   let reply: string = "";
   let defenceInfo: ChatDefenceReport = {
@@ -98,22 +96,19 @@ router.post("/openai/chat", async (req: Request, res: Response) => {
   let wonPhase: boolean | null | undefined = null;
   // parse out the message
   const message: string = req.body?.message;
-  const currentPhase: number = req.body?.currentPhase;
-  let numPhasesCompleted: number = req.session.numPhasesCompleted;
+  const currentPhase = req.body?.currentPhase;
+  let numPhasesCompleted = req.session.numPhasesCompleted;
 
   // if phase has changed, reinitialize the QA model with with new filepath
   if (prevPhase != currentPhase) {
     prevPhase = currentPhase;
-    initQAModel(req.session, currentPhase);
+    initQAModel(req.session.apiKey, currentPhase);
   }
 
   if (message) {
     transformedMessage = message;
     // see if this message triggers any defences
-    const detectReply: ChatResponse = detectTriggeredDefences(
-      message,
-      req.session.defences
-    );
+    const detectReply = detectTriggeredDefences(message, req.session.defences);
     reply = detectReply.reply;
     defenceInfo = detectReply.defenceInfo;
     // if blocked, send the response
@@ -122,22 +117,24 @@ router.post("/openai/chat", async (req: Request, res: Response) => {
       transformedMessage = transformMessage(message, req.session.defences);
       // get the chatGPT reply
       try {
-        const openAiReply: ChatResponse = await chatGptSendMessage(
+        const openAiReply = await chatGptSendMessage(
           transformedMessage,
           req.session,
           currentPhase
         );
-        wonPhase = openAiReply.wonPhase;
 
-        reply = openAiReply.reply;
-        // combine triggered defences
-        defenceInfo.triggeredDefences = [
-          ...defenceInfo.triggeredDefences,
-          ...openAiReply.defenceInfo.triggeredDefences,
-        ];
-        // combine blocked
-        defenceInfo.blocked =
-          defenceInfo.blocked || openAiReply.defenceInfo.blocked;
+        if (openAiReply) {
+          wonPhase = openAiReply.wonPhase;
+          reply = openAiReply.reply;
+          // combine triggered defences
+          defenceInfo.triggeredDefences = [
+            ...defenceInfo.triggeredDefences,
+            ...openAiReply.defenceInfo.triggeredDefences,
+          ];
+          // combine blocked
+          defenceInfo.blocked =
+            defenceInfo.blocked || openAiReply.defenceInfo.blocked;
+        }
       } catch (error: any) {
         console.log(error);
         if (error.response?.status == 401) {
@@ -175,19 +172,20 @@ router.post("/openai/chat", async (req: Request, res: Response) => {
 });
 
 // Clear the ChatGPT messages
-router.post("/openai/clear", (req: Request, res: Response) => {
+router.post("/openai/clear", (req, res) => {
   req.session.chatHistory = [];
   res.send("ChatGPT messages cleared");
 });
 
 // Set API key
-router.post("/openai/apiKey", async (req: Request, res: Response) => {
+router.post("/openai/apiKey", async (req, res) => {
   const apiKey: string = req.body?.apiKey;
   if (!apiKey) {
     res.status(401).send("Invalid API key");
     return;
   }
-  if (await setOpenAiApiKey(req.session, apiKey)) {
+  if (await setOpenAiApiKey(apiKey, req.session.gptModel)) {
+    req.session.apiKey = apiKey;
     res.send("API key set");
   } else {
     res.status(401).send("Invalid API key");
@@ -195,12 +193,12 @@ router.post("/openai/apiKey", async (req: Request, res: Response) => {
 });
 
 // Get API key
-router.get("/openai/apiKey", (req: Request, res: Response) => {
+router.get("/openai/apiKey", (req, res) => {
   res.send(req.session.apiKey);
 });
 
 // Set the ChatGPT model
-router.post("/openai/model", async (req: Request, res: Response) => {
+router.post("/openai/model", async (req, res) => {
   const model: string = req.body?.model;
   if (model) {
     if (await setGptModel(req.session, model)) {
@@ -211,12 +209,12 @@ router.post("/openai/model", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/openai/model", (req: Request, res: Response) => {
+router.get("/openai/model", (req, res) => {
   res.send(req.session.gptModel);
 });
 
-router.get("/phase/completed", (req: Request, res: Response) => {
+router.get("/phase/completed", (req, res) => {
   res.send(req.session.numPhasesCompleted.toString());
 });
 
-module.exports = router;
+export { router };
