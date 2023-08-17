@@ -34,13 +34,6 @@ interface ChatMalicious {
   reason: string;
 }
 
-interface ChatMessage {
-  defenceInfo?: ChatDefenceReport;
-  message: string;
-  isOriginalMessage: boolean;
-  type: CHAT_MESSAGE_TYPE;
-}
-
 interface ChatResponse {
   reply: string;
   defenceInfo: ChatDefenceReport;
@@ -50,11 +43,5 @@ interface ChatResponse {
   wonPhase?: boolean | null;
 }
 
-export type {
-  ChatAnswer,
-  ChatDefenceReport,
-  ChatMalicious,
-  ChatMessage,
-  ChatResponse,
-};
+export type { ChatAnswer, ChatDefenceReport, ChatMalicious, ChatResponse };
 export { CHAT_MODELS, CHAT_MESSAGE_TYPE };

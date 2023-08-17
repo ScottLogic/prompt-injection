@@ -6,7 +6,6 @@ import {
   initQAModel,
   initPromptEvaluationModel,
   queryDocuments,
-  queryPromptEvaluationModel,
 } from "./langchain";
 import { EmailResponse } from "./models/email";
 import {
@@ -278,23 +277,6 @@ const chatGptSendMessage = async (
     triggeredDefences: [],
   };
   let wonPhase: boolean | undefined | null = false;
-
-  // evaluate the message for prompt injection
-  // to speed up replies, only do this on phases where defences are active
-  if (currentPhase >= 2) {
-    const evalPrompt = await queryPromptEvaluationModel(message);
-    if (evalPrompt.isMalicious) {
-      defenceInfo.triggeredDefences.push("LLM_EVALUATION");
-      if (isDefenceActive("LLM_EVALUATION", session.defences)) {
-        console.debug("LLM evalutation defence active.");
-        defenceInfo.isBlocked = true;
-        defenceInfo.blockedReason =
-          "Message blocked by the malicious prompt evaluator." +
-          evalPrompt.reason;
-        return { reply: defenceInfo.blockedReason, defenceInfo: defenceInfo };
-      }
-    }
-  }
 
   // add user message to chat
   session.chatHistory.push({ role: "user", content: message });

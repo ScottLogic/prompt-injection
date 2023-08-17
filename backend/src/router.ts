@@ -131,12 +131,17 @@ router.post("/openai/chat", async (req, res) => {
   if (message) {
     transformedMessage = message;
     // see if this message triggers any defences
-    const detectReply = detectTriggeredDefences(message, req.session.defences);
-    defenceInfo = detectReply;
+    const useLlmEvaluation = currentPhase >= 2;
+    defenceInfo = await detectTriggeredDefences(
+      message,
+      req.session.defences,
+      useLlmEvaluation
+    );
     // if blocked, send the response
     if (!defenceInfo.isBlocked) {
       // transform the message according to active defences
       transformedMessage = transformMessage(message, req.session.defences);
+
       // get the chatGPT reply
       try {
         const openAiReply = await chatGptSendMessage(

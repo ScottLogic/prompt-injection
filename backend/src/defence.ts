@@ -1,3 +1,4 @@
+import { queryPromptEvaluationModel } from "./langchain";
 import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { retrievalQAPrePromptSecure } from "./promptTemplates";
@@ -233,10 +234,11 @@ const transformMessage = (message: string, defences: DefenceInfo[]): string => {
 };
 
 // detects triggered defences in original message and blocks the message if necessary
-const detectTriggeredDefences = (
+async function detectTriggeredDefences(
   message: string,
-  defences: DefenceInfo[]
-): ChatDefenceReport => {
+  defences: DefenceInfo[],
+  useLlmEvaluation: boolean
+) {
   // keep track of any triggered defences
   const defenceReport: ChatDefenceReport = {
     blockedReason: "",
@@ -265,8 +267,25 @@ const detectTriggeredDefences = (
     // add the defence to the list of triggered defences
     defenceReport.triggeredDefences.push("XML_TAGGING");
   }
+
+  // evaluate the message for prompt injection
+  // to speed up replies, only do this on phases where defences are active
+  if (useLlmEvaluation) {
+    const evalPrompt = await queryPromptEvaluationModel(message);
+    if (evalPrompt.isMalicious) {
+      defenceReport.triggeredDefences.push("LLM_EVALUATION");
+      if (isDefenceActive("LLM_EVALUATION", defences)) {
+        console.debug("LLM evalutation defence active.");
+        defenceReport.isBlocked = true;
+        defenceReport.blockedReason =
+          "Message blocked by the malicious prompt evaluator." +
+          evalPrompt.reason;
+      }
+    }
+  }
+
   return defenceReport;
-};
+}
 
 export {
   activateDefence,
