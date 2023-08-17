@@ -52,7 +52,7 @@ const setGptModel = async (model: string): Promise<boolean> => {
 const getGptModel = async (): Promise<CHAT_MODELS> => {
   const response = await sendRequest(PATH + "model", "GET");
   const modelStr = await response.text();
-  return <CHAT_MODELS>modelStr;
+  return modelStr as CHAT_MODELS;
 };
 
 export {

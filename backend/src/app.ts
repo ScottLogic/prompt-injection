@@ -62,7 +62,7 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   // initialise session variables
   if (!req.session.chatHistory) {
     req.session.chatHistory = [];

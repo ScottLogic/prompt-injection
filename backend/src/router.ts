@@ -12,7 +12,6 @@ import { initQAModel } from "./langchain";
 import { ChatDefenceReport, ChatResponse } from "./models/chat";
 import { DefenceConfig } from "./models/defence";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
-import session from "express-session";
 import { retrievalQAPrePrompt } from "./promptTemplates";
 
 const router = express.Router();

@@ -1,3 +1,5 @@
+import { Session } from "express-session";
+
 import { isDefenceActive, getSystemRole } from "./defence";
 import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
 import {
@@ -15,7 +17,6 @@ import {
   OpenAIApi,
 } from "openai";
 import { ChatDefenceReport, ChatResponse } from "./models/chat";
-import { Session, SessionData } from "express-session";
 
 // OpenAI config
 let config: Configuration | null = null;
