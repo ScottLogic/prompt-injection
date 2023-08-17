@@ -17,6 +17,16 @@
   margin-top: 4px;
 }
 
+.defence-mechanism-config-validated {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.validation-text {
+  font-size: 14px;
+  font-weight: 600;
+}
+
 @keyframes flash-red-active {
   0% {
     background-color: #eef;

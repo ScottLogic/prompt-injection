@@ -3,6 +3,7 @@ import { DefenceConfig, DefenceInfo } from "../../models/defence";
 import "./DefenceMechanism.css";
 import "../StrategyBox/StrategyMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
+const { TiTick, TiTimes } = require("react-icons/ti");
 
 function DefenceMechanism({
   defenceDetail,
@@ -13,21 +14,35 @@ function DefenceMechanism({
   defenceDetail: DefenceInfo;
   setDefenceActive: (defenceId: string) => void;
   setDefenceInactive: (defenceId: string) => void;
-  setDefenceConfiguration: (defenceId: string, config: DefenceConfig[]) => void;
+  setDefenceConfiguration: (
+    defenceId: string,
+    config: DefenceConfig[]
+  ) => Promise<boolean>;
 }) {
   const [isInfoBoxVisible, setIsInfoBoxVisible] = useState<boolean>(false);
+  const [isConfigured, setIsConfigured] = useState<boolean>(false);
+  const [configValidated, setConfigValidated] = useState<boolean>(true);
 
   const ANIMATION_FLASH_TIME_SECONDS = 1;
   const ANIMATION_FLASH_REPEAT = 3;
 
-  const setConfigurationValue = (configId: string, value: string) => {
+  const setConfigurationValue = async (configId: string, value: string) => {
     const newConfiguration = defenceDetail.config.map((config) => {
       if (config.id === configId) {
         config.value = value;
       }
       return config;
     });
-    setDefenceConfiguration(defenceDetail.id, newConfiguration);
+    setDefenceConfiguration(defenceDetail.id, newConfiguration).then(
+      (configured) => {
+        setIsConfigured(true);
+        setConfigValidated(configured);
+      }
+    );
+    // hide the message after 3 seconds
+    setTimeout(() => {
+      setIsConfigured(false);
+    }, 3000);
   };
 
   return (
@@ -88,6 +103,19 @@ function DefenceMechanism({
                     />
                   );
                 })}
+              </div>
+            ) : null}
+            {isConfigured ? (
+              <div className="defence-mechanism-config-validated">
+                {configValidated ? (
+                  <p className="validation-text">
+                    <TiTick /> defence successfully configured
+                  </p>
+                ) : (
+                  <p className="validation-text">
+                    <TiTimes /> invalid input - configuration failed
+                  </p>
+                )}
               </div>
             ) : null}
           </div>

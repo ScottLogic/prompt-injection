@@ -101,16 +101,22 @@ function DefenceBox({
     defenceId: string,
     config: DefenceConfig[]
   ) => {
-    configureDefence(defenceId, config).then(() => {
-      // update state
-      const newDefences = defenceDetails.map((defence) => {
-        if (defence.id === defenceId) {
-          defence.config = config;
+    const configSuccess = configureDefence(defenceId, config).then(
+      (success) => {
+        if (success) {
+          // update state
+          const newDefences = defenceDetails.map((defence) => {
+            if (defence.id === defenceId) {
+              defence.config = config;
+            }
+            return defence;
+          });
+          setDefenceDetails(newDefences);
         }
-        return defence;
-      });
-      setDefenceDetails(newDefences);
-    });
+        return success;
+      }
+    );
+    return configSuccess;
   };
 
   return (
