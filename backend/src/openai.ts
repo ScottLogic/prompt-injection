@@ -1,4 +1,13 @@
-const { Configuration, OpenAIApi } = require("openai");
+import { AxiosResponse } from "axios";
+import { ChatCompletion, ChatDefenceReport, ChatResponse } from "./types/chat";
+import { EmailResponse } from "./types/email";
+import { Session } from "./types/session";
+
+const {
+  Configuration,
+  OpenAIApi,
+  CreateChatCompletionResponse,
+} = require("openai");
 const { isDefenceActive, getSystemRole } = require("./defence");
 const { sendEmail, getEmailWhitelist, isEmailInWhitelist } = require("./email");
 const {
@@ -9,8 +18,8 @@ const {
 } = require("./langchain");
 
 // OpenAI config
-let config = null;
-let openai = null;
+let config: typeof Configuration = null;
+let openai: typeof OpenAIApi = null;
 
 // functions available to ChatGPT
 const chatGptFunctions = [
@@ -62,21 +71,30 @@ const chatGptFunctions = [
 ];
 
 // test the api key works with the model
-async function validateApiKey(apiKey, gptModel) {
+const validateApiKey = async (
+  apiKey: string,
+  gptModel: string
+): Promise<boolean> => {
   try {
-    const testOpenAI = new OpenAIApi(new Configuration({ apiKey: apiKey }));
-    const response = await testOpenAI.createChatCompletion({
-      model: gptModel,
-      messages: [{ role: "user", content: "this is a test prompt" }],
-    });
+    const testOpenAI: typeof OpenAIApi = new OpenAIApi(
+      new Configuration({ apiKey: apiKey })
+    );
+    const response: AxiosResponse<typeof CreateChatCompletionResponse, any> =
+      await testOpenAI.createChatCompletion({
+        model: gptModel,
+        messages: [{ role: "user", content: "this is a test prompt" }],
+      });
     return true;
   } catch (error) {
     console.debug("Error validating API key: " + error);
     return false;
   }
-}
+};
 
-async function setOpenAiApiKey(session, apiKey) {
+const setOpenAiApiKey = async (
+  session: Session,
+  apiKey: any
+): Promise<boolean> => {
   // initialise all models with the new key
   if (await validateApiKey(apiKey, session.gptModel)) {
     console.debug("Setting API key and initialising models");
@@ -92,17 +110,20 @@ async function setOpenAiApiKey(session, apiKey) {
     openai = null;
     return false;
   }
-}
+};
 
-function initOpenAi(session) {
-  configuration = new Configuration({
+const initOpenAi = (session: Session): void => {
+  config = new Configuration({
     apiKey: session.apiKey,
   });
-  openai = new OpenAIApi(configuration);
+  openai = new OpenAIApi(config);
   console.debug("OpenAI initialised");
-}
+};
 
-async function setGptModel(session, model) {
+const setGptModel = async (
+  session: Session,
+  model: string
+): Promise<boolean> => {
   if (model !== session.gptModel) {
     if (await validateApiKey(session.apiKey, model)) {
       console.debug(
@@ -115,30 +136,31 @@ async function setGptModel(session, model) {
       return false;
     }
   }
-}
+  return false;
+};
 
 // returns true if the function is in the list of functions available to ChatGPT
-function isChatGptFunction(functionName) {
+const isChatGptFunction = (functionName: string) => {
   return chatGptFunctions.find((func) => func.name === functionName);
-}
+};
 
-async function chatGptCallFunction(
-  functionCall,
-  defenceInfo,
-  currentPhase,
-  session
-) {
-  let reply = null;
-  let wonPhase = null;
+const chatGptCallFunction = async (
+  functionCall: any,
+  defenceInfo: ChatDefenceReport,
+  currentPhase: number,
+  session: Session
+): Promise<ChatResponse> => {
+  let reply: ChatCompletion = {} as ChatCompletion;
+  let wonPhase: boolean | null = null;
   // get the function name
-  const functionName = functionCall.name;
+  const functionName: string = functionCall.name;
 
   // check if we know the function
   if (isChatGptFunction(functionName)) {
     // get the function parameters
     const params = JSON.parse(functionCall.arguments);
     console.debug("Function call: " + functionName);
-    let response = null;
+    let response: string = "";
 
     // call the function
     if (functionName === "sendEmail") {
@@ -159,7 +181,7 @@ async function chatGptCallFunction(
       }
 
       if (isAllowedToSendEmail) {
-        const emailResponse = sendEmail(
+        const emailResponse: EmailResponse = sendEmail(
           params.address,
           params.subject,
           params.body,
@@ -187,10 +209,18 @@ async function chatGptCallFunction(
   } else {
     console.error("Unknown function: " + functionName);
   }
-  return { reply, wonPhase, defenceInfo };
-}
+  return {
+    reply: reply.content,
+    wonPhase: wonPhase,
+    defenceInfo: defenceInfo,
+    completion: reply,
+  };
+};
 
-async function chatGptChatCompletion(session, currentPhase) {
+const chatGptChatCompletion = async (
+  session: Session,
+  currentPhase: number
+): Promise<ChatCompletion> => {
   // check if we need to set a system role
   // system role is always active on phases
   if (currentPhase <= 2 || isDefenceActive("SYSTEM_ROLE", session.defences)) {
@@ -218,7 +248,10 @@ async function chatGptChatCompletion(session, currentPhase) {
     };
   }
 
-  chat_completion = await openai.createChatCompletion({
+  const chat_completion: AxiosResponse<
+    typeof CreateChatCompletionResponse,
+    any
+  > = await openai.createChatCompletion({
     model: session.gptModel,
     messages: session.chatHistory,
     functions: chatGptFunctions,
@@ -226,12 +259,19 @@ async function chatGptChatCompletion(session, currentPhase) {
 
   // get the reply
   return chat_completion.data.choices[0].message;
-}
+};
 
-async function chatGptSendMessage(message, session, currentPhase) {
+const chatGptSendMessage = async (
+  message: string,
+  session: Session,
+  currentPhase: number
+): Promise<ChatResponse> => {
   // init defence info
-  let defenceInfo = { triggeredDefences: [], blocked: false };
-  let wonPhase = false;
+  let defenceInfo: ChatDefenceReport = {
+    triggeredDefences: [],
+    blocked: false,
+  };
+  let wonPhase: boolean | undefined | null = false;
 
   // evaluate the message for prompt injection
   // to speed up replies, only do this on phases where defences are active
@@ -253,13 +293,16 @@ async function chatGptSendMessage(message, session, currentPhase) {
   // add user message to chat
   session.chatHistory.push({ role: "user", content: message });
 
-  let reply = await chatGptChatCompletion(session, currentPhase);
+  let reply: ChatCompletion = await chatGptChatCompletion(
+    session,
+    currentPhase
+  );
   // check if GPT wanted to call a function
   while (reply.function_call) {
     session.chatHistory.push(reply);
 
     // call the function and get a new reply and defence info from
-    const functionCallReply = await chatGptCallFunction(
+    const functionCallReply: ChatResponse = await chatGptCallFunction(
       reply.function_call,
       defenceInfo,
       currentPhase,
@@ -267,7 +310,9 @@ async function chatGptSendMessage(message, session, currentPhase) {
     );
     wonPhase = functionCallReply.wonPhase;
     // add the function call to the chat history
-    session.chatHistory.push(functionCallReply.reply);
+    if (functionCallReply.completion !== undefined) {
+      session.chatHistory.push(functionCallReply.completion);
+    }
     // update the defence info
     defenceInfo = functionCallReply.defenceInfo;
 
@@ -284,8 +329,9 @@ async function chatGptSendMessage(message, session, currentPhase) {
     reply: reply.content,
     wonPhase: wonPhase,
     defenceInfo: defenceInfo,
+    completion: reply,
   };
-}
+};
 
 module.exports = {
   initOpenAi,

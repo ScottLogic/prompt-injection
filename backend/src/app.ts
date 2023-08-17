@@ -1,4 +1,7 @@
+import { Request, Response } from "./types/dto";
+
 const express = require("express");
+const { Application } = require("express");
 const router = require("./router");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -9,32 +12,34 @@ const { getInitialDefences } = require("./defence");
 dotenv.config();
 
 // by default runs on port 3001
-const port = process.env.PORT || 3001;
+const port: string = process.env.PORT || String(3001);
 
-const envOpenAiKey = process.env.OPENAI_API_KEY;
+const envOpenAiKey: string | undefined = process.env.OPENAI_API_KEY;
 
 // use default model
-const defaultModel = "gpt-4";
+const defaultModel: string = "gpt-4";
 
 // Creating express server
-const app = express();
+const app: typeof Application = express();
 // for parsing application/json
 app.use(express.json());
 
 // use session
-const sess = {
+const express_session: typeof session = {
   secret: process.env.SESSION_SECRET,
   name: "prompt-injection.sid",
   resave: false,
   saveUninitialized: true,
-  cookie: {},
+  cookie: {
+    secure: false,
+  },
 };
 
 // serve secure cookies in production
 if (app.get("env") === "production") {
-  sess.cookie.secure = true;
+  express_session.cookie.secure = true;
 }
-app.use(session(sess));
+app.use(session(express_session));
 
 app.use(
   cors({
@@ -43,7 +48,7 @@ app.use(
   })
 );
 
-app.use(function (req, res, next) {
+app.use((req: Request, res: Response, next: () => {}) => {
   // initialise session variables
   if (!req.session.chatHistory) {
     req.session.chatHistory = [];

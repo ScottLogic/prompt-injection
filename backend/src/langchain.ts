@@ -1,12 +1,17 @@
+import { ChatAnswer, ChatMalicious } from "./types/chat";
+import { Session } from "./types/session";
+
 const { TextLoader } = require("langchain/document_loaders/fs/text");
 const { PDFLoader } = require("langchain/document_loaders/fs/pdf");
 const { CSVLoader } = require("langchain/document_loaders/fs/csv");
 const { DirectoryLoader } = require("langchain/document_loaders/fs/directory");
+const { Document } = require("langchain/document");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { MemoryVectorStore } = require("langchain/vectorstores/memory");
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 const {
+  ChainValues,
   RetrievalQAChain,
   LLMChain,
   SequentialChain,
@@ -20,12 +25,12 @@ const {
 } = require("./promptTemplates");
 
 // chain we use in question/answer request
-let qaChain = null;
+let qaChain: typeof RetrievalQAChain = null;
 
 // chain we use in prompt evaluation request
-let promptEvaluationChain = null;
+let promptEvaluationChain: typeof SequentialChain = null;
 
-function getFilepath(currentPhase) {
+const getFilepath = (currentPhase: number): string => {
   let filePath = "resources/documents/";
   switch (currentPhase) {
     case 0:
@@ -37,70 +42,81 @@ function getFilepath(currentPhase) {
     default:
       return (filePath += "common/");
   }
-}
+};
 
 // load the documents from filesystem
-async function getDocuments(filePath) {
+const getDocuments = async (filePath: string): Promise<(typeof Document)[]> => {
   console.debug("Loading documents from: " + filePath);
 
-  const loader = new DirectoryLoader(filePath, {
-    ".pdf": (path) => new PDFLoader(path),
-    ".txt": (path) => new TextLoader(path),
-    ".csv": (path) => new CSVLoader(path),
+  const loader: typeof DirectoryLoader = new DirectoryLoader(filePath, {
+    ".pdf": (path: string) => new PDFLoader(path),
+    ".txt": (path: string) => new TextLoader(path),
+    ".csv": (path: string) => new CSVLoader(path),
   });
-  const docs = await loader.load();
+  const docs: (typeof Document)[] = await loader.load();
 
   // split the documents into chunks
-  const textSplitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 0,
-  });
-  const splitDocs = await textSplitter.splitDocuments(docs);
+  const textSplitter: typeof RecursiveCharacterTextSplitter =
+    new RecursiveCharacterTextSplitter({
+      chunkSize: 1000,
+      chunkOverlap: 0,
+    });
+  const splitDocs: (typeof Document)[] = await textSplitter.splitDocuments(
+    docs
+  );
   return splitDocs;
-}
+};
 
 // QA Chain - ask the chat model a question about the documents
-async function initQAModel(session, currentPhase) {
+const initQAModel = async (
+  session: Session,
+  currentPhase: number
+): Promise<void> => {
   if (!session.apiKey) {
     console.debug("No apiKey set to initialise QA model");
     return;
   }
   // get the documents
-  const docs = await getDocuments(getFilepath(currentPhase));
+  const docs: (typeof Document)[] = await getDocuments(
+    getFilepath(currentPhase)
+  );
 
   // embed and store the splits
-  const embeddings = new OpenAIEmbeddings({ openAIApiKey: session.apiKey });
-  const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
+  const embeddings: typeof OpenAIEmbeddings = new OpenAIEmbeddings({
+    openAIApiKey: session.apiKey,
+  });
+  const vectorStore: typeof MemoryVectorStore =
+    await MemoryVectorStore.fromDocuments(docs, embeddings);
 
   // initialise model
-  const model = new ChatOpenAI({
+  const model: typeof ChatOpenAI = new ChatOpenAI({
     modelName: "gpt-4",
     stream: true,
     openAIApiKey: session.apiKey,
   });
 
   // prompt template for question and answering
-  const qaPrompt = PromptTemplate.fromTemplate(retrievalQATemplate);
+  const qaPrompt: typeof PromptTemplate =
+    PromptTemplate.fromTemplate(retrievalQATemplate);
 
   // set chain to retrieval QA chain
   qaChain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
     prompt: qaPrompt,
   });
-}
+};
 
 // initialise the prompt evaluation model
-async function initPromptEvaluationModel(session) {
+const initPromptEvaluationModel = async (session: Session): Promise<void> => {
   if (!session.apiKey) {
     console.debug("No apiKey set to initialise prompt evaluation model");
     return;
   }
 
   // create chain to detect prompt injection
-  const promptInjectionPrompt = PromptTemplate.fromTemplate(
-    promptInjectionEvalTemplate
-  );
+  const promptInjectionPrompt: typeof PromptTemplate =
+    PromptTemplate.fromTemplate(promptInjectionEvalTemplate);
 
-  const promptInjectionChain = new LLMChain({
+  const promptInjectionChain: typeof LLMChain = new LLMChain({
     llm: new OpenAI({
       model: "gpt-3.5-turbo",
       temperature: 0,
@@ -111,10 +127,9 @@ async function initPromptEvaluationModel(session) {
   });
 
   // create chain to detect malicious prompts
-  const maliciousInputPrompt = PromptTemplate.fromTemplate(
-    maliciousPromptTemplate
-  );
-  const maliciousInputChain = new LLMChain({
+  const maliciousInputPrompt: typeof PromptTemplate =
+    PromptTemplate.fromTemplate(maliciousPromptTemplate);
+  const maliciousInputChain: typeof LLMChain = new LLMChain({
     llm: new OpenAI({
       model: "gpt-3.5-turbo",
       temperature: 0,
@@ -130,38 +145,42 @@ async function initPromptEvaluationModel(session) {
     outputVariables: ["promptInjectionEval", "maliciousInputEval"],
   });
   console.debug("Prompt evaluation chain initialised");
-}
+};
 
 // ask the question and return models answer
-async function queryDocuments(question) {
+const queryDocuments = async (question: string): Promise<ChatAnswer> => {
   if (!qaChain) {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
   }
-  const response = await qaChain.call({
+  const response: typeof ChainValues = await qaChain.call({
     query: question,
   });
   console.debug("QA model response: " + response.text);
-  const result = {
+  const result: ChatAnswer = {
     reply: response.text,
     questionAnswered: true,
   };
   return result;
-}
+};
 
 // ask LLM whether the prompt is malicious
-async function queryPromptEvaluationModel(input) {
+const queryPromptEvaluationModel = async (
+  input: string
+): Promise<ChatMalicious> => {
   if (!promptEvaluationChain) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };
   }
 
-  const response = await promptEvaluationChain.call({ prompt: input });
+  const response: typeof ChainValues = await promptEvaluationChain.call({
+    prompt: input,
+  });
 
-  const promptInjectionEval = formatEvaluationOutput(
+  const promptInjectionEval: any = formatEvaluationOutput(
     response.promptInjectionEval
   );
-  const maliciousInputEval = formatEvaluationOutput(
+  const maliciousInputEval: any = formatEvaluationOutput(
     response.maliciousInputEval
   );
 
@@ -182,15 +201,15 @@ async function queryPromptEvaluationModel(input) {
     return { isMalicious: true, reason: maliciousInputEval.reason };
   }
   return { isMalicious: false, reason: "" };
-}
+};
 
 // format the evaluation model output. text should be a Yes or No answer followed by a reason
-function formatEvaluationOutput(response) {
+const formatEvaluationOutput = (response: any): any => {
   try {
     // split response on first full stop or comma
-    const splitResponse = response.split(/\.|,/);
-    const answer = splitResponse[0].replace(/\W/g, "").toLowerCase();
-    const reason = splitResponse[1];
+    const splitResponse: string[] = response.split(/\.|,/);
+    const answer: string = splitResponse[0].replace(/\W/g, "").toLowerCase();
+    const reason: string = splitResponse[1];
     return {
       isMalicious: answer === "yes",
       reason: reason,
@@ -204,7 +223,7 @@ function formatEvaluationOutput(response) {
     );
     return { isMalicious: false, reason: "" };
   }
-}
+};
 
 module.exports = {
   getDocuments,

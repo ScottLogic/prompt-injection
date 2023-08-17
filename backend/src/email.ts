@@ -1,13 +1,17 @@
+import { DefenceInfo } from "./types/defence";
+import { EmailInfo, EmailResponse } from "./types/email";
+import { Session } from "./types/session";
+
 const { getEmailWhitelistVar, isDefenceActive } = require("./defence.js");
 
 // return the whitelist variable
-function getEmailWhitelistValues(defences) {
+const getEmailWhitelistValues = (defences: DefenceInfo[]): string[] => {
   const emailWhitelist = getEmailWhitelistVar(defences);
-  return emailWhitelist.split(",").map((c) => c.trim());
-}
+  return emailWhitelist.split(",").map((c: string) => c.trim());
+};
 
 // if defense active return the whitelist of emails and domains
-function getEmailWhitelist(defences) {
+const getEmailWhitelist = (defences: DefenceInfo[]): string => {
   if (!isDefenceActive("EMAIL_WHITELIST", defences)) {
     return "As the email whitelist defence is not active, any email address can be emailed.";
   } else {
@@ -16,10 +20,13 @@ function getEmailWhitelist(defences) {
       getEmailWhitelistValues(defences)
     );
   }
-}
+};
 
 // check if email is in whitelist
-function isEmailInWhitelist(emailAddress, defences) {
+const isEmailInWhitelist = (
+  emailAddress: string,
+  defences: DefenceInfo[]
+): boolean => {
   // get the domain from email
   const emailAddressDomain = emailAddress.split("@")[1];
   const emailWhitelist = getEmailWhitelistValues(defences);
@@ -37,12 +44,22 @@ function isEmailInWhitelist(emailAddress, defences) {
   }
   // otherwise check if their full email is whitelisted
   return emailWhitelist.includes(emailAddress);
-}
+};
 
-function sendEmail(address, subject, body, session, currentPhase) {
+const sendEmail = (
+  address: string,
+  subject: string,
+  body: string,
+  session: Session,
+  currentPhase: number
+): EmailResponse => {
   // add to the list of sent emails
-  const email = { address: address, subject: subject, content: body };
-  const response =
+  const email: EmailInfo = {
+    address: address,
+    subject: subject,
+    content: body,
+  };
+  const response: string =
     "Email sent to " +
     address +
     " with subject " +
@@ -52,12 +69,15 @@ function sendEmail(address, subject, body, session, currentPhase) {
   console.log(response);
   // add the sent email to the session
   session.sentEmails.push(email);
-  const wonPhase = checkPhaseWinCondition(email, currentPhase);
+  const wonPhase: boolean = checkPhaseWinCondition(email, currentPhase);
 
   return { response: response, wonPhase: wonPhase };
-}
+};
 
-function checkPhaseWinCondition(email, currentPhase) {
+const checkPhaseWinCondition = (
+  email: EmailInfo,
+  currentPhase: number
+): boolean => {
   switch (currentPhase) {
     case 0:
       return (
@@ -82,7 +102,7 @@ function checkPhaseWinCondition(email, currentPhase) {
     default:
       return false;
   }
-}
+};
 
 module.exports = {
   getEmailWhitelist,
