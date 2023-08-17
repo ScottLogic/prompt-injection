@@ -32,6 +32,11 @@ async function deactivateDefence(id: string): Promise<boolean> {
 }
 
 async function configureDefence(id: string, config: DefenceConfig[]) {
+  const validation = config.map((c) => validateDefence(id, c.name, c.value));
+  if (validation.includes(false)) {
+    console.log("Invalid value for defence configuration", id, config);
+    return false;
+  }
   const response = await sendRequest(
     PATH + "configure",
     "POST",
@@ -41,6 +46,29 @@ async function configureDefence(id: string, config: DefenceConfig[]) {
     JSON.stringify({ defenceId: id, config: config })
   );
   return response.status === 200;
+}
+
+function validateNumberConfig(config: string) {
+  // config is a number greater than zero
+  return !isNaN(Number(config)) && Number(config) > 0;
+}
+
+function validateStringConfig(config: string) {
+  // config is non empty string and is not a number
+  return config != "" && !Number(config);
+}
+
+function validateDefence(id: string, configName: string, config: string) {
+  switch (id) {
+    case "CHARACTER_LIMIT":
+      return validateNumberConfig(config);
+    case "RANDOM_SEQUENCE_ENCLOSURE":
+      return configName === "length"
+        ? validateNumberConfig(config)
+        : validateNumberConfig(config);
+    default:
+      return validateStringConfig(config);
+  }
 }
 
 export { getDefences, activateDefence, deactivateDefence, configureDefence };
