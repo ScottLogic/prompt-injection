@@ -150,7 +150,7 @@ const chatGptCallFunction = async (
   session: Session
 ): Promise<ChatResponse | null> => {
   let reply: ChatCompletionRequestMessage | null = null;
-  let wonPhase: boolean | null = null;
+  let wonPhase: boolean = false;
   // get the function name
   const functionName: string = functionCall.name || "";
 
@@ -214,10 +214,9 @@ const chatGptCallFunction = async (
 
   if (reply && reply.content) {
     return {
-      reply: reply.content,
-      wonPhase: wonPhase,
-      defenceInfo: defenceInfo,
       completion: reply,
+      defenceInfo: defenceInfo,
+      wonPhase: wonPhase,
     };
   } else {
     return null;
@@ -313,10 +312,9 @@ const chatGptSendMessage = async (
     // log the entire chat history so far
     console.log(session.chatHistory);
     return {
-      reply: reply.content,
-      wonPhase: wonPhase,
-      defenceInfo: defenceInfo,
       completion: reply,
+      defenceInfo: defenceInfo,
+      wonPhase: wonPhase,
     };
   } else {
     return null;

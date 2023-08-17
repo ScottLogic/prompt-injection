@@ -35,13 +35,24 @@ interface ChatMalicious {
 }
 
 interface ChatResponse {
-  reply: string;
+  completion: ChatCompletionRequestMessage;
   defenceInfo: ChatDefenceReport;
-  completion?: ChatCompletionRequestMessage;
-  numPhasesCompleted?: number;
-  transformedMessage?: string;
-  wonPhase?: boolean | null;
+  wonPhase: boolean;
 }
 
-export type { ChatAnswer, ChatDefenceReport, ChatMalicious, ChatResponse };
+interface ChatHttpResponse {
+  reply: string;
+  defenceInfo: ChatDefenceReport;
+  numPhasesCompleted: number;
+  transformedMessage: string;
+  wonPhase: boolean;
+}
+
+export type {
+  ChatAnswer,
+  ChatDefenceReport,
+  ChatMalicious,
+  ChatResponse,
+  ChatHttpResponse,
+};
 export { CHAT_MODELS, CHAT_MESSAGE_TYPE };

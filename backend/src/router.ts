@@ -9,7 +9,7 @@ import {
   getQALLMprePrompt,
 } from "./defence";
 import { initQAModel } from "./langchain";
-import { ChatDefenceReport, ChatResponse } from "./models/chat";
+import { ChatHttpResponse } from "./models/chat";
 import { DefenceConfig } from "./models/defence";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
 import { retrievalQAPrePrompt } from "./promptTemplates";
@@ -107,16 +107,18 @@ router.post("/email/clear", (req, res) => {
 // Chat to ChatGPT
 router.post("/openai/chat", async (req, res) => {
   // set reply params
-  let reply: string = "";
-  let defenceInfo: ChatDefenceReport = {
-    blockedReason: "",
-    isBlocked: false,
-    triggeredDefences: [],
+  const chatResponse: ChatHttpResponse = {
+    reply: "",
+    defenceInfo: {
+      blockedReason: "",
+      isBlocked: false,
+      triggeredDefences: [],
+    },
+    numPhasesCompleted: req.session.numPhasesCompleted,
+    transformedMessage: "",
+    wonPhase: false,
   };
-  let transformedMessage: string = "";
 
-  // whether the phase has been won by sending correct email
-  let wonPhase: boolean | null | undefined = null;
   // parse out the message
   const message: string = req.body?.message;
   const currentPhase = req.body?.currentPhase;
@@ -129,73 +131,70 @@ router.post("/openai/chat", async (req, res) => {
   }
 
   if (message) {
-    transformedMessage = message;
+    chatResponse.transformedMessage = message;
     // see if this message triggers any defences
     const useLlmEvaluation = currentPhase >= 2;
-    defenceInfo = await detectTriggeredDefences(
+    chatResponse.defenceInfo = await detectTriggeredDefences(
       message,
       req.session.defences,
       useLlmEvaluation
     );
     // if blocked, send the response
-    if (!defenceInfo.isBlocked) {
+    if (!chatResponse.defenceInfo.isBlocked) {
       // transform the message according to active defences
-      transformedMessage = transformMessage(message, req.session.defences);
+      chatResponse.transformedMessage = transformMessage(
+        message,
+        req.session.defences
+      );
 
       // get the chatGPT reply
       try {
         const openAiReply = await chatGptSendMessage(
-          transformedMessage,
+          chatResponse.transformedMessage,
           req.session,
           currentPhase
         );
 
         if (openAiReply) {
-          wonPhase = openAiReply.wonPhase;
-          reply = openAiReply.reply;
+          chatResponse.wonPhase = openAiReply.wonPhase;
+          chatResponse.reply = openAiReply.completion.content || "";
           // combine triggered defences
-          defenceInfo.triggeredDefences = [
-            ...defenceInfo.triggeredDefences,
+          chatResponse.defenceInfo.triggeredDefences = [
+            ...chatResponse.defenceInfo.triggeredDefences,
             ...openAiReply.defenceInfo.triggeredDefences,
           ];
           // combine blocked
-          defenceInfo.isBlocked =
-            defenceInfo.isBlocked || openAiReply.defenceInfo.isBlocked;
+          chatResponse.defenceInfo.isBlocked =
+            chatResponse.defenceInfo.isBlocked ||
+            openAiReply.defenceInfo.isBlocked;
         }
       } catch (error: any) {
         console.log(error);
         if (error.response?.status == 401) {
           res.statusCode = 401;
-          reply = "Please enter a valid OpenAI API key to chat to me!";
+          chatResponse.reply =
+            "Please enter a valid OpenAI API key to chat to me!";
         } else {
           res.statusCode = 500;
           console.log(error);
-          reply = "Failed to get chatGPT reply";
+          chatResponse.reply = "Failed to get chatGPT reply";
         }
       }
     }
   } else {
     res.statusCode = 400;
-    reply = "Missing message";
-    console.error(reply);
+    chatResponse.reply = "Missing message";
+    console.error(chatResponse.reply);
   }
   // enable next phase when user wins current phase
-  if (wonPhase) {
+  if (chatResponse.wonPhase) {
     console.log("Win conditon met for phase: ", currentPhase);
     numPhasesCompleted = currentPhase + 1;
     req.session.numPhasesCompleted = numPhasesCompleted;
   }
-  // construct response
-  const response: ChatResponse = {
-    reply,
-    defenceInfo,
-    transformedMessage,
-    numPhasesCompleted,
-    wonPhase,
-  };
   // log and send the reply with defence info
-  console.log(response);
-  res.send(response);
+  console.log(chatResponse);
+  res.send(chatResponse);
 });
 
 // Clear the ChatGPT messages
