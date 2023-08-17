@@ -1,6 +1,6 @@
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 
-const DEFENCE_DETAILS: DefenceInfo[] = [
+const DEFENCE_DETAILS_PHASE: DefenceInfo[] = [
   new DefenceInfo(
     DEFENCE_TYPES.CHARACTER_LIMIT,
     "Character Limit",
@@ -42,4 +42,14 @@ const DEFENCE_DETAILS: DefenceInfo[] = [
   ),
 ];
 
-export { DEFENCE_DETAILS };
+const DEFENCE_DETAILS_ALL: DefenceInfo[] = [
+  ...DEFENCE_DETAILS_PHASE,
+  new DefenceInfo(
+    DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
+    "QA LLM instructions",
+    "Currently the chatbot speaks to a separate Question/Answering LLM to retrieve information on documents. The QA LLM will reveal all information to the chatbot, who will then decide whether to reveal to the user. This defence adds an instructional pre-prompt to the QA LLM to not reveal certain sensitive information to the chatbot.",
+    [new DefenceConfig("prePrompt", "pre-prompt")]
+  ),
+];
+
+export { DEFENCE_DETAILS_PHASE, DEFENCE_DETAILS_ALL };

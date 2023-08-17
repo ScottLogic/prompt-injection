@@ -1,3 +1,5 @@
+const { retrievalQAPrePromptSecure } = require("./promptTemplates");
+
 function getInitialDefences() {
   const defences = [
     {
@@ -42,6 +44,15 @@ function getInitialDefences() {
       ],
     },
     { id: "LLM_EVALUATION" },
+    {
+      id: "QA_LLM_INSTRUCTIONS",
+      config: [
+        {
+          id: "prePrompt",
+          value: retrievalQAPrePromptSecure,
+        },
+      ],
+    },
   ];
   // make all defences inactive by default and return
   return defences.map((defence) => ({ ...defence, isActive: false }));
@@ -102,6 +113,10 @@ function getSystemRole(defences, currentPhase) {
 
 function getEmailWhitelistVar(defences) {
   return getConfigValue(defences, "EMAIL_WHITELIST", "whitelist", "");
+}
+
+function getQALLMprePrompt(defences) {
+  return getConfigValue(defences, "QA_LLM_INSTRUCTIONS", "prePrompt", "");
 }
 
 function isDefenceActive(id, defences) {
@@ -227,6 +242,7 @@ module.exports = {
   deactivateDefence,
   getInitialDefences,
   getSystemRole,
+  getQALLMprePrompt,
   isDefenceActive,
   transformMessage,
   detectTriggeredDefences,

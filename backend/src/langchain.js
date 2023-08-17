@@ -14,7 +14,8 @@ const {
 const { PromptTemplate } = require("langchain/prompts");
 const { OpenAI } = require("langchain/llms/openai");
 const {
-  retrievalQATemplate,
+  qAcontextTemplate,
+  retrievalQAPrePrompt,
   promptInjectionEvalTemplate,
   maliciousPromptTemplate,
 } = require("./promptTemplates");
@@ -59,8 +60,17 @@ async function getDocuments(filePath) {
   return splitDocs;
 }
 
+// join the configurable preprompt to the context template
+function getQAPromptTemplate(prePrompt) {
+  if (!prePrompt) {
+    console.debug("Using default retrieval QA pre-prompt");
+    prePrompt = retrievalQAPrePrompt;
+  }
+  return PromptTemplate.fromTemplate(prePrompt + qAcontextTemplate);
+}
+
 // QA Chain - ask the chat model a question about the documents
-async function initQAModel(session, currentPhase) {
+async function initQAModel(session, currentPhase, prePrompt) {
   if (!session.apiKey) {
     console.debug("No apiKey set to initialise QA model");
     return;
@@ -80,7 +90,7 @@ async function initQAModel(session, currentPhase) {
   });
 
   // prompt template for question and answering
-  const qaPrompt = PromptTemplate.fromTemplate(retrievalQATemplate);
+  const qaPrompt = getQAPromptTemplate(prePrompt);
 
   // set chain to retrieval QA chain
   qaChain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {

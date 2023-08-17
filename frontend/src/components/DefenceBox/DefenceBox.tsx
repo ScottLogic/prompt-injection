@@ -7,20 +7,25 @@ import {
   deactivateDefence,
   configureDefence,
 } from "../../service/defenceService";
-import { DEFENCE_DETAILS } from "../../Defences";
 import { DefenceConfig, DefenceInfo } from "../../models/defence";
 
 function DefenceBox({
+  defences,
   triggeredDefences,
   defenceActivated,
   defenceDeactivated,
 }: {
+  defences: DefenceInfo[];
   triggeredDefences: string[];
   defenceActivated: (defenceInfo: DefenceInfo) => void;
   defenceDeactivated: (defenceInfo: DefenceInfo) => void;
 }) {
   // list of defence mechanisms
-  const [defenceDetails, setDefenceDetails] = useState(DEFENCE_DETAILS);
+  const [defenceDetails, setDefenceDetails] = useState(defences);
+
+  useEffect(() => {
+    setDefenceDetails(defences);
+  }, [defences]);
 
   // called on mount
   useEffect(() => {
@@ -110,8 +115,6 @@ function DefenceBox({
 
   return (
     <div id="strategy-box">
-      <div className="side-bar-header">defence mechanisms</div>
-
       {defenceDetails.map((defenceDetail, index) => {
         return (
           <DefenceMechanism
