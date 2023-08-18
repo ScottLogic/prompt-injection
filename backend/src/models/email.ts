@@ -6,6 +6,7 @@ interface EmailInfo {
 
 interface EmailResponse {
   response: string;
+  sentEmail: EmailInfo;
   wonPhase: boolean;
 }
 

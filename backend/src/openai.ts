@@ -187,11 +187,12 @@ const chatGptCallFunction = async (
           params.address,
           params.subject,
           params.body,
-          session,
           currentPhase
         );
         response = emailResponse.response;
         wonPhase = emailResponse.wonPhase;
+        // add the sent email to the session
+        session.sentEmails.push(emailResponse.sentEmail);
       }
     } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist(session.defences);

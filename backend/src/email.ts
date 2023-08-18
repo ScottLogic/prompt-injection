@@ -1,4 +1,3 @@
-import { Session } from "express-session";
 import { DefenceInfo } from "./models/defence";
 import { EmailInfo, EmailResponse } from "./models/email";
 import { getEmailWhitelistVar, isDefenceActive } from "./defence";
@@ -49,7 +48,6 @@ const sendEmail = (
   address: string,
   subject: string,
   body: string,
-  session: Session,
   currentPhase: number
 ): EmailResponse => {
   // add to the list of sent emails
@@ -66,11 +64,9 @@ const sendEmail = (
     " and body " +
     body;
   console.log(response);
-  // add the sent email to the session
-  session.sentEmails.push(email);
   const wonPhase: boolean = checkPhaseWinCondition(email, currentPhase);
 
-  return { response: response, wonPhase: wonPhase };
+  return { response: response, sentEmail: email, wonPhase: wonPhase };
 };
 
 function checkSubjectAndBodyContains(
