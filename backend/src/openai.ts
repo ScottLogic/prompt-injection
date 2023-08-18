@@ -15,7 +15,7 @@ import {
   Configuration,
   OpenAIApi,
 } from "openai";
-import { ChatDefenceReport, ChatResponse } from "./models/chat";
+import { CHAT_MODELS, ChatDefenceReport, ChatResponse } from "./models/chat";
 
 // OpenAI config
 let config: Configuration | null = null;
@@ -92,9 +92,10 @@ const validateApiKey = async (
 
 const setOpenAiApiKey = async (
   apiKey: string,
-  currentPhase: number,
   gptModel: string,
-  prePrompt: string
+  prePrompt: string,
+  // default to sandbox mode
+  currentPhase: number = 3
 ): Promise<boolean> => {
   // initialise all models with the new key
   if (await validateApiKey(apiKey, gptModel)) {
@@ -121,7 +122,7 @@ const initOpenAi = (openAiApiKey: string): void => {
 
 const setGptModel = async (
   session: Session,
-  model: string
+  model: CHAT_MODELS
 ): Promise<boolean> => {
   if (model !== session.gptModel) {
     if (await validateApiKey(session.apiKey, model)) {
@@ -227,7 +228,7 @@ const chatGptCallFunction = async (
 const chatGptChatCompletion = async (
   session: Session,
   currentPhase: number
-): Promise<ChatCompletionResponseMessage | undefined> => {
+): Promise<ChatCompletionResponseMessage | null> => {
   // check if we need to set a system role
   // system role is always active on phases
   if (currentPhase <= 2 || isDefenceActive("SYSTEM_ROLE", session.defences)) {
@@ -262,7 +263,7 @@ const chatGptChatCompletion = async (
   });
 
   // get the reply
-  return chat_completion.data.choices[0].message;
+  return chat_completion.data.choices[0].message || null;
 };
 
 const chatGptSendMessage = async (

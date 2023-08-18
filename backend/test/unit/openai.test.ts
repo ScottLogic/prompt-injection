@@ -1,18 +1,18 @@
 import { OpenAIApi } from "openai";
 import { validateApiKey, setOpenAiApiKey } from "../../src/openai";
 import { initQAModel } from "../../src/langchain";
+import { CHAT_MODELS } from "../../src/models/chat";
 
-// Mock the OpenAIApi module
-jest.mock("openai");
-// Create a mock instance
+// Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
-OpenAIApi.mockImplementation(() => {
-  return {
+// Mock the OpenAIApi class
+jest.mock("openai", () => ({
+  OpenAIApi: jest.fn().mockImplementation(() => ({
     createChatCompletion: mockCreateChatCompletion,
-  };
-});
+  })),
+  Configuration: jest.fn().mockImplementation(() => ({})),
+}));
 
-const mockInitOpenAi = jest.fn();
 jest.mock("../../src/openai", () => {
   const originalModule = jest.requireActual("../../src/openai");
   return {
@@ -21,45 +21,31 @@ jest.mock("../../src/openai", () => {
   };
 });
 
-jest.mock("../../src/langchain");
-initQAModel.mockImplementation(() => {
+jest.mock("../../src/langchain", () => {
+  const originalModule = jest.requireActual("../../src/langchain");
   return {
+    ...originalModule,
     initQAModel: jest.fn(),
   };
 });
 
 test("GIVEN a valid API key WHEN calling validateApiKey THEN it should return true", async () => {
-  mockCreateChatCompletion.mockResolvedValueOnce({
-    data: {
-      choices: [
-        {
-          message: {
-            role: "assistant",
-            content: "Hi",
-          },
-        },
-      ],
-    },
-  });
-  const result = await validateApiKey("sk-1234567");
+  const result = await validateApiKey("sk-1234567", CHAT_MODELS.GPT_4);
   expect(result).toBe(true);
   mockCreateChatCompletion.mockRestore();
 });
 
 test("GIVEN an invalid API key WHEN calling validateApiKey THEN it should return false", async () => {
   mockCreateChatCompletion.mockRejectedValueOnce(new Error("Invalid API key"));
-  const result = await validateApiKey("invalid-api-key");
+  const result = await validateApiKey("invalid-api-key", CHAT_MODELS.GPT_4);
   expect(result).toBe(false);
 });
 
 test("GIVEN a valid API key WHEN calling setOpenAiApiKey THEN it should set the API key and initialize models", async () => {
-  const session = { apiKey: "" };
   const apiKey = "sk-1234567";
-
-  const result = await setOpenAiApiKey(session, apiKey);
+  const result = await setOpenAiApiKey(apiKey, CHAT_MODELS.GPT_4, "");
 
   expect(result).toBe(true);
-  expect(session.apiKey).toBe(apiKey);
   // once to validate, once to initalize
   expect(OpenAIApi).toHaveBeenCalledTimes(2);
   expect(initQAModel).toHaveBeenCalled();
@@ -67,21 +53,17 @@ test("GIVEN a valid API key WHEN calling setOpenAiApiKey THEN it should set the 
 
 test("GIVEN an invalid API key WHEN calling setOpenAiApiKey THEN it should set the API key to empty", async () => {
   mockCreateChatCompletion.mockRejectedValueOnce(new Error("Invalid API key"));
-  const session = { apiKey: "valid-api-key" };
   const apiKey = "invalid-api-key";
-
   // Call the function
-  const result = await setOpenAiApiKey(session, apiKey);
+  const result = await setOpenAiApiKey(apiKey, CHAT_MODELS.GPT_4, "");
 
   // Check if the API key and models are reset correctly
   expect(result).toBe(false);
-  expect(session.apiKey).toBe("");
   // once only to validate
   expect(OpenAIApi).toHaveBeenCalledTimes(1);
   expect(initQAModel).not.toHaveBeenCalled();
 });
 
 afterEach(() => {
-  OpenAIApi.mockClear();
   jest.clearAllMocks();
 });

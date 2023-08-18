@@ -19,7 +19,7 @@ declare module "express-session" {
     sentEmails: EmailInfo[];
     defences: DefenceInfo[];
     apiKey: string;
-    gptModel: string;
+    gptModel: CHAT_MODELS;
     numPhasesCompleted: number;
   }
 }
@@ -94,6 +94,6 @@ app.listen(port, () => {
   const prePrompt = getQALLMprePrompt(getInitialDefences());
   if (envOpenAiKey && prePrompt) {
     console.debug("Initializing models with API key from environment variable");
-    setOpenAiApiKey(envOpenAiKey, 3, defaultModel, prePrompt);
+    setOpenAiApiKey(envOpenAiKey, defaultModel, prePrompt);
   }
 });

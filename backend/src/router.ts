@@ -9,7 +9,7 @@ import {
   getQALLMprePrompt,
 } from "./defence";
 import { initQAModel } from "./langchain";
-import { ChatHttpResponse } from "./models/chat";
+import { CHAT_MODELS, ChatHttpResponse } from "./models/chat";
 import { DefenceConfig } from "./models/defence";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
 import { retrievalQAPrePrompt } from "./promptTemplates";
@@ -213,7 +213,6 @@ router.post("/openai/apiKey", async (req, res) => {
   if (
     await setOpenAiApiKey(
       apiKey,
-      3,
       req.session.gptModel,
       getQALLMprePrompt(req.session.defences)
     )
@@ -232,7 +231,7 @@ router.get("/openai/apiKey", (req, res) => {
 
 // Set the ChatGPT model
 router.post("/openai/model", async (req, res) => {
-  const model: string = req.body?.model;
+  const model: CHAT_MODELS = req.body?.model;
   if (model) {
     if (await setGptModel(req.session, model)) {
       res.status(200).send("ChatGPT model set. ");
