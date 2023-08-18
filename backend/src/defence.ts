@@ -113,7 +113,8 @@ const getRandomSequenceEnclosureLength = (defences: DefenceInfo[]): string => {
 
 const getSystemRole = (
   defences: DefenceInfo[],
-  currentPhase: number
+  // by default, use sandbox
+  currentPhase: number = 3
 ): string => {
   switch (currentPhase) {
     case 0:
