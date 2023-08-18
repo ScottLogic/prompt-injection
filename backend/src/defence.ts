@@ -242,7 +242,7 @@ async function detectTriggeredDefences(
 ) {
   // keep track of any triggered defences
   const defenceReport: ChatDefenceReport = {
-    blockedReason: "",
+    blockedReason: null,
     isBlocked: false,
     triggeredDefences: [],
   };

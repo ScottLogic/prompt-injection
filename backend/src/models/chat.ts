@@ -19,7 +19,7 @@ enum CHAT_MESSAGE_TYPE {
 }
 
 interface ChatDefenceReport {
-  blockedReason: string;
+  blockedReason: string | null;
   isBlocked: boolean;
   triggeredDefences: string[];
 }

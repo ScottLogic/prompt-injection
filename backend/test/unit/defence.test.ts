@@ -1,32 +1,31 @@
 import {
   activateDefence,
-  deactivateDefence,
   configureDefence,
+  deactivateDefence,
+  detectTriggeredDefences,
+  getInitialDefences,
   getSystemRole,
   isDefenceActive,
   transformMessage,
-  detectTriggeredDefences,
-  getInitialDefences,
 } from "../../src/defence";
-import { DefenceConfig, DefenceInfo } from "../../src/models/defence";
 
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {
   const defence = "SYSTEM_ROLE";
-  const defences: DefenceInfo[] = getInitialDefences();
+  const defences = getInitialDefences();
   const updatedActiveDefences = activateDefence(defence, defences);
-  expect(updatedActiveDefences).toContainEqual({ id: defence, isActive: true });
+  expect(isDefenceActive(defence, updatedActiveDefences)).toBe(true);
 });
 
 test("GIVEN defence is active WHEN activating defence THEN defence is active", () => {
   const defence = "SYSTEM_ROLE";
-  const defences: DefenceInfo[] = getInitialDefences();
+  const defences = getInitialDefences();
   const updatedActiveDefences = activateDefence(defence, defences);
-  expect(updatedActiveDefences).toContainEqual({ id: defence, isActive: true });
+  expect(isDefenceActive(defence, updatedActiveDefences)).toBe(true);
 });
 
 test("GIVEN defence is active WHEN deactivating defence THEN defence is not active", () => {
   const defence = "SYSTEM_ROLE";
-  const defences: DefenceInfo[] = getInitialDefences();
+  const defences = getInitialDefences();
   activateDefence(defence, defences);
   const updatedActiveDefences = deactivateDefence(defence, defences);
   expect(updatedActiveDefences).not.toContain(defence);
@@ -42,8 +41,8 @@ test("GIVEN defence is not active WHEN deactivating defence THEN defence is not 
 test("GIVEN defence is active WHEN checking if defence is active THEN return true", () => {
   const defence = "SYSTEM_ROLE";
   const defences = getInitialDefences();
-  activateDefence(defence, defences);
-  const isActive = isDefenceActive(defence, defences);
+  const updatedDefences = activateDefence(defence, defences);
+  const isActive = isDefenceActive(defence, updatedDefences);
   expect(isActive).toBe(true);
 });
 
@@ -56,7 +55,7 @@ test("GIVEN defence is not active WHEN checking if defence is active THEN return
 
 test("GIVEN no defences are active WHEN transforming message THEN message is not transformed", () => {
   const message = "Hello";
-  const defences: DefenceInfo[] = [];
+  const defences = getInitialDefences();
   const transformedMessage = transformMessage(message, defences);
   expect(transformedMessage).toBe(message);
 });
@@ -103,15 +102,15 @@ test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
   const message = "Hello";
   const defences = getInitialDefences();
   // activate XML_TAGGING defence
-  activateDefence("XML_TAGGING", defences);
-  const transformedMessage = transformMessage(message, defences);
+  const updatedDefences = activateDefence("XML_TAGGING", defences);
+  const transformedMessage = transformMessage(message, updatedDefences);
   // expect the message to be surrounded by XML tags
   expect(transformedMessage).toBe("<user_input>" + message + "</user_input>");
 });
 
 test("GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered", async () => {
   const message = "Hello";
-  const defences: DefenceInfo[] = [];
+  const defences = getInitialDefences();
   const defenceReport = await detectTriggeredDefences(message, defences, false);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
@@ -124,11 +123,11 @@ test(
     "THEN CHARACTER_LIMIT defence is triggered AND the message is blocked",
   async () => {
     const message = "Hello";
-    const defences = getInitialDefences();
+    let defences = getInitialDefences();
     // activate CHARACTER_LIMIT defence
-    activateDefence("CHARACTER_LIMIT", defences);
+    defences = activateDefence("CHARACTER_LIMIT", defences);
     // configure CHARACTER_LIMIT defence
-    configureDefence("CHARACTER_LIMIT", defences, [
+    defences = configureDefence("CHARACTER_LIMIT", defences, [
       {
         id: "maxMessageLength",
         value: String(3),
@@ -178,9 +177,9 @@ test(
     "THEN CHARACTER_LIMIT defence is triggered AND the message is not blocked",
   async () => {
     const message = "Hello";
-    const defences = getInitialDefences();
+    let defences = getInitialDefences();
     // configure CHARACTER_LIMIT defence
-    configureDefence("CHARACTER_LIMIT", defences, [
+    defences = configureDefence("CHARACTER_LIMIT", defences, [
       {
         id: "maxMessageLength",
         value: String(3),
@@ -199,7 +198,7 @@ test(
 
 test("GIVEN message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is triggered", async () => {
   const message = "<Hello>";
-  const defences: DefenceInfo[] = [];
+  const defences = getInitialDefences();
   const defenceReport = await detectTriggeredDefences(message, defences, false);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
@@ -208,23 +207,27 @@ test("GIVEN message contains XML tags WHEN detecting triggered defences THEN XML
 
 test("GIVEN setting max message length WHEN configuring defence THEN defence is configured", () => {
   const defence = "CHARACTER_LIMIT";
-  const defences = getInitialDefences();
+  let defences = getInitialDefences();
   // configure CHARACTER_LIMIT defence
-  configureDefence(defence, defences, [
+  defences = configureDefence(defence, defences, [
     {
       id: "maxMessageLength",
       value: String(20),
     },
   ]);
-  const config: DefenceConfig[] = [
-    { id: "maxMessageLength", value: String(10) },
-  ];
-  const updatedDefences = configureDefence(defence, defences, config);
-  expect(updatedDefences).toContainEqual({
-    id: defence,
-    isActive: true,
-    config: config,
-  });
+  const config = [{ id: "maxMessageLength", value: String(10) }];
+  defences = configureDefence(defence, defences, config);
+  const matchingDefence = defences.find((d) => d.id === defence);
+  expect(matchingDefence).toBeTruthy();
+  if (matchingDefence) {
+    const matchingDefenceConfig = matchingDefence.config.find(
+      (c) => c.id === config[0].id
+    );
+    expect(matchingDefenceConfig).toBeTruthy();
+    if (matchingDefenceConfig) {
+      expect(matchingDefenceConfig.value).toBe(config[0].value);
+    }
+  }
 });
 
 test("GIVEN system role has not been configured WHEN getting system role THEN return empty string", () => {
@@ -262,33 +265,51 @@ test("GIVEN setting email whitelist WHEN configuring defence THEN defence is con
       value: "someone@example.com,someone_else@example.com",
     },
   ]);
-  const config: DefenceConfig[] = [
+  const config = [
     { id: "whitelist", value: "someone@example.com,someone_else@example.com" },
   ];
   const updatedDefences = configureDefence(defence, defences, config);
-  expect(updatedDefences).toContainEqual({
-    id: defence,
-    isActive: true,
-    config: config,
-  });
+  const matchingDefence = updatedDefences.find((d) => d.id === defence);
+  expect(matchingDefence).toBeTruthy();
+  if (matchingDefence) {
+    const matchingDefenceConfig = matchingDefence.config.find(
+      (c) => c.id === config[0].id
+    );
+    expect(matchingDefenceConfig).toBeTruthy();
+    if (matchingDefenceConfig) {
+      expect(matchingDefenceConfig.value).toBe(config[0].value);
+    }
+  }
 });
 
 test("GIVEN user configures random sequence enclosure WHEN configuring defence THEN defence is configured", () => {
+  const defence = "RANDOM_SEQUENCE_ENCLOSURE";
   let defences = getInitialDefences();
   const newPrePrompt = "new pre prompt";
   const newLength = String(100);
-  // configure RSE length
-  defences = configureDefence("RANDOM_SEQUENCE_ENCLOSURE", defences, [
+  const config = [
     { id: "length", value: newLength },
     { id: "prePrompt", value: newPrePrompt },
-  ]);
+  ];
+  // configure RSE length
+  defences = configureDefence(defence, defences, config);
   // expect the RSE length to be updated
-  expect(defences).toContainEqual({
-    id: "RANDOM_SEQUENCE_ENCLOSURE",
-    isActive: false,
-    config: [
-      { id: "length", value: newLength },
-      { id: "prePrompt", value: newPrePrompt },
-    ],
-  });
+  const matchingDefence = defences.find((d) => d.id === defence);
+  expect(matchingDefence).toBeTruthy();
+  if (matchingDefence) {
+    let matchingDefenceConfig = matchingDefence.config.find(
+      (c) => c.id === config[0].id
+    );
+    expect(matchingDefenceConfig).toBeTruthy();
+    if (matchingDefenceConfig) {
+      expect(matchingDefenceConfig.value).toBe(config[0].value);
+    }
+    matchingDefenceConfig = matchingDefence.config.find(
+      (c) => c.id === config[1].id
+    );
+    expect(matchingDefenceConfig).toBeTruthy();
+    if (matchingDefenceConfig) {
+      expect(matchingDefenceConfig.value).toBe(config[1].value);
+    }
+  }
 });
