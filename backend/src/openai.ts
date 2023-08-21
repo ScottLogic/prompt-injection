@@ -235,11 +235,19 @@ const chatGptChatCompletion = async (
   // check if we need to set a system role
   // system role is always active on phases
   if (currentPhase <= 2 || isDefenceActive("SYSTEM_ROLE", defences)) {
-    // add the system role to the start of the chat history
-    chatHistory.unshift({
-      role: "system",
-      content: getSystemRole(defences, currentPhase),
-    });
+    // check to see if there's already a system role
+    if (!chatHistory.find((message) => message.role === "system")) {
+      // add the system role to the start of the chat history
+      chatHistory.unshift({
+        role: "system",
+        content: getSystemRole(defences, currentPhase),
+      });
+    }
+  } else {
+    // remove the system role from the chat history
+    while (chatHistory.length > 0 && chatHistory[0].role === "system") {
+      chatHistory.shift();
+    }
   }
 
   // make sure openai has been initialised
