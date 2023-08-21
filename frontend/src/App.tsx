@@ -20,7 +20,6 @@ import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
 
 function App() {
-  const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [defencesToShow, setDefencesToShow] =
@@ -34,9 +33,6 @@ function App() {
   const updateTriggeredDefences = (defenceDetails: string[]) => {
     // set the new triggered defences
     setTriggeredDefences(defenceDetails);
-    // update the key of the defence box to force a re-render
-    setDefenceBoxKey(defenceBoxKey + 1);
-
     // add a message to the chat
     defenceDetails.forEach((defence) => {
       defenceTriggered(defence);
@@ -134,7 +130,6 @@ function App() {
         {/* hide defence box on phases 0 and 1 */}
         {currentPhase >= 2 && (
           <DefenceBox
-            key={defenceBoxKey}
             defences={defencesToShow}
             triggeredDefences={triggeredDefences}
             defenceActivated={defenceActivated}
