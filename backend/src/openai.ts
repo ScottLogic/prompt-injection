@@ -7,7 +7,7 @@ import {
   initPromptEvaluationModel,
   queryDocuments,
 } from "./langchain";
-import { EmailResponse } from "./models/email";
+import { EmailInfo, EmailResponse } from "./models/email";
 import {
   ChatCompletionRequestMessage,
   ChatCompletionRequestMessageFunctionCall,
@@ -146,10 +146,11 @@ const isChatGptFunction = (functionName: string) => {
 };
 
 const chatGptCallFunction = async (
-  functionCall: ChatCompletionRequestMessageFunctionCall,
   defenceInfo: ChatDefenceReport,
-  currentPhase: number,
-  session: Session
+  defences: DefenceInfo[],
+  functionCall: ChatCompletionRequestMessageFunctionCall,
+  sentEmails: EmailInfo[],
+  currentPhase: number
 ): Promise<ChatResponse | null> => {
   let reply: ChatCompletionRequestMessage | null = null;
   let wonPhase: boolean = false;
@@ -168,12 +169,12 @@ const chatGptCallFunction = async (
     // call the function
     if (functionName === "sendEmail") {
       let isAllowedToSendEmail = false;
-      if (isEmailInWhitelist(params.address, session.defences)) {
+      if (isEmailInWhitelist(params.address, defences)) {
         isAllowedToSendEmail = true;
       } else {
         // trigger email defence even if it is not active
         defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
-        if (isDefenceActive("EMAIL_WHITELIST", session.defences)) {
+        if (isDefenceActive("EMAIL_WHITELIST", defences)) {
           // do not send email if defence is on and set to blocked
           defenceInfo.isBlocked = true;
           defenceInfo.blockedReason =
@@ -194,10 +195,10 @@ const chatGptCallFunction = async (
         response = emailResponse.response;
         wonPhase = emailResponse.wonPhase;
         // add the sent email to the session
-        session.sentEmails.push(emailResponse.sentEmail);
+        sentEmails.push(emailResponse.sentEmail);
       }
     } else if (functionName == "getEmailWhitelist") {
-      response = getEmailWhitelist(session.defences);
+      response = getEmailWhitelist(defences);
     }
     if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
@@ -205,7 +206,6 @@ const chatGptCallFunction = async (
       response = (await queryDocuments(params.question)).reply;
     }
 
-    // add function call to chat
     reply = {
       role: "function",
       content: response,
@@ -215,7 +215,7 @@ const chatGptCallFunction = async (
     console.error("Unknown function: " + functionName);
   }
 
-  if (reply && reply.content) {
+  if (reply) {
     return {
       completion: reply,
       defenceInfo: defenceInfo,
@@ -262,8 +262,11 @@ const chatGptChatCompletion = async (
 };
 
 const chatGptSendMessage = async (
+  chatHistory: ChatCompletionRequestMessage[],
+  defences: DefenceInfo[],
+  gptModel: CHAT_MODELS,
   message: string,
-  session: Session,
+  sentEmails: EmailInfo[],
   // default to sandbox
   currentPhase: number = 3
 ): Promise<ChatResponse | null> => {
@@ -276,30 +279,31 @@ const chatGptSendMessage = async (
   let wonPhase: boolean | undefined | null = false;
 
   // add user message to chat
-  session.chatHistory.push({ role: "user", content: message });
+  chatHistory.push({ role: "user", content: message });
 
   let reply = await chatGptChatCompletion(
-    session.chatHistory,
-    session.defences,
-    session.gptModel,
+    chatHistory,
+    defences,
+    gptModel,
     currentPhase
   );
   // check if GPT wanted to call a function
   while (reply && reply.function_call) {
-    session.chatHistory.push(reply);
+    chatHistory.push(reply);
 
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
-      reply.function_call,
       defenceInfo,
-      currentPhase,
-      session
+      defences,
+      reply.function_call,
+      sentEmails,
+      currentPhase
     );
     if (functionCallReply) {
       wonPhase = functionCallReply.wonPhase;
       // add the function call to the chat history
       if (functionCallReply.completion !== undefined) {
-        session.chatHistory.push(functionCallReply.completion);
+        chatHistory.push(functionCallReply.completion);
       }
       // update the defence info
       defenceInfo = functionCallReply.defenceInfo;
@@ -307,18 +311,18 @@ const chatGptSendMessage = async (
 
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion(
-      session.chatHistory,
-      session.defences,
-      session.gptModel,
+      chatHistory,
+      defences,
+      gptModel,
       currentPhase
     );
   }
 
   if (reply && reply.content) {
     // add the ai reply to the chat history
-    session.chatHistory.push(reply);
+    chatHistory.push(reply);
     // log the entire chat history so far
-    console.log(session.chatHistory);
+    console.log(chatHistory);
     return {
       completion: reply,
       defenceInfo: defenceInfo,

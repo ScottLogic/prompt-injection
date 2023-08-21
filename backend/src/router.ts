@@ -150,8 +150,11 @@ router.post("/openai/chat", async (req, res) => {
       // get the chatGPT reply
       try {
         const openAiReply = await chatGptSendMessage(
+          req.session.chatHistory,
+          req.session.defences,
+          req.session.gptModel,
           chatResponse.transformedMessage,
-          req.session,
+          req.session.sentEmails,
           currentPhase
         );
 
