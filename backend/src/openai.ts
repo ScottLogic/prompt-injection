@@ -11,11 +11,10 @@ import { EmailInfo, EmailResponse } from "./models/email";
 import {
   ChatCompletionRequestMessage,
   ChatCompletionRequestMessageFunctionCall,
-  ChatCompletionResponseMessage,
   Configuration,
   OpenAIApi,
 } from "openai";
-import { CHAT_MODELS, ChatDefenceReport, ChatResponse } from "./models/chat";
+import { CHAT_MODELS, ChatDefenceReport } from "./models/chat";
 import { DefenceInfo } from "./models/defence";
 import { PHASE_NAMES } from "./models/phase";
 
@@ -73,10 +72,7 @@ const chatGptFunctions = [
 ];
 
 // test the api key works with the model
-const validateApiKey = async (
-  apiKey: string,
-  gptModel: string
-): Promise<boolean> => {
+async function validateApiKey(apiKey: string, gptModel: string) {
   try {
     const testOpenAI: OpenAIApi = new OpenAIApi(
       new Configuration({ apiKey: apiKey })
@@ -90,15 +86,15 @@ const validateApiKey = async (
     console.debug("Error validating API key: " + error);
     return false;
   }
-};
+}
 
-const setOpenAiApiKey = async (
+async function setOpenAiApiKey(
   apiKey: string,
   gptModel: string,
   prePrompt: string,
   // default to sandbox mode
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
-): Promise<boolean> => {
+) {
   // initialise all models with the new key
   if (await validateApiKey(apiKey, gptModel)) {
     console.debug("Setting API key and initialising models");
@@ -112,20 +108,17 @@ const setOpenAiApiKey = async (
     openai = null;
     return false;
   }
-};
+}
 
-const initOpenAi = (openAiApiKey: string): void => {
+function initOpenAi(openAiApiKey: string) {
   config = new Configuration({
     apiKey: openAiApiKey,
   });
   openai = new OpenAIApi(config);
   console.debug("OpenAI initialised");
-};
+}
 
-const setGptModel = async (
-  session: Session,
-  model: CHAT_MODELS
-): Promise<boolean> => {
+async function setGptModel(session: Session, model: CHAT_MODELS) {
   if (model !== session.gptModel) {
     if (await validateApiKey(session.apiKey, model)) {
       console.debug(
@@ -139,21 +132,21 @@ const setGptModel = async (
     }
   }
   return false;
-};
+}
 
 // returns true if the function is in the list of functions available to ChatGPT
-const isChatGptFunction = (functionName: string) => {
+function isChatGptFunction(functionName: string) {
   return chatGptFunctions.find((func) => func.name === functionName);
-};
+}
 
-const chatGptCallFunction = async (
+async function chatGptCallFunction(
   defenceInfo: ChatDefenceReport,
   defences: DefenceInfo[],
   functionCall: ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
-): Promise<ChatResponse | null> => {
+) {
   let reply: ChatCompletionRequestMessage | null = null;
   let wonPhase: boolean = false;
   // get the function name
@@ -226,15 +219,21 @@ const chatGptCallFunction = async (
   } else {
     return null;
   }
-};
+}
 
-const chatGptChatCompletion = async (
+async function chatGptChatCompletion(
   chatHistory: ChatCompletionRequestMessage[],
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
-): Promise<ChatCompletionResponseMessage | null> => {
+) {
+  // make sure openai is initialised
+  if (!openai) {
+    console.error("OpenAI not initialised");
+    return null;
+  }
+
   // check if we need to set a system role
   // system role is always active on phases
   if (
@@ -256,15 +255,6 @@ const chatGptChatCompletion = async (
     }
   }
 
-  // make sure openai has been initialised
-  if (!openai) {
-    console.debug("OpenAI not initialised with api key");
-    return {
-      role: "assistant",
-      content: "Please enter a valid OpenAI API key to chat to me!",
-    };
-  }
-
   const chat_completion = await openai.createChatCompletion({
     model: gptModel,
     messages: chatHistory,
@@ -273,9 +263,9 @@ const chatGptChatCompletion = async (
 
   // get the reply
   return chat_completion.data.choices[0].message || null;
-};
+}
 
-const chatGptSendMessage = async (
+async function chatGptSendMessage(
   chatHistory: ChatCompletionRequestMessage[],
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
@@ -283,7 +273,7 @@ const chatGptSendMessage = async (
   sentEmails: EmailInfo[],
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
-): Promise<ChatResponse | null> => {
+) {
   // init defence info
   let defenceInfo: ChatDefenceReport = {
     blockedReason: "",
@@ -345,7 +335,7 @@ const chatGptSendMessage = async (
   } else {
     return null;
   }
-};
+}
 
 export {
   initOpenAi,

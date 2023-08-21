@@ -1,16 +1,16 @@
 import { DefenceInfo } from "./models/defence";
-import { EmailInfo, EmailResponse } from "./models/email";
+import { EmailInfo } from "./models/email";
 import { getEmailWhitelistVar, isDefenceActive } from "./defence";
 import { PHASE_NAMES } from "./models/phase";
 
 // return the whitelist variable
-const getEmailWhitelistValues = (defences: DefenceInfo[]): string[] => {
+function getEmailWhitelistValues(defences: DefenceInfo[]) {
   const emailWhitelist = getEmailWhitelistVar(defences);
   return emailWhitelist.split(",").map((c: string) => c.trim());
-};
+}
 
 // if defense active return the whitelist of emails and domains
-const getEmailWhitelist = (defences: DefenceInfo[]): string => {
+function getEmailWhitelist(defences: DefenceInfo[]) {
   if (!isDefenceActive("EMAIL_WHITELIST", defences)) {
     return "As the email whitelist defence is not active, any email address can be emailed.";
   } else {
@@ -19,13 +19,10 @@ const getEmailWhitelist = (defences: DefenceInfo[]): string => {
       getEmailWhitelistValues(defences)
     );
   }
-};
+}
 
 // check if email is in whitelist
-const isEmailInWhitelist = (
-  emailAddress: string,
-  defences: DefenceInfo[]
-): boolean => {
+function isEmailInWhitelist(emailAddress: string, defences: DefenceInfo[]) {
   // get the domain from email
   const emailAddressDomain = emailAddress.split("@")[1];
   const emailWhitelist = getEmailWhitelistValues(defences);
@@ -43,15 +40,15 @@ const isEmailInWhitelist = (
   }
   // otherwise check if their full email is whitelisted
   return emailWhitelist.includes(emailAddress);
-};
+}
 
-const sendEmail = (
+function sendEmail(
   address: string,
   subject: string,
   body: string,
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
-): EmailResponse => {
+) {
   // add to the list of sent emails
   const email: EmailInfo = {
     address: address,
@@ -69,7 +66,7 @@ const sendEmail = (
   const wonPhase: boolean = checkPhaseWinCondition(email, currentPhase);
 
   return { response: response, sentEmail: email, wonPhase: wonPhase };
-};
+}
 
 function checkSubjectAndBodyContains(
   subject: string,

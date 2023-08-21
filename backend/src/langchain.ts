@@ -11,7 +11,7 @@ import { PromptTemplate } from "langchain/prompts";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 
-import { CHAT_MODELS, ChatAnswer, ChatMalicious } from "./models/chat";
+import { CHAT_MODELS, ChatAnswer } from "./models/chat";
 import {
   maliciousPromptTemplate,
   promptInjectionEvalTemplate,
@@ -26,9 +26,7 @@ let qaChain: RetrievalQAChain | null = null;
 // chain we use in prompt evaluation request
 let promptEvaluationChain: SequentialChain | null = null;
 
-const getFilepath = (
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
-): string => {
+function getFilepath(currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX) {
   let filePath = "resources/documents/";
   switch (currentPhase) {
     case PHASE_NAMES.PHASE_0:
@@ -40,10 +38,10 @@ const getFilepath = (
     default:
       return (filePath += "common/");
   }
-};
+}
 
 // load the documents from filesystem
-const getDocuments = async (filePath: string): Promise<Document[]> => {
+async function getDocuments(filePath: string) {
   console.debug("Loading documents from: " + filePath);
 
   const loader: DirectoryLoader = new DirectoryLoader(filePath, {
@@ -60,7 +58,7 @@ const getDocuments = async (filePath: string): Promise<Document[]> => {
   });
   const splitDocs = await textSplitter.splitDocuments(docs);
   return splitDocs;
-};
+}
 
 // join the configurable preprompt to the context template
 function getQAPromptTemplate(prePrompt: string) {
@@ -108,7 +106,7 @@ async function initQAModel(
 }
 
 // initialise the prompt evaluation model
-const initPromptEvaluationModel = async (apiKey: string): Promise<void> => {
+function initPromptEvaluationModel(apiKey: string) {
   if (!apiKey) {
     console.debug("No apiKey set to initialise prompt evaluation model");
     return;
@@ -149,10 +147,10 @@ const initPromptEvaluationModel = async (apiKey: string): Promise<void> => {
     outputVariables: ["promptInjectionEval", "maliciousInputEval"],
   });
   console.debug("Prompt evaluation chain initialised");
-};
+}
 
 // ask the question and return models answer
-const queryDocuments = async (question: string): Promise<ChatAnswer> => {
+async function queryDocuments(question: string) {
   if (!qaChain) {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
@@ -166,12 +164,10 @@ const queryDocuments = async (question: string): Promise<ChatAnswer> => {
     questionAnswered: true,
   };
   return result;
-};
+}
 
 // ask LLM whether the prompt is malicious
-const queryPromptEvaluationModel = async (
-  input: string
-): Promise<ChatMalicious> => {
+async function queryPromptEvaluationModel(input: string) {
   if (!promptEvaluationChain) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };
@@ -205,10 +201,10 @@ const queryPromptEvaluationModel = async (
     return { isMalicious: true, reason: maliciousInputEval.reason };
   }
   return { isMalicious: false, reason: "" };
-};
+}
 
 // format the evaluation model output. text should be a Yes or No answer followed by a reason
-const formatEvaluationOutput = (response: string) => {
+function formatEvaluationOutput(response: string) {
   try {
     // split response on first full stop or comma
     const splitResponse = response.split(/\.|,/);
@@ -227,7 +223,7 @@ const formatEvaluationOutput = (response: string) => {
     );
     return { isMalicious: false, reason: "" };
   }
-};
+}
 
 export {
   initQAModel,
