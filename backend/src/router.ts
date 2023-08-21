@@ -7,6 +7,7 @@ import {
   transformMessage,
   detectTriggeredDefences,
   getQALLMprePrompt,
+  getInitialDefences,
 } from "./defence";
 import { initQAModel } from "./langchain";
 import { CHAT_MODELS, ChatHttpResponse } from "./models/chat";
@@ -79,6 +80,13 @@ router.post("/defence/configure", (req, res) => {
     res.statusCode = 400;
     res.send("Missing defenceId or config");
   }
+});
+
+// reset the active defences
+router.post("/defence/reset", (req, res) => {
+  req.session.defences = getInitialDefences();
+  console.debug("Defences reset");
+  res.send("Defences reset");
 });
 
 // Get the status of all defences
@@ -189,6 +197,7 @@ router.post("/openai/chat", async (req, res) => {
     console.log("Win conditon met for phase: ", currentPhase);
     numPhasesCompleted = currentPhase + 1;
     req.session.numPhasesCompleted = numPhasesCompleted;
+    chatResponse.numPhasesCompleted = numPhasesCompleted;
   }
   // log and send the reply with defence info
   console.log(chatResponse);

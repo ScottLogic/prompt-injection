@@ -14,6 +14,7 @@ import { DefenceInfo } from "./models/defence";
 import { getCompletedPhases } from "./service/phaseService";
 import { clearEmails } from "./service/emailService";
 import { clearChat } from "./service/chatService";
+import { resetActiveDefences } from "./service/defenceService";
 import { PHASES } from "./Phases";
 import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
@@ -86,6 +87,8 @@ function App() {
     // clear frontend messages
     setMessages([]);
     setCurrentPhase(newPhase);
+
+    resetActiveDefences();
 
     // add the preamble to the chat
     const preambleMessage = PHASES[newPhase].preamble;
