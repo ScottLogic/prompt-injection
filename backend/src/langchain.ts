@@ -226,7 +226,6 @@ const formatEvaluationOutput = (response: string) => {
 };
 
 export {
-  getDocuments,
   initQAModel,
   initPromptEvaluationModel,
   queryDocuments,
