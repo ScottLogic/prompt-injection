@@ -1,4 +1,4 @@
-import { Phase } from "../../models/phase";
+import { Phase, PHASE_NAMES } from "../../models/phase";
 import { PHASES } from "../../Phases";
 
 import "./PhaseSelectionBox.css";
@@ -10,7 +10,7 @@ function PhaseSelectionBox(
     numCompletedPhases,
     setNewPhase,
   }: {
-    currentPhase: number;
+    currentPhase: PHASE_NAMES;
     numCompletedPhases: number;
     setNewPhase: (newPhase: number) => void;
   }
@@ -35,7 +35,9 @@ function PhaseSelectionBox(
               }`}
               key={phase.name}
               onClick={() => handlePhaseChange(index)}
-              disabled={index !== numCompletedPhases && index !== 3}
+              disabled={
+                index !== numCompletedPhases && index !== PHASE_NAMES.SANDBOX
+              }
             >
               {phase.name}
             </button>

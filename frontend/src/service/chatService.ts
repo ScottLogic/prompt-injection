@@ -1,5 +1,6 @@
 import { sendRequest } from "./backendService";
 import { CHAT_MODELS, ChatResponse } from "../models/chat";
+import { PHASE_NAMES } from "../models/phase";
 
 const PATH = "openai/";
 
@@ -10,7 +11,7 @@ const clearChat = async (): Promise<boolean> => {
 
 const sendMessage = async (
   message: string,
-  currentPhase: number
+  currentPhase: PHASE_NAMES
 ): Promise<ChatResponse> => {
   const response = await sendRequest(
     PATH + "chat",
