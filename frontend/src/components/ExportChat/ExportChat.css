@@ -1,0 +1,24 @@
+#export-pdf-area {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.export-chat-box {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 65%;
+        overflow-y: auto;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+.export-email-box {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 35%;
+        overflow-y: auto;
+        margin-left: 10px;
+    }

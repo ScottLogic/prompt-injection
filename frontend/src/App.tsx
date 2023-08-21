@@ -18,6 +18,7 @@ import { resetActiveDefences } from "./service/defenceService";
 import { PHASES } from "./Phases";
 import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
+import ExportPDF from "./components/ExportChat/ExportPDF";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
@@ -168,6 +169,7 @@ function App() {
         />
         <EmailBox emails={emails} />
       </div>
+      <ExportPDF messages={messages} emails={emails} />
     </span>
   );
 }
