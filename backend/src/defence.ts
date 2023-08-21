@@ -1,6 +1,7 @@
 import { queryPromptEvaluationModel } from "./langchain";
 import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
+import { PHASE_NAMES } from "./models/phase";
 import { retrievalQAPrePromptSecure } from "./promptTemplates";
 
 const getInitialDefences = (): DefenceInfo[] => {
@@ -114,14 +115,14 @@ const getRandomSequenceEnclosureLength = (defences: DefenceInfo[]): string => {
 const getSystemRole = (
   defences: DefenceInfo[],
   // by default, use sandbox
-  currentPhase: number = 3
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ): string => {
   switch (currentPhase) {
-    case 0:
+    case PHASE_NAMES.PHASE_0:
       return process.env.SYSTEM_ROLE_PHASE_0 || "";
-    case 1:
+    case PHASE_NAMES.PHASE_1:
       return process.env.SYSTEM_ROLE_PHASE_1 || "";
-    case 2:
+    case PHASE_NAMES.PHASE_2:
       return process.env.SYSTEM_ROLE_PHASE_2 || "";
     default:
       return getConfigValue(defences, "SYSTEM_ROLE", "systemRole", "");

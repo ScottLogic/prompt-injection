@@ -17,6 +17,7 @@ import {
 } from "openai";
 import { CHAT_MODELS, ChatDefenceReport, ChatResponse } from "./models/chat";
 import { DefenceInfo } from "./models/defence";
+import { PHASE_NAMES } from "./models/phase";
 
 // OpenAI config
 let config: Configuration | null = null;
@@ -96,13 +97,13 @@ const setOpenAiApiKey = async (
   gptModel: string,
   prePrompt: string,
   // default to sandbox mode
-  currentPhase: number = 3
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ): Promise<boolean> => {
   // initialise all models with the new key
   if (await validateApiKey(apiKey, gptModel)) {
     console.debug("Setting API key and initialising models");
     initOpenAi(apiKey);
-    initQAModel(apiKey, currentPhase, prePrompt);
+    initQAModel(apiKey, prePrompt, currentPhase);
     initPromptEvaluationModel(apiKey);
     return true;
   } else {
@@ -150,7 +151,8 @@ const chatGptCallFunction = async (
   defences: DefenceInfo[],
   functionCall: ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
-  currentPhase: number
+  // default to sandbox
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ): Promise<ChatResponse | null> => {
   let reply: ChatCompletionRequestMessage | null = null;
   let wonPhase: boolean = false;
@@ -230,11 +232,15 @@ const chatGptChatCompletion = async (
   chatHistory: ChatCompletionRequestMessage[],
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
-  currentPhase: number
+  // default to sandbox
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ): Promise<ChatCompletionResponseMessage | null> => {
   // check if we need to set a system role
   // system role is always active on phases
-  if (currentPhase <= 2 || isDefenceActive("SYSTEM_ROLE", defences)) {
+  if (
+    currentPhase !== PHASE_NAMES.SANDBOX ||
+    isDefenceActive("SYSTEM_ROLE", defences)
+  ) {
     // check to see if there's already a system role
     if (!chatHistory.find((message) => message.role === "system")) {
       // add the system role to the start of the chat history
@@ -276,7 +282,7 @@ const chatGptSendMessage = async (
   message: string,
   sentEmails: EmailInfo[],
   // default to sandbox
-  currentPhase: number = 3
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ): Promise<ChatResponse | null> => {
   // init defence info
   let defenceInfo: ChatDefenceReport = {

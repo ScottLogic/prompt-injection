@@ -13,11 +13,12 @@ import { CHAT_MODELS, ChatHttpResponse } from "./models/chat";
 import { DefenceConfig } from "./models/defence";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
 import { retrievalQAPrePrompt } from "./promptTemplates";
+import { PHASE_NAMES } from "./models/phase";
 
 const router = express.Router();
 
 // keep track of phase change to reinitialize models
-let prevPhase = 3;
+let prevPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX;
 
 // Activate a defence
 router.post("/defence/activate", (req, res) => {
@@ -32,11 +33,7 @@ router.post("/defence/activate", (req, res) => {
       console.debug(
         "Activating qa llm instruction defence - reinitializing qa model"
       );
-      initQAModel(
-        req.session.apiKey,
-        3,
-        getQALLMprePrompt(req.session.defences)
-      );
+      initQAModel(req.session.apiKey, getQALLMprePrompt(req.session.defences));
     }
 
     res.send("Defence activated");
@@ -56,11 +53,7 @@ router.post("/defence/deactivate", (req, res) => {
 
     if (defenceId === "QA_LLM_INSTRUCTIONS") {
       console.debug("Resetting QA model with default prompt");
-      initQAModel(
-        req.session.apiKey,
-        3,
-        getQALLMprePrompt(req.session.defences)
-      );
+      initQAModel(req.session.apiKey, getQALLMprePrompt(req.session.defences));
     }
     res.send("Defence deactivated");
   } else {
@@ -121,19 +114,21 @@ router.post("/openai/chat", async (req, res) => {
 
   // parse out the message
   const message: string = req.body?.message;
-  const currentPhase = req.body?.currentPhase;
+  const currentPhase: PHASE_NAMES = req.body?.currentPhase;
   let numPhasesCompleted = req.session.numPhasesCompleted;
 
   // if phase has changed, reinitialize the QA model with with new filepath
   if (prevPhase != currentPhase) {
     prevPhase = currentPhase;
-    initQAModel(req.session.apiKey, currentPhase, retrievalQAPrePrompt);
+    initQAModel(req.session.apiKey, retrievalQAPrePrompt, currentPhase);
   }
 
   if (message) {
     chatResponse.transformedMessage = message;
     // see if this message triggers any defences
-    const useLlmEvaluation = currentPhase >= 2;
+    const useLlmEvaluation =
+      currentPhase === PHASE_NAMES.PHASE_2 ||
+      currentPhase === PHASE_NAMES.SANDBOX;
     chatResponse.defenceInfo = await detectTriggeredDefences(
       message,
       req.session.defences,

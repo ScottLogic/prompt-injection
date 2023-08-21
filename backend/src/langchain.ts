@@ -18,6 +18,7 @@ import {
   qAcontextTemplate,
   retrievalQAPrePrompt,
 } from "./promptTemplates";
+import { PHASE_NAMES } from "./models/phase";
 
 // chain we use in question/answer request
 let qaChain: RetrievalQAChain | null = null;
@@ -25,14 +26,16 @@ let qaChain: RetrievalQAChain | null = null;
 // chain we use in prompt evaluation request
 let promptEvaluationChain: SequentialChain | null = null;
 
-const getFilepath = (currentPhase: number): string => {
+const getFilepath = (
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+): string => {
   let filePath = "resources/documents/";
   switch (currentPhase) {
-    case 0:
+    case PHASE_NAMES.PHASE_0:
       return (filePath += "phase_0/");
-    case 1:
+    case PHASE_NAMES.PHASE_1:
       return (filePath += "phase_1/");
-    case 2:
+    case PHASE_NAMES.PHASE_2:
       return (filePath += "phase_2/");
     default:
       return (filePath += "common/");
@@ -71,8 +74,9 @@ function getQAPromptTemplate(prePrompt: string) {
 // QA Chain - ask the chat model a question about the documents
 async function initQAModel(
   apiKey: string,
-  currentPhase: number,
-  prePrompt: string
+  prePrompt: string,
+  // default to sandbox
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ) {
   if (!apiKey) {
     console.debug("No apiKey set to initialise QA model");

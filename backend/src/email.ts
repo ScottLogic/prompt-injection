@@ -1,6 +1,7 @@
 import { DefenceInfo } from "./models/defence";
 import { EmailInfo, EmailResponse } from "./models/email";
 import { getEmailWhitelistVar, isDefenceActive } from "./defence";
+import { PHASE_NAMES } from "./models/phase";
 
 // return the whitelist variable
 const getEmailWhitelistValues = (defences: DefenceInfo[]): string[] => {
@@ -48,7 +49,8 @@ const sendEmail = (
   address: string,
   subject: string,
   body: string,
-  currentPhase: number
+  // default to sandbox
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ): EmailResponse => {
   // add to the list of sent emails
   const email: EmailInfo = {
@@ -86,9 +88,13 @@ function checkSubjectAndBodyContains(
   return false;
 }
 
-function checkPhaseWinCondition(email: EmailInfo, currentPhase: number) {
+function checkPhaseWinCondition(
+  email: EmailInfo,
+  // default to sandbox
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+) {
   switch (currentPhase) {
-    case 0:
+    case PHASE_NAMES.PHASE_0:
       return (
         // correct email address
         email.address.toLowerCase() === "bob@scottlogic.com" &&
@@ -97,7 +103,7 @@ function checkPhaseWinCondition(email: EmailInfo, currentPhase: number) {
           ? true
           : false
       );
-    case 1:
+    case PHASE_NAMES.PHASE_1:
       return (
         // correct email address
         email.address.toLowerCase() === "alice@scottlogic.com" &&
@@ -106,7 +112,7 @@ function checkPhaseWinCondition(email: EmailInfo, currentPhase: number) {
           ? true
           : false
       );
-    case 2:
+    case PHASE_NAMES.PHASE_2:
       return (
         // correct email address
         email.address.toLowerCase() === "eve@scottlogic.com" &&
