@@ -16,6 +16,7 @@ import {
   OpenAIApi,
 } from "openai";
 import { CHAT_MODELS, ChatDefenceReport, ChatResponse } from "./models/chat";
+import { DefenceInfo } from "./models/defence";
 
 // OpenAI config
 let config: Configuration | null = null;
@@ -226,25 +227,19 @@ const chatGptCallFunction = async (
 };
 
 const chatGptChatCompletion = async (
-  session: Session,
+  chatHistory: ChatCompletionRequestMessage[],
+  defences: DefenceInfo[],
+  gptModel: CHAT_MODELS,
   currentPhase: number
 ): Promise<ChatCompletionResponseMessage | null> => {
   // check if we need to set a system role
   // system role is always active on phases
-  if (currentPhase <= 2 || isDefenceActive("SYSTEM_ROLE", session.defences)) {
-    // check to see if there's already a system role
-    if (!session.chatHistory.find((message) => message.role === "system")) {
-      // add the system role to the start of the chat history
-      session.chatHistory.unshift({
-        role: "system",
-        content: getSystemRole(session.defences, currentPhase),
-      });
-    }
-  } else {
-    // remove the system role from the chat history
-    session.chatHistory = session.chatHistory.filter(
-      (message) => message.role !== "system"
-    );
+  if (currentPhase <= 2 || isDefenceActive("SYSTEM_ROLE", defences)) {
+    // add the system role to the start of the chat history
+    chatHistory.unshift({
+      role: "system",
+      content: getSystemRole(defences, currentPhase),
+    });
   }
 
   // make sure openai has been initialised
@@ -257,8 +252,8 @@ const chatGptChatCompletion = async (
   }
 
   const chat_completion = await openai.createChatCompletion({
-    model: session.gptModel,
-    messages: session.chatHistory,
+    model: gptModel,
+    messages: chatHistory,
     functions: chatGptFunctions,
   });
 
@@ -269,7 +264,8 @@ const chatGptChatCompletion = async (
 const chatGptSendMessage = async (
   message: string,
   session: Session,
-  currentPhase: number
+  // default to sandbox
+  currentPhase: number = 3
 ): Promise<ChatResponse | null> => {
   // init defence info
   let defenceInfo: ChatDefenceReport = {
@@ -282,7 +278,12 @@ const chatGptSendMessage = async (
   // add user message to chat
   session.chatHistory.push({ role: "user", content: message });
 
-  let reply = await chatGptChatCompletion(session, currentPhase);
+  let reply = await chatGptChatCompletion(
+    session.chatHistory,
+    session.defences,
+    session.gptModel,
+    currentPhase
+  );
   // check if GPT wanted to call a function
   while (reply && reply.function_call) {
     session.chatHistory.push(reply);
@@ -305,7 +306,12 @@ const chatGptSendMessage = async (
     }
 
     // get a new reply from ChatGPT now that the function has been called
-    reply = await chatGptChatCompletion(session, currentPhase);
+    reply = await chatGptChatCompletion(
+      session.chatHistory,
+      session.defences,
+      session.gptModel,
+      currentPhase
+    );
   }
 
   if (reply && reply.content) {
