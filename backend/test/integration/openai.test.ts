@@ -44,11 +44,7 @@ test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", a
     sentEmails
   );
 
-  expect(reply).toBeDefined();
-  expect(reply?.completion).toBeDefined();
-  expect(reply?.completion.content).toBe(
-    "Please enter a valid OpenAI API key to chat to me!"
-  );
+  expect(reply).toBeNull();
 });
 
 test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", async () => {
