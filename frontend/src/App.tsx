@@ -148,6 +148,8 @@ function App() {
         {currentPhase >= 2 && <AttackBox attacks={ATTACKS_ALL} />}
         {/* hide model selection box on phases 0 and 1 */}
         {currentPhase > 2 && <ModelSelectionBox />}
+
+        <ExportPDF messages={messages} emails={emails} />
       </div>
       <div id="centre-area">
         <Header />
@@ -169,7 +171,6 @@ function App() {
         />
         <EmailBox emails={emails} />
       </div>
-      <ExportPDF messages={messages} emails={emails} />
     </span>
   );
 }

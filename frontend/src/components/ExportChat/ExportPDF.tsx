@@ -7,6 +7,8 @@ import { ChatMessage } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 
+import "./ExportChat.css";
+
 const ExportPDF = ({
   messages,
   emails,
@@ -15,17 +17,14 @@ const ExportPDF = ({
   emails: EmailInfo[];
 }) => {
   return (
-    <div id="pdf-download-link">
+    <div id="export-chat-box">
       <PDFDownloadLink
         document={<PDFExportContent messages={messages} emails={emails} />}
         fileName="chat-log.pdf"
+        className="pdf-download-button"
       >
-        {({ loading }) => (loading ? "Generating PDF..." : "Download PDF")}
+        {({ loading }) => "Export chat history"}
       </PDFDownloadLink>
-
-      {/* <PDFViewer width="500" height="400">
-        <PDFExportContent messages={messages} emails={emails} />
-      </PDFViewer> */}
     </div>
   );
 };
