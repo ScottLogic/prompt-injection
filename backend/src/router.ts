@@ -130,18 +130,18 @@ router.post("/openai/chat", async (req, res) => {
     prevPhase = currentPhase;
     initQAModel(req.session.apiKey, retrievalQAPrePrompt, currentPhase);
   }
-
   if (message) {
     chatResponse.transformedMessage = message;
-    // see if this message triggers any defences
-    const useLlmEvaluation =
+    // see if this message triggers any defences (only for phase 2 and sandbox)
+    if (
       currentPhase === PHASE_NAMES.PHASE_2 ||
-      currentPhase === PHASE_NAMES.SANDBOX;
-    chatResponse.defenceInfo = await detectTriggeredDefences(
-      message,
-      req.session.defences,
-      useLlmEvaluation
-    );
+      currentPhase === PHASE_NAMES.SANDBOX
+    ) {
+      chatResponse.defenceInfo = await detectTriggeredDefences(
+        message,
+        req.session.defences
+      );
+    }
     // if blocked, send the response
     if (!chatResponse.defenceInfo.isBlocked) {
       // transform the message according to active defences
