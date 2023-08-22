@@ -7,11 +7,13 @@ const { TiTick, TiTimes } = require("react-icons/ti");
 
 function DefenceMechanism({
   defenceDetail,
+  currentPhase,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
 }: {
   defenceDetail: DefenceInfo;
+  currentPhase: number;
   setDefenceActive: (defenceId: string) => void;
   setDefenceInactive: (defenceId: string) => void;
   setDefenceConfiguration: (
@@ -92,7 +94,8 @@ function DefenceMechanism({
         {isInfoBoxVisible ? (
           <div className="strategy-mechanism-info-box">
             <div>{defenceDetail.info}</div>
-            {defenceDetail.config ? (
+
+            {defenceDetail.config && currentPhase > 2 ? (
               <div className="defence-mechanism-config">
                 {defenceDetail.config.map((config, index) => {
                   return (
@@ -105,6 +108,7 @@ function DefenceMechanism({
                 })}
               </div>
             ) : null}
+
             {isConfigured ? (
               <div className="defence-mechanism-config-validated">
                 {configValidated ? (

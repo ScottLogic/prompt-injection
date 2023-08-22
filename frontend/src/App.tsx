@@ -136,6 +136,7 @@ function App() {
           <DefenceBox
             key={defenceBoxKey}
             defences={defencesToShow}
+            currentPhase={currentPhase}
             triggeredDefences={triggeredDefences}
             defenceActivated={defenceActivated}
             defenceDeactivated={defenceDeactivated}
