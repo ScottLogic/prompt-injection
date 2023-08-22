@@ -12,13 +12,13 @@ import { DefenceConfig, DefenceInfo } from "../../models/defence";
 function DefenceBox({
   defences,
   triggeredDefences,
-  currentPhase,
+  showConfigurations,
   defenceActivated,
   defenceDeactivated,
 }: {
   defences: DefenceInfo[];
   triggeredDefences: string[];
-  currentPhase: number;
+  showConfigurations: boolean;
   defenceActivated: (defenceInfo: DefenceInfo) => void;
   defenceDeactivated: (defenceInfo: DefenceInfo) => void;
 }) {
@@ -128,7 +128,7 @@ function DefenceBox({
           <DefenceMechanism
             key={index}
             defenceDetail={defenceDetail}
-            currentPhase={currentPhase}
+            showConfigurations={showConfigurations}
             setDefenceActive={setDefenceActive}
             setDefenceInactive={setDefenceInactive}
             setDefenceConfiguration={setDefenceConfiguration}

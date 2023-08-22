@@ -131,12 +131,12 @@ function App() {
   return (
     <span id="main-area">
       <div className="side-bar">
-        {/* hide defence box on phases 0 and 1 */}
+        {/* hide defence box on phases 0 and 1. only allow configuration in sandbox */}
         {currentPhase >= 2 && (
           <DefenceBox
             key={defenceBoxKey}
             defences={defencesToShow}
-            currentPhase={currentPhase}
+            showConfigurations={currentPhase > 2 ? true : false}
             triggeredDefences={triggeredDefences}
             defenceActivated={defenceActivated}
             defenceDeactivated={defenceDeactivated}
