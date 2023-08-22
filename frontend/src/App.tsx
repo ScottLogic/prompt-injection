@@ -8,6 +8,7 @@ import EmailBox from "./components/EmailBox/EmailBox";
 import PhaseSelectionBox from "./components/PhaseSelectionBox/PhaseSelectionBox";
 import Header from "./components/Header";
 import ModelSelectionBox from "./components/ModelSelectionBox/ModelSelectionBox";
+import ExportPDFLink from "./components/ExportChat/ExportPDFLink";
 import { EmailInfo } from "./models/email";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
 import { DefenceInfo } from "./models/defence";
@@ -151,6 +152,11 @@ function App() {
           currentPhase === PHASE_NAMES.SANDBOX) && (
           <AttackBox attacks={ATTACKS_ALL} />
         )}
+        <ExportPDFLink
+          messages={messages}
+          emails={emails}
+          currentPhase={currentPhase}
+        />
         {/* hide model selection box on phases 0 and 1 */}
         {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
       </div>
