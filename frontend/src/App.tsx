@@ -152,14 +152,12 @@ function App() {
           currentPhase === PHASE_NAMES.SANDBOX) && (
           <AttackBox attacks={ATTACKS_ALL} />
         )}
-        {/* hide model selection box on phases 0 and 1 */}
-        {currentPhase > 2 && <ModelSelectionBox />}
-
         <ExportPDFLink
           messages={messages}
           emails={emails}
           currentPhase={currentPhase}
         />
+        {/* hide model selection box on phases 0 and 1 */}
         {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
       </div>
       <div id="centre-area">

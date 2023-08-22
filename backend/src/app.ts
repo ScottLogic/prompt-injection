@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import session from "express-session";
 
-import { getInitialDefences, getQALLMprePrompt } from "./defence";
+import { getInitialDefences } from "./defence";
 import { setOpenAiApiKey } from "./openai";
 import { router } from "./router";
 import { ChatCompletionRequestMessage } from "openai";
