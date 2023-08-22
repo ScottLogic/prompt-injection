@@ -148,7 +148,6 @@ function App() {
         {currentPhase >= 2 && <AttackBox attacks={ATTACKS_ALL} />}
         {/* hide model selection box on phases 0 and 1 */}
         {currentPhase > 2 && <ModelSelectionBox />}
-
         <ExportPDFLink
           messages={messages}
           emails={emails}
