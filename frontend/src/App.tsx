@@ -18,9 +18,9 @@ import { resetActiveDefences } from "./service/defenceService";
 import { PHASES } from "./Phases";
 import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
+import { PHASE_NAMES } from "./models/phase";
 
 function App() {
-  const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [defencesToShow, setDefencesToShow] =
@@ -28,15 +28,14 @@ function App() {
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
 
   // start on sandbox mode
-  const [currentPhase, setCurrentPhase] = useState<number>(3);
+  const [currentPhase, setCurrentPhase] = useState<PHASE_NAMES>(
+    PHASE_NAMES.SANDBOX
+  );
   const [numCompletedPhases, setNumCompletedPhases] = useState<number>(0);
 
   const updateTriggeredDefences = (defenceDetails: string[]) => {
     // set the new triggered defences
     setTriggeredDefences(defenceDetails);
-    // update the key of the defence box to force a re-render
-    setDefenceBoxKey(defenceBoxKey + 1);
-
     // add a message to the chat
     defenceDetails.forEach((defence) => {
       defenceTriggered(defence);
@@ -80,7 +79,7 @@ function App() {
     clearEmails();
   };
 
-  const setNewPhase = (newPhase: number) => {
+  const setNewPhase = (newPhase: PHASE_NAMES) => {
     // reset emails and messages from front and backend
     clearChat();
     clearEmailBox();
@@ -95,7 +94,7 @@ function App() {
     addPhasePreambleMessage(preambleMessage.toLowerCase());
 
     // choose appropriate defences to display
-    newPhase === 2
+    newPhase === PHASE_NAMES.PHASE_2
       ? setDefencesToShow(DEFENCE_DETAILS_PHASE)
       : setDefencesToShow(DEFENCE_DETAILS_ALL);
   };
@@ -132,9 +131,9 @@ function App() {
     <span id="main-area">
       <div className="side-bar">
         {/* hide defence box on phases 0 and 1 */}
-        {currentPhase >= 2 && (
+        {(currentPhase === PHASE_NAMES.PHASE_2 ||
+          currentPhase === PHASE_NAMES.SANDBOX) && (
           <DefenceBox
-            key={defenceBoxKey}
             defences={defencesToShow}
             triggeredDefences={triggeredDefences}
             defenceActivated={defenceActivated}
@@ -142,11 +141,16 @@ function App() {
           />
         )}
         {/* show reduced set of attacks on phase 1 */}
-        {currentPhase === 1 && <AttackBox attacks={ATTACKS_PHASE_1} />}
+        {currentPhase === PHASE_NAMES.PHASE_1 && (
+          <AttackBox attacks={ATTACKS_PHASE_1} />
+        )}
         {/* show all attacks on phase 2 and sandbox */}
-        {currentPhase >= 2 && <AttackBox attacks={ATTACKS_ALL} />}
+        {(currentPhase === PHASE_NAMES.PHASE_2 ||
+          currentPhase === PHASE_NAMES.SANDBOX) && (
+          <AttackBox attacks={ATTACKS_ALL} />
+        )}
         {/* hide model selection box on phases 0 and 1 */}
-        {currentPhase > 2 && <ModelSelectionBox />}
+        {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
       </div>
       <div id="centre-area">
         <Header />

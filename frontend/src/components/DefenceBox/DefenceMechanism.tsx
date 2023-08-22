@@ -94,7 +94,7 @@ function DefenceMechanism({
             <div>{defenceDetail.info}</div>
             {defenceDetail.config ? (
               <div className="defence-mechanism-config">
-                {defenceDetail.config.map((config, index) => {
+                {defenceDetail.config.map((config) => {
                   return (
                     <DefenceConfiguration
                       key={config.id}
