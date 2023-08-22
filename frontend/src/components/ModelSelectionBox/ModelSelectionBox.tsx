@@ -1,5 +1,5 @@
 // Path: frontend\src\components\ModelSelectionBox\ModelSelectionBox.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./ModelSelectionBox.css";
 import { setGptModel, getGptModel } from "../../service/chatService";
 import { CHAT_MODELS } from "../../models/chat";
@@ -7,9 +7,9 @@ import { CHAT_MODELS } from "../../models/chat";
 // return a drop down menu with the models
 function ModelSelectionBox() {
   // model currently selected in the dropdown
-  const [selectedModel, setSelectedModel] = useState("gpt-4");
+  const [selectedModel, setSelectedModel] = useState(CHAT_MODELS.GPT_4);
   // model in use by the app
-  const [modelInUse, setModelInUse] = useState("gpt-4");
+  const [modelInUse, setModelInUse] = useState(CHAT_MODELS.GPT_4);
 
   const [errorChangingModel, setErrorChangingModel] = useState(false);
 
@@ -46,7 +46,7 @@ function ModelSelectionBox() {
         <select
           id="model-selection-menu"
           aria-label="model-select"
-          onChange={(e) => setSelectedModel(e.target.value)}
+          onChange={(e) => setSelectedModel(e.target.value as CHAT_MODELS)}
           placeholder={modelInUse}
         >
           {chatModelOptions.map((model) => (
