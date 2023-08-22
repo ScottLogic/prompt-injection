@@ -8,6 +8,7 @@ import EmailBox from "./components/EmailBox/EmailBox";
 import PhaseSelectionBox from "./components/PhaseSelectionBox/PhaseSelectionBox";
 import Header from "./components/Header";
 import ModelSelectionBox from "./components/ModelSelectionBox/ModelSelectionBox";
+import ExportPDFLink from "./components/ExportChat/ExportPDFLink";
 import { EmailInfo } from "./models/email";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
 import { DefenceInfo } from "./models/defence";
@@ -18,7 +19,6 @@ import { resetActiveDefences } from "./service/defenceService";
 import { PHASES } from "./Phases";
 import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
-import ExportPDF from "./components/ExportChat/ExportPDF";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
@@ -149,7 +149,11 @@ function App() {
         {/* hide model selection box on phases 0 and 1 */}
         {currentPhase > 2 && <ModelSelectionBox />}
 
-        <ExportPDF messages={messages} emails={emails} />
+        <ExportPDFLink
+          messages={messages}
+          emails={emails}
+          currentPhase={currentPhase}
+        />
       </div>
       <div id="centre-area">
         <Header />

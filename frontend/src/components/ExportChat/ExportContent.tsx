@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   },
   subheaderSection: {
     borderBottom: "1px solid black",
+    marginBottom: 5,
     alignContent: "center",
   },
   header: {
@@ -28,7 +29,6 @@ const styles = StyleSheet.create({
   section: {
     margin: 5,
     padding: 10,
-    border: "1px solid black",
     width: "50%",
     flexDirection: "column",
   },
@@ -38,19 +38,29 @@ const styles = StyleSheet.create({
   },
 });
 
-const PDFExportContent = ({
+const ExportContent = ({
   messages,
   emails,
+  currentPhase,
 }: {
   messages: ChatMessage[];
   emails: EmailInfo[];
+  currentPhase: number;
 }) => {
+  const getTitle = (currentPhase: number) => {
+    const title = "Prompt injection demo chat";
+    if (currentPhase === 3) {
+      return title + " (sandbox mode)";
+    } else {
+      return title + " (phase " + currentPhase + ")";
+    }
+  };
   console.log("Exporting chat history");
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.headerSection}>
-          <Text>Prompt injection demo chat</Text>
+          <Text style={styles.header}>{getTitle(currentPhase)}</Text>
         </View>
         <View style={styles.pageContent}>
           <View style={styles.section}>
@@ -71,4 +81,4 @@ const PDFExportContent = ({
   );
 };
 
-export default PDFExportContent;
+export default ExportContent;
