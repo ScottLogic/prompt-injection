@@ -29,12 +29,6 @@ const DEFENCE_DETAILS_PHASE: DefenceInfo[] = [
     ]
   ),
   new DefenceInfo(
-    DEFENCE_TYPES.SYSTEM_ROLE,
-    "System Role",
-    "Tell the chat bot to follow a specific role.",
-    [new DefenceConfig("systemRole", "system role")]
-  ),
-  new DefenceInfo(
     DEFENCE_TYPES.XML_TAGGING,
     "XML Tagging",
     "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input. This is a form of prompt validation.",
@@ -44,6 +38,12 @@ const DEFENCE_DETAILS_PHASE: DefenceInfo[] = [
 
 const DEFENCE_DETAILS_ALL: DefenceInfo[] = [
   ...DEFENCE_DETAILS_PHASE,
+  new DefenceInfo(
+    DEFENCE_TYPES.SYSTEM_ROLE,
+    "System Role",
+    "Tell the chat bot to follow a specific role.",
+    [new DefenceConfig("systemRole", "system role")]
+  ),
   new DefenceInfo(
     DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
     "QA LLM instructions",
