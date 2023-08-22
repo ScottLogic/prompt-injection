@@ -3,7 +3,7 @@ import { DefenceConfig, DefenceInfo } from "../../models/defence";
 import "./DefenceMechanism.css";
 import "../StrategyBox/StrategyMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
-const { TiTick, TiTimes } = require("react-icons/ti");
+import { TiTick, TiTimes } from "react-icons/ti";
 
 function DefenceMechanism({
   defenceDetail,
