@@ -9,6 +9,7 @@ import {
   ChatResponse,
 } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
+import { PHASE_NAMES } from "../../models/phase";
 
 function ChatBox(
   this: any,
@@ -22,7 +23,7 @@ function ChatBox(
     clearMessages,
   }: {
     messages: ChatMessage[];
-    currentPhase: number;
+    currentPhase: PHASE_NAMES;
     setNumCompletedPhases: (numCompletedPhases: number) => void;
     setEmails: (emails: EmailInfo[]) => void;
     updateTriggeredDefences: (defences: string[]) => void;

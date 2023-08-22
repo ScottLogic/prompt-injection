@@ -41,7 +41,7 @@ function DefenceBox({
           localDefence.isActive = matchingRemoteDefence.isActive;
           // set each config value
           if (matchingRemoteDefence.config && localDefence.config) {
-            matchingRemoteDefence.config.forEach((configEntry, index) => {
+            matchingRemoteDefence.config.forEach((configEntry) => {
               // get the matching config in the local defence
               const matchingConfig = localDefence.config.find((config) => {
                 return config.id === configEntry.id;
@@ -123,6 +123,7 @@ function DefenceBox({
 
   return (
     <div id="strategy-box">
+      <div className="side-bar-header">defence mechanisms</div>
       {defenceDetails.map((defenceDetail, index) => {
         return (
           <DefenceMechanism

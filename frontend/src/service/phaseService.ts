@@ -1,5 +1,4 @@
 import { sendRequest } from "./backendService";
-import { clearChat } from "./chatService";
 
 const PATH = "phase/";
 
