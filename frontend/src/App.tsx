@@ -18,6 +18,7 @@ import { resetActiveDefences } from "./service/defenceService";
 import { PHASES } from "./Phases";
 import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
+import ExportPDF from "./components/ExportChat/ExportPDF";
 
 function App() {
   const [defenceBoxKey, setDefenceBoxKey] = useState<number>(0);
@@ -147,6 +148,8 @@ function App() {
         {currentPhase >= 2 && <AttackBox attacks={ATTACKS_ALL} />}
         {/* hide model selection box on phases 0 and 1 */}
         {currentPhase > 2 && <ModelSelectionBox />}
+
+        <ExportPDF messages={messages} emails={emails} />
       </div>
       <div id="centre-area">
         <Header />
