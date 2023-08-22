@@ -1,8 +1,8 @@
 enum PHASE_NAMES {
-  PHASE_0 = "phase 0",
-  PHASE_1 = "phase 1",
-  PHASE_2 = "phase 2",
-  SANDBOX = "sandbox",
+  PHASE_0 = 0,
+  PHASE_1,
+  PHASE_2,
+  SANDBOX,
 }
 
 interface Phase {

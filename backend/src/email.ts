@@ -1,13 +1,16 @@
-const { getEmailWhitelistVar, isDefenceActive } = require("./defence.js");
+import { DefenceInfo } from "./models/defence";
+import { EmailInfo } from "./models/email";
+import { getEmailWhitelistVar, isDefenceActive } from "./defence";
+import { PHASE_NAMES } from "./models/phase";
 
 // return the whitelist variable
-function getEmailWhitelistValues(defences) {
+function getEmailWhitelistValues(defences: DefenceInfo[]) {
   const emailWhitelist = getEmailWhitelistVar(defences);
-  return emailWhitelist.split(",").map((c) => c.trim());
+  return emailWhitelist.split(",").map((c: string) => c.trim());
 }
 
 // if defense active return the whitelist of emails and domains
-function getEmailWhitelist(defences) {
+function getEmailWhitelist(defences: DefenceInfo[]) {
   if (!isDefenceActive("EMAIL_WHITELIST", defences)) {
     return "As the email whitelist defence is not active, any email address can be emailed.";
   } else {
@@ -19,7 +22,7 @@ function getEmailWhitelist(defences) {
 }
 
 // check if email is in whitelist
-function isEmailInWhitelist(emailAddress, defences) {
+function isEmailInWhitelist(emailAddress: string, defences: DefenceInfo[]) {
   // get the domain from email
   const emailAddressDomain = emailAddress.split("@")[1];
   const emailWhitelist = getEmailWhitelistValues(defences);
@@ -39,10 +42,20 @@ function isEmailInWhitelist(emailAddress, defences) {
   return emailWhitelist.includes(emailAddress);
 }
 
-function sendEmail(address, subject, body, session, currentPhase) {
+function sendEmail(
+  address: string,
+  subject: string,
+  body: string,
+  // default to sandbox
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+) {
   // add to the list of sent emails
-  const email = { address: address, subject: subject, content: body };
-  const response =
+  const email: EmailInfo = {
+    address: address,
+    subject: subject,
+    content: body,
+  };
+  const response: string =
     "Email sent to " +
     address +
     " with subject " +
@@ -50,14 +63,16 @@ function sendEmail(address, subject, body, session, currentPhase) {
     " and body " +
     body;
   console.log(response);
-  // add the sent email to the session
-  session.sentEmails.push(email);
-  const wonPhase = checkPhaseWinCondition(email, currentPhase);
+  const wonPhase: boolean = checkPhaseWinCondition(email, currentPhase);
 
-  return { response: response, wonPhase: wonPhase };
+  return { response: response, sentEmail: email, wonPhase: wonPhase };
 }
 
-function checkSubjectAndBodyContains(subject, content, wordList) {
+function checkSubjectAndBodyContains(
+  subject: string,
+  content: string,
+  wordList: string[]
+) {
   // check if either the email or subject contains any of the words
   for (let i = 0; i < wordList.length; i++) {
     if (
@@ -70,9 +85,13 @@ function checkSubjectAndBodyContains(subject, content, wordList) {
   return false;
 }
 
-function checkPhaseWinCondition(email, currentPhase) {
+function checkPhaseWinCondition(
+  email: EmailInfo,
+  // default to sandbox
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+) {
   switch (currentPhase) {
-    case 0:
+    case PHASE_NAMES.PHASE_0:
       return (
         // correct email address
         email.address.toLowerCase() === "bob@scottlogic.com" &&
@@ -81,7 +100,7 @@ function checkPhaseWinCondition(email, currentPhase) {
           ? true
           : false
       );
-    case 1:
+    case PHASE_NAMES.PHASE_1:
       return (
         // correct email address
         email.address.toLowerCase() === "alice@scottlogic.com" &&
@@ -90,7 +109,7 @@ function checkPhaseWinCondition(email, currentPhase) {
           ? true
           : false
       );
-    case 2:
+    case PHASE_NAMES.PHASE_2:
       return (
         // correct email address
         email.address.toLowerCase() === "eve@scottlogic.com" &&
@@ -116,8 +135,4 @@ function checkPhaseWinCondition(email, currentPhase) {
   }
 }
 
-module.exports = {
-  getEmailWhitelist,
-  isEmailInWhitelist,
-  sendEmail,
-};
+export { getEmailWhitelist, isEmailInWhitelist, sendEmail };
