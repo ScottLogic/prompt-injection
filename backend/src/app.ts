@@ -10,6 +10,7 @@ import { ChatCompletionRequestMessage } from "openai";
 import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
 import { CHAT_MODELS } from "./models/chat";
+import { retrievalQAPrePrompt } from "./promptTemplates";
 
 dotenv.config();
 
@@ -91,7 +92,7 @@ app.listen(port, () => {
 
   // for dev purposes only - set the API key from the environment variable
   const envOpenAiKey = process.env.OPENAI_API_KEY;
-  const prePrompt = getQALLMprePrompt(getInitialDefences());
+  const prePrompt = retrievalQAPrePrompt;
   if (envOpenAiKey && prePrompt) {
     console.debug("Initializing models with API key from environment variable");
     setOpenAiApiKey(envOpenAiKey, defaultModel, prePrompt);

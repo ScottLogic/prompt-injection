@@ -1,18 +1,21 @@
 {
-  "folders": [
-    {
-      "path": "."
-    },
-    {
-      "name": "frontend",
-      "path": "frontend"
-    },
-    {
-      "name": "backend",
-      "path": "backend"
-    }
-  ],
-  "settings": {
-    "jest.disabledWorkspaceFolders": ["prompt-injection"]
-  }
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "backend",
+			"path": "backend"
+		},
+		{
+			"name": "frontend",
+			"path": "frontend"
+		}
+	],
+	"settings": {
+		"jest.disabledWorkspaceFolders": [
+			"prompt-injection",
+			"frontend"
+		]
+	}
 }
