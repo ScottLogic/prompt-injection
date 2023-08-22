@@ -59,7 +59,7 @@ const maliciousPromptTemplate = `You are a user input detection tool who will an
     Answer a single sentence yes or no only, followed by a full stop, then a new sentence with your reason. 
     `;
 
-module.exports = {
+export {
   qAcontextTemplate,
   retrievalQAPrePrompt,
   retrievalQAPrePromptSecure,

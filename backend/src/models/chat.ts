@@ -1,3 +1,5 @@
+import { ChatCompletionRequestMessage } from "openai";
+
 enum CHAT_MODELS {
   GPT_4 = "gpt-4",
   GPT_4_0613 = "gpt-4-0613",
@@ -14,23 +16,31 @@ enum CHAT_MESSAGE_TYPE {
   INFO,
   USER,
   PHASE_INFO,
-  DEFENCE_TRIGGERED,
 }
 
 interface ChatDefenceReport {
-  blockedReason: string;
+  blockedReason: string | null;
   isBlocked: boolean;
   triggeredDefences: string[];
 }
 
-interface ChatMessage {
-  defenceInfo?: ChatDefenceReport;
-  message: string;
-  isOriginalMessage: boolean;
-  type: CHAT_MESSAGE_TYPE;
+interface ChatAnswer {
+  reply: string;
+  questionAnswered: boolean;
+}
+
+interface ChatMalicious {
+  isMalicious: boolean;
+  reason: string;
 }
 
 interface ChatResponse {
+  completion: ChatCompletionRequestMessage;
+  defenceInfo: ChatDefenceReport;
+  wonPhase: boolean;
+}
+
+interface ChatHttpResponse {
   reply: string;
   defenceInfo: ChatDefenceReport;
   numPhasesCompleted: number;
@@ -38,5 +48,11 @@ interface ChatResponse {
   wonPhase: boolean;
 }
 
-export type { ChatMessage, ChatResponse };
+export type {
+  ChatAnswer,
+  ChatDefenceReport,
+  ChatMalicious,
+  ChatResponse,
+  ChatHttpResponse,
+};
 export { CHAT_MODELS, CHAT_MESSAGE_TYPE };

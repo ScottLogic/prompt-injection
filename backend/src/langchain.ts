@@ -1,39 +1,39 @@
-const { TextLoader } = require("langchain/document_loaders/fs/text");
-const { PDFLoader } = require("langchain/document_loaders/fs/pdf");
-const { CSVLoader } = require("langchain/document_loaders/fs/csv");
-const { DirectoryLoader } = require("langchain/document_loaders/fs/directory");
-const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
-const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
-const { MemoryVectorStore } = require("langchain/vectorstores/memory");
-const { ChatOpenAI } = require("langchain/chat_models/openai");
-const {
-  RetrievalQAChain,
-  LLMChain,
-  SequentialChain,
-} = require("langchain/chains");
-const { PromptTemplate } = require("langchain/prompts");
-const { OpenAI } = require("langchain/llms/openai");
-const {
+import { RetrievalQAChain, LLMChain, SequentialChain } from "langchain/chains";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { Document } from "langchain/document";
+import { CSVLoader } from "langchain/document_loaders/fs/csv";
+import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
+import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { TextLoader } from "langchain/document_loaders/fs/text";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { OpenAI } from "langchain/llms/openai";
+import { PromptTemplate } from "langchain/prompts";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+
+import { CHAT_MODELS, ChatAnswer } from "./models/chat";
+import {
+  maliciousPromptTemplate,
+  promptInjectionEvalTemplate,
   qAcontextTemplate,
   retrievalQAPrePrompt,
-  promptInjectionEvalTemplate,
-  maliciousPromptTemplate,
-} = require("./promptTemplates");
+} from "./promptTemplates";
+import { PHASE_NAMES } from "./models/phase";
 
 // chain we use in question/answer request
-let qaChain = null;
+let qaChain: RetrievalQAChain | null = null;
 
 // chain we use in prompt evaluation request
-let promptEvaluationChain = null;
+let promptEvaluationChain: SequentialChain | null = null;
 
-function getFilepath(currentPhase) {
+function getFilepath(currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX) {
   let filePath = "resources/documents/";
   switch (currentPhase) {
-    case 0:
+    case PHASE_NAMES.PHASE_0:
       return (filePath += "phase_0/");
-    case 1:
+    case PHASE_NAMES.PHASE_1:
       return (filePath += "phase_1/");
-    case 2:
+    case PHASE_NAMES.PHASE_2:
       return (filePath += "phase_2/");
     default:
       return (filePath += "common/");
@@ -41,13 +41,13 @@ function getFilepath(currentPhase) {
 }
 
 // load the documents from filesystem
-async function getDocuments(filePath) {
+async function getDocuments(filePath: string) {
   console.debug("Loading documents from: " + filePath);
 
-  const loader = new DirectoryLoader(filePath, {
-    ".pdf": (path) => new PDFLoader(path),
-    ".txt": (path) => new TextLoader(path),
-    ".csv": (path) => new CSVLoader(path),
+  const loader: DirectoryLoader = new DirectoryLoader(filePath, {
+    ".pdf": (path: string) => new PDFLoader(path),
+    ".txt": (path: string) => new TextLoader(path),
+    ".csv": (path: string) => new CSVLoader(path),
   });
   const docs = await loader.load();
 
@@ -61,7 +61,7 @@ async function getDocuments(filePath) {
 }
 
 // join the configurable preprompt to the context template
-function getQAPromptTemplate(prePrompt) {
+function getQAPromptTemplate(prePrompt: string) {
   if (!prePrompt) {
     console.debug("Using default retrieval QA pre-prompt");
     prePrompt = retrievalQAPrePrompt;
@@ -70,23 +70,30 @@ function getQAPromptTemplate(prePrompt) {
 }
 
 // QA Chain - ask the chat model a question about the documents
-async function initQAModel(session, currentPhase, prePrompt) {
-  if (!session.apiKey) {
+async function initQAModel(
+  apiKey: string,
+  prePrompt: string,
+  // default to sandbox
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+) {
+  if (!apiKey) {
     console.debug("No apiKey set to initialise QA model");
     return;
   }
   // get the documents
-  const docs = await getDocuments(getFilepath(currentPhase));
+  const docs: Document[] = await getDocuments(getFilepath(currentPhase));
 
   // embed and store the splits
-  const embeddings = new OpenAIEmbeddings({ openAIApiKey: session.apiKey });
+  const embeddings = new OpenAIEmbeddings({
+    openAIApiKey: apiKey,
+  });
   const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
 
   // initialise model
   const model = new ChatOpenAI({
-    modelName: "gpt-4",
-    stream: true,
-    openAIApiKey: session.apiKey,
+    modelName: CHAT_MODELS.GPT_4,
+    streaming: true,
+    openAIApiKey: apiKey,
   });
 
   // prompt template for question and answering
@@ -99,8 +106,8 @@ async function initQAModel(session, currentPhase, prePrompt) {
 }
 
 // initialise the prompt evaluation model
-async function initPromptEvaluationModel(session) {
-  if (!session.apiKey) {
+function initPromptEvaluationModel(apiKey: string) {
+  if (!apiKey) {
     console.debug("No apiKey set to initialise prompt evaluation model");
     return;
   }
@@ -112,9 +119,9 @@ async function initPromptEvaluationModel(session) {
 
   const promptInjectionChain = new LLMChain({
     llm: new OpenAI({
-      model: "gpt-3.5-turbo",
+      modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
-      openAIApiKey: session.apiKey,
+      openAIApiKey: apiKey,
     }),
     prompt: promptInjectionPrompt,
     outputKey: "promptInjectionEval",
@@ -126,9 +133,9 @@ async function initPromptEvaluationModel(session) {
   );
   const maliciousInputChain = new LLMChain({
     llm: new OpenAI({
-      model: "gpt-3.5-turbo",
+      modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
-      openAIApiKey: session.apiKey,
+      openAIApiKey: apiKey,
     }),
     prompt: maliciousInputPrompt,
     outputKey: "maliciousInputEval",
@@ -143,7 +150,7 @@ async function initPromptEvaluationModel(session) {
 }
 
 // ask the question and return models answer
-async function queryDocuments(question) {
+async function queryDocuments(question: string) {
   if (!qaChain) {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
@@ -152,7 +159,7 @@ async function queryDocuments(question) {
     query: question,
   });
   console.debug("QA model response: " + response.text);
-  const result = {
+  const result: ChatAnswer = {
     reply: response.text,
     questionAnswered: true,
   };
@@ -160,13 +167,15 @@ async function queryDocuments(question) {
 }
 
 // ask LLM whether the prompt is malicious
-async function queryPromptEvaluationModel(input) {
+async function queryPromptEvaluationModel(input: string) {
   if (!promptEvaluationChain) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };
   }
 
-  const response = await promptEvaluationChain.call({ prompt: input });
+  const response = await promptEvaluationChain.call({
+    prompt: input,
+  });
 
   const promptInjectionEval = formatEvaluationOutput(
     response.promptInjectionEval
@@ -195,7 +204,7 @@ async function queryPromptEvaluationModel(input) {
 }
 
 // format the evaluation model output. text should be a Yes or No answer followed by a reason
-function formatEvaluationOutput(response) {
+function formatEvaluationOutput(response: string) {
   try {
     // split response on first full stop or comma
     const splitResponse = response.split(/\.|,/);
@@ -210,14 +219,13 @@ function formatEvaluationOutput(response) {
     console.error(error);
     console.debug(
       "Did not get a valid response from the prompt evaluation model. Original response: " +
-        response.text
+        response
     );
     return { isMalicious: false, reason: "" };
   }
 }
 
-module.exports = {
-  getDocuments,
+export {
   initQAModel,
   initPromptEvaluationModel,
   queryDocuments,

@@ -3,15 +3,17 @@ import { DefenceConfig, DefenceInfo } from "../../models/defence";
 import "./DefenceMechanism.css";
 import "../StrategyBox/StrategyMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
-const { TiTick, TiTimes } = require("react-icons/ti");
+import { TiTick, TiTimes } from "react-icons/ti";
 
 function DefenceMechanism({
   defenceDetail,
+  showConfigurations,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
 }: {
   defenceDetail: DefenceInfo;
+  showConfigurations: boolean;
   setDefenceActive: (defenceId: string) => void;
   setDefenceInactive: (defenceId: string) => void;
   setDefenceConfiguration: (
@@ -92,9 +94,10 @@ function DefenceMechanism({
         {isInfoBoxVisible ? (
           <div className="strategy-mechanism-info-box">
             <div>{defenceDetail.info}</div>
-            {defenceDetail.config ? (
+
+            {defenceDetail.config && showConfigurations ? (
               <div className="defence-mechanism-config">
-                {defenceDetail.config.map((config, index) => {
+                {defenceDetail.config.map((config) => {
                   return (
                     <DefenceConfiguration
                       key={config.id}
@@ -105,6 +108,7 @@ function DefenceMechanism({
                 })}
               </div>
             ) : null}
+
             {isConfigured ? (
               <div className="defence-mechanism-config-validated">
                 {configValidated ? (
