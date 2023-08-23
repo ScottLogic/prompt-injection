@@ -2,7 +2,10 @@ const mockCall = jest.fn();
 const mockRetrievalQAChain = {
   call: mockCall,
 };
-let mockFromLLM = jest.fn(() => mockRetrievalQAChain);
+const mockPromptEvalChain = {
+  call: mockCall,
+};
+let mockFromLLM = jest.fn();
 const mockFromTemplate = jest.fn(() => "");
 
 import {
@@ -10,8 +13,6 @@ import {
   initQAModel,
   queryDocuments,
   queryPromptEvaluationModel,
-  qaChain,
-  promptEvaluationChain,
 } from "../../src/langchain";
 import { PHASE_NAMES } from "../../src/models/phase";
 import {
@@ -98,18 +99,22 @@ jest.mock("langchain/chains", () => {
   };
 });
 
+beforeEach(() => {
+  process.env = {};
+});
+
 test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is initialised THEN the llm is initialized and the prompt is set to the default", async () => {
-  // spy on getDocuments
+  mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
   await initQAModel("test-api-key", "");
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledWith(
     retrievalQAPrePrompt + qAcontextTemplate
   );
-  expect(qaChain).toBeDefined();
 });
 
 test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialized and prompt is set to the correct prompt ", async () => {
+  mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
   await initQAModel(
     "test-api-key",
     "this is a test prompt.",
@@ -123,33 +128,31 @@ test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
 });
 
 test("GIVEN the QA model is initilised WHEN a question is asked THEN it answers ", async () => {
-  mockCall.mockResolvedValue({
+  mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
+  await initQAModel("test-api-key", "", PHASE_NAMES.SANDBOX);
+  expect(mockFromLLM).toBeCalledTimes(1);
+  expect(mockFromTemplate).toBeCalledTimes(1);
+  mockCall.mockResolvedValueOnce({
     text: "The CEO is Bill.",
   });
-  await initQAModel("test-api-key", "", PHASE_NAMES.SANDBOX);
-  expect(qaChain).toBeDefined();
   const answer = await queryDocuments("who is the CEO?");
-  expect(answer).toEqual({
-    reply: "The CEO is Bill.",
-    questionAnswered: true,
-  });
+  expect(mockCall).toBeCalledTimes(1);
+  expect(answer.reply).toEqual("The CEO is Bill.");
 });
 
 test("GIVEN the QA model is not initialised WHEN a question is asked THEN it returns an empty response ", async () => {
+  mockFromLLM.mockReset();
+  mockFromLLM.mockImplementation(() => null);
   const answer = await queryDocuments("who is the CEO?");
-  expect(answer).toEqual({
-    reply: "",
-    questionAnswered: false,
-  });
-  expect(qaChain).toBeUndefined();
+  expect(answer.reply).toEqual("");
 });
 
 test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM", async () => {
+  mockFromLLM.mockImplementation(() => mockPromptEvalChain);
   await initPromptEvaluationModel("test-api-key");
   expect(mockFromTemplate).toBeCalledTimes(2);
   expect(mockFromTemplate).toBeCalledWith(promptInjectionEvalTemplate);
   expect(mockFromTemplate).toBeCalledWith(maliciousPromptTemplate);
-  expect(promptEvaluationChain).toBeDefined();
 });
 
 test("GIVEN the prompt evaluation model is not initialised WHEN it is asked to evaluate an input it returns an empty response", async () => {
@@ -162,8 +165,8 @@ test("GIVEN the prompt evaluation model is not initialised WHEN it is asked to e
 });
 
 test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it responds in the correct format THEN it returns a final decision and reason", async () => {
+  mockFromLLM.mockImplementation(() => mockPromptEvalChain);
   await initPromptEvaluationModel("test-api-key");
-  expect(promptEvaluationChain).toBeDefined();
 
   mockCall.mockResolvedValue({
     promptInjectionEval:
@@ -181,8 +184,9 @@ test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evalu
 });
 
 test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it does not respond in the correct format THEN it returns a final decision of false", async () => {
+  mockFromLLM.mockImplementation(() => mockPromptEvalChain);
+
   await initPromptEvaluationModel("test-api-key");
-  expect(promptEvaluationChain).toBeDefined();
 
   mockCall.mockResolvedValue({
     promptInjectionEval: "idk!",

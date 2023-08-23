@@ -105,8 +105,7 @@ async function initQAModel(
   qaChain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
     prompt: qaPrompt,
   });
-
-  console.debug("QA chain initialised");
+  console.debug("QA chain initialised.");
 }
 
 // initialise the prompt evaluation model
@@ -149,7 +148,7 @@ function initPromptEvaluationModel(apiKey: string) {
     inputVariables: ["prompt"],
     outputVariables: ["promptInjectionEval", "maliciousInputEval"],
   });
-  console.debug("Prompt evaluation chain initialised");
+  console.debug("Prompt evaluation chain initialised.");
 }
 
 // ask the question and return models answer
@@ -234,6 +233,4 @@ export {
   queryDocuments,
   queryPromptEvaluationModel,
   formatEvaluationOutput,
-  qaChain, // for testing
-  promptEvaluationChain,
 };
