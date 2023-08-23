@@ -35,7 +35,7 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detect
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
-  const result = await detectTriggeredDefences(message, defences, true);
+  const result = await detectTriggeredDefences(message, defences);
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(true);
   expect(result.triggeredDefences).toContain("LLM_EVALUATION");
@@ -57,7 +57,7 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers malice det
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
-  const result = await detectTriggeredDefences(message, defences, true);
+  const result = await detectTriggeredDefences(message, defences);
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(true);
   expect(result.triggeredDefences).toContain("LLM_EVALUATION");
@@ -79,7 +79,7 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers prompt inj
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
-  const result = await detectTriggeredDefences(message, defences, true);
+  const result = await detectTriggeredDefences(message, defences);
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(true);
   expect(result.triggeredDefences).toContain("LLM_EVALUATION");
@@ -101,7 +101,7 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN de
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
-  const result = await detectTriggeredDefences(message, defences, true);
+  const result = await detectTriggeredDefences(message, defences);
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(false);
   expect(result.triggeredDefences.length).toBe(0);
@@ -121,7 +121,7 @@ test("GIVEN LLM_EVALUATION defence is not active AND prompt is malicious WHEN de
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
-  const result = await detectTriggeredDefences(message, defences, true);
+  const result = await detectTriggeredDefences(message, defences);
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(false);
   expect(result.triggeredDefences).toContain("LLM_EVALUATION");
