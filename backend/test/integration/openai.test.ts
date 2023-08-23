@@ -53,7 +53,7 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
   const defences: DefenceInfo[] = [];
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
-  const apiKey = "sk-12345";
+  const openAiApiKey = "sk-12345";
 
   // Mock the createChatCompletion function
   mockCreateChatCompletion.mockResolvedValueOnce({
@@ -70,7 +70,7 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
   });
 
   // initialise OpenAI
-  initOpenAi(apiKey);
+  initOpenAi(openAiApiKey);
   // send the message
   const reply = await chatGptSendMessage(
     chatHistory,
@@ -103,7 +103,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
-  const apiKey = "sk-12345";
+  const openAiApiKey = "sk-12345";
 
   defences = activateDefence("SYSTEM_ROLE", defences);
 
@@ -122,7 +122,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   });
 
   // initialise OpenAI
-  initOpenAi(apiKey);
+  initOpenAi(openAiApiKey);
   // send the message
   const reply = await chatGptSendMessage(
     chatHistory,
@@ -166,7 +166,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
-  const apiKey = "sk-12345";
+  const openAiApiKey = "sk-12345";
 
   // activate the SYSTEM_ROLE defence
   defences = activateDefence("SYSTEM_ROLE", defences);
@@ -186,7 +186,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   });
 
   // initialise OpenAI
-  initOpenAi(apiKey);
+  initOpenAi(openAiApiKey);
   // send the message
   const reply = await chatGptSendMessage(
     chatHistory,
@@ -236,7 +236,7 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
-  const apiKey = "sk-12345";
+  const openAiApiKey = "sk-12345";
 
   // Mock the createChatCompletion function
   mockCreateChatCompletion.mockResolvedValueOnce({
@@ -253,7 +253,7 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
   });
 
   // initialise OpenAI
-  initOpenAi(apiKey);
+  initOpenAi(openAiApiKey);
   // send the message
   const reply = await chatGptSendMessage(
     chatHistory,
@@ -304,7 +304,7 @@ test(
     let defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
     const gptModel = CHAT_MODELS.GPT_4;
-    const apiKey = "sk-12345";
+    const openAiApiKey = "sk-12345";
 
     defences = activateDefence("SYSTEM_ROLE", defences);
 
@@ -323,7 +323,7 @@ test(
     });
 
     // initialise OpenAI
-    initOpenAi(apiKey);
+    initOpenAi(openAiApiKey);
     // send the message
     const reply = await chatGptSendMessage(
       chatHistory,
@@ -368,7 +368,7 @@ test(
     const defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
     const gptModel = CHAT_MODELS.GPT_4;
-    const apiKey = "sk-12345";
+    const openAiApiKey = "sk-12345";
 
     // Mock the createChatCompletion function
     mockCreateChatCompletion
@@ -405,7 +405,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi(apiKey);
+    initOpenAi(openAiApiKey);
     // send the message
     const reply = await chatGptSendMessage(
       chatHistory,
@@ -446,7 +446,7 @@ test(
     let defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
     const gptModel = CHAT_MODELS.GPT_4;
-    const apiKey = "sk-12345";
+    const openAiApiKey = "sk-12345";
 
     defences = activateDefence("EMAIL_WHITELIST", defences);
 
@@ -485,7 +485,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi(apiKey);
+    initOpenAi(openAiApiKey);
     // send the message
     const reply = await chatGptSendMessage(
       chatHistory,
@@ -523,7 +523,7 @@ test(
     let defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
     const gptModel = CHAT_MODELS.GPT_4;
-    const apiKey = "sk-12345";
+    const openAiApiKey = "sk-12345";
 
     defences = activateDefence("EMAIL_WHITELIST", defences);
 
@@ -562,7 +562,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi(apiKey);
+    initOpenAi(openAiApiKey);
     // send the message
     const reply = await chatGptSendMessage(
       chatHistory,
@@ -602,7 +602,7 @@ test(
     const defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
     const gptModel = CHAT_MODELS.GPT_4;
-    const apiKey = "sk-12345";
+    const openAiApiKey = "sk-12345";
 
     // set email whitelist
     process.env.EMAIL_WHITELIST = "bob@example.com";
@@ -642,7 +642,7 @@ test(
       });
 
     // initialise OpenAI
-    initOpenAi(apiKey);
+    initOpenAi(openAiApiKey);
     // send the message
     const reply = await chatGptSendMessage(
       chatHistory,

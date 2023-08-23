@@ -1,5 +1,3 @@
-import { Session } from "express-session";
-
 import { isDefenceActive, getSystemRole } from "./defence";
 import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
 import {
@@ -20,7 +18,6 @@ import { PHASE_NAMES } from "./models/phase";
 
 // OpenAI config
 let config: Configuration | null = null;
-let openai: OpenAIApi | null = null;
 
 // functions available to ChatGPT
 const chatGptFunctions = [
@@ -72,10 +69,10 @@ const chatGptFunctions = [
 ];
 
 // test the api key works with the model
-async function validateApiKey(apiKey: string, gptModel: string) {
+async function validateApiKey(openAiApiKey: string, gptModel: string) {
   try {
     const testOpenAI: OpenAIApi = new OpenAIApi(
-      new Configuration({ apiKey: apiKey })
+      new Configuration({ apiKey: openAiApiKey })
     );
     await testOpenAI.createChatCompletion({
       model: gptModel,
@@ -89,49 +86,49 @@ async function validateApiKey(apiKey: string, gptModel: string) {
 }
 
 async function setOpenAiApiKey(
-  apiKey: string,
+  openAiApiKey: string,
   gptModel: string,
   prePrompt: string,
   // default to sandbox mode
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ) {
   // initialise all models with the new key
-  if (await validateApiKey(apiKey, gptModel)) {
+  if (await validateApiKey(openAiApiKey, gptModel)) {
     console.debug("Setting API key and initialising models");
-    initOpenAi(apiKey);
-    initQAModel(apiKey, prePrompt, currentPhase);
-    initPromptEvaluationModel(apiKey);
+    initOpenAi(openAiApiKey);
+    initQAModel(openAiApiKey, prePrompt, currentPhase);
+    initPromptEvaluationModel(openAiApiKey);
     return true;
   } else {
     // set to empty in case it was previously set
     console.debug("Invalid API key. Cannot initialise OpenAI models");
-    openai = null;
     return false;
   }
 }
 
 function initOpenAi(openAiApiKey: string) {
-  config = new Configuration({
-    apiKey: openAiApiKey,
-  });
-  openai = new OpenAIApi(config);
+  // make sure it's possible to get OpenAiApi object from the key
+  getOpenAiFromKey(openAiApiKey);
   console.debug("OpenAI initialised");
 }
 
-async function setGptModel(session: Session, model: CHAT_MODELS) {
-  if (model !== session.gptModel) {
-    if (await validateApiKey(session.apiKey, model)) {
-      console.debug(
-        "Setting GPT model from: " + session.gptModel + " to: " + model
-      );
-      session.gptModel = model;
-      return true;
-    } else {
-      console.debug("Could not validate apiKey with model=" + model);
-      return false;
-    }
+function getOpenAiFromKey(openAiApiKey: string) {
+  config = new Configuration({
+    apiKey: openAiApiKey,
+  });
+  const openai = new OpenAIApi(config);
+  return openai;
+}
+
+async function setGptModel(openAiApiKey: string, model: CHAT_MODELS) {
+  console.debug("Setting GPT model to: " + model);
+  if (await validateApiKey(openAiApiKey, model)) {
+    console.debug("Set GPT model to: " + model);
+    return true;
+  } else {
+    console.debug("Could not validate openAiApiKey with model=" + model);
+    return false;
   }
-  return false;
 }
 
 // returns true if the function is in the list of functions available to ChatGPT
@@ -189,7 +186,6 @@ async function chatGptCallFunction(
         );
         response = emailResponse.response;
         wonPhase = emailResponse.wonPhase;
-        // add the sent email to the session
         sentEmails.push(emailResponse.sentEmail);
       }
     } else if (functionName == "getEmailWhitelist") {
@@ -225,15 +221,10 @@ async function chatGptChatCompletion(
   chatHistory: ChatCompletionRequestMessage[],
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
+  openai: OpenAIApi,
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ) {
-  // make sure openai is initialised
-  if (!openai) {
-    console.error("OpenAI not initialised");
-    return null;
-  }
-
   // check if we need to set a system role
   // system role is always active on phases
   if (
@@ -270,10 +261,13 @@ async function chatGptSendMessage(
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
   message: string,
+  openAiApiKey: string,
   sentEmails: EmailInfo[],
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ) {
+  console.log(`User message: '${message}'`);
+
   // init defence info
   let defenceInfo: ChatDefenceReport = {
     blockedReason: "",
@@ -285,10 +279,12 @@ async function chatGptSendMessage(
   // add user message to chat
   chatHistory.push({ role: "user", content: message });
 
+  const openai = getOpenAiFromKey(openAiApiKey);
   let reply = await chatGptChatCompletion(
     chatHistory,
     defences,
     gptModel,
+    openai,
     currentPhase
   );
   // check if GPT wanted to call a function
@@ -318,6 +314,7 @@ async function chatGptSendMessage(
       chatHistory,
       defences,
       gptModel,
+      openai,
       currentPhase
     );
   }
@@ -338,7 +335,6 @@ async function chatGptSendMessage(
 }
 
 export {
-  initOpenAi,
   chatGptSendMessage,
   setOpenAiApiKey,
   validateApiKey,
