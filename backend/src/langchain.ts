@@ -73,13 +73,13 @@ function getQAPromptTemplate(prePrompt: string) {
 
 // QA Chain - ask the chat model a question about the documents
 async function initQAModel(
-  apiKey: string,
+  openAiApiKey: string,
   prePrompt: string,
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ) {
-  if (!apiKey) {
-    console.debug("No apiKey set to initialise QA model");
+  if (!openAiApiKey) {
+    console.debug("No OpenAI API key set to initialise QA model");
     return;
   }
   // get the documents
@@ -87,7 +87,7 @@ async function initQAModel(
 
   // embed and store the splits
   const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: apiKey,
+    openAIApiKey: openAiApiKey,
   });
   const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
 
@@ -95,7 +95,7 @@ async function initQAModel(
   const model = new ChatOpenAI({
     modelName: CHAT_MODELS.GPT_4,
     streaming: true,
-    openAIApiKey: apiKey,
+    openAIApiKey: openAiApiKey,
   });
 
   // prompt template for question and answering
@@ -110,9 +110,9 @@ async function initQAModel(
 }
 
 // initialise the prompt evaluation model
-function initPromptEvaluationModel(apiKey: string) {
-  if (!apiKey) {
-    console.debug("No apiKey set to initialise prompt evaluation model");
+function initPromptEvaluationModel(openAiApiKey: string) {
+  if (!openAiApiKey) {
+    console.debug("No OpenAI API key set to initialise prompt evaluation model");
     return;
   }
   // create chain to detect prompt injection
@@ -124,7 +124,7 @@ function initPromptEvaluationModel(apiKey: string) {
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
-      openAIApiKey: apiKey,
+      openAIApiKey: openAiApiKey,
     }),
     prompt: promptInjectionPrompt,
     outputKey: "promptInjectionEval",
@@ -138,7 +138,7 @@ function initPromptEvaluationModel(apiKey: string) {
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
-      openAIApiKey: apiKey,
+      openAIApiKey: openAiApiKey,
     }),
     prompt: maliciousInputPrompt,
     outputKey: "maliciousInputEval",
@@ -175,6 +175,8 @@ async function queryPromptEvaluationModel(input: string) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };
   }
+  console.log(`Checking '${input}' for malicious prompts`);
+
   const response = await promptEvaluationChain.call({
     prompt: input,
   });

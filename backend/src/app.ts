@@ -17,11 +17,11 @@ dotenv.config();
 declare module "express-session" {
   interface Session {
     chatHistory: ChatCompletionRequestMessage[];
-    sentEmails: EmailInfo[];
     defences: DefenceInfo[];
-    apiKey: string;
     gptModel: CHAT_MODELS;
     numPhasesCompleted: number;
+    openAiApiKey: string | null;
+    sentEmails: EmailInfo[];
   }
 }
 
@@ -63,19 +63,13 @@ app.use(
   })
 );
 
-app.use((req, _res, next) => {
+app.use(async (req, _res, next) => {
   // initialise session variables
   if (!req.session.chatHistory) {
     req.session.chatHistory = [];
   }
-  if (!req.session.sentEmails) {
-    req.session.sentEmails = [];
-  }
   if (!req.session.defences) {
     req.session.defences = getInitialDefences();
-  }
-  if (!req.session.apiKey) {
-    req.session.apiKey = process.env.OPENAI_API_KEY || "";
   }
   if (!req.session.gptModel) {
     req.session.gptModel = defaultModel;
@@ -83,18 +77,26 @@ app.use((req, _res, next) => {
   if (!req.session.numPhasesCompleted) {
     req.session.numPhasesCompleted = 0;
   }
+  if (!req.session.openAiApiKey) {
+    req.session.openAiApiKey = process.env.OPENAI_API_KEY || null;
+  }
+  if (!req.session.sentEmails) {
+    req.session.sentEmails = [];
+  }
   next();
 });
 
 app.use("/", router);
 app.listen(port, () => {
   console.log("Server is running on port: " + port);
-
+ 
   // for dev purposes only - set the API key from the environment variable
   const envOpenAiKey = process.env.OPENAI_API_KEY;
   const prePrompt = retrievalQAPrePrompt;
   if (envOpenAiKey && prePrompt) {
     console.debug("Initializing models with API key from environment variable");
-    setOpenAiApiKey(envOpenAiKey, defaultModel, prePrompt);
+    setOpenAiApiKey(envOpenAiKey, defaultModel, prePrompt).then(() => {
+      console.debug("OpenAI models initialized");
+    });
   }
 });

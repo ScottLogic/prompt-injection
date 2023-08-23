@@ -6,23 +6,23 @@ import { BiHide, BiShowAlt } from "react-icons/bi";
 import "./ApiKeyBox.css";
 
 function ApiKeyBox(this: any) {
-  const [apiKey, setApiKey] = useState<string>("");
+  const [openAiApiKey, setApiKey] = useState<string>("");
   const [isValidated, setIsValidated] = useState<boolean>(false);
   const [isInvalidated, setIsInvalidated] = useState<boolean>(false);
   const [keyDisplayed, setKeyDisplayed] = useState<boolean>(false);
 
   const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const apiKey = event.target.value;
-    setApiKey(apiKey);
+    const openAiApiKey = event.target.value;
+    setApiKey(openAiApiKey);
   };
 
   const handleApiKeySubmit = async (
     event: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (event.key === "Enter" && event.target !== null) {
-      const apiKey = event.currentTarget.value;
+      const openAiApiKey = event.currentTarget.value;
       // returns true if successful
-      const response = await setOpenAIApiKey(apiKey);
+      const response = await setOpenAIApiKey(openAiApiKey);
       if (response) {
         console.log("API key validated and set");
         setIsValidated(true);
@@ -32,7 +32,7 @@ function ApiKeyBox(this: any) {
         setIsValidated(false);
         setIsInvalidated(true);
       }
-      setApiKey(apiKey);
+      setApiKey(openAiApiKey);
     }
   };
 
@@ -64,7 +64,7 @@ function ApiKeyBox(this: any) {
           isInvalidated ? "invalidated" : ""
         }`}
         type={keyDisplayed ? "text" : "password"}
-        value={apiKey}
+        value={openAiApiKey}
         placeholder="enter your API key here.."
         onChange={handleApiKeyChange}
         onKeyUp={handleApiKeySubmit.bind(this)}

@@ -111,7 +111,7 @@ test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
 test("GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered", async () => {
   const message = "Hello";
   const defences = getInitialDefences();
-  const defenceReport = await detectTriggeredDefences(message, defences, false);
+  const defenceReport = await detectTriggeredDefences(message, defences);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
   expect(defenceReport.triggeredDefences.length).toBe(0);
@@ -133,11 +133,7 @@ test(
         value: String(3),
       },
     ]);
-    const defenceReport = await detectTriggeredDefences(
-      message,
-      defences,
-      false
-    );
+    const defenceReport = await detectTriggeredDefences(message, defences);
     expect(defenceReport.blockedReason).toBe("Message is too long");
     expect(defenceReport.isBlocked).toBe(true);
     expect(defenceReport.triggeredDefences).toContain("CHARACTER_LIMIT");
@@ -160,11 +156,7 @@ test(
         value: String(280),
       },
     ]);
-    const defenceReport = await detectTriggeredDefences(
-      message,
-      defences,
-      false
-    );
+    const defenceReport = await detectTriggeredDefences(message, defences);
     expect(defenceReport.blockedReason).toBe(null);
     expect(defenceReport.isBlocked).toBe(false);
     expect(defenceReport.triggeredDefences.length).toBe(0);
@@ -185,11 +177,7 @@ test(
         value: String(3),
       },
     ]);
-    const defenceReport = await detectTriggeredDefences(
-      message,
-      defences,
-      false
-    );
+    const defenceReport = await detectTriggeredDefences(message, defences);
     expect(defenceReport.blockedReason).toBe(null);
     expect(defenceReport.isBlocked).toBe(false);
     expect(defenceReport.triggeredDefences).toContain("CHARACTER_LIMIT");
@@ -199,7 +187,7 @@ test(
 test("GIVEN message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is triggered", async () => {
   const message = "<Hello>";
   const defences = getInitialDefences();
-  const defenceReport = await detectTriggeredDefences(message, defences, false);
+  const defenceReport = await detectTriggeredDefences(message, defences);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
   expect(defenceReport.triggeredDefences).toContain("XML_TAGGING");
