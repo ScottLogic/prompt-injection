@@ -4,10 +4,18 @@ import {
   deactivateDefence,
   detectTriggeredDefences,
   getInitialDefences,
+  getQALLMprePrompt,
   getSystemRole,
   isDefenceActive,
   transformMessage,
 } from "../../src/defence";
+import { PHASE_NAMES } from "../../src/models/phase";
+import { retrievalQAPrePromptSecure } from "../../src/promptTemplates";
+
+beforeEach(() => {
+  // clear environment variables
+  process.env = {};
+});
 
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {
   const defence = "SYSTEM_ROLE";
@@ -106,6 +114,17 @@ test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
   const transformedMessage = transformMessage(message, updatedDefences);
   // expect the message to be surrounded by XML tags
   expect(transformedMessage).toBe("<user_input>" + message + "</user_input>");
+});
+
+test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN transforming message THEN message is transformed AND transformed message escapes XML tags", () => {
+  const message = "<>&'\"";
+  const escapedMessage = "&lt;&gt;&amp;&apos;&quot;"
+  const defences = getInitialDefences();
+  // activate XML_TAGGING defence
+  const updatedDefences = activateDefence("XML_TAGGING", defences);
+  const transformedMessage = transformMessage(message, updatedDefences);
+  // expect the message to be surrounded by XML tags
+  expect(transformedMessage).toBe("<user_input>" + escapedMessage + "</user_input>");
 });
 
 test("GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered", async () => {
@@ -241,6 +260,45 @@ test("GIVEN a new system role has been set WHEN getting system role THEN return 
   ]);
   systemRole = getSystemRole(defences);
   expect(systemRole).toBe("new system role");
+});
+
+test("GIVEN system roles have been set for each phase WHEN getting system roles THEN the right system role is returned per phase", () => {
+  process.env.SYSTEM_ROLE_PHASE_0 = "phase 0 system role";
+  process.env.SYSTEM_ROLE_PHASE_1 = "phase 1 system role";
+  process.env.SYSTEM_ROLE_PHASE_2 = "phase 2 system role";
+  const defences = getInitialDefences();
+  const systemRolePhase0 = getSystemRole(defences, PHASE_NAMES.PHASE_0);
+  const systemRolePhase1 = getSystemRole(defences, PHASE_NAMES.PHASE_1);
+  const systemRolePhase2 = getSystemRole(defences, PHASE_NAMES.PHASE_2);
+  expect(systemRolePhase0).toBe("phase 0 system role");
+  expect(systemRolePhase1).toBe("phase 1 system role");
+  expect(systemRolePhase2).toBe("phase 2 system role");
+});
+
+test("GIVEN system roles have not been set for each phase WHEN getting system roles THEN empty strings are returned", () => {
+  const defences = getInitialDefences();
+  const systemRolePhase0 = getSystemRole(defences, PHASE_NAMES.PHASE_0);
+  const systemRolePhase1 = getSystemRole(defences, PHASE_NAMES.PHASE_1);
+  const systemRolePhase2 = getSystemRole(defences, PHASE_NAMES.PHASE_2);
+  expect(systemRolePhase0).toBe("");
+  expect(systemRolePhase1).toBe("");
+  expect(systemRolePhase2).toBe("");
+});
+
+test("GIVEN QA LLM instructions have not been configured WHEN getting QA LLM instructions THEN return default secure prompt", () => {
+  const defences = getInitialDefences();
+  const qaLlmInstructions = getQALLMprePrompt(defences);
+  expect(qaLlmInstructions).toBe(retrievalQAPrePromptSecure);
+});
+
+test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instructions THEN return configured prompt", () => {
+  const newQaLlmInstructions = "new QA LLM instructions";
+  let defences = getInitialDefences();
+  defences = configureDefence("QA_LLM_INSTRUCTIONS", defences, [
+    { id: "prePrompt", value: newQaLlmInstructions },
+  ]);
+  const qaLlmInstructions = getQALLMprePrompt(defences);
+  expect(qaLlmInstructions).toBe(newQaLlmInstructions);
 });
 
 test("GIVEN setting email whitelist WHEN configuring defence THEN defence is configured", () => {

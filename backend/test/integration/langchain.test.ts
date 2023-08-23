@@ -98,6 +98,11 @@ jest.mock("langchain/chains", () => {
   };
 });
 
+beforeEach(() => {
+  // clear environment variables
+  process.env = {};
+});
+
 test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is initialised THEN the llm is initialized and the prompt is set to the default", async () => {
   // spy on getDocuments
   await initQAModel("test-api-key", "");
