@@ -30,11 +30,11 @@ router.post("/defence/activate", (req, res) => {
     req.session.defences = activateDefence(defenceId, req.session.defences);
 
     // need to re-initialize QA model when turned on
-    if (defenceId === "QA_LLM_INSTRUCTIONS") {
+    if (defenceId === "QA_LLM_INSTRUCTIONS" && req.session.openAiApiKey) {
       console.debug(
         "Activating qa llm instruction defence - reinitializing qa model"
       );
-      initQAModel(req.session.apiKey, getQALLMprePrompt(req.session.defences));
+      initQAModel(req.session.openAiApiKey, getQALLMprePrompt(req.session.defences));
     }
 
     res.send("Defence activated");
@@ -52,9 +52,9 @@ router.post("/defence/deactivate", (req, res) => {
     // deactivate the defence
     req.session.defences = deactivateDefence(defenceId, req.session.defences);
 
-    if (defenceId === "QA_LLM_INSTRUCTIONS") {
+    if (defenceId === "QA_LLM_INSTRUCTIONS" && req.session.openAiApiKey) {
       console.debug("Resetting QA model with default prompt");
-      initQAModel(req.session.apiKey, getQALLMprePrompt(req.session.defences));
+      initQAModel(req.session.openAiApiKey, getQALLMprePrompt(req.session.defences));
     }
     res.send("Defence deactivated");
   } else {
@@ -119,86 +119,97 @@ router.post("/openai/chat", async (req, res) => {
     transformedMessage: "",
     wonPhase: false,
   };
+  
+  // must have initialised openai
+  if (!req.session.openAiApiKey) {
+    res.statusCode = 401;
+    chatResponse.defenceInfo.isBlocked = true;
+    chatResponse.defenceInfo.blockedReason = "Please enter a valid OpenAI API key to chat to me!";
+    console.error(chatResponse.reply);
+  } else {
+    // parse out the message
+    const message: string = req.body?.message;
+    const currentPhase: PHASE_NAMES = req.body?.currentPhase;
+    let numPhasesCompleted = req.session.numPhasesCompleted;
 
-  // parse out the message
-  const message: string = req.body?.message;
-  const currentPhase: PHASE_NAMES = req.body?.currentPhase;
-  let numPhasesCompleted = req.session.numPhasesCompleted;
-
-  // if phase has changed, reinitialize the QA model with with new filepath
-  if (prevPhase != currentPhase) {
-    prevPhase = currentPhase;
-    initQAModel(req.session.apiKey, retrievalQAPrePrompt, currentPhase);
-  }
-  if (message) {
-    chatResponse.transformedMessage = message;
-    // see if this message triggers any defences (only for phase 2 and sandbox)
-    if (
-      currentPhase === PHASE_NAMES.PHASE_2 ||
-      currentPhase === PHASE_NAMES.SANDBOX
-    ) {
-      chatResponse.defenceInfo = await detectTriggeredDefences(
-        message,
-        req.session.defences
-      );
+    // if phase has changed, reinitialize the QA model with with new filepath
+    if (prevPhase != currentPhase) {
+      prevPhase = currentPhase;
+      initQAModel(req.session.openAiApiKey, retrievalQAPrePrompt, currentPhase);
     }
-    // if blocked, send the response
-    if (!chatResponse.defenceInfo.isBlocked) {
-      // transform the message according to active defences
-      chatResponse.transformedMessage = transformMessage(
-        message,
-        req.session.defences
-      );
-
-      // get the chatGPT reply
-      try {
-        const openAiReply = await chatGptSendMessage(
-          req.session.chatHistory,
-          req.session.defences,
-          req.session.gptModel,
-          chatResponse.transformedMessage,
-          req.session.sentEmails,
-          currentPhase
+    if (message) {
+      chatResponse.transformedMessage = message;
+      // see if this message triggers any defences (only for phase 2 and sandbox)
+      if (
+        currentPhase === PHASE_NAMES.PHASE_2 ||
+        currentPhase === PHASE_NAMES.SANDBOX
+      ) {
+        chatResponse.defenceInfo = await detectTriggeredDefences(
+          message,
+          req.session.defences
+        );
+      }
+      // if blocked, send the response
+      if (!chatResponse.defenceInfo.isBlocked) {
+        // transform the message according to active defences
+        chatResponse.transformedMessage = transformMessage(
+          message,
+          req.session.defences
         );
 
-        if (openAiReply) {
-          chatResponse.wonPhase = openAiReply.wonPhase;
-          chatResponse.reply = openAiReply.completion.content || "";
-          // combine triggered defences
-          chatResponse.defenceInfo.triggeredDefences = [
-            ...chatResponse.defenceInfo.triggeredDefences,
-            ...openAiReply.defenceInfo.triggeredDefences,
-          ];
-          // combine blocked
-          chatResponse.defenceInfo.isBlocked =
-            chatResponse.defenceInfo.isBlocked ||
-            openAiReply.defenceInfo.isBlocked;
-        }
-      } catch (error: any) {
-        console.log(error);
-        if (error.response?.status == 401) {
-          res.statusCode = 401;
-          chatResponse.reply =
-            "Please enter a valid OpenAI API key to chat to me!";
-        } else {
-          res.statusCode = 500;
+        // get the chatGPT reply
+        try {
+          const openAiReply = await chatGptSendMessage(
+            req.session.chatHistory,
+            req.session.defences,
+            req.session.gptModel,
+            chatResponse.transformedMessage,
+            req.session.openAiApiKey,
+            req.session.sentEmails,
+            currentPhase
+          );
+
+          if (openAiReply) {
+            chatResponse.wonPhase = openAiReply.wonPhase;
+            chatResponse.reply = openAiReply.completion.content || "";
+            // combine triggered defences
+            chatResponse.defenceInfo.triggeredDefences = [
+              ...chatResponse.defenceInfo.triggeredDefences,
+              ...openAiReply.defenceInfo.triggeredDefences,
+            ];
+            // combine blocked
+            chatResponse.defenceInfo.isBlocked =
+              chatResponse.defenceInfo.isBlocked ||
+              openAiReply.defenceInfo.isBlocked;
+          }
+        } catch (error: any) {
           console.log(error);
-          chatResponse.reply = "Failed to get chatGPT reply";
+          if (error.response?.status == 401) {
+            res.statusCode = 401;
+            chatResponse.reply =
+              "Please enter a valid OpenAI API key to chat to me!";
+          } else {
+            res.statusCode = 500;
+            console.log(error);
+            chatResponse.reply = "Failed to get chatGPT reply";
+          }
         }
       }
+
+      // enable next phase when user wins current phase
+      if (chatResponse.wonPhase) {
+        console.log("Win conditon met for phase: ", currentPhase);
+        numPhasesCompleted = currentPhase + 1;
+        req.session.numPhasesCompleted = numPhasesCompleted;
+        chatResponse.numPhasesCompleted = numPhasesCompleted;
+      }
+    } else {
+      res.statusCode = 400;
+      chatResponse.reply = "Missing message";
+      console.error(chatResponse.reply);
     }
-  } else {
-    res.statusCode = 400;
-    chatResponse.reply = "Missing message";
-    console.error(chatResponse.reply);
   }
-  // enable next phase when user wins current phase
-  if (chatResponse.wonPhase) {
-    console.log("Win conditon met for phase: ", currentPhase);
-    numPhasesCompleted = currentPhase + 1;
-    req.session.numPhasesCompleted = numPhasesCompleted;
-    chatResponse.numPhasesCompleted = numPhasesCompleted;
-  }
+  
   // log and send the reply with defence info
   console.log(chatResponse);
   res.send(chatResponse);
@@ -212,19 +223,13 @@ router.post("/openai/clear", (req, res) => {
 
 // Set API key
 router.post("/openai/apiKey", async (req, res) => {
-  const apiKey: string = req.body?.apiKey;
-  if (!apiKey) {
+  const openAiApiKey: string = req.body?.openAiApiKey;
+  if (!openAiApiKey) {
     res.status(401).send("Invalid API key");
     return;
   }
-  if (
-    await setOpenAiApiKey(
-      apiKey,
-      req.session.gptModel,
-      getQALLMprePrompt(req.session.defences)
-    )
-  ) {
-    req.session.apiKey = apiKey;
+  if (await setOpenAiApiKey(openAiApiKey, req.session.gptModel, getQALLMprePrompt(req.session.defences))) {
+    req.session.openAiApiKey = openAiApiKey;
     res.send("API key set");
   } else {
     res.status(401).send("Invalid API key");
@@ -233,18 +238,22 @@ router.post("/openai/apiKey", async (req, res) => {
 
 // Get API key
 router.get("/openai/apiKey", (req, res) => {
-  res.send(req.session.apiKey);
+  res.send(req.session.openAiApiKey);
 });
 
 // Set the ChatGPT model
 router.post("/openai/model", async (req, res) => {
   const model: CHAT_MODELS = req.body?.model;
-  if (model) {
-    if (await setGptModel(req.session, model)) {
-      res.status(200).send("ChatGPT model set. ");
-    } else {
-      res.status(401).send("Could not set model");
-    }
+  if (!model) {
+    res.status(400).send("Missing model");
+  } else if (!req.session.openAiApiKey) {
+    res.status(401).send("Please enter a valid OpenAI API key to set the model!");
+  } else if (model === req.session.gptModel) {
+    res.status(200).send("ChatGPT model already set. ");
+  } else if (await setGptModel(req.session.openAiApiKey, model)) {
+    res.status(200).send("ChatGPT model set. ");
+  } else {
+    res.status(401).send("Could not set model");
   }
 });
 

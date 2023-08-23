@@ -24,18 +24,18 @@ const sendMessage = async (
   return data;
 };
 
-const setOpenAIApiKey = async (apiKey: string): Promise<boolean> => {
+const setOpenAIApiKey = async (openAiApiKey: string): Promise<boolean> => {
   const response = await sendRequest(
-    PATH + "apiKey",
+    PATH + "openAiApiKey",
     "POST",
     { "Content-Type": "application/json" },
-    JSON.stringify({ apiKey })
+    JSON.stringify({ openAiApiKey })
   );
   return response.status === 200;
 };
 
 const getOpenAIApiKey = async (): Promise<string> => {
-  const response = await sendRequest(PATH + "apiKey", "GET");
+  const response = await sendRequest(PATH + "openAiApiKey", "GET");
   const data = await response.text();
   return data;
 };
