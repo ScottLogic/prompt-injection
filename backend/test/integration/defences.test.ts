@@ -14,6 +14,11 @@ jest.mock("langchain/chains", () => {
   };
 });
 
+beforeEach(() => {
+  // clear environment variables
+  process.env = {};
+});
+
 test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({

@@ -6,6 +6,11 @@ import {
 } from "../../src/email";
 import { PHASE_NAMES } from "../../src/models/phase";
 
+beforeEach(() => {
+  // clear environment variables
+  process.env = {};
+});
+
 test("GIVEN an email is to be sent WHEN sendEmail is called THEN the response is valid", () => {
   const address = "bob@scottlogic.com";
   const subject = "Secret project";

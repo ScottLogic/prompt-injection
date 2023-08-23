@@ -29,6 +29,11 @@ jest.mock("../../src/langchain", () => {
   };
 });
 
+beforeEach(() => {
+  // clear environment variables
+  process.env = {};
+});
+
 test("GIVEN OpenAI not initialised WHEN sending message THEN error is thrown", async () => {
   const message = "Hello";
   const chatHistory: ChatCompletionRequestMessage[] = [];
@@ -286,6 +291,9 @@ test(
   "GIVEN SYSTEM_ROLE defence is active AND the system role is already in the chat history " +
     "WHEN sending message THEN system role is not re-added to the chat history",
   async () => {
+    // set the system role prompt
+    process.env.SYSTEM_ROLE = "You are a helpful assistant";
+    
     const message = "Hello";
     const chatHistory: ChatCompletionRequestMessage[] = [
       {

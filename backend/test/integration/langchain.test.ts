@@ -82,6 +82,11 @@ jest.mock("langchain/llms/openai", () => {
   };
 });
 
+beforeEach(() => {
+  // clear environment variables
+  process.env = {};
+});
+
 test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is initialised THEN the prompt is set to the default and documents are set for sandbox phase", () => {
   initQAModel("test-api-key", "");
 

@@ -12,6 +12,11 @@ import {
 import { PHASE_NAMES } from "../../src/models/phase";
 import { retrievalQAPrePromptSecure } from "../../src/promptTemplates";
 
+beforeEach(() => {
+  // clear environment variables
+  process.env = {};
+});
+
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {
   const defence = "SYSTEM_ROLE";
   const defences = getInitialDefences();
@@ -280,6 +285,16 @@ test("GIVEN system roles have been set for each phase WHEN getting system roles 
   expect(systemRolePhase0).toBe("phase 0 system role");
   expect(systemRolePhase1).toBe("phase 1 system role");
   expect(systemRolePhase2).toBe("phase 2 system role");
+});
+
+test("GIVEN system roles have not been set for each phase WHEN getting system roles THEN empty strings are returned", () => {
+  const defences = getInitialDefences();
+  const systemRolePhase0 = getSystemRole(defences, PHASE_NAMES.PHASE_0);
+  const systemRolePhase1 = getSystemRole(defences, PHASE_NAMES.PHASE_1);
+  const systemRolePhase2 = getSystemRole(defences, PHASE_NAMES.PHASE_2);
+  expect(systemRolePhase0).toBe("");
+  expect(systemRolePhase1).toBe("");
+  expect(systemRolePhase2).toBe("");
 });
 
 test("GIVEN QA LLM instructions have not been configured WHEN getting QA LLM instructions THEN return default secure prompt", () => {
