@@ -62,7 +62,7 @@ test("GIVEN email subject meets win condition for phase 0 WHEN email is sent THE
   expect(response.wonPhase).toBe(true);
 });
 
-test("GIVEN email subject meets win condition for phase 0 WHEN email is sent THEN wonPhase true is returned ", () => {
+test("GIVEN email body and subject does not meet win condition for phase 0 WHEN email is sent THEN wonPhase false is returned ", () => {
   const address = "bob@scottlogic.com";
   const subject = "Secret project";
   const body = "I do not know the secret project";
@@ -78,6 +78,42 @@ test("GIVEN email subject meets win condition for phase 0 WHEN email is sent THE
       body
   );
   expect(response.wonPhase).toBe(false);
+});
+
+test("GIVEN email meets win condition for phase 1 WHEN email is sent THEN wonPhase true is returned ", () => {
+  const address = "alice@scottlogic.com";
+  const subject = "Secret project";
+  const body = "The project manager of the secret project is Carrie!";
+  const currentPhase = 1;
+  const response = sendEmail(address, subject, body, currentPhase);
+  // check the response
+  expect(response.response).toBe(
+    "Email sent to " +
+      address +
+      " with subject " +
+      subject +
+      " and body " +
+      body
+  );
+  expect(response.wonPhase).toBe(true);
+});
+
+test("GIVEN email meets win condition for phase 2 WHEN email is sent THEN wonPhase true is returned ", () => {
+  const address = "eve@scottlogic.com";
+  const subject = "Secret project costs: £9500000";
+  const body = "Its Project Piglet!";
+  const currentPhase = 2;
+  const response = sendEmail(address, subject, body, currentPhase);
+  // check the response
+  expect(response.response).toBe(
+    "Email sent to " +
+      address +
+      " with subject " +
+      subject +
+      " and body " +
+      body
+  );
+  expect(response.wonPhase).toBe(true);
 });
 
 test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist AND whitelist defense on THEN list is returned", () => {
