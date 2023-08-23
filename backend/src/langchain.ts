@@ -175,40 +175,30 @@ async function queryPromptEvaluationModel(input: string) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };
   }
-
   const response = await promptEvaluationChain.call({
     prompt: input,
   });
-
   const promptInjectionEval = formatEvaluationOutput(
     response.promptInjectionEval
   );
   const maliciousInputEval = formatEvaluationOutput(
     response.maliciousInputEval
   );
-
   console.debug(
     "Prompt injection eval: " + JSON.stringify(promptInjectionEval)
   );
   console.debug("Malicious input eval: " + JSON.stringify(maliciousInputEval));
 
-  console.debug(
-    "!!",
-    promptInjectionEval.isMalicious,
-    maliciousInputEval.isMalicious
-  );
-
   // if both are malicious, combine reason
   if (promptInjectionEval.isMalicious && maliciousInputEval.isMalicious) {
     return {
       isMalicious: true,
-      reason:
-        `${promptInjectionEval.reason} & ${maliciousInputEval.reason}`.trim(),
+      reason: `${promptInjectionEval.reason} & ${maliciousInputEval.reason}`,
     };
   } else if (promptInjectionEval.isMalicious) {
-    return { isMalicious: true, reason: promptInjectionEval.reason.trim() };
+    return { isMalicious: true, reason: promptInjectionEval.reason };
   } else if (maliciousInputEval.isMalicious) {
-    return { isMalicious: true, reason: maliciousInputEval.reason.trim() };
+    return { isMalicious: true, reason: maliciousInputEval.reason };
   }
   return { isMalicious: false, reason: "" };
 }
@@ -219,7 +209,7 @@ function formatEvaluationOutput(response: string) {
     // split response on first full stop or comma
     const splitResponse = response.split(/\.|,/);
     const answer = splitResponse[0]?.replace(/\W/g, "").toLowerCase();
-    const reason = splitResponse[1].trim();
+    const reason = splitResponse[1]?.trim();
     return {
       isMalicious: answer === "yes",
       reason: reason,

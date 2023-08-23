@@ -123,11 +123,10 @@ test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
 });
 
 test("GIVEN the QA model is initilised WHEN a question is asked THEN it answers ", async () => {
-  mockFromLLM.mockRestore();
   mockCall.mockResolvedValue({
     text: "The CEO is Bill.",
   });
-  await initQAModel("test-api-key", "");
+  await initQAModel("test-api-key", "", PHASE_NAMES.SANDBOX);
   expect(qaChain).toBeDefined();
   const answer = await queryDocuments("who is the CEO?");
   expect(answer).toEqual({

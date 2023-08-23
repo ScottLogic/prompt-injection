@@ -1,8 +1,10 @@
 import { PHASE_NAMES } from "../../src/models/phase";
 import {
+  initQAModel,
   getFilepath,
   getQAPromptTemplate,
   formatEvaluationOutput,
+  initPromptEvaluationModel,
 } from "../../src/langchain";
 import {
   qAcontextTemplate,
@@ -14,6 +16,22 @@ jest.mock("langchain/prompts", () => ({
     fromTemplate: jest.fn((template) => template),
   },
 }));
+
+test("GIVEN initQAModel is called with no apiKey THEN return early and log message", async () => {
+  const consoleDebugMock = jest.spyOn(console, "debug").mockImplementation();
+  await initQAModel("", "");
+  expect(consoleDebugMock).toHaveBeenCalledWith(
+    "No apiKey set to initialise QA model"
+  );
+});
+
+test("GIVEN initPromptEvaluationModel is called with no apiKey THEN return early and log message", async () => {
+  const consoleDebugMock = jest.spyOn(console, "debug").mockImplementation();
+  await initPromptEvaluationModel("");
+  expect(consoleDebugMock).toHaveBeenCalledWith(
+    "No apiKey set to initialise prompt evaluation model"
+  );
+});
 
 test("GIVEN phase is 0 THEN correct filepath is returned", () => {
   const filePath = getFilepath(PHASE_NAMES.PHASE_0);
@@ -71,6 +89,6 @@ test("GIVEN llm evaluation model responds with an invalid format THEN formatEval
 
   expect(formattedOutput).toEqual({
     isMalicious: false,
-    reason: "",
+    reason: undefined,
   });
 });
