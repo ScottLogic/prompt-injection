@@ -21,7 +21,7 @@ test("GIVEN initQAModel is called with no apiKey THEN return early and log messa
   const consoleDebugMock = jest.spyOn(console, "debug").mockImplementation();
   await initQAModel("", "");
   expect(consoleDebugMock).toHaveBeenCalledWith(
-    "No apiKey set to initialise QA model"
+    "No OpenAI API key set to initialise QA model"
   );
 });
 
@@ -29,7 +29,7 @@ test("GIVEN initPromptEvaluationModel is called with no apiKey THEN return early
   const consoleDebugMock = jest.spyOn(console, "debug").mockImplementation();
   await initPromptEvaluationModel("");
   expect(consoleDebugMock).toHaveBeenCalledWith(
-    "No apiKey set to initialise prompt evaluation model"
+    "No OpenAI API key set to initialise prompt evaluation model"
   );
 });
 

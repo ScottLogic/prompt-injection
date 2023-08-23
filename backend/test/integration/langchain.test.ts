@@ -13,6 +13,8 @@ import {
   initQAModel,
   queryDocuments,
   queryPromptEvaluationModel,
+  setQAChain,
+  setPromptEvaluationChain,
 } from "../../src/langchain";
 import { PHASE_NAMES } from "../../src/models/phase";
 import {
@@ -100,7 +102,12 @@ jest.mock("langchain/chains", () => {
 });
 
 beforeEach(() => {
+  // clear environment variables
   process.env = {};
+
+  // reset the chains
+  setQAChain(null);
+  setPromptEvaluationChain(null);
 });
 
 test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is initialised THEN the llm is initialized and the prompt is set to the default", async () => {
@@ -141,8 +148,6 @@ test("GIVEN the QA model is initilised WHEN a question is asked THEN it answers 
 });
 
 test("GIVEN the QA model is not initialised WHEN a question is asked THEN it returns an empty response ", async () => {
-  mockFromLLM.mockReset();
-  mockFromLLM.mockImplementation(() => null);
   const answer = await queryDocuments("who is the CEO?");
   expect(answer.reply).toEqual("");
 });

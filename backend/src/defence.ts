@@ -92,7 +92,7 @@ function getMaxMessageLength(defences: DefenceInfo[]) {
 }
 
 function getRandomSequenceEnclosurePrePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(defences, "RANDOM_SEQUENCE_ENCLOSURE", "prePrompt", "");
+  return getConfigValue(defences, "RANDOM_SEQUENCE_ENCLOSURE", "prePrompt", retrievalQAPrePromptSecure);
 }
 
 function getRandomSequenceEnclosureLength(defences: DefenceInfo[]) {
@@ -179,9 +179,8 @@ function escapeXml(unsafe: string) {
       case "'":
         return "&apos;";
       case '"':
-        return "&quot;";
       default:
-        return c;
+        return "&quot;";
     }
   });
 }
@@ -230,8 +229,7 @@ function transformMessage(message: string, defences: DefenceInfo[]) {
 // detects triggered defences in original message and blocks the message if necessary
 async function detectTriggeredDefences(
   message: string,
-  defences: DefenceInfo[],
-  useLlmEvaluation: boolean
+  defences: DefenceInfo[]
 ) {
   // keep track of any triggered defences
   const defenceReport: ChatDefenceReport = {
@@ -263,18 +261,15 @@ async function detectTriggeredDefences(
   }
 
   // evaluate the message for prompt injection
-  // to speed up replies, only do this on phases where defences are active
-  if (useLlmEvaluation) {
-    const evalPrompt = await queryPromptEvaluationModel(message);
-    if (evalPrompt.isMalicious) {
-      defenceReport.triggeredDefences.push("LLM_EVALUATION");
-      if (isDefenceActive("LLM_EVALUATION", defences)) {
-        console.debug("LLM evalutation defence active.");
-        defenceReport.isBlocked = true;
-        defenceReport.blockedReason =
-          "Message blocked by the malicious prompt evaluator." +
-          evalPrompt.reason;
-      }
+  const evalPrompt = await queryPromptEvaluationModel(message);
+  if (evalPrompt.isMalicious) {
+    defenceReport.triggeredDefences.push("LLM_EVALUATION");
+    if (isDefenceActive("LLM_EVALUATION", defences)) {
+      console.debug("LLM evalutation defence active.");
+      defenceReport.isBlocked = true;
+      defenceReport.blockedReason =
+        "Message blocked by the malicious prompt evaluator." +
+        evalPrompt.reason;
     }
   }
 
@@ -285,11 +280,11 @@ export {
   activateDefence,
   configureDefence,
   deactivateDefence,
+  detectTriggeredDefences,
+  getEmailWhitelistVar,
   getInitialDefences,
   getQALLMprePrompt,
   getSystemRole,
   isDefenceActive,
   transformMessage,
-  detectTriggeredDefences,
-  getEmailWhitelistVar,
 };

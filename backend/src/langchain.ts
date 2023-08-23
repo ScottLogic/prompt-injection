@@ -26,6 +26,16 @@ let qaChain: RetrievalQAChain | null = null;
 // chain we use in prompt evaluation request
 let promptEvaluationChain: SequentialChain | null = null;
 
+function setQAChain(chain: RetrievalQAChain | null) {
+  console.debug("Setting QA chain.");
+  qaChain = chain;
+}
+
+function setPromptEvaluationChain(chain: SequentialChain | null) {
+  console.debug("Setting evaluation chain.");
+  promptEvaluationChain = chain;
+}
+
 function getFilepath(currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX) {
   let filePath = "resources/documents/";
   switch (currentPhase) {
@@ -73,13 +83,13 @@ function getQAPromptTemplate(prePrompt: string) {
 
 // QA Chain - ask the chat model a question about the documents
 async function initQAModel(
-  apiKey: string,
+  openAiApiKey: string,
   prePrompt: string,
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ) {
-  if (!apiKey) {
-    console.debug("No apiKey set to initialise QA model");
+  if (!openAiApiKey) {
+    console.debug("No OpenAI API key set to initialise QA model");
     return;
   }
   // get the documents
@@ -87,7 +97,7 @@ async function initQAModel(
 
   // embed and store the splits
   const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: apiKey,
+    openAIApiKey: openAiApiKey,
   });
   const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
 
@@ -95,23 +105,27 @@ async function initQAModel(
   const model = new ChatOpenAI({
     modelName: CHAT_MODELS.GPT_4,
     streaming: true,
-    openAIApiKey: apiKey,
+    openAIApiKey: openAiApiKey,
   });
 
   // prompt template for question and answering
   const qaPrompt = getQAPromptTemplate(prePrompt);
 
   // set chain to retrieval QA chain
-  qaChain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
-    prompt: qaPrompt,
-  });
+  setQAChain(
+    RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
+      prompt: qaPrompt,
+    })
+  );
   console.debug("QA chain initialised.");
 }
 
 // initialise the prompt evaluation model
-function initPromptEvaluationModel(apiKey: string) {
-  if (!apiKey) {
-    console.debug("No apiKey set to initialise prompt evaluation model");
+function initPromptEvaluationModel(openAiApiKey: string) {
+  if (!openAiApiKey) {
+    console.debug(
+      "No OpenAI API key set to initialise prompt evaluation model"
+    );
     return;
   }
   // create chain to detect prompt injection
@@ -123,7 +137,7 @@ function initPromptEvaluationModel(apiKey: string) {
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
-      openAIApiKey: apiKey,
+      openAIApiKey: openAiApiKey,
     }),
     prompt: promptInjectionPrompt,
     outputKey: "promptInjectionEval",
@@ -137,17 +151,19 @@ function initPromptEvaluationModel(apiKey: string) {
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
-      openAIApiKey: apiKey,
+      openAIApiKey: openAiApiKey,
     }),
     prompt: maliciousInputPrompt,
     outputKey: "maliciousInputEval",
   });
 
-  promptEvaluationChain = new SequentialChain({
+  const sequentialChain = new SequentialChain({
     chains: [promptInjectionChain, maliciousInputChain],
     inputVariables: ["prompt"],
     outputVariables: ["promptInjectionEval", "maliciousInputEval"],
   });
+  setPromptEvaluationChain(sequentialChain);
+
   console.debug("Prompt evaluation chain initialised.");
 }
 
@@ -174,6 +190,8 @@ async function queryPromptEvaluationModel(input: string) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };
   }
+  console.log(`Checking '${input}' for malicious prompts`);
+
   const response = await promptEvaluationChain.call({
     prompt: input,
   });
@@ -233,4 +251,6 @@ export {
   queryDocuments,
   queryPromptEvaluationModel,
   formatEvaluationOutput,
+  setQAChain,
+  setPromptEvaluationChain,
 };
