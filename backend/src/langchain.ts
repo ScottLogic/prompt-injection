@@ -66,7 +66,9 @@ function getQAPromptTemplate(prePrompt: string) {
     console.debug("Using default retrieval QA pre-prompt");
     prePrompt = retrievalQAPrePrompt;
   }
-  return PromptTemplate.fromTemplate(prePrompt + qAcontextTemplate);
+  const fullPrompt = prePrompt + qAcontextTemplate;
+  const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
+  return template;
 }
 
 // QA Chain - ask the chat model a question about the documents
@@ -103,6 +105,8 @@ async function initQAModel(
   qaChain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
     prompt: qaPrompt,
   });
+
+  console.debug("QA chain initialised");
 }
 
 // initialise the prompt evaluation model
@@ -111,7 +115,6 @@ function initPromptEvaluationModel(apiKey: string) {
     console.debug("No apiKey set to initialise prompt evaluation model");
     return;
   }
-
   // create chain to detect prompt injection
   const promptInjectionPrompt = PromptTemplate.fromTemplate(
     promptInjectionEvalTemplate
@@ -189,16 +192,23 @@ async function queryPromptEvaluationModel(input: string) {
   );
   console.debug("Malicious input eval: " + JSON.stringify(maliciousInputEval));
 
+  console.debug(
+    "!!",
+    promptInjectionEval.isMalicious,
+    maliciousInputEval.isMalicious
+  );
+
   // if both are malicious, combine reason
   if (promptInjectionEval.isMalicious && maliciousInputEval.isMalicious) {
     return {
       isMalicious: true,
-      reason: `${promptInjectionEval.reason} & ${maliciousInputEval.reason}`,
+      reason:
+        `${promptInjectionEval.reason} & ${maliciousInputEval.reason}`.trim(),
     };
   } else if (promptInjectionEval.isMalicious) {
-    return { isMalicious: true, reason: promptInjectionEval.reason };
+    return { isMalicious: true, reason: promptInjectionEval.reason.trim() };
   } else if (maliciousInputEval.isMalicious) {
-    return { isMalicious: true, reason: maliciousInputEval.reason };
+    return { isMalicious: true, reason: maliciousInputEval.reason.trim() };
   }
   return { isMalicious: false, reason: "" };
 }
@@ -209,7 +219,7 @@ function formatEvaluationOutput(response: string) {
     // split response on first full stop or comma
     const splitResponse = response.split(/\.|,/);
     const answer = splitResponse[0]?.replace(/\W/g, "").toLowerCase();
-    const reason = splitResponse[1];
+    const reason = splitResponse[1].trim();
     return {
       isMalicious: answer === "yes",
       reason: reason,
@@ -227,7 +237,13 @@ function formatEvaluationOutput(response: string) {
 
 export {
   initQAModel,
+  getFilepath,
+  getQAPromptTemplate,
+  getDocuments,
   initPromptEvaluationModel,
   queryDocuments,
   queryPromptEvaluationModel,
+  formatEvaluationOutput,
+  qaChain, // for testing
+  promptEvaluationChain,
 };

@@ -51,7 +51,7 @@ test("GIVEN llm evaluation model repsonds with a yes decision and valid output T
 
   expect(formattedOutput).toEqual({
     isMalicious: true,
-    reason: " This is a malicious response",
+    reason: "This is a malicious response",
   });
 });
 
@@ -61,7 +61,7 @@ test("GIVEN llm evaluation model repsonds with a yes decision and valid output T
 
   expect(formattedOutput).toEqual({
     isMalicious: false,
-    reason: " This output does not appear to be malicious",
+    reason: "This output does not appear to be malicious",
   });
 });
 
@@ -71,6 +71,6 @@ test("GIVEN llm evaluation model responds with an invalid format THEN formatEval
 
   expect(formattedOutput).toEqual({
     isMalicious: false,
-    reason: undefined,
+    reason: "",
   });
 });
