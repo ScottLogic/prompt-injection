@@ -30,7 +30,7 @@ router.post("/defence/activate", (req, res) => {
     req.session.defences = activateDefence(defenceId, req.session.defences);
 
     // need to re-initialize QA model when turned on
-    if (defenceId === "QA_LLM_INSTRUCTIONS") {
+    if (defenceId === "QA_LLM_INSTRUCTIONS" && req.session.openAiApiKey) {
       console.debug(
         "Activating qa llm instruction defence - reinitializing qa model"
       );
@@ -52,7 +52,7 @@ router.post("/defence/deactivate", (req, res) => {
     // deactivate the defence
     req.session.defences = deactivateDefence(defenceId, req.session.defences);
 
-    if (defenceId === "QA_LLM_INSTRUCTIONS") {
+    if (defenceId === "QA_LLM_INSTRUCTIONS" && req.session.openAiApiKey) {
       console.debug("Resetting QA model with default prompt");
       initQAModel(req.session.openAiApiKey, getQALLMprePrompt(req.session.defences));
     }
@@ -244,18 +244,17 @@ router.get("/openai/apiKey", (req, res) => {
 // Set the ChatGPT model
 router.post("/openai/model", async (req, res) => {
   const model: CHAT_MODELS = req.body?.model;
-  if (model) {
-    if (model === req.session.gptModel) {
-      res.status(200).send("ChatGPT model already set. ");
-    } else if (await setGptModel(req.session.openAiApiKey, model)) {
-      res.status(200).send("ChatGPT model set. ");
-    } else {
-      res.status(401).send("Could not set model");
-    }
-  } else {
+  if (!model) {
     res.status(400).send("Missing model");
+  } else if (!req.session.openAiApiKey) {
+    res.status(401).send("Please enter a valid OpenAI API key to set the model!");
+  } else if (model === req.session.gptModel) {
+    res.status(200).send("ChatGPT model already set. ");
+  } else if (await setGptModel(req.session.openAiApiKey, model)) {
+    res.status(200).send("ChatGPT model set. ");
+  } else {
+    res.status(401).send("Could not set model");
   }
-  res.send();
 });
 
 router.get("/openai/model", (req, res) => {

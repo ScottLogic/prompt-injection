@@ -20,7 +20,7 @@ declare module "express-session" {
     defences: DefenceInfo[];
     gptModel: CHAT_MODELS;
     numPhasesCompleted: number;
-    openAiApiKey: string;
+    openAiApiKey: string | null;
     sentEmails: EmailInfo[];
   }
 }
@@ -78,7 +78,7 @@ app.use(async (req, _res, next) => {
     req.session.numPhasesCompleted = 0;
   }
   if (!req.session.openAiApiKey) {
-    req.session.openAiApiKey = process.env.OPENAI_API_KEY || "";
+    req.session.openAiApiKey = process.env.OPENAI_API_KEY || null;
   }
   if (!req.session.sentEmails) {
     req.session.sentEmails = [];
