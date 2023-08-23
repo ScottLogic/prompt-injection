@@ -285,11 +285,11 @@ export {
   activateDefence,
   configureDefence,
   deactivateDefence,
+  detectTriggeredDefences,
+  getEmailWhitelistVar,
   getInitialDefences,
   getQALLMprePrompt,
   getSystemRole,
   isDefenceActive,
   transformMessage,
-  detectTriggeredDefences,
-  getEmailWhitelistVar,
 };
