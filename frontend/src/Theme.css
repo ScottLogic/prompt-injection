@@ -15,6 +15,8 @@
   --main-input-text-colour: var(--main-button-inactive-text-colour);
 
   --chat-bot-background: linear-gradient(#D482FB, #F3DBFE);
+  --chat-blocked-background: linear-gradient(#cc3c3c, #ffD5DA);
+  --chat-edited-background: linear-gradient(#6a9b9b, #cae7f5);
   --chat-user-background: linear-gradient(var(--main-accent-colour), #8AD5DA);
   --chat-info-text-colour: #888;
   --chat-message-text-colour: #000;
