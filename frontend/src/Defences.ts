@@ -50,6 +50,12 @@ const DEFENCE_DETAILS_ALL: DefenceInfo[] = [
     "Currently the chatbot speaks to a separate Question/Answering LLM to retrieve information on documents. The QA LLM will reveal all information to the chatbot, who will then decide whether to reveal to the user. This defence adds an instructional pre-prompt to the QA LLM to not reveal certain sensitive information to the chatbot.",
     [new DefenceConfig("prePrompt", "pre-prompt")]
   ),
+  new DefenceInfo(
+    DEFENCE_TYPES.FILTERING,
+    "Filtering",
+    "A list of words or phrases to check against user input or bot output. If a match is found, the message is rejected.",
+    [new DefenceConfig("filtering", "filter list")]
+  ),
 ];
 
 export { DEFENCE_DETAILS_PHASE, DEFENCE_DETAILS_ALL };

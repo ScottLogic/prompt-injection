@@ -42,6 +42,12 @@ const getInitialDefences = (): DefenceInfo[] => {
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.XML_TAGGING, []),
+    new DefenceInfo(DEFENCE_TYPES.FILTERING, [
+      {
+        id: "filtering",
+        value: process.env.FILTER_LIST || "",
+      },
+    ]),
   ];
 };
 
@@ -92,7 +98,12 @@ function getMaxMessageLength(defences: DefenceInfo[]) {
 }
 
 function getRandomSequenceEnclosurePrePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(defences, "RANDOM_SEQUENCE_ENCLOSURE", "prePrompt", retrievalQAPrePromptSecure);
+  return getConfigValue(
+    defences,
+    "RANDOM_SEQUENCE_ENCLOSURE",
+    "prePrompt",
+    retrievalQAPrePromptSecure
+  );
 }
 
 function getRandomSequenceEnclosureLength(defences: DefenceInfo[]) {
@@ -127,6 +138,10 @@ function getEmailWhitelistVar(defences: DefenceInfo[]) {
 
 function getQALLMprePrompt(defences: DefenceInfo[]) {
   return getConfigValue(defences, "QA_LLM_INSTRUCTIONS", "prePrompt", "");
+}
+
+function getFilterList(defences: DefenceInfo[]) {
+  return getConfigValue(defences, "FILTERING", "filtering", "");
 }
 
 function isDefenceActive(id: string, defences: DefenceInfo[]) {
@@ -204,6 +219,24 @@ function transformXmlTagging(message: string) {
   return transformedMessage;
 }
 
+// check message for any words in the filter list
+function detectInputFilterList(message: string, filterList: string) {
+  const detectedPhrases = [];
+  const cleanedMessage = message.replace(/[^a-zA-Z ]/g, "").toLowerCase();
+  console.debug("cleaned message: " + cleanedMessage);
+  const filterListSplit = filterList
+    .toLowerCase()
+    .split(",")
+    .filter((phrase) => phrase.trim() !== "");
+  for (const phrase of filterListSplit) {
+    if (cleanedMessage.includes(phrase.trim())) {
+      detectedPhrases.push(phrase);
+    }
+  }
+  console.debug("detected phrases: " + detectedPhrases);
+  return detectedPhrases;
+}
+
 //apply defence string transformations to original message
 function transformMessage(message: string, defences: DefenceInfo[]) {
   let transformedMessage: string = message;
@@ -252,6 +285,22 @@ async function detectTriggeredDefences(
       return defenceReport;
     }
   }
+  const detectedPhrases = detectInputFilterList(
+    message,
+    getFilterList(defences)
+  );
+  if (detectedPhrases.length > 0) {
+    console.debug("FILTERING defence triggered.");
+    defenceReport.triggeredDefences.push("FILTERING");
+    if (isDefenceActive("FILTERING", defences)) {
+      defenceReport.isBlocked = true;
+      defenceReport.blockedReason =
+        "Message blocked - I cannot answer questions about " +
+        detectedPhrases.join(" or ") +
+        "!";
+      return defenceReport;
+    }
+  }
 
   // check if message contains XML tags
   if (detectXMLTags(message)) {
@@ -287,4 +336,5 @@ export {
   getSystemRole,
   isDefenceActive,
   transformMessage,
+  detectInputFilterList,
 };
