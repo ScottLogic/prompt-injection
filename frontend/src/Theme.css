@@ -21,5 +21,6 @@
   --chat-triggered-text-color: #cc3c3c;
 
   --email-background-colour: #93FFCB;
+  --email-divider-colour: var(--email-text-colour);
   --email-text-colour: #000;
 }
