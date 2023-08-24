@@ -11,7 +11,7 @@ import {
 } from "./defence";
 import { initQAModel } from "./langchain";
 import { CHAT_MODELS, ChatHttpResponse } from "./models/chat";
-import { DefenceConfig } from "./models/defence";
+import { DEFENCE_TYPES, DefenceConfig } from "./models/defence";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
 import { retrievalQAPrePrompt } from "./promptTemplates";
 import { PHASE_NAMES } from "./models/phase";
@@ -24,13 +24,13 @@ let prevPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX;
 // Activate a defence
 router.post("/defence/activate", (req, res) => {
   // id of the defence
-  const defenceId: string = req.body?.defenceId;
+  const defenceId: DEFENCE_TYPES = req.body?.defenceId;
   if (defenceId) {
     // activate the defence
     req.session.defences = activateDefence(defenceId, req.session.defences);
 
     // need to re-initialize QA model when turned on
-    if (defenceId === "QA_LLM_INSTRUCTIONS" && req.session.openAiApiKey) {
+    if (defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS && req.session.openAiApiKey) {
       console.debug(
         "Activating qa llm instruction defence - reinitializing qa model"
       );
@@ -47,12 +47,12 @@ router.post("/defence/activate", (req, res) => {
 // Deactivate a defence
 router.post("/defence/deactivate", (req, res) => {
   // id of the defence
-  const defenceId: string = req.body?.defenceId;
+  const defenceId: DEFENCE_TYPES = req.body?.defenceId;
   if (defenceId) {
     // deactivate the defence
     req.session.defences = deactivateDefence(defenceId, req.session.defences);
 
-    if (defenceId === "QA_LLM_INSTRUCTIONS" && req.session.openAiApiKey) {
+    if (defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS && req.session.openAiApiKey) {
       console.debug("Resetting QA model with default prompt");
       initQAModel(req.session.openAiApiKey, getQALLMprePrompt(req.session.defences));
     }

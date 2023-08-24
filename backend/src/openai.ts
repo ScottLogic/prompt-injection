@@ -165,8 +165,8 @@ async function chatGptCallFunction(
         isAllowedToSendEmail = true;
       } else {
         // trigger email defence even if it is not active
-        defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
-        if (isDefenceActive("EMAIL_WHITELIST", defences)) {
+        defenceInfo.triggeredDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
+        if (isDefenceActive(DEFENCE_TYPES.EMAIL_WHITELIST, defences)) {
           // do not send email if defence is on and set to blocked
           defenceInfo.isBlocked = true;
           defenceInfo.blockedReason =
@@ -229,7 +229,7 @@ async function chatGptChatCompletion(
   // system role is always active on phases
   if (
     currentPhase !== PHASE_NAMES.SANDBOX ||
-    isDefenceActive("SYSTEM_ROLE", defences)
+    isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
     // check to see if there's already a system role
     if (!chatHistory.find((message) => message.role === "system")) {
