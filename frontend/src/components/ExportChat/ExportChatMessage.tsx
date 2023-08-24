@@ -41,22 +41,34 @@ const styles = StyleSheet.create({
   },
 });
 
+const getMessage = (message: ChatMessage) => {
+  if (
+    message.type === CHAT_MESSAGE_TYPE.BOT &&
+    message.defenceInfo?.isBlocked
+  ) {
+    // show the reason why the message was blocked
+    return message.defenceInfo.blockedReason;
+  } else {
+    return message.message;
+  }
+};
+
 const getFullPrefix = (message: ChatMessage) => {
   switch (message.type) {
     case CHAT_MESSAGE_TYPE.INFO:
-      return "Info: " + message.message;
+      return "Info: " + getMessage(message);
     case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
-      return "Info: " + message.message;
+      return "Info: " + getMessage(message);
     case CHAT_MESSAGE_TYPE.USER:
       if (message.isOriginalMessage) {
-        return "You: " + message.message;
+        return "You: " + getMessage(message);
       } else {
-        return "You (edited): " + message.message;
+        return "You (edited): " + getMessage(message);
       }
     case CHAT_MESSAGE_TYPE.BOT:
-      return "Bot: " + message.message;
+      return "Bot: " + getMessage(message);
     default:
-      return message.message;
+      return getMessage(message);
   }
 };
 
