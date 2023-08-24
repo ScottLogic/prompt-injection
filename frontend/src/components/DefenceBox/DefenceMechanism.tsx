@@ -51,7 +51,11 @@ function DefenceMechanism({
   return (
     <span>
       <div
-        className="strategy-mechanism defence-mechanism"
+        className={
+          defenceDetail.isActive
+            ? "strategy-mechanism defence-mechanism prompt-injection-button defence-active"
+            : "strategy-mechanism defence-mechanism prompt-injection-button"
+        }
         onMouseOver={() => {
           setIsInfoBoxVisible(true);
         }}

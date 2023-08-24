@@ -1,5 +1,9 @@
 .defence-active {
-  background-color: #eef;
+  background-color: var(--main-button-active-background-colour);
+}
+
+.defence-active:hover {
+  background-color: var(--main-button-active-background-colour);
 }
 
 .defence-mechanism:hover {

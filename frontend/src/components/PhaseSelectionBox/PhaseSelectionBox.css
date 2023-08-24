@@ -15,3 +15,8 @@
     color: var(--main-button-active-text-colour);
     background-color: var(--main-button-active-background-colour);
 }
+
+.selected:hover {
+    color: var(--main-button-active-text-colour);
+    background-color: var(--main-button-active-background-colour);
+}
