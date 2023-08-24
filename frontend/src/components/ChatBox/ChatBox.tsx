@@ -111,17 +111,21 @@ function ChatBox(
     <div id="chat-box">
       <ChatBoxFeed messages={messages} />
       <div id="chat-box-footer">
-        <div id="chat-box-input">
-          <input
+          <input 
+            id="chat-box-input" 
+            className="prompt-injection-input"
             type="text"
             placeholder="chat to chatgpt..."
             autoFocus
             onKeyUp={sendChatMessage.bind(this)}
           />
-        </div>
-        <div id="chat-box-button" onClick={clearClicked.bind(this)}>
-          <button>clear</button>
-        </div>
+        <button 
+          id="chat-box-button" 
+          className="prompt-injection-button"
+          onClick={clearClicked.bind(this)}
+        >
+          clear
+        </button>
       </div>
     </div>
   );

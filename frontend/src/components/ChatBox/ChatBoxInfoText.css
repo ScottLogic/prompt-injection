@@ -1,11 +1,11 @@
 .chat-box-info-text {
-  color: #888;
+  color: var(--chat-info-text-colour);
   font-size: 14px;
   padding-top: 16px;
 }
 
 .chat-box-info-defence-triggered-text {
-  color: #cc3c3c;
+  color: var(--chat-triggered-text-color);
   font-size: 14px;
   padding-top: 16px;
 }

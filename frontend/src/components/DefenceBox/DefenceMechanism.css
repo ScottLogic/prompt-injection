@@ -10,7 +10,7 @@
 }
 
 .defence-mechanism-config {
-  border-color: #ccc;
+  border-color: var(--main-border-colour);
   border-style: solid;
   border-width: 1px 0 0 0;
   font-size: 14px;

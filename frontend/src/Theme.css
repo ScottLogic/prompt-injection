@@ -1,0 +1,25 @@
+:root {
+  --main-accent-colour: #1FD07B;
+  --main-background-colour: #101010;
+  --main-border-colour: var(--main-accent-colour);
+  --main-text-colour: #fff;
+
+  --main-button-active-background-colour: #313131;
+  --main-button-active-text-colour: #fff;
+  --main-button-inactive-background-colour: #313131;
+  --main-button-inactive-text-colour: #fff;
+  --main-button-hover-background-colour: #555555;
+  --main-button-hover-text-colour: #fff;
+
+  --main-input-background-colour: var(--main-button-inactive-background-colour);
+  --main-input-text-colour: var(--main-button-inactive-text-colour);
+
+  --chat-bot-background: linear-gradient(#D482FB, #F3DBFE);
+  --chat-user-background: linear-gradient(var(--main-accent-colour), #8AD5DA);
+  --chat-info-text-colour: #888;
+  --chat-message-text-colour: #000;
+  --chat-triggered-text-color: #cc3c3c;
+
+  --email-background-colour: #93FFCB;
+  --email-text-colour: #000;
+}

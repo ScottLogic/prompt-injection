@@ -1,5 +1,5 @@
 .sent-email {
-  border-color: #ccc;
+  border-color: var(--main-border-colour);
   border-radius: 5px;
   border-style: solid;
   border-width: 1px;
@@ -10,7 +10,7 @@
 }
 
 .sent-email-divider {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--main-border-colour);
   margin: 5px 0;
   width: 100%;
 }

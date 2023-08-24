@@ -1,5 +1,5 @@
 .chat-box-message {
-  border-color: #888;
+  color: var(--chat-message-text-colour);
   border-radius: 8px;
   border-style: solid;
   border-width: 1px;

@@ -14,7 +14,7 @@ a {
 
 button {
     height: 30px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--main-border-colour);
     border-radius: 5px;
     padding: 0 5px;
     font-size: 16px;
