@@ -7,16 +7,20 @@ const mockPromptEvalChain = {
 };
 let mockFromLLM = jest.fn();
 const mockFromTemplate = jest.fn(() => "");
+const mockLoader = jest.fn();
+const mockSplitDocuments = jest.fn();
 
 import {
   initPromptEvaluationModel,
   initQAModel,
   queryDocuments,
   queryPromptEvaluationModel,
+  getDocuments,
   setQAChain,
   setPromptEvaluationChain,
 } from "../../src/langchain";
 import { PHASE_NAMES } from "../../src/models/phase";
+
 import {
   retrievalQAPrePrompt,
   qAcontextTemplate,
@@ -56,7 +60,7 @@ jest.mock("langchain/document_loaders/fs/directory", () => {
   return {
     DirectoryLoader: jest.fn().mockImplementation(() => {
       return {
-        load: jest.fn(),
+        load: mockLoader,
       };
     }),
   };
@@ -67,7 +71,7 @@ jest.mock("langchain/text_splitter", () => {
   return {
     RecursiveCharacterTextSplitter: jest.fn().mockImplementation(() => {
       return {
-        splitDocuments: jest.fn(),
+        splitDocuments: mockSplitDocuments,
       };
     }),
   };
@@ -204,6 +208,21 @@ test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evalu
     isMalicious: false,
     reason: "",
   });
+});
+
+test("GIVEN a valid filePath then getDocuments returns the correct documents", async () => {
+  const mockDocs = ["doc1.txt", "doc2.txt"];
+  const mockSplitDocs = ["split1", "split1.5", "split2"];
+  mockLoader.mockResolvedValue(mockDocs);
+  mockSplitDocuments.mockResolvedValue(mockSplitDocs);
+
+  const filePath = "/path/to/documents";
+
+  const result = await getDocuments(filePath);
+
+  expect(result).toEqual(mockSplitDocs);
+  expect(mockLoader).toHaveBeenCalled();
+  expect(mockSplitDocuments).toHaveBeenCalledWith(mockDocs);
 });
 
 afterEach(() => {
