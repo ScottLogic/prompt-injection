@@ -29,10 +29,14 @@ jest.mock("../../src/langchain", () => {
   };
 });
 
+beforeEach(() => {
+  // clear environment variables
+  process.env = {};
+});
+
 test("GIVEN a valid API key WHEN calling validateApiKey THEN it should return true", async () => {
   const result = await validateApiKey("sk-1234567", CHAT_MODELS.GPT_4);
   expect(result).toBe(true);
-  mockCreateChatCompletion.mockRestore();
 });
 
 test("GIVEN an invalid API key WHEN calling validateApiKey THEN it should return false", async () => {
