@@ -125,7 +125,7 @@ function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
   return getConfigValue(
     defences,
     type,
-    type == DEFENCE_TYPES.FILTER_USER_INPUT
+    type === DEFENCE_TYPES.FILTER_USER_INPUT
       ? "filterUserInput"
       : "filterBotOutput",
     ""
@@ -195,7 +195,11 @@ function detectFilterList(message: string, filterList: string) {
     .split(",")
     .filter((phrase) => phrase.trim() !== "");
   for (const phrase of filterListSplit) {
-    if (cleanedMessage.includes(phrase.trim())) {
+    // check if original message or cleaned message contains the phrase
+    if (
+      message.toLowerCase().includes(phrase.trim()) ||
+      cleanedMessage.includes(phrase.trim())
+    ) {
       detectedPhrases.push(phrase);
     }
   }
@@ -325,9 +329,9 @@ async function detectTriggeredDefences(
     if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
       defenceReport.isBlocked = true;
       defenceReport.blockedReason =
-        "Message blocked - I cannot answer questions about " +
-        detectedPhrases.join(" or ") +
-        "!";
+        "Message blocked - I cannot answer questions about '" +
+        detectedPhrases.join("' or '") +
+        "'!";
     }
   }
   // check if message contains XML tags

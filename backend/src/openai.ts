@@ -337,8 +337,9 @@ async function chatGptSendMessage(
       );
       if (detectedPhrases.length > 0) {
         console.debug(
-          "FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: " +
-            detectedPhrases.join(", ")
+          "FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: '" +
+            detectedPhrases.join("', '") +
+            "'."
         );
         defenceInfo.triggeredDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);
         if (isDefenceActive(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences)) {
