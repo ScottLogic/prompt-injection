@@ -1,7 +1,7 @@
 import { ChatCompletionRequestMessage } from "openai";
 import { CHAT_MODELS } from "../../src/models/chat";
 import { chatGptSendMessage } from "../../src/openai";
-import { DefenceInfo } from "../../src/models/defence";
+import { DEFENCE_TYPES, DefenceInfo } from "../../src/models/defence";
 import { EmailInfo } from "../../src/models/email";
 import { activateDefence, getInitialDefences } from "../../src/defence";
 
@@ -91,7 +91,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   const gptModel = CHAT_MODELS.GPT_4;
   const openAiApiKey = "sk-12345";
 
-  defences = activateDefence("SYSTEM_ROLE", defences);
+  defences = activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, defences);
 
   // Mock the createChatCompletion function
   mockCreateChatCompletion.mockResolvedValueOnce({
@@ -154,7 +154,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   const openAiApiKey = "sk-12345";
 
   // activate the SYSTEM_ROLE defence
-  defences = activateDefence("SYSTEM_ROLE", defences);
+  defences = activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, defences);
 
   // Mock the createChatCompletion function
   mockCreateChatCompletion.mockResolvedValueOnce({
@@ -292,7 +292,7 @@ test(
     const gptModel = CHAT_MODELS.GPT_4;
     const openAiApiKey = "sk-12345";
 
-    defences = activateDefence("SYSTEM_ROLE", defences);
+    defences = activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, defences);
 
     // Mock the createChatCompletion function
     mockCreateChatCompletion.mockResolvedValueOnce({
@@ -410,7 +410,7 @@ test(
     expect(reply?.defenceInfo.isBlocked).toBe(false);
     // EMAIL_WHITELIST defence is triggered
     expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
-    expect(reply?.defenceInfo.triggeredDefences[0]).toBe("EMAIL_WHITELIST");
+    expect(reply?.defenceInfo.triggeredDefences[0]).toBe(DEFENCE_TYPES.EMAIL_WHITELIST);
 
     // restore the mock
     mockCreateChatCompletion.mockRestore();
@@ -432,7 +432,7 @@ test(
     const gptModel = CHAT_MODELS.GPT_4;
     const openAiApiKey = "sk-12345";
 
-    defences = activateDefence("EMAIL_WHITELIST", defences);
+    defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
 
     // Mock the createChatCompletion function
     mockCreateChatCompletion
@@ -486,7 +486,7 @@ test(
     expect(reply?.defenceInfo.isBlocked).toBe(true);
     // EMAIL_WHITELIST defence is triggered
     expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
-    expect(reply?.defenceInfo.triggeredDefences[0]).toBe("EMAIL_WHITELIST");
+    expect(reply?.defenceInfo.triggeredDefences[0]).toBe(DEFENCE_TYPES.EMAIL_WHITELIST);
 
     // restore the mock
     mockCreateChatCompletion.mockRestore();
@@ -508,7 +508,7 @@ test(
     const gptModel = CHAT_MODELS.GPT_4;
     const openAiApiKey = "sk-12345";
 
-    defences = activateDefence("EMAIL_WHITELIST", defences);
+    defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
 
     // Mock the createChatCompletion function
     mockCreateChatCompletion

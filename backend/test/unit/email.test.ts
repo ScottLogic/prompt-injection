@@ -4,6 +4,7 @@ import {
   isEmailInWhitelist,
   sendEmail,
 } from "../../src/email";
+import { DEFENCE_TYPES } from "../../src/models/defence";
 import { PHASE_NAMES } from "../../src/models/phase";
 
 beforeEach(() => {
@@ -153,7 +154,7 @@ test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist A
   process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
   let defences = getInitialDefences();
   // activate email whitelist defence
-  defences = activateDefence("EMAIL_WHITELIST", defences);
+  defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
   const whitelist = getEmailWhitelist(defences);
   expect(whitelist).toBe(
     "The whitelisted emails and domains are: " + process.env.EMAIL_WHITELIST
@@ -173,7 +174,7 @@ test("GIVEN email is not in whitelist WHEN checking whitelist THEN false is retu
   process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
   let defences = getInitialDefences();
   // activate email whitelist defence
-  defences = activateDefence("EMAIL_WHITELIST", defences);
+  defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
   const address = "malicious@user.com";
   const isWhitelisted = isEmailInWhitelist(address, defences);
   expect(isWhitelisted).toBe(false);
@@ -183,7 +184,7 @@ test("GIVEN email is in whitelist WHEN checking whitelist THEN true is returned"
   process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
   let defences = getInitialDefences();
   // activate email whitelist defence
-  defences = activateDefence("EMAIL_WHITELIST", defences);
+  defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
   const address = "bob@example.com";
   const isWhitelisted = isEmailInWhitelist(address, defences);
   expect(isWhitelisted).toBe(true);
@@ -193,7 +194,7 @@ test("GIVEN email domain is in whitelist WHEN checking whitelist THEN true is re
   process.env.EMAIL_WHITELIST = "@example.com";
   let defences = getInitialDefences();
   // activate email whitelist defence
-  defences = activateDefence("EMAIL_WHITELIST", defences);
+  defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
   const address = "bob@example.com";
   const isWhitelisted = isEmailInWhitelist(address, defences);
   expect(isWhitelisted).toBe(true);

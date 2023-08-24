@@ -1,4 +1,4 @@
-import { DefenceConfig, DefenceInfo } from "../models/defence";
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "../models/defence";
 import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
@@ -60,9 +60,9 @@ function validateStringConfig(config: string) {
 
 function validateDefence(id: string, configName: string, config: string) {
   switch (id) {
-    case "CHARACTER_LIMIT":
+    case DEFENCE_TYPES.CHARACTER_LIMIT:
       return validateNumberConfig(config);
-    case "RANDOM_SEQUENCE_ENCLOSURE":
+    case DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE:
       return configName === "length"
         ? validateNumberConfig(config)
         : validateStringConfig(config);

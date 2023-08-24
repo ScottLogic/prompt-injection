@@ -1,4 +1,4 @@
-import { DefenceInfo } from "./models/defence";
+import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { EmailInfo } from "./models/email";
 import { getEmailWhitelistVar, isDefenceActive } from "./defence";
 import { PHASE_NAMES } from "./models/phase";
@@ -11,7 +11,7 @@ function getEmailWhitelistValues(defences: DefenceInfo[]) {
 
 // if defense active return the whitelist of emails and domains
 function getEmailWhitelist(defences: DefenceInfo[]) {
-  if (!isDefenceActive("EMAIL_WHITELIST", defences)) {
+  if (!isDefenceActive(DEFENCE_TYPES.EMAIL_WHITELIST, defences)) {
     return "As the email whitelist defence is not active, any email address can be emailed.";
   } else {
     return (

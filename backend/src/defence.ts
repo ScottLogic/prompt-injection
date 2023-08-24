@@ -45,14 +45,14 @@ const getInitialDefences = (): DefenceInfo[] => {
   ];
 };
 
-function activateDefence(id: string, defences: DefenceInfo[]) {
+function activateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   // return the updated list of defences
   return defences.map((defence) =>
     defence.id === id ? { ...defence, isActive: true } : defence
   );
 }
 
-function deactivateDefence(id: string, defences: DefenceInfo[]) {
+function deactivateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   // return the updated list of defences
   return defences.map((defence) =>
     defence.id === id ? { ...defence, isActive: false } : defence
@@ -60,7 +60,7 @@ function deactivateDefence(id: string, defences: DefenceInfo[]) {
 }
 
 function configureDefence(
-  id: string,
+  id: DEFENCE_TYPES,
   defences: DefenceInfo[],
   config: DefenceConfig[]
 ) {
@@ -72,7 +72,7 @@ function configureDefence(
 
 function getConfigValue(
   defences: DefenceInfo[],
-  defenceId: string,
+  defenceId: DEFENCE_TYPES,
   configId: string,
   defaultValue: string
 ) {
@@ -85,20 +85,20 @@ function getConfigValue(
 function getMaxMessageLength(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
-    "CHARACTER_LIMIT",
+    DEFENCE_TYPES.CHARACTER_LIMIT,
     "maxMessageLength",
     String(280)
   );
 }
 
 function getRandomSequenceEnclosurePrePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(defences, "RANDOM_SEQUENCE_ENCLOSURE", "prePrompt", retrievalQAPrePromptSecure);
+  return getConfigValue(defences, DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, "prePrompt", retrievalQAPrePromptSecure);
 }
 
 function getRandomSequenceEnclosureLength(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
-    "RANDOM_SEQUENCE_ENCLOSURE",
+    DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
     "length",
     String(10)
   );
@@ -117,19 +117,19 @@ function getSystemRole(
     case PHASE_NAMES.PHASE_2:
       return process.env.SYSTEM_ROLE_PHASE_2 || "";
     default:
-      return getConfigValue(defences, "SYSTEM_ROLE", "systemRole", "");
+      return getConfigValue(defences, DEFENCE_TYPES.SYSTEM_ROLE, "systemRole", "");
   }
 }
 
 function getEmailWhitelistVar(defences: DefenceInfo[]) {
-  return getConfigValue(defences, "EMAIL_WHITELIST", "whitelist", "");
+  return getConfigValue(defences, DEFENCE_TYPES.EMAIL_WHITELIST, "whitelist", "");
 }
 
 function getQALLMprePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(defences, "QA_LLM_INSTRUCTIONS", "prePrompt", "");
+  return getConfigValue(defences, DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, "prePrompt", "");
 }
 
-function isDefenceActive(id: string, defences: DefenceInfo[]) {
+function isDefenceActive(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   return defences.find((defence) => defence.id === id && defence.isActive)
     ? true
     : false;
@@ -207,13 +207,13 @@ function transformXmlTagging(message: string) {
 //apply defence string transformations to original message
 function transformMessage(message: string, defences: DefenceInfo[]) {
   let transformedMessage: string = message;
-  if (isDefenceActive("RANDOM_SEQUENCE_ENCLOSURE", defences)) {
+  if (isDefenceActive(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, defences)) {
     transformedMessage = transformRandomSequenceEnclosure(
       transformedMessage,
       defences
     );
   }
-  if (isDefenceActive("XML_TAGGING", defences)) {
+  if (isDefenceActive(DEFENCE_TYPES.XML_TAGGING, defences)) {
     transformedMessage = transformXmlTagging(transformedMessage);
   }
   if (message == transformedMessage) {
@@ -242,9 +242,9 @@ async function detectTriggeredDefences(
   if (message.length > maxMessageLength) {
     console.debug("CHARACTER_LIMIT defence triggered.");
     // add the defence to the list of triggered defences
-    defenceReport.triggeredDefences.push("CHARACTER_LIMIT");
+    defenceReport.triggeredDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
     // check if the defence is active
-    if (isDefenceActive("CHARACTER_LIMIT", defences)) {
+    if (isDefenceActive(DEFENCE_TYPES.CHARACTER_LIMIT, defences)) {
       // block the message
       defenceReport.isBlocked = true;
       defenceReport.blockedReason = "Message is too long";
@@ -257,14 +257,14 @@ async function detectTriggeredDefences(
   if (detectXMLTags(message)) {
     console.debug("XML_TAGGING defence triggered.");
     // add the defence to the list of triggered defences
-    defenceReport.triggeredDefences.push("XML_TAGGING");
+    defenceReport.triggeredDefences.push(DEFENCE_TYPES.XML_TAGGING);
   }
 
   // evaluate the message for prompt injection
   const evalPrompt = await queryPromptEvaluationModel(message);
   if (evalPrompt.isMalicious) {
-    defenceReport.triggeredDefences.push("LLM_EVALUATION");
-    if (isDefenceActive("LLM_EVALUATION", defences)) {
+    defenceReport.triggeredDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
+    if (isDefenceActive(DEFENCE_TYPES.LLM_EVALUATION, defences)) {
       console.debug("LLM evalutation defence active.");
       defenceReport.isBlocked = true;
       defenceReport.blockedReason =
