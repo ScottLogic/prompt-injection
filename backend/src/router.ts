@@ -182,8 +182,6 @@ router.post("/openai/chat", async (req, res) => {
             currentPhase
           );
 
-          console.debug("ChatGPT reply: ", openAiReply);
-
           if (openAiReply) {
             chatResponse.wonPhase = openAiReply.wonPhase;
             chatResponse.reply = openAiReply.completion.content || "";
