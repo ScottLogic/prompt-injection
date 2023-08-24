@@ -190,7 +190,6 @@ function generateRandomString(string_length: number) {
 function detectFilterList(message: string, filterList: string) {
   const detectedPhrases = [];
   const cleanedMessage = message.replace(/[^a-zA-Z ]/g, "").toLowerCase();
-  console.debug("cleaned message: " + cleanedMessage);
   const filterListSplit = filterList
     .toLowerCase()
     .split(",")
@@ -200,7 +199,6 @@ function detectFilterList(message: string, filterList: string) {
       detectedPhrases.push(phrase);
     }
   }
-  console.debug("detected phrases: " + detectedPhrases);
   return detectedPhrases;
 }
 
@@ -313,12 +311,16 @@ async function detectTriggeredDefences(
     }
   }
 
+  // check for words/phrases in the block list
   const detectedPhrases = detectFilterList(
     message,
     getFilterList(defences, DEFENCE_TYPES.FILTER_USER_INPUT)
   );
   if (detectedPhrases.length > 0) {
-    console.debug("FILTERING defence triggered.");
+    console.debug(
+      "FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: " +
+        detectedPhrases.join(", ")
+    );
     defenceReport.triggeredDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
     if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
       defenceReport.isBlocked = true;
