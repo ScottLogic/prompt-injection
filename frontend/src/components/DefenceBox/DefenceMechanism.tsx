@@ -25,8 +25,9 @@ function DefenceMechanism({
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const [configValidated, setConfigValidated] = useState<boolean>(true);
 
-  const ANIMATION_FLASH_TIME_SECONDS = 1;
-  const ANIMATION_FLASH_REPEAT = 3;
+  // TODO remove
+  // const ANIMATION_FLASH_TIME_SECONDS = 1;
+  // const ANIMATION_FLASH_REPEAT = 3;
 
   const setConfigurationValue = async (configId: string, value: string) => {
     const newConfiguration = defenceDetail.config.map((config) => {
@@ -50,38 +51,34 @@ function DefenceMechanism({
   return (
     <span>
       <div
-        className={
-          defenceDetail.isActive
-            ? "strategy-mechanism defence-mechanism defence-active"
-            : "strategy-mechanism defence-mechanism"
-        }
+        className="strategy-mechanism defence-mechanism"
         onMouseOver={() => {
           setIsInfoBoxVisible(true);
         }}
         onMouseLeave={() => {
           setIsInfoBoxVisible(false);
         }}
-        style={
-          defenceDetail.isTriggered
-            ? defenceDetail.isActive
-              ? {
-                  animation:
-                    "flash-red-active " +
-                    ANIMATION_FLASH_TIME_SECONDS +
-                    "s linear 0s " +
-                    ANIMATION_FLASH_REPEAT +
-                    " forwards",
-                }
-              : {
-                  animation:
-                    "flash-red-inactive " +
-                    ANIMATION_FLASH_TIME_SECONDS +
-                    "s linear 0s " +
-                    ANIMATION_FLASH_REPEAT +
-                    " forwards",
-                }
-            : { animation: "none" }
-        }
+        // style={
+        //   defenceDetail.isTriggered
+        //     ? defenceDetail.isActive
+        //       ? {
+        //           animation:
+        //             "flash-red-active " +
+        //             ANIMATION_FLASH_TIME_SECONDS +
+        //             "s linear 0s " +
+        //             ANIMATION_FLASH_REPEAT +
+        //             " forwards",
+        //         }
+        //       : {
+        //           animation:
+        //             "flash-red-inactive " +
+        //             ANIMATION_FLASH_TIME_SECONDS +
+        //             "s linear 0s " +
+        //             ANIMATION_FLASH_REPEAT +
+        //             " forwards",
+        //         }
+        //     : { animation: "none" }
+        // }
         onClick={() => {
           defenceDetail.isActive
             ? setDefenceInactive(defenceDetail.id)
