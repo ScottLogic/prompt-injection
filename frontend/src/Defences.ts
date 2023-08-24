@@ -51,10 +51,16 @@ const DEFENCE_DETAILS_ALL: DefenceInfo[] = [
     [new DefenceConfig("prePrompt", "pre-prompt")]
   ),
   new DefenceInfo(
-    DEFENCE_TYPES.FILTERING,
-    "Filtering",
-    "A list of words or phrases to check against user input or bot output. If a match is found, the message is rejected.",
-    [new DefenceConfig("filtering", "filter list")]
+    DEFENCE_TYPES.FILTER_USER_INPUT,
+    "Input Filtering",
+    "Use a block list of words or phrases to check against user input. If a match is found, the message is block.",
+    [new DefenceConfig("filterUserInput", "filter list")]
+  ),
+  new DefenceInfo(
+    DEFENCE_TYPES.FILTER_BOT_OUTPUT,
+    "Output Filtering",
+    "Use a block list of words or phrases to check against bot output. If a match is found, the message is block.",
+    [new DefenceConfig("filterBotOutput", "filter list")]
   ),
 ];
 

@@ -1,4 +1,9 @@
-import { isDefenceActive, getSystemRole } from "./defence";
+import {
+  isDefenceActive,
+  getSystemRole,
+  detectFilterList,
+  getFilterList,
+} from "./defence";
 import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
 import {
   initQAModel,
@@ -13,7 +18,7 @@ import {
   OpenAIApi,
 } from "openai";
 import { CHAT_MODELS, ChatDefenceReport } from "./models/chat";
-import { DefenceInfo } from "./models/defence";
+import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { PHASE_NAMES } from "./models/phase";
 
 // OpenAI config
@@ -165,8 +170,8 @@ async function chatGptCallFunction(
         isAllowedToSendEmail = true;
       } else {
         // trigger email defence even if it is not active
-        defenceInfo.triggeredDefences.push("EMAIL_WHITELIST");
-        if (isDefenceActive("EMAIL_WHITELIST", defences)) {
+        defenceInfo.triggeredDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
+        if (isDefenceActive(DEFENCE_TYPES.EMAIL_WHITELIST, defences)) {
           // do not send email if defence is on and set to blocked
           defenceInfo.isBlocked = true;
           defenceInfo.blockedReason =
@@ -229,7 +234,7 @@ async function chatGptChatCompletion(
   // system role is always active on phases
   if (
     currentPhase !== PHASE_NAMES.SANDBOX ||
-    isDefenceActive("SYSTEM_ROLE", defences)
+    isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
     // check to see if there's already a system role
     if (!chatHistory.find((message) => message.role === "system")) {
@@ -320,6 +325,20 @@ async function chatGptSendMessage(
   }
 
   if (reply && reply.content) {
+    // if output filter defence is active, filter the output
+    const detectedFilterList = detectFilterList(
+      reply.content,
+      getFilterList(defences, DEFENCE_TYPES.FILTER_BOT_OUTPUT)
+    );
+    if (detectedFilterList.length > 0) {
+      console.log("Detected filter list: " + detectedFilterList);
+      defenceInfo.triggeredDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);
+      if (isDefenceActive(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences)) {
+        defenceInfo.isBlocked = true;
+        defenceInfo.blockedReason =
+          "My original response was blocked as it contained a restricted word/phrase. Ask me something else. ";
+      }
+    }
     // add the ai reply to the chat history
     chatHistory.push(reply);
     // log the entire chat history so far
@@ -334,9 +353,4 @@ async function chatGptSendMessage(
   }
 }
 
-export {
-  chatGptSendMessage,
-  setOpenAiApiKey,
-  validateApiKey,
-  setGptModel,
-};
+export { chatGptSendMessage, setOpenAiApiKey, validateApiKey, setGptModel };

@@ -3,6 +3,7 @@ import "./ChatBoxMessage.css";
 
 function ChatBoxMessage({ message }: { message: ChatMessage }) {
   function getMessage() {
+    console.log("message---", message);
     if (
       message.type === CHAT_MESSAGE_TYPE.BOT &&
       message.defenceInfo?.isBlocked
