@@ -20,13 +20,8 @@
 }
 
 #p error {
-    color: red;
+    color: var(--main-error-colour);
 }
-
-#model-selection-info  {
-
-}
-
 
 #model-selection-menu {
     width: 60%;
