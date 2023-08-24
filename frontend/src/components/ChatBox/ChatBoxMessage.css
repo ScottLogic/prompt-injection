@@ -19,6 +19,7 @@
 }
 
 .chat-box-message-ai {
+  background: var(--chat-bot-background);
   float: right;
   margin-left: auto;
   text-align: right;
@@ -33,7 +34,7 @@
 }
 
 .chat-box-message-user {
-  background-color: #eef;
+  background: var(--chat-user-background);
   float: left;
   margin-right: auto;
   text-align: left;
