@@ -1,4 +1,4 @@
-import { DefenceInfo } from "./models/defence";
+import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { EmailInfo } from "./models/email";
 import { getEmailWhitelistVar, isDefenceActive } from "./defence";
 import { PHASE_NAMES } from "./models/phase";

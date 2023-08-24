@@ -92,7 +92,7 @@ function getMaxMessageLength(defences: DefenceInfo[]) {
 }
 
 function getRandomSequenceEnclosurePrePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(defences, DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, "prePrompt", "");
+  return getConfigValue(defences, DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, "prePrompt", retrievalQAPrePromptSecure);
 }
 
 function getRandomSequenceEnclosureLength(defences: DefenceInfo[]) {
@@ -179,9 +179,8 @@ function escapeXml(unsafe: string) {
       case "'":
         return "&apos;";
       case '"':
-        return "&quot;";
       default:
-        return c;
+        return "&quot;";
     }
   });
 }
@@ -281,11 +280,11 @@ export {
   activateDefence,
   configureDefence,
   deactivateDefence,
+  detectTriggeredDefences,
+  getEmailWhitelistVar,
   getInitialDefences,
   getQALLMprePrompt,
   getSystemRole,
   isDefenceActive,
   transformMessage,
-  detectTriggeredDefences,
-  getEmailWhitelistVar,
 };

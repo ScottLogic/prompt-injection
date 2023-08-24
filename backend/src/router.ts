@@ -66,7 +66,7 @@ router.post("/defence/deactivate", (req, res) => {
 // Configure a defence
 router.post("/defence/configure", (req, res) => {
   // id of the defence
-  const defenceId: string = req.body?.defenceId;
+  const defenceId: DEFENCE_TYPES = req.body?.defenceId;
   const config: DefenceConfig[] = req.body?.config;
   if (defenceId && config) {
     // configure the defence

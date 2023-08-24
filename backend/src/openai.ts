@@ -13,7 +13,7 @@ import {
   OpenAIApi,
 } from "openai";
 import { CHAT_MODELS, ChatDefenceReport } from "./models/chat";
-import { DefenceInfo } from "./models/defence";
+import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { PHASE_NAMES } from "./models/phase";
 
 // OpenAI config

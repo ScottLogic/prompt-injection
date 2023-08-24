@@ -26,6 +26,16 @@ let qaChain: RetrievalQAChain | null = null;
 // chain we use in prompt evaluation request
 let promptEvaluationChain: SequentialChain | null = null;
 
+function setQAChain(chain: RetrievalQAChain | null) {
+  console.debug("Setting QA chain.");
+  qaChain = chain;
+}
+
+function setPromptEvaluationChain(chain: SequentialChain | null) {
+  console.debug("Setting evaluation chain.");
+  promptEvaluationChain = chain;
+}
+
 function getFilepath(currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX) {
   let filePath = "resources/documents/";
   switch (currentPhase) {
@@ -66,7 +76,9 @@ function getQAPromptTemplate(prePrompt: string) {
     console.debug("Using default retrieval QA pre-prompt");
     prePrompt = retrievalQAPrePrompt;
   }
-  return PromptTemplate.fromTemplate(prePrompt + qAcontextTemplate);
+  const fullPrompt = prePrompt + qAcontextTemplate;
+  const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
+  return template;
 }
 
 // QA Chain - ask the chat model a question about the documents
@@ -100,18 +112,22 @@ async function initQAModel(
   const qaPrompt = getQAPromptTemplate(prePrompt);
 
   // set chain to retrieval QA chain
-  qaChain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
-    prompt: qaPrompt,
-  });
+  setQAChain(
+    RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
+      prompt: qaPrompt,
+    })
+  );
+  console.debug("QA chain initialised.");
 }
 
 // initialise the prompt evaluation model
 function initPromptEvaluationModel(openAiApiKey: string) {
   if (!openAiApiKey) {
-    console.debug("No OpenAI API key set to initialise prompt evaluation model");
+    console.debug(
+      "No OpenAI API key set to initialise prompt evaluation model"
+    );
     return;
   }
-
   // create chain to detect prompt injection
   const promptInjectionPrompt = PromptTemplate.fromTemplate(
     promptInjectionEvalTemplate
@@ -141,12 +157,14 @@ function initPromptEvaluationModel(openAiApiKey: string) {
     outputKey: "maliciousInputEval",
   });
 
-  promptEvaluationChain = new SequentialChain({
+  const sequentialChain = new SequentialChain({
     chains: [promptInjectionChain, maliciousInputChain],
     inputVariables: ["prompt"],
     outputVariables: ["promptInjectionEval", "maliciousInputEval"],
   });
-  console.debug("Prompt evaluation chain initialised");
+  setPromptEvaluationChain(sequentialChain);
+
+  console.debug("Prompt evaluation chain initialised.");
 }
 
 // ask the question and return models answer
@@ -172,19 +190,17 @@ async function queryPromptEvaluationModel(input: string) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };
   }
-
   console.log(`Checking '${input}' for malicious prompts`);
+
   const response = await promptEvaluationChain.call({
     prompt: input,
   });
-
   const promptInjectionEval = formatEvaluationOutput(
     response.promptInjectionEval
   );
   const maliciousInputEval = formatEvaluationOutput(
     response.maliciousInputEval
   );
-
   console.debug(
     "Prompt injection eval: " + JSON.stringify(promptInjectionEval)
   );
@@ -210,7 +226,7 @@ function formatEvaluationOutput(response: string) {
     // split response on first full stop or comma
     const splitResponse = response.split(/\.|,/);
     const answer = splitResponse[0]?.replace(/\W/g, "").toLowerCase();
-    const reason = splitResponse[1];
+    const reason = splitResponse[1]?.trim();
     return {
       isMalicious: answer === "yes",
       reason: reason,
@@ -228,7 +244,13 @@ function formatEvaluationOutput(response: string) {
 
 export {
   initQAModel,
+  getFilepath,
+  getQAPromptTemplate,
+  getDocuments,
   initPromptEvaluationModel,
   queryDocuments,
   queryPromptEvaluationModel,
+  formatEvaluationOutput,
+  setQAChain,
+  setPromptEvaluationChain,
 };
