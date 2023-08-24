@@ -58,6 +58,7 @@ function ModelSelectionBox() {
         </select>
         <button
           id="model-selection-button"
+          className="prompt-injection-button"
           onClick={async () => submitSelectedModel()}
         >
           Choose

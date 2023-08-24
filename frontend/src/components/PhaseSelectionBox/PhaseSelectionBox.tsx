@@ -30,7 +30,7 @@ function PhaseSelectionBox(
         {PHASES.map((phase: Phase, index: number) => {
           return (
             <button
-              className={`phase-selection-button ${
+              className={`prompt-injection-button phase-selection-button ${
                 index === currentPhase ? "selected" : ""
               }`}
               key={phase.name}

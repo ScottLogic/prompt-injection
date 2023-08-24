@@ -1,5 +1,5 @@
 .strategy-mechanism {
-  border-color: #ccc;
+  border-color: var(--main-border-colour);
   border-radius: 8px;
   border-style: solid;
   border-width: 1px;
@@ -18,14 +18,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-color: #ccc;
+  border-color: var(--main-border-colour);
   border-radius: 10px;
   border-style: solid;
   border-width: 1px;
   height: 20px;
   width: 20px;
-  background-color: #ddd;
-  color: #444;
 }
 
 .strategy-mechanism-info span {
@@ -34,7 +32,7 @@
 }
 
 .strategy-mechanism-info-box {
-  border-color: #ccc;
+  border-color: var(--main-border-colour);
   border-style: solid;
   border-width: 1px 0 0 0;
   font-size: 14px;

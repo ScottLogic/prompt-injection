@@ -1,5 +1,5 @@
 .chat-box-message {
-  border-color: #888;
+  color: var(--chat-message-text-colour);
   border-radius: 8px;
   border-style: solid;
   border-width: 1px;
@@ -14,37 +14,26 @@
   word-wrap: break-word;
 }
 
-.blocked {
-  background-color: #fee;
-}
-
 .chat-box-message-ai {
+  background: var(--chat-bot-background);
   float: right;
   margin-left: auto;
   text-align: right;
 }
 
-.chat-box-message-blocked {
-  background-color: #fee;
-}
-
-.chat-box-message-ok {
-  background-color: #efe;
+.chat-box-message-ai-blocked {
+  background: var(--chat-blocked-background);
 }
 
 .chat-box-message-user {
-  background-color: #eef;
+  background: var(--chat-user-background);
   float: left;
   margin-right: auto;
   text-align: left;
 }
 
 .chat-box-message-user-transformed {
-  background-color: rgb(252 229 255);
-  float: left;
-  float: left;
-  margin-right: auto;
-  text-align: left;
+  background: var(--chat-edited-background);
 }
 
 .chat-box-message-phase-info {

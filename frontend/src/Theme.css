@@ -1,0 +1,29 @@
+:root {
+  --main-accent-colour: #1FD07B;
+  --main-background-colour: #101010;
+  --main-border-colour: var(--main-accent-colour);
+  --main-error-colour: #cc3c3c;
+  --main-text-colour: #fff;
+
+  --main-button-active-background-colour: teal;
+  --main-button-active-text-colour: var(--main-text-colour);
+  --main-button-inactive-background-colour: #313131;
+  --main-button-inactive-text-colour: var(--main-text-colour);
+  --main-button-hover-background-colour: #555555;
+  --main-button-hover-text-colour: var(--main-text-colour);
+
+  --main-input-background-colour: var(--main-button-inactive-background-colour);
+  --main-input-text-colour: var(--main-button-inactive-text-colour);
+
+  --chat-bot-background: linear-gradient(#D482FB, #F3DBFE);
+  --chat-blocked-background: linear-gradient(var(--main-error-colour), #ffD5DA);
+  --chat-edited-background: linear-gradient(#6a9b9b, #cae7f5);
+  --chat-user-background: linear-gradient(var(--main-accent-colour), #8AD5DA);
+  --chat-info-text-colour: #888;
+  --chat-message-text-colour: #000;
+  --chat-triggered-text-color: var(--main-error-colour);
+
+  --email-background-colour: #93FFCB;
+  --email-divider-colour: var(--email-text-colour);
+  --email-text-colour: #000;
+}

@@ -22,10 +22,10 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
           : message.type === CHAT_MESSAGE_TYPE.USER
           ? message.isOriginalMessage
             ? "chat-box-message chat-box-message-user"
-            : "chat-box-message chat-box-message-user-transformed"
+            : "chat-box-message chat-box-message-user chat-box-message-user-transformed"
           : message.defenceInfo?.isBlocked
-          ? "chat-box-message chat-box-message-ai chat-box-message-blocked"
-          : "chat-box-message chat-box-message-ai chat-box-message-ok"
+          ? "chat-box-message chat-box-message-ai chat-box-message-ai-blocked"
+          : "chat-box-message chat-box-message-ai"
       }
       lang="en"
     >

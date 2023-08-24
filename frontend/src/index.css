@@ -15,5 +15,8 @@ code {
 
 html {
   height: 100%;
+  background-color: var(--main-background-colour);
+  border-color: var(--main-border-colour);
+  color: var(--main-text-colour);
 }
 

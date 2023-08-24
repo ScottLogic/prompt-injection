@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import "./App.css";
+import "./Theme.css";
 import AttackBox from "./components/AttackBox/AttackBox";
 import ChatBox from "./components/ChatBox/ChatBox";
 import DefenceBox from "./components/DefenceBox/DefenceBox";

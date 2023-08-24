@@ -1,16 +1,19 @@
 .defence-active {
-  background-color: #eef;
+  background-color: var(--main-button-active-background-colour);
+}
+
+.defence-active:hover {
+  background-color: var(--main-button-active-background-colour);
 }
 
 .defence-mechanism:hover {
-  border-color: #444;
   border-width: 2px;
   margin: 0px;
   margin-bottom: 7px;
 }
 
 .defence-mechanism-config {
-  border-color: #ccc;
+  border-color: var(--main-border-colour);
   border-style: solid;
   border-width: 1px 0 0 0;
   font-size: 14px;
