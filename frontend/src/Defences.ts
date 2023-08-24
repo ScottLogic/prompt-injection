@@ -16,13 +16,13 @@ const DEFENCE_DETAILS_PHASE: DefenceInfo[] = [
   new DefenceInfo(
     DEFENCE_TYPES.FILTER_USER_INPUT,
     "Input Filtering",
-    "Use a block list of words or phrases to check against user input. If a match is found, the message is block.",
+    "Use a block list of words or phrases to check against user input. If a match is found, the message is blocked.",
     [new DefenceConfig("filterUserInput", "filter list")]
   ),
   new DefenceInfo(
     DEFENCE_TYPES.FILTER_BOT_OUTPUT,
     "Output Filtering",
-    "Use a block list of words or phrases to check against bot output. If a match is found, the message is block.",
+    "Use a block list of words or phrases to check against bot output. If a match is found, the message is blocked.",
     [new DefenceConfig("filterBotOutput", "filter list")]
   ),
   new DefenceInfo(
