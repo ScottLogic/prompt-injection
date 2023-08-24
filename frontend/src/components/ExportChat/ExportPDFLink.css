@@ -8,16 +8,10 @@
 a {
     padding: 5 12px;
     font-size: 16px;
-    color: #666;
+    color: var(--main-button-inactive-text-colour);
     text-decoration: none;
 }
 
 button {
     height: 30px;
-    border: 1px solid var(--main-border-colour);
-    border-radius: 5px;
-    padding: 0 5px;
-    font-size: 16px;
-    box-sizing: border-box;
-    color: #666;
 }

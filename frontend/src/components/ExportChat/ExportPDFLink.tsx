@@ -1,4 +1,3 @@
-import React from "react";
 import ExportContent from "./ExportContent";
 import { ChatMessage } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
@@ -23,9 +22,8 @@ const ExportPDFLink = ({
   };
   return (
     <div id="export-chat-box">
-      <button>
+      <button className="prompt-injection-button">
         <PDFDownloadLink
-          className="pdf-download-button"
           document={
             <ExportContent
               messages={messages}
