@@ -1,47 +1,16 @@
-#main-area {
-  display: flex;
-  flex-direction: row;
+#app-content {
   height: 100%;
-}
-
-#centre-area {
   display: flex;
   flex-direction: column;
-  border-color: var(--main-border-colour);
-  border-width: 0px 1px;
-  border-style: solid;
-  position: relative;
-  height: 100%;
-  width: 40%;
-  margin: 0 auto;
-  text-align: center;
 }
 
-h1 {
-  margin: 0;
-  padding: 20px;
+#app-content-body {
+  height: 50%;
+  flex-grow: 1;
 }
 
 #root {
   height: 100%;
-}
-
-.side-bar {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 30%;
-  overflow-y: auto;
-}
-
-.side-bar-header {
-  border-color: var(--main-border-colour);
-  border-width: 0 0 1px 0;
-  border-style: solid;
-  margin: 15px;
-  margin-bottom: 10px;
-  padding-bottom: 20px;
-  text-align: center;
 }
 
 .prompt-injection-button {
