@@ -15,7 +15,11 @@ import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
 import { DefenceInfo } from "./models/defence";
 import { getCompletedPhases } from "./service/phaseService";
 import { clearEmails, getSentEmails } from "./service/emailService";
-import { clearChat, getChatHistory } from "./service/chatService";
+import {
+  clearChat,
+  getChatHistory,
+  addInfoMessageToHistory,
+} from "./service/chatService";
 import { getDefences, resetActiveDefences } from "./service/defenceService";
 import { PHASES } from "./Phases";
 import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
@@ -55,6 +59,7 @@ function App() {
       type: CHAT_MESSAGE_TYPE.INFO,
       isOriginalMessage: true,
     });
+    addInfoMessageToHistory(message, currentPhase);
   };
 
   const addDefenceTriggeredMessage = (message: string) => {
@@ -63,6 +68,7 @@ function App() {
       type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
       isOriginalMessage: true,
     });
+    addInfoMessageToHistory(message, currentPhase);
   };
   const addPhasePreambleMessage = (message: string) => {
     addChatMessage({
@@ -90,23 +96,12 @@ function App() {
       setEmails(phaseEmails);
     });
 
+    // get
     getChatHistory(newPhase).then((phaseChatHistory) => {
       setMessages(phaseChatHistory);
-      console.log("getting chat history for phase " + newPhase);
-      for (let i = 0; i < phaseChatHistory.length; i++) {
-        console.log(JSON.stringify(phaseChatHistory[i]));
-      }
     });
 
-    // reset emails and messages from front and backend
-    // clearChat(currentPhase);
-    // clearEmailBox();
-    // clear frontend messages
-    // setMessages([]);
-
     setCurrentPhase(newPhase);
-
-    // resetActiveDefences(currentPhase);
 
     // add the preamble to the chat
     // const preambleMessage = PHASES[newPhase].preamble;

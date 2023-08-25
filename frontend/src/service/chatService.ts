@@ -41,8 +41,6 @@ const getChatHistory = async (phase: number): Promise<ChatMessage[]> => {
   const response = await sendRequest(PATH + "history?phase=" + phase, "GET");
   const data = await response.json();
 
-  console.log("getChatHistory", data);
-
   // convert to ChatMessage object
   const chatMessages: ChatMessage[] = data.map(
     (message: ChatHistoryMessage) => {
@@ -99,6 +97,16 @@ const getGptModel = async (): Promise<CHAT_MODELS> => {
   return modelStr as CHAT_MODELS;
 };
 
+const addInfoMessageToHistory = async (message: string, phase: number) => {
+  const response = await sendRequest(
+    PATH + "addInfo",
+    "POST",
+    { "Content-Type": "application/json" },
+    JSON.stringify({ message: message, phase: phase })
+  );
+  return response.status === 200;
+};
+
 export {
   clearChat,
   sendMessage,
@@ -107,4 +115,5 @@ export {
   getGptModel,
   setGptModel,
   getChatHistory,
+  addInfoMessageToHistory,
 };

@@ -262,14 +262,32 @@ router.post("/openai/chat", async (req, res) => {
 
 // get the chat history
 router.get("/openai/history", (req, res) => {
-  console.debug("Getting chat history");
   const phase: number | undefined = req.query?.phase as number | undefined;
   if (phase) {
-    console.debug("Getting chat history for phase: ", phase || "");
     res.send(req.session.phaseState[phase].chatHistory);
   } else {
     res.statusCode = 400;
     res.send("Missing phase");
+  }
+});
+
+// add a info message to chat history
+router.post("/openai/addInfo", (req, res) => {
+  const message: string = req.body?.message;
+  const phase: number = req.body?.phase;
+  if (message && phase) {
+    req.session.phaseState[phase].chatHistory.push({
+      completion: null,
+      infoMessage: message,
+    });
+    console.debug(
+      "Message added to chat history",
+      req.session.phaseState[phase].chatHistory
+    );
+    res.send("Message added to chat history");
+  } else {
+    res.statusCode = 400;
+    res.send("Missing message or phase");
   }
 });
 
