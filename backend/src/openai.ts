@@ -12,7 +12,11 @@ import {
   Configuration,
   OpenAIApi,
 } from "openai";
-import { CHAT_MODELS, ChatDefenceReport } from "./models/chat";
+import {
+  CHAT_MODELS,
+  ChatDefenceReport,
+  ChatHistoryMessage,
+} from "./models/chat";
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { PHASE_NAMES } from "./models/phase";
 
@@ -218,7 +222,7 @@ async function chatGptCallFunction(
 }
 
 async function chatGptChatCompletion(
-  chatHistory: ChatCompletionRequestMessage[],
+  chatHistory: ChatHistoryMessage[],
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
   openai: OpenAIApi,
@@ -232,23 +236,29 @@ async function chatGptChatCompletion(
     isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
     // check to see if there's already a system role
-    if (!chatHistory.find((message) => message.role === "system")) {
+    if (!chatHistory.find((message) => message.completion?.role === "system")) {
       // add the system role to the start of the chat history
       chatHistory.unshift({
-        role: "system",
-        content: getSystemRole(defences, currentPhase),
+        completion: {
+          role: "system",
+          content: getSystemRole(defences, currentPhase),
+        },
+        infoMessage: null,
       });
     }
   } else {
     // remove the system role from the chat history
-    while (chatHistory.length > 0 && chatHistory[0].role === "system") {
+    while (
+      chatHistory.length > 0 &&
+      chatHistory[0].completion?.role === "system"
+    ) {
       chatHistory.shift();
     }
   }
 
   const chat_completion = await openai.createChatCompletion({
     model: gptModel,
-    messages: chatHistory,
+    messages: getChatCompletionsFromHistory(chatHistory),
     functions: chatGptFunctions,
   });
 
@@ -256,8 +266,28 @@ async function chatGptChatCompletion(
   return chat_completion.data.choices[0].message || null;
 }
 
+const getChatCompletionsFromHistory = (
+  chatHistory: ChatHistoryMessage[]
+): ChatCompletionRequestMessage[] => {
+  const completions: ChatCompletionRequestMessage[] =
+    chatHistory.length > 0
+      ? chatHistory
+          .filter((message) => message.completion !== null)
+          .map((message) => message.completion as ChatCompletionRequestMessage)
+      : [];
+  return completions;
+};
+
+const pushCompletionToHistory = (
+  chatHistory: ChatHistoryMessage[],
+  completion: ChatCompletionRequestMessage
+) => {
+  chatHistory.push({ completion: completion, infoMessage: null });
+  return chatHistory;
+};
+
 async function chatGptSendMessage(
-  chatHistory: ChatCompletionRequestMessage[],
+  chatHistory: ChatHistoryMessage[],
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
   message: string,
@@ -277,7 +307,10 @@ async function chatGptSendMessage(
   let wonPhase: boolean | undefined | null = false;
 
   // add user message to chat
-  chatHistory.push({ role: "user", content: message });
+  chatHistory = pushCompletionToHistory(chatHistory, {
+    role: "user",
+    content: message,
+  });
 
   const openai = getOpenAiFromKey(openAiApiKey);
   let reply = await chatGptChatCompletion(
@@ -289,7 +322,7 @@ async function chatGptSendMessage(
   );
   // check if GPT wanted to call a function
   while (reply && reply.function_call) {
-    chatHistory.push(reply);
+    chatHistory = pushCompletionToHistory(chatHistory, reply);
 
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
@@ -303,7 +336,10 @@ async function chatGptSendMessage(
       wonPhase = functionCallReply.wonPhase;
       // add the function call to the chat history
       if (functionCallReply.completion !== undefined) {
-        chatHistory.push(functionCallReply.completion);
+        chatHistory = pushCompletionToHistory(
+          chatHistory,
+          functionCallReply.completion
+        );
       }
       // update the defence info
       defenceInfo = functionCallReply.defenceInfo;
@@ -321,7 +357,7 @@ async function chatGptSendMessage(
 
   if (reply && reply.content) {
     // add the ai reply to the chat history
-    chatHistory.push(reply);
+    chatHistory = pushCompletionToHistory(chatHistory, reply);
     // log the entire chat history so far
     console.log(chatHistory);
     return {
@@ -334,9 +370,4 @@ async function chatGptSendMessage(
   }
 }
 
-export {
-  chatGptSendMessage,
-  setOpenAiApiKey,
-  validateApiKey,
-  setGptModel,
-};
+export { chatGptSendMessage, setOpenAiApiKey, validateApiKey, setGptModel };

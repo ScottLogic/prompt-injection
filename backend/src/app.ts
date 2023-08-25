@@ -6,7 +6,7 @@ import session from "express-session";
 import { getInitialDefences } from "./defence";
 import { setOpenAiApiKey } from "./openai";
 import { router } from "./router";
-import { ChatCompletionRequestMessage } from "openai";
+import { ChatHistoryMessage } from "./models/chat";
 import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
 import { CHAT_MODELS } from "./models/chat";
@@ -23,7 +23,7 @@ declare module "express-session" {
   }
   interface PhaseState {
     phase: number;
-    chatHistory: ChatCompletionRequestMessage[];
+    chatHistory: ChatHistoryMessage[];
     defences: DefenceInfo[];
     sentEmails: EmailInfo[];
   }
@@ -69,12 +69,6 @@ app.use(
 
 app.use(async (req, _res, next) => {
   // initialise session variables
-  // if (!req.session.chatHistory) {
-  //   req.session.chatHistory = [];
-  // }
-  // if (!req.session.defences) {
-  //   req.session.defences = getInitialDefences();
-  // }
   if (!req.session.gptModel) {
     req.session.gptModel = defaultModel;
   }
@@ -84,13 +78,10 @@ app.use(async (req, _res, next) => {
   if (!req.session.openAiApiKey) {
     req.session.openAiApiKey = process.env.OPENAI_API_KEY || null;
   }
-  // if (!req.session.sentEmails) {
-  //   req.session.sentEmails = [];
-  // }
   if (!req.session.phaseState) {
     req.session.phaseState = [];
-    // add empty states for phases 1-4
-    for (let i = 0; i < 4; i++) {
+    // add empty states for phases 1-3
+    for (let i = 0; i <= 3; i++) {
       req.session.phaseState.push({
         phase: i,
         chatHistory: [],
@@ -99,8 +90,6 @@ app.use(async (req, _res, next) => {
       });
     }
   }
-
-  console.log("Phases: ", req.session.phaseState);
   next();
 });
 

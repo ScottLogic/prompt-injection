@@ -48,11 +48,17 @@ interface ChatHttpResponse {
   wonPhase: boolean;
 }
 
+interface ChatHistoryMessage {
+  completion: ChatCompletionRequestMessage | null;
+  infoMessage: string | null | undefined;
+}
+
 export type {
   ChatAnswer,
   ChatDefenceReport,
   ChatMalicious,
   ChatResponse,
   ChatHttpResponse,
+  ChatHistoryMessage,
 };
 export { CHAT_MODELS, CHAT_MESSAGE_TYPE };

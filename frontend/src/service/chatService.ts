@@ -1,5 +1,11 @@
 import { sendRequest } from "./backendService";
-import { CHAT_MODELS, ChatMessage, ChatResponse } from "../models/chat";
+import {
+  CHAT_MESSAGE_TYPE,
+  CHAT_MODELS,
+  ChatHistoryMessage,
+  ChatMessage,
+  ChatResponse,
+} from "../models/chat";
 import { PHASE_NAMES } from "../models/phase";
 
 const PATH = "openai/";
@@ -34,7 +40,31 @@ const sendMessage = async (
 const getChatHistory = async (phase: number): Promise<ChatMessage[]> => {
   const response = await sendRequest(PATH + "history?phase=" + phase, "GET");
   const data = await response.json();
-  return data;
+
+  console.log("getChatHistory", data);
+
+  // convert to ChatMessage object
+  const chatMessages: ChatMessage[] = data.map(
+    (message: ChatHistoryMessage) => {
+      if (message.completion) {
+        return {
+          message: message.completion.content,
+          isOriginalMessage: true,
+          type:
+            message.completion.role == "user"
+              ? CHAT_MESSAGE_TYPE.USER
+              : CHAT_MESSAGE_TYPE.BOT,
+        };
+      } else if (message.infoMessage) {
+        return {
+          message: message.infoMessage,
+          isOriginalMessage: false,
+          type: CHAT_MESSAGE_TYPE.INFO,
+        };
+      }
+    }
+  );
+  return chatMessages;
 };
 
 const setOpenAIApiKey = async (openAiApiKey: string): Promise<boolean> => {
