@@ -1,13 +1,8 @@
-import { useState } from "react";
-import { useEffect } from "react";
-
 import "./DemoBody.css";
 import { ATTACKS_PHASE_1, ATTACKS_ALL } from "../../Attacks";
-import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import { ChatMessage, CHAT_MESSAGE_TYPE } from "../../models/chat";
 import { DefenceInfo } from "../../models/defence";
 import { PHASE_NAMES } from "../../models/phase";
-import { getCompletedPhases } from "../../service/phaseService";
 import AttackBox from "../AttackBox/AttackBox";
 import ChatBox from "../ChatBox/ChatBox";
 import DefenceBox from "../DefenceBox/DefenceBox";
@@ -23,8 +18,8 @@ function DemoBody(
     emails,
     messages,
     addChatMessage,
+    resetPhase,
     setEmails,
-    setNewPhase,
     setNumCompletedPhases,
   }: {
     currentPhase: PHASE_NAMES;
@@ -32,41 +27,17 @@ function DemoBody(
     emails: EmailInfo[];
     messages: ChatMessage[];
     addChatMessage: (message: ChatMessage) => void;
+    resetPhase: () => void;
     setEmails: (emails: EmailInfo[]) => void;
-    setNewPhase: (newPhase: PHASE_NAMES) => void;
     setNumCompletedPhases: (numCompletedPhases: number) => void;
   }
 ) {
-  const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
-
-  const updateTriggeredDefences = (defenceDetails: string[]) => {
-    // set the new triggered defences
-    setTriggeredDefences(defenceDetails);
-    // add a message to the chat
-    defenceDetails.forEach((defence) => {
-      defenceTriggered(defence);
-    });
-  };
-
   const addInfoMessage = (message: string) => {
     addChatMessage({
       message: message,
       type: CHAT_MESSAGE_TYPE.INFO,
       isOriginalMessage: true,
     });
-  };
-
-  const addDefenceTriggeredMessage = (message: string) => {
-    addChatMessage({
-      message: message,
-      type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-      isOriginalMessage: true,
-    });
-  };
-
-  const clearMessages = () => {
-    // resetting the current phase will also reset the messages
-    setNewPhase(currentPhase);
   };
 
   // methods to be called when defences are (de)activated
@@ -80,23 +51,6 @@ function DemoBody(
     addInfoMessage(infoMessage.toLowerCase());
   };
 
-  // add a message to the chat when a defence is triggered
-  const defenceTriggered = (id: String) => {
-    const defenceInfo = DEFENCE_DETAILS_ALL.find(
-      (defence) => defence.id === id
-    )?.name;
-    const infoMessage = `${defenceInfo} defence triggered`;
-    addDefenceTriggeredMessage(infoMessage.toLowerCase());
-  };
-
-  // called on mount
-  useEffect(() => {
-    getCompletedPhases().then((numCompletedPhases) => {
-      setNumCompletedPhases(numCompletedPhases);
-    });
-    setNewPhase(currentPhase);
-  }, []);
-
   return (
     <span id="main-area">
       <div className="side-bar">
@@ -107,7 +61,6 @@ function DemoBody(
           <DefenceBox
             defences={defences}
             showConfigurations={currentPhase > 2 ? true : false}
-            triggeredDefences={triggeredDefences}
             defenceActivated={defenceActivated}
             defenceDeactivated={defenceDeactivated}
           />
@@ -133,11 +86,10 @@ function DemoBody(
         <ChatBox
           messages={messages}
           currentPhase={currentPhase}
+          addChatMessage={addChatMessage}
+          resetPhase={resetPhase}
           setNumCompletedPhases={setNumCompletedPhases}
           setEmails={setEmails}
-          updateTriggeredDefences={updateTriggeredDefences}
-          addChatMessage={addChatMessage}
-          clearMessages={clearMessages}
         />
       </div>
       <div className="side-bar">
