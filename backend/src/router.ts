@@ -25,22 +25,31 @@ let prevPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX;
 router.post("/defence/activate", (req, res) => {
   // id of the defence
   const defenceId: DEFENCE_TYPES = req.body?.defenceId;
-  if (defenceId) {
+  const phase: number = req.body?.phase;
+  if (defenceId && phase) {
     // activate the defence
-    req.session.defences = activateDefence(defenceId, req.session.defences);
-
+    req.session.phaseState[phase].defences = activateDefence(
+      defenceId,
+      req.session.phaseState[phase].defences
+    );
     // need to re-initialize QA model when turned on
-    if (defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS && req.session.openAiApiKey) {
+    if (
+      defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS &&
+      req.session.openAiApiKey
+    ) {
       console.debug(
         "Activating qa llm instruction defence - reinitializing qa model"
       );
-      initQAModel(req.session.openAiApiKey, getQALLMprePrompt(req.session.defences));
+      initQAModel(
+        req.session.openAiApiKey,
+        getQALLMprePrompt(req.session.phaseState[phase].defences)
+      );
     }
 
     res.send("Defence activated");
   } else {
     res.statusCode = 400;
-    res.send("Missing defenceId");
+    res.send("Missing defenceId or phase");
   }
 });
 
@@ -48,18 +57,28 @@ router.post("/defence/activate", (req, res) => {
 router.post("/defence/deactivate", (req, res) => {
   // id of the defence
   const defenceId: DEFENCE_TYPES = req.body?.defenceId;
-  if (defenceId) {
+  const phase: number = req.body?.phase;
+  if (defenceId && phase) {
     // deactivate the defence
-    req.session.defences = deactivateDefence(defenceId, req.session.defences);
+    req.session.defences = deactivateDefence(
+      defenceId,
+      req.session.phaseState[phase].defences
+    );
 
-    if (defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS && req.session.openAiApiKey) {
+    if (
+      defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS &&
+      req.session.openAiApiKey
+    ) {
       console.debug("Resetting QA model with default prompt");
-      initQAModel(req.session.openAiApiKey, getQALLMprePrompt(req.session.defences));
+      initQAModel(
+        req.session.openAiApiKey,
+        getQALLMprePrompt(req.session.phaseState[phase].defences)
+      );
     }
     res.send("Defence deactivated");
   } else {
     res.statusCode = 400;
-    res.send("Missing defenceId");
+    res.send("Missing defenceId or phase");
   }
 });
 
@@ -68,41 +87,61 @@ router.post("/defence/configure", (req, res) => {
   // id of the defence
   const defenceId: DEFENCE_TYPES = req.body?.defenceId;
   const config: DefenceConfig[] = req.body?.config;
-  if (defenceId && config) {
+  const phase: number = req.body?.phase;
+  if (defenceId && config && phase) {
     // configure the defence
     req.session.defences = configureDefence(
       defenceId,
-      req.session.defences,
+      req.session.phaseState[phase].defences,
       config
     );
     res.send("Defence configured");
   } else {
     res.statusCode = 400;
-    res.send("Missing defenceId or config");
+    res.send("Missing defenceId or config or phase");
   }
 });
 
 // reset the active defences
 router.post("/defence/reset", (req, res) => {
-  req.session.defences = getInitialDefences();
-  console.debug("Defences reset");
-  res.send("Defences reset");
+  const phase: number = req.body?.phase;
+  if (phase) {
+    req.session.phaseState[phase].defences = getInitialDefences();
+    console.debug("Defences reset");
+    res.send("Defences reset");
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
-// Get the status of all defences
+// Get the status of all defences TODO
 router.get("/defence/status", (req, res) => {
   res.send(req.session.defences);
 });
 
-// Get sent emails
+// Get sent emails // /email/get?phas=3
 router.get("/email/get", (req, res) => {
-  res.send(req.session.sentEmails);
+  const phase: number | undefined = req.query?.phase as number | undefined;
+  if (phase) {
+    res.send(req.session.phaseState[phase].sentEmails);
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
 // clear emails
 router.post("/email/clear", (req, res) => {
-  req.session.sentEmails = [];
-  res.send("Emails cleared");
+  const phase: number = req.body?.phase;
+  if (phase) {
+    req.session.phaseState[phase].sentEmails = [];
+    console.debug("Emails cleared");
+    res.send("Emails cleared");
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
 // Chat to ChatGPT
@@ -119,12 +158,13 @@ router.post("/openai/chat", async (req, res) => {
     transformedMessage: "",
     wonPhase: false,
   };
-  
+
   // must have initialised openai
   if (!req.session.openAiApiKey) {
     res.statusCode = 401;
     chatResponse.defenceInfo.isBlocked = true;
-    chatResponse.defenceInfo.blockedReason = "Please enter a valid OpenAI API key to chat to me!";
+    chatResponse.defenceInfo.blockedReason =
+      "Please enter a valid OpenAI API key to chat to me!";
     console.error(chatResponse.reply);
   } else {
     // parse out the message
@@ -146,7 +186,7 @@ router.post("/openai/chat", async (req, res) => {
       ) {
         chatResponse.defenceInfo = await detectTriggeredDefences(
           message,
-          req.session.defences
+          req.session.phaseState[currentPhase].defences
         );
       }
       // if blocked, send the response
@@ -154,18 +194,18 @@ router.post("/openai/chat", async (req, res) => {
         // transform the message according to active defences
         chatResponse.transformedMessage = transformMessage(
           message,
-          req.session.defences
+          req.session.phaseState[currentPhase].defences
         );
 
         // get the chatGPT reply
         try {
           const openAiReply = await chatGptSendMessage(
-            req.session.chatHistory,
-            req.session.defences,
+            req.session.phaseState[currentPhase].chatHistory,
+            req.session.phaseState[currentPhase].defences,
             req.session.gptModel,
             chatResponse.transformedMessage,
             req.session.openAiApiKey,
-            req.session.sentEmails,
+            req.session.phaseState[currentPhase].sentEmails,
             currentPhase
           );
 
@@ -209,7 +249,6 @@ router.post("/openai/chat", async (req, res) => {
       console.error(chatResponse.reply);
     }
   }
-  
   // log and send the reply with defence info
   console.log(chatResponse);
   res.send(chatResponse);
@@ -217,8 +256,15 @@ router.post("/openai/chat", async (req, res) => {
 
 // Clear the ChatGPT messages
 router.post("/openai/clear", (req, res) => {
-  req.session.chatHistory = [];
-  res.send("ChatGPT messages cleared");
+  const phase: number = req.body?.phase;
+  if (phase) {
+    req.session.phaseState[phase].chatHistory = [];
+    console.debug("ChatGPT messages cleared");
+    res.send("ChatGPT messages cleared");
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
 // Set API key
@@ -228,7 +274,13 @@ router.post("/openai/apiKey", async (req, res) => {
     res.status(401).send("Invalid API key");
     return;
   }
-  if (await setOpenAiApiKey(openAiApiKey, req.session.gptModel, getQALLMprePrompt(req.session.defences))) {
+  if (
+    await setOpenAiApiKey(
+      openAiApiKey,
+      req.session.gptModel,
+      getQALLMprePrompt(req.session.defences) // todo - make this default
+    )
+  ) {
     req.session.openAiApiKey = openAiApiKey;
     res.send("API key set");
   } else {
@@ -247,7 +299,9 @@ router.post("/openai/model", async (req, res) => {
   if (!model) {
     res.status(400).send("Missing model");
   } else if (!req.session.openAiApiKey) {
-    res.status(401).send("Please enter a valid OpenAI API key to set the model!");
+    res
+      .status(401)
+      .send("Please enter a valid OpenAI API key to set the model!");
   } else if (model === req.session.gptModel) {
     res.status(200).send("ChatGPT model already set. ");
   } else if (await setGptModel(req.session.openAiApiKey, model)) {

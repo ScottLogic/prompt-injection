@@ -22,6 +22,13 @@ declare module "express-session" {
     numPhasesCompleted: number;
     openAiApiKey: string | null;
     sentEmails: EmailInfo[];
+    phaseState: PhaseState[];
+  }
+  interface PhaseState {
+    phase: number;
+    chatHistory: ChatCompletionRequestMessage[];
+    defences: DefenceInfo[];
+    sentEmails: EmailInfo[];
   }
 }
 
@@ -83,13 +90,27 @@ app.use(async (req, _res, next) => {
   if (!req.session.sentEmails) {
     req.session.sentEmails = [];
   }
+  if (!req.session.phaseState) {
+    req.session.phaseState = [];
+    // add empty states for phases 1-4
+    for (let i = 0; i < 4; i++) {
+      req.session.phaseState.push({
+        phase: i,
+        chatHistory: [],
+        defences: getInitialDefences(),
+        sentEmails: [],
+      });
+    }
+  }
+
+  console.log("Phases: ", req.session.phaseState);
   next();
 });
 
 app.use("/", router);
 app.listen(port, () => {
   console.log("Server is running on port: " + port);
- 
+
   // for dev purposes only - set the API key from the environment variable
   const envOpenAiKey = process.env.OPENAI_API_KEY;
   const prePrompt = retrievalQAPrePrompt;

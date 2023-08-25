@@ -92,7 +92,12 @@ function getMaxMessageLength(defences: DefenceInfo[]) {
 }
 
 function getRandomSequenceEnclosurePrePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(defences, DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, "prePrompt", retrievalQAPrePromptSecure);
+  return getConfigValue(
+    defences,
+    DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
+    "prePrompt",
+    retrievalQAPrePromptSecure
+  );
 }
 
 function getRandomSequenceEnclosureLength(defences: DefenceInfo[]) {
@@ -117,16 +122,31 @@ function getSystemRole(
     case PHASE_NAMES.PHASE_2:
       return process.env.SYSTEM_ROLE_PHASE_2 || "";
     default:
-      return getConfigValue(defences, DEFENCE_TYPES.SYSTEM_ROLE, "systemRole", "");
+      return getConfigValue(
+        defences,
+        DEFENCE_TYPES.SYSTEM_ROLE,
+        "systemRole",
+        ""
+      );
   }
 }
 
 function getEmailWhitelistVar(defences: DefenceInfo[]) {
-  return getConfigValue(defences, DEFENCE_TYPES.EMAIL_WHITELIST, "whitelist", "");
+  return getConfigValue(
+    defences,
+    DEFENCE_TYPES.EMAIL_WHITELIST,
+    "whitelist",
+    ""
+  );
 }
 
 function getQALLMprePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(defences, DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, "prePrompt", "");
+  return getConfigValue(
+    defences,
+    DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
+    "prePrompt",
+    ""
+  );
 }
 
 function isDefenceActive(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
