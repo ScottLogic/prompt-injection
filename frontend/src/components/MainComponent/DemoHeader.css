@@ -1,0 +1,18 @@
+#demo-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#demo-header-left {
+  width: 100%;
+}
+
+#demo-header-middle {
+  white-space: nowrap;
+}
+
+#demo-header-right {
+  width: 100%;
+  text-align: right;
+}
