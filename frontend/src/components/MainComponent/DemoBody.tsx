@@ -22,8 +22,8 @@ function DemoBody(
     defences,
     emails,
     messages,
+    addChatMessage,
     setEmails,
-    setMessages,
     setNewPhase,
     setNumCompletedPhases,
   }: {
@@ -31,8 +31,8 @@ function DemoBody(
     defences: DefenceInfo[];
     emails: EmailInfo[];
     messages: ChatMessage[];
+    addChatMessage: (message: ChatMessage) => void;
     setEmails: (emails: EmailInfo[]) => void;
-    setMessages: (messages: ChatMessage[]) => void;
     setNewPhase: (newPhase: PHASE_NAMES) => void;
     setNumCompletedPhases: (numCompletedPhases: number) => void;
   }
@@ -48,10 +48,6 @@ function DemoBody(
     });
   };
 
-  // methods to modify messages
-  const addChatMessage = (message: ChatMessage) => {
-    setMessages([...messages, message]);
-  };
   const addInfoMessage = (message: string) => {
     addChatMessage({
       message: message,

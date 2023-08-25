@@ -78,8 +78,8 @@ function App() {
           defences={defencesToShow}
           emails={emails}
           messages={messages}
+          addChatMessage={addChatMessage}
           setEmails={setEmails}
-          setMessages={setMessages}
           setNewPhase={setNewPhase}
           setNumCompletedPhases={setNumCompletedPhases}
         />
