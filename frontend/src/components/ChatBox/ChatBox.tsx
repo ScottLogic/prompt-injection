@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
-import { clearChat, sendMessage } from "../../service/chatService";
+import { sendMessage } from "../../service/chatService";
 import { getSentEmails } from "../../service/emailService";
 import {
   CHAT_MESSAGE_TYPE,
@@ -10,25 +10,24 @@ import {
 } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
 import { PHASE_NAMES } from "../../models/phase";
+import { DEFENCE_DETAILS_ALL } from "../../Defences";
 
 function ChatBox(
   this: any,
   {
     messages,
     currentPhase,
+    addChatMessage,
+    resetPhase,
     setNumCompletedPhases,
     setEmails,
-    updateTriggeredDefences,
-    addChatMessage,
-    clearMessages,
   }: {
     messages: ChatMessage[];
     currentPhase: PHASE_NAMES;
+    addChatMessage: (message: ChatMessage) => void;
+    resetPhase: () => void;
     setNumCompletedPhases: (numCompletedPhases: number) => void;
     setEmails: (emails: EmailInfo[]) => void;
-    updateTriggeredDefences: (defences: string[]) => void;
-    addChatMessage: (message: ChatMessage) => void;
-    clearMessages: () => void;
   }
 ) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
@@ -40,13 +39,6 @@ function ChatBox(
       setEmails(sentEmails);
     });
   }, [setEmails]);
-
-  const clearClicked = () => {
-    // clear local messages
-    clearMessages();
-    // clear remote messages
-    clearChat();
-  };
 
   const sendChatMessage = async (
     event: React.KeyboardEvent<HTMLInputElement>
@@ -84,8 +76,18 @@ function ChatBox(
         defenceInfo: response.defenceInfo,
         isOriginalMessage: true,
       });
-      // update triggered defences
-      updateTriggeredDefences(response.defenceInfo.triggeredDefences);
+      // add triggered defences to the chat
+      response.defenceInfo.triggeredDefences.forEach((triggeredDefence) => {
+        // get user-friendly defence name
+        const defenceName = DEFENCE_DETAILS_ALL.find((defence) => {
+          return defence.id === triggeredDefence;
+        })?.name.toLowerCase();
+        addChatMessage({
+          type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
+          message: `${defenceName} defence triggered`,
+          isOriginalMessage: true,
+        })
+      });
 
       // we have the message reply
       setIsSendingMessage(false);
@@ -122,7 +124,7 @@ function ChatBox(
         <button 
           id="chat-box-button" 
           className="prompt-injection-button"
-          onClick={clearClicked.bind(this)}
+          onClick={resetPhase.bind(this)}
         >
           clear
         </button>

@@ -11,13 +11,11 @@ import { DefenceConfig, DefenceInfo } from "../../models/defence";
 
 function DefenceBox({
   defences,
-  triggeredDefences,
   showConfigurations,
   defenceActivated,
   defenceDeactivated,
 }: {
   defences: DefenceInfo[];
-  triggeredDefences: string[];
   showConfigurations: boolean;
   defenceActivated: (defenceInfo: DefenceInfo) => void;
   defenceDeactivated: (defenceInfo: DefenceInfo) => void;
@@ -57,17 +55,6 @@ function DefenceBox({
       setDefenceDetails(newDefences);
     });
   }, []);
-
-  // update triggered defences
-  useEffect(() => {
-    // update state
-    const newDefences = defenceDetails.map((defenceDetail) => {
-      defenceDetail.isTriggered = triggeredDefences.includes(defenceDetail.id);
-      return defenceDetail;
-    });
-    setDefenceDetails(newDefences);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggeredDefences]);
 
   const setDefenceActive = (defenceType: string) => {
     activateDefence(defenceType).then(() => {
