@@ -40,13 +40,21 @@ function ChatBox(
     });
   }, [setEmails]);
 
-  const sendChatMessage = async (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter" && event.target !== null && !isSendingMessage) {
+  function inputKeyPressed(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter") {
+      sendChatMessage();
+    }
+  }
+
+  async function sendChatMessage() {
+    const inputBoxElement = document.getElementById("chat-box-input") as HTMLInputElement;
+    // get the message from the input box
+    const message = inputBoxElement?.value;
+    // clear the input box
+    inputBoxElement!.value = "";
+
+    if (message && !isSendingMessage) {
       setIsSendingMessage(true);
-      // get the message
-      const message = event.currentTarget.value;
 
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
@@ -54,8 +62,6 @@ function ChatBox(
         type: CHAT_MESSAGE_TYPE.USER,
         isOriginalMessage: true,
       });
-      // clear the input
-      event.currentTarget.value = "";
 
       const response: ChatResponse = await sendMessage(message, currentPhase);
       setNumCompletedPhases(response.numPhasesCompleted);
@@ -115,21 +121,32 @@ function ChatBox(
     <div id="chat-box">
       <ChatBoxFeed messages={messages} />
       <div id="chat-box-footer">
+        <div id="chat-box-footer-messages">
           <input 
             id="chat-box-input" 
             className="prompt-injection-input"
             type="text"
-            placeholder="chat to chatgpt..."
+            placeholder="Type here..."
             autoFocus
-            onKeyUp={sendChatMessage.bind(this)}
+            onKeyUp={inputKeyPressed.bind(this)}
           />
-        <button 
-          id="chat-box-button" 
-          className="prompt-injection-button"
-          onClick={resetPhase.bind(this)}
-        >
-          reset
-        </button>
+          <button 
+            id="chat-box-button-send" 
+            className="prompt-injection-button"
+            onClick={sendChatMessage}
+          >
+            Send
+          </button>
+        </div>
+        <div id="chat-box-footer-reset">
+          <button 
+              id="chat-box-button-reset" 
+              className="prompt-injection-button"
+              onClick={resetPhase.bind(this)}
+            >
+            Reset phase
+          </button>
+        </div>
       </div>
     </div>
   );

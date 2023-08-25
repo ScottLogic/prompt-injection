@@ -5,10 +5,15 @@
 }
 
 #chat-box-footer {
-  align-items: center;
   display: flex;
+  flex-direction: column;
   padding: 32px;
-  height: 40px;
+}
+
+#chat-box-footer-messages {
+  display: flex;
+  flex-direction: row;
+  height: 52px;
 }
 
 #chat-box-input {
@@ -21,8 +26,14 @@
   box-sizing: border-box;
 }
 
-#chat-box-button {
+#chat-box-button-send {
   height: 100%;
   width: 20%;
   margin-left: 8px;
+}
+
+#chat-box-button-reset {
+  height: 34px;
+  width: 100%;
+  margin-top: 10px;
 }
