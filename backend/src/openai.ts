@@ -1,4 +1,9 @@
-import { isDefenceActive, getSystemRole } from "./defence";
+import {
+  isDefenceActive,
+  getSystemRole,
+  detectFilterList,
+  getFilterList,
+} from "./defence";
 import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
 import {
   initQAModel,
@@ -320,6 +325,30 @@ async function chatGptSendMessage(
   }
 
   if (reply && reply.content) {
+    console.debug("GPT reply: " + reply.content);
+    // if output filter defence is active, check for blocked words/phrases
+    if (
+      currentPhase === PHASE_NAMES.PHASE_2 ||
+      currentPhase === PHASE_NAMES.SANDBOX
+    ) {
+      const detectedPhrases = detectFilterList(
+        reply.content,
+        getFilterList(defences, DEFENCE_TYPES.FILTER_BOT_OUTPUT)
+      );
+      if (detectedPhrases.length > 0) {
+        console.debug(
+          "FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: '" +
+            detectedPhrases.join("', '") +
+            "'."
+        );
+        defenceInfo.triggeredDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);
+        if (isDefenceActive(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences)) {
+          defenceInfo.isBlocked = true;
+          defenceInfo.blockedReason =
+            "My original response was blocked as it contained a restricted word/phrase. Ask me something else. ";
+        }
+      }
+    }
     // add the ai reply to the chat history
     chatHistory.push(reply);
     // log the entire chat history so far
@@ -334,9 +363,4 @@ async function chatGptSendMessage(
   }
 }
 
-export {
-  chatGptSendMessage,
-  setOpenAiApiKey,
-  validateApiKey,
-  setGptModel,
-};
+export { chatGptSendMessage, setOpenAiApiKey, validateApiKey, setGptModel };

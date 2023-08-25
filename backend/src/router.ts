@@ -30,11 +30,17 @@ router.post("/defence/activate", (req, res) => {
     req.session.defences = activateDefence(defenceId, req.session.defences);
 
     // need to re-initialize QA model when turned on
-    if (defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS && req.session.openAiApiKey) {
+    if (
+      defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS &&
+      req.session.openAiApiKey
+    ) {
       console.debug(
         "Activating qa llm instruction defence - reinitializing qa model"
       );
-      initQAModel(req.session.openAiApiKey, getQALLMprePrompt(req.session.defences));
+      initQAModel(
+        req.session.openAiApiKey,
+        getQALLMprePrompt(req.session.defences)
+      );
     }
 
     res.send("Defence activated");
@@ -52,9 +58,15 @@ router.post("/defence/deactivate", (req, res) => {
     // deactivate the defence
     req.session.defences = deactivateDefence(defenceId, req.session.defences);
 
-    if (defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS && req.session.openAiApiKey) {
+    if (
+      defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS &&
+      req.session.openAiApiKey
+    ) {
       console.debug("Resetting QA model with default prompt");
-      initQAModel(req.session.openAiApiKey, getQALLMprePrompt(req.session.defences));
+      initQAModel(
+        req.session.openAiApiKey,
+        getQALLMprePrompt(req.session.defences)
+      );
     }
     res.send("Defence deactivated");
   } else {
@@ -119,12 +131,13 @@ router.post("/openai/chat", async (req, res) => {
     transformedMessage: "",
     wonPhase: false,
   };
-  
+
   // must have initialised openai
   if (!req.session.openAiApiKey) {
     res.statusCode = 401;
     chatResponse.defenceInfo.isBlocked = true;
-    chatResponse.defenceInfo.blockedReason = "Please enter a valid OpenAI API key to chat to me!";
+    chatResponse.defenceInfo.blockedReason =
+      "Please enter a valid OpenAI API key to chat to me!";
     console.error(chatResponse.reply);
   } else {
     // parse out the message
@@ -172,6 +185,7 @@ router.post("/openai/chat", async (req, res) => {
           if (openAiReply) {
             chatResponse.wonPhase = openAiReply.wonPhase;
             chatResponse.reply = openAiReply.completion.content || "";
+
             // combine triggered defences
             chatResponse.defenceInfo.triggeredDefences = [
               ...chatResponse.defenceInfo.triggeredDefences,
@@ -181,6 +195,11 @@ router.post("/openai/chat", async (req, res) => {
             chatResponse.defenceInfo.isBlocked =
               chatResponse.defenceInfo.isBlocked ||
               openAiReply.defenceInfo.isBlocked;
+
+            // combine blocked reason
+            chatResponse.defenceInfo.blockedReason =
+              chatResponse.defenceInfo.blockedReason ||
+              openAiReply.defenceInfo.blockedReason;
           }
         } catch (error: any) {
           console.log(error);
@@ -209,7 +228,7 @@ router.post("/openai/chat", async (req, res) => {
       console.error(chatResponse.reply);
     }
   }
-  
+
   // log and send the reply with defence info
   console.log(chatResponse);
   res.send(chatResponse);
@@ -228,7 +247,13 @@ router.post("/openai/apiKey", async (req, res) => {
     res.status(401).send("Invalid API key");
     return;
   }
-  if (await setOpenAiApiKey(openAiApiKey, req.session.gptModel, getQALLMprePrompt(req.session.defences))) {
+  if (
+    await setOpenAiApiKey(
+      openAiApiKey,
+      req.session.gptModel,
+      getQALLMprePrompt(req.session.defences)
+    )
+  ) {
     req.session.openAiApiKey = openAiApiKey;
     res.send("API key set");
   } else {
@@ -247,7 +272,9 @@ router.post("/openai/model", async (req, res) => {
   if (!model) {
     res.status(400).send("Missing model");
   } else if (!req.session.openAiApiKey) {
-    res.status(401).send("Please enter a valid OpenAI API key to set the model!");
+    res
+      .status(401)
+      .send("Please enter a valid OpenAI API key to set the model!");
   } else if (model === req.session.gptModel) {
     res.status(200).send("ChatGPT model already set. ");
   } else if (await setGptModel(req.session.openAiApiKey, model)) {

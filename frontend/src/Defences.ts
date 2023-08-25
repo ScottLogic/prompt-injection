@@ -14,10 +14,16 @@ const DEFENCE_DETAILS_PHASE: DefenceInfo[] = [
   //   [new DefenceConfig("whitelist", "email whitelist")]
   // ),
   new DefenceInfo(
-    DEFENCE_TYPES.LLM_EVALUATION,
-    "LLM Evaluation",
-    "Use an LLM to evaluate the user input for malicious content or prompt injection. ",
-    []
+    DEFENCE_TYPES.FILTER_USER_INPUT,
+    "Input Filtering",
+    "Use a block list of words or phrases to check against user input. If a match is found, the message is blocked.",
+    [new DefenceConfig("filterUserInput", "filter list")]
+  ),
+  new DefenceInfo(
+    DEFENCE_TYPES.FILTER_BOT_OUTPUT,
+    "Output Filtering",
+    "Use a block list of words or phrases to check against bot output. If a match is found, the message is blocked.",
+    [new DefenceConfig("filterBotOutput", "filter list")]
   ),
   new DefenceInfo(
     DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
@@ -32,6 +38,12 @@ const DEFENCE_DETAILS_PHASE: DefenceInfo[] = [
     DEFENCE_TYPES.XML_TAGGING,
     "XML Tagging",
     "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input. This is a form of prompt validation.",
+    []
+  ),
+  new DefenceInfo(
+    DEFENCE_TYPES.LLM_EVALUATION,
+    "LLM Evaluation",
+    "Use an LLM to evaluate the user input for malicious content or prompt injection. ",
     []
   ),
 ];
