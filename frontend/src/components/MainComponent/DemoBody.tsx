@@ -3,15 +3,10 @@ import { useEffect } from "react";
 
 import "./DemoBody.css";
 import { ATTACKS_PHASE_1, ATTACKS_ALL } from "../../Attacks";
-import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "../../Defences";
-import { PHASES } from "../../Phases";
+import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import { ChatMessage, CHAT_MESSAGE_TYPE } from "../../models/chat";
 import { DefenceInfo } from "../../models/defence";
-import { EmailInfo } from "../../models/email";
 import { PHASE_NAMES } from "../../models/phase";
-import { clearChat } from "../../service/chatService";
-import { resetActiveDefences } from "../../service/defenceService";
-import { clearEmails } from "../../service/emailService";
 import { getCompletedPhases } from "../../service/phaseService";
 import AttackBox from "../AttackBox/AttackBox";
 import ChatBox from "../ChatBox/ChatBox";
@@ -19,20 +14,30 @@ import DefenceBox from "../DefenceBox/DefenceBox";
 import EmailBox from "../EmailBox/EmailBox";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ModelSelectionBox from "../ModelSelectionBox/ModelSelectionBox";
-import PhaseSelectionBox from "../PhaseSelectionBox/PhaseSelectionBox";
+import { EmailInfo } from "../../models/email";
 
-function DemoBody() {
-  const [emails, setEmails] = useState<EmailInfo[]>([]);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [defencesToShow, setDefencesToShow] =
-    useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
+function DemoBody(
+  {
+    currentPhase,
+    defences,
+    emails,
+    messages,
+    setEmails,
+    setMessages,
+    setNewPhase,
+    setNumCompletedPhases,
+  }: {
+    currentPhase: PHASE_NAMES;
+    defences: DefenceInfo[];
+    emails: EmailInfo[];
+    messages: ChatMessage[];
+    setEmails: (emails: EmailInfo[]) => void;
+    setMessages: (messages: ChatMessage[]) => void;
+    setNewPhase: (newPhase: PHASE_NAMES) => void;
+    setNumCompletedPhases: (numCompletedPhases: number) => void;
+  }
+) {
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
-
-  // start on sandbox mode
-  const [currentPhase, setCurrentPhase] = useState<PHASE_NAMES>(
-    PHASE_NAMES.SANDBOX
-  );
-  const [numCompletedPhases, setNumCompletedPhases] = useState<number>(0);
 
   const updateTriggeredDefences = (defenceDetails: string[]) => {
     // set the new triggered defences
@@ -45,7 +50,7 @@ function DemoBody() {
 
   // methods to modify messages
   const addChatMessage = (message: ChatMessage) => {
-    setMessages((messages: ChatMessage[]) => [...messages, message]);
+    setMessages([...messages, message]);
   };
   const addInfoMessage = (message: string) => {
     addChatMessage({
@@ -62,42 +67,10 @@ function DemoBody() {
       isOriginalMessage: true,
     });
   };
-  const addPhasePreambleMessage = (message: string) => {
-    addChatMessage({
-      message: message,
-      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-      isOriginalMessage: true,
-    });
-  };
 
   const clearMessages = () => {
     // resetting the current phase will also reset the messages
     setNewPhase(currentPhase);
-  };
-
-  const clearEmailBox = () => {
-    setEmails([]);
-    clearEmails();
-  };
-
-  const setNewPhase = (newPhase: PHASE_NAMES) => {
-    // reset emails and messages from front and backend
-    clearChat();
-    clearEmailBox();
-    // clear frontend messages
-    setMessages([]);
-    setCurrentPhase(newPhase);
-
-    resetActiveDefences();
-
-    // add the preamble to the chat
-    const preambleMessage = PHASES[newPhase].preamble;
-    addPhasePreambleMessage(preambleMessage.toLowerCase());
-
-    // choose appropriate defences to display
-    newPhase === PHASE_NAMES.PHASE_2
-      ? setDefencesToShow(DEFENCE_DETAILS_PHASE)
-      : setDefencesToShow(DEFENCE_DETAILS_ALL);
   };
 
   // methods to be called when defences are (de)activated
@@ -111,7 +84,7 @@ function DemoBody() {
     addInfoMessage(infoMessage.toLowerCase());
   };
 
-  //a add a message to the chat when a defence is triggered
+  // add a message to the chat when a defence is triggered
   const defenceTriggered = (id: String) => {
     const defenceInfo = DEFENCE_DETAILS_ALL.find(
       (defence) => defence.id === id
@@ -136,7 +109,7 @@ function DemoBody() {
         {(currentPhase === PHASE_NAMES.PHASE_2 ||
           currentPhase === PHASE_NAMES.SANDBOX) && (
           <DefenceBox
-            defences={defencesToShow}
+            defences={defences}
             showConfigurations={currentPhase > 2 ? true : false}
             triggeredDefences={triggeredDefences}
             defenceActivated={defenceActivated}
@@ -172,11 +145,6 @@ function DemoBody() {
         />
       </div>
       <div className="side-bar">
-        <PhaseSelectionBox
-          currentPhase={currentPhase}
-          numCompletedPhases={numCompletedPhases}
-          setNewPhase={setNewPhase}
-        />
         <EmailBox emails={emails} />
       </div>
     </span>
