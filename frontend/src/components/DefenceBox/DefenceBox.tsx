@@ -10,17 +10,21 @@ import {
 import { DefenceConfig, DefenceInfo } from "../../models/defence";
 
 function DefenceBox({
+  currentPhase,
   defences,
   triggeredDefences,
   showConfigurations,
   defenceActivated,
   defenceDeactivated,
+  switchedPhase,
 }: {
+  currentPhase: number;
   defences: DefenceInfo[];
   triggeredDefences: string[];
   showConfigurations: boolean;
   defenceActivated: (defenceInfo: DefenceInfo) => void;
   defenceDeactivated: (defenceInfo: DefenceInfo) => void;
+  switchedPhase: (newPhase: number) => void;
 }) {
   // list of defence mechanisms
   const [defenceDetails, setDefenceDetails] = useState(defences);
@@ -29,10 +33,10 @@ function DefenceBox({
     setDefenceDetails(defences);
   }, [defences]);
 
-  // called on mount
+  // called on mount & when switchPhase is called
   useEffect(() => {
     // fetch defences from backend
-    getDefences().then((remoteDefences) => {
+    getDefences(currentPhase).then((remoteDefences) => {
       const newDefences = defenceDetails.map((localDefence) => {
         const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
           return localDefence.id === remoteDefence.id;
@@ -56,7 +60,7 @@ function DefenceBox({
       });
       setDefenceDetails(newDefences);
     });
-  }, []);
+  }, [switchedPhase]);
 
   // update triggered defences
   useEffect(() => {
@@ -70,7 +74,7 @@ function DefenceBox({
   }, [triggeredDefences]);
 
   const setDefenceActive = (defenceType: string) => {
-    activateDefence(defenceType).then(() => {
+    activateDefence(defenceType, currentPhase).then(() => {
       // update state
       const newDefenceDetails = defenceDetails.map((defenceDetail) => {
         if (defenceDetail.id === defenceType) {
@@ -85,7 +89,7 @@ function DefenceBox({
   };
 
   const setDefenceInactive = (defenceType: string) => {
-    deactivateDefence(defenceType).then(() => {
+    deactivateDefence(defenceType, currentPhase).then(() => {
       // update state
       const newDefenceDetails = defenceDetails.map((defenceDetail) => {
         if (defenceDetail.id === defenceType) {
@@ -103,21 +107,23 @@ function DefenceBox({
     defenceId: string,
     config: DefenceConfig[]
   ) => {
-    const configSuccess = configureDefence(defenceId, config).then(
-      (success) => {
-        if (success) {
-          // update state
-          const newDefences = defenceDetails.map((defence) => {
-            if (defence.id === defenceId) {
-              defence.config = config;
-            }
-            return defence;
-          });
-          setDefenceDetails(newDefences);
-        }
-        return success;
+    const configSuccess = configureDefence(
+      defenceId,
+      config,
+      currentPhase
+    ).then((success) => {
+      if (success) {
+        // update state
+        const newDefences = defenceDetails.map((defence) => {
+          if (defence.id === defenceId) {
+            defence.config = config;
+          }
+          return defence;
+        });
+        setDefenceDetails(newDefences);
       }
-    );
+      return success;
+    });
     return configSuccess;
   };
 

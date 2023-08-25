@@ -1,11 +1,18 @@
 import { sendRequest } from "./backendService";
-import { CHAT_MODELS, ChatResponse } from "../models/chat";
+import { CHAT_MODELS, ChatMessage, ChatResponse } from "../models/chat";
 import { PHASE_NAMES } from "../models/phase";
 
 const PATH = "openai/";
 
-const clearChat = async (): Promise<boolean> => {
-  const response = await sendRequest(PATH + "clear", "POST");
+const clearChat = async (phase: number): Promise<boolean> => {
+  const response = await sendRequest(
+    PATH + "clear",
+    "POST",
+    {
+      "Content-Type": "application/json",
+    },
+    JSON.stringify({ phase: phase })
+  );
   return response.status === 200;
 };
 
@@ -21,6 +28,12 @@ const sendMessage = async (
   );
   const data = await response.json();
   console.log(data);
+  return data;
+};
+
+const getChatHistory = async (phase: number): Promise<ChatMessage[]> => {
+  const response = await sendRequest(PATH + "history?phase=" + phase, "GET");
+  const data = await response.json();
   return data;
 };
 
@@ -63,4 +76,5 @@ export {
   getOpenAIApiKey,
   getGptModel,
   setGptModel,
+  getChatHistory,
 };

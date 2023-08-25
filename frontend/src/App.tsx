@@ -14,9 +14,9 @@ import { EmailInfo } from "./models/email";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
 import { DefenceInfo } from "./models/defence";
 import { getCompletedPhases } from "./service/phaseService";
-import { clearEmails } from "./service/emailService";
-import { clearChat } from "./service/chatService";
-import { resetActiveDefences } from "./service/defenceService";
+import { clearEmails, getSentEmails } from "./service/emailService";
+import { clearChat, getChatHistory } from "./service/chatService";
+import { getDefences, resetActiveDefences } from "./service/defenceService";
 import { PHASES } from "./Phases";
 import { ATTACKS_ALL, ATTACKS_PHASE_1 } from "./Attacks";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
@@ -48,6 +48,7 @@ function App() {
   const addChatMessage = (message: ChatMessage) => {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
   };
+
   const addInfoMessage = (message: string) => {
     addChatMessage({
       message: message,
@@ -78,22 +79,38 @@ function App() {
 
   const clearEmailBox = () => {
     setEmails([]);
-    clearEmails();
+    clearEmails(currentPhase);
   };
 
   const setNewPhase = (newPhase: PHASE_NAMES) => {
+    console.log("changing phase from " + currentPhase + " to " + newPhase);
+
+    // get emails for new phase from the backend
+    getSentEmails(newPhase).then((phaseEmails) => {
+      setEmails(phaseEmails);
+    });
+
+    getChatHistory(newPhase).then((phaseChatHistory) => {
+      setMessages(phaseChatHistory);
+      console.log("getting chat history for phase " + newPhase);
+      for (let i = 0; i < phaseChatHistory.length; i++) {
+        console.log(JSON.stringify(phaseChatHistory[i]));
+      }
+    });
+
     // reset emails and messages from front and backend
-    clearChat();
-    clearEmailBox();
+    // clearChat(currentPhase);
+    // clearEmailBox();
     // clear frontend messages
-    setMessages([]);
+    // setMessages([]);
+
     setCurrentPhase(newPhase);
 
-    resetActiveDefences();
+    // resetActiveDefences(currentPhase);
 
     // add the preamble to the chat
-    const preambleMessage = PHASES[newPhase].preamble;
-    addPhasePreambleMessage(preambleMessage.toLowerCase());
+    // const preambleMessage = PHASES[newPhase].preamble;
+    // addPhasePreambleMessage(preambleMessage.toLowerCase());
 
     // choose appropriate defences to display
     newPhase === PHASE_NAMES.PHASE_2
@@ -137,11 +154,13 @@ function App() {
         {(currentPhase === PHASE_NAMES.PHASE_2 ||
           currentPhase === PHASE_NAMES.SANDBOX) && (
           <DefenceBox
+            currentPhase={currentPhase}
             defences={defencesToShow}
             showConfigurations={currentPhase > 2 ? true : false}
             triggeredDefences={triggeredDefences}
             defenceActivated={defenceActivated}
             defenceDeactivated={defenceDeactivated}
+            switchedPhase={setNewPhase} // to load active defences when phase is switched
           />
         )}
         {/* show reduced set of attacks on phase 1 */}

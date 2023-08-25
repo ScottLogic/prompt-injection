@@ -16,13 +16,10 @@ dotenv.config();
 
 declare module "express-session" {
   interface Session {
-    chatHistory: ChatCompletionRequestMessage[];
-    defences: DefenceInfo[];
-    gptModel: CHAT_MODELS;
-    numPhasesCompleted: number;
     openAiApiKey: string | null;
-    sentEmails: EmailInfo[];
+    gptModel: CHAT_MODELS;
     phaseState: PhaseState[];
+    numPhasesCompleted: number;
   }
   interface PhaseState {
     phase: number;
@@ -72,12 +69,12 @@ app.use(
 
 app.use(async (req, _res, next) => {
   // initialise session variables
-  if (!req.session.chatHistory) {
-    req.session.chatHistory = [];
-  }
-  if (!req.session.defences) {
-    req.session.defences = getInitialDefences();
-  }
+  // if (!req.session.chatHistory) {
+  //   req.session.chatHistory = [];
+  // }
+  // if (!req.session.defences) {
+  //   req.session.defences = getInitialDefences();
+  // }
   if (!req.session.gptModel) {
     req.session.gptModel = defaultModel;
   }
@@ -87,9 +84,9 @@ app.use(async (req, _res, next) => {
   if (!req.session.openAiApiKey) {
     req.session.openAiApiKey = process.env.OPENAI_API_KEY || null;
   }
-  if (!req.session.sentEmails) {
-    req.session.sentEmails = [];
-  }
+  // if (!req.session.sentEmails) {
+  //   req.session.sentEmails = [];
+  // }
   if (!req.session.phaseState) {
     req.session.phaseState = [];
     // add empty states for phases 1-4

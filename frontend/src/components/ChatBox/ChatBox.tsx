@@ -36,7 +36,7 @@ function ChatBox(
   // called on mount
   useEffect(() => {
     // get sent emails
-    getSentEmails().then((sentEmails) => {
+    getSentEmails(currentPhase).then((sentEmails) => {
       setEmails(sentEmails);
     });
   }, [setEmails]);
@@ -45,7 +45,7 @@ function ChatBox(
     // clear local messages
     clearMessages();
     // clear remote messages
-    clearChat();
+    clearChat(currentPhase);
   };
 
   const sendChatMessage = async (
@@ -91,7 +91,7 @@ function ChatBox(
       setIsSendingMessage(false);
 
       // get sent emails
-      const sentEmails: EmailInfo[] = await getSentEmails();
+      const sentEmails: EmailInfo[] = await getSentEmails(currentPhase);
       // update emails
       setEmails(sentEmails);
 
@@ -111,16 +111,16 @@ function ChatBox(
     <div id="chat-box">
       <ChatBoxFeed messages={messages} />
       <div id="chat-box-footer">
-          <input 
-            id="chat-box-input" 
-            className="prompt-injection-input"
-            type="text"
-            placeholder="chat to chatgpt..."
-            autoFocus
-            onKeyUp={sendChatMessage.bind(this)}
-          />
-        <button 
-          id="chat-box-button" 
+        <input
+          id="chat-box-input"
+          className="prompt-injection-input"
+          type="text"
+          placeholder="chat to chatgpt..."
+          autoFocus
+          onKeyUp={sendChatMessage.bind(this)}
+        />
+        <button
+          id="chat-box-button"
           className="prompt-injection-button"
           onClick={clearClicked.bind(this)}
         >

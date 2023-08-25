@@ -60,7 +60,7 @@ router.post("/defence/deactivate", (req, res) => {
   const phase: number = req.body?.phase;
   if (defenceId && phase) {
     // deactivate the defence
-    req.session.defences = deactivateDefence(
+    req.session.phaseState[phase].defences = deactivateDefence(
       defenceId,
       req.session.phaseState[phase].defences
     );
@@ -90,7 +90,7 @@ router.post("/defence/configure", (req, res) => {
   const phase: number = req.body?.phase;
   if (defenceId && config && phase) {
     // configure the defence
-    req.session.defences = configureDefence(
+    req.session.phaseState[phase].defences = configureDefence(
       defenceId,
       req.session.phaseState[phase].defences,
       config
@@ -115,12 +115,18 @@ router.post("/defence/reset", (req, res) => {
   }
 });
 
-// Get the status of all defences TODO
+// Get the status of all defences /defence/status?phase=1
 router.get("/defence/status", (req, res) => {
-  res.send(req.session.defences);
+  const phase: number | undefined = req.query?.phase as number | undefined;
+  if (phase) {
+    res.send(req.session.phaseState[phase].defences);
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
-// Get sent emails // /email/get?phas=3
+// Get sent emails // /email/get?phase=1
 router.get("/email/get", (req, res) => {
   const phase: number | undefined = req.query?.phase as number | undefined;
   if (phase) {
@@ -254,6 +260,19 @@ router.post("/openai/chat", async (req, res) => {
   res.send(chatResponse);
 });
 
+// get the chat history
+router.get("/openai/history", (req, res) => {
+  console.debug("Getting chat history");
+  const phase: number | undefined = req.query?.phase as number | undefined;
+  if (phase) {
+    console.debug("Getting chat history for phase: ", phase || "");
+    res.send(req.session.phaseState[phase].chatHistory);
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
+});
+
 // Clear the ChatGPT messages
 router.post("/openai/clear", (req, res) => {
   const phase: number = req.body?.phase;
@@ -278,7 +297,7 @@ router.post("/openai/apiKey", async (req, res) => {
     await setOpenAiApiKey(
       openAiApiKey,
       req.session.gptModel,
-      getQALLMprePrompt(req.session.defences) // todo - make this default
+      getQALLMprePrompt(req.session.phaseState[2].defences) // todo - make this default
     )
   ) {
     req.session.openAiApiKey = openAiApiKey;
