@@ -64,9 +64,15 @@ function App() {
     // reset remote defences
     resetActiveDefences();
     // choose appropriate defences to display
-    newPhase === PHASE_NAMES.PHASE_2
-      ? setDefencesToShow(DEFENCE_DETAILS_PHASE)
-      : setDefencesToShow(DEFENCE_DETAILS_ALL);
+    let defences = newPhase === PHASE_NAMES.PHASE_2
+      ? DEFENCE_DETAILS_PHASE
+      : DEFENCE_DETAILS_ALL;
+    // make all defences inactive
+    defences = defences.map((defence) => {
+      defence.isActive = false;
+      return defence;
+    });
+    setDefencesToShow(defences);
 
     // add the preamble to the chat
     const preambleMessage = PHASES[newPhase].preamble;
