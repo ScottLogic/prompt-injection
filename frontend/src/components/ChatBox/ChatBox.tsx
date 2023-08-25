@@ -82,11 +82,13 @@ function ChatBox(
         const defenceName = DEFENCE_DETAILS_ALL.find((defence) => {
           return defence.id === triggeredDefence;
         })?.name.toLowerCase();
-        addChatMessage({
-          type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-          message: `${defenceName} defence triggered`,
-          isOriginalMessage: true,
-        })
+        if (defenceName) {
+          addChatMessage({
+            type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
+            message: `${defenceName} defence triggered`,
+            isOriginalMessage: true,
+          })
+        }
       });
 
       // we have the message reply
@@ -126,7 +128,7 @@ function ChatBox(
           className="prompt-injection-button"
           onClick={resetPhase.bind(this)}
         >
-          clear
+          reset
         </button>
       </div>
     </div>
