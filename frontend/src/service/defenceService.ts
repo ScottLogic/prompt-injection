@@ -58,6 +58,12 @@ function validateStringConfig(config: string) {
   return config != "" && !Number(config);
 }
 
+function validateFilterConfig(config: string) {
+  // config is not empty or list of empty commas
+  const commaPattern = /^,*,*$/;
+  return config != "" && !commaPattern.test(config);
+}
+
 function validateDefence(id: string, configName: string, config: string) {
   switch (id) {
     case DEFENCE_TYPES.CHARACTER_LIMIT:
@@ -66,6 +72,10 @@ function validateDefence(id: string, configName: string, config: string) {
       return configName === "length"
         ? validateNumberConfig(config)
         : validateStringConfig(config);
+    case DEFENCE_TYPES.FILTER_USER_INPUT:
+      return validateFilterConfig(config);
+    case DEFENCE_TYPES.FILTER_BOT_OUTPUT:
+      return validateFilterConfig(config);
     default:
       return validateStringConfig(config);
   }
