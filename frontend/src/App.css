@@ -4,6 +4,14 @@
   flex-direction: column;
 }
 
+#app-content-header {
+  height: 10%;
+  border-width: 0px;
+  border-bottom: 5px;
+  border-color: var(--main-accent-colour);
+  border-style: solid;
+}
+
 #app-content-body {
   height: 50%;
   flex-grow: 1;

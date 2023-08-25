@@ -1,18 +1,36 @@
 #demo-header {
   display: flex;
+  align-items: center;
   flex-direction: row;
   justify-content: space-between;
+  height: 100%;
 }
 
 #demo-header-left {
   width: 100%;
+  padding-left: 32px;
+}
+
+#demo-header-title {
+  font-size: 36px;
+  font-style: italic;
+  font-weight: 700;
+  padding-right: 24px;
 }
 
 #demo-header-middle {
   white-space: nowrap;
 }
 
+#demo-header-current-phase { 
+  color: var(--main-accent-colour);
+  font-size: 36px;
+  font-style: italic;
+  font-weight: 700;
+}
+
 #demo-header-right {
   width: 100%;
   text-align: right;
+  padding-right: 32px;
 }
