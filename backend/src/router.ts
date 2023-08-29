@@ -207,11 +207,14 @@ router.post("/openai/chat", async (req, res) => {
           req.session.phaseState[currentPhase].defences
         );
 
-        // if message has been transformed then add the original to chat histroy
-        if (chatResponse.transformedMessage !== message) {
+        // if message has been transformed then add the original to chat history
+        const isOriginalMessage = chatResponse.transformedMessage === message;
+
+        if (!isOriginalMessage) {
           req.session.phaseState[currentPhase].chatHistory.push({
             completion: null,
             chatMessageType: CHAT_MESSAGE_TYPE.USER,
+            isOriginalMessage: true,
             infoMessage: message,
           });
         }
@@ -222,6 +225,7 @@ router.post("/openai/chat", async (req, res) => {
             req.session.phaseState[currentPhase].defences,
             req.session.gptModel,
             chatResponse.transformedMessage,
+            isOriginalMessage,
             req.session.openAiApiKey,
             req.session.phaseState[currentPhase].sentEmails,
             currentPhase
@@ -344,7 +348,7 @@ router.post("/openai/apiKey", async (req, res) => {
     await setOpenAiApiKey(
       openAiApiKey,
       req.session.gptModel,
-      getQALLMprePrompt(req.session.phaseState[2].defences) // todo - make this default?
+      getQALLMprePrompt(req.session.phaseState[3].defences) // use phase 2 as only phase with QA LLM defence
     )
   ) {
     req.session.openAiApiKey = openAiApiKey;

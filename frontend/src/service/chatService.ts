@@ -66,11 +66,13 @@ const getChatHistory = async (phase: number): Promise<ChatMessage[]> => {
             return {
               message: message.infoMessage,
               type: CHAT_MESSAGE_TYPE.USER,
+              isOriginalMessage: message.isOriginalMessage,
             };
           } else {
             return {
               message: message.completion?.content,
               type: CHAT_MESSAGE_TYPE.USER,
+              isOriginalMessage: message.isOriginalMessage,
             };
           }
         case CHAT_MESSAGE_TYPE.INFO:

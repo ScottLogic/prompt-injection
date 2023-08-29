@@ -288,7 +288,8 @@ const getChatCompletionsFromHistory = (
 
 const pushCompletionToHistory = (
   chatHistory: ChatHistoryMessage[],
-  completion: ChatCompletionRequestMessage
+  completion: ChatCompletionRequestMessage,
+  isOriginalMessage: boolean = true
 ) => {
   const messageType =
     completion.role === "user"
@@ -299,7 +300,7 @@ const pushCompletionToHistory = (
   chatHistory.push({
     completion: completion,
     chatMessageType: messageType,
-    isOriginalMessage: true,
+    isOriginalMessage: isOriginalMessage,
     infoMessage: null,
   });
   return chatHistory;
@@ -310,6 +311,7 @@ async function chatGptSendMessage(
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
   message: string,
+  isOriginalMessage: boolean,
   openAiApiKey: string,
   sentEmails: EmailInfo[],
   // default to sandbox
@@ -326,10 +328,14 @@ async function chatGptSendMessage(
   let wonPhase: boolean | undefined | null = false;
 
   // add user message to chat
-  chatHistory = pushCompletionToHistory(chatHistory, {
-    role: "user",
-    content: message,
-  });
+  chatHistory = pushCompletionToHistory(
+    chatHistory,
+    {
+      role: "user",
+      content: message,
+    },
+    isOriginalMessage
+  );
 
   const openai = getOpenAiFromKey(openAiApiKey);
   let reply = await chatGptChatCompletion(
