@@ -250,6 +250,7 @@ async function chatGptChatCompletion(
           content: getSystemRole(defences, currentPhase),
         },
         chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+        isOriginalMessage: true,
         infoMessage: null,
       });
     }
@@ -298,6 +299,7 @@ const pushCompletionToHistory = (
   chatHistory.push({
     completion: completion,
     chatMessageType: messageType,
+    isOriginalMessage: true,
     infoMessage: null,
   });
   return chatHistory;

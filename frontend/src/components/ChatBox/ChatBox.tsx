@@ -124,7 +124,6 @@ function ChatBox(
       }
     }
   };
-
   return (
     <div id="chat-box">
       <ChatBoxFeed messages={messages} />

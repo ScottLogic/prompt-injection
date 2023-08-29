@@ -40,48 +40,60 @@ const sendMessage = async (
 const getChatHistory = async (phase: number): Promise<ChatMessage[]> => {
   const response = await sendRequest(PATH + "history?phase=" + phase, "GET");
   const data = await response.json();
-
   // convert to ChatMessage object
   const chatMessages: ChatMessage[] = data.map(
     (message: ChatHistoryMessage) => {
       switch (message.chatMessageType) {
         case CHAT_MESSAGE_TYPE.BOT:
-          return {
-            message: message.completion?.content,
-            isOriginalMessage: true,
-            type: CHAT_MESSAGE_TYPE.BOT,
-          };
+          if (message.completion) {
+            return {
+              message: message.completion?.content,
+              type: CHAT_MESSAGE_TYPE.BOT,
+            };
+          } else {
+            return {
+              message: message.infoMessage,
+              type: CHAT_MESSAGE_TYPE.BOT,
+              defenceInfo: {
+                blockedReason: message.infoMessage,
+                isBlocked: true,
+                triggeredDefences: [],
+              },
+            };
+          }
         case CHAT_MESSAGE_TYPE.USER:
-          return {
-            message: message.completion?.content,
-            isOriginalMessage: true,
-            type: CHAT_MESSAGE_TYPE.USER,
-          };
+          if (message.infoMessage) {
+            return {
+              message: message.infoMessage,
+              type: CHAT_MESSAGE_TYPE.USER,
+            };
+          } else {
+            return {
+              message: message.completion?.content,
+              type: CHAT_MESSAGE_TYPE.USER,
+            };
+          }
         case CHAT_MESSAGE_TYPE.INFO:
           return {
             message: message.infoMessage,
-            isOriginalMessage: true,
             type: message.chatMessageType,
           };
         case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
           return {
             message: message.infoMessage,
-            isOriginalMessage: true,
             type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
           };
         case CHAT_MESSAGE_TYPE.PHASE_INFO:
           return {
             message: message.infoMessage,
-            isOriginalMessage: true,
             type: CHAT_MESSAGE_TYPE.PHASE_INFO,
           };
         default:
-          // don't want to show system role messages or function calls
+          // don't show system role messages or function calls in the chat box
           return null;
       }
     }
   );
-  console.log("chatMessages: " + JSON.stringify(chatMessages));
   return chatMessages.filter((message) => message !== null);
 };
 

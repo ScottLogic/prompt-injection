@@ -207,6 +207,14 @@ router.post("/openai/chat", async (req, res) => {
           req.session.phaseState[currentPhase].defences
         );
 
+        // if message has been transformed then add the original to chat histroy
+        if (chatResponse.transformedMessage !== message) {
+          req.session.phaseState[currentPhase].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.USER,
+            infoMessage: message,
+          });
+        }
         // get the chatGPT reply
         try {
           const openAiReply = await chatGptSendMessage(
@@ -251,6 +259,14 @@ router.post("/openai/chat", async (req, res) => {
           }
         }
       }
+      // if the reply was blocked then add it to the chat history
+      if (chatResponse.defenceInfo.isBlocked) {
+        req.session.phaseState[currentPhase].chatHistory.push({
+          completion: null,
+          chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+          infoMessage: chatResponse.defenceInfo.blockedReason,
+        });
+      }
 
       // enable next phase when user wins current phase
       if (chatResponse.wonPhase) {
@@ -281,7 +297,7 @@ router.get("/openai/history", (req, res) => {
   }
 });
 
-// add a info message to chat history
+// add an info message to chat history
 router.post("/openai/addInfo", (req, res) => {
   const message: string = req.body?.message;
   const chatMessageType: CHAT_MESSAGE_TYPE = req.body?.chatMessageType;

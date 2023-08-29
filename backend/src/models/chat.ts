@@ -54,7 +54,8 @@ interface ChatHttpResponse {
 interface ChatHistoryMessage {
   completion: ChatCompletionRequestMessage | null;
   chatMessageType: CHAT_MESSAGE_TYPE;
-  infoMessage: string | null | undefined;
+  isOriginalMessage?: boolean;
+  infoMessage?: string | null;
 }
 
 export type {
