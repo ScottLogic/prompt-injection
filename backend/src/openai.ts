@@ -289,6 +289,7 @@ const getChatCompletionsFromHistory = (
 const pushCompletionToHistory = (
   chatHistory: ChatHistoryMessage[],
   completion: ChatCompletionRequestMessage,
+  isBlocked: boolean,
   isOriginalMessage: boolean = true
 ) => {
   const messageType =
@@ -297,12 +298,16 @@ const pushCompletionToHistory = (
       : completion.role === "function" || completion.function_call
       ? CHAT_MESSAGE_TYPE.FUNCTION_CALL
       : CHAT_MESSAGE_TYPE.BOT;
-  chatHistory.push({
-    completion: completion,
-    chatMessageType: messageType,
-    isOriginalMessage: isOriginalMessage,
-    infoMessage: null,
-  });
+  if (!isBlocked) {
+    chatHistory.push({
+      completion: completion,
+      chatMessageType: messageType,
+      isOriginalMessage: isOriginalMessage,
+      infoMessage: null,
+    });
+  } else {
+    console.log("Skipping adding blocked message to chat history", completion);
+  }
   return chatHistory;
 };
 
@@ -334,6 +339,7 @@ async function chatGptSendMessage(
       role: "user",
       content: message,
     },
+    defenceInfo.isBlocked,
     isOriginalMessage
   );
 
@@ -347,7 +353,11 @@ async function chatGptSendMessage(
   );
   // check if GPT wanted to call a function
   while (reply && reply.function_call) {
-    chatHistory = pushCompletionToHistory(chatHistory, reply);
+    chatHistory = pushCompletionToHistory(
+      chatHistory,
+      reply,
+      defenceInfo.isBlocked
+    );
 
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
@@ -363,7 +373,8 @@ async function chatGptSendMessage(
       if (functionCallReply.completion !== undefined) {
         chatHistory = pushCompletionToHistory(
           chatHistory,
-          functionCallReply.completion
+          functionCallReply.completion,
+          defenceInfo.isBlocked
         );
       }
       // update the defence info
@@ -406,7 +417,11 @@ async function chatGptSendMessage(
       }
     }
     // add the ai reply to the chat history
-    chatHistory = pushCompletionToHistory(chatHistory, reply);
+    chatHistory = pushCompletionToHistory(
+      chatHistory,
+      reply,
+      defenceInfo.isBlocked
+    );
 
     // log the entire chat history so far
     console.log(chatHistory);

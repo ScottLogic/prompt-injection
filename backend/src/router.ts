@@ -198,6 +198,15 @@ router.post("/openai/chat", async (req, res) => {
           message,
           req.session.phaseState[currentPhase].defences
         );
+        // if message is blocked, add to chat history
+        if (chatResponse.defenceInfo.isBlocked) {
+          req.session.phaseState[currentPhase].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.USER,
+            infoMessage: message,
+            isOriginalMessage: true,
+          });
+        }
       }
       // if blocked, send the response
       if (!chatResponse.defenceInfo.isBlocked) {
@@ -206,10 +215,8 @@ router.post("/openai/chat", async (req, res) => {
           message,
           req.session.phaseState[currentPhase].defences
         );
-
-        // if message has been transformed then add the original to chat history
+        // if message has been transformed then add the original to chat history and send other to ai chat
         const isOriginalMessage = chatResponse.transformedMessage === message;
-
         if (!isOriginalMessage) {
           req.session.phaseState[currentPhase].chatHistory.push({
             completion: null,
@@ -263,6 +270,7 @@ router.post("/openai/chat", async (req, res) => {
           }
         }
       }
+
       // if the reply was blocked then add it to the chat history
       if (chatResponse.defenceInfo.isBlocked) {
         req.session.phaseState[currentPhase].chatHistory.push({
