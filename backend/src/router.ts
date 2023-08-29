@@ -321,10 +321,6 @@ router.post("/openai/addInfo", (req, res) => {
       chatMessageType: chatMessageType,
       infoMessage: message,
     });
-    console.debug(
-      "Message added to chat history",
-      req.session.phaseState[phase].chatHistory
-    );
     res.send("Message added to chat history");
   } else {
     res.statusCode = 400;

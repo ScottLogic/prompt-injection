@@ -1,5 +1,8 @@
-import { ChatCompletionRequestMessage } from "openai";
-import { CHAT_MODELS } from "../../src/models/chat";
+import {
+  CHAT_MESSAGE_TYPE,
+  CHAT_MODELS,
+  ChatHistoryMessage,
+} from "../../src/models/chat";
 import { chatGptSendMessage } from "../../src/openai";
 import { DEFENCE_TYPES, DefenceInfo } from "../../src/models/defence";
 import { EmailInfo } from "../../src/models/email";
@@ -36,7 +39,7 @@ beforeEach(() => {
 
 test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", async () => {
   const message = "Hello";
-  const chatHistory: ChatCompletionRequestMessage[] = [];
+  const chatHistory: ChatHistoryMessage[] = [];
   const defences: DefenceInfo[] = [];
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
@@ -62,6 +65,7 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
     defences,
     gptModel,
     message,
+    true,
     openAiApiKey,
     sentEmails
   );
@@ -71,10 +75,10 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
   expect(reply?.completion.content).toBe("Hi");
   // check the chat history has been updated
   expect(chatHistory.length).toBe(2);
-  expect(chatHistory[0].role).toBe("user");
-  expect(chatHistory[0].content).toBe("Hello");
-  expect(chatHistory[1].role).toBe("assistant");
-  expect(chatHistory[1].content).toBe("Hi");
+  expect(chatHistory[0].completion?.role).toBe("user");
+  expect(chatHistory[0].completion?.content).toBe("Hello");
+  expect(chatHistory[1].completion?.role).toBe("assistant");
+  expect(chatHistory[1].completion?.content).toBe("Hi");
 
   // restore the mock
   mockCreateChatCompletion.mockRestore();
@@ -85,7 +89,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   process.env.SYSTEM_ROLE = "You are a helpful assistant";
 
   const message = "Hello";
-  const chatHistory: ChatCompletionRequestMessage[] = [];
+  const chatHistory: ChatHistoryMessage[] = [];
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
@@ -113,6 +117,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
     defences,
     gptModel,
     message,
+    true,
     openAiApiKey,
     sentEmails
   );
@@ -122,12 +127,12 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   // check the chat history has been updated
   expect(chatHistory.length).toBe(3);
   // system role is added to the start of the chat history
-  expect(chatHistory[0].role).toBe("system");
-  expect(chatHistory[0].content).toBe(process.env.SYSTEM_ROLE);
-  expect(chatHistory[1].role).toBe("user");
-  expect(chatHistory[1].content).toBe("Hello");
-  expect(chatHistory[2].role).toBe("assistant");
-  expect(chatHistory[2].content).toBe("Hi");
+  expect(chatHistory[0].completion?.role).toBe("system");
+  expect(chatHistory[0].completion?.content).toBe(process.env.SYSTEM_ROLE);
+  expect(chatHistory[1].completion?.role).toBe("user");
+  expect(chatHistory[1].completion?.content).toBe("Hello");
+  expect(chatHistory[2].completion?.role).toBe("assistant");
+  expect(chatHistory[2].completion?.content).toBe("Hi");
 
   // restore the mock
   mockCreateChatCompletion.mockRestore();
@@ -138,14 +143,21 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   process.env.SYSTEM_ROLE = "You are a helpful assistant";
 
   const message = "Hello";
-  const chatHistory: ChatCompletionRequestMessage[] = [
+  const isOriginalMessage = true;
+  const chatHistory: ChatHistoryMessage[] = [
     {
-      role: "user",
-      content: "I'm a user",
+      completion: {
+        role: "user",
+        content: "I'm a user",
+      },
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
     },
     {
-      role: "assistant",
-      content: "I'm an assistant",
+      completion: {
+        role: "assistant",
+        content: "I'm an assistant",
+      },
+      chatMessageType: CHAT_MESSAGE_TYPE.BOT,
     },
   ];
   let defences: DefenceInfo[] = getInitialDefences();
@@ -176,6 +188,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
     defences,
     gptModel,
     message,
+    isOriginalMessage,
     openAiApiKey,
     sentEmails
   );
@@ -185,17 +198,17 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   // check the chat history has been updated
   expect(chatHistory.length).toBe(5);
   // system role is added to the start of the chat history
-  expect(chatHistory[0].role).toBe("system");
-  expect(chatHistory[0].content).toBe(process.env.SYSTEM_ROLE);
+  expect(chatHistory[0].completion?.role).toBe("system");
+  expect(chatHistory[0].completion?.content).toBe(process.env.SYSTEM_ROLE);
   // rest of the chat history is in order
-  expect(chatHistory[1].role).toBe("user");
-  expect(chatHistory[1].content).toBe("I'm a user");
-  expect(chatHistory[2].role).toBe("assistant");
-  expect(chatHistory[2].content).toBe("I'm an assistant");
-  expect(chatHistory[3].role).toBe("user");
-  expect(chatHistory[3].content).toBe("Hello");
-  expect(chatHistory[4].role).toBe("assistant");
-  expect(chatHistory[4].content).toBe("Hi");
+  expect(chatHistory[1].completion?.role).toBe("user");
+  expect(chatHistory[1].completion?.content).toBe("I'm a user");
+  expect(chatHistory[2].completion?.role).toBe("assistant");
+  expect(chatHistory[2].completion?.content).toBe("I'm an assistant");
+  expect(chatHistory[3].completion?.role).toBe("user");
+  expect(chatHistory[3].completion?.content).toBe("Hello");
+  expect(chatHistory[4].completion?.role).toBe("assistant");
+  expect(chatHistory[4].completion?.content).toBe("Hi");
 
   // restore the mock
   mockCreateChatCompletion.mockRestore();
@@ -203,18 +216,27 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
 
 test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system role is removed from the chat history", async () => {
   const message = "Hello";
-  const chatHistory: ChatCompletionRequestMessage[] = [
+  const chatHistory: ChatHistoryMessage[] = [
     {
-      role: "system",
-      content: "You are a helpful assistant",
+      completion: {
+        role: "system",
+        content: "You are a helpful assistant",
+      },
+      chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
     },
     {
-      role: "user",
-      content: "I'm a user",
+      completion: {
+        role: "user",
+        content: "I'm a user",
+      },
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
     },
     {
-      role: "assistant",
-      content: "I'm an assistant",
+      completion: {
+        role: "assistant",
+        content: "I'm an assistant",
+      },
+      chatMessageType: CHAT_MESSAGE_TYPE.BOT,
     },
   ];
   let defences: DefenceInfo[] = getInitialDefences();
@@ -242,6 +264,7 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
     defences,
     gptModel,
     message,
+    true,
     openAiApiKey,
     sentEmails
   );
@@ -252,14 +275,14 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
   expect(chatHistory.length).toBe(4);
   // system role is removed from the start of the chat history
   // rest of the chat history is in order
-  expect(chatHistory[0].role).toBe("user");
-  expect(chatHistory[0].content).toBe("I'm a user");
-  expect(chatHistory[1].role).toBe("assistant");
-  expect(chatHistory[1].content).toBe("I'm an assistant");
-  expect(chatHistory[2].role).toBe("user");
-  expect(chatHistory[2].content).toBe("Hello");
-  expect(chatHistory[3].role).toBe("assistant");
-  expect(chatHistory[3].content).toBe("Hi");
+  expect(chatHistory[0].completion?.role).toBe("user");
+  expect(chatHistory[0].completion?.content).toBe("I'm a user");
+  expect(chatHistory[1].completion?.role).toBe("assistant");
+  expect(chatHistory[1].completion?.content).toBe("I'm an assistant");
+  expect(chatHistory[2].completion?.role).toBe("user");
+  expect(chatHistory[2].completion?.content).toBe("Hello");
+  expect(chatHistory[3].completion?.role).toBe("assistant");
+  expect(chatHistory[3].completion?.content).toBe("Hi");
 
   // restore the mock
   mockCreateChatCompletion.mockRestore();
@@ -273,18 +296,27 @@ test(
     process.env.SYSTEM_ROLE = "You are a helpful assistant";
 
     const message = "Hello";
-    const chatHistory: ChatCompletionRequestMessage[] = [
+    const chatHistory: ChatHistoryMessage[] = [
       {
-        role: "system",
-        content: "You are a helpful assistant",
+        completion: {
+          role: "system",
+          content: "You are a helpful assistant",
+        },
+        chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
       },
       {
-        role: "user",
-        content: "I'm a user",
+        completion: {
+          role: "user",
+          content: "I'm a user",
+        },
+        chatMessageType: CHAT_MESSAGE_TYPE.USER,
       },
       {
-        role: "assistant",
-        content: "I'm an assistant",
+        completion: {
+          role: "assistant",
+          content: "I'm an assistant",
+        },
+        chatMessageType: CHAT_MESSAGE_TYPE.BOT,
       },
     ];
     let defences: DefenceInfo[] = getInitialDefences();
@@ -314,6 +346,7 @@ test(
       defences,
       gptModel,
       message,
+      true,
       openAiApiKey,
       sentEmails
     );
@@ -323,17 +356,17 @@ test(
     // check the chat history has been updated
     expect(chatHistory.length).toBe(5);
     // system role is added to the start of the chat history
-    expect(chatHistory[0].role).toBe("system");
-    expect(chatHistory[0].content).toBe(process.env.SYSTEM_ROLE);
+    expect(chatHistory[0].completion?.role).toBe("system");
+    expect(chatHistory[0].completion?.content).toBe(process.env.SYSTEM_ROLE);
     // rest of the chat history is in order
-    expect(chatHistory[1].role).toBe("user");
-    expect(chatHistory[1].content).toBe("I'm a user");
-    expect(chatHistory[2].role).toBe("assistant");
-    expect(chatHistory[2].content).toBe("I'm an assistant");
-    expect(chatHistory[3].role).toBe("user");
-    expect(chatHistory[3].content).toBe("Hello");
-    expect(chatHistory[4].role).toBe("assistant");
-    expect(chatHistory[4].content).toBe("Hi");
+    expect(chatHistory[1].completion?.role).toBe("user");
+    expect(chatHistory[1].completion?.content).toBe("I'm a user");
+    expect(chatHistory[2].completion?.role).toBe("assistant");
+    expect(chatHistory[2].completion?.content).toBe("I'm an assistant");
+    expect(chatHistory[3].completion?.role).toBe("user");
+    expect(chatHistory[3].completion?.content).toBe("Hello");
+    expect(chatHistory[4].completion?.role).toBe("assistant");
+    expect(chatHistory[4].completion?.content).toBe("Hi");
 
     // restore the mock
     mockCreateChatCompletion.mockRestore();
@@ -349,7 +382,7 @@ test(
     process.env.EMAIL_WHITELIST = "";
 
     const message = "Hello";
-    const chatHistory: ChatCompletionRequestMessage[] = [];
+    const chatHistory: ChatHistoryMessage[] = [];
     const defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
     const gptModel = CHAT_MODELS.GPT_4;
@@ -395,6 +428,7 @@ test(
       defences,
       gptModel,
       message,
+      true,
       openAiApiKey,
       sentEmails
     );
@@ -428,11 +462,12 @@ test(
     process.env.EMAIL_WHITELIST = "";
 
     const message = "Hello";
-    const chatHistory: ChatCompletionRequestMessage[] = [];
+    const chatHistory: ChatHistoryMessage[] = [];
     let defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
     const gptModel = CHAT_MODELS.GPT_4;
     const openAiApiKey = "sk-12345";
+    const isOriginalMessage = true;
 
     defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
 
@@ -476,6 +511,7 @@ test(
       defences,
       gptModel,
       message,
+      isOriginalMessage,
       openAiApiKey,
       sentEmails
     );
@@ -506,11 +542,12 @@ test(
     process.env.EMAIL_WHITELIST = "bob@example.com";
 
     const message = "Send an email to bob@example.com saying hi";
-    const chatHistory: ChatCompletionRequestMessage[] = [];
+    const chatHistory: ChatHistoryMessage[] = [];
     let defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
     const gptModel = CHAT_MODELS.GPT_4;
     const openAiApiKey = "sk-12345";
+    const isOriginalMessage = true;
 
     defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
 
@@ -554,6 +591,7 @@ test(
       defences,
       gptModel,
       message,
+      isOriginalMessage,
       openAiApiKey,
       sentEmails
     );
@@ -584,11 +622,12 @@ test(
     process.env.EMAIL_WHITELIST = "bob@example.com";
 
     const message = "Send an email to bob@example.com saying hi";
-    const chatHistory: ChatCompletionRequestMessage[] = [];
+    const chatHistory: ChatHistoryMessage[] = [];
     const defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
     const gptModel = CHAT_MODELS.GPT_4;
     const openAiApiKey = "sk-12345";
+    const isOriginalMessage = true;
 
     // set email whitelist
     process.env.EMAIL_WHITELIST = "bob@example.com";
@@ -633,6 +672,7 @@ test(
       defences,
       gptModel,
       message,
+      isOriginalMessage,
       openAiApiKey,
       sentEmails
     );
@@ -657,11 +697,12 @@ test("GIVEN the output filtering defence is active WHEN the bot responds with a 
   process.env.FILTER_LIST_OUTPUT = "secret project,password";
   const message = "What is the secret Project?";
 
-  const chatHistory: ChatCompletionRequestMessage[] = [];
+  const chatHistory: ChatHistoryMessage[] = [];
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
   const openAiApiKey = "sk-12345";
+  const isOriginalMessage = true;
 
   defences = activateDefence(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences);
 
@@ -682,6 +723,7 @@ test("GIVEN the output filtering defence is active WHEN the bot responds with a 
     defences,
     gptModel,
     message,
+    isOriginalMessage,
     openAiApiKey,
     sentEmails
   );
@@ -700,11 +742,12 @@ test("GIVEN the output filtering defence is active WHEN the bot responds with a 
   process.env.FILTER_LIST_OUTPUT = "secret project,password";
   const message = "What is the secret Project?";
 
-  const chatHistory: ChatCompletionRequestMessage[] = [];
+  const chatHistory: ChatHistoryMessage[] = [];
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
   const openAiApiKey = "sk-12345";
+  const isOriginalMessage = true;
 
   defences = activateDefence(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences);
 
@@ -725,6 +768,7 @@ test("GIVEN the output filtering defence is active WHEN the bot responds with a 
     defences,
     gptModel,
     message,
+    isOriginalMessage,
     openAiApiKey,
     sentEmails
   );
@@ -741,11 +785,12 @@ test("GIVEN the output filtering defence is not active WHEN the bot responds wit
   process.env.FILTER_LIST_OUTPUT = "secret project,password";
   const message = "What is the secret Project?";
 
-  const chatHistory: ChatCompletionRequestMessage[] = [];
+  const chatHistory: ChatHistoryMessage[] = [];
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
   const openAiApiKey = "sk-12345";
+  const isOriginalMessage = true;
 
   mockCreateChatCompletion.mockResolvedValueOnce({
     data: {
@@ -764,6 +809,7 @@ test("GIVEN the output filtering defence is not active WHEN the bot responds wit
     defences,
     gptModel,
     message,
+    isOriginalMessage,
     openAiApiKey,
     sentEmails
   );

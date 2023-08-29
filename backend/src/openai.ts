@@ -380,7 +380,6 @@ async function chatGptSendMessage(
       // update the defence info
       defenceInfo = functionCallReply.defenceInfo;
     }
-
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion(
       chatHistory,
@@ -392,7 +391,6 @@ async function chatGptSendMessage(
   }
 
   if (reply && reply.content) {
-    console.debug("GPT reply: " + reply.content);
     // if output filter defence is active, check for blocked words/phrases
     if (
       currentPhase === PHASE_NAMES.PHASE_2 ||
