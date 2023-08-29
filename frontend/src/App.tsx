@@ -2,7 +2,7 @@ import "./App.css";
 import "./Theme.css";
 import DemoHeader from "./components/MainComponent/DemoHeader";
 import DemoBody from "./components/MainComponent/DemoBody";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PHASE_NAMES } from "./models/phase";
 import { clearChat } from "./service/chatService";
 import { EmailInfo } from "./models/email";
@@ -12,12 +12,11 @@ import { resetActiveDefences } from "./service/defenceService";
 import { PHASES } from "./Phases";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
 import { DefenceInfo } from "./models/defence";
+import { getCompletedPhases } from "./service/phaseService";
 
 function App() {
   // start on sandbox mode
-  const [currentPhase, setCurrentPhase] = useState<PHASE_NAMES>(
-    PHASE_NAMES.SANDBOX
-  );
+  const [currentPhase, setCurrentPhase] = useState<PHASE_NAMES>(PHASE_NAMES.SANDBOX);
   const [numCompletedPhases, setNumCompletedPhases] = useState<number>(0);
   
   const [defencesToShow, setDefencesToShow] =
@@ -25,12 +24,19 @@ function App() {
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
+  // called on mount
+  useEffect(() => {
+    getCompletedPhases().then((numCompletedPhases) => {
+      setNumCompletedPhases(numCompletedPhases);
+    });
+    setNewPhase(currentPhase);
+  }, []);
   
-  const addChatMessage = (message: ChatMessage) => {
+  function addChatMessage(message: ChatMessage) {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
   };
 
-  const addPhasePreambleMessage = (message: string) => {
+  function addPhasePreambleMessage (message: string) {
     addChatMessage({
       message: message,
       type: CHAT_MESSAGE_TYPE.PHASE_INFO,
@@ -38,29 +44,39 @@ function App() {
     });
   };
 
-  const clearEmailBox = () => {
-    setEmails([]);
-    clearEmails();
-  };
+  function resetPhase() {
+    setNewPhase(currentPhase);
+  }
 
-  const setNewPhase = (newPhase: PHASE_NAMES) => {
-    // reset emails and messages from front and backend
-    clearChat();
-    clearEmailBox();
-    // clear frontend messages
-    setMessages([]);
+  function setNewPhase(newPhase: PHASE_NAMES) {
     setCurrentPhase(newPhase);
 
+    // reset remove emails
+    clearEmails();
+    // reset local emails
+    setEmails([]);
+
+    // reset remove chat
+    clearChat();
+    // reset local chat
+    setMessages([]);
+
+    // reset remote defences
     resetActiveDefences();
+    // choose appropriate defences to display
+    let defences = newPhase === PHASE_NAMES.PHASE_2
+      ? DEFENCE_DETAILS_PHASE
+      : DEFENCE_DETAILS_ALL;
+    // make all defences inactive
+    defences = defences.map((defence) => {
+      defence.isActive = false;
+      return defence;
+    });
+    setDefencesToShow(defences);
 
     // add the preamble to the chat
     const preambleMessage = PHASES[newPhase].preamble;
     addPhasePreambleMessage(preambleMessage.toLowerCase());
-
-    // choose appropriate defences to display
-    newPhase === PHASE_NAMES.PHASE_2
-      ? setDefencesToShow(DEFENCE_DETAILS_PHASE)
-      : setDefencesToShow(DEFENCE_DETAILS_ALL);
   };
 
   return (
@@ -79,8 +95,8 @@ function App() {
           emails={emails}
           messages={messages}
           addChatMessage={addChatMessage}
+          resetPhase={resetPhase}
           setEmails={setEmails}
-          setNewPhase={setNewPhase}
           setNumCompletedPhases={setNumCompletedPhases}
         />
       </div>
