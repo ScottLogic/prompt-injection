@@ -191,7 +191,7 @@ test(
 test(
   "GIVEN CHARACTER_LIMIT defence is not active AND message is too long " +
     "WHEN detecting triggered defences " +
-    "THEN CHARACTER_LIMIT defence is triggered AND the message is not blocked",
+    "THEN CHARACTER_LIMIT defence is alerted AND the message is not blocked",
   async () => {
     const message = "Hello";
     let defences = getInitialDefences();
@@ -205,19 +205,19 @@ test(
     const defenceReport = await detectTriggeredDefences(message, defences);
     expect(defenceReport.blockedReason).toBe(null);
     expect(defenceReport.isBlocked).toBe(false);
-    expect(defenceReport.triggeredDefences).toContain(
+    expect(defenceReport.alertedDefences).toContain(
       DEFENCE_TYPES.CHARACTER_LIMIT
     );
   }
 );
 
-test("GIVEN message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is triggered", async () => {
+test("GIVEN message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is alerted", async () => {
   const message = "<Hello>";
   const defences = getInitialDefences();
   const defenceReport = await detectTriggeredDefences(message, defences);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
-  expect(defenceReport.triggeredDefences).toContain(DEFENCE_TYPES.XML_TAGGING);
+  expect(defenceReport.alertedDefences).toContain(DEFENCE_TYPES.XML_TAGGING);
 });
 
 test("GIVEN message contains phrases from the filter listed WHEN detecting triggered defences THEN FILTERING defence is triggered", async () => {
