@@ -12,7 +12,6 @@ import { DefenceConfig, DefenceInfo } from "../../models/defence";
 function DefenceBox({
   currentPhase,
   defences,
-  triggeredDefences,
   showConfigurations,
   defenceActivated,
   defenceDeactivated,
@@ -20,7 +19,6 @@ function DefenceBox({
 }: {
   currentPhase: number;
   defences: DefenceInfo[];
-  triggeredDefences: string[];
   showConfigurations: boolean;
   defenceActivated: (defenceInfo: DefenceInfo) => void;
   defenceDeactivated: (defenceInfo: DefenceInfo) => void;
@@ -61,17 +59,6 @@ function DefenceBox({
       setDefenceDetails(newDefences);
     });
   }, [switchedPhase]);
-
-  // update triggered defences
-  useEffect(() => {
-    // update state
-    const newDefences = defenceDetails.map((defenceDetail) => {
-      defenceDetail.isTriggered = triggeredDefences.includes(defenceDetail.id);
-      return defenceDetail;
-    });
-    setDefenceDetails(newDefences);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggeredDefences]);
 
   const setDefenceActive = (defenceType: string) => {
     activateDefence(defenceType, currentPhase).then(() => {

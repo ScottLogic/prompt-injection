@@ -6,12 +6,12 @@
   border-width: 1px;
   font-size: 14px;
   margin-top: 10px;
-  padding: 5px;
+  padding: 10px 24px;
   white-space: pre-wrap;
 }
 
 .sent-email-divider {
   border-bottom: 1px solid var(--email-divider-colour);
-  margin: 5px 0;
+  margin: 8px 0;
   width: 100%;
 }

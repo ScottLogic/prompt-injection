@@ -42,6 +42,18 @@ const getInitialDefences = (): DefenceInfo[] => {
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.XML_TAGGING, []),
+    new DefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
+      {
+        id: "filterUserInput",
+        value: process.env.FILTER_LIST_INPUT || "",
+      },
+    ]),
+    new DefenceInfo(DEFENCE_TYPES.FILTER_BOT_OUTPUT, [
+      {
+        id: "filterBotOutput",
+        value: process.env.FILTER_LIST_OUTPUT || "",
+      },
+    ]),
   ];
 };
 
@@ -109,6 +121,16 @@ function getRandomSequenceEnclosureLength(defences: DefenceInfo[]) {
   );
 }
 
+function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
+  return getConfigValue(
+    defences,
+    type,
+    type === DEFENCE_TYPES.FILTER_USER_INPUT
+      ? "filterUserInput"
+      : "filterBotOutput",
+    ""
+  );
+}
 function getSystemRole(
   defences: DefenceInfo[],
   // by default, use sandbox
@@ -162,6 +184,26 @@ function generateRandomString(string_length: number) {
     random_string += String.fromCharCode(random_ascii);
   }
   return random_string;
+}
+
+// check message for any words in the filter list
+function detectFilterList(message: string, filterList: string) {
+  const detectedPhrases = [];
+  const cleanedMessage = message.replace(/[^a-zA-Z ]/g, "").toLowerCase();
+  const filterListSplit = filterList
+    .toLowerCase()
+    .split(",")
+    .filter((phrase) => phrase.trim() !== "");
+  for (const phrase of filterListSplit) {
+    // check if original message or cleaned message contains the phrase
+    if (
+      message.toLowerCase().includes(phrase.trim()) ||
+      cleanedMessage.includes(phrase.trim())
+    ) {
+      detectedPhrases.push(phrase);
+    }
+  }
+  return detectedPhrases;
 }
 
 // apply random sequence enclosure defense to input message
@@ -273,6 +315,25 @@ async function detectTriggeredDefences(
     }
   }
 
+  // check for words/phrases in the block list
+  const detectedPhrases = detectFilterList(
+    message,
+    getFilterList(defences, DEFENCE_TYPES.FILTER_USER_INPUT)
+  );
+  if (detectedPhrases.length > 0) {
+    console.debug(
+      "FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: " +
+        detectedPhrases.join(", ")
+    );
+    defenceReport.triggeredDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
+    if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
+      defenceReport.isBlocked = true;
+      defenceReport.blockedReason =
+        "Message blocked - I cannot answer questions about '" +
+        detectedPhrases.join("' or '") +
+        "'!";
+    }
+  }
   // check if message contains XML tags
   if (detectXMLTags(message)) {
     console.debug("XML_TAGGING defence triggered.");
@@ -292,7 +353,6 @@ async function detectTriggeredDefences(
         evalPrompt.reason;
     }
   }
-
   return defenceReport;
 }
 
@@ -307,4 +367,6 @@ export {
   getSystemRole,
   isDefenceActive,
   transformMessage,
+  getFilterList,
+  detectFilterList,
 };

@@ -25,7 +25,6 @@ function PhaseSelectionBox(
 
   return (
     <span>
-      <div className="side-bar-header">phases</div>
       <div id="phase-selection-box">
         {PHASES.map((phase: Phase, index: number) => {
           return (

@@ -271,7 +271,7 @@ test(
   async () => {
     // set the system role prompt
     process.env.SYSTEM_ROLE = "You are a helpful assistant";
-    
+
     const message = "Hello";
     const chatHistory: ChatCompletionRequestMessage[] = [
       {
@@ -410,7 +410,9 @@ test(
     expect(reply?.defenceInfo.isBlocked).toBe(false);
     // EMAIL_WHITELIST defence is triggered
     expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
-    expect(reply?.defenceInfo.triggeredDefences[0]).toBe(DEFENCE_TYPES.EMAIL_WHITELIST);
+    expect(reply?.defenceInfo.triggeredDefences[0]).toBe(
+      DEFENCE_TYPES.EMAIL_WHITELIST
+    );
 
     // restore the mock
     mockCreateChatCompletion.mockRestore();
@@ -486,7 +488,9 @@ test(
     expect(reply?.defenceInfo.isBlocked).toBe(true);
     // EMAIL_WHITELIST defence is triggered
     expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
-    expect(reply?.defenceInfo.triggeredDefences[0]).toBe(DEFENCE_TYPES.EMAIL_WHITELIST);
+    expect(reply?.defenceInfo.triggeredDefences[0]).toBe(
+      DEFENCE_TYPES.EMAIL_WHITELIST
+    );
 
     // restore the mock
     mockCreateChatCompletion.mockRestore();
@@ -649,3 +653,125 @@ test(
     mockCreateChatCompletion.mockRestore();
   }
 );
+test("GIVEN the output filtering defence is active WHEN the bot responds with a message containing a phrase in the list THEN the defence is triggered and the message is blocked", async () => {
+  process.env.FILTER_LIST_OUTPUT = "secret project,password";
+  const message = "What is the secret Project?";
+
+  const chatHistory: ChatCompletionRequestMessage[] = [];
+  let defences: DefenceInfo[] = getInitialDefences();
+  const sentEmails: EmailInfo[] = [];
+  const gptModel = CHAT_MODELS.GPT_4;
+  const openAiApiKey = "sk-12345";
+
+  defences = activateDefence(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences);
+
+  mockCreateChatCompletion.mockResolvedValueOnce({
+    data: {
+      choices: [
+        {
+          message: {
+            role: "assistant",
+            content: "The secret project is Project X!",
+          },
+        },
+      ],
+    },
+  });
+  const reply = await chatGptSendMessage(
+    chatHistory,
+    defences,
+    gptModel,
+    message,
+    openAiApiKey,
+    sentEmails
+  );
+
+  expect(reply).toBeDefined();
+  expect(reply?.defenceInfo.isBlocked).toBe(true);
+  expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
+  expect(reply?.defenceInfo.blockedReason).toBe(
+    "My original response was blocked as it contained a restricted word/phrase. Ask me something else. "
+  );
+
+  mockCreateChatCompletion.mockRestore();
+});
+
+test("GIVEN the output filtering defence is active WHEN the bot responds with a message containing a phrase not in the list THEN the message is not blocked", async () => {
+  process.env.FILTER_LIST_OUTPUT = "secret project,password";
+  const message = "What is the secret Project?";
+
+  const chatHistory: ChatCompletionRequestMessage[] = [];
+  let defences: DefenceInfo[] = getInitialDefences();
+  const sentEmails: EmailInfo[] = [];
+  const gptModel = CHAT_MODELS.GPT_4;
+  const openAiApiKey = "sk-12345";
+
+  defences = activateDefence(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences);
+
+  mockCreateChatCompletion.mockResolvedValueOnce({
+    data: {
+      choices: [
+        {
+          message: {
+            role: "assistant",
+            content: "I cant tell you!",
+          },
+        },
+      ],
+    },
+  });
+  const reply = await chatGptSendMessage(
+    chatHistory,
+    defences,
+    gptModel,
+    message,
+    openAiApiKey,
+    sentEmails
+  );
+
+  expect(reply).toBeDefined();
+  expect(reply?.completion.content).toBe("I cant tell you!");
+  expect(reply?.defenceInfo.isBlocked).toBe(false);
+  expect(reply?.defenceInfo.triggeredDefences.length).toBe(0);
+
+  mockCreateChatCompletion.mockRestore();
+});
+
+test("GIVEN the output filtering defence is not active WHEN the bot responds with a message containing a phrase in the list THEN the defence is triggered and the message is not blocked", async () => {
+  process.env.FILTER_LIST_OUTPUT = "secret project,password";
+  const message = "What is the secret Project?";
+
+  const chatHistory: ChatCompletionRequestMessage[] = [];
+  let defences: DefenceInfo[] = getInitialDefences();
+  const sentEmails: EmailInfo[] = [];
+  const gptModel = CHAT_MODELS.GPT_4;
+  const openAiApiKey = "sk-12345";
+
+  mockCreateChatCompletion.mockResolvedValueOnce({
+    data: {
+      choices: [
+        {
+          message: {
+            role: "assistant",
+            content: "The secret project is X.",
+          },
+        },
+      ],
+    },
+  });
+  const reply = await chatGptSendMessage(
+    chatHistory,
+    defences,
+    gptModel,
+    message,
+    openAiApiKey,
+    sentEmails
+  );
+
+  expect(reply).toBeDefined();
+  expect(reply?.completion.content).toBe("The secret project is X.");
+  expect(reply?.defenceInfo.isBlocked).toBe(false);
+  expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
+
+  mockCreateChatCompletion.mockRestore();
+});

@@ -98,6 +98,7 @@ const getGptModel = async (): Promise<CHAT_MODELS> => {
 };
 
 const addInfoMessageToHistory = async (message: string, phase: number) => {
+  console.log("Adding info message to history" + message);
   const response = await sendRequest(
     PATH + "addInfo",
     "POST",

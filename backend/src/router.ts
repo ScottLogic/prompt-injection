@@ -218,6 +218,7 @@ router.post("/openai/chat", async (req, res) => {
           if (openAiReply) {
             chatResponse.wonPhase = openAiReply.wonPhase;
             chatResponse.reply = openAiReply.completion.content || "";
+
             // combine triggered defences
             chatResponse.defenceInfo.triggeredDefences = [
               ...chatResponse.defenceInfo.triggeredDefences,
@@ -227,6 +228,11 @@ router.post("/openai/chat", async (req, res) => {
             chatResponse.defenceInfo.isBlocked =
               chatResponse.defenceInfo.isBlocked ||
               openAiReply.defenceInfo.isBlocked;
+
+            // combine blocked reason
+            chatResponse.defenceInfo.blockedReason =
+              chatResponse.defenceInfo.blockedReason ||
+              openAiReply.defenceInfo.blockedReason;
           }
         } catch (error: any) {
           console.log(error);
@@ -315,7 +321,7 @@ router.post("/openai/apiKey", async (req, res) => {
     await setOpenAiApiKey(
       openAiApiKey,
       req.session.gptModel,
-      getQALLMprePrompt(req.session.phaseState[2].defences) // todo - make this default
+      getQALLMprePrompt(req.session.phaseState[2].defences) // todo - make this default?
     )
   ) {
     req.session.openAiApiKey = openAiApiKey;
