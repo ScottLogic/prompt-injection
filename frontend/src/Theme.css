@@ -21,7 +21,8 @@
   --chat-user-background: linear-gradient(var(--main-accent-colour), #8AD5DA);
   --chat-info-text-colour: #888;
   --chat-message-text-colour: #000;
-  --chat-triggered-text-color: var(--main-error-colour);
+  --chat-alerted-text-colour: teal;
+  --chat-triggered-text-colour: var(--main-error-colour);
 
   --email-background-colour: #93FFCB;
   --email-divider-colour: var(--email-text-colour);

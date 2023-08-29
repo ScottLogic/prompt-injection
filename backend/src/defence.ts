@@ -297,21 +297,25 @@ async function detectTriggeredDefences(
   const defenceReport: ChatDefenceReport = {
     blockedReason: null,
     isBlocked: false,
+    alertedDefences: [],
     triggeredDefences: [],
   };
   const maxMessageLength: number = Number(getMaxMessageLength(defences));
   // check if the message is too long
   if (message.length > maxMessageLength) {
     console.debug("CHARACTER_LIMIT defence triggered.");
-    // add the defence to the list of triggered defences
-    defenceReport.triggeredDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
     // check if the defence is active
     if (isDefenceActive(DEFENCE_TYPES.CHARACTER_LIMIT, defences)) {
+      // add the defence to the list of triggered defences
+      defenceReport.triggeredDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
       // block the message
       defenceReport.isBlocked = true;
       defenceReport.blockedReason = "Message is too long";
       // return the defence info
       return defenceReport;
+    } else {
+      // add the defence to the list of alerted defences
+      defenceReport.alertedDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
     }
   }
 
@@ -325,32 +329,41 @@ async function detectTriggeredDefences(
       "FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: " +
         detectedPhrases.join(", ")
     );
-    defenceReport.triggeredDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
     if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
+      defenceReport.triggeredDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
       defenceReport.isBlocked = true;
       defenceReport.blockedReason =
         "Message blocked - I cannot answer questions about '" +
         detectedPhrases.join("' or '") +
         "'!";
+    } else {
+      defenceReport.alertedDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
     }
   }
   // check if message contains XML tags
   if (detectXMLTags(message)) {
     console.debug("XML_TAGGING defence triggered.");
-    // add the defence to the list of triggered defences
-    defenceReport.triggeredDefences.push(DEFENCE_TYPES.XML_TAGGING);
+    if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
+      // add the defence to the list of triggered defences
+      defenceReport.triggeredDefences.push(DEFENCE_TYPES.XML_TAGGING);
+    } else {
+      // add the defence to the list of alerted defences
+      defenceReport.alertedDefences.push(DEFENCE_TYPES.XML_TAGGING);
+    }
   }
 
   // evaluate the message for prompt injection
   const evalPrompt = await queryPromptEvaluationModel(message);
   if (evalPrompt.isMalicious) {
-    defenceReport.triggeredDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
     if (isDefenceActive(DEFENCE_TYPES.LLM_EVALUATION, defences)) {
+      defenceReport.triggeredDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
       console.debug("LLM evalutation defence active.");
       defenceReport.isBlocked = true;
       defenceReport.blockedReason =
         "Message blocked by the malicious prompt evaluator." +
         evalPrompt.reason;
+    } else {
+      defenceReport.alertedDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
     }
   }
   return defenceReport;

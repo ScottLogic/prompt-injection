@@ -76,6 +76,20 @@ function ChatBox(
         defenceInfo: response.defenceInfo,
         isOriginalMessage: true,
       });
+      // add altered defences to the chat
+      response.defenceInfo.alertedDefences.forEach((triggeredDefence) => {
+        // get user-friendly defence name
+        const defenceName = DEFENCE_DETAILS_ALL.find((defence) => {
+          return defence.id === triggeredDefence;
+        })?.name.toLowerCase();
+        if (defenceName) {
+          addChatMessage({
+            type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
+            message: `your last message would have triggered the ${defenceName} defence`,
+            isOriginalMessage: true,
+          })
+        }
+      });
       // add triggered defences to the chat
       response.defenceInfo.triggeredDefences.forEach((triggeredDefence) => {
         // get user-friendly defence name

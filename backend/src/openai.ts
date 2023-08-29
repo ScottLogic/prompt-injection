@@ -169,14 +169,14 @@ async function chatGptCallFunction(
       if (isEmailInWhitelist(params.address, defences)) {
         isAllowedToSendEmail = true;
       } else {
-        // trigger email defence even if it is not active
-        defenceInfo.triggeredDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
         if (isDefenceActive(DEFENCE_TYPES.EMAIL_WHITELIST, defences)) {
+          defenceInfo.triggeredDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
           // do not send email if defence is on and set to blocked
           defenceInfo.isBlocked = true;
           defenceInfo.blockedReason =
             "Cannot send to this email as it is not whitelisted";
         } else {
+          defenceInfo.alertedDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
           // send email if defence is not active
           isAllowedToSendEmail = true;
         }
@@ -277,6 +277,7 @@ async function chatGptSendMessage(
   let defenceInfo: ChatDefenceReport = {
     blockedReason: "",
     isBlocked: false,
+    alertedDefences: [],
     triggeredDefences: [],
   };
   let wonPhase: boolean | undefined | null = false;
@@ -341,11 +342,13 @@ async function chatGptSendMessage(
             detectedPhrases.join("', '") +
             "'."
         );
-        defenceInfo.triggeredDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);
         if (isDefenceActive(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences)) {
+          defenceInfo.triggeredDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);
           defenceInfo.isBlocked = true;
           defenceInfo.blockedReason =
             "My original response was blocked as it contained a restricted word/phrase. Ask me something else. ";
+        } else {
+          defenceInfo.alertedDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);
         }
       }
     }

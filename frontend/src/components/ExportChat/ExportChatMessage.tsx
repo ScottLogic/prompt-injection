@@ -1,4 +1,3 @@
-import React, { Fragment } from "react";
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "../../models/chat";
 
@@ -56,7 +55,7 @@ const getMessage = (message: ChatMessage) => {
 const getFullPrefix = (message: ChatMessage) => {
   switch (message.type) {
     case CHAT_MESSAGE_TYPE.INFO:
-      return "Info: " + getMessage(message);
+    case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
     case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
       return "Info: " + getMessage(message);
     case CHAT_MESSAGE_TYPE.USER:
@@ -75,7 +74,7 @@ const getFullPrefix = (message: ChatMessage) => {
 const getMessageStyle = (type: CHAT_MESSAGE_TYPE) => {
   switch (type) {
     case CHAT_MESSAGE_TYPE.INFO:
-      return styles.chatBoxInfo;
+    case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
     case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
       return styles.chatBoxInfo;
     case CHAT_MESSAGE_TYPE.USER:
