@@ -16,6 +16,7 @@ import { resetActiveDefences } from "./service/defenceService";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
 import { DefenceInfo } from "./models/defence";
 import { getCompletedPhases } from "./service/phaseService";
+import { PHASES } from "./Phases";
 
 function App() {
   // start on sandbox mode
@@ -43,11 +44,26 @@ function App() {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
   };
 
+  // add the preamble message for the current phase to start of chat
+  function addPhasePreambleMessage(message: string) {
+    addChatMessage({
+      message: message,
+      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
+      isOriginalMessage: true,
+    });
+    addInfoMessageToHistory(
+      message,
+      CHAT_MESSAGE_TYPE.PHASE_INFO,
+      currentPhase
+    );
+  }
+
   // for clearing phase progress
   function resetPhase() {
     console.log("resetting phase " + currentPhase);
     clearChat(currentPhase).then(() => {
       setMessages([]);
+      addPhasePreambleMessage(PHASES[currentPhase].preamble);
     });
     clearEmails(currentPhase).then(() => {
       setEmails([]);
@@ -69,12 +85,12 @@ function App() {
 
     // get chat history for new phase from the backend
     getChatHistory(newPhase).then((phaseChatHistory) => {
+      // if chat history is empty, add a preamble message
       setMessages(phaseChatHistory);
+      if (phaseChatHistory.length === 0) {
+        addPhasePreambleMessage(PHASES[newPhase].preamble);
+      }
     });
-
-    // add the preamble to the chat
-    // const preambleMessage = PHASES[newPhase].preamble;
-    // addPhasePreambleMessage(preambleMessage.toLowerCase());
 
     // choose appropriate defences to display
     let defences =

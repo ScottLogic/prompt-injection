@@ -80,7 +80,7 @@ app.use(async (req, _res, next) => {
   }
   if (!req.session.phaseState) {
     req.session.phaseState = [];
-    // add empty states for phases 1-3
+    // add empty states for phases 0-3
     for (let i = 0; i <= 3; i++) {
       req.session.phaseState.push({
         phase: i,

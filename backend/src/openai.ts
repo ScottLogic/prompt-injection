@@ -250,8 +250,6 @@ async function chatGptChatCompletion(
           content: getSystemRole(defences, currentPhase),
         },
         chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
-        isOriginalMessage: true,
-        infoMessage: null,
       });
     }
   } else {
@@ -274,6 +272,7 @@ async function chatGptChatCompletion(
   return chat_completion.data.choices[0].message || null;
 }
 
+// take only the completions to send to GPT
 const getChatCompletionsFromHistory = (
   chatHistory: ChatHistoryMessage[]
 ): ChatCompletionRequestMessage[] => {
@@ -303,7 +302,6 @@ const pushCompletionToHistory = (
       completion: completion,
       chatMessageType: messageType,
       isOriginalMessage: isOriginalMessage,
-      infoMessage: null,
     });
   } else {
     console.log("Skipping adding blocked message to chat history", completion);

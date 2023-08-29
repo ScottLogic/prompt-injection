@@ -34,7 +34,7 @@ function PhaseSelectionBox(
               }`}
               key={phase.name}
               onClick={() => handlePhaseChange(index)}
-              // disabled={index !== numCompletedPhases && index !== 3} // TODO: FIX
+              disabled={index > numCompletedPhases && index !== 3}
             >
               {phase.name}
             </button>

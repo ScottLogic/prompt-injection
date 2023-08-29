@@ -25,10 +25,6 @@ function DefenceMechanism({
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const [configValidated, setConfigValidated] = useState<boolean>(true);
 
-  // TODO remove
-  // const ANIMATION_FLASH_TIME_SECONDS = 1;
-  // const ANIMATION_FLASH_REPEAT = 3;
-
   const setConfigurationValue = async (configId: string, value: string) => {
     const newConfiguration = defenceDetail.config.map((config) => {
       if (config.id === configId) {

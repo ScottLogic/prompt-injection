@@ -198,7 +198,7 @@ router.post("/openai/chat", async (req, res) => {
           message,
           req.session.phaseState[currentPhase].defences
         );
-        // if message is blocked, add to chat history
+        // if message is blocked, add to chat history (not as completion)
         if (chatResponse.defenceInfo.isBlocked) {
           req.session.phaseState[currentPhase].chatHistory.push({
             completion: null,
@@ -215,7 +215,7 @@ router.post("/openai/chat", async (req, res) => {
           message,
           req.session.phaseState[currentPhase].defences
         );
-        // if message has been transformed then add the original to chat history and send other to ai chat
+        // if message has been transformed then add the original to chat history and send transformed to chatGPT
         const isOriginalMessage = chatResponse.transformedMessage === message;
         if (!isOriginalMessage) {
           req.session.phaseState[currentPhase].chatHistory.push({
@@ -315,7 +315,6 @@ router.post("/openai/addInfo", (req, res) => {
   const chatMessageType: CHAT_MESSAGE_TYPE = req.body?.chatMessageType;
   const phase: PHASE_NAMES = req.body?.phase;
   if (message && chatMessageType && phase >= 0) {
-    console.log("Adding message to chat history,", req.session);
     req.session.phaseState[phase].chatHistory.push({
       completion: null,
       chatMessageType: chatMessageType,
