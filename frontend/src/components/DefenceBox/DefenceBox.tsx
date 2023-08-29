@@ -15,14 +15,12 @@ function DefenceBox({
   showConfigurations,
   defenceActivated,
   defenceDeactivated,
-  switchedPhase,
 }: {
   currentPhase: number;
   defences: DefenceInfo[];
   showConfigurations: boolean;
   defenceActivated: (defenceInfo: DefenceInfo) => void;
   defenceDeactivated: (defenceInfo: DefenceInfo) => void;
-  switchedPhase: (newPhase: number) => void;
 }) {
   // list of defence mechanisms
   const [defenceDetails, setDefenceDetails] = useState(defences);
@@ -35,7 +33,7 @@ function DefenceBox({
   useEffect(() => {
     // fetch defences from backend
     getDefences(currentPhase).then((remoteDefences) => {
-      const newDefences = defenceDetails.map((localDefence) => {
+      defenceDetails.map((localDefence) => {
         const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
           return localDefence.id === remoteDefence.id;
         });
@@ -56,9 +54,8 @@ function DefenceBox({
         }
         return localDefence;
       });
-      setDefenceDetails(newDefences);
     });
-  }, [switchedPhase]);
+  }, [defences]);
 
   const setDefenceActive = (defenceType: string) => {
     activateDefence(defenceType, currentPhase).then(() => {

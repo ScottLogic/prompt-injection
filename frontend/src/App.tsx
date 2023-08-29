@@ -27,6 +27,7 @@ function App() {
 
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
+
   const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -73,7 +74,7 @@ function App() {
     });
   }
 
-  // for going switching phase - not clearing progress
+  // for going switching phase without clearing progress
   const setNewPhase = (newPhase: PHASE_NAMES) => {
     console.log("changing phase from " + currentPhase + " to " + newPhase);
     setCurrentPhase(newPhase);
@@ -91,17 +92,16 @@ function App() {
         addPhasePreambleMessage(PHASES[newPhase].preamble);
       }
     });
-
-    // choose appropriate defences to display
     let defences =
       newPhase === PHASE_NAMES.PHASE_2
         ? DEFENCE_DETAILS_PHASE
         : DEFENCE_DETAILS_ALL;
     // make all defences inactive
-    defences = defences.map((defence) => {
-      defence.isActive = false;
-      return defence;
-    });
+    // defences = defences.map((defence) => {
+    //   defence.isActive = false;
+    //   return defence;
+    // });
+    console.log("defences to show: " + defences.length);
     setDefencesToShow(defences);
   };
 

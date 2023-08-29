@@ -64,7 +64,6 @@ function DemoBody({
             showConfigurations={currentPhase > 2 ? true : false}
             defenceActivated={defenceActivated}
             defenceDeactivated={defenceDeactivated}
-            switchedPhase={resetPhase}
           />
         )}
         {/* show reduced set of attacks on phase 1 */}

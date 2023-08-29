@@ -136,7 +136,6 @@ const addInfoMessageToHistory = async (
   chatMessageType: CHAT_MESSAGE_TYPE,
   phase: number
 ) => {
-  console.log("Adding info message to history" + message);
   const response = await sendRequest(
     PATH + "addInfo",
     "POST",
