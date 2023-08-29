@@ -38,27 +38,9 @@ function App() {
     setNewPhase(currentPhase);
   }, []);
 
-  // const updateTriggeredDefences = (defenceDetails: string[]) => {
-  //   // set the new triggered defences
-  //   setTriggeredDefences(defenceDetails);
-  //   // add a message to the chat
-  //   defenceDetails.forEach((defence) => {
-  //     defenceTriggered(defence);
-  //   });
-  // };
-
   // methods to modify messages
   const addChatMessage = (message: ChatMessage) => {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
-  };
-
-  const addDefenceTriggeredMessage = (message: string) => {
-    addChatMessage({
-      message: message,
-      type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-      isOriginalMessage: true,
-    });
-    addInfoMessageToHistory(message, currentPhase);
   };
 
   // for clearing phase progress
@@ -106,23 +88,6 @@ function App() {
     });
     setDefencesToShow(defences);
   };
-
-  //a add a message to the chat when a defence is triggered
-  const defenceTriggered = (id: String) => {
-    const defenceInfo = DEFENCE_DETAILS_ALL.find(
-      (defence) => defence.id === id
-    )?.name;
-    const infoMessage = `${defenceInfo} defence triggered`;
-    addDefenceTriggeredMessage(infoMessage.toLowerCase());
-  };
-
-  function addPhasePreambleMessage(message: string) {
-    addChatMessage({
-      message: message,
-      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-      isOriginalMessage: true,
-    });
-  }
 
   return (
     <div id="app-content">

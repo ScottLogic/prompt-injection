@@ -10,7 +10,11 @@ import {
   getInitialDefences,
 } from "./defence";
 import { initQAModel } from "./langchain";
-import { CHAT_MODELS, ChatHttpResponse } from "./models/chat";
+import {
+  CHAT_MESSAGE_TYPE,
+  CHAT_MODELS,
+  ChatHttpResponse,
+} from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig } from "./models/defence";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
 import { retrievalQAPrePrompt } from "./promptTemplates";
@@ -25,7 +29,7 @@ let prevPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX;
 router.post("/defence/activate", (req, res) => {
   // id of the defence
   const defenceId: DEFENCE_TYPES = req.body?.defenceId;
-  const phase: number = req.body?.phase;
+  const phase: PHASE_NAMES = req.body?.phase;
   if (defenceId && phase) {
     // activate the defence
     req.session.phaseState[phase].defences = activateDefence(
@@ -57,7 +61,7 @@ router.post("/defence/activate", (req, res) => {
 router.post("/defence/deactivate", (req, res) => {
   // id of the defence
   const defenceId: DEFENCE_TYPES = req.body?.defenceId;
-  const phase: number = req.body?.phase;
+  const phase: PHASE_NAMES = req.body?.phase;
   if (defenceId && phase) {
     // deactivate the defence
     req.session.phaseState[phase].defences = deactivateDefence(
@@ -87,8 +91,8 @@ router.post("/defence/configure", (req, res) => {
   // id of the defence
   const defenceId: DEFENCE_TYPES = req.body?.defenceId;
   const config: DefenceConfig[] = req.body?.config;
-  const phase: number = req.body?.phase;
-  if (defenceId && config && phase) {
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (defenceId && config && phase >= 0) {
     // configure the defence
     req.session.phaseState[phase].defences = configureDefence(
       defenceId,
@@ -104,8 +108,8 @@ router.post("/defence/configure", (req, res) => {
 
 // reset the active defences
 router.post("/defence/reset", (req, res) => {
-  const phase: number = req.body?.phase;
-  if (phase) {
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (phase >= 0) {
     req.session.phaseState[phase].defences = getInitialDefences();
     console.debug("Defences reset");
     res.send("Defences reset");
@@ -139,8 +143,8 @@ router.get("/email/get", (req, res) => {
 
 // clear emails
 router.post("/email/clear", (req, res) => {
-  const phase: number = req.body?.phase;
-  if (phase) {
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (phase >= 0) {
     req.session.phaseState[phase].sentEmails = [];
     console.debug("Emails cleared");
     res.send("Emails cleared");
@@ -280,10 +284,13 @@ router.get("/openai/history", (req, res) => {
 // add a info message to chat history
 router.post("/openai/addInfo", (req, res) => {
   const message: string = req.body?.message;
-  const phase: number = req.body?.phase;
-  if (message && phase) {
+  const chatMessageType: CHAT_MESSAGE_TYPE = req.body?.chatMessageType;
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (message && chatMessageType && phase >= 0) {
+    console.log("Adding message to chat history,", req.session);
     req.session.phaseState[phase].chatHistory.push({
       completion: null,
+      chatMessageType: chatMessageType,
       infoMessage: message,
     });
     console.debug(
@@ -293,14 +300,14 @@ router.post("/openai/addInfo", (req, res) => {
     res.send("Message added to chat history");
   } else {
     res.statusCode = 400;
-    res.send("Missing message or phase");
+    res.send("Missing message or message type or phase");
   }
 });
 
 // Clear the ChatGPT messages
 router.post("/openai/clear", (req, res) => {
-  const phase: number = req.body?.phase;
-  if (phase) {
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (phase >= 0) {
     req.session.phaseState[phase].chatHistory = [];
     console.debug("ChatGPT messages cleared");
     res.send("ChatGPT messages cleared");

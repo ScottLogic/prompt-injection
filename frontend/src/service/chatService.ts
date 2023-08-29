@@ -44,25 +44,45 @@ const getChatHistory = async (phase: number): Promise<ChatMessage[]> => {
   // convert to ChatMessage object
   const chatMessages: ChatMessage[] = data.map(
     (message: ChatHistoryMessage) => {
-      if (message.completion) {
-        return {
-          message: message.completion.content,
-          isOriginalMessage: true,
-          type:
-            message.completion.role == "user"
-              ? CHAT_MESSAGE_TYPE.USER
-              : CHAT_MESSAGE_TYPE.BOT,
-        };
-      } else if (message.infoMessage) {
-        return {
-          message: message.infoMessage,
-          isOriginalMessage: false,
-          type: CHAT_MESSAGE_TYPE.INFO,
-        };
+      switch (message.chatMessageType) {
+        case CHAT_MESSAGE_TYPE.BOT:
+          return {
+            message: message.completion?.content,
+            isOriginalMessage: true,
+            type: CHAT_MESSAGE_TYPE.BOT,
+          };
+        case CHAT_MESSAGE_TYPE.USER:
+          return {
+            message: message.completion?.content,
+            isOriginalMessage: true,
+            type: CHAT_MESSAGE_TYPE.USER,
+          };
+        case CHAT_MESSAGE_TYPE.INFO:
+          return {
+            message: message.infoMessage,
+            isOriginalMessage: true,
+            type: message.chatMessageType,
+          };
+        case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
+          return {
+            message: message.infoMessage,
+            isOriginalMessage: true,
+            type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
+          };
+        case CHAT_MESSAGE_TYPE.PHASE_INFO:
+          return {
+            message: message.infoMessage,
+            isOriginalMessage: true,
+            type: CHAT_MESSAGE_TYPE.PHASE_INFO,
+          };
+        default:
+          // don't want to show system role messages or function calls
+          return null;
       }
     }
   );
-  return chatMessages;
+  console.log("chatMessages: " + JSON.stringify(chatMessages));
+  return chatMessages.filter((message) => message !== null);
 };
 
 const setOpenAIApiKey = async (openAiApiKey: string): Promise<boolean> => {
@@ -97,13 +117,21 @@ const getGptModel = async (): Promise<CHAT_MODELS> => {
   return modelStr as CHAT_MODELS;
 };
 
-const addInfoMessageToHistory = async (message: string, phase: number) => {
+const addInfoMessageToHistory = async (
+  message: string,
+  chatMessageType: CHAT_MESSAGE_TYPE,
+  phase: number
+) => {
   console.log("Adding info message to history" + message);
   const response = await sendRequest(
     PATH + "addInfo",
     "POST",
     { "Content-Type": "application/json" },
-    JSON.stringify({ message: message, phase: phase })
+    JSON.stringify({
+      message: message,
+      chatMessageType: chatMessageType,
+      phase: phase,
+    })
   );
   return response.status === 200;
 };

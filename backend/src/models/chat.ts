@@ -16,6 +16,9 @@ enum CHAT_MESSAGE_TYPE {
   INFO,
   USER,
   PHASE_INFO,
+  SYSTEM,
+  DEFENCE_TRIGGERED,
+  FUNCTION_CALL,
 }
 
 interface ChatDefenceReport {
@@ -50,6 +53,7 @@ interface ChatHttpResponse {
 
 interface ChatHistoryMessage {
   completion: ChatCompletionRequestMessage | null;
+  chatMessageType: CHAT_MESSAGE_TYPE;
   infoMessage: string | null | undefined;
 }
 

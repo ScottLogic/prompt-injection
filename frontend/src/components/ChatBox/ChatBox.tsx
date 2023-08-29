@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
-import { sendMessage } from "../../service/chatService";
+import {
+  addInfoMessageToHistory,
+  sendMessage,
+} from "../../service/chatService";
 import { getSentEmails } from "../../service/emailService";
 import {
   CHAT_MESSAGE_TYPE,
@@ -88,6 +91,11 @@ function ChatBox(
             message: `${defenceName} defence triggered`,
             isOriginalMessage: true,
           });
+          addInfoMessageToHistory(
+            `${defenceName} defence triggered`,
+            CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
+            currentPhase
+          );
         }
       });
 
@@ -100,13 +108,19 @@ function ChatBox(
       setEmails(sentEmails);
 
       if (response.wonPhase) {
+        const successMessage =
+          "Congratulations! You have completed this phase. Please click on the next phase to continue.";
         addChatMessage({
           type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-          message:
-            "Congratulations! You have completed this phase. Please click on the next phase to continue.",
+          message: successMessage,
           defenceInfo: response.defenceInfo,
           isOriginalMessage: true,
         });
+        addInfoMessageToHistory(
+          successMessage,
+          CHAT_MESSAGE_TYPE.PHASE_INFO,
+          currentPhase
+        );
       }
     }
   };

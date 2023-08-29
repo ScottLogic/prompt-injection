@@ -18,6 +18,7 @@ import {
   OpenAIApi,
 } from "openai";
 import {
+  CHAT_MESSAGE_TYPE,
   CHAT_MODELS,
   ChatDefenceReport,
   ChatHistoryMessage,
@@ -248,6 +249,7 @@ async function chatGptChatCompletion(
           role: "system",
           content: getSystemRole(defences, currentPhase),
         },
+        chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
         infoMessage: null,
       });
     }
@@ -287,7 +289,17 @@ const pushCompletionToHistory = (
   chatHistory: ChatHistoryMessage[],
   completion: ChatCompletionRequestMessage
 ) => {
-  chatHistory.push({ completion: completion, infoMessage: null });
+  const messageType =
+    completion.role === "user"
+      ? CHAT_MESSAGE_TYPE.USER
+      : completion.role === "function" || completion.function_call
+      ? CHAT_MESSAGE_TYPE.FUNCTION_CALL
+      : CHAT_MESSAGE_TYPE.BOT;
+  chatHistory.push({
+    completion: completion,
+    chatMessageType: messageType,
+    infoMessage: null,
+  });
   return chatHistory;
 };
 
@@ -387,8 +399,10 @@ async function chatGptSendMessage(
     }
     // add the ai reply to the chat history
     chatHistory = pushCompletionToHistory(chatHistory, reply);
+
     // log the entire chat history so far
     console.log(chatHistory);
+
     return {
       completion: reply,
       defenceInfo: defenceInfo,

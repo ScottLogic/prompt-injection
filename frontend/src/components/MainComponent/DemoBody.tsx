@@ -37,7 +37,7 @@ function DemoBody({
       type: CHAT_MESSAGE_TYPE.INFO,
       isOriginalMessage: true,
     });
-    addInfoMessageToHistory(message, currentPhase);
+    addInfoMessageToHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
   };
 
   // methods to be called when defences are (de)activated
