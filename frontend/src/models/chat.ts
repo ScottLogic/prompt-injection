@@ -13,8 +13,10 @@ enum CHAT_MODELS {
 
 enum CHAT_MESSAGE_TYPE {
   BOT,
+  BOT_BLOCKED,
   INFO,
   USER,
+  USER_TRANSFORMED,
   PHASE_INFO,
   DEFENCE_ALERTED,
   DEFENCE_TRIGGERED,
@@ -28,9 +30,7 @@ interface ChatDefenceReport {
 }
 
 interface ChatMessage {
-  defenceInfo?: ChatDefenceReport;
   message: string;
-  isOriginalMessage: boolean;
   type: CHAT_MESSAGE_TYPE;
 }
 

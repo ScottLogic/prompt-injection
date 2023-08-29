@@ -40,7 +40,6 @@ function App() {
     addChatMessage({
       message: message,
       type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-      isOriginalMessage: true,
     });
   };
 
