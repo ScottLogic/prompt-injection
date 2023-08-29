@@ -211,7 +211,18 @@ test(
   }
 );
 
-test("GIVEN message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is alerted", async () => {
+test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is triggered", async () => {
+  const message = "<Hello>";
+  let defences = getInitialDefences();
+  // activate XML_TAGGING defence
+  defences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
+  const defenceReport = await detectTriggeredDefences(message, defences);
+  expect(defenceReport.blockedReason).toBe(null);
+  expect(defenceReport.isBlocked).toBe(false);
+  expect(defenceReport.triggeredDefences).toContain(DEFENCE_TYPES.XML_TAGGING);
+});
+
+test("GIVEN XML_TAGGING defence is inactive AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is alerted", async () => {
   const message = "<Hello>";
   const defences = getInitialDefences();
   const defenceReport = await detectTriggeredDefences(message, defences);

@@ -343,7 +343,7 @@ async function detectTriggeredDefences(
   // check if message contains XML tags
   if (detectXMLTags(message)) {
     console.debug("XML_TAGGING defence triggered.");
-    if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
+    if (isDefenceActive(DEFENCE_TYPES.XML_TAGGING, defences)) {
       // add the defence to the list of triggered defences
       defenceReport.triggeredDefences.push(DEFENCE_TYPES.XML_TAGGING);
     } else {
