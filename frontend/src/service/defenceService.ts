@@ -6,7 +6,6 @@ const PATH = "defence/";
 async function getDefences(phase: number): Promise<DefenceInfo[]> {
   const response = await sendRequest(PATH + "status?phase=" + phase, "GET");
   const data = await response.json();
-  console.log("Defence status: ", JSON.stringify(data));
   return data;
 }
 

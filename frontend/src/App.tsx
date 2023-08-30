@@ -62,6 +62,7 @@ function App() {
   // for clearing phase progress
   function resetPhase() {
     console.log("resetting phase " + currentPhase);
+
     clearChat(currentPhase).then(() => {
       setMessages([]);
       addPhasePreambleMessage(PHASES[currentPhase].preamble);
@@ -77,6 +78,7 @@ function App() {
   // for going switching phase without clearing progress
   const setNewPhase = (newPhase: PHASE_NAMES) => {
     console.log("changing phase from " + currentPhase + " to " + newPhase);
+
     setCurrentPhase(newPhase);
 
     // get emails for new phase from the backend
@@ -86,12 +88,13 @@ function App() {
 
     // get chat history for new phase from the backend
     getChatHistory(newPhase).then((phaseChatHistory) => {
-      // if chat history is empty, add a preamble message
       setMessages(phaseChatHistory);
-      if (phaseChatHistory.length === 0) {
+      // if chat history is empty, add a preamble message
+      if (!phaseChatHistory) {
         addPhasePreambleMessage(PHASES[newPhase].preamble);
       }
     });
+
     let defences =
       newPhase === PHASE_NAMES.PHASE_2
         ? DEFENCE_DETAILS_PHASE
@@ -101,7 +104,6 @@ function App() {
     //   defence.isActive = false;
     //   return defence;
     // });
-    console.log("defences to show: " + defences.length);
     setDefencesToShow(defences);
   };
 
