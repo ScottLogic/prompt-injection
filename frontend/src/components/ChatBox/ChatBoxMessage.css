@@ -12,33 +12,89 @@
   hyphens: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
+  /* For the triangle */
+  position: relative;
 }
 
 .chat-box-message-ai {
   background: var(--chat-bot-background);
-  float: right;
-  margin-left: auto;
-  text-align: right;
+  border-radius: 0px 8px 8px 8px;
+  float: left;
+  margin-right: auto;
+  text-align: left;
+}
+
+.chat-box-message-ai:before {
+  content: "";
+  position: absolute;
+  border-style: solid;
+  /* reduce the damage in FF3.0 */
+  display: block;
+  width: 0;
+  top: 0px; /* controls vertical position */
+  left: -10px; /* value = - border-left-width - border-right-width */
+  border-width: 6px 0px 0px 10px;
+  border-color: var(--chat-bot-colour) transparent;
 }
 
 .chat-box-message-ai-blocked {
   background: var(--chat-blocked-background);
 }
 
+.chat-box-message-ai-blocked:before {
+  content: "";
+  position: absolute;
+  border-style: solid;
+  /* reduce the damage in FF3.0 */
+  display: block;
+  width: 0;
+  top: 0px; /* controls vertical position */
+  left: -10px; /* value = - border-left-width - border-right-width */
+  border-width: 6px 0px 0px 10px;
+  border-color: var(--chat-blocked-colour) transparent;
+}
+
 .chat-box-message-user {
   background: var(--chat-user-background);
-  float: left;
-  margin-right: auto;
-  text-align: left;
+  border-radius: 8px 0px 8px 8px;
+  float: right;
+  margin-left: auto;
+  text-align: right;
+}
+
+.chat-box-message-user:after {
+  content: "";
+  position: absolute;
+  border-style: solid;
+  /* reduce the damage in FF3.0 */
+  display: block;
+  width: 0;
+  top: 0px; /* controls vertical position */
+  right: -10px; /* value = - border-left-width - border-right-width */
+  border-width: 0 0 6px 10px;
+  border-color: transparent var(--chat-user-colour);
 }
 
 .chat-box-message-user-transformed {
   background: var(--chat-edited-background);
 }
 
+.chat-box-message-user-transformed:after {
+  content: "";
+  position: absolute;
+  border-style: solid;
+  /* reduce the damage in FF3.0 */
+  display: block;
+  width: 0;
+  top: 0px; /* controls vertical position */
+  right: -10px; /* value = - border-left-width - border-right-width */
+  border-width: 0 0 6px 10px;
+  border-color: transparent var(--chat-edited-colour);
+}
+
 .chat-box-message-phase-info {
-    float: right;
-    margin-left: auto;
-    text-align: right;
-    background-color: rgb(255, 255, 230);
+  float: right;
+  margin-left: auto;
+  text-align: right;
+  background-color: rgb(255, 255, 230);
 }
