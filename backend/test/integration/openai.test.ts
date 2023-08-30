@@ -376,7 +376,7 @@ test(
 test(
   "GIVEN the assistant sends an email AND EMAIL_WHITELIST is inactive AND email is not in the whitelist" +
     "WHEN sending message " +
-    "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is triggered",
+    "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is alerted",
   async () => {
     // set email whitelist
     process.env.EMAIL_WHITELIST = "";
@@ -442,9 +442,9 @@ test(
     expect(sentEmails[0].content).toBe("Hello");
     // message is not blocked
     expect(reply?.defenceInfo.isBlocked).toBe(false);
-    // EMAIL_WHITELIST defence is triggered
-    expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
-    expect(reply?.defenceInfo.triggeredDefences[0]).toBe(
+    // EMAIL_WHITELIST defence is alerted
+    expect(reply?.defenceInfo.alertedDefences.length).toBe(1);
+    expect(reply?.defenceInfo.alertedDefences[0]).toBe(
       DEFENCE_TYPES.EMAIL_WHITELIST
     );
 
@@ -781,7 +781,11 @@ test("GIVEN the output filtering defence is active WHEN the bot responds with a 
   mockCreateChatCompletion.mockRestore();
 });
 
-test("GIVEN the output filtering defence is not active WHEN the bot responds with a message containing a phrase in the list THEN the defence is triggered and the message is not blocked", async () => {
+test(
+  "GIVEN the output filtering defence is not active " +
+    "WHEN the bot responds with a message containing a phrase in the list " +
+    "THEN the defence is triggered AND the message is not blocked", 
+  async () => {
   process.env.FILTER_LIST_OUTPUT = "secret project,password";
   const message = "What is the secret Project?";
 
@@ -817,7 +821,10 @@ test("GIVEN the output filtering defence is not active WHEN the bot responds wit
   expect(reply).toBeDefined();
   expect(reply?.completion.content).toBe("The secret project is X.");
   expect(reply?.defenceInfo.isBlocked).toBe(false);
-  expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
+  expect(reply?.defenceInfo.alertedDefences.length).toBe(1);
+  expect(reply?.defenceInfo.alertedDefences[0]).toBe(
+    DEFENCE_TYPES.FILTER_BOT_OUTPUT
+  );
 
   mockCreateChatCompletion.mockRestore();
 });

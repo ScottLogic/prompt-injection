@@ -13,7 +13,9 @@ function ChatBoxInfoText({
       className={
         type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
           ? "chat-box-info-defence-triggered-text"
-          : "chat-box-info-text"
+          : type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED 
+            ? "chat-box-info-defence-alerted-text"
+            : "chat-box-info-text"
       }
     >
       {text}

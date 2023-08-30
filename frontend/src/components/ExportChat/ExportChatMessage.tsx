@@ -1,4 +1,3 @@
-import React, { Fragment } from "react";
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "../../models/chat";
 
@@ -41,41 +40,28 @@ const styles = StyleSheet.create({
   },
 });
 
-const getMessage = (message: ChatMessage) => {
-  if (
-    message.type === CHAT_MESSAGE_TYPE.BOT &&
-    message.defenceInfo?.isBlocked
-  ) {
-    // show the reason why the message was blocked
-    return message.defenceInfo.blockedReason;
-  } else {
-    return message.message;
-  }
-};
-
 const getFullPrefix = (message: ChatMessage) => {
   switch (message.type) {
     case CHAT_MESSAGE_TYPE.INFO:
-      return "Info: " + getMessage(message);
+    case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
     case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
-      return "Info: " + getMessage(message);
+      return "Info: " + message.message;
     case CHAT_MESSAGE_TYPE.USER:
-      if (message.isOriginalMessage) {
-        return "You: " + getMessage(message);
-      } else {
-        return "You (edited): " + getMessage(message);
-      }
+      return "You: " + message.message;
+    case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
+      return "You (edited): " + message.message;
     case CHAT_MESSAGE_TYPE.BOT:
-      return "Bot: " + getMessage(message);
+    case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
+      return "Bot: " + message.message;
     default:
-      return getMessage(message);
+      return message.message;
   }
 };
 
 const getMessageStyle = (type: CHAT_MESSAGE_TYPE) => {
   switch (type) {
     case CHAT_MESSAGE_TYPE.INFO:
-      return styles.chatBoxInfo;
+    case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
     case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
       return styles.chatBoxInfo;
     case CHAT_MESSAGE_TYPE.USER:

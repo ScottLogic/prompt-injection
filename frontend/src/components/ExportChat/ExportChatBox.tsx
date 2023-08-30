@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Fragment } from "react";
+import { View, StyleSheet } from "@react-pdf/renderer";
 import { ChatMessage } from "../../models/chat";
 import ExportChatMessage from "./ExportChatMessage";
 

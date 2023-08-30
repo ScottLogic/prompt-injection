@@ -1,4 +1,3 @@
-import React from "react";
 import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import { ChatMessage } from "../../models/chat";
 import { EmailInfo } from "../../models/email";

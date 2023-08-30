@@ -61,6 +61,11 @@ const getChatHistory = async (phase: number): Promise<ChatMessage[]> => {
               },
             };
           }
+        case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
+          return {
+            message: message.completion?.content,
+            type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+          };
         case CHAT_MESSAGE_TYPE.USER:
           if (message.completion) {
             return {

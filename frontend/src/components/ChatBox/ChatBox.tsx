@@ -43,22 +43,29 @@ function ChatBox(
     });
   }, [setEmails]);
 
-  const sendChatMessage = async (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter" && event.target !== null && !isSendingMessage) {
+  function inputKeyPressed(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter") {
+      sendChatMessage();
+    }
+  }
+
+  async function sendChatMessage() {
+    const inputBoxElement = document.getElementById(
+      "chat-box-input"
+    ) as HTMLInputElement;
+    // get the message from the input box
+    const message = inputBoxElement?.value;
+    // clear the input box
+    inputBoxElement!.value = "";
+
+    if (message && !isSendingMessage) {
       setIsSendingMessage(true);
-      // get the message
-      const message = event.currentTarget.value;
 
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
         message: message,
         type: CHAT_MESSAGE_TYPE.USER,
-        isOriginalMessage: true,
       });
-      // clear the input
-      event.currentTarget.value = "";
 
       const response: ChatResponse = await sendMessage(message, currentPhase);
       setNumCompletedPhases(response.numPhasesCompleted);
@@ -68,16 +75,33 @@ function ChatBox(
       if (isTransformed) {
         addChatMessage({
           message: transformedMessage,
-          type: CHAT_MESSAGE_TYPE.USER,
-          isOriginalMessage: false,
+          type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
         });
       }
       // add it to the list of messages
-      addChatMessage({
-        type: CHAT_MESSAGE_TYPE.BOT,
-        message: response.reply,
-        defenceInfo: response.defenceInfo,
-        isOriginalMessage: true,
+      if (response.defenceInfo.isBlocked) {
+        addChatMessage({
+          type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+          message: response.defenceInfo.blockedReason,
+        });
+      } else {
+        addChatMessage({
+          type: CHAT_MESSAGE_TYPE.BOT,
+          message: response.reply,
+        });
+      }
+      // add altered defences to the chat
+      response.defenceInfo.alertedDefences.forEach((triggeredDefence) => {
+        // get user-friendly defence name
+        const defenceName = DEFENCE_DETAILS_ALL.find((defence) => {
+          return defence.id === triggeredDefence;
+        })?.name.toLowerCase();
+        if (defenceName) {
+          addChatMessage({
+            type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
+            message: `your last message would have triggered the ${defenceName} defence`,
+          });
+        }
       });
       // add triggered defences to the chat
       response.defenceInfo.triggeredDefences.forEach((triggeredDefence) => {
@@ -89,7 +113,6 @@ function ChatBox(
           addChatMessage({
             type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
             message: `${defenceName} defence triggered`,
-            isOriginalMessage: true,
           });
           addInfoMessageToHistory(
             `${defenceName} defence triggered`,
@@ -113,8 +136,6 @@ function ChatBox(
         addChatMessage({
           type: CHAT_MESSAGE_TYPE.PHASE_INFO,
           message: successMessage,
-          defenceInfo: response.defenceInfo,
-          isOriginalMessage: true,
         });
         addInfoMessageToHistory(
           successMessage,
@@ -123,26 +144,37 @@ function ChatBox(
         );
       }
     }
-  };
+  }
   return (
     <div id="chat-box">
       <ChatBoxFeed messages={messages} />
       <div id="chat-box-footer">
-        <input
-          id="chat-box-input"
-          className="prompt-injection-input"
-          type="text"
-          placeholder="chat to chatgpt..."
-          autoFocus
-          onKeyUp={sendChatMessage.bind(this)}
-        />
-        <button
-          id="chat-box-button"
-          className="prompt-injection-button"
-          onClick={resetPhase.bind(this)}
-        >
-          reset
-        </button>
+        <div id="chat-box-footer-messages">
+          <input
+            id="chat-box-input"
+            className="prompt-injection-input"
+            type="text"
+            placeholder="Type here..."
+            autoFocus
+            onKeyUp={inputKeyPressed.bind(this)}
+          />
+          <button
+            id="chat-box-button-send"
+            className="prompt-injection-button"
+            onClick={sendChatMessage}
+          >
+            Send
+          </button>
+        </div>
+        <div id="chat-box-footer-reset">
+          <button
+            id="chat-box-button-reset"
+            className="prompt-injection-button"
+            onClick={resetPhase.bind(this)}
+          >
+            Reset phase
+          </button>
+        </div>
       </div>
     </div>
   );

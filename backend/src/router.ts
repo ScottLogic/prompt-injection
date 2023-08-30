@@ -162,6 +162,7 @@ router.post("/openai/chat", async (req, res) => {
     defenceInfo: {
       blockedReason: "",
       isBlocked: false,
+      alertedDefences: [],
       triggeredDefences: [],
     },
     numPhasesCompleted: req.session.numPhasesCompleted,

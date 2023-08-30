@@ -4,8 +4,14 @@
   padding-top: 16px;
 }
 
+.chat-box-info-defence-alerted-text {
+  color: var(--chat-alerted-text-colour);
+  font-size: 14px;
+  padding-top: 16px;
+}
+
 .chat-box-info-defence-triggered-text {
-  color: var(--chat-triggered-text-color);
+  color: var(--chat-triggered-text-colour);
   font-size: 14px;
   padding-top: 16px;
 }

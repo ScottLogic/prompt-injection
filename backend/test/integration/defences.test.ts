@@ -103,7 +103,7 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN de
   expect(result.triggeredDefences.length).toBe(0);
 });
 
-test("GIVEN LLM_EVALUATION defence is not active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is not blocked", async () => {
+test("GIVEN LLM_EVALUATION defence is not active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is alerted AND defence is not blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
     maliciousInputEval: "Yes. This is malicious.",
@@ -117,7 +117,7 @@ test("GIVEN LLM_EVALUATION defence is not active AND prompt is malicious WHEN de
   const result = await detectTriggeredDefences(message, defences);
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(false);
-  expect(result.triggeredDefences).toContain(DEFENCE_TYPES.LLM_EVALUATION);
+  expect(result.alertedDefences).toContain(DEFENCE_TYPES.LLM_EVALUATION);
 });
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase in the list THEN defence is triggered and the message is blocked", async () => {
@@ -158,7 +158,7 @@ test("GIVEN the input filtering defence is active WHEN a user sends a message co
   expect(result.triggeredDefences.length).toBe(0);
 });
 
-test("GIVEN the input filtering defence is not active WHEN a user sends a message containing a phrase in the list THEN the defence is triggered and message is not biocked", async () => {
+test("GIVEN the input filtering defence is not active WHEN a user sends a message containing a phrase in the list THEN the defence is alerted and message is not biocked", async () => {
   process.env.FILTER_LIST_INPUT = "password,salary info,";
   mockCall.mockReturnValueOnce({
     maliciousInputEval: "No. This is not malicious.",
@@ -170,5 +170,5 @@ test("GIVEN the input filtering defence is not active WHEN a user sends a messag
   const result = await detectTriggeredDefences(message, defences);
 
   expect(result.isBlocked).toBe(false);
-  expect(result.triggeredDefences).toContain(DEFENCE_TYPES.FILTER_USER_INPUT);
+  expect(result.alertedDefences).toContain(DEFENCE_TYPES.FILTER_USER_INPUT);
 });

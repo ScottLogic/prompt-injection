@@ -1,4 +1,5 @@
 import { ChatCompletionRequestMessage } from "openai";
+import { DEFENCE_TYPES } from "./defence";
 
 enum CHAT_MODELS {
   GPT_4 = "gpt-4",
@@ -27,7 +28,8 @@ enum CHAT_MESSAGE_TYPE {
 interface ChatDefenceReport {
   blockedReason: string | null;
   isBlocked: boolean;
-  triggeredDefences: string[];
+  alertedDefences: DEFENCE_TYPES[];
+  triggeredDefences: DEFENCE_TYPES[];
 }
 
 interface ChatAnswer {
