@@ -10,7 +10,11 @@ import {
   getInitialDefences,
 } from "./defence";
 import { initQAModel } from "./langchain";
-import { CHAT_MODELS, ChatHttpResponse } from "./models/chat";
+import {
+  CHAT_MESSAGE_TYPE,
+  CHAT_MODELS,
+  ChatHttpResponse,
+} from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig } from "./models/defence";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
 import { retrievalQAPrePrompt } from "./promptTemplates";
@@ -25,10 +29,13 @@ let prevPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX;
 router.post("/defence/activate", (req, res) => {
   // id of the defence
   const defenceId: DEFENCE_TYPES = req.body?.defenceId;
-  if (defenceId) {
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (defenceId && phase) {
     // activate the defence
-    req.session.defences = activateDefence(defenceId, req.session.defences);
-
+    req.session.phaseState[phase].defences = activateDefence(
+      defenceId,
+      req.session.phaseState[phase].defences
+    );
     // need to re-initialize QA model when turned on
     if (
       defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS &&
@@ -39,14 +46,14 @@ router.post("/defence/activate", (req, res) => {
       );
       initQAModel(
         req.session.openAiApiKey,
-        getQALLMprePrompt(req.session.defences)
+        getQALLMprePrompt(req.session.phaseState[phase].defences)
       );
     }
 
     res.send("Defence activated");
   } else {
     res.statusCode = 400;
-    res.send("Missing defenceId");
+    res.send("Missing defenceId or phase");
   }
 });
 
@@ -54,9 +61,13 @@ router.post("/defence/activate", (req, res) => {
 router.post("/defence/deactivate", (req, res) => {
   // id of the defence
   const defenceId: DEFENCE_TYPES = req.body?.defenceId;
-  if (defenceId) {
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (defenceId && phase) {
     // deactivate the defence
-    req.session.defences = deactivateDefence(defenceId, req.session.defences);
+    req.session.phaseState[phase].defences = deactivateDefence(
+      defenceId,
+      req.session.phaseState[phase].defences
+    );
 
     if (
       defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS &&
@@ -65,13 +76,13 @@ router.post("/defence/deactivate", (req, res) => {
       console.debug("Resetting QA model with default prompt");
       initQAModel(
         req.session.openAiApiKey,
-        getQALLMprePrompt(req.session.defences)
+        getQALLMprePrompt(req.session.phaseState[phase].defences)
       );
     }
     res.send("Defence deactivated");
   } else {
     res.statusCode = 400;
-    res.send("Missing defenceId");
+    res.send("Missing defenceId or phase");
   }
 });
 
@@ -80,41 +91,67 @@ router.post("/defence/configure", (req, res) => {
   // id of the defence
   const defenceId: DEFENCE_TYPES = req.body?.defenceId;
   const config: DefenceConfig[] = req.body?.config;
-  if (defenceId && config) {
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (defenceId && config && phase >= 0) {
     // configure the defence
-    req.session.defences = configureDefence(
+    req.session.phaseState[phase].defences = configureDefence(
       defenceId,
-      req.session.defences,
+      req.session.phaseState[phase].defences,
       config
     );
     res.send("Defence configured");
   } else {
     res.statusCode = 400;
-    res.send("Missing defenceId or config");
+    res.send("Missing defenceId or config or phase");
   }
 });
 
 // reset the active defences
 router.post("/defence/reset", (req, res) => {
-  req.session.defences = getInitialDefences();
-  console.debug("Defences reset");
-  res.send("Defences reset");
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (phase >= 0) {
+    req.session.phaseState[phase].defences = getInitialDefences();
+    console.debug("Defences reset");
+    res.send("Defences reset");
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
-// Get the status of all defences
+// Get the status of all defences /defence/status?phase=1
 router.get("/defence/status", (req, res) => {
-  res.send(req.session.defences);
+  const phase: number | undefined = req.query?.phase as number | undefined;
+  if (phase) {
+    res.send(req.session.phaseState[phase].defences);
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
-// Get sent emails
+// Get sent emails // /email/get?phase=1
 router.get("/email/get", (req, res) => {
-  res.send(req.session.sentEmails);
+  const phase: number | undefined = req.query?.phase as number | undefined;
+  if (phase) {
+    res.send(req.session.phaseState[phase].sentEmails);
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
 // clear emails
 router.post("/email/clear", (req, res) => {
-  req.session.sentEmails = [];
-  res.send("Emails cleared");
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (phase >= 0) {
+    req.session.phaseState[phase].sentEmails = [];
+    console.debug("Emails cleared");
+    res.send("Emails cleared");
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
 // Chat to ChatGPT
@@ -160,26 +197,44 @@ router.post("/openai/chat", async (req, res) => {
       ) {
         chatResponse.defenceInfo = await detectTriggeredDefences(
           message,
-          req.session.defences
+          req.session.phaseState[currentPhase].defences
         );
+        // if message is blocked, add to chat history (not as completion)
+        if (chatResponse.defenceInfo.isBlocked) {
+          req.session.phaseState[currentPhase].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.USER,
+            infoMessage: message,
+          });
+        }
       }
       // if blocked, send the response
       if (!chatResponse.defenceInfo.isBlocked) {
         // transform the message according to active defences
         chatResponse.transformedMessage = transformMessage(
           message,
-          req.session.defences
+          req.session.phaseState[currentPhase].defences
         );
-
+        // if message has been transformed then add the original to chat history and send transformed to chatGPT
+        const messageIsTransformed =
+          chatResponse.transformedMessage !== message;
+        if (messageIsTransformed) {
+          req.session.phaseState[currentPhase].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.USER,
+            infoMessage: message,
+          });
+        }
         // get the chatGPT reply
         try {
           const openAiReply = await chatGptSendMessage(
-            req.session.chatHistory,
-            req.session.defences,
+            req.session.phaseState[currentPhase].chatHistory,
+            req.session.phaseState[currentPhase].defences,
             req.session.gptModel,
             chatResponse.transformedMessage,
+            messageIsTransformed,
             req.session.openAiApiKey,
-            req.session.sentEmails,
+            req.session.phaseState[currentPhase].sentEmails,
             currentPhase
           );
 
@@ -216,6 +271,15 @@ router.post("/openai/chat", async (req, res) => {
         }
       }
 
+      // if the reply was blocked then add it to the chat history
+      if (chatResponse.defenceInfo.isBlocked) {
+        req.session.phaseState[currentPhase].chatHistory.push({
+          completion: null,
+          chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+          infoMessage: chatResponse.defenceInfo.blockedReason,
+        });
+      }
+
       // enable next phase when user wins current phase
       if (chatResponse.wonPhase) {
         console.log("Win conditon met for phase: ", currentPhase);
@@ -229,16 +293,51 @@ router.post("/openai/chat", async (req, res) => {
       console.error(chatResponse.reply);
     }
   }
-
   // log and send the reply with defence info
   console.log(chatResponse);
   res.send(chatResponse);
 });
 
+// get the chat history
+router.get("/openai/history", (req, res) => {
+  const phase: number | undefined = req.query?.phase as number | undefined;
+  if (phase) {
+    res.send(req.session.phaseState[phase].chatHistory);
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
+});
+
+// add an info message to chat history
+router.post("/openai/addHistory", (req, res) => {
+  const message: string = req.body?.message;
+  const chatMessageType: CHAT_MESSAGE_TYPE = req.body?.chatMessageType;
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (message && chatMessageType && phase >= 0) {
+    req.session.phaseState[phase].chatHistory.push({
+      completion: null,
+      chatMessageType: chatMessageType,
+      infoMessage: message,
+    });
+    res.send("Message added to chat history");
+  } else {
+    res.statusCode = 400;
+    res.send("Missing message or message type or phase");
+  }
+});
+
 // Clear the ChatGPT messages
 router.post("/openai/clear", (req, res) => {
-  req.session.chatHistory = [];
-  res.send("ChatGPT messages cleared");
+  const phase: PHASE_NAMES = req.body?.phase;
+  if (phase >= 0) {
+    req.session.phaseState[phase].chatHistory = [];
+    console.debug("ChatGPT messages cleared");
+    res.send("ChatGPT messages cleared");
+  } else {
+    res.statusCode = 400;
+    res.send("Missing phase");
+  }
 });
 
 // Set API key
@@ -252,7 +351,7 @@ router.post("/openai/apiKey", async (req, res) => {
     await setOpenAiApiKey(
       openAiApiKey,
       req.session.gptModel,
-      getQALLMprePrompt(req.session.defences)
+      getQALLMprePrompt(req.session.phaseState[3].defences) // use phase 2 as only phase with QA LLM defence
     )
   ) {
     req.session.openAiApiKey = openAiApiKey;

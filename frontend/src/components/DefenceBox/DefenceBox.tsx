@@ -10,11 +10,13 @@ import {
 import { DefenceConfig, DefenceInfo } from "../../models/defence";
 
 function DefenceBox({
+  currentPhase,
   defences,
   showConfigurations,
   defenceActivated,
   defenceDeactivated,
 }: {
+  currentPhase: number;
   defences: DefenceInfo[];
   showConfigurations: boolean;
   defenceActivated: (defenceInfo: DefenceInfo) => void;
@@ -27,11 +29,11 @@ function DefenceBox({
     setDefenceDetails(defences);
   }, [defences]);
 
-  // called on mount
+  // called on mount & when defences are updated
   useEffect(() => {
     // fetch defences from backend
-    getDefences().then((remoteDefences) => {
-      const newDefences = defenceDetails.map((localDefence) => {
+    getDefences(currentPhase).then((remoteDefences) => {
+      defenceDetails.map((localDefence) => {
         const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
           return localDefence.id === remoteDefence.id;
         });
@@ -52,12 +54,11 @@ function DefenceBox({
         }
         return localDefence;
       });
-      setDefenceDetails(newDefences);
     });
-  }, []);
+  }, [defences]);
 
   const setDefenceActive = (defenceType: string) => {
-    activateDefence(defenceType).then(() => {
+    activateDefence(defenceType, currentPhase).then(() => {
       // update state
       const newDefenceDetails = defenceDetails.map((defenceDetail) => {
         if (defenceDetail.id === defenceType) {
@@ -72,7 +73,7 @@ function DefenceBox({
   };
 
   const setDefenceInactive = (defenceType: string) => {
-    deactivateDefence(defenceType).then(() => {
+    deactivateDefence(defenceType, currentPhase).then(() => {
       // update state
       const newDefenceDetails = defenceDetails.map((defenceDetail) => {
         if (defenceDetail.id === defenceType) {
@@ -90,21 +91,23 @@ function DefenceBox({
     defenceId: string,
     config: DefenceConfig[]
   ) => {
-    const configSuccess = configureDefence(defenceId, config).then(
-      (success) => {
-        if (success) {
-          // update state
-          const newDefences = defenceDetails.map((defence) => {
-            if (defence.id === defenceId) {
-              defence.config = config;
-            }
-            return defence;
-          });
-          setDefenceDetails(newDefences);
-        }
-        return success;
+    const configSuccess = configureDefence(
+      defenceId,
+      config,
+      currentPhase
+    ).then((success) => {
+      if (success) {
+        // update state
+        const newDefences = defenceDetails.map((defence) => {
+          if (defence.id === defenceId) {
+            defence.config = config;
+          }
+          return defence;
+        });
+        setDefenceDetails(newDefences);
       }
-    );
+      return success;
+    });
     return configSuccess;
   };
 

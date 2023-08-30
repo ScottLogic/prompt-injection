@@ -54,7 +54,6 @@ const ExportContent = ({
       return title + " (phase " + currentPhase + ")";
     }
   };
-  console.log("Exporting chat history");
   return (
     <Document>
       <Page size="A4" style={styles.page}>

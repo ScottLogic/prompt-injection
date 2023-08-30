@@ -10,33 +10,33 @@ import EmailBox from "../EmailBox/EmailBox";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ModelSelectionBox from "../ModelSelectionBox/ModelSelectionBox";
 import { EmailInfo } from "../../models/email";
+import { addMessageToChatHistory } from "../../service/chatService";
 
-function DemoBody(
-  {
-    currentPhase,
-    defences,
-    emails,
-    messages,
-    addChatMessage,
-    resetPhase,
-    setEmails,
-    setNumCompletedPhases,
-  }: {
-    currentPhase: PHASE_NAMES;
-    defences: DefenceInfo[];
-    emails: EmailInfo[];
-    messages: ChatMessage[];
-    addChatMessage: (message: ChatMessage) => void;
-    resetPhase: () => void;
-    setEmails: (emails: EmailInfo[]) => void;
-    setNumCompletedPhases: (numCompletedPhases: number) => void;
-  }
-) {
+function DemoBody({
+  currentPhase,
+  defences,
+  emails,
+  messages,
+  addChatMessage,
+  resetPhase,
+  setEmails,
+  setNumCompletedPhases,
+}: {
+  currentPhase: PHASE_NAMES;
+  defences: DefenceInfo[];
+  emails: EmailInfo[];
+  messages: ChatMessage[];
+  addChatMessage: (message: ChatMessage) => void;
+  resetPhase: () => void;
+  setEmails: (emails: EmailInfo[]) => void;
+  setNumCompletedPhases: (numCompletedPhases: number) => void;
+}) {
   const addInfoMessage = (message: string) => {
     addChatMessage({
       message: message,
       type: CHAT_MESSAGE_TYPE.INFO,
     });
+    addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
   };
 
   // methods to be called when defences are (de)activated
@@ -58,6 +58,7 @@ function DemoBody(
         {(currentPhase === PHASE_NAMES.PHASE_2 ||
           currentPhase === PHASE_NAMES.SANDBOX) && (
           <DefenceBox
+            currentPhase={currentPhase}
             defences={defences}
             showConfigurations={currentPhase > 2 ? true : false}
             defenceActivated={defenceActivated}

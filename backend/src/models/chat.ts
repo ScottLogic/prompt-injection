@@ -14,9 +14,15 @@ enum CHAT_MODELS {
 
 enum CHAT_MESSAGE_TYPE {
   BOT,
+  BOT_BLOCKED,
   INFO,
   USER,
+  USER_TRANSFORMED,
   PHASE_INFO,
+  DEFENCE_ALERTED,
+  DEFENCE_TRIGGERED,
+  SYSTEM,
+  FUNCTION_CALL,
 }
 
 interface ChatDefenceReport {
@@ -50,11 +56,18 @@ interface ChatHttpResponse {
   wonPhase: boolean;
 }
 
+interface ChatHistoryMessage {
+  completion: ChatCompletionRequestMessage | null;
+  chatMessageType: CHAT_MESSAGE_TYPE;
+  infoMessage?: string | null;
+}
+
 export type {
   ChatAnswer,
   ChatDefenceReport,
   ChatMalicious,
   ChatResponse,
   ChatHttpResponse,
+  ChatHistoryMessage,
 };
 export { CHAT_MODELS, CHAT_MESSAGE_TYPE };

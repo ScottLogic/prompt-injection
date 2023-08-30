@@ -6,21 +6,26 @@ import session from "express-session";
 import { getInitialDefences } from "./defence";
 import { setOpenAiApiKey } from "./openai";
 import { router } from "./router";
-import { ChatCompletionRequestMessage } from "openai";
+import { ChatHistoryMessage } from "./models/chat";
 import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
 import { CHAT_MODELS } from "./models/chat";
+import { PHASE_NAMES } from "./models/phase";
 import { retrievalQAPrePrompt } from "./promptTemplates";
 
 dotenv.config();
 
 declare module "express-session" {
   interface Session {
-    chatHistory: ChatCompletionRequestMessage[];
-    defences: DefenceInfo[];
-    gptModel: CHAT_MODELS;
-    numPhasesCompleted: number;
     openAiApiKey: string | null;
+    gptModel: CHAT_MODELS;
+    phaseState: PhaseState[];
+    numPhasesCompleted: number;
+  }
+  interface PhaseState {
+    phase: PHASE_NAMES;
+    chatHistory: ChatHistoryMessage[];
+    defences: DefenceInfo[];
     sentEmails: EmailInfo[];
   }
 }
@@ -65,12 +70,6 @@ app.use(
 
 app.use(async (req, _res, next) => {
   // initialise session variables
-  if (!req.session.chatHistory) {
-    req.session.chatHistory = [];
-  }
-  if (!req.session.defences) {
-    req.session.defences = getInitialDefences();
-  }
   if (!req.session.gptModel) {
     req.session.gptModel = defaultModel;
   }
@@ -80,8 +79,20 @@ app.use(async (req, _res, next) => {
   if (!req.session.openAiApiKey) {
     req.session.openAiApiKey = process.env.OPENAI_API_KEY || null;
   }
-  if (!req.session.sentEmails) {
-    req.session.sentEmails = [];
+  if (!req.session.phaseState) {
+    req.session.phaseState = [];
+    // add empty states for phases 0-3
+    Object.values(PHASE_NAMES).forEach((value) => {
+      if (isNaN(Number(value))) {
+        req.session.phaseState.push({
+          phase: value as PHASE_NAMES,
+          chatHistory: [],
+          defences: getInitialDefences(),
+          sentEmails: [],
+        });
+      }
+    });
+    console.log("Initialised phase state: ", req.session.phaseState);
   }
   next();
 });
@@ -89,7 +100,7 @@ app.use(async (req, _res, next) => {
 app.use("/", router);
 app.listen(port, () => {
   console.log("Server is running on port: " + port);
- 
+
   // for dev purposes only - set the API key from the environment variable
   const envOpenAiKey = process.env.OPENAI_API_KEY;
   const prePrompt = retrievalQAPrePrompt;

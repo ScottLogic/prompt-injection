@@ -20,6 +20,8 @@ enum CHAT_MESSAGE_TYPE {
   PHASE_INFO,
   DEFENCE_ALERTED,
   DEFENCE_TRIGGERED,
+  SYSTEM,
+  FUNCTION_CALL,
 }
 
 interface ChatDefenceReport {
@@ -42,5 +44,17 @@ interface ChatResponse {
   wonPhase: boolean;
 }
 
-export type { ChatMessage, ChatResponse };
+interface ChatCompletionRequestMessage {
+  role: string;
+  name: string | null;
+  content: string;
+}
+
+interface ChatHistoryMessage {
+  completion: ChatCompletionRequestMessage | null;
+  chatMessageType: CHAT_MESSAGE_TYPE;
+  infoMessage: string | null | undefined;
+}
+
+export type { ChatMessage, ChatResponse, ChatHistoryMessage };
 export { CHAT_MODELS, CHAT_MESSAGE_TYPE };

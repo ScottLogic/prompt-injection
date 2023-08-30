@@ -3,35 +3,39 @@ import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
 
-async function getDefences(): Promise<DefenceInfo[]> {
-  const response = await sendRequest(PATH + "status", "GET");
+async function getDefences(phase: number): Promise<DefenceInfo[]> {
+  const response = await sendRequest(PATH + "status?phase=" + phase, "GET");
   const data = await response.json();
   return data;
 }
 
-async function activateDefence(id: string): Promise<boolean> {
+async function activateDefence(id: string, phase: number): Promise<boolean> {
   const response = await sendRequest(
     PATH + "activate",
     "POST",
     { "Content-Type": "application/json" },
-    JSON.stringify({ defenceId: id })
+    JSON.stringify({ defenceId: id, phase: phase })
   );
   return response.status === 200;
 }
 
-async function deactivateDefence(id: string): Promise<boolean> {
+async function deactivateDefence(id: string, phase: number): Promise<boolean> {
   const response = await sendRequest(
     PATH + "deactivate",
     "POST",
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ defenceId: id })
+    JSON.stringify({ defenceId: id, phase: phase })
   );
   return response.status === 200;
 }
 
-async function configureDefence(id: string, config: DefenceConfig[]) {
+async function configureDefence(
+  id: string,
+  config: DefenceConfig[],
+  phase: number
+): Promise<boolean> {
   const validation = config.map((c) => validateDefence(id, c.name, c.value));
   if (validation.includes(false)) {
     console.log("Invalid value for defence configuration", id, config);
@@ -43,7 +47,7 @@ async function configureDefence(id: string, config: DefenceConfig[]) {
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ defenceId: id, config: config })
+    JSON.stringify({ defenceId: id, config: config, phase: phase })
   );
   return response.status === 200;
 }
@@ -81,8 +85,15 @@ function validateDefence(id: string, configName: string, config: string) {
   }
 }
 
-async function resetActiveDefences() {
-  const response = await sendRequest(PATH + "reset", "POST");
+async function resetActiveDefences(phase: number) {
+  const response = await sendRequest(
+    PATH + "reset",
+    "POST",
+    {
+      "Content-Type": "application/json",
+    },
+    JSON.stringify({ phase: phase })
+  );
   return response.status === 200;
 }
 

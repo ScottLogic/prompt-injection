@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
-import { sendMessage } from "../../service/chatService";
+import {
+  addMessageToChatHistory,
+  sendMessage,
+} from "../../service/chatService";
 import { getSentEmails } from "../../service/emailService";
 import {
   CHAT_MESSAGE_TYPE,
@@ -35,7 +38,7 @@ function ChatBox(
   // called on mount
   useEffect(() => {
     // get sent emails
-    getSentEmails().then((sentEmails) => {
+    getSentEmails(currentPhase).then((sentEmails) => {
       setEmails(sentEmails);
     });
   }, [setEmails]);
@@ -47,7 +50,9 @@ function ChatBox(
   }
 
   async function sendChatMessage() {
-    const inputBoxElement = document.getElementById("chat-box-input") as HTMLInputElement;
+    const inputBoxElement = document.getElementById(
+      "chat-box-input"
+    ) as HTMLInputElement;
     // get the message from the input box
     const message = inputBoxElement?.value;
     // clear the input box
@@ -77,7 +82,7 @@ function ChatBox(
       if (response.defenceInfo.isBlocked) {
         addChatMessage({
           type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-          message: response.defenceInfo.blockedReason
+          message: response.defenceInfo.blockedReason,
         });
       } else {
         addChatMessage({
@@ -92,10 +97,16 @@ function ChatBox(
           return defence.id === triggeredDefence;
         })?.name.toLowerCase();
         if (defenceName) {
+          const alertMsg = `your last message would have triggered the ${defenceName} defence`;
           addChatMessage({
             type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
-            message: `your last message would have triggered the ${defenceName} defence`,
-          })
+            message: alertMsg,
+          });
+          addMessageToChatHistory(
+            alertMsg,
+            CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
+            currentPhase
+          );
         }
       });
       // add triggered defences to the chat
@@ -105,10 +116,16 @@ function ChatBox(
           return defence.id === triggeredDefence;
         })?.name.toLowerCase();
         if (defenceName) {
+          const triggerMsg = `${defenceName} defence triggered`;
           addChatMessage({
             type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-            message: `${defenceName} defence triggered`,
-          })
+            message: triggerMsg,
+          });
+          addMessageToChatHistory(
+            triggerMsg,
+            CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
+            currentPhase
+          );
         }
       });
 
@@ -116,35 +133,40 @@ function ChatBox(
       setIsSendingMessage(false);
 
       // get sent emails
-      const sentEmails: EmailInfo[] = await getSentEmails();
+      const sentEmails: EmailInfo[] = await getSentEmails(currentPhase);
       // update emails
       setEmails(sentEmails);
 
       if (response.wonPhase) {
+        const successMessage =
+          "Congratulations! You have completed this phase. Please click on the next phase to continue.";
         addChatMessage({
           type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-          message:
-            "Congratulations! You have completed this phase. Please click on the next phase to continue.",
+          message: successMessage,
         });
+        addMessageToChatHistory(
+          successMessage,
+          CHAT_MESSAGE_TYPE.PHASE_INFO,
+          currentPhase
+        );
       }
     }
-  };
-
+  }
   return (
     <div id="chat-box">
       <ChatBoxFeed messages={messages} />
       <div id="chat-box-footer">
         <div id="chat-box-footer-messages">
-          <input 
-            id="chat-box-input" 
+          <input
+            id="chat-box-input"
             className="prompt-injection-input"
             type="text"
             placeholder="Type here..."
             autoFocus
             onKeyUp={inputKeyPressed.bind(this)}
           />
-          <button 
-            id="chat-box-button-send" 
+          <button
+            id="chat-box-button-send"
             className="prompt-injection-button"
             onClick={sendChatMessage}
           >
@@ -152,11 +174,11 @@ function ChatBox(
           </button>
         </div>
         <div id="chat-box-footer-reset">
-          <button 
-              id="chat-box-button-reset" 
-              className="prompt-injection-button"
-              onClick={resetPhase.bind(this)}
-            >
+          <button
+            id="chat-box-button-reset"
+            className="prompt-injection-button"
+            onClick={resetPhase.bind(this)}
+          >
             Reset phase
           </button>
         </div>

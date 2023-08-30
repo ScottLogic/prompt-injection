@@ -17,7 +17,12 @@ import {
   Configuration,
   OpenAIApi,
 } from "openai";
-import { CHAT_MODELS, ChatDefenceReport } from "./models/chat";
+import {
+  CHAT_MESSAGE_TYPE,
+  CHAT_MODELS,
+  ChatDefenceReport,
+  ChatHistoryMessage,
+} from "./models/chat";
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { PHASE_NAMES } from "./models/phase";
 
@@ -223,7 +228,7 @@ async function chatGptCallFunction(
 }
 
 async function chatGptChatCompletion(
-  chatHistory: ChatCompletionRequestMessage[],
+  chatHistory: ChatHistoryMessage[],
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
   openai: OpenAIApi,
@@ -237,23 +242,29 @@ async function chatGptChatCompletion(
     isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
     // check to see if there's already a system role
-    if (!chatHistory.find((message) => message.role === "system")) {
+    if (!chatHistory.find((message) => message.completion?.role === "system")) {
       // add the system role to the start of the chat history
       chatHistory.unshift({
-        role: "system",
-        content: getSystemRole(defences, currentPhase),
+        completion: {
+          role: "system",
+          content: getSystemRole(defences, currentPhase),
+        },
+        chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
       });
     }
   } else {
     // remove the system role from the chat history
-    while (chatHistory.length > 0 && chatHistory[0].role === "system") {
+    while (
+      chatHistory.length > 0 &&
+      chatHistory[0].completion?.role === "system"
+    ) {
       chatHistory.shift();
     }
   }
 
   const chat_completion = await openai.createChatCompletion({
     model: gptModel,
-    messages: chatHistory,
+    messages: getChatCompletionsFromHistory(chatHistory),
     functions: chatGptFunctions,
   });
 
@@ -261,11 +272,42 @@ async function chatGptChatCompletion(
   return chat_completion.data.choices[0].message || null;
 }
 
+// take only the completions to send to GPT
+const getChatCompletionsFromHistory = (
+  chatHistory: ChatHistoryMessage[]
+): ChatCompletionRequestMessage[] => {
+  const completions: ChatCompletionRequestMessage[] =
+    chatHistory.length > 0
+      ? chatHistory
+          .filter((message) => message.completion !== null)
+          .map((message) => message.completion as ChatCompletionRequestMessage)
+      : [];
+  return completions;
+};
+
+const pushCompletionToHistory = (
+  chatHistory: ChatHistoryMessage[],
+  completion: ChatCompletionRequestMessage,
+  messageType: CHAT_MESSAGE_TYPE
+) => {
+  if (messageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
+    chatHistory.push({
+      completion: completion,
+      chatMessageType: messageType,
+    });
+  } else {
+    // do not add the bots reply which was subsequently blocked
+    console.log("Skipping adding blocked message to chat history", completion);
+  }
+  return chatHistory;
+};
+
 async function chatGptSendMessage(
-  chatHistory: ChatCompletionRequestMessage[],
+  chatHistory: ChatHistoryMessage[],
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
   message: string,
+  messageIsTransformed: boolean,
   openAiApiKey: string,
   sentEmails: EmailInfo[],
   // default to sandbox
@@ -283,7 +325,16 @@ async function chatGptSendMessage(
   let wonPhase: boolean | undefined | null = false;
 
   // add user message to chat
-  chatHistory.push({ role: "user", content: message });
+  chatHistory = pushCompletionToHistory(
+    chatHistory,
+    {
+      role: "user",
+      content: message,
+    },
+    messageIsTransformed
+      ? CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+      : CHAT_MESSAGE_TYPE.USER
+  );
 
   const openai = getOpenAiFromKey(openAiApiKey);
   let reply = await chatGptChatCompletion(
@@ -295,7 +346,11 @@ async function chatGptSendMessage(
   );
   // check if GPT wanted to call a function
   while (reply && reply.function_call) {
-    chatHistory.push(reply);
+    chatHistory = pushCompletionToHistory(
+      chatHistory,
+      reply,
+      CHAT_MESSAGE_TYPE.FUNCTION_CALL
+    );
 
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
@@ -309,12 +364,15 @@ async function chatGptSendMessage(
       wonPhase = functionCallReply.wonPhase;
       // add the function call to the chat history
       if (functionCallReply.completion !== undefined) {
-        chatHistory.push(functionCallReply.completion);
+        chatHistory = pushCompletionToHistory(
+          chatHistory,
+          functionCallReply.completion,
+          CHAT_MESSAGE_TYPE.FUNCTION_CALL
+        );
       }
       // update the defence info
       defenceInfo = functionCallReply.defenceInfo;
     }
-
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion(
       chatHistory,
@@ -326,7 +384,6 @@ async function chatGptSendMessage(
   }
 
   if (reply && reply.content) {
-    console.debug("GPT reply: " + reply.content);
     // if output filter defence is active, check for blocked words/phrases
     if (
       currentPhase === PHASE_NAMES.PHASE_2 ||
@@ -353,9 +410,17 @@ async function chatGptSendMessage(
       }
     }
     // add the ai reply to the chat history
-    chatHistory.push(reply);
+    chatHistory = pushCompletionToHistory(
+      chatHistory,
+      reply,
+      defenceInfo.isBlocked
+        ? CHAT_MESSAGE_TYPE.BOT_BLOCKED
+        : CHAT_MESSAGE_TYPE.BOT
+    );
+
     // log the entire chat history so far
     console.log(chatHistory);
+
     return {
       completion: reply,
       defenceInfo: defenceInfo,
