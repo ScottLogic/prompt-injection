@@ -29,7 +29,7 @@ function DefenceBox({
     setDefenceDetails(defences);
   }, [defences]);
 
-  // called on mount & when switchPhase is called
+  // called on mount & when defences are updated
   useEffect(() => {
     // fetch defences from backend
     getDefences(currentPhase).then((remoteDefences) => {

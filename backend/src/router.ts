@@ -310,7 +310,7 @@ router.get("/openai/history", (req, res) => {
 });
 
 // add an info message to chat history
-router.post("/openai/addInfo", (req, res) => {
+router.post("/openai/addHistory", (req, res) => {
   const message: string = req.body?.message;
   const chatMessageType: CHAT_MESSAGE_TYPE = req.body?.chatMessageType;
   const phase: PHASE_NAMES = req.body?.phase;

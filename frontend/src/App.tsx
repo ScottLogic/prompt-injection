@@ -71,6 +71,16 @@ function App() {
     });
     resetActiveDefences(currentPhase).then(() => {
       setTriggeredDefences([]);
+      // choose appropriate defences to display
+      let defences =
+        currentPhase === PHASE_NAMES.PHASE_2
+          ? DEFENCE_DETAILS_PHASE
+          : DEFENCE_DETAILS_ALL;
+      defences = defences.map((defence) => {
+        defence.isActive = false;
+        return defence;
+      });
+      setDefencesToShow(defences);
     });
   }
 
@@ -93,10 +103,10 @@ function App() {
 
       // if chat history is empty, add a preamble message
       if (phaseChatHistory.length === 0) {
+        console.log("adding preamble message for phase " + newPhase);
         addPhasePreambleMessage(PHASES[newPhase].preamble);
       }
     });
-
     let defences =
       newPhase === PHASE_NAMES.PHASE_2
         ? DEFENCE_DETAILS_PHASE

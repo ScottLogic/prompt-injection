@@ -136,7 +136,7 @@ const addMessageToChatHistory = async (
   phase: number
 ) => {
   const response = await sendRequest(
-    PATH + "addInfo",
+    PATH + "addHistory",
     "POST",
     { "Content-Type": "application/json" },
     JSON.stringify({

@@ -289,24 +289,14 @@ const pushCompletionToHistory = (
   chatHistory: ChatHistoryMessage[],
   completion: ChatCompletionRequestMessage,
   messageType: CHAT_MESSAGE_TYPE
-  // isBlocked: boolean,
-  // messageIsTransformed: boolean = true
 ) => {
-  // const messageType =
-  //   completion.role === "user"
-  //     ? messageIsTransformed
-  //       ? CHAT_MESSAGE_TYPE.USER_TRANSFORMED
-  //       : CHAT_MESSAGE_TYPE.USER
-  //     : completion.role === "function" || completion.function_call
-  //     ? CHAT_MESSAGE_TYPE.FUNCTION_CALL
-  //     : CHAT_MESSAGE_TYPE.BOT;
-
   if (messageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
     chatHistory.push({
       completion: completion,
       chatMessageType: messageType,
     });
   } else {
+    // do not add the bots reply which was subsequently blocked
     console.log("Skipping adding blocked message to chat history", completion);
   }
   return chatHistory;
