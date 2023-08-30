@@ -45,55 +45,49 @@ const getChatHistory = async (phase: number): Promise<ChatMessage[]> => {
     (message: ChatHistoryMessage) => {
       switch (message.chatMessageType) {
         case CHAT_MESSAGE_TYPE.BOT:
-          if (message.completion) {
-            return {
-              message: message.completion?.content,
-              type: CHAT_MESSAGE_TYPE.BOT,
-            };
-          } else {
-            return {
-              message: message.infoMessage,
-              type: CHAT_MESSAGE_TYPE.BOT,
-              defenceInfo: {
-                blockedReason: message.infoMessage,
-                isBlocked: true,
-                triggeredDefences: [],
-              },
-            };
-          }
+          return {
+            message: message.completion?.content,
+            type: CHAT_MESSAGE_TYPE.BOT,
+          };
+        case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
+          return {
+            message: message.infoMessage,
+            type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+            defenceInfo: {
+              blockedReason: message.infoMessage,
+              isBlocked: true,
+              triggeredDefences: [],
+            },
+          };
+        case CHAT_MESSAGE_TYPE.USER:
+          return {
+            message: message.completion?.content || message.infoMessage,
+            type: CHAT_MESSAGE_TYPE.USER,
+          };
         case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
           return {
             message: message.completion?.content,
             type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
           };
-        case CHAT_MESSAGE_TYPE.USER:
-          if (message.completion) {
-            return {
-              message: message.completion?.content,
-              type: CHAT_MESSAGE_TYPE.USER,
-              isOriginalMessage: message.isOriginalMessage,
-            };
-          } else {
-            return {
-              message: message.infoMessage,
-              type: CHAT_MESSAGE_TYPE.USER,
-              isOriginalMessage: message.isOriginalMessage,
-            };
-          }
         case CHAT_MESSAGE_TYPE.INFO:
           return {
             message: message.infoMessage,
             type: message.chatMessageType,
           };
-        case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
-          return {
-            message: message.infoMessage,
-            type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-          };
         case CHAT_MESSAGE_TYPE.PHASE_INFO:
           return {
             message: message.infoMessage,
             type: CHAT_MESSAGE_TYPE.PHASE_INFO,
+          };
+        case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
+          return {
+            message: message.infoMessage,
+            type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
+          };
+        case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
+          return {
+            message: message.infoMessage,
+            type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
           };
         default:
           // don't show system role messages or function calls in the chat box
@@ -136,7 +130,7 @@ const getGptModel = async (): Promise<CHAT_MODELS> => {
   return modelStr as CHAT_MODELS;
 };
 
-const addInfoMessageToHistory = async (
+const addMessageToChatHistory = async (
   message: string,
   chatMessageType: CHAT_MESSAGE_TYPE,
   phase: number
@@ -162,5 +156,5 @@ export {
   getGptModel,
   setGptModel,
   getChatHistory,
-  addInfoMessageToHistory,
+  addMessageToChatHistory,
 };

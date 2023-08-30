@@ -288,20 +288,23 @@ const getChatCompletionsFromHistory = (
 const pushCompletionToHistory = (
   chatHistory: ChatHistoryMessage[],
   completion: ChatCompletionRequestMessage,
-  isBlocked: boolean,
-  isOriginalMessage: boolean = true
+  messageType: CHAT_MESSAGE_TYPE
+  // isBlocked: boolean,
+  // messageIsTransformed: boolean = true
 ) => {
-  const messageType =
-    completion.role === "user"
-      ? CHAT_MESSAGE_TYPE.USER
-      : completion.role === "function" || completion.function_call
-      ? CHAT_MESSAGE_TYPE.FUNCTION_CALL
-      : CHAT_MESSAGE_TYPE.BOT;
-  if (!isBlocked) {
+  // const messageType =
+  //   completion.role === "user"
+  //     ? messageIsTransformed
+  //       ? CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+  //       : CHAT_MESSAGE_TYPE.USER
+  //     : completion.role === "function" || completion.function_call
+  //     ? CHAT_MESSAGE_TYPE.FUNCTION_CALL
+  //     : CHAT_MESSAGE_TYPE.BOT;
+
+  if (messageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
     chatHistory.push({
       completion: completion,
       chatMessageType: messageType,
-      isOriginalMessage: isOriginalMessage,
     });
   } else {
     console.log("Skipping adding blocked message to chat history", completion);
@@ -314,7 +317,7 @@ async function chatGptSendMessage(
   defences: DefenceInfo[],
   gptModel: CHAT_MODELS,
   message: string,
-  isOriginalMessage: boolean,
+  messageIsTransformed: boolean,
   openAiApiKey: string,
   sentEmails: EmailInfo[],
   // default to sandbox
@@ -338,8 +341,9 @@ async function chatGptSendMessage(
       role: "user",
       content: message,
     },
-    defenceInfo.isBlocked,
-    isOriginalMessage
+    messageIsTransformed
+      ? CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+      : CHAT_MESSAGE_TYPE.USER
   );
 
   const openai = getOpenAiFromKey(openAiApiKey);
@@ -355,7 +359,7 @@ async function chatGptSendMessage(
     chatHistory = pushCompletionToHistory(
       chatHistory,
       reply,
-      defenceInfo.isBlocked
+      CHAT_MESSAGE_TYPE.FUNCTION_CALL
     );
 
     // call the function and get a new reply and defence info from
@@ -373,7 +377,7 @@ async function chatGptSendMessage(
         chatHistory = pushCompletionToHistory(
           chatHistory,
           functionCallReply.completion,
-          defenceInfo.isBlocked
+          CHAT_MESSAGE_TYPE.FUNCTION_CALL
         );
       }
       // update the defence info
@@ -420,6 +424,8 @@ async function chatGptSendMessage(
       chatHistory,
       reply,
       defenceInfo.isBlocked
+        ? CHAT_MESSAGE_TYPE.BOT_BLOCKED
+        : CHAT_MESSAGE_TYPE.BOT
     );
 
     // log the entire chat history so far

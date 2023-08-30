@@ -53,7 +53,6 @@ interface ChatCompletionRequestMessage {
 interface ChatHistoryMessage {
   completion: ChatCompletionRequestMessage | null;
   chatMessageType: CHAT_MESSAGE_TYPE;
-  isOriginalMessage?: boolean;
   infoMessage: string | null | undefined;
 }
 

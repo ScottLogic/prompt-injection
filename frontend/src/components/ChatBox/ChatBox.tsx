@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
 import {
-  addInfoMessageToHistory,
+  addMessageToChatHistory,
   sendMessage,
 } from "../../service/chatService";
 import { getSentEmails } from "../../service/emailService";
@@ -97,10 +97,16 @@ function ChatBox(
           return defence.id === triggeredDefence;
         })?.name.toLowerCase();
         if (defenceName) {
+          const alertMsg = `your last message would have triggered the ${defenceName} defence`;
           addChatMessage({
             type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
-            message: `your last message would have triggered the ${defenceName} defence`,
+            message: alertMsg,
           });
+          addMessageToChatHistory(
+            alertMsg,
+            CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
+            currentPhase
+          );
         }
       });
       // add triggered defences to the chat
@@ -110,12 +116,13 @@ function ChatBox(
           return defence.id === triggeredDefence;
         })?.name.toLowerCase();
         if (defenceName) {
+          const triggerMsg = `${defenceName} defence triggered`;
           addChatMessage({
             type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-            message: `${defenceName} defence triggered`,
+            message: triggerMsg,
           });
-          addInfoMessageToHistory(
-            `${defenceName} defence triggered`,
+          addMessageToChatHistory(
+            triggerMsg,
             CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
             currentPhase
           );
@@ -137,7 +144,7 @@ function ChatBox(
           type: CHAT_MESSAGE_TYPE.PHASE_INFO,
           message: successMessage,
         });
-        addInfoMessageToHistory(
+        addMessageToChatHistory(
           successMessage,
           CHAT_MESSAGE_TYPE.PHASE_INFO,
           currentPhase

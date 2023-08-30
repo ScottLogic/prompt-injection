@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { PHASE_NAMES } from "./models/phase";
 import {
   getChatHistory,
-  addInfoMessageToHistory,
+  addMessageToChatHistory,
   clearChat,
 } from "./service/chatService";
 import { EmailInfo } from "./models/email";
@@ -51,7 +51,7 @@ function App() {
       message: message,
       type: CHAT_MESSAGE_TYPE.PHASE_INFO,
     });
-    addInfoMessageToHistory(
+    addMessageToChatHistory(
       message,
       CHAT_MESSAGE_TYPE.PHASE_INFO,
       currentPhase
@@ -78,6 +78,8 @@ function App() {
   const setNewPhase = (newPhase: PHASE_NAMES) => {
     console.log("changing phase from " + currentPhase + " to " + newPhase);
 
+    // clear in case preamble is added
+    setMessages([]);
     setCurrentPhase(newPhase);
 
     // get emails for new phase from the backend
@@ -88,8 +90,9 @@ function App() {
     // get chat history for new phase from the backend
     getChatHistory(newPhase).then((phaseChatHistory) => {
       setMessages(phaseChatHistory);
+
       // if chat history is empty, add a preamble message
-      if (!phaseChatHistory) {
+      if (phaseChatHistory.length === 0) {
         addPhasePreambleMessage(PHASES[newPhase].preamble);
       }
     });
@@ -98,11 +101,6 @@ function App() {
       newPhase === PHASE_NAMES.PHASE_2
         ? DEFENCE_DETAILS_PHASE
         : DEFENCE_DETAILS_ALL;
-    // make all defences inactive
-    // defences = defences.map((defence) => {
-    //   defence.isActive = false;
-    //   return defence;
-    // });
     setDefencesToShow(defences);
   };
 

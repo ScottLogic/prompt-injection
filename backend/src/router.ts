@@ -205,7 +205,6 @@ router.post("/openai/chat", async (req, res) => {
             completion: null,
             chatMessageType: CHAT_MESSAGE_TYPE.USER,
             infoMessage: message,
-            isOriginalMessage: true,
           });
         }
       }
@@ -217,12 +216,12 @@ router.post("/openai/chat", async (req, res) => {
           req.session.phaseState[currentPhase].defences
         );
         // if message has been transformed then add the original to chat history and send transformed to chatGPT
-        const isOriginalMessage = chatResponse.transformedMessage === message;
-        if (!isOriginalMessage) {
+        const messageIsTransformed =
+          chatResponse.transformedMessage !== message;
+        if (messageIsTransformed) {
           req.session.phaseState[currentPhase].chatHistory.push({
             completion: null,
             chatMessageType: CHAT_MESSAGE_TYPE.USER,
-            isOriginalMessage: true,
             infoMessage: message,
           });
         }
@@ -233,7 +232,7 @@ router.post("/openai/chat", async (req, res) => {
             req.session.phaseState[currentPhase].defences,
             req.session.gptModel,
             chatResponse.transformedMessage,
-            isOriginalMessage,
+            messageIsTransformed,
             req.session.openAiApiKey,
             req.session.phaseState[currentPhase].sentEmails,
             currentPhase
@@ -276,7 +275,7 @@ router.post("/openai/chat", async (req, res) => {
       if (chatResponse.defenceInfo.isBlocked) {
         req.session.phaseState[currentPhase].chatHistory.push({
           completion: null,
-          chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+          chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
           infoMessage: chatResponse.defenceInfo.blockedReason,
         });
       }

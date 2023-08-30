@@ -10,7 +10,7 @@ import EmailBox from "../EmailBox/EmailBox";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ModelSelectionBox from "../ModelSelectionBox/ModelSelectionBox";
 import { EmailInfo } from "../../models/email";
-import { addInfoMessageToHistory } from "../../service/chatService";
+import { addMessageToChatHistory } from "../../service/chatService";
 
 function DemoBody({
   currentPhase,
@@ -36,7 +36,7 @@ function DemoBody({
       message: message,
       type: CHAT_MESSAGE_TYPE.INFO,
     });
-    addInfoMessageToHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
+    addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
   };
 
   // methods to be called when defences are (de)activated
