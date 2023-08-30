@@ -45,26 +45,17 @@ function App() {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
   };
 
-  // add the preamble message for the current phase to start of chat
-  function addPhasePreambleMessage(message: string) {
-    addChatMessage({
-      message: message,
-      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-    });
-    addMessageToChatHistory(
-      message,
-      CHAT_MESSAGE_TYPE.PHASE_INFO,
-      currentPhase
-    );
-  }
-
   // for clearing phase progress
   function resetPhase() {
     console.log("resetting phase " + currentPhase);
 
     clearChat(currentPhase).then(() => {
       setMessages([]);
-      addPhasePreambleMessage(PHASES[currentPhase].preamble);
+      // add preamble to start of chat
+      addChatMessage({
+        message: PHASES[currentPhase].preamble,
+        type: CHAT_MESSAGE_TYPE.PHASE_INFO,
+      });
     });
     clearEmails(currentPhase).then(() => {
       setEmails([]);
@@ -87,8 +78,6 @@ function App() {
   // for going switching phase without clearing progress
   const setNewPhase = (newPhase: PHASE_NAMES) => {
     console.log("changing phase from " + currentPhase + " to " + newPhase);
-
-    // clear in case preamble is added
     setMessages([]);
     setCurrentPhase(newPhase);
 
@@ -99,14 +88,14 @@ function App() {
 
     // get chat history for new phase from the backend
     getChatHistory(newPhase).then((phaseChatHistory) => {
+      // add the preamble to the start of the chat history
+      phaseChatHistory.unshift({
+        message: PHASES[newPhase].preamble,
+        type: CHAT_MESSAGE_TYPE.PHASE_INFO,
+      });
       setMessages(phaseChatHistory);
-
-      // if chat history is empty, add a preamble message
-      if (phaseChatHistory.length === 0) {
-        console.log("adding preamble message for phase " + newPhase);
-        addPhasePreambleMessage(PHASES[newPhase].preamble);
-      }
     });
+
     let defences =
       newPhase === PHASE_NAMES.PHASE_2
         ? DEFENCE_DETAILS_PHASE

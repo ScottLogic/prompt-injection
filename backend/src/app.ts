@@ -10,6 +10,7 @@ import { ChatHistoryMessage } from "./models/chat";
 import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
 import { CHAT_MODELS } from "./models/chat";
+import { PHASE_NAMES } from "./models/phase";
 import { retrievalQAPrePrompt } from "./promptTemplates";
 
 dotenv.config();
@@ -22,7 +23,7 @@ declare module "express-session" {
     numPhasesCompleted: number;
   }
   interface PhaseState {
-    phase: number;
+    phase: PHASE_NAMES;
     chatHistory: ChatHistoryMessage[];
     defences: DefenceInfo[];
     sentEmails: EmailInfo[];
@@ -81,14 +82,17 @@ app.use(async (req, _res, next) => {
   if (!req.session.phaseState) {
     req.session.phaseState = [];
     // add empty states for phases 0-3
-    for (let i = 0; i <= 3; i++) {
-      req.session.phaseState.push({
-        phase: i,
-        chatHistory: [],
-        defences: getInitialDefences(),
-        sentEmails: [],
-      });
-    }
+    Object.values(PHASE_NAMES).forEach((value) => {
+      if (isNaN(Number(value))) {
+        req.session.phaseState.push({
+          phase: value as PHASE_NAMES,
+          chatHistory: [],
+          defences: getInitialDefences(),
+          sentEmails: [],
+        });
+      }
+    });
+    console.log("Initialised phase state: ", req.session.phaseState);
   }
   next();
 });
