@@ -60,7 +60,6 @@ function ChatBox(
       addChatMessage({
         message: message,
         type: CHAT_MESSAGE_TYPE.USER,
-        isOriginalMessage: true,
       });
 
       const response: ChatResponse = await sendMessage(message, currentPhase);
@@ -71,16 +70,33 @@ function ChatBox(
       if (isTransformed) {
         addChatMessage({
           message: transformedMessage,
-          type: CHAT_MESSAGE_TYPE.USER,
-          isOriginalMessage: false,
+          type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
         });
       }
       // add it to the list of messages
-      addChatMessage({
-        type: CHAT_MESSAGE_TYPE.BOT,
-        message: response.reply,
-        defenceInfo: response.defenceInfo,
-        isOriginalMessage: true,
+      if (response.defenceInfo.isBlocked) {
+        addChatMessage({
+          type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+          message: response.defenceInfo.blockedReason
+        });
+      } else {
+        addChatMessage({
+          type: CHAT_MESSAGE_TYPE.BOT,
+          message: response.reply,
+        });
+      }
+      // add altered defences to the chat
+      response.defenceInfo.alertedDefences.forEach((triggeredDefence) => {
+        // get user-friendly defence name
+        const defenceName = DEFENCE_DETAILS_ALL.find((defence) => {
+          return defence.id === triggeredDefence;
+        })?.name.toLowerCase();
+        if (defenceName) {
+          addChatMessage({
+            type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
+            message: `your last message would have triggered the ${defenceName} defence`,
+          })
+        }
       });
       // add triggered defences to the chat
       response.defenceInfo.triggeredDefences.forEach((triggeredDefence) => {
@@ -92,7 +108,6 @@ function ChatBox(
           addChatMessage({
             type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
             message: `${defenceName} defence triggered`,
-            isOriginalMessage: true,
           })
         }
       });
@@ -110,8 +125,6 @@ function ChatBox(
           type: CHAT_MESSAGE_TYPE.PHASE_INFO,
           message:
             "Congratulations! You have completed this phase. Please click on the next phase to continue.",
-          defenceInfo: response.defenceInfo,
-          isOriginalMessage: true,
         });
       }
     }

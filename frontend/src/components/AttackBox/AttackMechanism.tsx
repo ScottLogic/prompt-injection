@@ -1,9 +1,9 @@
+import { useState } from "react";
 import { AttackInfo } from "../../models/attack";
 import "../StrategyBox/StrategyMechanism.css";
-import React from "react";
 
 function DefenceMechanism({ attack }: { attack: AttackInfo }) {
-  const [isInfoBoxVisible, setIsInfoBoxVisible] = React.useState(false);
+  const [isInfoBoxVisible, setIsInfoBoxVisible] = useState(false);
 
   return (
     <span>

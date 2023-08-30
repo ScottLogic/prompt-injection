@@ -36,7 +36,6 @@ function DemoBody(
     addChatMessage({
       message: message,
       type: CHAT_MESSAGE_TYPE.INFO,
-      isOriginalMessage: true,
     });
   };
 

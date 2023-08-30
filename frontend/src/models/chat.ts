@@ -1,3 +1,5 @@
+import { DEFENCE_TYPES } from "./defence";
+
 enum CHAT_MODELS {
   GPT_4 = "gpt-4",
   GPT_4_0613 = "gpt-4-0613",
@@ -11,22 +13,24 @@ enum CHAT_MODELS {
 
 enum CHAT_MESSAGE_TYPE {
   BOT,
+  BOT_BLOCKED,
   INFO,
   USER,
+  USER_TRANSFORMED,
   PHASE_INFO,
+  DEFENCE_ALERTED,
   DEFENCE_TRIGGERED,
 }
 
 interface ChatDefenceReport {
   blockedReason: string;
   isBlocked: boolean;
-  triggeredDefences: string[];
+  alertedDefences: DEFENCE_TYPES[];
+  triggeredDefences: DEFENCE_TYPES[];
 }
 
 interface ChatMessage {
-  defenceInfo?: ChatDefenceReport;
   message: string;
-  isOriginalMessage: boolean;
   type: CHAT_MESSAGE_TYPE;
 }
 
