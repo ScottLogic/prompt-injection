@@ -52,36 +52,35 @@ async function configureDefence(
   return response.status === 200;
 }
 
-function validateNumberConfig(config: string) {
+function validatePositiveNumberConfig(config: string) {
   // config is a number greater than zero
   return !isNaN(Number(config)) && Number(config) > 0;
 }
 
-function validateStringConfig(config: string) {
+function validateNonEmptyStringConfig(config: string) {
   // config is non empty string and is not a number
-  return config != "" && !Number(config);
+  return config !== "" && !Number(config);
 }
 
 function validateFilterConfig(config: string) {
-  // config is not empty or list of empty commas
+  // config is not a list of empty commas
   const commaPattern = /^,*,*$/;
-  return config != "" && !commaPattern.test(config);
+  return config === "" || !commaPattern.test(config);
 }
 
 function validateDefence(id: string, configName: string, config: string) {
   switch (id) {
     case DEFENCE_TYPES.CHARACTER_LIMIT:
-      return validateNumberConfig(config);
+      return validatePositiveNumberConfig(config);
     case DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE:
       return configName === "length"
-        ? validateNumberConfig(config)
-        : validateStringConfig(config);
+        ? validatePositiveNumberConfig(config)
+        : validateNonEmptyStringConfig(config);
     case DEFENCE_TYPES.FILTER_USER_INPUT:
-      return validateFilterConfig(config);
     case DEFENCE_TYPES.FILTER_BOT_OUTPUT:
       return validateFilterConfig(config);
     default:
-      return validateStringConfig(config);
+      return validateNonEmptyStringConfig(config);
   }
 }
 
