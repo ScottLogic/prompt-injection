@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { DefenceConfig, DefenceInfo } from "../../models/defence";
+import { validateDefence } from "../../service/defenceService";
 import "./DefenceMechanism.css";
 import "../StrategyBox/StrategyMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
@@ -26,18 +27,28 @@ function DefenceMechanism({
   const [configValidated, setConfigValidated] = useState<boolean>(true);
 
   const setConfigurationValue = async (configId: string, value: string) => {
-    const newConfiguration = defenceDetail.config.map((config) => {
-      if (config.id === configId) {
-        config.value = value;
-      }
-      return config;
-    });
-    setDefenceConfiguration(defenceDetail.id, newConfiguration).then(
-      (configured) => {
-        setIsConfigured(true);
-        setConfigValidated(configured);
-      }
-    );
+    const configName =
+      defenceDetail.config.find((config) => config.id === configId)?.name || "";
+
+    const configIsValid = validateDefence(defenceDetail.id, configName, value);
+    if (configIsValid) {
+      const newConfiguration = defenceDetail.config.map((config) => {
+        if (config.id === configId) {
+          config.value = value;
+        }
+        return config;
+      });
+      setDefenceConfiguration(defenceDetail.id, newConfiguration).then(
+        (configured) => {
+          setIsConfigured(true);
+          setConfigValidated(configured);
+        }
+      );
+    } else {
+      setConfigValidated(false);
+      setIsConfigured(true);
+    }
+
     // hide the message after 3 seconds
     setTimeout(() => {
       setIsConfigured(false);
