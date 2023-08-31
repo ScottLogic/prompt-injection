@@ -1,0 +1,16 @@
+#document-view-area {
+    margin: 15px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.document-view-button {
+    background-color: var(--main-button-inactive-background-colour);
+    border-color: var(--main-border-colour);
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    color: var(--main-button-inactive-text-colour);
+    cursor: pointer;
+}
