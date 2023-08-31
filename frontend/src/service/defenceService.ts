@@ -36,11 +36,6 @@ async function configureDefence(
   config: DefenceConfig[],
   phase: number
 ): Promise<boolean> {
-  const validation = config.map((c) => validateDefence(id, c.name, c.value));
-  if (validation.includes(false)) {
-    console.log("Invalid value for defence configuration", id, config);
-    return false;
-  }
   const response = await sendRequest(
     PATH + "configure",
     "POST",
@@ -102,4 +97,5 @@ export {
   deactivateDefence,
   configureDefence,
   resetActiveDefences,
+  validateDefence,
 };
