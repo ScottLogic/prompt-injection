@@ -16,7 +16,6 @@ import { PHASE_NAMES } from "../../models/phase";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 
 function ChatBox(
-  this: any,
   {
     messages,
     currentPhase,
@@ -33,6 +32,7 @@ function ChatBox(
     setEmails: (emails: EmailInfo[]) => void;
   }
 ) {
+  const [completedPhases, setCompletedPhases] = useState<Set<PHASE_NAMES>>(new Set());
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
 
   // called on mount
@@ -47,6 +47,12 @@ function ChatBox(
     if (event.key === "Enter") {
       sendChatMessage();
     }
+  }
+
+  function resetButtonPressed() {
+    completedPhases.delete(currentPhase);
+    setCompletedPhases(completedPhases);
+    resetPhase();
   }
 
   async function sendChatMessage() {
@@ -137,7 +143,8 @@ function ChatBox(
       // update emails
       setEmails(sentEmails);
 
-      if (response.wonPhase) {
+      if (response.wonPhase && !completedPhases.has(currentPhase)) {
+        setCompletedPhases(completedPhases.add(currentPhase));
         const successMessage =
           "Congratulations! You have completed this phase. Please click on the next phase to continue.";
         addChatMessage({
@@ -163,7 +170,7 @@ function ChatBox(
             type="text"
             placeholder="Type here..."
             autoFocus
-            onKeyUp={inputKeyPressed.bind(this)}
+            onKeyUp={inputKeyPressed}
           />
           <button
             id="chat-box-button-send"
@@ -177,7 +184,7 @@ function ChatBox(
           <button
             id="chat-box-button-reset"
             className="prompt-injection-button"
-            onClick={resetPhase.bind(this)}
+            onClick={resetButtonPressed}
           >
             Reset phase
           </button>
