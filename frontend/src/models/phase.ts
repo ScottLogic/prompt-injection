@@ -9,8 +9,6 @@ interface Phase {
   id: PHASE_NAMES;
   name: string;
   preamble: string;
-  isCurrent: boolean;
-  isComplete: boolean;
 }
 
 export { PHASE_NAMES };
