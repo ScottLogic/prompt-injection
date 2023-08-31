@@ -92,7 +92,6 @@ app.use(async (req, _res, next) => {
         });
       }
     });
-    console.log("Initialised phase state: ", req.session.phaseState);
   }
   next();
 });
