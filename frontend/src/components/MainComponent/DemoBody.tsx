@@ -67,8 +67,16 @@ function DemoBody({
   return (
     <span id="main-area">
       <div className="side-bar">
+        {/* show reduced set of attacks on phase 1 */}
+        {currentPhase === PHASE_NAMES.PHASE_1 && (
+          <AttackBox attacks={ATTACKS_PHASE_1} />
+        )}
+        {/* show all attacks on phase 2 and sandbox */}
+        {(currentPhase === PHASE_NAMES.PHASE_2 ||
+          currentPhase === PHASE_NAMES.SANDBOX) && (
+          <AttackBox attacks={ATTACKS_ALL} />
+        )}
         {/* hide defence box on phases 0 and 1. only allow configuration in sandbox */}
-        {/* hide defence box on phases 0 and 1 */}
         {(currentPhase === PHASE_NAMES.PHASE_2 ||
           currentPhase === PHASE_NAMES.SANDBOX) && (
           <DefenceBox
@@ -78,15 +86,6 @@ function DemoBody({
             defenceActivated={defenceActivated}
             defenceDeactivated={defenceDeactivated}
           />
-        )}
-        {/* show reduced set of attacks on phase 1 */}
-        {currentPhase === PHASE_NAMES.PHASE_1 && (
-          <AttackBox attacks={ATTACKS_PHASE_1} />
-        )}
-        {/* show all attacks on phase 2 and sandbox */}
-        {(currentPhase === PHASE_NAMES.PHASE_2 ||
-          currentPhase === PHASE_NAMES.SANDBOX) && (
-          <AttackBox attacks={ATTACKS_ALL} />
         )}
         {/* hide model selection box on phases 0 and 1 */}
         {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
