@@ -55,6 +55,10 @@
     margin: auto;
 }
 
+#react-doc-viewer {
+    color: var(--chat-message-text-colour);
+}
+
 #react-doc-viewer #header-bar {
     background-color: var(--main-background-colour);
     color: var(--main-accent-colour)
@@ -68,14 +72,10 @@
     color: var(--main-accent-colour);
 }
 
-#react-doc-viewer #txt-renderer {
-    color: var(  --chat-message-text-colour);
-    text-align: left;
+#react-doc-viewer #proxy-renderer{
+    padding: 20px;
 }
 
-#document-view-area {
-    color: var(--chat-message-text-colour);
-    text-align: left;
+#react-doc-viewer #txt-renderer {
     padding: 10px;
 }
-

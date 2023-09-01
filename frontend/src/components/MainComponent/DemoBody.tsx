@@ -11,7 +11,6 @@ import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ModelSelectionBox from "../ModelSelectionBox/ModelSelectionBox";
 import { EmailInfo } from "../../models/email";
 import { addMessageToChatHistory } from "../../service/chatService";
-import PopUpBox from "../DocumentViewer/PopUpBox";
 import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
 
 function DemoBody({

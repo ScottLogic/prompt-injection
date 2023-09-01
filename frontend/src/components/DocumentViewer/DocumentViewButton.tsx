@@ -1,4 +1,4 @@
-import PopUpBox from "./PopUpBox";
+import DocumentViewBox from "./DocumentViewBox";
 
 import "./DocumentViewButton.css";
 import { useState } from "react";
@@ -7,14 +7,14 @@ function DocumentViewButton() {
   const [showPopup, setShowPopup] = useState(false);
 
   return (
-    <div id="document-view-area">
+    <div id="document-view-button-area">
       <button
         className="document-view-button"
         onClick={() => setShowPopup(true)}
       >
         View Documents
       </button>
-      <PopUpBox show={showPopup} setShow={setShowPopup} />
+      <DocumentViewBox show={showPopup} setShow={setShowPopup} />
     </div>
   );
 }
