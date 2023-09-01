@@ -9,13 +9,19 @@ function DocumentViewBox({
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const docPath = "/documents/";
+
+  fetch(docPath)
+    .then((res) => res.text())
+    .then((data) => console.log(data));
+
   const documents = [
     { uri: "/documents/company_info.txt", fileType: "txt" },
-    { uri: "/documents/project_ABB.txt", fileType: "txt" },
-    { uri: "/documents/project_BAC.txt", fileType: "txt" },
-    { uri: "/documents/project_DFP.txt", fileType: "txt" },
     { uri: "/documents/expenses.csv", fileType: "text/csv" },
     { uri: "/documents/employee_info.csv", fileType: "text/csv" },
+    { uri: "/documents/project_bongo.txt", fileType: "txt" },
+    { uri: "/documents/project_kazoo.txt", fileType: "txt" },
+    { uri: "/documents/project_piccolo.txt", fileType: "txt" },
   ];
 
   return show ? (
@@ -33,7 +39,6 @@ function DocumentViewBox({
               className="document-viewer"
               documents={documents}
               pluginRenderers={DocViewerRenderers}
-              style={{ height: "700px", width: "80%" }}
             />
           </div>
         </div>

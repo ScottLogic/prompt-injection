@@ -49,14 +49,11 @@
     text-align: center;
 }
 
-.document-viewer {
+#react-doc-viewer {
+    color: var(--chat-message-text-colour);
     width: 70%;
     height: 500px;
     margin: auto;
-}
-
-#react-doc-viewer {
-    color: var(--chat-message-text-colour);
 }
 
 #react-doc-viewer #header-bar {
