@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
+import { getDocumentUris } from "../../service/documentService";
 
 import "./DocumentViewBox.css";
 
@@ -9,20 +11,13 @@ function DocumentViewBox({
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const docPath = "/documents/";
-
-  fetch(docPath)
-    .then((res) => res.text())
-    .then((data) => console.log(data));
-
-  const documents = [
-    { uri: "/documents/company_info.txt", fileType: "txt" },
-    { uri: "/documents/expenses.csv", fileType: "text/csv" },
-    { uri: "/documents/employee_info.csv", fileType: "text/csv" },
-    { uri: "/documents/project_bongo.txt", fileType: "txt" },
-    { uri: "/documents/project_kazoo.txt", fileType: "txt" },
-    { uri: "/documents/project_piccolo.txt", fileType: "txt" },
-  ];
+  const [documents, setDocuments] = useState<Document[]>([]);
+  // on mount get document uris
+  useEffect(() => {
+    getDocumentUris().then((uris) => {
+      setDocuments(uris);
+    });
+  }, []);
 
   return show ? (
     <div className="document-popup">

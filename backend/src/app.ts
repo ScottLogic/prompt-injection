@@ -12,6 +12,7 @@ import { DefenceInfo } from "./models/defence";
 import { CHAT_MODELS } from "./models/chat";
 import { PHASE_NAMES } from "./models/phase";
 import { retrievalQAPrePrompt } from "./promptTemplates";
+import path from "path";
 
 dotenv.config();
 
@@ -110,3 +111,10 @@ app.listen(port, () => {
     });
   }
 });
+
+app.use(
+  "/documents",
+  express.static(path.join(__dirname, "../resources/documents/common"))
+);
+
+app.use("/test", express.static(__dirname + "/doc"));
