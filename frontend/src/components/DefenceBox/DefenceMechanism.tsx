@@ -58,38 +58,13 @@ function DefenceMechanism({
   return (
     <span>
       <div
-        className={
-          defenceDetail.isActive
-            ? "strategy-mechanism defence-mechanism defence-active"
-            : "strategy-mechanism defence-mechanism"
-        }
+        className="strategy-mechanism defence-mechanism"
         onMouseOver={() => {
           setIsInfoBoxVisible(true);
         }}
         onMouseLeave={() => {
           setIsInfoBoxVisible(false);
         }}
-        // style={
-        //   defenceDetail.isTriggered
-        //     ? defenceDetail.isActive
-        //       ? {
-        //           animation:
-        //             "flash-red-active " +
-        //             ANIMATION_FLASH_TIME_SECONDS +
-        //             "s linear 0s " +
-        //             ANIMATION_FLASH_REPEAT +
-        //             " forwards",
-        //         }
-        //       : {
-        //           animation:
-        //             "flash-red-inactive " +
-        //             ANIMATION_FLASH_TIME_SECONDS +
-        //             "s linear 0s " +
-        //             ANIMATION_FLASH_REPEAT +
-        //             " forwards",
-        //         }
-        //     : { animation: "none" }
-        // }
         onClick={() => {
           defenceDetail.isActive
             ? setDefenceInactive(defenceDetail.id)
@@ -98,6 +73,10 @@ function DefenceMechanism({
       >
         <div className="strategy-mechanism-header">
           <span>{defenceDetail.name}</span>
+          <label className="switch">
+            <input type="checkbox"></input>
+            <span className="slider round"></span>
+          </label>
         </div>
         {isInfoBoxVisible ? (
           <div className="strategy-mechanism-info-box">
