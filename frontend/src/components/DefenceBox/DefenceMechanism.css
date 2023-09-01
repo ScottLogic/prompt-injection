@@ -2,10 +2,6 @@
   background-color: var(--main-button-active-background-colour);
 }
 
-.defence-active:hover {
-  background-color: var(--main-button-active-background-colour);
-}
-
 .defence-mechanism:hover {
   border-width: 2px;
   margin: 0px;
@@ -13,9 +9,6 @@
 }
 
 .defence-mechanism-config {
-  border-color: var(--main-border-colour);
-  border-style: solid;
-  border-width: 1px 0 0 0;
   font-size: 14px;
   margin-top: 4px;
 }
@@ -28,28 +21,4 @@
 .validation-text {
   font-size: 14px;
   font-weight: 600;
-}
-
-@keyframes flash-red-active {
-  0% {
-    background-color: #eef;
-  }
-  50% {
-    background-color: #fdd;
-  }
-  100% {
-    background-color: #eef;
-  }
-}
-
-@keyframes flash-red-inactive {
-  0% {
-    background-color: #fff;
-  }
-  50% {
-    background-color: #fdd;
-  }
-  100% {
-    background-color: #fff;
-  }
 }

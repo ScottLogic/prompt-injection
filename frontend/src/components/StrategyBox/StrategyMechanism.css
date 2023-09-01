@@ -1,10 +1,9 @@
 .strategy-mechanism {
-  border-color: var(--main-border-colour);
+  background-color: var(--main-button-inactive-background-colour);
+  border-color: transparent;
   border-radius: 8px;
   border-style: solid;
-  border-width: 1px;
-  padding: 6px;
-  margin: 1px;
+  padding: 12px 14px;
   margin-bottom: 8px;
   cursor: default;
 }
@@ -18,10 +17,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-color: var(--main-border-colour);
-  border-radius: 10px;
-  border-style: solid;
-  border-width: 1px;
   height: 20px;
   width: 20px;
 }
@@ -32,9 +27,6 @@
 }
 
 .strategy-mechanism-info-box {
-  border-color: var(--main-border-colour);
-  border-style: solid;
-  border-width: 1px 0 0 0;
   font-size: 14px;
   margin-top: 4px;
 }
