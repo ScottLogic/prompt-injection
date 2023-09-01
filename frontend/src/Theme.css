@@ -5,6 +5,10 @@
   --main-error-colour: #cc3c3c;
   --main-text-colour: #fff;
 
+  --main-scrollbar-colour: #333333;
+  --main-scrollbar-hover-colour: #444444;
+  --main-scrollbar-border-colour: #666666;
+
   --main-button-active-background-colour: teal;
   --main-button-active-text-colour: var(--main-text-colour);
   --main-button-inactive-background-colour: #313131;

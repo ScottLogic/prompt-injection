@@ -13,6 +13,21 @@
   height: 100%;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* draggable scrolling handle */
+::-webkit-scrollbar-thumb {
+  background-color: var(--main-scrollbar-colour);
+  border-color: var(--main-scrollbar-border-colour);
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--main-scrollbar-hover-colour);
+}
+
 .prompt-injection-button {
   background-color: var(--main-button-inactive-background-colour);
   border-color: var(--main-border-colour);
