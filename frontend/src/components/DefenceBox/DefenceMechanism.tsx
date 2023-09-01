@@ -65,16 +65,21 @@ function DefenceMechanism({
         onMouseLeave={() => {
           setIsInfoBoxVisible(false);
         }}
-        onClick={() => {
-          defenceDetail.isActive
-            ? setDefenceInactive(defenceDetail.id)
-            : setDefenceActive(defenceDetail.id);
-        }}
       >
         <div className="strategy-mechanism-header">
           <span>{defenceDetail.name}</span>
-          <label className="switch">
-            <input type="checkbox"></input>
+          <label className="switch" >
+            <input 
+              type="checkbox" 
+              placeholder="defence-toggle" 
+              onClick={() => {
+                defenceDetail.isActive
+                  ? setDefenceInactive(defenceDetail.id)
+                  : setDefenceActive(defenceDetail.id);
+              }}
+              // set checked if defence is active
+              checked={defenceDetail.isActive}
+            />
             <span className="slider round"></span>
           </label>
         </div>
