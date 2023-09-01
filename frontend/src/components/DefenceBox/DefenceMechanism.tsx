@@ -72,7 +72,7 @@ function DefenceMechanism({
             <input 
               type="checkbox" 
               placeholder="defence-toggle" 
-              onClick={() => {
+              onChange={() => {
                 defenceDetail.isActive
                   ? setDefenceInactive(defenceDetail.id)
                   : setDefenceActive(defenceDetail.id);

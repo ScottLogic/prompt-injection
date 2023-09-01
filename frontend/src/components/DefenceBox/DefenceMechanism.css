@@ -65,6 +65,10 @@ input:checked+.slider:before {
   transform: translateX(16px);
 }
 
+/*
+ * Modified from https://www.w3schools.com/howto/howto_css_switch.asp
+*/
+
 /* Rounded sliders */
 .slider.round {
   border-radius: 34px;
