@@ -11,6 +11,9 @@
 
 #root {
   height: 100%;
+
+  /* firefox scrollbar styling */
+  scrollbar-color: var(--main-scrollbar-colour) transparent;
 }
 
 ::-webkit-scrollbar {
