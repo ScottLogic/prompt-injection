@@ -1,6 +1,8 @@
 :root {
+  --header-background-colour: #101010;
+
   --main-accent-colour: #1FD07B;
-  --main-background-colour: #101010;
+  --main-background-colour: #252525;
   --main-border-colour: var(--main-accent-colour);
   --main-error-colour: #cc3c3c;
   --main-text-colour: #fff;

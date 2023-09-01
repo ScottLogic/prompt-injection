@@ -1,13 +1,13 @@
 #demo-header {
+  background-color: var(--header-background-colour);
   display: flex;
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
-  padding: 20px 32px;
-  border-width: 0px;
-  border-bottom: 3px;
-  border-color: var(--main-accent-colour);
-  border-style: solid;
+  padding: 0 32px;
+  height: 100%;
+  min-height: 50px;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
 #demo-header-left {
@@ -25,7 +25,7 @@
   white-space: nowrap;
 }
 
-#demo-header-current-phase { 
+#demo-header-current-phase {
   color: var(--main-accent-colour);
   font-size: 36px;
   font-style: italic;

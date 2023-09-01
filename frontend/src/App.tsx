@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { PHASE_NAMES } from "./models/phase";
 import {
   getChatHistory,
-  addMessageToChatHistory,
   clearChat,
 } from "./service/chatService";
 import { EmailInfo } from "./models/email";
@@ -28,7 +27,6 @@ function App() {
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
 
-  const [triggeredDefences, setTriggeredDefences] = useState<string[]>([]);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
@@ -61,7 +59,6 @@ function App() {
       setEmails([]);
     });
     resetActiveDefences(currentPhase).then(() => {
-      setTriggeredDefences([]);
       // choose appropriate defences to display
       let defences =
         currentPhase === PHASE_NAMES.PHASE_2
@@ -96,7 +93,7 @@ function App() {
       setMessages(phaseChatHistory);
     });
 
-    let defences =
+    const defences =
       newPhase === PHASE_NAMES.PHASE_2
         ? DEFENCE_DETAILS_PHASE
         : DEFENCE_DETAILS_ALL;
