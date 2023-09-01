@@ -1,5 +1,5 @@
 #model-selection-box {
-    padding: 1px 32px;
+    padding: 1px 0;
     position: relative;
 }
 
@@ -16,7 +16,7 @@
 #model-selection-info p {
     margin: 0;
     padding: 0;
-    color:cadetblue
+    color: cadetblue
 }
 
 #p error {

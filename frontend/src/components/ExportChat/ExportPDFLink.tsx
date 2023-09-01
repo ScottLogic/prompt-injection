@@ -33,7 +33,7 @@ const ExportPDFLink = ({
           }
           fileName={getFileName()}
         >
-          {"Export chat history"}
+          {"Export"}
         </PDFDownloadLink>{" "}
       </button>
     </div>

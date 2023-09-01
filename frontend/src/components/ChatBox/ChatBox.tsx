@@ -18,21 +18,22 @@ import { DEFENCE_DETAILS_ALL } from "../../Defences";
 function ChatBox(
   {
     messages,
+    completedPhases,
     currentPhase,
     addChatMessage,
-    resetPhase,
+    addCompletedPhase,
     setNumCompletedPhases,
     setEmails,
   }: {
     messages: ChatMessage[];
+    completedPhases: Set<PHASE_NAMES>;
     currentPhase: PHASE_NAMES;
     addChatMessage: (message: ChatMessage) => void;
-    resetPhase: () => void;
+    addCompletedPhase: (phase: PHASE_NAMES) => void;
     setNumCompletedPhases: (numCompletedPhases: number) => void;
     setEmails: (emails: EmailInfo[]) => void;
   }
 ) {
-  const [completedPhases, setCompletedPhases] = useState<Set<PHASE_NAMES>>(new Set());
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
 
   // called on mount
@@ -47,12 +48,6 @@ function ChatBox(
     if (event.key === "Enter") {
       sendChatMessage();
     }
-  }
-
-  function resetButtonPressed() {
-    completedPhases.delete(currentPhase);
-    setCompletedPhases(completedPhases);
-    resetPhase();
   }
 
   async function sendChatMessage() {
@@ -144,7 +139,7 @@ function ChatBox(
       setEmails(sentEmails);
 
       if (response.wonPhase && !completedPhases.has(currentPhase)) {
-        setCompletedPhases(completedPhases.add(currentPhase));
+        addCompletedPhase(currentPhase);
         const successMessage =
           "Congratulations! You have completed this phase. Please click on the next phase to continue.";
         addChatMessage({
@@ -178,15 +173,6 @@ function ChatBox(
             onClick={sendChatMessage}
           >
             Send
-          </button>
-        </div>
-        <div id="chat-box-footer-reset">
-          <button
-            id="chat-box-button-reset"
-            className="prompt-injection-button"
-            onClick={resetButtonPressed}
-          >
-            Reset phase
           </button>
         </div>
       </div>

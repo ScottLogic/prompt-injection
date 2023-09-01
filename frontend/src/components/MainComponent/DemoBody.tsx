@@ -11,6 +11,7 @@ import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ModelSelectionBox from "../ModelSelectionBox/ModelSelectionBox";
 import { EmailInfo } from "../../models/email";
 import { addMessageToChatHistory } from "../../service/chatService";
+import { useState } from "react";
 
 function DemoBody({
   currentPhase,
@@ -31,6 +32,19 @@ function DemoBody({
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedPhases: (numCompletedPhases: number) => void;
 }) {
+  const [completedPhases, setCompletedPhases] = useState<Set<PHASE_NAMES>>(new Set());
+
+  function addCompletedPhase(phase: PHASE_NAMES) {
+    completedPhases.add(phase);
+    setCompletedPhases(completedPhases);
+  }
+
+  function resetButtonClicked() {
+    completedPhases.delete(currentPhase);
+    setCompletedPhases(completedPhases);
+    resetPhase();
+  }
+
   const addInfoMessage = (message: string) => {
     addChatMessage({
       message: message,
@@ -74,20 +88,31 @@ function DemoBody({
           currentPhase === PHASE_NAMES.SANDBOX) && (
           <AttackBox attacks={ATTACKS_ALL} />
         )}
-        <ExportPDFLink
-          messages={messages}
-          emails={emails}
-          currentPhase={currentPhase}
-        />
         {/* hide model selection box on phases 0 and 1 */}
         {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
+        <div id="control-buttons">
+          <div className="control-button">
+            <ExportPDFLink
+              messages={messages}
+              emails={emails}
+              currentPhase={currentPhase}
+            />
+          </div>
+          <button
+            className="prompt-injection-button control-button"
+            onClick={resetButtonClicked}
+          >
+            Reset
+          </button>
+        </div> 
       </div>
       <div id="centre-area">
         <ChatBox
           messages={messages}
+          completedPhases={completedPhases}
           currentPhase={currentPhase}
           addChatMessage={addChatMessage}
-          resetPhase={resetPhase}
+          addCompletedPhase={addCompletedPhase}
           setNumCompletedPhases={setNumCompletedPhases}
           setEmails={setEmails}
         />

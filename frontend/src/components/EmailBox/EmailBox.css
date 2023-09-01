@@ -10,6 +10,5 @@
   flex-direction: column-reverse;
   flex-grow: 1;
   overflow-y: auto;
-  padding: 0 40px;
-  padding-bottom: 40px;
+  padding: 32px 8px;
 }
