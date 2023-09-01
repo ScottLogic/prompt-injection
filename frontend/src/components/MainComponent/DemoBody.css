@@ -27,13 +27,10 @@
 }
 
 .side-bar-header {
-  border-color: var(--main-border-colour);
-  border-width: 0 0 1px 0;
-  border-style: solid;
-  margin: 15px;
-  margin-bottom: 10px;
-  padding-bottom: 20px;
-  text-align: center;
+  margin-top: 25px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  text-align: left;
 }
 
 #control-buttons {

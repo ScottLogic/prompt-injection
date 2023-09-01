@@ -113,7 +113,7 @@ function DefenceBox({
 
   return (
     <div id="strategy-box">
-      <div className="side-bar-header">defence mechanisms</div>
+      <div className="side-bar-header">Defences</div>
       {defenceDetails.map((defenceDetail, index) => {
         return (
           <DefenceMechanism
