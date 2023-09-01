@@ -3,6 +3,7 @@
   flex-direction: column-reverse;
   flex-grow: 1;
   height: 1px;
-  overflow: auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
   padding: 0 32px;
 }

@@ -23,6 +23,7 @@
   height: 100%;
   width: 30%;
   overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .side-bar-header {
