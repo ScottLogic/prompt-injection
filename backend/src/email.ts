@@ -14,10 +14,9 @@ function getEmailWhitelist(defences: DefenceInfo[]) {
   if (!isDefenceActive(DEFENCE_TYPES.EMAIL_WHITELIST, defences)) {
     return "As the email whitelist defence is not active, any email address can be emailed.";
   } else {
-    return (
-      `The whitelisted emails and domains are: ${ 
-      getEmailWhitelistValues(defences)}`
-    );
+    return `The whitelisted emails and domains are: ${getEmailWhitelistValues(
+      defences
+    ).toString()}`;
   }
 }
 
@@ -33,13 +32,15 @@ function isEmailInWhitelist(emailAddress: string, defences: DefenceInfo[]) {
   );
 
   // check if the users email domain is in the domain whitelist
-  for (let i = 0; i < emailDomainWhitelist.length; i++) {
-    if (emailAddressDomain.endsWith(emailDomainWhitelist[i].substring(1))) {
-      return true;
-    }
+  const matchingEmail = emailDomainWhitelist.find((email) => {
+    return emailAddressDomain.endsWith(email.substring(1));
+  });
+  if (matchingEmail) {
+    return true;
+  } else {
+    // otherwise check if their full email is whitelisted
+    return emailWhitelist.includes(emailAddress);
   }
-  // otherwise check if their full email is whitelisted
-  return emailWhitelist.includes(emailAddress);
 }
 
 function sendEmail(
@@ -55,13 +56,7 @@ function sendEmail(
     subject: subject,
     content: body,
   };
-  const response =
-    `Email sent to ${ 
-    address 
-    } with subject ${ 
-    subject 
-    } and body ${ 
-    body}`;
+  const response = `Email sent to ${address} with subject ${subject} and body ${body}`;
   console.log(response);
   const wonPhase: boolean = checkPhaseWinCondition(email, currentPhase);
 
@@ -73,16 +68,13 @@ function checkSubjectAndBodyContains(
   content: string,
   wordList: string[]
 ) {
-  // check if either the email or subject contains any of the words
-  for (let i = 0; i < wordList.length; i++) {
-    if (
-      subject.toLowerCase().includes(wordList[i].toLowerCase()) ||
-      content.toLowerCase().includes(wordList[i].toLowerCase())
-    ) {
-      return true;
-    }
-  }
-  return false;
+  const matchingWord = wordList.find((word) => {
+    return (
+      subject.toLowerCase().includes(word.toLowerCase()) ||
+      content.toLowerCase().includes(word.toLowerCase())
+    );
+  });
+  return matchingWord ? true : false;
 }
 
 function checkPhaseWinCondition(
