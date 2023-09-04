@@ -3,6 +3,7 @@ import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { getDocumentUris } from "../../service/documentService";
 
 import "./DocumentViewBox.css";
+import { RemoteDocument } from "../../models/document";
 
 function DocumentViewBox({
   show,
@@ -11,7 +12,7 @@ function DocumentViewBox({
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const [documents, setDocuments] = useState<RemoteDocument[]>([]);
   // on mount get document uris
   useEffect(() => {
     getDocumentUris().then((uris) => {
