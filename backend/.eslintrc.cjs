@@ -24,4 +24,5 @@ module.exports = {
 
     "prefer-template": "error",
   },
+  ignorePatterns: ["build", "coverage", "node_modules", "jest.config.js"],
 };
