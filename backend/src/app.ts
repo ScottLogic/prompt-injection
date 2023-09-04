@@ -19,7 +19,7 @@ dotenv.config();
 declare module "express-session" {
   interface Session {
     openAiApiKey: string | null;
-    gptModel: CHAT_MODELS;
+    gptModel: CHAT_MODELS | null;
     phaseState: PhaseState[];
     numPhasesCompleted: number;
   }
@@ -32,7 +32,7 @@ declare module "express-session" {
 }
 
 // by default runs on port 3001
-const port = process.env.PORT || String(3001);
+const port = process.env.PORT ?? String(3001);
 // use default model
 const defaultModel = CHAT_MODELS.GPT_4;
 
@@ -43,7 +43,7 @@ app.use(express.json());
 
 // use session
 const express_session: session.SessionOptions = {
-  secret: process.env.SESSION_SECRET || "secret",
+  secret: process.env.SESSION_SECRET ?? "secret",
   name: "prompt-injection.sid",
   resave: false,
   saveUninitialized: true,
@@ -69,7 +69,7 @@ app.use(
   })
 );
 
-app.use(async (req, _res, next) => {
+app.use((req, _res, next) => {
   // initialise session variables
   if (!req.session.gptModel) {
     req.session.gptModel = defaultModel;
@@ -78,9 +78,9 @@ app.use(async (req, _res, next) => {
     req.session.numPhasesCompleted = 0;
   }
   if (!req.session.openAiApiKey) {
-    req.session.openAiApiKey = process.env.OPENAI_API_KEY || null;
+    req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
   }
-  if (!req.session.phaseState) {
+  if (req.session.phaseState.length === 0) {
     req.session.phaseState = [];
     // add empty states for phases 0-3
     Object.values(PHASE_NAMES).forEach((value) => {
@@ -99,14 +99,15 @@ app.use(async (req, _res, next) => {
 
 app.use("/", router);
 app.listen(port, () => {
-  console.log(`Server is running on port: ${  port}`);
+  console.log(`Server is running on port: ${port}`);
 
   // for dev purposes only - set the API key from the environment variable
   const envOpenAiKey = process.env.OPENAI_API_KEY;
   const prePrompt = retrievalQAPrePrompt;
-  if (envOpenAiKey && prePrompt) {
+  if (envOpenAiKey) {
     console.debug("Initializing models with API key from environment variable");
-    setOpenAiApiKey(envOpenAiKey, defaultModel, prePrompt).then(() => {
+    // asynchronously set the API key
+    void setOpenAiApiKey(envOpenAiKey, defaultModel, prePrompt).then(() => {
       console.debug("OpenAI models initialized");
     });
   }
