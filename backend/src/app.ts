@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import express from "express";
 import session from "express-session";
 
-import { getInitialDefences } from "./defence";
 import { setOpenAiApiKey } from "./openai";
 import { router } from "./router";
 import { ChatHistoryMessage } from "./models/chat";
@@ -13,13 +12,15 @@ import { CHAT_MODELS } from "./models/chat";
 import { PHASE_NAMES } from "./models/phase";
 import { retrievalQAPrePrompt } from "./promptTemplates";
 import path from "path";
+import { getInitialDefences } from "./defence";
 
 dotenv.config();
 
 declare module "express-session" {
   interface Session {
+    initialised: boolean;
     openAiApiKey: string | null;
-    gptModel: CHAT_MODELS | null;
+    gptModel: CHAT_MODELS;
     phaseState: PhaseState[];
     numPhasesCompleted: number;
   }
@@ -71,16 +72,10 @@ app.use(
 
 app.use((req, _res, next) => {
   // initialise session variables
-  if (!req.session.gptModel) {
+  if (!req.session.initialised) {
     req.session.gptModel = defaultModel;
-  }
-  if (!req.session.numPhasesCompleted) {
     req.session.numPhasesCompleted = 0;
-  }
-  if (!req.session.openAiApiKey) {
     req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
-  }
-  if (req.session.phaseState.length === 0) {
     req.session.phaseState = [];
     // add empty states for phases 0-3
     Object.values(PHASE_NAMES).forEach((value) => {
@@ -93,6 +88,7 @@ app.use((req, _res, next) => {
         });
       }
     });
+    req.session.initialised = true;
   }
   next();
 });
