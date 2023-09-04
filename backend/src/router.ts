@@ -16,9 +16,11 @@ import {
   ChatHttpResponse,
 } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig } from "./models/defence";
+import { Document } from "./models/document";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
 import { retrievalQAPrePrompt } from "./promptTemplates";
 import { PHASE_NAMES } from "./models/phase";
+import * as fs from "fs";
 
 const router = express.Router();
 
@@ -390,6 +392,25 @@ router.get("/openai/model", (req, res) => {
 
 router.get("/phase/completed", (req, res) => {
   res.send(req.session.numPhasesCompleted.toString());
+});
+
+router.get("/documents", (_, res) => {
+  const docFiles: Document[] = [];
+
+  fs.readdir("resources/documents/common", (err, files) => {
+    if (err) {
+      res.status(500).send("Failed to read documents");
+      return;
+    }
+    files.forEach((file) => {
+      const fileType = file.split(".").pop() || "";
+      docFiles.push({
+        filename: file,
+        filetype: fileType == "csv" ? "text/csv" : fileType,
+      });
+    });
+    res.send(docFiles);
+  });
 });
 
 export { router };

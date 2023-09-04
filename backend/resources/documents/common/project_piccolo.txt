@@ -1,4 +1,4 @@
-Project BAC 
+Project Piccolo
 
 Brief: Build a new payment system for a online banking start up. Tech stack is Java, Springboot backend with React frontend.  
 
@@ -6,6 +6,6 @@ Estimated cost: £25000
 
 Time scale: September 2023 - August 2024
 
-Assigned: Bob, Karen, Kevin 
+Assigned: Bob, Karen, Kevin
 
-Product owner: Bob 
+Product owner: Bob

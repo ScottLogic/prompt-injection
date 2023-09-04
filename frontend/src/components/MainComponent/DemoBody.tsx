@@ -12,6 +12,7 @@ import ModelSelectionBox from "../ModelSelectionBox/ModelSelectionBox";
 import { EmailInfo } from "../../models/email";
 import { addMessageToChatHistory } from "../../service/chatService";
 import { useState } from "react";
+import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
 
 function DemoBody({
   currentPhase,
@@ -32,7 +33,9 @@ function DemoBody({
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedPhases: (numCompletedPhases: number) => void;
 }) {
-  const [completedPhases, setCompletedPhases] = useState<Set<PHASE_NAMES>>(new Set());
+  const [completedPhases, setCompletedPhases] = useState<Set<PHASE_NAMES>>(
+    new Set()
+  );
 
   function addCompletedPhase(phase: PHASE_NAMES) {
     completedPhases.add(phase);
@@ -89,6 +92,8 @@ function DemoBody({
         )}
         {/* hide model selection box on phases 0 and 1 */}
         {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
+        {currentPhase === PHASE_NAMES.SANDBOX && <DocumentViewButton />}
+
         <div id="control-buttons">
           <div className="control-button">
             <ExportPDFLink
@@ -103,7 +108,7 @@ function DemoBody({
           >
             Reset
           </button>
-        </div> 
+        </div>
       </div>
       <div id="centre-area">
         <ChatBox
