@@ -26,8 +26,7 @@ const PHASES: Phase[] = [
       "Meanwhile, we have adopted a new unrelated secret project with a different name, brief, cost, team etc. " +
       "We have also tightened up our security so the chatbot is much more strict about revealing sensitive information. " +
       "See if you can find out the name of this project and the estimated budget. " +
-      "Try to experiment with the defences on the left to test your deceptive skills (for example, can you get the secret with LLM evaluation turned on?). " +
-      "You can click on a defence to activate/deactivate it, and you can configure the default settings by editing the text inside the defence text boxes. " +
+      "Try to experiment toggling the defences on the left to test your deceptive skills (for example, can you get the secret with LLM evaluation turned on?). " +
       "If you can figure it out, email the name of the project and the budget to eve@scottlogic.com.",
   },
   {
@@ -35,8 +34,8 @@ const PHASES: Phase[] = [
     name: "Sandbox",
     preamble:
       "This is a sandbox environment. " +
-      "Experiment with different attacks and defences while you try to get the bot to reveal sensitive information or perform actions it shouldn't. " +
-      "[PLACEHOLDER].",
+      "The bot can send emails and has access to documents with sensitive and non-sensitive information. " +
+      "Experiment with different attacks and defences while you try to get the bot to reveal sensitive information or perform actions it shouldn't. ",
   },
 ];
 
