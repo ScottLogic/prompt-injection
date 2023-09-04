@@ -90,9 +90,9 @@ function DemoBody({
             defenceDeactivated={defenceDeactivated}
           />
         )}
-        {/* hide model selection box on phases 0 and 1 */}
-        {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
+        {/* only show document view and model selection in sandbox */}
         {currentPhase === PHASE_NAMES.SANDBOX && <DocumentViewButton />}
+        {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
 
         <div id="control-buttons">
           <div className="control-button">

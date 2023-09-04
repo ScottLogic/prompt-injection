@@ -42,27 +42,33 @@ function ModelSelectionBox() {
     <div id="model-selection-box">
       <div className="side-bar-header">Model</div>
       <div id="model-selection-row">
-        <p>Select a model: </p>
-        <select
-          id="model-selection-menu"
-          aria-label="model-select"
-          onChange={(e) => setSelectedModel(e.target.value as CHAT_MODELS)}
-          placeholder={modelInUse}
-        >
-          {chatModelOptions.map((model) => (
-            <option key={model} value={model}>
-              {model}
-            </option>
-          ))}
-          ;
-        </select>
-        <button
-          id="model-selection-button"
-          className="prompt-injection-button"
-          onClick={async () => submitSelectedModel()}
-        >
-          Choose
-        </button>
+        <div id="text-area">
+          <p>Select a model: </p>
+        </div>
+        <div id="menu-area">
+          <select
+            id="model-selection-menu"
+            aria-label="model-select"
+            onChange={(e) => setSelectedModel(e.target.value as CHAT_MODELS)}
+            placeholder={modelInUse}
+          >
+            {chatModelOptions.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+            ;
+          </select>
+        </div>
+        <div id="button-area">
+          <button
+            id="model-selection-button"
+            className="prompt-injection-button"
+            onClick={async () => submitSelectedModel()}
+          >
+            Choose
+          </button>
+        </div>
       </div>
 
       <div id="model-selection-info">
