@@ -112,9 +112,8 @@ app.listen(port, () => {
   }
 });
 
+// serve the documents folder
 app.use(
   "/documents",
   express.static(path.join(__dirname, "../resources/documents/common"))
 );
-
-app.use("/test", express.static(__dirname + "/doc"));
