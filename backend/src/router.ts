@@ -123,7 +123,7 @@ router.post("/defence/reset", (req, res) => {
 
 // Get the status of all defences /defence/status?phase=1
 router.get("/defence/status", (req, res) => {
-  const phase: number | undefined = req.query?.phase as number | undefined;
+  const phase: number | undefined = req.query.phase as number | undefined;
   if (phase) {
     res.send(req.session.phaseState[phase].defences);
   } else {
@@ -134,7 +134,7 @@ router.get("/defence/status", (req, res) => {
 
 // Get sent emails // /email/get?phase=1
 router.get("/email/get", (req, res) => {
-  const phase: number | undefined = req.query?.phase as number | undefined;
+  const phase: number | undefined = req.query.phase as number | undefined;
   if (phase) {
     res.send(req.session.phaseState[phase].sentEmails);
   } else {
@@ -302,7 +302,7 @@ router.post("/openai/chat", async (req, res) => {
 
 // get the chat history
 router.get("/openai/history", (req, res) => {
-  const phase: number | undefined = req.query?.phase as number | undefined;
+  const phase: number | undefined = req.query.phase as number | undefined;
   if (phase) {
     res.send(req.session.phaseState[phase].chatHistory);
   } else {

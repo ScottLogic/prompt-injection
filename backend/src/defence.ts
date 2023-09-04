@@ -90,7 +90,7 @@ function getConfigValue(
 ) {
   const configValue: string | undefined = defences
     .find((defence) => defence.id === defenceId)
-    ?.config?.find((config) => config.id === configId)?.value;
+    ?.config.find((config) => config.id === configId)?.value;
   return configValue || defaultValue;
 }
 
@@ -249,7 +249,7 @@ function escapeXml(unsafe: string) {
 
 // function to detect any XML tags in user input
 function detectXMLTags(input: string) {
-  const tagRegex: RegExp = /<\/?[a-zA-Z][\w\-]*(?:\b[^>]*\/\s*|[^>]*>|[?]>)/g;
+  const tagRegex = /<\/?[a-zA-Z][\w\-]*(?:\b[^>]*\/\s*|[^>]*>|[?]>)/g;
   const foundTags: string[] = input.match(tagRegex) || [];
   return foundTags.length > 0;
 }
@@ -257,8 +257,8 @@ function detectXMLTags(input: string) {
 // apply XML tagging defence to input message
 function transformXmlTagging(message: string) {
   console.debug("XML Tagging defence active.");
-  const openTag: string = "<user_input>";
-  const closeTag: string = "</user_input>";
+  const openTag = "<user_input>";
+  const closeTag = "</user_input>";
   const transformedMessage: string = openTag.concat(
     escapeXml(message),
     closeTag
@@ -300,7 +300,7 @@ async function detectTriggeredDefences(
     alertedDefences: [],
     triggeredDefences: [],
   };
-  const maxMessageLength: number = Number(getMaxMessageLength(defences));
+  const maxMessageLength = Number(getMaxMessageLength(defences));
   // check if the message is too long
   if (message.length > maxMessageLength) {
     console.debug("CHARACTER_LIMIT defence triggered.");

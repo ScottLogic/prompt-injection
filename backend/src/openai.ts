@@ -155,7 +155,7 @@ async function chatGptCallFunction(
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ) {
   let reply: ChatCompletionRequestMessage | null = null;
-  let wonPhase: boolean = false;
+  let wonPhase = false;
   // get the function name
   const functionName: string = functionCall.name || "";
 
@@ -166,7 +166,7 @@ async function chatGptCallFunction(
       ? JSON.parse(functionCall.arguments)
       : {};
     console.debug("Function call: " + functionName);
-    let response: string = "";
+    let response = "";
 
     // call the function
     if (functionName === "sendEmail") {
@@ -280,7 +280,7 @@ const getChatCompletionsFromHistory = (
     chatHistory.length > 0
       ? chatHistory
           .filter((message) => message.completion !== null)
-          .map((message) => message.completion as ChatCompletionRequestMessage)
+          .map((message) => message.completion!)
       : [];
   return completions;
 };
@@ -345,7 +345,7 @@ async function chatGptSendMessage(
     currentPhase
   );
   // check if GPT wanted to call a function
-  while (reply && reply.function_call) {
+  while (reply?.function_call) {
     chatHistory = pushCompletionToHistory(
       chatHistory,
       reply,
@@ -383,7 +383,7 @@ async function chatGptSendMessage(
     );
   }
 
-  if (reply && reply.content) {
+  if (reply?.content) {
     // if output filter defence is active, check for blocked words/phrases
     if (
       currentPhase === PHASE_NAMES.PHASE_2 ||
