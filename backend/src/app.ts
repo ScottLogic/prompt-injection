@@ -99,7 +99,7 @@ app.use(async (req, _res, next) => {
 
 app.use("/", router);
 app.listen(port, () => {
-  console.log("Server is running on port: " + port);
+  console.log(`Server is running on port: ${  port}`);
 
   // for dev purposes only - set the API key from the environment variable
   const envOpenAiKey = process.env.OPENAI_API_KEY;

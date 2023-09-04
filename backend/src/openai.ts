@@ -90,7 +90,7 @@ async function validateApiKey(openAiApiKey: string, gptModel: string) {
     });
     return true;
   } catch (error) {
-    console.debug("Error validating API key: " + error);
+    console.debug(`Error validating API key: ${  error}`);
     return false;
   }
 }
@@ -131,12 +131,12 @@ function getOpenAiFromKey(openAiApiKey: string) {
 }
 
 async function setGptModel(openAiApiKey: string, model: CHAT_MODELS) {
-  console.debug("Setting GPT model to: " + model);
+  console.debug(`Setting GPT model to: ${  model}`);
   if (await validateApiKey(openAiApiKey, model)) {
-    console.debug("Set GPT model to: " + model);
+    console.debug(`Set GPT model to: ${  model}`);
     return true;
   } else {
-    console.debug("Could not validate openAiApiKey with model=" + model);
+    console.debug(`Could not validate openAiApiKey with model=${  model}`);
     return false;
   }
 }
@@ -165,7 +165,7 @@ async function chatGptCallFunction(
     const params = functionCall.arguments
       ? JSON.parse(functionCall.arguments)
       : {};
-    console.debug("Function call: " + functionName);
+    console.debug(`Function call: ${  functionName}`);
     let response = "";
 
     // call the function
@@ -202,7 +202,7 @@ async function chatGptCallFunction(
       response = getEmailWhitelist(defences);
     }
     if (functionName === "askQuestion") {
-      console.debug("Asking question: " + params.question);
+      console.debug(`Asking question: ${  params.question}`);
       // if asking a question, call the queryDocuments
       response = (await queryDocuments(params.question)).reply;
     }
@@ -213,7 +213,7 @@ async function chatGptCallFunction(
       name: functionName,
     };
   } else {
-    console.error("Unknown function: " + functionName);
+    console.error(`Unknown function: ${  functionName}`);
   }
 
   if (reply) {
@@ -395,9 +395,9 @@ async function chatGptSendMessage(
       );
       if (detectedPhrases.length > 0) {
         console.debug(
-          "FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: '" +
-            detectedPhrases.join("', '") +
-            "'."
+          `FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: '${ 
+            detectedPhrases.join("', '") 
+            }'.`
         );
         if (isDefenceActive(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences)) {
           defenceInfo.triggeredDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);

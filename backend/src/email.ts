@@ -15,8 +15,8 @@ function getEmailWhitelist(defences: DefenceInfo[]) {
     return "As the email whitelist defence is not active, any email address can be emailed.";
   } else {
     return (
-      "The whitelisted emails and domains are: " +
-      getEmailWhitelistValues(defences)
+      `The whitelisted emails and domains are: ${ 
+      getEmailWhitelistValues(defences)}`
     );
   }
 }
@@ -55,13 +55,13 @@ function sendEmail(
     subject: subject,
     content: body,
   };
-  const response: string =
-    "Email sent to " +
-    address +
-    " with subject " +
-    subject +
-    " and body " +
-    body;
+  const response =
+    `Email sent to ${ 
+    address 
+    } with subject ${ 
+    subject 
+    } and body ${ 
+    body}`;
   console.log(response);
   const wonPhase: boolean = checkPhaseWinCondition(email, currentPhase);
 

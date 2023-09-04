@@ -60,7 +60,7 @@ test("GIVEN getQAPromptTemplate is called with no prePrompt THEN correct prompt 
 
 test("GIVEN getQAPromptTemplate is called with a prePrompt THEN correct prompt is returned", () => {
   const prompt = getQAPromptTemplate("This is a test prompt");
-  expect(prompt).toBe("This is a test prompt" + qAcontextTemplate);
+  expect(prompt).toBe(`This is a test prompt${  qAcontextTemplate}`);
 });
 
 test("GIVEN llm evaluation model repsonds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason", () => {

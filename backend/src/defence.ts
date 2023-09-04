@@ -282,7 +282,7 @@ function transformMessage(message: string, defences: DefenceInfo[]) {
     console.debug("No defences applied. Message unchanged.");
   } else {
     console.debug(
-      "Defences applied. Transformed message: " + transformedMessage
+      `Defences applied. Transformed message: ${  transformedMessage}`
     );
   }
   return transformedMessage;
@@ -326,16 +326,16 @@ async function detectTriggeredDefences(
   );
   if (detectedPhrases.length > 0) {
     console.debug(
-      "FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: " +
-        detectedPhrases.join(", ")
+      `FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: ${ 
+        detectedPhrases.join(", ")}`
     );
     if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
       defenceReport.triggeredDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
       defenceReport.isBlocked = true;
       defenceReport.blockedReason =
-        "Message blocked - I cannot answer questions about '" +
-        detectedPhrases.join("' or '") +
-        "'!";
+        `Message blocked - I cannot answer questions about '${ 
+        detectedPhrases.join("' or '") 
+        }'!`;
     } else {
       defenceReport.alertedDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
     }
@@ -360,8 +360,8 @@ async function detectTriggeredDefences(
       console.debug("LLM evalutation defence active.");
       defenceReport.isBlocked = true;
       defenceReport.blockedReason =
-        "Message blocked by the malicious prompt evaluator." +
-        evalPrompt.reason;
+        `Message blocked by the malicious prompt evaluator.${ 
+        evalPrompt.reason}`;
     } else {
       defenceReport.alertedDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
     }

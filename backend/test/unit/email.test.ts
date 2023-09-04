@@ -19,12 +19,12 @@ test("GIVEN an email is to be sent WHEN sendEmail is called THEN the response is
   const response = sendEmail(address, subject, body);
   // check the response
   expect(response.response).toBe(
-    "Email sent to " +
-      address +
-      " with subject " +
-      subject +
-      " and body " +
-      body
+    `Email sent to ${ 
+      address 
+      } with subject ${ 
+      subject 
+      } and body ${ 
+      body}`
   );
   expect(response.sentEmail.address).toBe(address);
   expect(response.sentEmail.subject).toBe(subject);
@@ -157,7 +157,7 @@ test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist A
   defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
   const whitelist = getEmailWhitelist(defences);
   expect(whitelist).toBe(
-    "The whitelisted emails and domains are: " + process.env.EMAIL_WHITELIST
+    `The whitelisted emails and domains are: ${  process.env.EMAIL_WHITELIST}`
   );
 });
 

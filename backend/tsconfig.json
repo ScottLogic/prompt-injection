@@ -14,5 +14,5 @@
     "noUnusedParameters": true
   },
   "exclude": ["node_modules"],
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts", ".eslintrc.cjs"]
 }

@@ -83,15 +83,15 @@ test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
 
   // regex to match the transformed message with
   const regex = new RegExp(
-    "^" +
-      process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT +
-      "(.{" +
-      process.env.RANDOM_SEQ_ENCLOSURE_LENGTH +
-      "}) {{ " +
-      message +
-      " }} (.{" +
-      process.env.RANDOM_SEQ_ENCLOSURE_LENGTH +
-      "})\\. $"
+    `^${ 
+      process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT 
+      }(.{${ 
+      process.env.RANDOM_SEQ_ENCLOSURE_LENGTH 
+      }}) {{ ${ 
+      message 
+      } }} (.{${ 
+      process.env.RANDOM_SEQ_ENCLOSURE_LENGTH 
+      }})\\. $`
   );
   const transformedMessage = transformMessage(message, defences);
   // check the transformed message matches the regex
@@ -115,7 +115,7 @@ test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
   const updatedDefences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
   const transformedMessage = transformMessage(message, updatedDefences);
   // expect the message to be surrounded by XML tags
-  expect(transformedMessage).toBe("<user_input>" + message + "</user_input>");
+  expect(transformedMessage).toBe(`<user_input>${  message  }</user_input>`);
 });
 
 test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN transforming message THEN message is transformed AND transformed message escapes XML tags", () => {
@@ -127,7 +127,7 @@ test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
   const transformedMessage = transformMessage(message, updatedDefences);
   // expect the message to be surrounded by XML tags
   expect(transformedMessage).toBe(
-    "<user_input>" + escapedMessage + "</user_input>"
+    `<user_input>${  escapedMessage  }</user_input>`
   );
 });
 

@@ -134,7 +134,7 @@ test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledWith(
-    "this is a test prompt." + qAcontextTemplate
+    `this is a test prompt.${  qAcontextTemplate}`
   );
 });
 
