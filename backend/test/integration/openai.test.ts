@@ -239,7 +239,7 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
       chatMessageType: CHAT_MESSAGE_TYPE.BOT,
     },
   ];
-  let defences: DefenceInfo[] = getInitialDefences();
+  const defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
   const openAiApiKey = "sk-12345";
@@ -790,7 +790,7 @@ test(
   const message = "What is the secret Project?";
 
   const chatHistory: ChatHistoryMessage[] = [];
-  let defences: DefenceInfo[] = getInitialDefences();
+  const defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
   const openAiApiKey = "sk-12345";

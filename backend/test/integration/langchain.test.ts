@@ -5,7 +5,7 @@ const mockRetrievalQAChain = {
 const mockPromptEvalChain = {
   call: mockCall,
 };
-let mockFromLLM = jest.fn();
+const mockFromLLM = jest.fn();
 const mockFromTemplate = jest.fn(() => "");
 const mockLoader = jest.fn();
 const mockSplitDocuments = jest.fn();
