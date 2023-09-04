@@ -1,6 +1,14 @@
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { PHASE_NAMES } from "./phase";
+
 interface Document {
   filename: string;
   filetype: string;
 }
 
-export type { Document };
+interface DocumentVector {
+  currentPhase: PHASE_NAMES;
+  docVector: MemoryVectorStore;
+}
+
+export type { Document, DocumentVector };

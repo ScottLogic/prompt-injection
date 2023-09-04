@@ -12,6 +12,8 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 
 import { CHAT_MODELS, ChatAnswer } from "./models/chat";
+import { DocumentVector } from "./models/document";
+
 import {
   maliciousPromptTemplate,
   promptInjectionEvalTemplate,
@@ -20,16 +22,19 @@ import {
 } from "./promptTemplates";
 import { PHASE_NAMES } from "./models/phase";
 
+// store vectorised documents as array
+let vectorisedDocuments: DocumentVector[] = [];
+
 // chain we use in question/answer request
-let qaChain: RetrievalQAChain | null = null;
+// let qaChain: RetrievalQAChain | null = null;
 
 // chain we use in prompt evaluation request
 let promptEvaluationChain: SequentialChain | null = null;
 
-function setQAChain(chain: RetrievalQAChain | null) {
-  console.debug("Setting QA chain.");
-  qaChain = chain;
-}
+// function setQAChain(chain: RetrievalQAChain | null) {
+//   console.debug("Setting QA chain.");
+//   qaChain = chain;
+// }
 
 function setPromptEvaluationChain(chain: SequentialChain | null) {
   console.debug("Setting evaluation chain.");
@@ -49,7 +54,6 @@ function getFilepath(currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX) {
       return (filePath += "common/");
   }
 }
-
 // load the documents from filesystem
 async function getDocuments(filePath: string) {
   console.debug("Loading documents from: " + filePath);
@@ -79,6 +83,31 @@ function getQAPromptTemplate(prePrompt: string) {
   const fullPrompt = prePrompt + qAcontextTemplate;
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;
+}
+
+function initDocumentVectors(openAiApiKey: string) {
+  Object.values(PHASE_NAMES).forEach(async (value) => {
+    if (isNaN(Number(value))) {
+      console.debug("Initialising document vectors for phase: " + value);
+      const phase = value as PHASE_NAMES;
+
+      // get the documents
+      const docs: Document[] = await getDocuments(getFilepath(phase));
+
+      // embed and store the splits
+      const embeddings = new OpenAIEmbeddings({
+        openAIApiKey: openAiApiKey,
+      });
+      const vectorStore: MemoryVectorStore =
+        await MemoryVectorStore.fromDocuments(docs, embeddings);
+      const docVector = { currentPhase: phase, docVector: vectorStore };
+      vectorisedDocuments.push(docVector);
+    }
+  });
+  console.debug(
+    "Document vectors initialised.",
+    JSON.stringify(vectorisedDocuments)
+  );
 }
 
 // QA Chain - ask the chat model a question about the documents
@@ -112,12 +141,34 @@ async function initQAModel(
   const qaPrompt = getQAPromptTemplate(prePrompt);
 
   // set chain to retrieval QA chain
-  setQAChain(
-    RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
-      prompt: qaPrompt,
-    })
+  // setQAChain(
+  //   RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
+  //     prompt: qaPrompt,
+  //   })
+  // );
+  console.debug("QA chain initialised.", qaPrompt, vectorStore, model);
+}
+
+async function initQAModelV2(phase: PHASE_NAMES, openAiApiKey: string) {
+  const documentVectors = vectorisedDocuments[phase];
+  if (!documentVectors) {
+    console.debug("No document vector found for phase: " + phase);
+    return;
+  }
+  // initialise model
+  const model = new ChatOpenAI({
+    modelName: CHAT_MODELS.GPT_4,
+    streaming: true,
+    openAIApiKey: openAiApiKey,
+  });
+
+  return RetrievalQAChain.fromLLM(
+    model,
+    documentVectors.docVector.asRetriever(),
+    {
+      prompt: getQAPromptTemplate(retrievalQAPrePrompt),
+    }
   );
-  console.debug("QA chain initialised.");
 }
 
 // initialise the prompt evaluation model
@@ -168,7 +219,12 @@ function initPromptEvaluationModel(openAiApiKey: string) {
 }
 
 // ask the question and return models answer
-async function queryDocuments(question: string) {
+async function queryDocuments(
+  question: string,
+  currentPhase: PHASE_NAMES,
+  openAiApiKey: string
+) {
+  const qaChain = await initQAModelV2(currentPhase, openAiApiKey);
   if (!qaChain) {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
@@ -251,6 +307,7 @@ export {
   queryDocuments,
   queryPromptEvaluationModel,
   formatEvaluationOutput,
-  setQAChain,
+  // setQAChain,
   setPromptEvaluationChain,
+  initDocumentVectors,
 };

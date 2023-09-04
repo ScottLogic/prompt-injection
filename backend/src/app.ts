@@ -13,6 +13,7 @@ import { CHAT_MODELS } from "./models/chat";
 import { PHASE_NAMES } from "./models/phase";
 import { retrievalQAPrePrompt } from "./promptTemplates";
 import path from "path";
+import { initDocumentVectors } from "./langchain";
 
 dotenv.config();
 
@@ -93,7 +94,9 @@ app.use(async (req, _res, next) => {
         });
       }
     });
+    initDocumentVectors(req.session.openAiApiKey || "");
   }
+
   next();
 });
 

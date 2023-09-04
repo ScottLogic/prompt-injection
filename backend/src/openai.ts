@@ -152,7 +152,8 @@ async function chatGptCallFunction(
   functionCall: ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
   // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX,
+  openAiApiKey: string
 ) {
   let reply: ChatCompletionRequestMessage | null = null;
   let wonPhase: boolean = false;
@@ -204,7 +205,9 @@ async function chatGptCallFunction(
     if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
-      response = (await queryDocuments(params.question)).reply;
+      response = (
+        await queryDocuments(params.question, currentPhase, openAiApiKey)
+      ).reply;
     }
 
     reply = {
@@ -358,7 +361,8 @@ async function chatGptSendMessage(
       defences,
       reply.function_call,
       sentEmails,
-      currentPhase
+      currentPhase,
+      openAiApiKey
     );
     if (functionCallReply) {
       wonPhase = functionCallReply.wonPhase;
