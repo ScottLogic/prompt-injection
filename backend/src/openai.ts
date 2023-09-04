@@ -3,6 +3,7 @@ import {
   getSystemRole,
   detectFilterList,
   getFilterList,
+  getQALLMprePrompt,
 } from "./defence";
 import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
 import {
@@ -151,6 +152,7 @@ async function chatGptCallFunction(
   defences: DefenceInfo[],
   functionCall: ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
+  openAiApiKey: string,
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ) {
@@ -202,9 +204,18 @@ async function chatGptCallFunction(
       response = getEmailWhitelist(defences);
     }
     if (functionName === "askQuestion") {
-      console.debug("Asking question: " + params.question);
+      console.debug(
+        "Asking question: " + params.question + " (phase: " + currentPhase + ")"
+      );
       // if asking a question, call the queryDocuments
-      response = (await queryDocuments(params.question)).reply;
+      response = (
+        await queryDocuments(
+          params.question,
+          openAiApiKey,
+          getQALLMprePrompt(defences),
+          currentPhase
+        )
+      ).reply;
     }
 
     reply = {
@@ -261,7 +272,6 @@ async function chatGptChatCompletion(
       chatHistory.shift();
     }
   }
-
   const chat_completion = await openai.createChatCompletion({
     model: gptModel,
     messages: getChatCompletionsFromHistory(chatHistory),
@@ -358,6 +368,7 @@ async function chatGptSendMessage(
       defences,
       reply.function_call,
       sentEmails,
+      openAiApiKey,
       currentPhase
     );
     if (functionCallReply) {

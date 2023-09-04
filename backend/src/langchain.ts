@@ -23,6 +23,9 @@ import { PHASE_NAMES } from "./models/phase";
 // chain we use in question/answer request
 let qaChain: RetrievalQAChain | null = null;
 
+// keep track of active phase model is initialised for
+let activePhase: PHASE_NAMES | null = null;
+
 // chain we use in prompt evaluation request
 let promptEvaluationChain: SequentialChain | null = null;
 
@@ -117,7 +120,9 @@ async function initQAModel(
       prompt: qaPrompt,
     })
   );
-  console.debug("QA chain initialised.");
+  // set the active phase
+  activePhase = currentPhase;
+  console.debug("QA chain initialised for phase: " + activePhase);
 }
 
 // initialise the prompt evaluation model
@@ -163,16 +168,26 @@ function initPromptEvaluationModel(openAiApiKey: string) {
     outputVariables: ["promptInjectionEval", "maliciousInputEval"],
   });
   setPromptEvaluationChain(sequentialChain);
-
   console.debug("Prompt evaluation chain initialised.");
 }
 
 // ask the question and return models answer
-async function queryDocuments(question: string) {
+async function queryDocuments(
+  question: string,
+  openAiApiKey: string,
+  prePrompt: string,
+  currentPhase: PHASE_NAMES
+) {
   if (!qaChain) {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
   }
+  // init QA model each time in case it has been changed
+  if (currentPhase !== activePhase) {
+    console.debug("Reinitialising QA model for new phase: " + currentPhase);
+    await initQAModel(openAiApiKey, prePrompt, currentPhase);
+  }
+
   const response = await qaChain.call({
     query: question,
   });
