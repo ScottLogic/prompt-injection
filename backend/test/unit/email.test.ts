@@ -38,7 +38,7 @@ test("GIVEN in sandbox mode WHEN email is sent THEN wonPhase false is returned "
   const currentPhase = PHASE_NAMES.SANDBOX;
   const response = sendEmail(address, subject, body, currentPhase);
   expect(response.wonPhase).toBe(false);
-}); 
+});
 
 test("GIVEN email body meets win condition for phase 0 AND email recipient is correct WHEN email is sent THEN wonPhase true is returned ", () => {
   const address = "bob@scottlogic.com";
