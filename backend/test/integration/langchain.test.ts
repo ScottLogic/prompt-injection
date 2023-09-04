@@ -146,13 +146,23 @@ test("GIVEN the QA model is initilised WHEN a question is asked THEN it answers 
   mockCall.mockResolvedValueOnce({
     text: "The CEO is Bill.",
   });
-  const answer = await queryDocuments("who is the CEO?");
+  const answer = await queryDocuments(
+    "who is the CEO?",
+    "test-api-key",
+    "",
+    PHASE_NAMES.SANDBOX
+  );
   expect(mockCall).toBeCalledTimes(1);
   expect(answer.reply).toEqual("The CEO is Bill.");
 });
 
 test("GIVEN the QA model is not initialised WHEN a question is asked THEN it returns an empty response ", async () => {
-  const answer = await queryDocuments("who is the CEO?");
+  const answer = await queryDocuments(
+    "who is the CEO?",
+    "test-api-key",
+    "",
+    PHASE_NAMES.SANDBOX
+  );
   expect(answer.reply).toEqual("");
 });
 

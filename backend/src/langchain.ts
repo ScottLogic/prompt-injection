@@ -182,7 +182,7 @@ async function queryDocuments(
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
   }
-  // init QA model each time in case it has been changed
+  // re-init model if phase has changed
   if (currentPhase !== activePhase) {
     console.debug("Reinitialising QA model for new phase: " + currentPhase);
     await initQAModel(openAiApiKey, prePrompt, currentPhase);
