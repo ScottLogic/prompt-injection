@@ -19,6 +19,7 @@ import {
   retrievalQAPrePrompt,
 } from "./promptTemplates";
 import { PHASE_NAMES } from "./models/phase";
+import { PromptEvaluationChainReply, QaChainReply } from "./models/langchain";
 
 // chain we use in question/answer request
 let qaChain: RetrievalQAChain | null = null;
@@ -52,7 +53,7 @@ function getFilepath(currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX) {
 
 // load the documents from filesystem
 async function getDocuments(filePath: string) {
-  console.debug(`Loading documents from: ${  filePath}`);
+  console.debug(`Loading documents from: ${filePath}`);
 
   const loader: DirectoryLoader = new DirectoryLoader(filePath, {
     ".pdf": (path: string) => new PDFLoader(path),
@@ -173,10 +174,11 @@ async function queryDocuments(question: string) {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
   }
-  const response = await qaChain.call({
+
+  const response = (await qaChain.call({
     query: question,
-  });
-  console.debug(`QA model response: ${  response.text}`);
+  })) as QaChainReply;
+  console.debug(`QA model response: ${response.text}`);
   const result: ChatAnswer = {
     reply: response.text,
     questionAnswered: true,
@@ -192,9 +194,9 @@ async function queryPromptEvaluationModel(input: string) {
   }
   console.log(`Checking '${input}' for malicious prompts`);
 
-  const response = await promptEvaluationChain.call({
+  const response = (await promptEvaluationChain.call({
     prompt: input,
-  });
+  })) as PromptEvaluationChainReply;
   const promptInjectionEval = formatEvaluationOutput(
     response.promptInjectionEval
   );
@@ -202,9 +204,9 @@ async function queryPromptEvaluationModel(input: string) {
     response.maliciousInputEval
   );
   console.debug(
-    `Prompt injection eval: ${  JSON.stringify(promptInjectionEval)}`
+    `Prompt injection eval: ${JSON.stringify(promptInjectionEval)}`
   );
-  console.debug(`Malicious input eval: ${  JSON.stringify(maliciousInputEval)}`);
+  console.debug(`Malicious input eval: ${JSON.stringify(maliciousInputEval)}`);
 
   // if both are malicious, combine reason
   if (promptInjectionEval.isMalicious && maliciousInputEval.isMalicious) {
@@ -235,8 +237,7 @@ function formatEvaluationOutput(response: string) {
     // in case the model does not respond in the format we have asked
     console.error(error);
     console.debug(
-      `Did not get a valid response from the prompt evaluation model. Original response: ${ 
-        response}`
+      `Did not get a valid response from the prompt evaluation model. Original response: ${response}`
     );
     return { isMalicious: false, reason: "" };
   }
