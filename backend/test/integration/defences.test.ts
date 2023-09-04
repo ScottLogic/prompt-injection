@@ -10,7 +10,9 @@ import { DEFENCE_TYPES } from "../../src/models/defence";
 const mockCall = jest.fn();
 // mock the queryPromptEvaluationModel function
 jest.mock("langchain/chains", () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const originalModule = jest.requireActual("langchain/chains");
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,
     SequentialChain: jest.fn().mockImplementation(() => ({
