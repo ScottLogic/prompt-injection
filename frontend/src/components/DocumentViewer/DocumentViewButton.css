@@ -1,8 +1,9 @@
 #document-view-button-area {
-    margin: 15px;
     padding-top: 20px;
     padding-bottom: 20px;
     text-align: center;
+    height: 40px;
+    min-height: 40px;
 }
 
 .document-view-button {
