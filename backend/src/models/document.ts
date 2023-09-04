@@ -1,5 +1,4 @@
-interface Document {]
-  uri: string;
+interface Document {
   filename: string;
   filetype: string;
 }

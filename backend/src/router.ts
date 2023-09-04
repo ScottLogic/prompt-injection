@@ -405,7 +405,6 @@ router.get("/documents", (_, res) => {
     files.forEach((file) => {
       const fileType = file.split(".").pop() || "";
       docFiles.push({
-        uri: process.env.DOCUMENT_URL + file,
         filename: file,
         filetype: fileType == "csv" ? "text/csv" : fileType,
       });
