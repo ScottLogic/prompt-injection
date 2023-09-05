@@ -3,7 +3,6 @@ import { DefenceConfig } from "../../models/defence";
 import ContentEditable from "react-contenteditable";
 
 function DefenceConfiguration(
-  this: any,
   {
     config,
     setConfigurationValue,
@@ -26,7 +25,7 @@ function DefenceConfiguration(
       <ContentEditable
         className="defence-config-value prompt-injection-input"
         html={config.value.toString()}
-        onKeyUp={setConfiguration.bind(this)}
+        onKeyUp={setConfiguration}
         onClick={(event) => { event.stopPropagation(); }}
         onChange={() => {return;}}
       />
