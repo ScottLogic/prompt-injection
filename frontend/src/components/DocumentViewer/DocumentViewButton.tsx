@@ -10,7 +10,7 @@ function DocumentViewButton() {
     <div id="document-view-button-area">
       <button
         className="document-view-button"
-        onClick={() => setShowPopup(true)}
+        onClick={() => { setShowPopup(true); }}
       >
         View Documents
       </button>

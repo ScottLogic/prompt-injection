@@ -7,7 +7,7 @@ import {
   deactivateDefence,
   configureDefence,
 } from "../../service/defenceService";
-import { DefenceConfig, DefenceInfo } from "../../models/defence";
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "../../models/defence";
 
 function DefenceBox({
   currentPhase,
@@ -40,76 +40,72 @@ function DefenceBox({
         if (matchingRemoteDefence) {
           localDefence.isActive = matchingRemoteDefence.isActive;
           // set each config value
-          if (matchingRemoteDefence.config && localDefence.config) {
-            matchingRemoteDefence.config.forEach((configEntry) => {
-              // get the matching config in the local defence
-              const matchingConfig = localDefence.config.find((config) => {
-                return config.id === configEntry.id;
-              });
-              if (matchingConfig) {
-                matchingConfig.value = configEntry.value;
-              }
+          matchingRemoteDefence.config.forEach((configEntry) => {
+            // get the matching config in the local defence
+            const matchingConfig = localDefence.config.find((config) => {
+              return config.id === configEntry.id;
             });
-          }
+            if (matchingConfig) {
+              matchingConfig.value = configEntry.value;
+            }
+          });
         }
         return localDefence;
       });
+    }).catch((err) => {
+      console.log(err);
     });
   }, [defences]);
 
-  const setDefenceActive = (defenceType: string) => {
-    activateDefence(defenceType, currentPhase).then(() => {
-      // update state
-      const newDefenceDetails = defenceDetails.map((defenceDetail) => {
-        if (defenceDetail.id === defenceType) {
-          defenceDetail.isActive = true;
-          defenceDetail.isTriggered = false;
-          defenceActivated(defenceDetail);
-        }
-        return defenceDetail;
-      });
-      setDefenceDetails(newDefenceDetails);
+  async function setDefenceActive(defenceId: DEFENCE_TYPES) {
+    await activateDefence(defenceId, currentPhase)
+    // update state
+    const newDefenceDetails = defenceDetails.map((defenceDetail) => {
+      if (defenceDetail.id === defenceId) {
+        defenceDetail.isActive = true;
+        defenceDetail.isTriggered = false;
+        defenceActivated(defenceDetail);
+      }
+      return defenceDetail;
     });
-  };
+    setDefenceDetails(newDefenceDetails);
+  }
 
-  const setDefenceInactive = (defenceType: string) => {
-    deactivateDefence(defenceType, currentPhase).then(() => {
-      // update state
-      const newDefenceDetails = defenceDetails.map((defenceDetail) => {
-        if (defenceDetail.id === defenceType) {
-          defenceDetail.isActive = false;
-          defenceDetail.isTriggered = false;
-          defenceDeactivated(defenceDetail);
-        }
-        return defenceDetail;
-      });
-      setDefenceDetails(newDefenceDetails);
+  async function setDefenceInactive(defenceId: DEFENCE_TYPES) {
+    await deactivateDefence(defenceId, currentPhase);
+    // update state
+    const newDefenceDetails = defenceDetails.map((defenceDetail) => {
+      if (defenceDetail.id === defenceId) {
+        defenceDetail.isActive = false;
+        defenceDetail.isTriggered = false;
+        defenceDeactivated(defenceDetail);
+      }
+      return defenceDetail;
     });
-  };
+    setDefenceDetails(newDefenceDetails);
+  }
 
-  const setDefenceConfiguration = (
-    defenceId: string,
+  async function setDefenceConfiguration(
+    defenceId: DEFENCE_TYPES,
     config: DefenceConfig[]
-  ) => {
-    const configSuccess = configureDefence(
+  ) {
+    const success = await configureDefence(
       defenceId,
       config,
       currentPhase
-    ).then((success) => {
-      if (success) {
-        // update state
-        const newDefences = defenceDetails.map((defence) => {
-          if (defence.id === defenceId) {
-            defence.config = config;
-          }
-          return defence;
-        });
-        setDefenceDetails(newDefences);
-      }
-      return success;
-    });
-    return configSuccess;
-  };
+    );
+    if (success) {
+      // update state
+      const newDefences = defenceDetails.map((defence) => {
+        if (defence.id === defenceId) {
+          defence.config = config;
+        }
+        return defence;
+      });
+      setDefenceDetails(newDefences);
+    }
+    return success;
+  }
 
   return (
     <div id="strategy-box">
@@ -120,8 +116,8 @@ function DefenceBox({
             key={index}
             defenceDetail={defenceDetail}
             showConfigurations={showConfigurations}
-            setDefenceActive={setDefenceActive}
-            setDefenceInactive={setDefenceInactive}
+            setDefenceActive={() => void setDefenceActive}
+            setDefenceInactive={() => void setDefenceInactive}
             setDefenceConfiguration={setDefenceConfiguration}
           />
         );

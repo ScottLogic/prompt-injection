@@ -34,71 +34,70 @@ function App() {
   useEffect(() => {
     getCompletedPhases().then((numCompletedPhases) => {
       setNumCompletedPhases(numCompletedPhases);
+    }).catch((err) => {
+      console.log(err);
     });
-    setNewPhase(currentPhase);
+    void setNewPhase(currentPhase);
   }, []);
 
   // methods to modify messages
-  const addChatMessage = (message: ChatMessage) => {
+  function addChatMessage(message: ChatMessage) {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
-  };
+  }
 
   // for clearing phase progress
-  function resetPhase() {
-    console.log("resetting phase " + currentPhase);
+  async function resetPhase() {
+    console.log(`resetting phase ${  currentPhase}`);
 
-    clearChat(currentPhase).then(() => {
-      setMessages([]);
-      // add preamble to start of chat
-      addChatMessage({
-        message: PHASES[currentPhase].preamble,
-        type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-      });
+    await clearChat(currentPhase);
+    setMessages([]);
+    // add preamble to start of chat
+    addChatMessage({
+      message: PHASES[currentPhase].preamble,
+      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
     });
-    clearEmails(currentPhase).then(() => {
-      setEmails([]);
+
+    await clearEmails(currentPhase);
+    setEmails([]);
+
+    await resetActiveDefences(currentPhase);
+    // choose appropriate defences to display
+    let defences =
+      currentPhase === PHASE_NAMES.PHASE_2
+        ? DEFENCE_DETAILS_PHASE
+        : DEFENCE_DETAILS_ALL;
+    defences = defences.map((defence) => {
+      defence.isActive = false;
+      return defence;
     });
-    resetActiveDefences(currentPhase).then(() => {
-      // choose appropriate defences to display
-      let defences =
-        currentPhase === PHASE_NAMES.PHASE_2
-          ? DEFENCE_DETAILS_PHASE
-          : DEFENCE_DETAILS_ALL;
-      defences = defences.map((defence) => {
-        defence.isActive = false;
-        return defence;
-      });
-      setDefencesToShow(defences);
-    });
+    setDefencesToShow(defences);
   }
 
   // for going switching phase without clearing progress
-  const setNewPhase = (newPhase: PHASE_NAMES) => {
-    console.log("changing phase from " + currentPhase + " to " + newPhase);
+  async function setNewPhase(newPhase: PHASE_NAMES) {
+    console.log(`changing phase from ${  currentPhase  } to ${  newPhase}`);
     setMessages([]);
     setCurrentPhase(newPhase);
 
     // get emails for new phase from the backend
-    getSentEmails(newPhase).then((phaseEmails) => {
-      setEmails(phaseEmails);
-    });
+    const phaseEmails = await getSentEmails(newPhase);
+    setEmails(phaseEmails);
 
     // get chat history for new phase from the backend
-    getChatHistory(newPhase).then((phaseChatHistory) => {
-      // add the preamble to the start of the chat history
-      phaseChatHistory.unshift({
-        message: PHASES[newPhase].preamble,
-        type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-      });
-      setMessages(phaseChatHistory);
+    const phaseChatHistory = await getChatHistory(newPhase);
+    // add the preamble to the start of the chat history
+    phaseChatHistory.unshift({
+      message: PHASES[newPhase].preamble,
+      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
     });
+    setMessages(phaseChatHistory);
 
     const defences =
       newPhase === PHASE_NAMES.PHASE_2
         ? DEFENCE_DETAILS_PHASE
         : DEFENCE_DETAILS_ALL;
     setDefencesToShow(defences);
-  };
+  }
 
   return (
     <div id="app-content">
@@ -106,7 +105,7 @@ function App() {
         <DemoHeader
           currentPhase={currentPhase}
           numCompletedPhases={numCompletedPhases}
-          setNewPhase={setNewPhase}
+          setNewPhase={() => {void setNewPhase}}
         />
       </div>
       <div id="app-content-body">
@@ -116,7 +115,7 @@ function App() {
           emails={emails}
           messages={messages}
           addChatMessage={addChatMessage}
-          resetPhase={resetPhase}
+          resetPhase={() => void resetPhase}
           setEmails={setEmails}
           setNumCompletedPhases={setNumCompletedPhases}
         />

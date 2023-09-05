@@ -4,7 +4,7 @@ import { getBackendUrl, sendRequest } from "./backendService";
 async function getDocumentUris(): Promise<RemoteDocument[]> {
   const path = "documents";
   const response = await sendRequest(path, "GET");
-  let documents: RemoteDocument[] = await response.json();
+  let documents = await response.json() as RemoteDocument[];
   documents = documents.map((document) => {
     return {
       ...document,

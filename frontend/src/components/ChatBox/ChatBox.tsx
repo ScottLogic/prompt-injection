@@ -41,12 +41,15 @@ function ChatBox(
     // get sent emails
     getSentEmails(currentPhase).then((sentEmails) => {
       setEmails(sentEmails);
+    }).catch((err) => {
+      console.log(err);
     });
   }, [setEmails]);
 
   function inputKeyPressed(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Enter") {
-      sendChatMessage();
+      // asynchronously send the message
+      void sendChatMessage();
     }
   }
 
@@ -55,9 +58,9 @@ function ChatBox(
       "chat-box-input"
     ) as HTMLInputElement;
     // get the message from the input box
-    const message = inputBoxElement?.value;
+    const message = inputBoxElement.value;
     // clear the input box
-    inputBoxElement!.value = "";
+    inputBoxElement.value = "";
 
     if (message && !isSendingMessage) {
       setIsSendingMessage(true);
@@ -103,7 +106,8 @@ function ChatBox(
             type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
             message: alertMsg,
           });
-          addMessageToChatHistory(
+          // asynchronously add the message to the chat history
+          void addMessageToChatHistory(
             alertMsg,
             CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
             currentPhase
@@ -122,7 +126,8 @@ function ChatBox(
             type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
             message: triggerMsg,
           });
-          addMessageToChatHistory(
+          // asynchronously add the message to the chat history
+          void addMessageToChatHistory(
             triggerMsg,
             CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
             currentPhase
@@ -146,7 +151,8 @@ function ChatBox(
           type: CHAT_MESSAGE_TYPE.PHASE_INFO,
           message: successMessage,
         });
-        addMessageToChatHistory(
+        // asynchronously add the message to the chat history
+        void addMessageToChatHistory(
           successMessage,
           CHAT_MESSAGE_TYPE.PHASE_INFO,
           currentPhase
@@ -170,7 +176,7 @@ function ChatBox(
           <button
             id="chat-box-button-send"
             className="prompt-injection-button"
-            onClick={sendChatMessage}
+            onClick={() => void sendChatMessage}
           >
             Send
           </button>

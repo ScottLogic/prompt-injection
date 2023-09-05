@@ -16,7 +16,7 @@ function DemoHeader(
 ) {
   function getPhaseName(phase: PHASE_NAMES) {
     const phaseName = PHASES.find((p) => p.id === phase)?.name;
-    return phaseName || "";
+    return phaseName ?? "";
   }
 
   return (

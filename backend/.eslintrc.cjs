@@ -13,6 +13,7 @@ module.exports = {
   },
   plugins: ["@typescript-eslint"],
   root: true,
+  ignorePatterns: ["build", "coverage", "node_modules", "jest.config.js"],
   rules: {
     "@typescript-eslint/init-declarations": "error",
     "@typescript-eslint/no-misused-promises": [
@@ -22,7 +23,7 @@ module.exports = {
       },
     ],
 
+    "func-style": ["error", "declaration"],
     "prefer-template": "error",
   },
-  ignorePatterns: ["build", "coverage", "node_modules", "jest.config.js"],
 };

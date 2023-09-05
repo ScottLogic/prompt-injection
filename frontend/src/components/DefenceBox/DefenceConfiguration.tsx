@@ -9,15 +9,16 @@ function DefenceConfiguration(
     setConfigurationValue,
   }: {
     config: DefenceConfig;
-    setConfigurationValue: (configId: string, value: string) => void;
+    setConfigurationValue: (configId: string, value: string) => Promise<void>;
   }
 ) {
-  const setConfiguration = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  function setConfiguration(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Enter") {
       const value = event.currentTarget.innerText.trim();
-      setConfigurationValue(config.id, value);
+      // asynchronously set the configuration value
+      void setConfigurationValue(config.id, value);
     }
-  };
+  }
 
   return (
     <div>
@@ -26,8 +27,8 @@ function DefenceConfiguration(
         className="defence-config-value prompt-injection-input"
         html={config.value.toString()}
         onKeyUp={setConfiguration.bind(this)}
-        onClick={(event) => event.stopPropagation()}
-        onChange={() => {}}
+        onClick={(event) => { event.stopPropagation(); }}
+        onChange={() => {return;}}
       />
     </div>
   );

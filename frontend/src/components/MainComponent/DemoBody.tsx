@@ -48,24 +48,26 @@ function DemoBody({
     resetPhase();
   }
 
-  const addInfoMessage = (message: string) => {
+  function addInfoMessage(message: string) {
     addChatMessage({
       message: message,
       type: CHAT_MESSAGE_TYPE.INFO,
     });
-    addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
-  };
+    // asynchronously add the message to the chat history
+    void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
+  }
 
   // methods to be called when defences are (de)activated
   // this adds an info message to the chat
-  const defenceActivated = (defenceInfo: DefenceInfo) => {
+  function defenceActivated(defenceInfo: DefenceInfo) {
     const infoMessage = `${defenceInfo.name} defence activated`;
     addInfoMessage(infoMessage.toLowerCase());
-  };
-  const defenceDeactivated = (defenceInfo: DefenceInfo) => {
+  }
+
+  function defenceDeactivated(defenceInfo: DefenceInfo) {
     const infoMessage = `${defenceInfo.name} defence deactivated`;
     addInfoMessage(infoMessage.toLowerCase());
-  };
+  }
 
   return (
     <span id="main-area">
@@ -85,7 +87,7 @@ function DemoBody({
           <DefenceBox
             currentPhase={currentPhase}
             defences={defences}
-            showConfigurations={currentPhase > 2 ? true : false}
+            showConfigurations={currentPhase > PHASE_NAMES.PHASE_2 ? true : false}
             defenceActivated={defenceActivated}
             defenceDeactivated={defenceDeactivated}
           />

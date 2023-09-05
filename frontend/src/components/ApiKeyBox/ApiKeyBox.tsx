@@ -11,15 +11,15 @@ function ApiKeyBox(this: any) {
   const [isInvalidated, setIsInvalidated] = useState<boolean>(false);
   const [keyDisplayed, setKeyDisplayed] = useState<boolean>(false);
 
-  const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  function handleApiKeyChange(event: React.ChangeEvent<HTMLInputElement>) {
     const openAiApiKey = event.target.value;
     setApiKey(openAiApiKey);
-  };
+  }
 
-  const handleApiKeySubmit = async (
+  async function handleApiKeySubmit(
     event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter" && event.target !== null) {
+  ) {
+    if (event.key === "Enter") {
       const openAiApiKey = event.currentTarget.value;
       // returns true if successful
       const response = await setOpenAIApiKey(openAiApiKey);
@@ -34,25 +34,25 @@ function ApiKeyBox(this: any) {
       }
       setApiKey(openAiApiKey);
     }
-  };
+  }
 
   // show or hide the api key
-  const toggleDisplayKey = () => {
+  function toggleDisplayKey() {
     setKeyDisplayed(!keyDisplayed);
-  };
+  }
 
   // get the api key from the backend on refresh
   useEffect(() => {
-    const getApiKey = async () => {
-      const storedApiKey = await getOpenAIApiKey();
+    getOpenAIApiKey().then((storedApiKey) => {
       if (storedApiKey) {
         console.log("Retrieved previous set api key");
         setApiKey(storedApiKey);
         // if the key is stored from the backend it is valid
         setIsValidated(true);
       }
-    };
-    getApiKey();
+    }).catch((err) => {
+      console.log(err);
+    });
   }, []);
 
   return (
@@ -67,7 +67,7 @@ function ApiKeyBox(this: any) {
         value={openAiApiKey}
         placeholder="enter your API key here.."
         onChange={handleApiKeyChange}
-        onKeyUp={handleApiKeySubmit.bind(this)}
+        onKeyUp={() => void handleApiKeySubmit.bind(this)}
       />
       <span id="viewKey" onClick={toggleDisplayKey}>
         {keyDisplayed ? <BiHide /> : <BiShowAlt />}

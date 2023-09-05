@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ExportContent = ({
+function ExportContent({
   messages,
   emails,
   currentPhase,
@@ -45,15 +45,16 @@ const ExportContent = ({
   messages: ChatMessage[];
   emails: EmailInfo[];
   currentPhase: number;
-}) => {
-  const getTitle = (currentPhase: number) => {
+}) {
+  function getTitle(currentPhase: number) {
     const title = "Prompt injection demo chat";
     if (currentPhase === 3) {
-      return title + " (sandbox mode)";
+      return `${title  } (sandbox mode)`;
     } else {
-      return title + " (phase " + currentPhase + ")";
+      return `${title  } (phase ${  currentPhase  })`;
     }
-  };
+  }
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -77,6 +78,6 @@ const ExportContent = ({
       </Page>
     </Document>
   );
-};
+}
 
 export default ExportContent;

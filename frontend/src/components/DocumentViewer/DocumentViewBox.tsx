@@ -17,13 +17,15 @@ function DocumentViewBox({
   useEffect(() => {
     getDocumentUris().then((uris) => {
       setDocuments(uris);
+    }).catch((err) => {
+      console.log(err);
     });
   }, []);
 
   return show ? (
     <div className="document-popup">
       <div className="document-popup-inner">
-        <span className="close-button" onClick={() => setShow(false)}>
+        <span className="close-button" onClick={() => { setShow(false); }}>
           x
         </span>
         <div className="content">
