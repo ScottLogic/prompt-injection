@@ -21,6 +21,8 @@ module.exports = {
     "func-style": ["error", "declaration"], 
     "prefer-template": "error",
 
+    // turn this off to allow the use of useEffect on mount
+    'react-hooks/exhaustive-deps': 'off',
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
