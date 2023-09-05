@@ -176,7 +176,7 @@ function ChatBox(
           <button
             id="chat-box-button-send"
             className="prompt-injection-button"
-            onClick={() => void sendChatMessage}
+            onClick={() => void sendChatMessage()}
           >
             Send
           </button>

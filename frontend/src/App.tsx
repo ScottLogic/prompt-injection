@@ -105,7 +105,7 @@ function App() {
         <DemoHeader
           currentPhase={currentPhase}
           numCompletedPhases={numCompletedPhases}
-          setNewPhase={() => {void setNewPhase}}
+          setNewPhase={(newPhase) => void setNewPhase(newPhase)}
         />
       </div>
       <div id="app-content-body">
@@ -115,7 +115,7 @@ function App() {
           emails={emails}
           messages={messages}
           addChatMessage={addChatMessage}
-          resetPhase={() => void resetPhase}
+          resetPhase={() => void resetPhase()}
           setEmails={setEmails}
           setNumCompletedPhases={setNumCompletedPhases}
         />

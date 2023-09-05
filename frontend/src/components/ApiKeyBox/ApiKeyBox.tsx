@@ -5,7 +5,7 @@ import { setOpenAIApiKey, getOpenAIApiKey } from "../../service/chatService";
 import { BiHide, BiShowAlt } from "react-icons/bi";
 import "./ApiKeyBox.css";
 
-function ApiKeyBox(this: any) {
+function ApiKeyBox() {
   const [openAiApiKey, setApiKey] = useState<string>("");
   const [isValidated, setIsValidated] = useState<boolean>(false);
   const [isInvalidated, setIsInvalidated] = useState<boolean>(false);
@@ -67,7 +67,7 @@ function ApiKeyBox(this: any) {
         value={openAiApiKey}
         placeholder="enter your API key here.."
         onChange={handleApiKeyChange}
-        onKeyUp={() => void handleApiKeySubmit.bind(this)}
+        onKeyUp={(event) => void handleApiKeySubmit(event)}
       />
       <span id="viewKey" onClick={toggleDisplayKey}>
         {keyDisplayed ? <BiHide /> : <BiShowAlt />}
