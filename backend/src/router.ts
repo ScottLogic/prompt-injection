@@ -189,9 +189,11 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
     chatResponse.defenceInfo.blockedReason =
       "Please enter a valid OpenAI API key to chat to me!";
     console.error(chatResponse.reply);
-  } else if (!message || !currentPhase) {
+  } else if (message === undefined || currentPhase === undefined) {
     res.statusCode = 400;
-    res.send();
+    chatResponse.defenceInfo.isBlocked = true;
+    chatResponse.defenceInfo.blockedReason =
+      "Please send a message and current phase to chat to me!";
   } else {
     let numPhasesCompleted = req.session.numPhasesCompleted;
 
