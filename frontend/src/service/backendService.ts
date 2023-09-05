@@ -1,11 +1,15 @@
 const URL = "http://localhost:3001/";
 
-const sendRequest = async (
+function getBackendUrl(): string {
+  return URL;
+}
+
+async function sendRequest(
   path: string,
   method: string,
   headers?: HeadersInit,
   body?: BodyInit
-): Promise<Response> => {
+): Promise<Response> {
   const init: RequestInit = {
     credentials: "include",
     method: method,
@@ -18,6 +22,6 @@ const sendRequest = async (
   }
   const response: Response = await fetch(URL + path, init);
   return response;
-};
+}
 
-export { sendRequest };
+export { getBackendUrl, sendRequest };

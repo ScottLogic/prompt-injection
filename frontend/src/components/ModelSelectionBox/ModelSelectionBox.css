@@ -1,11 +1,24 @@
 #model-selection-box {
-    padding: 1px 32px;
+    padding: 1px 0;
     position: relative;
 }
 
 #model-selection-row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+#model-selection-row #text-area {
+    max-width: 30%;
+}
+
+#model-selection-row #menu-area {
+    min-width: 50%;
+}
+
+#model-selection-row #button-area {
+    min-width: 20%;
 }
 
 #model-selection-info {
@@ -16,7 +29,7 @@
 #model-selection-info p {
     margin: 0;
     padding: 0;
-    color:cadetblue
+    color: var(--main-accent-colour)
 }
 
 #p error {
@@ -24,11 +37,11 @@
 }
 
 #model-selection-menu {
-    width: 60%;
     padding: 5px;
-    margin-right: 10px;
+    width: 100%;
 }
 
 #model-selection-button {
     padding: 5px;
+    width: 100%;
 }
