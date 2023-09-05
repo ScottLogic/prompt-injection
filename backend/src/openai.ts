@@ -3,12 +3,13 @@ import {
   getSystemRole,
   detectFilterList,
   getFilterList,
+  getQALLMprePrompt,
 } from "./defence";
 import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
 import {
-  initQAModel,
   initPromptEvaluationModel,
   queryDocuments,
+  initDocumentVectors,
 } from "./langchain";
 import { EmailInfo, EmailResponse } from "./models/email";
 import {
@@ -95,19 +96,13 @@ async function validateApiKey(openAiApiKey: string, gptModel: string) {
   }
 }
 
-async function setOpenAiApiKey(
-  openAiApiKey: string,
-  gptModel: string,
-  prePrompt: string,
-  // default to sandbox mode
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
-) {
+async function setOpenAiApiKey(openAiApiKey: string, gptModel: string) {
   // initialise all models with the new key
   if (await validateApiKey(openAiApiKey, gptModel)) {
     console.debug("Setting API key and initialising models");
     initOpenAi(openAiApiKey);
-    initQAModel(openAiApiKey, prePrompt, currentPhase);
     initPromptEvaluationModel(openAiApiKey);
+    await initDocumentVectors(openAiApiKey);
     return true;
   } else {
     // set to empty in case it was previously set
@@ -205,8 +200,17 @@ async function chatGptCallFunction(
     if (functionName === "askQuestion") {
       console.debug("Asking question: " + params.question);
       // if asking a question, call the queryDocuments
+      let qaPrompt = "";
+      if (isDefenceActive(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences)) {
+        qaPrompt = getQALLMprePrompt(defences);
+      }
       response = (
-        await queryDocuments(params.question, currentPhase, openAiApiKey)
+        await queryDocuments(
+          params.question,
+          qaPrompt,
+          currentPhase,
+          openAiApiKey
+        )
       ).reply;
     }
 

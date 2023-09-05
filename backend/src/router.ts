@@ -6,10 +6,8 @@ import {
   configureDefence,
   transformMessage,
   detectTriggeredDefences,
-  getQALLMprePrompt,
   getInitialDefences,
 } from "./defence";
-import { initQAModel } from "./langchain";
 import {
   CHAT_MESSAGE_TYPE,
   CHAT_MODELS,
@@ -18,14 +16,13 @@ import {
 import { DEFENCE_TYPES, DefenceConfig } from "./models/defence";
 import { Document } from "./models/document";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
-import { retrievalQAPrePrompt } from "./promptTemplates";
 import { PHASE_NAMES } from "./models/phase";
 import * as fs from "fs";
 
 const router = express.Router();
 
 // keep track of phase change to reinitialize models
-let prevPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX;
+// let prevPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX;
 
 // Activate a defence
 router.post("/defence/activate", (req, res) => {
@@ -38,20 +35,6 @@ router.post("/defence/activate", (req, res) => {
       defenceId,
       req.session.phaseState[phase].defences
     );
-    // need to re-initialize QA model when turned on
-    if (
-      defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS &&
-      req.session.openAiApiKey
-    ) {
-      console.debug(
-        "Activating qa llm instruction defence - reinitializing qa model"
-      );
-      initQAModel(
-        req.session.openAiApiKey,
-        getQALLMprePrompt(req.session.phaseState[phase].defences)
-      );
-    }
-
     res.send("Defence activated");
   } else {
     res.statusCode = 400;
@@ -70,17 +53,6 @@ router.post("/defence/deactivate", (req, res) => {
       defenceId,
       req.session.phaseState[phase].defences
     );
-
-    if (
-      defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS &&
-      req.session.openAiApiKey
-    ) {
-      console.debug("Resetting QA model with default prompt");
-      initQAModel(
-        req.session.openAiApiKey,
-        getQALLMprePrompt(req.session.phaseState[phase].defences)
-      );
-    }
     res.send("Defence deactivated");
   } else {
     res.statusCode = 400;
@@ -132,7 +104,7 @@ router.get("/defence/status", (req, res) => {
   }
 });
 
-// Get sent emails // /email/get?phase=1
+// Get sent emails /email/get?phase=1
 router.get("/email/get", (req, res) => {
   const phase: number | undefined = req.query?.phase as number | undefined;
   if (phase) {
@@ -185,11 +157,6 @@ router.post("/openai/chat", async (req, res) => {
     const currentPhase: PHASE_NAMES = req.body?.currentPhase;
     let numPhasesCompleted = req.session.numPhasesCompleted;
 
-    // if phase has changed, reinitialize the QA model with with new filepath
-    if (prevPhase != currentPhase) {
-      prevPhase = currentPhase;
-      initQAModel(req.session.openAiApiKey, retrievalQAPrePrompt, currentPhase);
-    }
     if (message) {
       chatResponse.transformedMessage = message;
       // see if this message triggers any defences (only for phase 2 and sandbox)
@@ -349,13 +316,7 @@ router.post("/openai/apiKey", async (req, res) => {
     res.status(401).send("Invalid API key");
     return;
   }
-  if (
-    await setOpenAiApiKey(
-      openAiApiKey,
-      req.session.gptModel,
-      getQALLMprePrompt(req.session.phaseState[3].defences) // use phase 2 as only phase with QA LLM defence
-    )
-  ) {
+  if (await setOpenAiApiKey(openAiApiKey, req.session.gptModel)) {
     req.session.openAiApiKey = openAiApiKey;
     res.send("API key set");
   } else {

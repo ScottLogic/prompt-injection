@@ -6,9 +6,9 @@ interface Document {
   filetype: string;
 }
 
-interface DocumentVector {
-  currentPhase: PHASE_NAMES;
+interface DocumentsVector {
+  phase: PHASE_NAMES;
   docVector: MemoryVectorStore;
 }
 
-export type { Document, DocumentVector };
+export type { Document, DocumentsVector };

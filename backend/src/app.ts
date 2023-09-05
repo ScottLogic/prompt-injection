@@ -11,9 +11,7 @@ import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
 import { CHAT_MODELS } from "./models/chat";
 import { PHASE_NAMES } from "./models/phase";
-import { retrievalQAPrePrompt } from "./promptTemplates";
 import path from "path";
-import { initDocumentVectors } from "./langchain";
 
 dotenv.config();
 
@@ -94,9 +92,7 @@ app.use(async (req, _res, next) => {
         });
       }
     });
-    initDocumentVectors(req.session.openAiApiKey || "");
   }
-
   next();
 });
 
@@ -106,10 +102,9 @@ app.listen(port, () => {
 
   // for dev purposes only - set the API key from the environment variable
   const envOpenAiKey = process.env.OPENAI_API_KEY;
-  const prePrompt = retrievalQAPrePrompt;
-  if (envOpenAiKey && prePrompt) {
+  if (envOpenAiKey) {
     console.debug("Initializing models with API key from environment variable");
-    setOpenAiApiKey(envOpenAiKey, defaultModel, prePrompt).then(() => {
+    setOpenAiApiKey(envOpenAiKey, defaultModel).then(() => {
       console.debug("OpenAI models initialized");
     });
   }

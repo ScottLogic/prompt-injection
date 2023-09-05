@@ -10,9 +10,8 @@ import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
-
 import { CHAT_MODELS, ChatAnswer } from "./models/chat";
-import { DocumentVector } from "./models/document";
+import { DocumentsVector } from "./models/document";
 
 import {
   maliciousPromptTemplate,
@@ -22,26 +21,18 @@ import {
 } from "./promptTemplates";
 import { PHASE_NAMES } from "./models/phase";
 
-// store vectorised documents as array
-let vectorisedDocuments: DocumentVector[] = [];
-
-// chain we use in question/answer request
-// let qaChain: RetrievalQAChain | null = null;
+// store vectorised documents for each phase as array
+let vectorisedDocuments: DocumentsVector[] = [];
 
 // chain we use in prompt evaluation request
 let promptEvaluationChain: SequentialChain | null = null;
-
-// function setQAChain(chain: RetrievalQAChain | null) {
-//   console.debug("Setting QA chain.");
-//   qaChain = chain;
-// }
 
 function setPromptEvaluationChain(chain: SequentialChain | null) {
   console.debug("Setting evaluation chain.");
   promptEvaluationChain = chain;
 }
 
-function getFilepath(currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX) {
+function getFilepath(currentPhase: PHASE_NAMES) {
   let filePath = "resources/documents/";
   switch (currentPhase) {
     case PHASE_NAMES.PHASE_0:
@@ -50,14 +41,15 @@ function getFilepath(currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX) {
       return (filePath += "phase_1/");
     case PHASE_NAMES.PHASE_2:
       return (filePath += "phase_2/");
-    default:
+    case PHASE_NAMES.SANDBOX:
       return (filePath += "common/");
+    default:
+      return "";
   }
 }
 // load the documents from filesystem
 async function getDocuments(filePath: string) {
   console.debug("Loading documents from: " + filePath);
-
   const loader: DirectoryLoader = new DirectoryLoader(filePath, {
     ".pdf": (path: string) => new PDFLoader(path),
     ".txt": (path: string) => new TextLoader(path),
@@ -84,75 +76,44 @@ function getQAPromptTemplate(prePrompt: string) {
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;
 }
-
-function initDocumentVectors(openAiApiKey: string) {
-  Object.values(PHASE_NAMES).forEach(async (value) => {
-    if (isNaN(Number(value))) {
-      console.debug("Initialising document vectors for phase: " + value);
+// create and store the document vectors for each phase
+async function initDocumentVectors(openAiApiKey: string) {
+  if (!openAiApiKey) {
+    return;
+  }
+  for (const value of Object.values(PHASE_NAMES)) {
+    if (!isNaN(Number(value))) {
       const phase = value as PHASE_NAMES;
-
       // get the documents
-      const docs: Document[] = await getDocuments(getFilepath(phase));
-
+      const filePath: string = getFilepath(phase);
+      const docs: Document[] = await getDocuments(filePath);
       // embed and store the splits
       const embeddings = new OpenAIEmbeddings({
         openAIApiKey: openAiApiKey,
       });
       const vectorStore: MemoryVectorStore =
         await MemoryVectorStore.fromDocuments(docs, embeddings);
-      const docVector = { currentPhase: phase, docVector: vectorStore };
-      vectorisedDocuments.push(docVector);
+      // store the document vectors for the phase
+      vectorisedDocuments.push({
+        phase: phase,
+        docVector: vectorStore,
+      });
     }
-  });
+  }
   console.debug(
-    "Document vectors initialised.",
-    JSON.stringify(vectorisedDocuments)
+    "Intitialised document vectors for each phase. count=",
+    vectorisedDocuments.length
   );
 }
 
-// QA Chain - ask the chat model a question about the documents
 async function initQAModel(
-  openAiApiKey: string,
+  phase: PHASE_NAMES,
   prePrompt: string,
-  // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  openAiApiKey: string
 ) {
-  if (!openAiApiKey) {
-    console.debug("No OpenAI API key set to initialise QA model");
-    return;
-  }
-  // get the documents
-  const docs: Document[] = await getDocuments(getFilepath(currentPhase));
-
-  // embed and store the splits
-  const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: openAiApiKey,
-  });
-  const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
-
-  // initialise model
-  const model = new ChatOpenAI({
-    modelName: CHAT_MODELS.GPT_4,
-    streaming: true,
-    openAIApiKey: openAiApiKey,
-  });
-
-  // prompt template for question and answering
-  const qaPrompt = getQAPromptTemplate(prePrompt);
-
-  // set chain to retrieval QA chain
-  // setQAChain(
-  //   RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
-  //     prompt: qaPrompt,
-  //   })
-  // );
-  console.debug("QA chain initialised.", qaPrompt, vectorStore, model);
-}
-
-async function initQAModelV2(phase: PHASE_NAMES, openAiApiKey: string) {
   const documentVectors = vectorisedDocuments[phase];
   if (!documentVectors) {
-    console.debug("No document vector found for phase: " + phase);
+    console.error("No document vector found for phase: " + phase);
     return;
   }
   // initialise model
@@ -161,12 +122,12 @@ async function initQAModelV2(phase: PHASE_NAMES, openAiApiKey: string) {
     streaming: true,
     openAIApiKey: openAiApiKey,
   });
-
+  const promptTemplate = getQAPromptTemplate(prePrompt);
   return RetrievalQAChain.fromLLM(
     model,
     documentVectors.docVector.asRetriever(),
     {
-      prompt: getQAPromptTemplate(retrievalQAPrePrompt),
+      prompt: promptTemplate,
     }
   );
 }
@@ -214,17 +175,17 @@ function initPromptEvaluationModel(openAiApiKey: string) {
     outputVariables: ["promptInjectionEval", "maliciousInputEval"],
   });
   setPromptEvaluationChain(sequentialChain);
-
   console.debug("Prompt evaluation chain initialised.");
 }
 
 // ask the question and return models answer
 async function queryDocuments(
   question: string,
+  prePrompt: string,
   currentPhase: PHASE_NAMES,
   openAiApiKey: string
 ) {
-  const qaChain = await initQAModelV2(currentPhase, openAiApiKey);
+  const qaChain = await initQAModel(currentPhase, prePrompt, openAiApiKey);
   if (!qaChain) {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
@@ -307,7 +268,6 @@ export {
   queryDocuments,
   queryPromptEvaluationModel,
   formatEvaluationOutput,
-  // setQAChain,
   setPromptEvaluationChain,
   initDocumentVectors,
 };
