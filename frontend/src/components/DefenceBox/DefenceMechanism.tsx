@@ -53,6 +53,12 @@ function DefenceMechanism({
     }, 3000);
   }
 
+  function toggleDefence() {
+    defenceDetail.isActive
+      ? setDefenceInactive(defenceDetail.id)
+      : setDefenceActive(defenceDetail.id);
+  }
+
   return (
     <span>
       <div
@@ -70,11 +76,7 @@ function DefenceMechanism({
             <input 
               type="checkbox" 
               placeholder="defence-toggle" 
-              onChange={() => {
-                defenceDetail.isActive
-                  ? setDefenceInactive(defenceDetail.id)
-                  : setDefenceActive(defenceDetail.id);
-              }}
+              onChange={toggleDefence}
               // set checked if defence is active
               checked={defenceDetail.isActive}
             />

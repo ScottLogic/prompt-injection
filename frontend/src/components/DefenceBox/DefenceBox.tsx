@@ -116,8 +116,8 @@ function DefenceBox({
             key={index}
             defenceDetail={defenceDetail}
             showConfigurations={showConfigurations}
-            setDefenceActive={() => void setDefenceActive}
-            setDefenceInactive={() => void setDefenceInactive}
+            setDefenceActive={(defenceId) => void setDefenceActive(defenceId)}
+            setDefenceInactive={(defenceId) => void setDefenceInactive(defenceId)}
             setDefenceConfiguration={setDefenceConfiguration}
           />
         );
