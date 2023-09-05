@@ -4,7 +4,7 @@ import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { PHASE_NAMES } from "./models/phase";
 import { retrievalQAPrePromptSecure } from "./promptTemplates";
 
-const getInitialDefences = (): DefenceInfo[] => {
+function getInitialDefences(): DefenceInfo[] {
   return [
     new DefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
       {
@@ -55,7 +55,7 @@ const getInitialDefences = (): DefenceInfo[] => {
       },
     ]),
   ];
-};
+}
 
 function activateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   // return the updated list of defences

@@ -289,9 +289,9 @@ async function chatGptChatCompletion(
 }
 
 // take only the completions to send to GPT
-const getChatCompletionsFromHistory = (
+function getChatCompletionsFromHistory(
   chatHistory: ChatHistoryMessage[]
-): ChatCompletionRequestMessage[] => {
+): ChatCompletionRequestMessage[] {
   const completions: ChatCompletionRequestMessage[] =
     chatHistory.length > 0
       ? (chatHistory
@@ -302,13 +302,13 @@ const getChatCompletionsFromHistory = (
           ) as ChatCompletionRequestMessage[])
       : [];
   return completions;
-};
+}
 
-const pushCompletionToHistory = (
+function pushCompletionToHistory(
   chatHistory: ChatHistoryMessage[],
   completion: ChatCompletionRequestMessage,
   messageType: CHAT_MESSAGE_TYPE
-) => {
+) {
   if (messageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
     chatHistory.push({
       completion: completion,
@@ -319,7 +319,7 @@ const pushCompletionToHistory = (
     console.log("Skipping adding blocked message to chat history", completion);
   }
   return chatHistory;
-};
+}
 
 async function chatGptSendMessage(
   chatHistory: ChatHistoryMessage[],
