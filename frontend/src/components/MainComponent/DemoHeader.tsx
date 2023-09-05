@@ -3,17 +3,15 @@ import { PHASE_NAMES } from "../../models/phase";
 import PhaseSelectionBox from "../PhaseSelectionBox/PhaseSelectionBox";
 import "./DemoHeader.css";
 
-function DemoHeader(
-  {
-    currentPhase,
-    numCompletedPhases,
-    setNewPhase,
-  }: {
-    currentPhase: PHASE_NAMES;
-    numCompletedPhases: number;
-    setNewPhase: (newPhase: number) => void;
-  }
-) {
+function DemoHeader({
+  currentPhase,
+  numCompletedPhases,
+  setNewPhase,
+}: {
+  currentPhase: PHASE_NAMES;
+  numCompletedPhases: number;
+  setNewPhase: (newPhase: number) => void;
+}) {
   function getPhaseName(phase: PHASE_NAMES) {
     const phaseName = PHASES.find((p) => p.id === phase)?.name;
     return phaseName ?? "";

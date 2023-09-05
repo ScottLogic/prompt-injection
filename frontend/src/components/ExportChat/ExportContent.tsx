@@ -49,9 +49,9 @@ function ExportContent({
   function getTitle(currentPhase: number) {
     const title = "Prompt injection demo chat";
     if (currentPhase === 3) {
-      return `${title  } (sandbox mode)`;
+      return `${title} (sandbox mode)`;
     } else {
-      return `${title  } (phase ${  currentPhase  })`;
+      return `${title} (phase ${currentPhase})`;
     }
   }
 

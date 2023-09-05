@@ -87,7 +87,9 @@ function DemoBody({
           <DefenceBox
             currentPhase={currentPhase}
             defences={defences}
-            showConfigurations={currentPhase > PHASE_NAMES.PHASE_2 ? true : false}
+            showConfigurations={
+              currentPhase > PHASE_NAMES.PHASE_2 ? true : false
+            }
             defenceActivated={defenceActivated}
             defenceDeactivated={defenceDeactivated}
           />

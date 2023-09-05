@@ -4,10 +4,7 @@ import DemoHeader from "./components/MainComponent/DemoHeader";
 import DemoBody from "./components/MainComponent/DemoBody";
 import { useEffect, useState } from "react";
 import { PHASE_NAMES } from "./models/phase";
-import {
-  getChatHistory,
-  clearChat,
-} from "./service/chatService";
+import { getChatHistory, clearChat } from "./service/chatService";
 import { EmailInfo } from "./models/email";
 import { clearEmails, getSentEmails } from "./service/emailService";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
@@ -32,11 +29,13 @@ function App() {
 
   // called on mount
   useEffect(() => {
-    getCompletedPhases().then((numCompletedPhases) => {
-      setNumCompletedPhases(numCompletedPhases);
-    }).catch((err) => {
-      console.log(err);
-    });
+    getCompletedPhases()
+      .then((numCompletedPhases) => {
+        setNumCompletedPhases(numCompletedPhases);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     void setNewPhase(currentPhase);
   }, []);
 
@@ -47,7 +46,7 @@ function App() {
 
   // for clearing phase progress
   async function resetPhase() {
-    console.log(`resetting phase ${  currentPhase}`);
+    console.log(`resetting phase ${currentPhase}`);
 
     await clearChat(currentPhase);
     setMessages([]);
@@ -75,7 +74,7 @@ function App() {
 
   // for going switching phase without clearing progress
   async function setNewPhase(newPhase: PHASE_NAMES) {
-    console.log(`changing phase from ${  currentPhase  } to ${  newPhase}`);
+    console.log(`changing phase from ${currentPhase} to ${newPhase}`);
     setMessages([]);
     setCurrentPhase(newPhase);
 

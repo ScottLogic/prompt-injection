@@ -43,16 +43,18 @@ function ApiKeyBox() {
 
   // get the api key from the backend on refresh
   useEffect(() => {
-    getOpenAIApiKey().then((storedApiKey) => {
-      if (storedApiKey) {
-        console.log("Retrieved previous set api key");
-        setApiKey(storedApiKey);
-        // if the key is stored from the backend it is valid
-        setIsValidated(true);
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
+    getOpenAIApiKey()
+      .then((storedApiKey) => {
+        if (storedApiKey) {
+          console.log("Retrieved previous set api key");
+          setApiKey(storedApiKey);
+          // if the key is stored from the backend it is valid
+          setIsValidated(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (

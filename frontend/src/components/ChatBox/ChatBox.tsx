@@ -15,35 +15,35 @@ import { EmailInfo } from "../../models/email";
 import { PHASE_NAMES } from "../../models/phase";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 
-function ChatBox(
-  {
-    messages,
-    completedPhases,
-    currentPhase,
-    addChatMessage,
-    addCompletedPhase,
-    setNumCompletedPhases,
-    setEmails,
-  }: {
-    messages: ChatMessage[];
-    completedPhases: Set<PHASE_NAMES>;
-    currentPhase: PHASE_NAMES;
-    addChatMessage: (message: ChatMessage) => void;
-    addCompletedPhase: (phase: PHASE_NAMES) => void;
-    setNumCompletedPhases: (numCompletedPhases: number) => void;
-    setEmails: (emails: EmailInfo[]) => void;
-  }
-) {
+function ChatBox({
+  messages,
+  completedPhases,
+  currentPhase,
+  addChatMessage,
+  addCompletedPhase,
+  setNumCompletedPhases,
+  setEmails,
+}: {
+  messages: ChatMessage[];
+  completedPhases: Set<PHASE_NAMES>;
+  currentPhase: PHASE_NAMES;
+  addChatMessage: (message: ChatMessage) => void;
+  addCompletedPhase: (phase: PHASE_NAMES) => void;
+  setNumCompletedPhases: (numCompletedPhases: number) => void;
+  setEmails: (emails: EmailInfo[]) => void;
+}) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
 
   // called on mount
   useEffect(() => {
     // get sent emails
-    getSentEmails(currentPhase).then((sentEmails) => {
-      setEmails(sentEmails);
-    }).catch((err) => {
-      console.log(err);
-    });
+    getSentEmails(currentPhase)
+      .then((sentEmails) => {
+        setEmails(sentEmails);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [setEmails]);
 
   function inputKeyPressed(event: React.KeyboardEvent<HTMLInputElement>) {

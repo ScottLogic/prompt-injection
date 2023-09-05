@@ -3,17 +3,15 @@ import { PHASES } from "../../Phases";
 
 import "./PhaseSelectionBox.css";
 
-function PhaseSelectionBox(
-  {
-    currentPhase,
-    numCompletedPhases,
-    setNewPhase,
-  }: {
-    currentPhase: PHASE_NAMES;
-    numCompletedPhases: number;
-    setNewPhase: (newPhase: number) => void;
-  }
-) {
+function PhaseSelectionBox({
+  currentPhase,
+  numCompletedPhases,
+  setNewPhase,
+}: {
+  currentPhase: PHASE_NAMES;
+  numCompletedPhases: number;
+  setNewPhase: (newPhase: number) => void;
+}) {
   function handlePhaseChange(newPhase: PHASE_NAMES) {
     if (newPhase !== currentPhase) {
       console.log(`Changing phase to ${newPhase}`);
@@ -31,7 +29,9 @@ function PhaseSelectionBox(
                 phase.id === currentPhase ? "selected" : ""
               }`}
               key={phase.name}
-              onClick={() => {handlePhaseChange(phase.id)}}
+              onClick={() => {
+                handlePhaseChange(phase.id);
+              }}
               disabled={
                 index > numCompletedPhases && phase.id !== PHASE_NAMES.SANDBOX
               }

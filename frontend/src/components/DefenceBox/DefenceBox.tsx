@@ -7,7 +7,11 @@ import {
   deactivateDefence,
   configureDefence,
 } from "../../service/defenceService";
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "../../models/defence";
+import {
+  DEFENCE_TYPES,
+  DefenceConfig,
+  DefenceInfo,
+} from "../../models/defence";
 
 function DefenceBox({
   currentPhase,
@@ -32,33 +36,35 @@ function DefenceBox({
   // called on mount & when defences are updated
   useEffect(() => {
     // fetch defences from backend
-    getDefences(currentPhase).then((remoteDefences) => {
-      defenceDetails.map((localDefence) => {
-        const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
-          return localDefence.id === remoteDefence.id;
-        });
-        if (matchingRemoteDefence) {
-          localDefence.isActive = matchingRemoteDefence.isActive;
-          // set each config value
-          matchingRemoteDefence.config.forEach((configEntry) => {
-            // get the matching config in the local defence
-            const matchingConfig = localDefence.config.find((config) => {
-              return config.id === configEntry.id;
-            });
-            if (matchingConfig) {
-              matchingConfig.value = configEntry.value;
-            }
+    getDefences(currentPhase)
+      .then((remoteDefences) => {
+        defenceDetails.map((localDefence) => {
+          const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
+            return localDefence.id === remoteDefence.id;
           });
-        }
-        return localDefence;
+          if (matchingRemoteDefence) {
+            localDefence.isActive = matchingRemoteDefence.isActive;
+            // set each config value
+            matchingRemoteDefence.config.forEach((configEntry) => {
+              // get the matching config in the local defence
+              const matchingConfig = localDefence.config.find((config) => {
+                return config.id === configEntry.id;
+              });
+              if (matchingConfig) {
+                matchingConfig.value = configEntry.value;
+              }
+            });
+          }
+          return localDefence;
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }).catch((err) => {
-      console.log(err);
-    });
   }, [defences]);
 
   async function setDefenceActive(defenceId: DEFENCE_TYPES) {
-    await activateDefence(defenceId, currentPhase)
+    await activateDefence(defenceId, currentPhase);
     // update state
     const newDefenceDetails = defenceDetails.map((defenceDetail) => {
       if (defenceDetail.id === defenceId) {
@@ -89,11 +95,7 @@ function DefenceBox({
     defenceId: DEFENCE_TYPES,
     config: DefenceConfig[]
   ) {
-    const success = await configureDefence(
-      defenceId,
-      config,
-      currentPhase
-    );
+    const success = await configureDefence(defenceId, config, currentPhase);
     if (success) {
       // update state
       const newDefences = defenceDetails.map((defence) => {
@@ -117,7 +119,9 @@ function DefenceBox({
             defenceDetail={defenceDetail}
             showConfigurations={showConfigurations}
             setDefenceActive={(defenceId) => void setDefenceActive(defenceId)}
-            setDefenceInactive={(defenceId) => void setDefenceInactive(defenceId)}
+            setDefenceInactive={(defenceId) =>
+              void setDefenceInactive(defenceId)
+            }
             setDefenceConfiguration={setDefenceConfiguration}
           />
         );

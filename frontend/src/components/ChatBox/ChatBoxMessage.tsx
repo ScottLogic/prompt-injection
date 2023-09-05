@@ -17,10 +17,8 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
       }
       lang="en"
     >
-      {(message.type === CHAT_MESSAGE_TYPE.USER && <b>Input: </b>)}
-        {(message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED && (
-          <b>Edited: </b>
-        ))}
+      {message.type === CHAT_MESSAGE_TYPE.USER && <b>Input: </b>}
+      {message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED && <b>Edited: </b>}
       {message.type === CHAT_MESSAGE_TYPE.PHASE_INFO && (
         <p className="phase-info-header">Information</p>
       )}

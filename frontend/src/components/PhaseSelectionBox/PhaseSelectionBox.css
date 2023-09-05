@@ -1,21 +1,21 @@
 #phase-selection-box {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .phase-selection-button {
-    margin: 5px;
-    padding: 5px 5px;
+  margin: 5px;
+  padding: 5px 5px;
 }
 
 .selected {
-    color: var(--main-button-active-text-colour);
-    background-color: var(--main-button-active-background-colour);
+  color: var(--main-button-active-text-colour);
+  background-color: var(--main-button-active-background-colour);
 }
 
 .selected:hover {
-    color: var(--main-button-active-text-colour);
-    background-color: var(--main-button-active-background-colour);
+  color: var(--main-button-active-text-colour);
+  background-color: var(--main-button-active-background-colour);
 }

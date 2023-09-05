@@ -15,7 +15,7 @@ function ModelSelectionBox() {
 
   // handle button click to log the selected model
   async function submitSelectedModel() {
-    console.log(`selected model: ${  selectedModel}`);
+    console.log(`selected model: ${selectedModel}`);
     if (await setGptModel(selectedModel)) {
       setModelInUse(selectedModel);
       setErrorChangingModel(false);
@@ -26,11 +26,13 @@ function ModelSelectionBox() {
 
   // get the model
   useEffect(() => {
-    getGptModel().then((model) => {
-      setModelInUse(model);
-    }).catch((err) => {
-      console.log(err);
-    });
+    getGptModel()
+      .then((model) => {
+        setModelInUse(model);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   const chatModelOptions = Object.values(CHAT_MODELS);
@@ -47,7 +49,9 @@ function ModelSelectionBox() {
           <select
             id="model-selection-menu"
             aria-label="model-select"
-            onChange={(e) => { setSelectedModel(e.target.value as CHAT_MODELS); }}
+            onChange={(e) => {
+              setSelectedModel(e.target.value as CHAT_MODELS);
+            }}
             placeholder={modelInUse}
           >
             {chatModelOptions.map((model) => (

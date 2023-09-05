@@ -12,7 +12,7 @@
 }
 
 #viewKey {
-  color:grey;
+  color: grey;
   font-size: 16px;
 }
 
@@ -30,5 +30,3 @@
 .validated {
   background-color: #efe;
 }
-
-

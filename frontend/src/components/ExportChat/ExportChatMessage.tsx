@@ -45,14 +45,14 @@ function getFullPrefix(message: ChatMessage) {
     case CHAT_MESSAGE_TYPE.INFO:
     case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
     case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
-      return `Info: ${  message.message}`;
+      return `Info: ${message.message}`;
     case CHAT_MESSAGE_TYPE.USER:
-      return `You: ${  message.message}`;
+      return `You: ${message.message}`;
     case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
-      return `You (edited): ${  message.message}`;
+      return `You (edited): ${message.message}`;
     case CHAT_MESSAGE_TYPE.BOT:
     case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
-      return `Bot: ${  message.message}`;
+      return `Bot: ${message.message}`;
     default:
       return message.message;
   }

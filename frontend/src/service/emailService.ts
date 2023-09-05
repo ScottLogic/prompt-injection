@@ -5,7 +5,7 @@ const PATH = "email/";
 
 async function clearEmails(phase: number): Promise<boolean> {
   const response = await sendRequest(
-    `${PATH  }clear`,
+    `${PATH}clear`,
     "POST",
     {
       "Content-Type": "application/json",
@@ -16,8 +16,8 @@ async function clearEmails(phase: number): Promise<boolean> {
 }
 
 async function getSentEmails(phase: number) {
-  const response = await sendRequest(`${PATH  }get?phase=${  phase}`, "GET");
-  const data = await response.json() as EmailInfo[];
+  const response = await sendRequest(`${PATH}get?phase=${phase}`, "GET");
+  const data = (await response.json()) as EmailInfo[];
   return data;
 }
 

@@ -19,7 +19,7 @@ function ExportPDFLink({
     if (currentPhase === PHASE_NAMES.SANDBOX) {
       return "prompt-injection-chat-log-sandbox.pdf";
     } else {
-      return `prompt-injection-chat-log-phase-${  currentPhase  }.pdf`;
+      return `prompt-injection-chat-log-phase-${currentPhase}.pdf`;
     }
   }
 

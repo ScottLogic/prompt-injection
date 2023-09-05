@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "../../models/defence";
+import {
+  DEFENCE_TYPES,
+  DefenceConfig,
+  DefenceInfo,
+} from "../../models/defence";
 import { validateDefence } from "../../service/defenceService";
 import "./DefenceMechanism.css";
 import "../StrategyBox/StrategyMechanism.css";
@@ -39,8 +43,11 @@ function DefenceMechanism({
         return config;
       });
 
-      const configured = await setDefenceConfiguration(defenceDetail.id, newConfiguration);
-      setIsConfigured(true);  
+      const configured = await setDefenceConfiguration(
+        defenceDetail.id,
+        newConfiguration
+      );
+      setIsConfigured(true);
       setConfigValidated(configured);
     } else {
       setConfigValidated(false);
@@ -72,10 +79,10 @@ function DefenceMechanism({
       >
         <div className="strategy-mechanism-header">
           <span>{defenceDetail.name}</span>
-          <label className="switch" >
-            <input 
-              type="checkbox" 
-              placeholder="defence-toggle" 
+          <label className="switch">
+            <input
+              type="checkbox"
+              placeholder="defence-toggle"
               onChange={toggleDefence}
               // set checked if defence is active
               checked={defenceDetail.isActive}
