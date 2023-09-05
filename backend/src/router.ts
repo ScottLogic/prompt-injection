@@ -118,7 +118,7 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
 // reset the active defences
 router.post("/defence/reset", (req: DefenceResetRequest, res) => {
   const phase = req.body.phase;
-  if (phase && phase >= PHASE_NAMES.PHASE_0) {
+  if (phase !== undefined && phase >= PHASE_NAMES.PHASE_0) {
     req.session.phaseState[phase].defences = getInitialDefences();
     console.debug("Defences reset");
     res.send();
@@ -131,7 +131,7 @@ router.post("/defence/reset", (req: DefenceResetRequest, res) => {
 // Get the status of all defences /defence/status?phase=1
 router.get("/defence/status", (req, res) => {
   const phase: number | undefined = req.query.phase as number | undefined;
-  if (phase) {
+  if (phase !== undefined) {
     res.send(req.session.phaseState[phase].defences);
   } else {
     res.statusCode = 400;
@@ -142,7 +142,7 @@ router.get("/defence/status", (req, res) => {
 // Get sent emails // /email/get?phase=1
 router.get("/email/get", (req, res) => {
   const phase: number | undefined = req.query.phase as number | undefined;
-  if (phase) {
+  if (phase !== undefined) {
     res.send(req.session.phaseState[phase].sentEmails);
   } else {
     res.statusCode = 400;
@@ -153,7 +153,7 @@ router.get("/email/get", (req, res) => {
 // clear emails
 router.post("/email/clear", (req: EmailClearRequest, res) => {
   const phase = req.body.phase;
-  if (phase && phase >= PHASE_NAMES.PHASE_0) {
+  if (phase !== undefined && phase >= PHASE_NAMES.PHASE_0) {
     req.session.phaseState[phase].sentEmails = [];
     console.debug("Emails cleared");
     res.send();
@@ -312,7 +312,7 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
 // get the chat history
 router.get("/openai/history", (req, res) => {
   const phase: number | undefined = req.query.phase as number | undefined;
-  if (phase) {
+  if (phase !== undefined) {
     res.send(req.session.phaseState[phase].chatHistory);
   } else {
     res.statusCode = 400;
@@ -341,7 +341,7 @@ router.post("/openai/addHistory", (req: OpenAiAddHistoryRequest, res) => {
 // Clear the ChatGPT messages
 router.post("/openai/clear", (req: OpenAiClearRequest, res) => {
   const phase = req.body.phase;
-  if (phase && phase >= PHASE_NAMES.PHASE_0) {
+  if (phase !== undefined && phase >= PHASE_NAMES.PHASE_0) {
     req.session.phaseState[phase].chatHistory = [];
     console.debug("ChatGPT messages cleared");
     res.send();
