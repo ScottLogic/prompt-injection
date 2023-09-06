@@ -139,14 +139,14 @@ function App() {
     addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
   };
 
-  const setDefenceActive = (defenceId: string) => {
-    activateDefence(defenceId, currentPhase).then(() => {
+  const setDefenceActive = (defence: DefenceInfo) => {
+    activateDefence(defence.id, currentPhase).then(() => {
       // update state
       const newDefenceDetails = defencesToShow.map((defenceDetail) => {
-        if (defenceDetail.id === defenceId) {
+        if (defenceDetail.id === defence.id) {
           defenceDetail.isActive = true;
           defenceDetail.isTriggered = false;
-          const infoMessage = `${defenceId} defence activated`;
+          const infoMessage = `${defence.name} defence activated`;
           addInfoMessage(infoMessage.toLowerCase());
         }
         return defenceDetail;
@@ -155,14 +155,14 @@ function App() {
     });
   };
 
-  const setDefenceInactive = (defenceId: string) => {
-    deactivateDefence(defenceId, currentPhase).then(() => {
+  const setDefenceInactive = (defence: DefenceInfo) => {
+    deactivateDefence(defence.id, currentPhase).then(() => {
       // update state
       const newDefenceDetails = defencesToShow.map((defenceDetail) => {
-        if (defenceDetail.id === defenceId) {
+        if (defenceDetail.id === defence.id) {
           defenceDetail.isActive = false;
           defenceDetail.isTriggered = false;
-          const infoMessage = `${defenceId} defence deactivated`;
+          const infoMessage = `${defence.name} defence deactivated`;
           addInfoMessage(infoMessage.toLowerCase());
         }
         return defenceDetail;

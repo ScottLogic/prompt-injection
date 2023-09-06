@@ -12,8 +12,8 @@ function DefenceBox({
   currentPhase: number;
   defences: DefenceInfo[];
   showConfigurations: boolean;
-  setDefenceActive: (defenceId: string) => void;
-  setDefenceInactive: (defenceId: string) => void;
+  setDefenceActive: (defence: DefenceInfo) => void;
+  setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
     defenceId: string,
     config: DefenceConfig[]

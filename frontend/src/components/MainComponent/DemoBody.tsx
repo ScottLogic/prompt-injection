@@ -32,8 +32,8 @@ function DemoBody({
   messages: ChatMessage[];
   addChatMessage: (message: ChatMessage) => void;
   resetPhase: () => void;
-  setDefenceActive: (defenceId: string) => void;
-  setDefenceInactive: (defenceId: string) => void;
+  setDefenceActive: (defence: DefenceInfo) => void;
+  setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
     defenceId: string,
     config: DefenceConfig[]
