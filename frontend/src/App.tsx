@@ -7,13 +7,20 @@ import { PHASE_NAMES } from "./models/phase";
 import {
   getChatHistory,
   clearChat,
+  addMessageToChatHistory,
 } from "./service/chatService";
 import { EmailInfo } from "./models/email";
 import { clearEmails, getSentEmails } from "./service/emailService";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
-import { resetActiveDefences } from "./service/defenceService";
+import {
+  activateDefence,
+  configureDefence,
+  deactivateDefence,
+  getDefences,
+  resetActiveDefences,
+} from "./service/defenceService";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
-import { DefenceInfo } from "./models/defence";
+import { DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedPhases } from "./service/phaseService";
 import { PHASES } from "./Phases";
 
@@ -97,7 +104,95 @@ function App() {
       newPhase === PHASE_NAMES.PHASE_2
         ? DEFENCE_DETAILS_PHASE
         : DEFENCE_DETAILS_ALL;
-    setDefencesToShow(defences);
+    // fetch defences from backend
+    getDefences(newPhase).then((remoteDefences) => {
+      defences.map((localDefence) => {
+        const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
+          return localDefence.id === remoteDefence.id;
+        });
+        if (matchingRemoteDefence) {
+          localDefence.isActive = matchingRemoteDefence.isActive;
+          // set each config value
+          if (matchingRemoteDefence.config && localDefence.config) {
+            matchingRemoteDefence.config.forEach((configEntry) => {
+              // get the matching config in the local defence
+              const matchingConfig = localDefence.config.find((config) => {
+                return config.id === configEntry.id;
+              });
+              if (matchingConfig) {
+                matchingConfig.value = configEntry.value;
+              }
+            });
+          }
+        }
+        return localDefence;
+      });
+      setDefencesToShow(defences);
+    });
+  };
+
+  const addInfoMessage = (message: string) => {
+    addChatMessage({
+      message: message,
+      type: CHAT_MESSAGE_TYPE.INFO,
+    });
+    addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
+  };
+
+  const setDefenceActive = (defence: DefenceInfo) => {
+    activateDefence(defence.id, currentPhase).then(() => {
+      // update state
+      const newDefenceDetails = defencesToShow.map((defenceDetail) => {
+        if (defenceDetail.id === defence.id) {
+          defenceDetail.isActive = true;
+          defenceDetail.isTriggered = false;
+          const infoMessage = `${defence.name} defence activated`;
+          addInfoMessage(infoMessage.toLowerCase());
+        }
+        return defenceDetail;
+      });
+      setDefencesToShow(newDefenceDetails);
+    });
+  };
+
+  const setDefenceInactive = (defence: DefenceInfo) => {
+    deactivateDefence(defence.id, currentPhase).then(() => {
+      // update state
+      const newDefenceDetails = defencesToShow.map((defenceDetail) => {
+        if (defenceDetail.id === defence.id) {
+          defenceDetail.isActive = false;
+          defenceDetail.isTriggered = false;
+          const infoMessage = `${defence.name} defence deactivated`;
+          addInfoMessage(infoMessage.toLowerCase());
+        }
+        return defenceDetail;
+      });
+      setDefencesToShow(newDefenceDetails);
+    });
+  };
+
+  const setDefenceConfiguration = (
+    defenceId: string,
+    config: DefenceConfig[]
+  ) => {
+    const configSuccess = configureDefence(
+      defenceId,
+      config,
+      currentPhase
+    ).then((success) => {
+      if (success) {
+        // update state
+        const newDefences = defencesToShow.map((defence) => {
+          if (defence.id === defenceId) {
+            defence.config = config;
+          }
+          return defence;
+        });
+        setDefencesToShow(newDefences);
+      }
+      return success;
+    });
+    return configSuccess;
   };
 
   return (
@@ -117,6 +212,9 @@ function App() {
           messages={messages}
           addChatMessage={addChatMessage}
           resetPhase={resetPhase}
+          setDefenceActive={setDefenceActive}
+          setDefenceInactive={setDefenceInactive}
+          setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
           setNumCompletedPhases={setNumCompletedPhases}
         />

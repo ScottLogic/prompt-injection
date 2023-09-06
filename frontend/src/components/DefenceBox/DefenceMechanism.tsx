@@ -15,8 +15,8 @@ function DefenceMechanism({
 }: {
   defenceDetail: DefenceInfo;
   showConfigurations: boolean;
-  setDefenceActive: (defenceId: string) => void;
-  setDefenceInactive: (defenceId: string) => void;
+  setDefenceActive: (defence: DefenceInfo) => void;
+  setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
     defenceId: string,
     config: DefenceConfig[]
@@ -68,14 +68,14 @@ function DefenceMechanism({
       >
         <div className="strategy-mechanism-header">
           <span>{defenceDetail.name}</span>
-          <label className="switch" >
-            <input 
-              type="checkbox" 
-              placeholder="defence-toggle" 
+          <label className="switch">
+            <input
+              type="checkbox"
+              placeholder="defence-toggle"
               onChange={() => {
                 defenceDetail.isActive
-                  ? setDefenceInactive(defenceDetail.id)
-                  : setDefenceActive(defenceDetail.id);
+                  ? setDefenceInactive(defenceDetail)
+                  : setDefenceActive(defenceDetail);
               }}
               // set checked if defence is active
               checked={defenceDetail.isActive}
