@@ -21,9 +21,6 @@ import * as fs from "fs";
 
 const router = express.Router();
 
-// keep track of phase change to reinitialize models
-// let prevPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX;
-
 // Activate a defence
 router.post("/defence/activate", (req, res) => {
   // id of the defence

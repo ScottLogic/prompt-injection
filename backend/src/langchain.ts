@@ -83,11 +83,11 @@ function getQAPromptTemplate(prePrompt: string) {
   return template;
 }
 // create and store the document vectors for each phase
-async function initDocumentVectors(openAiApiKey: string) {
-  if (!openAiApiKey) {
-    console.debug("No OpenAI API key set to initialise document vectors.");
-    return;
-  }
+async function initDocumentVectors() {
+  // if (!openAiApiKey) {
+  //   console.debug("No OpenAI API key set to initialise document vectors.");
+  //   return;
+  // }
   let docVectors: DocumentsVector[] = [];
 
   for (const value of Object.values(PHASE_NAMES)) {
@@ -96,10 +96,10 @@ async function initDocumentVectors(openAiApiKey: string) {
       // get the documents
       const filePath: string = getFilepath(phase);
       const documents: Document[] = await getDocuments(filePath);
-      // embed and store the splits
-      const embeddings = new OpenAIEmbeddings({
-        openAIApiKey: openAiApiKey,
-      });
+
+      // embed and store the splits - use process.env.OPENAI_API_KEY for the key
+      const embeddings = new OpenAIEmbeddings();
+
       const vectorStore: MemoryVectorStore =
         await MemoryVectorStore.fromDocuments(documents, embeddings);
       // store the document vectors for the phase

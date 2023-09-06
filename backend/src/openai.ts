@@ -102,7 +102,7 @@ async function setOpenAiApiKey(openAiApiKey: string, gptModel: string) {
     console.debug("Setting API key and initialising models");
     initOpenAi(openAiApiKey);
     initPromptEvaluationModel(openAiApiKey);
-    await initDocumentVectors(openAiApiKey);
+    await initDocumentVectors();
     return true;
   } else {
     // set to empty in case it was previously set
