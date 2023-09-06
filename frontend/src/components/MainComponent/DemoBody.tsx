@@ -1,7 +1,11 @@
 import "./DemoBody.css";
 import { ATTACKS_PHASE_1, ATTACKS_ALL } from "../../Attacks";
-import { ChatMessage, CHAT_MESSAGE_TYPE } from "../../models/chat";
-import { DefenceInfo } from "../../models/defence";
+import { ChatMessage } from "../../models/chat";
+import {
+  DEFENCE_TYPES,
+  DefenceConfig,
+  DefenceInfo,
+} from "../../models/defence";
 import { PHASE_NAMES } from "../../models/phase";
 import AttackBox from "../AttackBox/AttackBox";
 import ChatBox from "../ChatBox/ChatBox";
@@ -10,7 +14,6 @@ import EmailBox from "../EmailBox/EmailBox";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ModelSelectionBox from "../ModelSelectionBox/ModelSelectionBox";
 import { EmailInfo } from "../../models/email";
-import { addMessageToChatHistory } from "../../service/chatService";
 import { useState } from "react";
 import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
 
@@ -21,6 +24,9 @@ function DemoBody({
   messages,
   addChatMessage,
   resetPhase,
+  setDefenceActive,
+  setDefenceInactive,
+  setDefenceConfiguration,
   setEmails,
   setNumCompletedPhases,
 }: {
@@ -30,6 +36,12 @@ function DemoBody({
   messages: ChatMessage[];
   addChatMessage: (message: ChatMessage) => void;
   resetPhase: () => void;
+  setDefenceActive: (defence: DefenceInfo) => void;
+  setDefenceInactive: (defence: DefenceInfo) => void;
+  setDefenceConfiguration: (
+    defenceId: DEFENCE_TYPES,
+    config: DefenceConfig[]
+  ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedPhases: (numCompletedPhases: number) => void;
 }) {
@@ -46,27 +58,6 @@ function DemoBody({
     completedPhases.delete(currentPhase);
     setCompletedPhases(completedPhases);
     resetPhase();
-  }
-
-  function addInfoMessage(message: string) {
-    addChatMessage({
-      message: message,
-      type: CHAT_MESSAGE_TYPE.INFO,
-    });
-    // asynchronously add the message to the chat history
-    void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
-  }
-
-  // methods to be called when defences are (de)activated
-  // this adds an info message to the chat
-  function defenceActivated(defenceInfo: DefenceInfo) {
-    const infoMessage = `${defenceInfo.name} defence activated`;
-    addInfoMessage(infoMessage.toLowerCase());
-  }
-
-  function defenceDeactivated(defenceInfo: DefenceInfo) {
-    const infoMessage = `${defenceInfo.name} defence deactivated`;
-    addInfoMessage(infoMessage.toLowerCase());
   }
 
   return (
@@ -90,8 +81,9 @@ function DemoBody({
             showConfigurations={
               currentPhase > PHASE_NAMES.PHASE_2 ? true : false
             }
-            defenceActivated={defenceActivated}
-            defenceDeactivated={defenceDeactivated}
+            setDefenceActive={setDefenceActive}
+            setDefenceInactive={setDefenceInactive}
+            setDefenceConfiguration={setDefenceConfiguration}
           />
         )}
         {/* hide model selection box on phases 0 and 1 */}

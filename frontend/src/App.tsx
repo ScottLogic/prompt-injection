@@ -4,17 +4,28 @@ import DemoHeader from "./components/MainComponent/DemoHeader";
 import DemoBody from "./components/MainComponent/DemoBody";
 import { useEffect, useState } from "react";
 import { PHASE_NAMES } from "./models/phase";
-import { getChatHistory, clearChat } from "./service/chatService";
+import {
+  getChatHistory,
+  clearChat,
+  addMessageToChatHistory,
+} from "./service/chatService";
 import { EmailInfo } from "./models/email";
 import { clearEmails, getSentEmails } from "./service/emailService";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
-import { resetActiveDefences } from "./service/defenceService";
+import {
+  activateDefence,
+  configureDefence,
+  deactivateDefence,
+  getDefences,
+  resetActiveDefences,
+} from "./service/defenceService";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
-import { DefenceInfo } from "./models/defence";
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedPhases } from "./service/phaseService";
 import { PHASES } from "./Phases";
 
 function App() {
+  const [demoBodyKey, setDemoBodyKey] = useState<number>(0);
   // start on sandbox mode
   const [currentPhase, setCurrentPhase] = useState<PHASE_NAMES>(
     PHASE_NAMES.SANDBOX
@@ -95,7 +106,86 @@ function App() {
       newPhase === PHASE_NAMES.PHASE_2
         ? DEFENCE_DETAILS_PHASE
         : DEFENCE_DETAILS_ALL;
+    // fetch defences from backend
+    const remoteDefences = await getDefences(newPhase);
+    defences.map((localDefence) => {
+      const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
+        return localDefence.id === remoteDefence.id;
+      });
+      if (matchingRemoteDefence) {
+        localDefence.isActive = matchingRemoteDefence.isActive;
+        // set each config value
+        matchingRemoteDefence.config.forEach((configEntry) => {
+          // get the matching config in the local defence
+          const matchingConfig = localDefence.config.find((config) => {
+            return config.id === configEntry.id;
+          });
+          if (matchingConfig) {
+            matchingConfig.value = configEntry.value;
+          }
+        });
+      }
+      return localDefence;
+    });
     setDefencesToShow(defences);
+    setDemoBodyKey(demoBodyKey + 1);
+  }
+
+  function addInfoMessage(message: string) {
+    addChatMessage({
+      message: message,
+      type: CHAT_MESSAGE_TYPE.INFO,
+    });
+    // asynchronously add message to chat history
+    void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
+  }
+
+  async function setDefenceActive(defence: DefenceInfo) {
+    await activateDefence(defence.id, currentPhase);
+    // update state
+    const newDefenceDetails = defencesToShow.map((defenceDetail) => {
+      if (defenceDetail.id === defence.id) {
+        defenceDetail.isActive = true;
+        defenceDetail.isTriggered = false;
+        const infoMessage = `${defence.name} defence activated`;
+        addInfoMessage(infoMessage.toLowerCase());
+      }
+      return defenceDetail;
+    });
+    setDefencesToShow(newDefenceDetails);
+  }
+
+  async function setDefenceInactive(defence: DefenceInfo) {
+    await deactivateDefence(defence.id, currentPhase);
+    // update state
+    const newDefenceDetails = defencesToShow.map((defenceDetail) => {
+      if (defenceDetail.id === defence.id) {
+        defenceDetail.isActive = false;
+        defenceDetail.isTriggered = false;
+        const infoMessage = `${defence.name} defence deactivated`;
+        addInfoMessage(infoMessage.toLowerCase());
+      }
+      return defenceDetail;
+    });
+    setDefencesToShow(newDefenceDetails);
+  }
+
+  async function setDefenceConfiguration(
+    defenceId: DEFENCE_TYPES,
+    config: DefenceConfig[]
+  ) {
+    const success = await configureDefence(defenceId, config, currentPhase);
+    if (success) {
+      // update state
+      const newDefences = defencesToShow.map((defence) => {
+        if (defence.id === defenceId) {
+          defence.config = config;
+        }
+        return defence;
+      });
+      setDefencesToShow(newDefences);
+    }
+    return success;
   }
 
   return (
@@ -109,12 +199,16 @@ function App() {
       </div>
       <div id="app-content-body">
         <DemoBody
+          key={demoBodyKey}
           currentPhase={currentPhase}
           defences={defencesToShow}
           emails={emails}
           messages={messages}
           addChatMessage={addChatMessage}
           resetPhase={() => void resetPhase()}
+          setDefenceActive={(defence) => void setDefenceActive(defence)}
+          setDefenceInactive={(defence) => void setDefenceInactive(defence)}
+          setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
           setNumCompletedPhases={setNumCompletedPhases}
         />

@@ -19,8 +19,8 @@ function DefenceMechanism({
 }: {
   defenceDetail: DefenceInfo;
   showConfigurations: boolean;
-  setDefenceActive: (defenceId: DEFENCE_TYPES) => void;
-  setDefenceInactive: (defenceId: DEFENCE_TYPES) => void;
+  setDefenceActive: (defence: DefenceInfo) => void;
+  setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
     defenceId: DEFENCE_TYPES,
     config: DefenceConfig[]
@@ -62,8 +62,8 @@ function DefenceMechanism({
 
   function toggleDefence() {
     defenceDetail.isActive
-      ? setDefenceInactive(defenceDetail.id)
-      : setDefenceActive(defenceDetail.id);
+      ? setDefenceInactive(defenceDetail)
+      : setDefenceActive(defenceDetail);
   }
 
   return (
