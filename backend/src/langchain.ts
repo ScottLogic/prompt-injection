@@ -27,6 +27,10 @@ let vectorisedDocuments: DocumentsVector[] = [];
 // chain we use in prompt evaluation request
 let promptEvaluationChain: SequentialChain | null = null;
 
+function setVectorisedDocuments(docs: DocumentsVector[]) {
+  vectorisedDocuments = docs;
+}
+
 function setPromptEvaluationChain(chain: SequentialChain | null) {
   console.debug("Setting evaluation chain.");
   promptEvaluationChain = chain;
@@ -44,6 +48,7 @@ function getFilepath(currentPhase: PHASE_NAMES) {
     case PHASE_NAMES.SANDBOX:
       return (filePath += "common/");
     default:
+      console.error("No document filepath found for phase: " + currentPhase);
       return "";
   }
 }
@@ -69,37 +74,42 @@ async function getDocuments(filePath: string) {
 // join the configurable preprompt to the context template
 function getQAPromptTemplate(prePrompt: string) {
   if (!prePrompt) {
-    console.debug("Using default retrieval QA pre-prompt");
+    // use the default prePrompt
     prePrompt = retrievalQAPrePrompt;
   }
   const fullPrompt = prePrompt + qAcontextTemplate;
+  console.debug("QA prompt: " + fullPrompt);
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;
 }
 // create and store the document vectors for each phase
 async function initDocumentVectors(openAiApiKey: string) {
   if (!openAiApiKey) {
+    console.debug("No OpenAI API key set to initialise document vectors.");
     return;
   }
+  let docVectors: DocumentsVector[] = [];
+
   for (const value of Object.values(PHASE_NAMES)) {
     if (!isNaN(Number(value))) {
       const phase = value as PHASE_NAMES;
       // get the documents
       const filePath: string = getFilepath(phase);
-      const docs: Document[] = await getDocuments(filePath);
+      const documents: Document[] = await getDocuments(filePath);
       // embed and store the splits
       const embeddings = new OpenAIEmbeddings({
         openAIApiKey: openAiApiKey,
       });
       const vectorStore: MemoryVectorStore =
-        await MemoryVectorStore.fromDocuments(docs, embeddings);
+        await MemoryVectorStore.fromDocuments(documents, embeddings);
       // store the document vectors for the phase
-      vectorisedDocuments.push({
+      docVectors.push({
         phase: phase,
         docVector: vectorStore,
       });
     }
   }
+  setVectorisedDocuments(docVectors);
   console.debug(
     "Intitialised document vectors for each phase. count=",
     vectorisedDocuments.length
@@ -111,6 +121,10 @@ async function initQAModel(
   prePrompt: string,
   openAiApiKey: string
 ) {
+  if (!openAiApiKey) {
+    console.debug("No OpenAI API key set to initialise QA model");
+    return;
+  }
   const documentVectors = vectorisedDocuments[phase];
   if (!documentVectors) {
     console.error("No document vector found for phase: " + phase);
@@ -123,6 +137,7 @@ async function initQAModel(
     openAIApiKey: openAiApiKey,
   });
   const promptTemplate = getQAPromptTemplate(prePrompt);
+
   return RetrievalQAChain.fromLLM(
     model,
     documentVectors.docVector.asRetriever(),
@@ -269,5 +284,6 @@ export {
   queryPromptEvaluationModel,
   formatEvaluationOutput,
   setPromptEvaluationChain,
+  setVectorisedDocuments,
   initDocumentVectors,
 };
