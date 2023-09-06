@@ -35,6 +35,23 @@ npm install
 | EMAIL_WHITELIST                 | kate@hotmail.com,bob@hotmail.com,@scottlogic.com | List of emails that the chat bot can 'send' emails to when the EMAIL_WHITELIST defence is active. |
 | SESSION_SECRET                  | YOUR_SESSION_SECRET | A secret string used to set up the backend user session. |
 
+## Development
+### Linting and formatting
+
+The project is configured to be linted and formatted on both the backend and frontend. 
+
+If you are using VS Code, we recommend doing the following:
+1. Get the prettier-eslint extension.
+2. Set the default formatter to the prettier-eslint one.
+3. Configure VS Code to format your documents on save.
+
+To manually lint and format you can do:
+```
+npm run lint
+npm run format
+```
+in both the backend and frontend directories.
+
 ## Deploy
 
 This project includes a VS Code launch file, so the project can be deployed from there if VS Code is used. Otherwise the code can be run manually:
