@@ -20,7 +20,9 @@ jest.mock("openai", () => ({
 
 // mock the queryPromptEvaluationModel function
 jest.mock("../../src/langchain", () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const originalModule = jest.requireActual("../../src/langchain");
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,
     queryPromptEvaluationModel: () => {
@@ -239,7 +241,7 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
       chatMessageType: CHAT_MESSAGE_TYPE.BOT,
     },
   ];
-  let defences: DefenceInfo[] = getInitialDefences();
+  const defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
   const gptModel = CHAT_MODELS.GPT_4;
   const openAiApiKey = "sk-12345";
@@ -784,47 +786,48 @@ test("GIVEN the output filtering defence is active WHEN the bot responds with a 
 test(
   "GIVEN the output filtering defence is not active " +
     "WHEN the bot responds with a message containing a phrase in the list " +
-    "THEN the defence is triggered AND the message is not blocked", 
+    "THEN the defence is triggered AND the message is not blocked",
   async () => {
-  process.env.FILTER_LIST_OUTPUT = "secret project,password";
-  const message = "What is the secret Project?";
+    process.env.FILTER_LIST_OUTPUT = "secret project,password";
+    const message = "What is the secret Project?";
 
-  const chatHistory: ChatHistoryMessage[] = [];
-  let defences: DefenceInfo[] = getInitialDefences();
-  const sentEmails: EmailInfo[] = [];
-  const gptModel = CHAT_MODELS.GPT_4;
-  const openAiApiKey = "sk-12345";
-  const isOriginalMessage = true;
+    const chatHistory: ChatHistoryMessage[] = [];
+    const defences: DefenceInfo[] = getInitialDefences();
+    const sentEmails: EmailInfo[] = [];
+    const gptModel = CHAT_MODELS.GPT_4;
+    const openAiApiKey = "sk-12345";
+    const isOriginalMessage = true;
 
-  mockCreateChatCompletion.mockResolvedValueOnce({
-    data: {
-      choices: [
-        {
-          message: {
-            role: "assistant",
-            content: "The secret project is X.",
+    mockCreateChatCompletion.mockResolvedValueOnce({
+      data: {
+        choices: [
+          {
+            message: {
+              role: "assistant",
+              content: "The secret project is X.",
+            },
           },
-        },
-      ],
-    },
-  });
-  const reply = await chatGptSendMessage(
-    chatHistory,
-    defences,
-    gptModel,
-    message,
-    isOriginalMessage,
-    openAiApiKey,
-    sentEmails
-  );
+        ],
+      },
+    });
+    const reply = await chatGptSendMessage(
+      chatHistory,
+      defences,
+      gptModel,
+      message,
+      isOriginalMessage,
+      openAiApiKey,
+      sentEmails
+    );
 
-  expect(reply).toBeDefined();
-  expect(reply?.completion.content).toBe("The secret project is X.");
-  expect(reply?.defenceInfo.isBlocked).toBe(false);
-  expect(reply?.defenceInfo.alertedDefences.length).toBe(1);
-  expect(reply?.defenceInfo.alertedDefences[0]).toBe(
-    DEFENCE_TYPES.FILTER_BOT_OUTPUT
-  );
+    expect(reply).toBeDefined();
+    expect(reply?.completion.content).toBe("The secret project is X.");
+    expect(reply?.defenceInfo.isBlocked).toBe(false);
+    expect(reply?.defenceInfo.alertedDefences.length).toBe(1);
+    expect(reply?.defenceInfo.alertedDefences[0]).toBe(
+      DEFENCE_TYPES.FILTER_BOT_OUTPUT
+    );
 
-  mockCreateChatCompletion.mockRestore();
-});
+    mockCreateChatCompletion.mockRestore();
+  }
+);

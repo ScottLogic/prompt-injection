@@ -1,19 +1,19 @@
 #document-view-button-area {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    text-align: center;
-    height: 40px;
-    min-height: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+  height: 40px;
+  min-height: 40px;
 }
 
 .document-view-button {
-    background-color: var(--main-button-inactive-background-colour);
-    border-color: var(--main-border-colour);
-    border-radius: 5px;
-    border-style: solid;
-    border-width: 1px;
-    color: var(--main-button-inactive-text-colour);
-    cursor: pointer;
-    font-size: 16px;
-    padding: 5 12px;
+  background-color: var(--main-button-inactive-background-colour);
+  border-color: var(--main-border-colour);
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  color: var(--main-button-inactive-text-colour);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5 12px;
 }

@@ -19,12 +19,7 @@ test("GIVEN an email is to be sent WHEN sendEmail is called THEN the response is
   const response = sendEmail(address, subject, body);
   // check the response
   expect(response.response).toBe(
-    "Email sent to " +
-      address +
-      " with subject " +
-      subject +
-      " and body " +
-      body
+    `Email sent to ${address} with subject ${subject} and body ${body}`
   );
   expect(response.sentEmail.address).toBe(address);
   expect(response.sentEmail.subject).toBe(subject);
@@ -38,7 +33,7 @@ test("GIVEN in sandbox mode WHEN email is sent THEN wonPhase false is returned "
   const currentPhase = PHASE_NAMES.SANDBOX;
   const response = sendEmail(address, subject, body, currentPhase);
   expect(response.wonPhase).toBe(false);
-}); 
+});
 
 test("GIVEN email body meets win condition for phase 0 AND email recipient is correct WHEN email is sent THEN wonPhase true is returned ", () => {
   const address = "bob@scottlogic.com";
@@ -157,7 +152,7 @@ test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist A
   defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
   const whitelist = getEmailWhitelist(defences);
   expect(whitelist).toBe(
-    "The whitelisted emails and domains are: " + process.env.EMAIL_WHITELIST
+    `The whitelisted emails and domains are: ${process.env.EMAIL_WHITELIST}`
   );
 });
 

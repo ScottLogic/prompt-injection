@@ -2,22 +2,20 @@ import "./DefenceConfiguration.css";
 import { DefenceConfig } from "../../models/defence";
 import ContentEditable from "react-contenteditable";
 
-function DefenceConfiguration(
-  this: any,
-  {
-    config,
-    setConfigurationValue,
-  }: {
-    config: DefenceConfig;
-    setConfigurationValue: (configId: string, value: string) => void;
-  }
-) {
-  const setConfiguration = (event: React.KeyboardEvent<HTMLDivElement>) => {
+function DefenceConfiguration({
+  config,
+  setConfigurationValue,
+}: {
+  config: DefenceConfig;
+  setConfigurationValue: (configId: string, value: string) => Promise<void>;
+}) {
+  function setConfiguration(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Enter") {
       const value = event.currentTarget.innerText.trim();
-      setConfigurationValue(config.id, value);
+      // asynchronously set the configuration value
+      void setConfigurationValue(config.id, value);
     }
-  };
+  }
 
   return (
     <div>
@@ -25,9 +23,13 @@ function DefenceConfiguration(
       <ContentEditable
         className="defence-config-value prompt-injection-input"
         html={config.value.toString()}
-        onKeyUp={setConfiguration.bind(this)}
-        onClick={(event) => event.stopPropagation()}
-        onChange={() => {}}
+        onKeyUp={setConfiguration}
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+        onChange={() => {
+          return;
+        }}
       />
     </div>
   );

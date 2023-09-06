@@ -1,7 +1,11 @@
 import "./DemoBody.css";
 import { ATTACKS_PHASE_1, ATTACKS_ALL } from "../../Attacks";
 import { ChatMessage } from "../../models/chat";
-import { DefenceConfig, DefenceInfo } from "../../models/defence";
+import {
+  DEFENCE_TYPES,
+  DefenceConfig,
+  DefenceInfo,
+} from "../../models/defence";
 import { PHASE_NAMES } from "../../models/phase";
 import AttackBox from "../AttackBox/AttackBox";
 import ChatBox from "../ChatBox/ChatBox";
@@ -35,7 +39,7 @@ function DemoBody({
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
-    defenceId: string,
+    defenceId: DEFENCE_TYPES,
     config: DefenceConfig[]
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
@@ -74,7 +78,9 @@ function DemoBody({
           <DefenceBox
             currentPhase={currentPhase}
             defences={defences}
-            showConfigurations={currentPhase > 2 ? true : false}
+            showConfigurations={
+              currentPhase > PHASE_NAMES.PHASE_2 ? true : false
+            }
             setDefenceActive={setDefenceActive}
             setDefenceInactive={setDefenceInactive}
             setDefenceConfiguration={setDefenceConfiguration}

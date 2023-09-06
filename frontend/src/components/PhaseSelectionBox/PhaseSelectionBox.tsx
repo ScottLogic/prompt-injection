@@ -3,25 +3,21 @@ import { PHASES } from "../../Phases";
 
 import "./PhaseSelectionBox.css";
 
-function PhaseSelectionBox(
-  this: any,
-  {
-    currentPhase,
-    numCompletedPhases,
-    setNewPhase,
-  }: {
-    currentPhase: PHASE_NAMES;
-    numCompletedPhases: number;
-    setNewPhase: (newPhase: number) => void;
-  }
-) {
-  const handlePhaseChange = async (index: number) => {
-    if (index !== currentPhase) {
-      const newPhase = index;
+function PhaseSelectionBox({
+  currentPhase,
+  numCompletedPhases,
+  setNewPhase,
+}: {
+  currentPhase: PHASE_NAMES;
+  numCompletedPhases: number;
+  setNewPhase: (newPhase: number) => void;
+}) {
+  function handlePhaseChange(newPhase: PHASE_NAMES) {
+    if (newPhase !== currentPhase) {
       console.log(`Changing phase to ${newPhase}`);
       setNewPhase(newPhase);
     }
-  };
+  }
 
   return (
     <span>
@@ -30,12 +26,14 @@ function PhaseSelectionBox(
           return (
             <button
               className={`prompt-injection-button phase-selection-button ${
-                index === currentPhase ? "selected" : ""
+                phase.id === currentPhase ? "selected" : ""
               }`}
               key={phase.name}
-              onClick={() => handlePhaseChange(index)}
+              onClick={() => {
+                handlePhaseChange(phase.id);
+              }}
               disabled={
-                index > numCompletedPhases && index !== PHASE_NAMES.SANDBOX
+                index > numCompletedPhases && phase.id !== PHASE_NAMES.SANDBOX
               }
             >
               {phase.name}

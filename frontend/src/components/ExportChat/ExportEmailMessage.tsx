@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
 });
-const ExportEmailMessage = ({ email }: { email: EmailInfo }) => {
+
+function ExportEmailMessage({ email }: { email: EmailInfo }) {
   return (
     <View style={styles.sentEmail}>
       <Text style={styles.text}>to: {email.address}</Text>
@@ -30,6 +31,6 @@ const ExportEmailMessage = ({ email }: { email: EmailInfo }) => {
       <Text style={styles.text}>{email.content}</Text>
     </View>
   );
-};
+}
 
 export default ExportEmailMessage;

@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { DefenceConfig, DefenceInfo } from "../../models/defence";
+import {
+  DEFENCE_TYPES,
+  DefenceConfig,
+  DefenceInfo,
+} from "../../models/defence";
 import { validateDefence } from "../../service/defenceService";
 import "./DefenceMechanism.css";
 import "../StrategyBox/StrategyMechanism.css";
@@ -18,7 +22,7 @@ function DefenceMechanism({
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
-    defenceId: string,
+    defenceId: DEFENCE_TYPES,
     config: DefenceConfig[]
   ) => Promise<boolean>;
 }) {
@@ -26,9 +30,9 @@ function DefenceMechanism({
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const [configValidated, setConfigValidated] = useState<boolean>(true);
 
-  const setConfigurationValue = async (configId: string, value: string) => {
+  async function setConfigurationValue(configId: string, value: string) {
     const configName =
-      defenceDetail.config.find((config) => config.id === configId)?.name || "";
+      defenceDetail.config.find((config) => config.id === configId)?.name ?? "";
 
     const configIsValid = validateDefence(defenceDetail.id, configName, value);
     if (configIsValid) {
@@ -38,12 +42,13 @@ function DefenceMechanism({
         }
         return config;
       });
-      setDefenceConfiguration(defenceDetail.id, newConfiguration).then(
-        (configured) => {
-          setIsConfigured(true);
-          setConfigValidated(configured);
-        }
+
+      const configured = await setDefenceConfiguration(
+        defenceDetail.id,
+        newConfiguration
       );
+      setIsConfigured(true);
+      setConfigValidated(configured);
     } else {
       setConfigValidated(false);
       setIsConfigured(true);
@@ -53,7 +58,13 @@ function DefenceMechanism({
     setTimeout(() => {
       setIsConfigured(false);
     }, 3000);
-  };
+  }
+
+  function toggleDefence() {
+    defenceDetail.isActive
+      ? setDefenceInactive(defenceDetail)
+      : setDefenceActive(defenceDetail);
+  }
 
   return (
     <span>
@@ -72,11 +83,7 @@ function DefenceMechanism({
             <input
               type="checkbox"
               placeholder="defence-toggle"
-              onChange={() => {
-                defenceDetail.isActive
-                  ? setDefenceInactive(defenceDetail)
-                  : setDefenceActive(defenceDetail);
-              }}
+              onChange={toggleDefence}
               // set checked if defence is active
               checked={defenceDetail.isActive}
             />
@@ -87,7 +94,7 @@ function DefenceMechanism({
           <div className="strategy-mechanism-info-box">
             <div>{defenceDetail.info}</div>
 
-            {defenceDetail.config && showConfigurations ? (
+            {showConfigurations ? (
               <div className="defence-mechanism-config">
                 {defenceDetail.config.map((config) => {
                   return (

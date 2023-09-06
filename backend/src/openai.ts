@@ -25,6 +25,10 @@ import {
 } from "./models/chat";
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { PHASE_NAMES } from "./models/phase";
+import {
+  FunctionAskQuestionParams,
+  FunctionSendEmailParams,
+} from "./models/openai";
 
 // OpenAI config
 let config: Configuration | null = null;
@@ -90,7 +94,9 @@ async function validateApiKey(openAiApiKey: string, gptModel: string) {
     });
     return true;
   } catch (error) {
-    console.debug("Error validating API key: " + error);
+    if (error instanceof Error) {
+      console.debug(`Error validating API key: ${error.message}`);
+    }
     return false;
   }
 }
@@ -106,7 +112,7 @@ async function setOpenAiApiKey(
   if (await validateApiKey(openAiApiKey, gptModel)) {
     console.debug("Setting API key and initialising models");
     initOpenAi(openAiApiKey);
-    initQAModel(openAiApiKey, prePrompt, currentPhase);
+    await initQAModel(openAiApiKey, prePrompt, currentPhase);
     initPromptEvaluationModel(openAiApiKey);
     return true;
   } else {
@@ -131,12 +137,12 @@ function getOpenAiFromKey(openAiApiKey: string) {
 }
 
 async function setGptModel(openAiApiKey: string, model: CHAT_MODELS) {
-  console.debug("Setting GPT model to: " + model);
+  console.debug(`Setting GPT model to: ${model}`);
   if (await validateApiKey(openAiApiKey, model)) {
-    console.debug("Set GPT model to: " + model);
+    console.debug(`Set GPT model to: ${model}`);
     return true;
   } else {
-    console.debug("Could not validate openAiApiKey with model=" + model);
+    console.debug(`Could not validate openAiApiKey with model=${model}`);
     return false;
   }
 }
@@ -155,56 +161,66 @@ async function chatGptCallFunction(
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ) {
   let reply: ChatCompletionRequestMessage | null = null;
-  let wonPhase: boolean = false;
+  let wonPhase = false;
   // get the function name
-  const functionName: string = functionCall.name || "";
+  const functionName: string = functionCall.name ?? "";
 
   // check if we know the function
   if (isChatGptFunction(functionName)) {
-    // get the function parameters
-    const params = functionCall.arguments
-      ? JSON.parse(functionCall.arguments)
-      : {};
-    console.debug("Function call: " + functionName);
-    let response: string = "";
+    console.debug(`Function call: ${functionName}`);
+    let response = "";
 
     // call the function
     if (functionName === "sendEmail") {
       let isAllowedToSendEmail = false;
-      if (isEmailInWhitelist(params.address, defences)) {
-        isAllowedToSendEmail = true;
-      } else {
-        if (isDefenceActive(DEFENCE_TYPES.EMAIL_WHITELIST, defences)) {
-          defenceInfo.triggeredDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
-          // do not send email if defence is on and set to blocked
-          defenceInfo.isBlocked = true;
-          defenceInfo.blockedReason =
-            "Cannot send to this email as it is not whitelisted";
-        } else {
-          defenceInfo.alertedDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
-          // send email if defence is not active
+      if (functionCall.arguments) {
+        const params = JSON.parse(
+          functionCall.arguments
+        ) as FunctionSendEmailParams;
+        if (isEmailInWhitelist(params.address, defences)) {
           isAllowedToSendEmail = true;
+        } else {
+          if (isDefenceActive(DEFENCE_TYPES.EMAIL_WHITELIST, defences)) {
+            defenceInfo.triggeredDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
+            // do not send email if defence is on and set to blocked
+            defenceInfo.isBlocked = true;
+            defenceInfo.blockedReason =
+              "Cannot send to this email as it is not whitelisted";
+          } else {
+            defenceInfo.alertedDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
+            // send email if defence is not active
+            isAllowedToSendEmail = true;
+          }
         }
-      }
 
-      if (isAllowedToSendEmail) {
-        const emailResponse: EmailResponse = sendEmail(
-          params.address,
-          params.subject,
-          params.body,
-          currentPhase
-        );
-        response = emailResponse.response;
-        wonPhase = emailResponse.wonPhase;
-        sentEmails.push(emailResponse.sentEmail);
+        if (isAllowedToSendEmail) {
+          const emailResponse: EmailResponse = sendEmail(
+            params.address,
+            params.subject,
+            params.body,
+            currentPhase
+          );
+          response = emailResponse.response;
+          wonPhase = emailResponse.wonPhase;
+          sentEmails.push(emailResponse.sentEmail);
+        }
+      } else {
+        console.error("No arguments provided to sendEmail function");
       }
     } else if (functionName == "getEmailWhitelist") {
       response = getEmailWhitelist(defences);
     }
     if (functionName === "askQuestion") {
-      console.debug("Asking question: " + params.question);
-      // if asking a question, call the queryDocuments
-      response = (await queryDocuments(params.question)).reply;
+      if (functionCall.arguments) {
+        const params = JSON.parse(
+          functionCall.arguments
+        ) as FunctionAskQuestionParams;
+        console.debug(`Asking question: ${params.question}`);
+        // if asking a question, call the queryDocuments
+        response = (await queryDocuments(params.question)).reply;
+      } else {
+        console.error("No arguments provided to askQuestion function");
+      }
     }
 
     reply = {
@@ -213,7 +229,7 @@ async function chatGptCallFunction(
       name: functionName,
     };
   } else {
-    console.error("Unknown function: " + functionName);
+    console.error(`Unknown function: ${functionName}`);
   }
 
   if (reply) {
@@ -269,27 +285,30 @@ async function chatGptChatCompletion(
   });
 
   // get the reply
-  return chat_completion.data.choices[0].message || null;
+  return chat_completion.data.choices[0].message ?? null;
 }
 
 // take only the completions to send to GPT
-const getChatCompletionsFromHistory = (
+function getChatCompletionsFromHistory(
   chatHistory: ChatHistoryMessage[]
-): ChatCompletionRequestMessage[] => {
+): ChatCompletionRequestMessage[] {
   const completions: ChatCompletionRequestMessage[] =
     chatHistory.length > 0
-      ? chatHistory
+      ? (chatHistory
           .filter((message) => message.completion !== null)
-          .map((message) => message.completion as ChatCompletionRequestMessage)
+          .map(
+            // we know the completion is not null here
+            (message) => message.completion
+          ) as ChatCompletionRequestMessage[])
       : [];
   return completions;
-};
+}
 
-const pushCompletionToHistory = (
+function pushCompletionToHistory(
   chatHistory: ChatHistoryMessage[],
   completion: ChatCompletionRequestMessage,
   messageType: CHAT_MESSAGE_TYPE
-) => {
+) {
   if (messageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
     chatHistory.push({
       completion: completion,
@@ -300,7 +319,7 @@ const pushCompletionToHistory = (
     console.log("Skipping adding blocked message to chat history", completion);
   }
   return chatHistory;
-};
+}
 
 async function chatGptSendMessage(
   chatHistory: ChatHistoryMessage[],
@@ -345,7 +364,7 @@ async function chatGptSendMessage(
     currentPhase
   );
   // check if GPT wanted to call a function
-  while (reply && reply.function_call) {
+  while (reply?.function_call) {
     chatHistory = pushCompletionToHistory(
       chatHistory,
       reply,
@@ -363,13 +382,11 @@ async function chatGptSendMessage(
     if (functionCallReply) {
       wonPhase = functionCallReply.wonPhase;
       // add the function call to the chat history
-      if (functionCallReply.completion !== undefined) {
-        chatHistory = pushCompletionToHistory(
-          chatHistory,
-          functionCallReply.completion,
-          CHAT_MESSAGE_TYPE.FUNCTION_CALL
-        );
-      }
+      chatHistory = pushCompletionToHistory(
+        chatHistory,
+        functionCallReply.completion,
+        CHAT_MESSAGE_TYPE.FUNCTION_CALL
+      );
       // update the defence info
       defenceInfo = functionCallReply.defenceInfo;
     }
@@ -383,7 +400,7 @@ async function chatGptSendMessage(
     );
   }
 
-  if (reply && reply.content) {
+  if (reply?.content) {
     // if output filter defence is active, check for blocked words/phrases
     if (
       currentPhase === PHASE_NAMES.PHASE_2 ||
@@ -395,9 +412,9 @@ async function chatGptSendMessage(
       );
       if (detectedPhrases.length > 0) {
         console.debug(
-          "FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: '" +
-            detectedPhrases.join("', '") +
-            "'."
+          `FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: '${detectedPhrases.join(
+            "', '"
+          )}'.`
         );
         if (isDefenceActive(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences)) {
           defenceInfo.triggeredDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);

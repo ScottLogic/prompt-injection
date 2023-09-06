@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import express from "express";
 import session from "express-session";
 
-import { getInitialDefences } from "./defence";
 import { setOpenAiApiKey } from "./openai";
 import { router } from "./router";
 import { ChatHistoryMessage } from "./models/chat";
@@ -13,11 +12,13 @@ import { CHAT_MODELS } from "./models/chat";
 import { PHASE_NAMES } from "./models/phase";
 import { retrievalQAPrePrompt } from "./promptTemplates";
 import path from "path";
+import { getInitialDefences } from "./defence";
 
 dotenv.config();
 
 declare module "express-session" {
   interface Session {
+    initialised: boolean;
     openAiApiKey: string | null;
     gptModel: CHAT_MODELS;
     phaseState: PhaseState[];
@@ -32,7 +33,7 @@ declare module "express-session" {
 }
 
 // by default runs on port 3001
-const port = process.env.PORT || String(3001);
+const port = process.env.PORT ?? String(3001);
 // use default model
 const defaultModel = CHAT_MODELS.GPT_4;
 
@@ -43,7 +44,7 @@ app.use(express.json());
 
 // use session
 const express_session: session.SessionOptions = {
-  secret: process.env.SESSION_SECRET || "secret",
+  secret: process.env.SESSION_SECRET ?? "secret",
   name: "prompt-injection.sid",
   resave: false,
   saveUninitialized: true,
@@ -69,18 +70,12 @@ app.use(
   })
 );
 
-app.use(async (req, _res, next) => {
+app.use((req, _res, next) => {
   // initialise session variables
-  if (!req.session.gptModel) {
+  if (!req.session.initialised) {
     req.session.gptModel = defaultModel;
-  }
-  if (!req.session.numPhasesCompleted) {
     req.session.numPhasesCompleted = 0;
-  }
-  if (!req.session.openAiApiKey) {
-    req.session.openAiApiKey = process.env.OPENAI_API_KEY || null;
-  }
-  if (!req.session.phaseState) {
+    req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
     req.session.phaseState = [];
     // add empty states for phases 0-3
     Object.values(PHASE_NAMES).forEach((value) => {
@@ -93,20 +88,22 @@ app.use(async (req, _res, next) => {
         });
       }
     });
+    req.session.initialised = true;
   }
   next();
 });
 
 app.use("/", router);
 app.listen(port, () => {
-  console.log("Server is running on port: " + port);
+  console.log(`Server is running on port: ${port}`);
 
   // for dev purposes only - set the API key from the environment variable
   const envOpenAiKey = process.env.OPENAI_API_KEY;
   const prePrompt = retrievalQAPrePrompt;
-  if (envOpenAiKey && prePrompt) {
+  if (envOpenAiKey) {
     console.debug("Initializing models with API key from environment variable");
-    setOpenAiApiKey(envOpenAiKey, defaultModel, prePrompt).then(() => {
+    // asynchronously set the API key
+    void setOpenAiApiKey(envOpenAiKey, defaultModel, prePrompt).then(() => {
       console.debug("OpenAI models initialized");
     });
   }

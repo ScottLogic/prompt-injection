@@ -5,7 +5,7 @@ const mockRetrievalQAChain = {
 const mockPromptEvalChain = {
   call: mockCall,
 };
-let mockFromLLM = jest.fn();
+const mockFromLLM = jest.fn();
 const mockFromTemplate = jest.fn(() => "");
 const mockLoader = jest.fn();
 const mockSplitDocuments = jest.fn();
@@ -42,7 +42,7 @@ jest.mock("langchain/embeddings/openai", () => {
 jest.mock("langchain/vectorstores/memory", () => {
   const mockAsRetriever = jest.fn();
   class MockMemoryVectorStore {
-    async asRetriever() {
+    asRetriever() {
       mockAsRetriever();
     }
   }
@@ -134,7 +134,7 @@ test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledWith(
-    "this is a test prompt." + qAcontextTemplate
+    `this is a test prompt.${qAcontextTemplate}`
   );
 });
 
@@ -156,9 +156,9 @@ test("GIVEN the QA model is not initialised WHEN a question is asked THEN it ret
   expect(answer.reply).toEqual("");
 });
 
-test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM", async () => {
+test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM", () => {
   mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-  await initPromptEvaluationModel("test-api-key");
+  initPromptEvaluationModel("test-api-key");
   expect(mockFromTemplate).toBeCalledTimes(2);
   expect(mockFromTemplate).toBeCalledWith(promptInjectionEvalTemplate);
   expect(mockFromTemplate).toBeCalledWith(maliciousPromptTemplate);
@@ -175,7 +175,7 @@ test("GIVEN the prompt evaluation model is not initialised WHEN it is asked to e
 
 test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it responds in the correct format THEN it returns a final decision and reason", async () => {
   mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-  await initPromptEvaluationModel("test-api-key");
+  initPromptEvaluationModel("test-api-key");
 
   mockCall.mockResolvedValue({
     promptInjectionEval:
@@ -195,7 +195,7 @@ test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evalu
 test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it does not respond in the correct format THEN it returns a final decision of false", async () => {
   mockFromLLM.mockImplementation(() => mockPromptEvalChain);
 
-  await initPromptEvaluationModel("test-api-key");
+  initPromptEvaluationModel("test-api-key");
 
   mockCall.mockResolvedValue({
     promptInjectionEval: "idk!",
