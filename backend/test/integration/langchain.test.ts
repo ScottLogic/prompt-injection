@@ -138,7 +138,7 @@ beforeEach(() => {
   setVectorisedDocuments([]);
 });
 
-test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM", async () => {
+test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM", () => {
   mockFromLLM.mockImplementation(() => mockPromptEvalChain);
   initPromptEvaluationModel("test-api-key");
   expect(mockFromTemplate).toBeCalledTimes(2);
@@ -146,7 +146,7 @@ test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEv
   expect(mockFromTemplate).toBeCalledWith(maliciousPromptTemplate);
 });
 
-test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is initialised THEN the llm is initialized and the prompt is set to the default", async () => {
+test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is initialised THEN the llm is initialized and the prompt is set to the default", () => {
   const phase = PHASE_NAMES.PHASE_0;
   const prompt = "";
   const apiKey = "test-api-key";
@@ -162,7 +162,7 @@ test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is in
   );
 });
 
-test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialized and prompt is set to the correct prompt ", async () => {
+test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialized and prompt is set to the correct prompt ", () => {
   const phase = PHASE_NAMES.PHASE_0;
   const prompt = "this is a test prompt. ";
   const apiKey = "test-api-key";
