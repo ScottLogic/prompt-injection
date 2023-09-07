@@ -14,6 +14,7 @@ import {
 import { EmailInfo } from "../../models/email";
 import { PHASE_NAMES } from "../../models/phase";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
+import { ThreeDots } from "react-loader-spinner";
 
 function ChatBox({
   messages,
@@ -176,9 +177,16 @@ function ChatBox({
           <button
             id="chat-box-button-send"
             className="prompt-injection-button"
+            disabled={isSendingMessage}
             onClick={() => void sendChatMessage()}
           >
-            Send
+            <span id="chat-box-button-content">
+              {isSendingMessage ? (
+                <ThreeDots width="24px" color="white" />
+              ) : (
+                "Send"
+              )}
+            </span>
           </button>
         </div>
       </div>
