@@ -13,6 +13,7 @@
 #demo-header-left {
   display: flex;
   align-items: center;
+  height: 100%;
   width: 100%;
 }
 
@@ -20,7 +21,11 @@
   font-size: 36px;
   font-style: italic;
   font-weight: 700;
-  padding-right: 24px;
+  padding-right: 36px;
+}
+
+#demo-header-icon {
+  height: 80%;
 }
 
 #demo-header-middle {
