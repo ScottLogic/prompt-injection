@@ -146,7 +146,7 @@ function initPromptEvaluationModel(openAiApiKey: string) {
 
   const promptInjectionChain = new LLMChain({
     llm: new OpenAI({
-      modelName: CHAT_MODELS.GPT_3_5_TURBO,
+      modelName: CHAT_MODELS.GPT_4,
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
@@ -160,7 +160,7 @@ function initPromptEvaluationModel(openAiApiKey: string) {
   );
   const maliciousInputChain = new LLMChain({
     llm: new OpenAI({
-      modelName: CHAT_MODELS.GPT_3_5_TURBO,
+      modelName: CHAT_MODELS.GPT_4,
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
