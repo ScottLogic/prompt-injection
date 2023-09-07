@@ -290,7 +290,8 @@ function transformMessage(message: string, defences: DefenceInfo[]) {
 // detects triggered defences in original message and blocks the message if necessary
 async function detectTriggeredDefences(
   message: string,
-  defences: DefenceInfo[]
+  defences: DefenceInfo[],
+  openAiApiKey: string
 ) {
   // keep track of any triggered defences
   const defenceReport: ChatDefenceReport = {
@@ -352,7 +353,7 @@ async function detectTriggeredDefences(
   }
 
   // evaluate the message for prompt injection
-  const evalPrompt = await queryPromptEvaluationModel(message);
+  const evalPrompt = await queryPromptEvaluationModel(message, openAiApiKey);
   if (evalPrompt.isMalicious) {
     if (isDefenceActive(DEFENCE_TYPES.LLM_EVALUATION, defences)) {
       defenceReport.triggeredDefences.push(DEFENCE_TYPES.LLM_EVALUATION);

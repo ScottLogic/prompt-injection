@@ -172,7 +172,8 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
       ) {
         chatResponse.defenceInfo = await detectTriggeredDefences(
           message,
-          req.session.phaseState[currentPhase].defences
+          req.session.phaseState[currentPhase].defences,
+          req.session.openAiApiKey
         );
         // if message is blocked, add to chat history (not as completion)
         if (chatResponse.defenceInfo.isBlocked) {

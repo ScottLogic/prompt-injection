@@ -25,17 +25,9 @@ import { PromptEvaluationChainReply, QaChainReply } from "./models/langchain";
 // store vectorised documents for each phase as array
 let vectorisedDocuments: DocumentsVector[] = [];
 
-// chain we use in prompt evaluation request
-let promptEvaluationChain: SequentialChain | null = null;
-
 // set the global varibale
 function setVectorisedDocuments(docs: DocumentsVector[]) {
   vectorisedDocuments = docs;
-}
-
-function setPromptEvaluationChain(chain: SequentialChain | null) {
-  console.debug("Setting evaluation chain.");
-  promptEvaluationChain = chain;
 }
 
 function getFilepath(currentPhase: PHASE_NAMES) {
@@ -181,8 +173,8 @@ function initPromptEvaluationModel(openAiApiKey: string) {
     inputVariables: ["prompt"],
     outputVariables: ["promptInjectionEval", "maliciousInputEval"],
   });
-  setPromptEvaluationChain(sequentialChain);
   console.debug("Prompt evaluation chain initialised.");
+  return sequentialChain;
 }
 
 // ask the question and return models answer
@@ -210,7 +202,8 @@ async function queryDocuments(
 }
 
 // ask LLM whether the prompt is malicious
-async function queryPromptEvaluationModel(input: string) {
+async function queryPromptEvaluationModel(input: string, openAIApiKey: string) {
+  const promptEvaluationChain = initPromptEvaluationModel(openAIApiKey);
   if (!promptEvaluationChain) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };
@@ -275,7 +268,6 @@ export {
   queryDocuments,
   queryPromptEvaluationModel,
   formatEvaluationOutput,
-  setPromptEvaluationChain,
   setVectorisedDocuments,
   initDocumentVectors,
 };

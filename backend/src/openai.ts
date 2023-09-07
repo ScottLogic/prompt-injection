@@ -6,7 +6,7 @@ import {
   getQALLMprePrompt,
 } from "./defence";
 import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
-import { initPromptEvaluationModel, queryDocuments } from "./langchain";
+import { queryDocuments } from "./langchain";
 import { EmailInfo, EmailResponse } from "./models/email";
 import {
   ChatCompletionRequestMessage,
@@ -99,11 +99,10 @@ async function validateApiKey(openAiApiKey: string, gptModel: string) {
 }
 
 async function setOpenAiApiKey(openAiApiKey: string, gptModel: string) {
-  // initialise all models with the new key
+  // initialise models with the new key
   if (await validateApiKey(openAiApiKey, gptModel)) {
     console.debug("Setting API key and initialising models");
     initOpenAi(openAiApiKey);
-    initPromptEvaluationModel(openAiApiKey);
     return true;
   } else {
     // set to empty in case it was previously set
