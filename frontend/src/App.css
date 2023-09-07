@@ -44,7 +44,7 @@
   cursor: pointer;
 }
 
-.prompt-injection-button:hover {
+.prompt-injection-button:hover:not([disabled]) {
   background-color: var(--main-button-hover-background-colour);
   color: var(--main-button-hover-text-colour);
 }
