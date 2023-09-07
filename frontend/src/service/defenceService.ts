@@ -3,15 +3,15 @@ import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
 
-async function getDefences(phase: number): Promise<DefenceInfo[]> {
-  const response = await sendRequest(PATH + "status?phase=" + phase, "GET");
-  const data = await response.json();
+async function getDefences(phase: number) {
+  const response = await sendRequest(`${PATH}status?phase=${phase}`, "GET");
+  const data = (await response.json()) as DefenceInfo[];
   return data;
 }
 
 async function activateDefence(id: string, phase: number): Promise<boolean> {
   const response = await sendRequest(
-    PATH + "activate",
+    `${PATH}activate`,
     "POST",
     { "Content-Type": "application/json" },
     JSON.stringify({ defenceId: id, phase: phase })
@@ -21,7 +21,7 @@ async function activateDefence(id: string, phase: number): Promise<boolean> {
 
 async function deactivateDefence(id: string, phase: number): Promise<boolean> {
   const response = await sendRequest(
-    PATH + "deactivate",
+    `${PATH}deactivate`,
     "POST",
     {
       "Content-Type": "application/json",
@@ -37,7 +37,7 @@ async function configureDefence(
   phase: number
 ): Promise<boolean> {
   const response = await sendRequest(
-    PATH + "configure",
+    `${PATH}configure`,
     "POST",
     {
       "Content-Type": "application/json",
@@ -81,7 +81,7 @@ function validateDefence(id: string, configName: string, config: string) {
 
 async function resetActiveDefences(phase: number) {
   const response = await sendRequest(
-    PATH + "reset",
+    `${PATH}reset`,
     "POST",
     {
       "Content-Type": "application/json",

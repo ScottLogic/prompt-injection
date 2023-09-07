@@ -3,9 +3,9 @@ import { EmailInfo } from "../models/email";
 
 const PATH = "email/";
 
-const clearEmails = async (phase: number): Promise<boolean> => {
+async function clearEmails(phase: number): Promise<boolean> {
   const response = await sendRequest(
-    PATH + "clear",
+    `${PATH}clear`,
     "POST",
     {
       "Content-Type": "application/json",
@@ -13,12 +13,12 @@ const clearEmails = async (phase: number): Promise<boolean> => {
     JSON.stringify({ phase: phase })
   );
   return response.status === 200;
-};
+}
 
-const getSentEmails = async (phase: number): Promise<EmailInfo[]> => {
-  const response = await sendRequest(PATH + "get?phase=" + phase, "GET");
-  const data = await response.json();
+async function getSentEmails(phase: number) {
+  const response = await sendRequest(`${PATH}get?phase=${phase}`, "GET");
+  const data = (await response.json()) as EmailInfo[];
   return data;
-};
+}
 
 export { clearEmails, getSentEmails };

@@ -7,17 +7,25 @@ import { PHASE_NAMES } from "./models/phase";
 import {
   getChatHistory,
   clearChat,
+  addMessageToChatHistory,
 } from "./service/chatService";
 import { EmailInfo } from "./models/email";
 import { clearEmails, getSentEmails } from "./service/emailService";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "./models/chat";
-import { resetActiveDefences } from "./service/defenceService";
+import {
+  activateDefence,
+  configureDefence,
+  deactivateDefence,
+  getDefences,
+  resetActiveDefences,
+} from "./service/defenceService";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
-import { DefenceInfo } from "./models/defence";
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedPhases } from "./service/phaseService";
 import { PHASES } from "./Phases";
 
 function App() {
+  const [demoBodyKey, setDemoBodyKey] = useState<number>(0);
   // start on sandbox mode
   const [currentPhase, setCurrentPhase] = useState<PHASE_NAMES>(
     PHASE_NAMES.SANDBOX
@@ -32,73 +40,153 @@ function App() {
 
   // called on mount
   useEffect(() => {
-    getCompletedPhases().then((numCompletedPhases) => {
-      setNumCompletedPhases(numCompletedPhases);
-    });
-    setNewPhase(currentPhase);
+    getCompletedPhases()
+      .then((numCompletedPhases) => {
+        setNumCompletedPhases(numCompletedPhases);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    void setNewPhase(currentPhase);
   }, []);
 
   // methods to modify messages
-  const addChatMessage = (message: ChatMessage) => {
+  function addChatMessage(message: ChatMessage) {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
-  };
+  }
 
   // for clearing phase progress
-  function resetPhase() {
-    console.log("resetting phase " + currentPhase);
+  async function resetPhase() {
+    console.log(`resetting phase ${currentPhase}`);
 
-    clearChat(currentPhase).then(() => {
-      setMessages([]);
-      // add preamble to start of chat
-      addChatMessage({
-        message: PHASES[currentPhase].preamble,
-        type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-      });
+    await clearChat(currentPhase);
+    setMessages([]);
+    // add preamble to start of chat
+    addChatMessage({
+      message: PHASES[currentPhase].preamble,
+      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
     });
-    clearEmails(currentPhase).then(() => {
-      setEmails([]);
+
+    await clearEmails(currentPhase);
+    setEmails([]);
+
+    await resetActiveDefences(currentPhase);
+    // choose appropriate defences to display
+    let defences =
+      currentPhase === PHASE_NAMES.PHASE_2
+        ? DEFENCE_DETAILS_PHASE
+        : DEFENCE_DETAILS_ALL;
+    defences = defences.map((defence) => {
+      defence.isActive = false;
+      return defence;
     });
-    resetActiveDefences(currentPhase).then(() => {
-      // choose appropriate defences to display
-      let defences =
-        currentPhase === PHASE_NAMES.PHASE_2
-          ? DEFENCE_DETAILS_PHASE
-          : DEFENCE_DETAILS_ALL;
-      defences = defences.map((defence) => {
-        defence.isActive = false;
-        return defence;
-      });
-      setDefencesToShow(defences);
-    });
+    setDefencesToShow(defences);
   }
 
   // for going switching phase without clearing progress
-  const setNewPhase = (newPhase: PHASE_NAMES) => {
-    console.log("changing phase from " + currentPhase + " to " + newPhase);
+  async function setNewPhase(newPhase: PHASE_NAMES) {
+    console.log(`changing phase from ${currentPhase} to ${newPhase}`);
     setMessages([]);
     setCurrentPhase(newPhase);
 
     // get emails for new phase from the backend
-    getSentEmails(newPhase).then((phaseEmails) => {
-      setEmails(phaseEmails);
-    });
+    const phaseEmails = await getSentEmails(newPhase);
+    setEmails(phaseEmails);
 
     // get chat history for new phase from the backend
-    getChatHistory(newPhase).then((phaseChatHistory) => {
-      // add the preamble to the start of the chat history
-      phaseChatHistory.unshift({
-        message: PHASES[newPhase].preamble,
-        type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-      });
-      setMessages(phaseChatHistory);
+    const phaseChatHistory = await getChatHistory(newPhase);
+    // add the preamble to the start of the chat history
+    phaseChatHistory.unshift({
+      message: PHASES[newPhase].preamble,
+      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
     });
+    setMessages(phaseChatHistory);
 
     const defences =
       newPhase === PHASE_NAMES.PHASE_2
         ? DEFENCE_DETAILS_PHASE
         : DEFENCE_DETAILS_ALL;
+    // fetch defences from backend
+    const remoteDefences = await getDefences(newPhase);
+    defences.map((localDefence) => {
+      const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
+        return localDefence.id === remoteDefence.id;
+      });
+      if (matchingRemoteDefence) {
+        localDefence.isActive = matchingRemoteDefence.isActive;
+        // set each config value
+        matchingRemoteDefence.config.forEach((configEntry) => {
+          // get the matching config in the local defence
+          const matchingConfig = localDefence.config.find((config) => {
+            return config.id === configEntry.id;
+          });
+          if (matchingConfig) {
+            matchingConfig.value = configEntry.value;
+          }
+        });
+      }
+      return localDefence;
+    });
     setDefencesToShow(defences);
-  };
+    setDemoBodyKey(demoBodyKey + 1);
+  }
+
+  function addInfoMessage(message: string) {
+    addChatMessage({
+      message: message,
+      type: CHAT_MESSAGE_TYPE.INFO,
+    });
+    // asynchronously add message to chat history
+    void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
+  }
+
+  async function setDefenceActive(defence: DefenceInfo) {
+    await activateDefence(defence.id, currentPhase);
+    // update state
+    const newDefenceDetails = defencesToShow.map((defenceDetail) => {
+      if (defenceDetail.id === defence.id) {
+        defenceDetail.isActive = true;
+        defenceDetail.isTriggered = false;
+        const infoMessage = `${defence.name} defence activated`;
+        addInfoMessage(infoMessage.toLowerCase());
+      }
+      return defenceDetail;
+    });
+    setDefencesToShow(newDefenceDetails);
+  }
+
+  async function setDefenceInactive(defence: DefenceInfo) {
+    await deactivateDefence(defence.id, currentPhase);
+    // update state
+    const newDefenceDetails = defencesToShow.map((defenceDetail) => {
+      if (defenceDetail.id === defence.id) {
+        defenceDetail.isActive = false;
+        defenceDetail.isTriggered = false;
+        const infoMessage = `${defence.name} defence deactivated`;
+        addInfoMessage(infoMessage.toLowerCase());
+      }
+      return defenceDetail;
+    });
+    setDefencesToShow(newDefenceDetails);
+  }
+
+  async function setDefenceConfiguration(
+    defenceId: DEFENCE_TYPES,
+    config: DefenceConfig[]
+  ) {
+    const success = await configureDefence(defenceId, config, currentPhase);
+    if (success) {
+      // update state
+      const newDefences = defencesToShow.map((defence) => {
+        if (defence.id === defenceId) {
+          defence.config = config;
+        }
+        return defence;
+      });
+      setDefencesToShow(newDefences);
+    }
+    return success;
+  }
 
   return (
     <div id="app-content">
@@ -106,17 +194,21 @@ function App() {
         <DemoHeader
           currentPhase={currentPhase}
           numCompletedPhases={numCompletedPhases}
-          setNewPhase={setNewPhase}
+          setNewPhase={(newPhase) => void setNewPhase(newPhase)}
         />
       </div>
       <div id="app-content-body">
         <DemoBody
+          key={demoBodyKey}
           currentPhase={currentPhase}
           defences={defencesToShow}
           emails={emails}
           messages={messages}
           addChatMessage={addChatMessage}
-          resetPhase={resetPhase}
+          resetPhase={() => void resetPhase()}
+          setDefenceActive={(defence) => void setDefenceActive(defence)}
+          setDefenceInactive={(defence) => void setDefenceInactive(defence)}
+          setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
           setNumCompletedPhases={setNumCompletedPhases}
         />

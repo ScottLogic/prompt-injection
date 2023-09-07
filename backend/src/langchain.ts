@@ -20,6 +20,7 @@ import {
   retrievalQAPrePrompt,
 } from "./promptTemplates";
 import { PHASE_NAMES } from "./models/phase";
+import { PromptEvaluationChainReply, QaChainReply } from "./models/langchain";
 
 // store vectorised documents for each phase as array
 let vectorisedDocuments: DocumentsVector[] = [];
@@ -27,6 +28,7 @@ let vectorisedDocuments: DocumentsVector[] = [];
 // chain we use in prompt evaluation request
 let promptEvaluationChain: SequentialChain | null = null;
 
+// set the global varibale
 function setVectorisedDocuments(docs: DocumentsVector[]) {
   vectorisedDocuments = docs;
 }
@@ -48,13 +50,14 @@ function getFilepath(currentPhase: PHASE_NAMES) {
     case PHASE_NAMES.SANDBOX:
       return (filePath += "common/");
     default:
-      console.error("No document filepath found for phase: " + currentPhase);
+      console.error(`No document filepath found for phase: ${filePath}`);
       return "";
   }
 }
 // load the documents from filesystem
 async function getDocuments(filePath: string) {
-  console.debug("Loading documents from: " + filePath);
+  console.debug(`Loading documents from: ${filePath}`);
+
   const loader: DirectoryLoader = new DirectoryLoader(filePath, {
     ".pdf": (path: string) => new PDFLoader(path),
     ".txt": (path: string) => new TextLoader(path),
@@ -78,17 +81,13 @@ function getQAPromptTemplate(prePrompt: string) {
     prePrompt = retrievalQAPrePrompt;
   }
   const fullPrompt = prePrompt + qAcontextTemplate;
-  console.debug("QA prompt: " + fullPrompt);
+  console.debug(`QA prompt: ${fullPrompt}`);
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;
 }
 // create and store the document vectors for each phase
 async function initDocumentVectors() {
-  // if (!openAiApiKey) {
-  //   console.debug("No OpenAI API key set to initialise document vectors.");
-  //   return;
-  // }
-  let docVectors: DocumentsVector[] = [];
+  const docVectors: DocumentsVector[] = [];
 
   for (const value of Object.values(PHASE_NAMES)) {
     if (!isNaN(Number(value))) {
@@ -97,7 +96,7 @@ async function initDocumentVectors() {
       const filePath: string = getFilepath(phase);
       const documents: Document[] = await getDocuments(filePath);
 
-      // embed and store the splits - use process.env.OPENAI_API_KEY for the key
+      // embed and store the splits - will use env variable for API key
       const embeddings = new OpenAIEmbeddings();
 
       const vectorStore: MemoryVectorStore =
@@ -116,7 +115,7 @@ async function initDocumentVectors() {
   );
 }
 
-async function initQAModel(
+function initQAModel(
   phase: PHASE_NAMES,
   prePrompt: string,
   openAiApiKey: string
@@ -125,11 +124,8 @@ async function initQAModel(
     console.debug("No OpenAI API key set to initialise QA model");
     return;
   }
-  const documentVectors = vectorisedDocuments[phase];
-  if (!documentVectors) {
-    console.error("No document vector found for phase: " + phase);
-    return;
-  }
+  const documentVectors = vectorisedDocuments[phase].docVector;
+
   // initialise model
   const model = new ChatOpenAI({
     modelName: CHAT_MODELS.GPT_4,
@@ -138,13 +134,9 @@ async function initQAModel(
   });
   const promptTemplate = getQAPromptTemplate(prePrompt);
 
-  return RetrievalQAChain.fromLLM(
-    model,
-    documentVectors.docVector.asRetriever(),
-    {
-      prompt: promptTemplate,
-    }
-  );
+  return RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
+    prompt: promptTemplate,
+  });
 }
 
 // initialise the prompt evaluation model
@@ -200,15 +192,16 @@ async function queryDocuments(
   currentPhase: PHASE_NAMES,
   openAiApiKey: string
 ) {
-  const qaChain = await initQAModel(currentPhase, prePrompt, openAiApiKey);
+  const qaChain = initQAModel(currentPhase, prePrompt, openAiApiKey);
   if (!qaChain) {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
   }
-  const response = await qaChain.call({
+
+  const response = (await qaChain.call({
     query: question,
-  });
-  console.debug("QA model response: " + response.text);
+  })) as QaChainReply;
+  console.debug(`QA model response: ${response.text}`);
   const result: ChatAnswer = {
     reply: response.text,
     questionAnswered: true,
@@ -224,9 +217,9 @@ async function queryPromptEvaluationModel(input: string) {
   }
   console.log(`Checking '${input}' for malicious prompts`);
 
-  const response = await promptEvaluationChain.call({
+  const response = (await promptEvaluationChain.call({
     prompt: input,
-  });
+  })) as PromptEvaluationChainReply;
   const promptInjectionEval = formatEvaluationOutput(
     response.promptInjectionEval
   );
@@ -234,9 +227,9 @@ async function queryPromptEvaluationModel(input: string) {
     response.maliciousInputEval
   );
   console.debug(
-    "Prompt injection eval: " + JSON.stringify(promptInjectionEval)
+    `Prompt injection eval: ${JSON.stringify(promptInjectionEval)}`
   );
-  console.debug("Malicious input eval: " + JSON.stringify(maliciousInputEval));
+  console.debug(`Malicious input eval: ${JSON.stringify(maliciousInputEval)}`);
 
   // if both are malicious, combine reason
   if (promptInjectionEval.isMalicious && maliciousInputEval.isMalicious) {
@@ -267,8 +260,7 @@ function formatEvaluationOutput(response: string) {
     // in case the model does not respond in the format we have asked
     console.error(error);
     console.debug(
-      "Did not get a valid response from the prompt evaluation model. Original response: " +
-        response
+      `Did not get a valid response from the prompt evaluation model. Original response: ${response}`
     );
     return { isMalicious: false, reason: "" };
   }

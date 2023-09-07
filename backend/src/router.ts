@@ -8,92 +8,96 @@ import {
   detectTriggeredDefences,
   getInitialDefences,
 } from "./defence";
-import {
-  CHAT_MESSAGE_TYPE,
-  CHAT_MODELS,
-  ChatHttpResponse,
-} from "./models/chat";
-import { DEFENCE_TYPES, DefenceConfig } from "./models/defence";
+import { CHAT_MESSAGE_TYPE, ChatHttpResponse } from "./models/chat";
 import { Document } from "./models/document";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
 import { PHASE_NAMES } from "./models/phase";
 import * as fs from "fs";
+import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
+import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
+import { EmailClearRequest } from "./models/api/EmailClearRequest";
+import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
+import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
+import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
+import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
+import { OpenAiSetKeyRequest } from "./models/api/OpenAiSetKeyRequest";
+import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
 
 const router = express.Router();
 
 // Activate a defence
-router.post("/defence/activate", (req, res) => {
+router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence
-  const defenceId: DEFENCE_TYPES = req.body?.defenceId;
-  const phase: PHASE_NAMES = req.body?.phase;
+  const defenceId = req.body.defenceId;
+  const phase = req.body.phase;
   if (defenceId && phase) {
     // activate the defence
     req.session.phaseState[phase].defences = activateDefence(
       defenceId,
       req.session.phaseState[phase].defences
     );
-    res.send("Defence activated");
+    res.send();
   } else {
     res.statusCode = 400;
-    res.send("Missing defenceId or phase");
+    res.send();
   }
 });
 
 // Deactivate a defence
-router.post("/defence/deactivate", (req, res) => {
+router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
   // id of the defence
-  const defenceId: DEFENCE_TYPES = req.body?.defenceId;
-  const phase: PHASE_NAMES = req.body?.phase;
+  const defenceId = req.body.defenceId;
+  const phase = req.body.phase;
   if (defenceId && phase) {
     // deactivate the defence
     req.session.phaseState[phase].defences = deactivateDefence(
       defenceId,
       req.session.phaseState[phase].defences
     );
-    res.send("Defence deactivated");
+    res.send();
   } else {
     res.statusCode = 400;
-    res.send("Missing defenceId or phase");
+    res.send();
   }
 });
 
 // Configure a defence
-router.post("/defence/configure", (req, res) => {
+router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
   // id of the defence
-  const defenceId: DEFENCE_TYPES = req.body?.defenceId;
-  const config: DefenceConfig[] = req.body?.config;
-  const phase: PHASE_NAMES = req.body?.phase;
-  if (defenceId && config && phase >= 0) {
+  const defenceId = req.body.defenceId;
+  const config = req.body.config;
+  const phase = req.body.phase;
+  if (defenceId && config && phase && phase >= PHASE_NAMES.PHASE_0) {
     // configure the defence
     req.session.phaseState[phase].defences = configureDefence(
       defenceId,
       req.session.phaseState[phase].defences,
       config
     );
-    res.send("Defence configured");
+    res.send();
   } else {
     res.statusCode = 400;
-    res.send("Missing defenceId or config or phase");
+    res.send();
   }
 });
 
 // reset the active defences
-router.post("/defence/reset", (req, res) => {
-  const phase: PHASE_NAMES = req.body?.phase;
-  if (phase >= 0) {
+router.post("/defence/reset", (req: DefenceResetRequest, res) => {
+  const phase = req.body.phase;
+  if (phase !== undefined && phase >= PHASE_NAMES.PHASE_0) {
     req.session.phaseState[phase].defences = getInitialDefences();
     console.debug("Defences reset");
-    res.send("Defences reset");
+    res.send();
   } else {
     res.statusCode = 400;
-    res.send("Missing phase");
+    res.send();
   }
 });
 
 // Get the status of all defences /defence/status?phase=1
 router.get("/defence/status", (req, res) => {
-  const phase: number | undefined = req.query?.phase as number | undefined;
-  if (phase) {
+  const phase: number | undefined = req.query.phase as number | undefined;
+  if (phase !== undefined) {
     res.send(req.session.phaseState[phase].defences);
   } else {
     res.statusCode = 400;
@@ -103,8 +107,8 @@ router.get("/defence/status", (req, res) => {
 
 // Get sent emails /email/get?phase=1
 router.get("/email/get", (req, res) => {
-  const phase: number | undefined = req.query?.phase as number | undefined;
-  if (phase) {
+  const phase: number | undefined = req.query.phase as number | undefined;
+  if (phase !== undefined) {
     res.send(req.session.phaseState[phase].sentEmails);
   } else {
     res.statusCode = 400;
@@ -113,20 +117,20 @@ router.get("/email/get", (req, res) => {
 });
 
 // clear emails
-router.post("/email/clear", (req, res) => {
-  const phase: PHASE_NAMES = req.body?.phase;
-  if (phase >= 0) {
+router.post("/email/clear", (req: EmailClearRequest, res) => {
+  const phase = req.body.phase;
+  if (phase !== undefined && phase >= PHASE_NAMES.PHASE_0) {
     req.session.phaseState[phase].sentEmails = [];
     console.debug("Emails cleared");
-    res.send("Emails cleared");
+    res.send();
   } else {
     res.statusCode = 400;
-    res.send("Missing phase");
+    res.send();
   }
 });
 
 // Chat to ChatGPT
-router.post("/openai/chat", async (req, res) => {
+router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
   // set reply params
   const chatResponse: ChatHttpResponse = {
     reply: "",
@@ -141,6 +145,9 @@ router.post("/openai/chat", async (req, res) => {
     wonPhase: false,
   };
 
+  const message = req.body.message;
+  const currentPhase = req.body.currentPhase;
+
   // must have initialised openai
   if (!req.session.openAiApiKey) {
     res.statusCode = 401;
@@ -148,10 +155,12 @@ router.post("/openai/chat", async (req, res) => {
     chatResponse.defenceInfo.blockedReason =
       "Please enter a valid OpenAI API key to chat to me!";
     console.error(chatResponse.reply);
+  } else if (message === undefined || currentPhase === undefined) {
+    res.statusCode = 400;
+    chatResponse.defenceInfo.isBlocked = true;
+    chatResponse.defenceInfo.blockedReason =
+      "Please send a message and current phase to chat to me!";
   } else {
-    // parse out the message
-    const message: string = req.body?.message;
-    const currentPhase: PHASE_NAMES = req.body?.currentPhase;
     let numPhasesCompleted = req.session.numPhasesCompleted;
 
     if (message) {
@@ -206,7 +215,7 @@ router.post("/openai/chat", async (req, res) => {
 
           if (openAiReply) {
             chatResponse.wonPhase = openAiReply.wonPhase;
-            chatResponse.reply = openAiReply.completion.content || "";
+            chatResponse.reply = openAiReply.completion.content ?? "";
 
             // combine triggered defences
             chatResponse.defenceInfo.triggeredDefences = [
@@ -215,23 +224,16 @@ router.post("/openai/chat", async (req, res) => {
             ];
             // combine blocked
             chatResponse.defenceInfo.isBlocked =
-              chatResponse.defenceInfo.isBlocked ||
               openAiReply.defenceInfo.isBlocked;
 
             // combine blocked reason
             chatResponse.defenceInfo.blockedReason =
-              chatResponse.defenceInfo.blockedReason ||
               openAiReply.defenceInfo.blockedReason;
           }
-        } catch (error: any) {
+        } catch (error) {
+          res.statusCode = 500;
           console.log(error);
-          if (error.response?.status == 401) {
-            res.statusCode = 401;
-            chatResponse.reply =
-              "Please enter a valid OpenAI API key to chat to me!";
-          } else {
-            res.statusCode = 500;
-            console.log(error);
+          if (error instanceof Error) {
             chatResponse.reply = "Failed to get chatGPT reply";
           }
         }
@@ -266,8 +268,8 @@ router.post("/openai/chat", async (req, res) => {
 
 // get the chat history
 router.get("/openai/history", (req, res) => {
-  const phase: number | undefined = req.query?.phase as number | undefined;
-  if (phase) {
+  const phase: number | undefined = req.query.phase as number | undefined;
+  if (phase !== undefined) {
     res.send(req.session.phaseState[phase].chatHistory);
   } else {
     res.statusCode = 400;
@@ -276,48 +278,48 @@ router.get("/openai/history", (req, res) => {
 });
 
 // add an info message to chat history
-router.post("/openai/addHistory", (req, res) => {
-  const message: string = req.body?.message;
-  const chatMessageType: CHAT_MESSAGE_TYPE = req.body?.chatMessageType;
-  const phase: PHASE_NAMES = req.body?.phase;
-  if (message && chatMessageType && phase >= 0) {
+router.post("/openai/addHistory", (req: OpenAiAddHistoryRequest, res) => {
+  const message = req.body.message;
+  const chatMessageType = req.body.chatMessageType;
+  const phase = req.body.phase;
+  if (message && chatMessageType && phase && phase >= PHASE_NAMES.PHASE_0) {
     req.session.phaseState[phase].chatHistory.push({
       completion: null,
       chatMessageType: chatMessageType,
       infoMessage: message,
     });
-    res.send("Message added to chat history");
+    res.send();
   } else {
     res.statusCode = 400;
-    res.send("Missing message or message type or phase");
+    res.send();
   }
 });
 
 // Clear the ChatGPT messages
-router.post("/openai/clear", (req, res) => {
-  const phase: PHASE_NAMES = req.body?.phase;
-  if (phase >= 0) {
+router.post("/openai/clear", (req: OpenAiClearRequest, res) => {
+  const phase = req.body.phase;
+  if (phase !== undefined && phase >= PHASE_NAMES.PHASE_0) {
     req.session.phaseState[phase].chatHistory = [];
     console.debug("ChatGPT messages cleared");
-    res.send("ChatGPT messages cleared");
+    res.send();
   } else {
     res.statusCode = 400;
-    res.send("Missing phase");
+    res.send();
   }
 });
 
 // Set API key
-router.post("/openai/apiKey", async (req, res) => {
-  const openAiApiKey: string = req.body?.openAiApiKey;
+router.post("/openai/apiKey", async (req: OpenAiSetKeyRequest, res) => {
+  const openAiApiKey = req.body.openAiApiKey;
   if (!openAiApiKey) {
-    res.status(401).send("Invalid API key");
+    res.status(401).send();
     return;
   }
   if (await setOpenAiApiKey(openAiApiKey, req.session.gptModel)) {
     req.session.openAiApiKey = openAiApiKey;
-    res.send("API key set");
+    res.send();
   } else {
-    res.status(401).send("Invalid API key");
+    res.status(401).send();
   }
 });
 
@@ -327,20 +329,18 @@ router.get("/openai/apiKey", (req, res) => {
 });
 
 // Set the ChatGPT model
-router.post("/openai/model", async (req, res) => {
-  const model: CHAT_MODELS = req.body?.model;
-  if (!model) {
-    res.status(400).send("Missing model");
+router.post("/openai/model", async (req: OpenAiSetModelRequest, res) => {
+  const model = req.body.model;
+  if (model === undefined) {
+    res.status(400).send();
   } else if (!req.session.openAiApiKey) {
-    res
-      .status(401)
-      .send("Please enter a valid OpenAI API key to set the model!");
+    res.status(401).send();
   } else if (model === req.session.gptModel) {
-    res.status(200).send("ChatGPT model already set. ");
+    res.status(200).send();
   } else if (await setGptModel(req.session.openAiApiKey, model)) {
-    res.status(200).send("ChatGPT model set. ");
+    res.status(200).send();
   } else {
-    res.status(401).send("Could not set model");
+    res.status(401).send();
   }
 });
 
@@ -361,7 +361,7 @@ router.get("/documents", (_, res) => {
       return;
     }
     files.forEach((file) => {
-      const fileType = file.split(".").pop() || "";
+      const fileType = file.split(".").pop() ?? "";
       docFiles.push({
         filename: file,
         filetype: fileType == "csv" ? "text/csv" : fileType,

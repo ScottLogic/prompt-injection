@@ -4,18 +4,18 @@ import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { PHASE_NAMES } from "./models/phase";
 import { retrievalQAPrePromptSecure } from "./promptTemplates";
 
-const getInitialDefences = (): DefenceInfo[] => {
+function getInitialDefences(): DefenceInfo[] {
   return [
     new DefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
       {
         id: "maxMessageLength",
-        value: process.env.MAX_MESSAGE_LENGTH || String(280),
+        value: process.env.MAX_MESSAGE_LENGTH ?? String(280),
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.EMAIL_WHITELIST, [
       {
         id: "whitelist",
-        value: process.env.EMAIL_WHITELIST || "",
+        value: process.env.EMAIL_WHITELIST ?? "",
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.LLM_EVALUATION, []),
@@ -28,34 +28,34 @@ const getInitialDefences = (): DefenceInfo[] => {
     new DefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
       {
         id: "prePrompt",
-        value: process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT || "",
+        value: process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT ?? "",
       },
       {
         id: "length",
-        value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH || String(10),
+        value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH ?? String(10),
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
       {
         id: "systemRole",
-        value: process.env.SYSTEM_ROLE || "",
+        value: process.env.SYSTEM_ROLE ?? "",
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.XML_TAGGING, []),
     new DefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
       {
         id: "filterUserInput",
-        value: process.env.FILTER_LIST_INPUT || "",
+        value: process.env.FILTER_LIST_INPUT ?? "",
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.FILTER_BOT_OUTPUT, [
       {
         id: "filterBotOutput",
-        value: process.env.FILTER_LIST_OUTPUT || "",
+        value: process.env.FILTER_LIST_OUTPUT ?? "",
       },
     ]),
   ];
-};
+}
 
 function activateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   // return the updated list of defences
@@ -90,8 +90,8 @@ function getConfigValue(
 ) {
   const configValue: string | undefined = defences
     .find((defence) => defence.id === defenceId)
-    ?.config?.find((config) => config.id === configId)?.value;
-  return configValue || defaultValue;
+    ?.config.find((config) => config.id === configId)?.value;
+  return configValue ?? defaultValue;
 }
 
 function getMaxMessageLength(defences: DefenceInfo[]) {
@@ -138,11 +138,11 @@ function getSystemRole(
 ) {
   switch (currentPhase) {
     case PHASE_NAMES.PHASE_0:
-      return process.env.SYSTEM_ROLE_PHASE_0 || "";
+      return process.env.SYSTEM_ROLE_PHASE_0 ?? "";
     case PHASE_NAMES.PHASE_1:
-      return process.env.SYSTEM_ROLE_PHASE_1 || "";
+      return process.env.SYSTEM_ROLE_PHASE_1 ?? "";
     case PHASE_NAMES.PHASE_2:
-      return process.env.SYSTEM_ROLE_PHASE_2 || "";
+      return process.env.SYSTEM_ROLE_PHASE_2 ?? "";
     default:
       return getConfigValue(
         defences,
@@ -229,7 +229,6 @@ function transformRandomSequenceEnclosure(
 
 // function to escape XML characters in user input to prevent hacking with XML tagging on
 function escapeXml(unsafe: string) {
-  unsafe.replace;
   return unsafe.replace(/[<>&'"]/g, function (c: string): string {
     switch (c) {
       case "<":
@@ -249,16 +248,16 @@ function escapeXml(unsafe: string) {
 
 // function to detect any XML tags in user input
 function detectXMLTags(input: string) {
-  const tagRegex: RegExp = /<\/?[a-zA-Z][\w\-]*(?:\b[^>]*\/\s*|[^>]*>|[?]>)/g;
-  const foundTags: string[] = input.match(tagRegex) || [];
+  const tagRegex = /<\/?[a-zA-Z][\w-]*(?:\b[^>]*\/\s*|[^>]*>|[?]>)/g;
+  const foundTags: string[] = input.match(tagRegex) ?? [];
   return foundTags.length > 0;
 }
 
 // apply XML tagging defence to input message
 function transformXmlTagging(message: string) {
   console.debug("XML Tagging defence active.");
-  const openTag: string = "<user_input>";
-  const closeTag: string = "</user_input>";
+  const openTag = "<user_input>";
+  const closeTag = "</user_input>";
   const transformedMessage: string = openTag.concat(
     escapeXml(message),
     closeTag
@@ -282,7 +281,7 @@ function transformMessage(message: string, defences: DefenceInfo[]) {
     console.debug("No defences applied. Message unchanged.");
   } else {
     console.debug(
-      "Defences applied. Transformed message: " + transformedMessage
+      `Defences applied. Transformed message: ${transformedMessage}`
     );
   }
   return transformedMessage;
@@ -300,7 +299,7 @@ async function detectTriggeredDefences(
     alertedDefences: [],
     triggeredDefences: [],
   };
-  const maxMessageLength: number = Number(getMaxMessageLength(defences));
+  const maxMessageLength = Number(getMaxMessageLength(defences));
   // check if the message is too long
   if (message.length > maxMessageLength) {
     console.debug("CHARACTER_LIMIT defence triggered.");
@@ -326,16 +325,16 @@ async function detectTriggeredDefences(
   );
   if (detectedPhrases.length > 0) {
     console.debug(
-      "FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: " +
-        detectedPhrases.join(", ")
+      `FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
+        ", "
+      )}`
     );
     if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
       defenceReport.triggeredDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
       defenceReport.isBlocked = true;
-      defenceReport.blockedReason =
-        "Message blocked - I cannot answer questions about '" +
-        detectedPhrases.join("' or '") +
-        "'!";
+      defenceReport.blockedReason = `Message blocked - I cannot answer questions about '${detectedPhrases.join(
+        "' or '"
+      )}'!`;
     } else {
       defenceReport.alertedDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
     }
@@ -359,9 +358,7 @@ async function detectTriggeredDefences(
       defenceReport.triggeredDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
       console.debug("LLM evalutation defence active.");
       defenceReport.isBlocked = true;
-      defenceReport.blockedReason =
-        "Message blocked by the malicious prompt evaluator." +
-        evalPrompt.reason;
+      defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.${evalPrompt.reason}`;
     } else {
       defenceReport.alertedDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
     }

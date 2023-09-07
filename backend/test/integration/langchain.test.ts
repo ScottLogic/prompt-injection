@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const mockCall = jest.fn();
 const mockRetrievalQAChain = {
   call: mockCall,
@@ -5,7 +6,7 @@ const mockRetrievalQAChain = {
 const mockPromptEvalChain = {
   call: mockCall,
 };
-let mockFromLLM = jest.fn();
+const mockFromLLM = jest.fn();
 const mockFromTemplate = jest.fn(() => "");
 const mockLoader = jest.fn();
 const mockSplitDocuments = jest.fn();
@@ -18,8 +19,8 @@ import {
   queryPromptEvaluationModel,
   getDocuments,
   setPromptEvaluationChain,
-  setVectorisedDocuments,
   initDocumentVectors,
+  setVectorisedDocuments,
 } from "../../src/langchain";
 import { DocumentsVector } from "../../src/models/document";
 import { PHASE_NAMES } from "../../src/models/phase";
@@ -42,12 +43,12 @@ jest.mock("langchain/embeddings/openai", () => {
   };
 });
 
-jest.mock("langchain/vectorstores/memory", () => {
-  class MockMemoryVectorStore {
-    async asRetriever() {
-      mockAsRetriever();
-    }
+class MockMemoryVectorStore {
+  asRetriever() {
+    mockAsRetriever();
   }
+}
+jest.mock("langchain/vectorstores/memory", () => {
   return {
     MemoryVectorStore: {
       fromDocuments: jest.fn(() =>
@@ -56,6 +57,27 @@ jest.mock("langchain/vectorstores/memory", () => {
     },
   };
 });
+
+class MockMemoryStore {
+  input: string;
+  constructor(input: string) {
+    this.input = input;
+  }
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async asRetriever() {
+    mockAsRetriever();
+  }
+}
+
+class MockDocumentsVector implements DocumentsVector {
+  phase: PHASE_NAMES;
+  docVector: any;
+  constructor(phase: PHASE_NAMES, docVector: any) {
+    this.phase = phase;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    this.docVector = new MockMemoryStore(docVector);
+  }
+}
 
 // mock DirectoryLoader
 jest.mock("langchain/document_loaders/fs/directory", () => {
@@ -107,37 +129,18 @@ jest.mock("langchain/chains", () => {
   };
 });
 
-class MockMemoryStore {
-  input: string;
-  constructor(input: string) {
-    this.input = input;
-  }
-  async asRetriever() {
-    mockAsRetriever();
-  }
-}
-
-class MockDocumentsVector implements DocumentsVector {
-  phase: PHASE_NAMES;
-  docVector: any;
-  constructor(phase: PHASE_NAMES, docVector: any) {
-    this.phase = phase;
-    this.docVector = new MockMemoryStore(docVector);
-  }
-}
-
 beforeEach(() => {
   // clear environment variables
   process.env = {};
 
   // reset the chains
-  setVectorisedDocuments([]);
   setPromptEvaluationChain(null);
+  setVectorisedDocuments([]);
 });
 
 test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM", async () => {
   mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-  await initPromptEvaluationModel("test-api-key");
+  initPromptEvaluationModel("test-api-key");
   expect(mockFromTemplate).toBeCalledTimes(2);
   expect(mockFromTemplate).toBeCalledWith(promptInjectionEvalTemplate);
   expect(mockFromTemplate).toBeCalledWith(maliciousPromptTemplate);
@@ -147,10 +150,11 @@ test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is in
   const phase = PHASE_NAMES.PHASE_0;
   const prompt = "";
   const apiKey = "test-api-key";
+
   setVectorisedDocuments([new MockDocumentsVector(phase, "test-docs")]);
 
   mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-  await initQAModel(phase, prompt, apiKey);
+  initQAModel(phase, prompt, apiKey);
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledWith(
@@ -160,23 +164,21 @@ test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is in
 
 test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialized and prompt is set to the correct prompt ", async () => {
   const phase = PHASE_NAMES.PHASE_0;
-  const prompt = "this is a test prompt.";
+  const prompt = "this is a test prompt. ";
   const apiKey = "test-api-key";
-
   setVectorisedDocuments([new MockDocumentsVector(phase, "test-docs")]);
+
   mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-  await initQAModel(phase, prompt, apiKey);
+  initQAModel(phase, prompt, apiKey);
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledWith(
-    "this is a test prompt." + qAcontextTemplate
+    `this is a test prompt. ${qAcontextTemplate}`
   );
 });
 
-test("GIVEN a valid API key WHEN application starts THEN document vectors are loaded for all phases", async () => {
-  const apiKey = "test-api-key";
-
-  await initDocumentVectors(apiKey);
+test("GIVEN application WHEN application starts THEN document vectors are loaded for all phases", async () => {
+  await initDocumentVectors();
   expect(mockLoader).toHaveBeenCalledTimes(4);
   expect(mockSplitDocuments).toHaveBeenCalledTimes(4);
 });
@@ -203,6 +205,8 @@ test("GIVEN the QA model is not initialised WHEN a question is asked THEN it ret
   const phase = PHASE_NAMES.PHASE_0;
   const prompt = "";
   const apiKey = "test-api-key";
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  setVectorisedDocuments([new MockDocumentsVector(phase, "test-docs")]);
   const answer = await queryDocuments(question, prompt, phase, apiKey);
   expect(answer.reply).toEqual("");
 });
@@ -218,7 +222,7 @@ test("GIVEN the prompt evaluation model is not initialised WHEN it is asked to e
 
 test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it responds in the correct format THEN it returns a final decision and reason", async () => {
   mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-  await initPromptEvaluationModel("test-api-key");
+  initPromptEvaluationModel("test-api-key");
 
   mockCall.mockResolvedValue({
     promptInjectionEval:
@@ -238,7 +242,7 @@ test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evalu
 test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it does not respond in the correct format THEN it returns a final decision of false", async () => {
   mockFromLLM.mockImplementation(() => mockPromptEvalChain);
 
-  await initPromptEvaluationModel("test-api-key");
+  initPromptEvaluationModel("test-api-key");
 
   mockCall.mockResolvedValue({
     promptInjectionEval: "idk!",

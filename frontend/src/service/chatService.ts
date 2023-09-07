@@ -10,9 +10,9 @@ import { PHASE_NAMES } from "../models/phase";
 
 const PATH = "openai/";
 
-const clearChat = async (phase: number): Promise<boolean> => {
+async function clearChat(phase: number) {
   const response = await sendRequest(
-    PATH + "clear",
+    `${PATH}clear`,
     "POST",
     {
       "Content-Type": "application/json",
@@ -20,123 +20,121 @@ const clearChat = async (phase: number): Promise<boolean> => {
     JSON.stringify({ phase: phase })
   );
   return response.status === 200;
-};
+}
 
-const sendMessage = async (
-  message: string,
-  currentPhase: PHASE_NAMES
-): Promise<ChatResponse> => {
+async function sendMessage(message: string, currentPhase: PHASE_NAMES) {
   const response = await sendRequest(
-    PATH + "chat",
+    `${PATH}chat`,
     "POST",
     { "Content-Type": "application/json" },
     JSON.stringify({ message, currentPhase })
   );
-  const data = await response.json();
+  const data = (await response.json()) as ChatResponse;
   console.log(data);
   return data;
-};
+}
 
-const getChatHistory = async (phase: number): Promise<ChatMessage[]> => {
-  const response = await sendRequest(PATH + "history?phase=" + phase, "GET");
-  const data = await response.json();
+async function getChatHistory(phase: number): Promise<ChatMessage[]> {
+  const response = await sendRequest(`${PATH}history?phase=${phase}`, "GET");
+  const chatHistory = (await response.json()) as ChatHistoryMessage[];
   // convert to ChatMessage object
-  const chatMessages: ChatMessage[] = data.map(
-    (message: ChatHistoryMessage) => {
-      switch (message.chatMessageType) {
-        case CHAT_MESSAGE_TYPE.BOT:
-          return {
-            message: message.completion?.content,
-            type: CHAT_MESSAGE_TYPE.BOT,
-          };
-        case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
-          return {
-            message: message.infoMessage,
-            type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-            defenceInfo: {
-              blockedReason: message.infoMessage,
-              isBlocked: true,
-              triggeredDefences: [],
-            },
-          };
-        case CHAT_MESSAGE_TYPE.USER:
-          return {
-            message: message.completion?.content || message.infoMessage,
-            type: CHAT_MESSAGE_TYPE.USER,
-          };
-        case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
-          return {
-            message: message.completion?.content,
-            type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
-          };
-        case CHAT_MESSAGE_TYPE.INFO:
-          return {
-            message: message.infoMessage,
-            type: message.chatMessageType,
-          };
-        case CHAT_MESSAGE_TYPE.PHASE_INFO:
-          return {
-            message: message.infoMessage,
-            type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-          };
-        case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
-          return {
-            message: message.infoMessage,
-            type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
-          };
-        case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
-          return {
-            message: message.infoMessage,
-            type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-          };
-        default:
-          // don't show system role messages or function calls in the chat box
-          return null;
-      }
+  const chatMessages: ChatMessage[] = [];
+  chatHistory.forEach((message) => {
+    switch (message.chatMessageType) {
+      case CHAT_MESSAGE_TYPE.BOT:
+        chatMessages.push({
+          message: message.completion?.content ?? "",
+          type: CHAT_MESSAGE_TYPE.BOT,
+        });
+        break;
+      case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
+        chatMessages.push({
+          message: message.infoMessage ?? "",
+          type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+        });
+        break;
+      case CHAT_MESSAGE_TYPE.USER:
+        chatMessages.push({
+          message: message.completion?.content ?? message.infoMessage ?? "",
+          type: CHAT_MESSAGE_TYPE.USER,
+        });
+        break;
+      case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
+        chatMessages.push({
+          message: message.completion?.content ?? "",
+          type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+        });
+        break;
+      case CHAT_MESSAGE_TYPE.INFO:
+        chatMessages.push({
+          message: message.infoMessage ?? "",
+          type: message.chatMessageType,
+        });
+        break;
+      case CHAT_MESSAGE_TYPE.PHASE_INFO:
+        chatMessages.push({
+          message: message.infoMessage ?? "",
+          type: CHAT_MESSAGE_TYPE.PHASE_INFO,
+        });
+        break;
+      case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
+        chatMessages.push({
+          message: message.infoMessage ?? "",
+          type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
+        });
+        break;
+      case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
+        chatMessages.push({
+          message: message.infoMessage ?? "",
+          type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
+        });
+        break;
+      default:
+        break;
     }
-  );
-  return chatMessages.filter((message) => message !== null);
-};
+  });
+  return chatMessages;
+}
 
-const setOpenAIApiKey = async (openAiApiKey: string): Promise<boolean> => {
+async function setOpenAIApiKey(openAiApiKey: string): Promise<boolean> {
   const response = await sendRequest(
-    PATH + "openAiApiKey",
+    `${PATH}openAiApiKey`,
     "POST",
     { "Content-Type": "application/json" },
     JSON.stringify({ openAiApiKey })
   );
   return response.status === 200;
-};
+}
 
-const getOpenAIApiKey = async (): Promise<string> => {
-  const response = await sendRequest(PATH + "openAiApiKey", "GET");
+async function getOpenAIApiKey(): Promise<string> {
+  const response = await sendRequest(`${PATH}openAiApiKey`, "GET");
   const data = await response.text();
   return data;
-};
+}
 
-const setGptModel = async (model: string): Promise<boolean> => {
+async function setGptModel(model: string): Promise<boolean> {
   const response = await sendRequest(
-    PATH + "model",
+    `${PATH}model`,
     "POST",
     { "Content-Type": "application/json" },
     JSON.stringify({ model })
   );
   return response.status === 200;
-};
+}
 
-const getGptModel = async (): Promise<CHAT_MODELS> => {
-  const response = await sendRequest(PATH + "model", "GET");
+async function getGptModel(): Promise<CHAT_MODELS> {
+  const response = await sendRequest(`${PATH}model`, "GET");
   const modelStr = await response.text();
   return modelStr as CHAT_MODELS;
-};
+}
 
-const addMessageToChatHistory = async (
+async function addMessageToChatHistory(
   message: string,
   chatMessageType: CHAT_MESSAGE_TYPE,
   phase: number
-) => {
+) {
   const response = await sendRequest(
-    PATH + "addHistory",
+    `${PATH}addHistory`,
     "POST",
     { "Content-Type": "application/json" },
     JSON.stringify({
@@ -146,7 +144,7 @@ const addMessageToChatHistory = async (
     })
   );
   return response.status === 200;
-};
+}
 
 export {
   clearChat,

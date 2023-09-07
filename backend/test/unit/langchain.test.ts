@@ -13,7 +13,7 @@ import {
 
 jest.mock("langchain/prompts", () => ({
   PromptTemplate: {
-    fromTemplate: jest.fn((template) => template),
+    fromTemplate: jest.fn((template: string) => template),
   },
 }));
 
@@ -29,9 +29,9 @@ test("GIVEN initQAModel is called with no apiKey THEN return early and log messa
   );
 });
 
-test("GIVEN initPromptEvaluationModel is called with no apiKey THEN return early and log message", async () => {
+test("GIVEN initPromptEvaluationModel is called with no apiKey THEN return early and log message", () => {
   const consoleDebugMock = jest.spyOn(console, "debug").mockImplementation();
-  await initPromptEvaluationModel("");
+  initPromptEvaluationModel("");
   expect(consoleDebugMock).toHaveBeenCalledWith(
     "No OpenAI API key set to initialise prompt evaluation model"
   );
@@ -64,7 +64,7 @@ test("GIVEN getQAPromptTemplate is called with no prePrompt THEN correct prompt 
 
 test("GIVEN getQAPromptTemplate is called with a prePrompt THEN correct prompt is returned", () => {
   const prompt = getQAPromptTemplate("This is a test prompt");
-  expect(prompt).toBe("This is a test prompt" + qAcontextTemplate);
+  expect(prompt).toBe(`This is a test prompt${qAcontextTemplate}`);
 });
 
 test("GIVEN llm evaluation model repsonds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason", () => {

@@ -3,6 +3,7 @@ import { ChatMessage } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
 import ExportChatBox from "./ExportChatBox";
 import ExportEmailBox from "./ExportEmailBox";
+import { PHASE_NAMES } from "../../models/phase";
 
 const styles = StyleSheet.create({
   page: {
@@ -37,23 +38,24 @@ const styles = StyleSheet.create({
   },
 });
 
-const ExportContent = ({
+function ExportContent({
   messages,
   emails,
   currentPhase,
 }: {
   messages: ChatMessage[];
   emails: EmailInfo[];
-  currentPhase: number;
-}) => {
-  const getTitle = (currentPhase: number) => {
+  currentPhase: PHASE_NAMES;
+}) {
+  function getTitle(currentPhase: PHASE_NAMES) {
     const title = "Prompt injection demo chat";
-    if (currentPhase === 3) {
-      return title + " (sandbox mode)";
+    if (currentPhase === PHASE_NAMES.SANDBOX) {
+      return `${title} (sandbox mode)`;
     } else {
-      return title + " (phase " + currentPhase + ")";
+      return `${title} (phase ${currentPhase})`;
     }
-  };
+  }
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -77,6 +79,6 @@ const ExportContent = ({
       </Page>
     </Document>
   );
-};
+}
 
 export default ExportContent;

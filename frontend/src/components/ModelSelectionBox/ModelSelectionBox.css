@@ -1,47 +1,47 @@
 #model-selection-box {
-    padding: 1px 0;
-    position: relative;
+  padding: 1px 0;
+  position: relative;
 }
 
 #model-selection-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #model-selection-row #text-area {
-    max-width: 30%;
+  max-width: 30%;
 }
 
 #model-selection-row #menu-area {
-    min-width: 50%;
+  min-width: 50%;
 }
 
 #model-selection-row #button-area {
-    min-width: 20%;
+  min-width: 20%;
 }
 
 #model-selection-info {
-    align-items: center;
-    text-align: center;
+  align-items: center;
+  text-align: center;
 }
 
 #model-selection-info p {
-    margin: 0;
-    padding: 0;
-    color: var(--main-accent-colour)
+  margin: 0;
+  padding: 0;
+  color: var(--main-accent-colour);
 }
 
 #p error {
-    color: var(--main-error-colour);
+  color: var(--main-error-colour);
 }
 
 #model-selection-menu {
-    padding: 5px;
-    width: 100%;
+  padding: 5px;
+  width: 100%;
 }
 
 #model-selection-button {
-    padding: 5px;
-    width: 100%;
+  padding: 5px;
+  width: 100%;
 }

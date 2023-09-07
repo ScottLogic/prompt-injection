@@ -10,13 +10,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const ExportEmailBox = ({ emails }: { emails: EmailInfo[] }) => {
+function ExportEmailBox({ emails }: { emails: EmailInfo[] }) {
   const rows = emails.map((email, index) => (
     <View style={styles.row} key={index}>
       <ExportEmailMessage email={email} />
     </View>
   ));
   return <Fragment>{rows}</Fragment>;
-};
+}
 
 export default ExportEmailBox;

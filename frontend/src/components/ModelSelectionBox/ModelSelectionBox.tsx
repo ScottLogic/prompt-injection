@@ -14,25 +14,25 @@ function ModelSelectionBox() {
   const [errorChangingModel, setErrorChangingModel] = useState(false);
 
   // handle button click to log the selected model
-  const submitSelectedModel = async () => {
-    console.log("selected model: " + selectedModel);
+  async function submitSelectedModel() {
+    console.log(`selected model: ${selectedModel}`);
     if (await setGptModel(selectedModel)) {
       setModelInUse(selectedModel);
       setErrorChangingModel(false);
     } else {
       setErrorChangingModel(true);
     }
-  };
+  }
 
   // get the model
   useEffect(() => {
-    const getModel = async () => {
-      const model = await getGptModel();
-      if (model) {
+    getGptModel()
+      .then((model) => {
         setModelInUse(model);
-      }
-    };
-    getModel();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   const chatModelOptions = Object.values(CHAT_MODELS);
@@ -49,7 +49,9 @@ function ModelSelectionBox() {
           <select
             id="model-selection-menu"
             aria-label="model-select"
-            onChange={(e) => setSelectedModel(e.target.value as CHAT_MODELS)}
+            onChange={(e) => {
+              setSelectedModel(e.target.value as CHAT_MODELS);
+            }}
             placeholder={modelInUse}
           >
             {chatModelOptions.map((model) => (
@@ -64,7 +66,7 @@ function ModelSelectionBox() {
           <button
             id="model-selection-button"
             className="prompt-injection-button"
-            onClick={async () => submitSelectedModel()}
+            onClick={void submitSelectedModel}
           >
             Choose
           </button>

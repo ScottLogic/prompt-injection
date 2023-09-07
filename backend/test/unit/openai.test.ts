@@ -1,6 +1,6 @@
 import { OpenAIApi } from "openai";
 import { validateApiKey, setOpenAiApiKey } from "../../src/openai";
-import { initDocumentVectors, initQAModel } from "../../src/langchain";
+import { initQAModel } from "../../src/langchain";
 import { CHAT_MODELS } from "../../src/models/chat";
 
 // Define a mock implementation for the createChatCompletion method
@@ -14,7 +14,9 @@ jest.mock("openai", () => ({
 }));
 
 jest.mock("../../src/openai", () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const originalModule = jest.requireActual("../../src/openai");
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,
     initOpenAi: jest.fn(),
@@ -22,7 +24,9 @@ jest.mock("../../src/openai", () => {
 });
 
 jest.mock("../../src/langchain", () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const originalModule = jest.requireActual("../../src/langchain");
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,
     initQAModel: jest.fn(),
@@ -46,14 +50,13 @@ test("GIVEN an invalid API key WHEN calling validateApiKey THEN it should return
   expect(result).toBe(false);
 });
 
-test("GIVEN a valid API key WHEN calling setOpenAiApiKey THEN it should set the API key and initialize models and documents", async () => {
+test("GIVEN a valid API key WHEN calling setOpenAiApiKey THEN it should set the API key and initialize models", async () => {
   const openAiApiKey = "sk-1234567";
   const result = await setOpenAiApiKey(openAiApiKey, CHAT_MODELS.GPT_4);
 
   expect(result).toBe(true);
   // once to validate, once to initalize
   expect(OpenAIApi).toHaveBeenCalledTimes(2);
-  expect(initDocumentVectors).toHaveBeenCalled();
 });
 
 test("GIVEN an invalid API key WHEN calling setOpenAiApiKey THEN it should set the API key to empty", async () => {
