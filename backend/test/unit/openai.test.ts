@@ -30,6 +30,7 @@ jest.mock("../../src/langchain", () => {
   return {
     ...originalModule,
     initQAModel: jest.fn(),
+    initDocumentVectors: jest.fn(),
   };
 });
 
@@ -51,19 +52,18 @@ test("GIVEN an invalid API key WHEN calling validateApiKey THEN it should return
 
 test("GIVEN a valid API key WHEN calling setOpenAiApiKey THEN it should set the API key and initialize models", async () => {
   const openAiApiKey = "sk-1234567";
-  const result = await setOpenAiApiKey(openAiApiKey, CHAT_MODELS.GPT_4, "");
+  const result = await setOpenAiApiKey(openAiApiKey, CHAT_MODELS.GPT_4);
 
   expect(result).toBe(true);
   // once to validate, once to initalize
   expect(OpenAIApi).toHaveBeenCalledTimes(2);
-  expect(initQAModel).toHaveBeenCalled();
 });
 
 test("GIVEN an invalid API key WHEN calling setOpenAiApiKey THEN it should set the API key to empty", async () => {
   mockCreateChatCompletion.mockRejectedValueOnce(new Error("Invalid API key"));
   const openAiApiKey = "invalid-api-key";
   // Call the function
-  const result = await setOpenAiApiKey(openAiApiKey, CHAT_MODELS.GPT_4, "");
+  const result = await setOpenAiApiKey(openAiApiKey, CHAT_MODELS.GPT_4);
 
   // Check if the API key and models are reset correctly
   expect(result).toBe(false);

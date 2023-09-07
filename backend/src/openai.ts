@@ -3,13 +3,10 @@ import {
   getSystemRole,
   detectFilterList,
   getFilterList,
+  getQALLMprePrompt,
 } from "./defence";
 import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
-import {
-  initQAModel,
-  initPromptEvaluationModel,
-  queryDocuments,
-} from "./langchain";
+import { queryDocuments } from "./langchain";
 import { EmailInfo, EmailResponse } from "./models/email";
 import {
   ChatCompletionRequestMessage,
@@ -101,19 +98,11 @@ async function validateApiKey(openAiApiKey: string, gptModel: string) {
   }
 }
 
-async function setOpenAiApiKey(
-  openAiApiKey: string,
-  gptModel: string,
-  prePrompt: string,
-  // default to sandbox mode
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
-) {
-  // initialise all models with the new key
+async function setOpenAiApiKey(openAiApiKey: string, gptModel: string) {
+  // initialise models with the new key
   if (await validateApiKey(openAiApiKey, gptModel)) {
     console.debug("Setting API key and initialising models");
     initOpenAi(openAiApiKey);
-    await initQAModel(openAiApiKey, prePrompt, currentPhase);
-    initPromptEvaluationModel(openAiApiKey);
     return true;
   } else {
     // set to empty in case it was previously set
@@ -158,7 +147,8 @@ async function chatGptCallFunction(
   functionCall: ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
   // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX,
+  openAiApiKey: string
 ) {
   let reply: ChatCompletionRequestMessage | null = null;
   let wonPhase = false;
@@ -217,7 +207,18 @@ async function chatGptCallFunction(
         ) as FunctionAskQuestionParams;
         console.debug(`Asking question: ${params.question}`);
         // if asking a question, call the queryDocuments
-        response = (await queryDocuments(params.question)).reply;
+        let qaPrompt = "";
+        if (isDefenceActive(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences)) {
+          qaPrompt = getQALLMprePrompt(defences);
+        }
+        response = (
+          await queryDocuments(
+            params.question,
+            qaPrompt,
+            currentPhase,
+            openAiApiKey
+          )
+        ).reply;
       } else {
         console.error("No arguments provided to askQuestion function");
       }
@@ -377,7 +378,8 @@ async function chatGptSendMessage(
       defences,
       reply.function_call,
       sentEmails,
-      currentPhase
+      currentPhase,
+      openAiApiKey
     );
     if (functionCallReply) {
       wonPhase = functionCallReply.wonPhase;

@@ -10,9 +10,9 @@ import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
 import { CHAT_MODELS } from "./models/chat";
 import { PHASE_NAMES } from "./models/phase";
-import { retrievalQAPrePrompt } from "./promptTemplates";
 import path from "path";
 import { getInitialDefences } from "./defence";
+import { initDocumentVectors } from "./langchain";
 
 dotenv.config();
 
@@ -97,13 +97,21 @@ app.use("/", router);
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 
+  // initialise the documents on app startup
+  initDocumentVectors()
+    .then(() => {
+      console.debug("Document vectors initialised");
+    })
+    .catch((err) => {
+      console.error("Error initialising document vectors", err);
+    });
+
   // for dev purposes only - set the API key from the environment variable
   const envOpenAiKey = process.env.OPENAI_API_KEY;
-  const prePrompt = retrievalQAPrePrompt;
   if (envOpenAiKey) {
     console.debug("Initializing models with API key from environment variable");
     // asynchronously set the API key
-    void setOpenAiApiKey(envOpenAiKey, defaultModel, prePrompt).then(() => {
+    void setOpenAiApiKey(envOpenAiKey, defaultModel).then(() => {
       console.debug("OpenAI models initialized");
     });
   }

@@ -10,8 +10,9 @@ import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
-
 import { CHAT_MODELS, ChatAnswer } from "./models/chat";
+import { DocumentsVector } from "./models/document";
+
 import {
   maliciousPromptTemplate,
   promptInjectionEvalTemplate,
@@ -21,23 +22,15 @@ import {
 import { PHASE_NAMES } from "./models/phase";
 import { PromptEvaluationChainReply, QaChainReply } from "./models/langchain";
 
-// chain we use in question/answer request
-let qaChain: RetrievalQAChain | null = null;
+// store vectorised documents for each phase as array
+let vectorisedDocuments: DocumentsVector[] = [];
 
-// chain we use in prompt evaluation request
-let promptEvaluationChain: SequentialChain | null = null;
-
-function setQAChain(chain: RetrievalQAChain | null) {
-  console.debug("Setting QA chain.");
-  qaChain = chain;
+// set the global varibale
+function setVectorisedDocuments(docs: DocumentsVector[]) {
+  vectorisedDocuments = docs;
 }
 
-function setPromptEvaluationChain(chain: SequentialChain | null) {
-  console.debug("Setting evaluation chain.");
-  promptEvaluationChain = chain;
-}
-
-function getFilepath(currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX) {
+function getFilepath(currentPhase: PHASE_NAMES) {
   let filePath = "resources/documents/";
   switch (currentPhase) {
     case PHASE_NAMES.PHASE_0:
@@ -46,11 +39,13 @@ function getFilepath(currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX) {
       return (filePath += "phase_1/");
     case PHASE_NAMES.PHASE_2:
       return (filePath += "phase_2/");
-    default:
+    case PHASE_NAMES.SANDBOX:
       return (filePath += "common/");
+    default:
+      console.error(`No document filepath found for phase: ${filePath}`);
+      return "";
   }
 }
-
 // load the documents from filesystem
 async function getDocuments(filePath: string) {
   console.debug(`Loading documents from: ${filePath}`);
@@ -74,33 +69,54 @@ async function getDocuments(filePath: string) {
 // join the configurable preprompt to the context template
 function getQAPromptTemplate(prePrompt: string) {
   if (!prePrompt) {
-    console.debug("Using default retrieval QA pre-prompt");
+    // use the default prePrompt
     prePrompt = retrievalQAPrePrompt;
   }
   const fullPrompt = prePrompt + qAcontextTemplate;
+  console.debug(`QA prompt: ${fullPrompt}`);
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;
 }
+// create and store the document vectors for each phase
+async function initDocumentVectors() {
+  const docVectors: DocumentsVector[] = [];
 
-// QA Chain - ask the chat model a question about the documents
-async function initQAModel(
-  openAiApiKey: string,
+  for (const value of Object.values(PHASE_NAMES)) {
+    if (!isNaN(Number(value))) {
+      const phase = value as PHASE_NAMES;
+      // get the documents
+      const filePath: string = getFilepath(phase);
+      const documents: Document[] = await getDocuments(filePath);
+
+      // embed and store the splits - will use env variable for API key
+      const embeddings = new OpenAIEmbeddings();
+
+      const vectorStore: MemoryVectorStore =
+        await MemoryVectorStore.fromDocuments(documents, embeddings);
+      // store the document vectors for the phase
+      docVectors.push({
+        phase: phase,
+        docVector: vectorStore,
+      });
+    }
+  }
+  setVectorisedDocuments(docVectors);
+  console.debug(
+    "Intitialised document vectors for each phase. count=",
+    vectorisedDocuments.length
+  );
+}
+
+function initQAModel(
+  phase: PHASE_NAMES,
   prePrompt: string,
-  // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  openAiApiKey: string
 ) {
   if (!openAiApiKey) {
     console.debug("No OpenAI API key set to initialise QA model");
     return;
   }
-  // get the documents
-  const docs: Document[] = await getDocuments(getFilepath(currentPhase));
-
-  // embed and store the splits
-  const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: openAiApiKey,
-  });
-  const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
+  const documentVectors = vectorisedDocuments[phase].docVector;
 
   // initialise model
   const model = new ChatOpenAI({
@@ -108,17 +124,11 @@ async function initQAModel(
     streaming: true,
     openAIApiKey: openAiApiKey,
   });
+  const promptTemplate = getQAPromptTemplate(prePrompt);
 
-  // prompt template for question and answering
-  const qaPrompt = getQAPromptTemplate(prePrompt);
-
-  // set chain to retrieval QA chain
-  setQAChain(
-    RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
-      prompt: qaPrompt,
-    })
-  );
-  console.debug("QA chain initialised.");
+  return RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
+    prompt: promptTemplate,
+  });
 }
 
 // initialise the prompt evaluation model
@@ -163,13 +173,18 @@ function initPromptEvaluationModel(openAiApiKey: string) {
     inputVariables: ["prompt"],
     outputVariables: ["promptInjectionEval", "maliciousInputEval"],
   });
-  setPromptEvaluationChain(sequentialChain);
-
   console.debug("Prompt evaluation chain initialised.");
+  return sequentialChain;
 }
 
 // ask the question and return models answer
-async function queryDocuments(question: string) {
+async function queryDocuments(
+  question: string,
+  prePrompt: string,
+  currentPhase: PHASE_NAMES,
+  openAiApiKey: string
+) {
+  const qaChain = initQAModel(currentPhase, prePrompt, openAiApiKey);
   if (!qaChain) {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };
@@ -187,7 +202,8 @@ async function queryDocuments(question: string) {
 }
 
 // ask LLM whether the prompt is malicious
-async function queryPromptEvaluationModel(input: string) {
+async function queryPromptEvaluationModel(input: string, openAIApiKey: string) {
+  const promptEvaluationChain = initPromptEvaluationModel(openAIApiKey);
   if (!promptEvaluationChain) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };
@@ -252,6 +268,6 @@ export {
   queryDocuments,
   queryPromptEvaluationModel,
   formatEvaluationOutput,
-  setQAChain,
-  setPromptEvaluationChain,
+  setVectorisedDocuments,
+  initDocumentVectors,
 };

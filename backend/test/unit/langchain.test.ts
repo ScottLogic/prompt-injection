@@ -17,9 +17,12 @@ jest.mock("langchain/prompts", () => ({
   },
 }));
 
-test("GIVEN initQAModel is called with no apiKey THEN return early and log message", async () => {
+test("GIVEN initQAModel is called with no apiKey THEN return early and log message", () => {
+  const phase = PHASE_NAMES.PHASE_0;
+  const prompt = "";
   const consoleDebugMock = jest.spyOn(console, "debug").mockImplementation();
-  await initQAModel("", "");
+
+  initQAModel(phase, prompt, "");
   expect(consoleDebugMock).toHaveBeenCalledWith(
     "No OpenAI API key set to initialise QA model"
   );

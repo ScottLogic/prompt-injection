@@ -6,15 +6,11 @@ import {
   configureDefence,
   transformMessage,
   detectTriggeredDefences,
-  getQALLMprePrompt,
   getInitialDefences,
 } from "./defence";
-import { initQAModel } from "./langchain";
 import { CHAT_MESSAGE_TYPE, ChatHttpResponse } from "./models/chat";
-import { DEFENCE_TYPES } from "./models/defence";
 import { Document } from "./models/document";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
-import { retrievalQAPrePrompt } from "./promptTemplates";
 import { PHASE_NAMES } from "./models/phase";
 import * as fs from "fs";
 import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
@@ -29,9 +25,6 @@ import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
 
 const router = express.Router();
 
-// keep track of phase change to reinitialize models
-let prevPhase = PHASE_NAMES.SANDBOX;
-
 // Activate a defence
 router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence
@@ -43,21 +36,6 @@ router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
       defenceId,
       req.session.phaseState[phase].defences
     );
-    // need to re-initialize QA model when turned on
-    if (
-      defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS &&
-      req.session.openAiApiKey
-    ) {
-      console.debug(
-        "Activating qa llm instruction defence - reinitializing qa model"
-      );
-      // asynchronously init the QA model
-      void initQAModel(
-        req.session.openAiApiKey,
-        getQALLMprePrompt(req.session.phaseState[phase].defences)
-      );
-    }
-
     res.send();
   } else {
     res.statusCode = 400;
@@ -76,18 +54,6 @@ router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
       defenceId,
       req.session.phaseState[phase].defences
     );
-
-    if (
-      defenceId === DEFENCE_TYPES.QA_LLM_INSTRUCTIONS &&
-      req.session.openAiApiKey
-    ) {
-      console.debug("Resetting QA model with default prompt");
-      // asynchronously init the QA model
-      void initQAModel(
-        req.session.openAiApiKey,
-        getQALLMprePrompt(req.session.phaseState[phase].defences)
-      );
-    }
     res.send();
   } else {
     res.statusCode = 400;
@@ -139,7 +105,7 @@ router.get("/defence/status", (req, res) => {
   }
 });
 
-// Get sent emails // /email/get?phase=1
+// Get sent emails /email/get?phase=1
 router.get("/email/get", (req, res) => {
   const phase: number | undefined = req.query.phase as number | undefined;
   if (phase !== undefined) {
@@ -197,15 +163,6 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
   } else {
     let numPhasesCompleted = req.session.numPhasesCompleted;
 
-    // if phase has changed, reinitialize the QA model with with new filepath
-    if (prevPhase != currentPhase) {
-      prevPhase = currentPhase;
-      await initQAModel(
-        req.session.openAiApiKey,
-        retrievalQAPrePrompt,
-        currentPhase
-      );
-    }
     if (message) {
       chatResponse.transformedMessage = message;
       // see if this message triggers any defences (only for phase 2 and sandbox)
@@ -215,7 +172,8 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
       ) {
         chatResponse.defenceInfo = await detectTriggeredDefences(
           message,
-          req.session.phaseState[currentPhase].defences
+          req.session.phaseState[currentPhase].defences,
+          req.session.openAiApiKey
         );
         // if message is blocked, add to chat history (not as completion)
         if (chatResponse.defenceInfo.isBlocked) {
@@ -358,13 +316,7 @@ router.post("/openai/apiKey", async (req: OpenAiSetKeyRequest, res) => {
     res.status(401).send();
     return;
   }
-  if (
-    await setOpenAiApiKey(
-      openAiApiKey,
-      req.session.gptModel,
-      getQALLMprePrompt(req.session.phaseState[3].defences) // use phase 2 as only phase with QA LLM defence
-    )
-  ) {
+  if (await setOpenAiApiKey(openAiApiKey, req.session.gptModel)) {
     req.session.openAiApiKey = openAiApiKey;
     res.send();
   } else {

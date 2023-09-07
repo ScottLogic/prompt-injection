@@ -10,13 +10,20 @@ import {
   transformMessage,
   detectFilterList,
 } from "../../src/defence";
+import * as langchain from "../../src/langchain";
 import { DEFENCE_TYPES } from "../../src/models/defence";
 import { PHASE_NAMES } from "../../src/models/phase";
 import { retrievalQAPrePromptSecure } from "../../src/promptTemplates";
 
+jest.mock("../../src/langchain");
+
 beforeEach(() => {
   // clear environment variables
   process.env = {};
+
+  jest
+    .mocked(langchain.queryPromptEvaluationModel)
+    .mockResolvedValue({ isMalicious: false, reason: "" });
 });
 
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {
@@ -123,8 +130,13 @@ test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
 
 test("GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered", async () => {
   const message = "Hello";
+  const apiKey = "test-api-key";
   const defences = getInitialDefences();
-  const defenceReport = await detectTriggeredDefences(message, defences);
+  const defenceReport = await detectTriggeredDefences(
+    message,
+    defences,
+    apiKey
+  );
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
   expect(defenceReport.triggeredDefences.length).toBe(0);
@@ -136,6 +148,7 @@ test(
     "THEN CHARACTER_LIMIT defence is triggered AND the message is blocked",
   async () => {
     const message = "Hello";
+    const apiKey = "test-api-key";
     let defences = getInitialDefences();
     // activate CHARACTER_LIMIT defence
     defences = activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defences);
@@ -146,7 +159,11 @@ test(
         value: String(3),
       },
     ]);
-    const defenceReport = await detectTriggeredDefences(message, defences);
+    const defenceReport = await detectTriggeredDefences(
+      message,
+      defences,
+      apiKey
+    );
     expect(defenceReport.blockedReason).toBe("Message is too long");
     expect(defenceReport.isBlocked).toBe(true);
     expect(defenceReport.triggeredDefences).toContain(
@@ -162,6 +179,7 @@ test(
   async () => {
     const message = "Hello";
     const defences = getInitialDefences();
+    const apiKey = "test-api-key";
     // activate CHARACTER_LIMIT defence
     activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defences);
     // configure CHARACTER_LIMIT defence
@@ -171,7 +189,11 @@ test(
         value: String(280),
       },
     ]);
-    const defenceReport = await detectTriggeredDefences(message, defences);
+    const defenceReport = await detectTriggeredDefences(
+      message,
+      defences,
+      apiKey
+    );
     expect(defenceReport.blockedReason).toBe(null);
     expect(defenceReport.isBlocked).toBe(false);
     expect(defenceReport.triggeredDefences.length).toBe(0);
@@ -185,6 +207,7 @@ test(
   async () => {
     const message = "Hello";
     let defences = getInitialDefences();
+    const apiKey = "test-api-key";
     // configure CHARACTER_LIMIT defence
     defences = configureDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defences, [
       {
@@ -192,7 +215,11 @@ test(
         value: String(3),
       },
     ]);
-    const defenceReport = await detectTriggeredDefences(message, defences);
+    const defenceReport = await detectTriggeredDefences(
+      message,
+      defences,
+      apiKey
+    );
     expect(defenceReport.blockedReason).toBe(null);
     expect(defenceReport.isBlocked).toBe(false);
     expect(defenceReport.alertedDefences).toContain(
@@ -204,9 +231,14 @@ test(
 test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is triggered", async () => {
   const message = "<Hello>";
   let defences = getInitialDefences();
+  const apiKey = "test-api-key";
   // activate XML_TAGGING defence
   defences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
-  const defenceReport = await detectTriggeredDefences(message, defences);
+  const defenceReport = await detectTriggeredDefences(
+    message,
+    defences,
+    apiKey
+  );
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
   expect(defenceReport.triggeredDefences).toContain(DEFENCE_TYPES.XML_TAGGING);
@@ -214,8 +246,13 @@ test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN det
 
 test("GIVEN XML_TAGGING defence is inactive AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is alerted", async () => {
   const message = "<Hello>";
+  const apiKey = "test-api-key";
   const defences = getInitialDefences();
-  const defenceReport = await detectTriggeredDefences(message, defences);
+  const defenceReport = await detectTriggeredDefences(
+    message,
+    defences,
+    apiKey
+  );
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
   expect(defenceReport.alertedDefences).toContain(DEFENCE_TYPES.XML_TAGGING);
