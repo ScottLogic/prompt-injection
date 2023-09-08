@@ -403,7 +403,7 @@ test(
                 function_call: {
                   name: "sendEmail",
                   arguments:
-                    '{\n  "address": "bob@example.com",\n  "subject": "Hi",\n  "body": "Hello"\n}',
+                    '{\n  "address": "bob@example.com",\n  "subject": "Hi",\n  "body": "Hello", "confirmed": "true" \n}',
                 },
               },
             },
@@ -486,7 +486,7 @@ test(
                 function_call: {
                   name: "sendEmail",
                   arguments:
-                    '{\n  "address": "bob@example.com",\n  "subject": "Hi",\n  "body": "Hello"\n}',
+                    '{\n  "address": "bob@example.com",\n  "subject": "Hi",\n  "body": "Hello", "confirmed": "true" \n}',
                 },
               },
             },
@@ -566,7 +566,7 @@ test(
                 function_call: {
                   name: "sendEmail",
                   arguments:
-                    '{\n  "address": "bob@example.com",\n  "subject": "Hi",\n  "body": "Hello"\n}',
+                    '{\n  "address": "bob@example.com",\n  "subject": "Hi",\n  "body": "Hello", "confirmed": "true" \n}',
                 },
               },
             },
@@ -647,7 +647,7 @@ test(
                 function_call: {
                   name: "sendEmail",
                   arguments:
-                    '{\n  "address": "bob@example.com",\n  "subject": "Hi",\n  "body": "Hello"\n}',
+                    '{\n  "address": "bob@example.com",\n  "subject": "Hi",\n  "body": "Hello", "confirmed": "true" \n}',
                 },
               },
             },
