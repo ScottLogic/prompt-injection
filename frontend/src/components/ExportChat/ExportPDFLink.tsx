@@ -25,20 +25,18 @@ function ExportPDFLink({
 
   return (
     <div id="export-chat-box">
-      <button className="prompt-injection-button">
-        <PDFDownloadLink
-          document={
-            <ExportContent
-              messages={messages}
-              emails={emails}
-              currentPhase={currentPhase}
-            />
-          }
-          fileName={getFileName()}
-        >
-          {"Export"}
-        </PDFDownloadLink>{" "}
-      </button>
+      <PDFDownloadLink
+        document={
+          <ExportContent
+            messages={messages}
+            emails={emails}
+            currentPhase={currentPhase}
+          />
+        }
+        fileName={getFileName()}
+      >
+        <button className="prompt-injection-button">Export</button>
+      </PDFDownloadLink>{" "}
     </div>
   );
 }
