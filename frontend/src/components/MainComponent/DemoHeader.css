@@ -21,11 +21,11 @@
   font-size: 36px;
   font-style: italic;
   font-weight: 700;
-  padding-right: 36px;
 }
 
 #demo-header-icon {
-  height: 80%;
+  height: 70%;
+  padding: 0 4%;
 }
 
 #demo-header-middle {
