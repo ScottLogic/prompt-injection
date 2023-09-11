@@ -1,13 +1,31 @@
-import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  View,
+  Text,
+  StyleSheet,
+  Font,
+} from "@react-pdf/renderer";
 import { ChatMessage } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
 import ExportChatBox from "./ExportChatBox";
 import ExportEmailBox from "./ExportEmailBox";
 import { PHASE_NAMES } from "../../models/phase";
 
+import CombinedFonts from "../../assets/fonts/CombinedFonts.ttf";
+import NotoSerifJP from "../../assets/fonts/NotoSerifJP-Regular.otf";
+import NotoSansSC from "../../assets/fonts/NotoSansSC-Regular.ttf";
+
+Font.register({ family: "CombinedFonts", src: CombinedFonts });
+
+// chinese and japanese - currently multi lang not supported
+Font.register({ family: "NotoSerifJP", src: NotoSerifJP });
+Font.register({ family: "NotoSansSC", src: NotoSansSC });
+
 const styles = StyleSheet.create({
   page: {
     backgroundColor: "white",
+    fontFamily: "CombinedFonts",
   },
   pageContent: {
     flexDirection: "row",
