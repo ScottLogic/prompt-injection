@@ -50,8 +50,13 @@ const chatGptFunctions = [
           type: "string",
           description: "The body of the email",
         },
+        confirmed: {
+          type: "boolean",
+          description:
+            "whether the user has confirmed the email is correct before sending",
+        },
       },
-      required: ["address", "subject", "body"],
+      required: ["address", "subject", "body", "confirmed"],
     },
   },
   // {
@@ -184,15 +189,19 @@ async function chatGptCallFunction(
         }
 
         if (isAllowedToSendEmail) {
+          console.debug("Send email params: ", JSON.stringify(params));
           const emailResponse: EmailResponse = sendEmail(
             params.address,
             params.subject,
             params.body,
+            params.confirmed,
             currentPhase
           );
           response = emailResponse.response;
           wonPhase = emailResponse.wonPhase;
-          sentEmails.push(emailResponse.sentEmail);
+          if (emailResponse.sentEmail) {
+            sentEmails.push(emailResponse.sentEmail);
+          }
         }
       } else {
         console.error("No arguments provided to sendEmail function");

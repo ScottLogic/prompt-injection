@@ -47,9 +47,16 @@ function sendEmail(
   address: string,
   subject: string,
   body: string,
+  confirmed: boolean,
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
 ) {
+  if (!confirmed) {
+    return {
+      response: "Email not sent as not confirmed with user",
+      wonPhase: false,
+    };
+  }
   // add to the list of sent emails
   const email: EmailInfo = {
     address: address,
