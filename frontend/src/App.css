@@ -42,6 +42,7 @@
   border-width: 1px;
   color: var(--main-button-inactive-text-colour);
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .prompt-injection-button:hover:not([disabled]) {
