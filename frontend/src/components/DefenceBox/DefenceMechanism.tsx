@@ -30,6 +30,10 @@ function DefenceMechanism({
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const [configValidated, setConfigValidated] = useState<boolean>(true);
 
+  function toggleDefenceInfo() {
+    setIsInfoBoxVisible(!isInfoBoxVisible);
+  }
+
   async function setConfigurationValue(configId: string, value: string) {
     const configName =
       defenceDetail.config.find((config) => config.id === configId)?.name ?? "";
@@ -70,12 +74,7 @@ function DefenceMechanism({
     <span>
       <div
         className="strategy-mechanism defence-mechanism"
-        onMouseOver={() => {
-          setIsInfoBoxVisible(true);
-        }}
-        onMouseLeave={() => {
-          setIsInfoBoxVisible(false);
-        }}
+        onClick={toggleDefenceInfo}
       >
         <div className="strategy-mechanism-header">
           <span>{defenceDetail.name}</span>
