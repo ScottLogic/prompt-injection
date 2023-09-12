@@ -48,12 +48,23 @@ function ChatBox({
   }, [setEmails]);
 
   function inputChange() {
-    // scroll to the bottom
     const inputBoxElement = document.getElementById(
       "chat-box-input"
     ) as HTMLSpanElement;
+
+    // scroll to the bottom
     inputBoxElement.scrollTop =
       inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
+
+    const maxHeightPx = 150;
+    inputBoxElement.style.height = "0";
+    if (inputBoxElement.scrollHeight > maxHeightPx) {
+      inputBoxElement.style.height = `${maxHeightPx}px`;
+      inputBoxElement.style.overflowY = "auto";
+    } else {
+      inputBoxElement.style.height = `${inputBoxElement.scrollHeight}px`;
+      inputBoxElement.style.overflowY = "hidden";
+    }
   }
 
   function inputKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
