@@ -62,33 +62,35 @@ function DemoBody({
 
   return (
     <span id="main-area">
-      <div className="side-bar">
-        {/* show reduced set of attacks on phase 1 */}
-        {currentPhase === PHASE_NAMES.PHASE_1 && (
-          <AttackBox attacks={ATTACKS_PHASE_1} />
-        )}
-        {/* show all attacks on phase 2 and sandbox */}
-        {(currentPhase === PHASE_NAMES.PHASE_2 ||
-          currentPhase === PHASE_NAMES.SANDBOX) && (
-          <AttackBox attacks={ATTACKS_ALL} />
-        )}
-        {/* hide defence box on phases 0 and 1. only allow configuration in sandbox */}
-        {(currentPhase === PHASE_NAMES.PHASE_2 ||
-          currentPhase === PHASE_NAMES.SANDBOX) && (
-          <DefenceBox
-            currentPhase={currentPhase}
-            defences={defences}
-            showConfigurations={
-              currentPhase > PHASE_NAMES.PHASE_2 ? true : false
-            }
-            setDefenceActive={setDefenceActive}
-            setDefenceInactive={setDefenceInactive}
-            setDefenceConfiguration={setDefenceConfiguration}
-          />
-        )}
-        {/* hide model selection box on phases 0 and 1 */}
-        {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
-        {currentPhase === PHASE_NAMES.SANDBOX && <DocumentViewButton />}
+      <div id="control-panel" className="side-bar">
+        <div id="control-strategy">
+          {/* show reduced set of attacks on phase 1 */}
+          {currentPhase === PHASE_NAMES.PHASE_1 && (
+            <AttackBox attacks={ATTACKS_PHASE_1} />
+          )}
+          {/* show all attacks on phase 2 and sandbox */}
+          {(currentPhase === PHASE_NAMES.PHASE_2 ||
+            currentPhase === PHASE_NAMES.SANDBOX) && (
+            <AttackBox attacks={ATTACKS_ALL} />
+          )}
+          {/* hide defence box on phases 0 and 1. only allow configuration in sandbox */}
+          {(currentPhase === PHASE_NAMES.PHASE_2 ||
+            currentPhase === PHASE_NAMES.SANDBOX) && (
+            <DefenceBox
+              currentPhase={currentPhase}
+              defences={defences}
+              showConfigurations={
+                currentPhase > PHASE_NAMES.PHASE_2 ? true : false
+              }
+              setDefenceActive={setDefenceActive}
+              setDefenceInactive={setDefenceInactive}
+              setDefenceConfiguration={setDefenceConfiguration}
+            />
+          )}
+          {/* hide model selection box on phases 0 and 1 */}
+          {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
+          {currentPhase === PHASE_NAMES.SANDBOX && <DocumentViewButton />}
+        </div>
 
         <div id="control-buttons">
           <div className="control-button">
