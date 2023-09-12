@@ -25,6 +25,7 @@
   overflow-y: auto;
   padding: 0 30px;
   scrollbar-width: thin;
+  box-sizing: border-box;
 }
 
 .side-bar-header {
