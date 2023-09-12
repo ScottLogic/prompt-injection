@@ -86,6 +86,18 @@ const chatGptFunctions = [
   },
 ];
 
+// max tokens each model can use
+const chatModelMaxTokens = {
+  [CHAT_MODELS.GPT_4]: 8192,
+  [CHAT_MODELS.GPT_4_0613]: 8192,
+  [CHAT_MODELS.GPT_4_32K]: 32768,
+  [CHAT_MODELS.GPT_4_32K_0613]: 32768,
+  [CHAT_MODELS.GPT_3_5_TURBO]: 4097,
+  [CHAT_MODELS.GPT_3_5_TURBO_0613]: 4097,
+  [CHAT_MODELS.GPT_3_5_TURBO_16K]: 16385,
+  [CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16385,
+};
+
 // test the api key works with the model
 async function validateApiKey(openAiApiKey: string, gptModel: string) {
   try {
@@ -289,30 +301,14 @@ async function chatGptChatCompletion(
       chatHistory.shift();
     }
   }
-
   const chat_completion = await openai.createChatCompletion({
     model: gptModel,
-    messages: getChatCompletionsFromHistory(chatHistory),
+    messages: getChatCompletionsFromHistory(chatHistory, gptModel),
     functions: chatGptFunctions,
   });
 
-  console.debug(
-    "chat completion. token info: ",
-    JSON.stringify(chat_completion.data.usage)
-  );
-
   // get the reply
   return chat_completion.data.choices[0].message ?? null;
-}
-
-function countChatHistoryTokens(chatHistory: ChatHistoryMessage[]) {
-  let sumTokens = 0;
-  chatHistory.forEach((message) => {
-    if (message.numTokens) {
-      sumTokens += message.numTokens;
-    }
-  });
-  return sumTokens;
 }
 
 // take only the chat history to send to GPT that is within the max tokens
@@ -358,37 +354,25 @@ function filterChatHistoryByMaxTokens(
 
 // take only the completions to send to GPT
 function getChatCompletionsFromHistory(
-  chatHistory: ChatHistoryMessage[]
+  chatHistory: ChatHistoryMessage[],
+  gptModel: CHAT_MODELS
 ): ChatCompletionRequestMessage[] {
   // limit the number of tokens sent to GPT
-  const maxTokens = 500;
+  const maxTokens = chatModelMaxTokens[gptModel];
+  console.log("gpt model = ", gptModel, "max tokens = ", maxTokens);
+
   const reducedChatHistory: ChatHistoryMessage[] = filterChatHistoryByMaxTokens(
     chatHistory,
     maxTokens
   );
-  console.debug(
-    "number of tokens in chat history",
-    countChatHistoryTokens(chatHistory)
-  );
-
-  console.log("reduced chat history: ");
-  console.log(reducedChatHistory);
-
   const completions: ChatCompletionRequestMessage[] =
     reducedChatHistory.length > 0
       ? (reducedChatHistory
           .filter((message) => message.completion !== null)
           .map(
-            // we know the completion is not null here
             (message) => message.completion
           ) as ChatCompletionRequestMessage[])
       : [];
-
-  console.debug(
-    "number of tokens in reduced chat history",
-    countChatHistoryTokens(reducedChatHistory)
-  );
-
   return completions;
 }
 
