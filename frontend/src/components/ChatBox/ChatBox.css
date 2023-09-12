@@ -18,6 +18,7 @@
 #chat-box-footer-messages {
   display: flex;
   flex-direction: row;
+  align-items: flex-end;
   width: 100%;
 }
 
@@ -31,6 +32,10 @@
   box-sizing: border-box;
   resize: none;
   background-color: inherit;
+
+  min-height: 53px;
+  max-height: 100px;
+  overflow-y: auto;
 }
 
 #chat-box-button-send {
