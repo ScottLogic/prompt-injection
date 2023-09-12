@@ -36,6 +36,10 @@
   min-height: 53px;
   max-height: 100px;
   overflow-y: auto;
+
+  font-size: inherit;
+  font-family: inherit;
+  color: white;
 }
 
 #chat-box-button-send {

@@ -15,7 +15,6 @@ import { EmailInfo } from "../../models/email";
 import { PHASE_NAMES } from "../../models/phase";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import { ThreeDots } from "react-loader-spinner";
-import ContentEditable from "react-contenteditable";
 
 function ChatBox({
   messages,
@@ -47,6 +46,15 @@ function ChatBox({
         console.log(err);
       });
   }, [setEmails]);
+
+  function inputChange() {
+    // scroll to the bottom
+    const inputBoxElement = document.getElementById(
+      "chat-box-input"
+    ) as HTMLSpanElement;
+    inputBoxElement.scrollTop =
+      inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
+  }
 
   function inputKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
     if (event.key === "Enter") {
@@ -172,16 +180,15 @@ function ChatBox({
       <ChatBoxFeed messages={messages} />
       <div id="chat-box-footer">
         <div id="chat-box-footer-messages">
-          <ContentEditable
+          <textarea
             id="chat-box-input"
             className="prompt-injection-input"
-            html=""
+            placeholder="Type here..."
             autoFocus
+            rows={1}
+            onChange={inputChange}
             onKeyDown={inputKeyDown}
             onKeyUp={inputKeyUp}
-            onChange={() => {
-              return;
-            }}
           />
           <button
             id="chat-box-button-send"
