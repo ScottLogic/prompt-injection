@@ -53,6 +53,7 @@ const chatGptFunctions = [
         },
         confirmed: {
           type: "boolean",
+          default: "false",
           description:
             "whether the user has confirmed the email is correct before sending",
         },
@@ -304,40 +305,89 @@ async function chatGptChatCompletion(
   return chat_completion.data.choices[0].message ?? null;
 }
 
+function countChatHistoryTokens(chatHistory: ChatHistoryMessage[]) {
+  let sumTokens = 0;
+  chatHistory.forEach((message) => {
+    if (message.numTokens) {
+      sumTokens += message.numTokens;
+    }
+  });
+  return sumTokens;
+}
+
+// take only the chat history to send to GPT that is within the max tokens
+function filterChatHistoryByMaxTokens(
+  list: ChatHistoryMessage[],
+  maxNumTokens: number
+): ChatHistoryMessage[] {
+  let sumTokens = 0;
+  const filteredList: ChatHistoryMessage[] = [];
+
+  // reverse list to add from most recent
+  const reverseList = list.slice().reverse();
+
+  // always add the most recent message to start of list
+  filteredList.push(reverseList[0]);
+  sumTokens += reverseList[0].numTokens ?? 0;
+
+  // if the first message is a system role add it to list
+  if (list[0].completion?.role === "system") {
+    sumTokens += list[0].numTokens ?? 0;
+    filteredList.push(list[0]);
+  }
+
+  // add elements after first message until max tokens reached
+  for (let i = 1; i < reverseList.length; i++) {
+    const element = reverseList[i];
+    if (element.completion && element.numTokens) {
+      // if we reach end and system role is there skip as it's already been added
+      if (element.completion.role === "system") {
+        continue;
+      }
+      if (sumTokens + element.numTokens <= maxNumTokens) {
+        filteredList.splice(i, 0, element);
+        sumTokens += element.numTokens;
+      } else {
+        console.debug("max tokens reached on element = ", element);
+        break;
+      }
+    }
+  }
+  return filteredList.reverse();
+}
+
 // take only the completions to send to GPT
 function getChatCompletionsFromHistory(
   chatHistory: ChatHistoryMessage[]
 ): ChatCompletionRequestMessage[] {
   // limit the number of tokens sent to GPT
-  const tokenLimit = 100;
-  let currentTokens = 0;
+  const maxTokens = 500;
+  const reducedChatHistory: ChatHistoryMessage[] = filterChatHistoryByMaxTokens(
+    chatHistory,
+    maxTokens
+  );
+  console.debug(
+    "number of tokens in chat history",
+    countChatHistoryTokens(chatHistory)
+  );
 
-  // reverse chat history
-  const reducedChatHistory = chatHistory.reverse().filter((message) => {
-    const totalTokens = currentTokens + (message.numTokens ?? 0);
-    if (totalTokens <= tokenLimit) {
-      currentTokens = totalTokens;
-      console.debug("current tokens: ", currentTokens);
-      return true;
-    } else {
-      return false;
-    }
-  });
-
-  // reduce to only the completions
-  console.debug("Chat history: to reduce ", chatHistory.length);
-  console.debug("Reduced chat history: to show  ", reducedChatHistory.length);
+  console.log("reduced chat history: ");
   console.log(reducedChatHistory);
 
   const completions: ChatCompletionRequestMessage[] =
-    reducedChatHistory.reverse().length > 0
-      ? (chatHistory
+    reducedChatHistory.length > 0
+      ? (reducedChatHistory
           .filter((message) => message.completion !== null)
           .map(
             // we know the completion is not null here
             (message) => message.completion
           ) as ChatCompletionRequestMessage[])
       : [];
+
+  console.debug(
+    "number of tokens in reduced chat history",
+    countChatHistoryTokens(reducedChatHistory)
+  );
 
   return completions;
 }
@@ -504,4 +554,10 @@ async function chatGptSendMessage(
   }
 }
 
-export { chatGptSendMessage, setOpenAiApiKey, validateApiKey, setGptModel };
+export {
+  chatGptSendMessage,
+  filterChatHistoryByMaxTokens,
+  setOpenAiApiKey,
+  validateApiKey,
+  setGptModel,
+};

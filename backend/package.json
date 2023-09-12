@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@dqbd/tiktoken": "^1.0.7",
     "cors": "^2.8.5",
     "d3-dsv": "^2.0.0",
     "dotenv": "^16.3.1",
