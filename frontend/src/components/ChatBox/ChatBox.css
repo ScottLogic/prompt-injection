@@ -1,7 +1,8 @@
 #chat-box {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  justify-content: flex-end;
+  height: 100%;
 }
 
 #chat-box-footer {
@@ -14,22 +15,31 @@
 #chat-box-footer-messages {
   display: flex;
   flex-direction: row;
-  height: 52px;
 }
 
 #chat-box-input {
+  flex-grow: 1;
+  padding: 18px 12px;
+  width: 100%;
+  height: 100%;
   align-self: flex-end;
   justify-content: center;
-  flex-grow: 1;
-  height: 100%;
-  padding: 0 12px;
   box-sizing: border-box;
+  resize: none;
+  background-color: inherit;
+
+  /* must inherit as it's a textarea */
+  font-family: inherit;
+  font-size: inherit;
+  color: white;
 }
 
 #chat-box-button-send {
   height: 100%;
+  max-height: 53px;
   width: 74px;
   margin-left: 8px;
+  margin-top: auto;
 }
 
 #chat-box-button-content {
@@ -39,10 +49,4 @@
   align-items: center;
   height: 40%;
   width: 100%;
-}
-
-#chat-box-button-reset {
-  height: 34px;
-  width: 100%;
-  margin-top: 10px;
 }

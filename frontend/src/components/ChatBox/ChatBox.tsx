@@ -47,7 +47,26 @@ function ChatBox({
       });
   }, [setEmails]);
 
-  function inputKeyPressed(event: React.KeyboardEvent<HTMLInputElement>) {
+  function resizeInputBox() {
+    // adjust the height of the text area
+    const maxHeight = 200;
+    const defaultHeight = 50;
+    const inputBoxElement = document.getElementById("chat-box-input") as
+      | HTMLTextAreaElement
+      | undefined;
+    if (inputBoxElement) {
+      if (inputBoxElement.scrollHeight > inputBoxElement.clientHeight) {
+        const newHeight = Math.min(inputBoxElement.scrollHeight, maxHeight);
+        inputBoxElement.style.height = "1px";
+        inputBoxElement.style.height = `${newHeight}px`;
+      } else {
+        inputBoxElement.style.height = `${defaultHeight}px`;
+      }
+    }
+  }
+
+  function inputKeyPressed(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    resizeInputBox();
     if (event.key === "Enter") {
       // asynchronously send the message
       void sendChatMessage();
@@ -166,12 +185,12 @@ function ChatBox({
       <ChatBoxFeed messages={messages} />
       <div id="chat-box-footer">
         <div id="chat-box-footer-messages">
-          <input
+          <textarea
             id="chat-box-input"
             className="prompt-injection-input"
-            type="text"
             placeholder="Type here..."
             autoFocus
+            rows={1}
             onKeyUp={inputKeyPressed}
           />
           <button
