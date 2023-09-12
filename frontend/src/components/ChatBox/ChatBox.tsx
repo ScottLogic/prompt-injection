@@ -56,14 +56,15 @@ function ChatBox({
       inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
   }
 
-  function inputKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
-    if (event.key === "Enter") {
+  function inputKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
     }
   }
 
-  function inputKeyUp(event: React.KeyboardEvent<HTMLSpanElement>) {
-    if (event.key === "Enter") {
+  function inputKeyUp(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    // shift+enter shouldn't send message
+    if (event.key === "Enter" && !event.shiftKey) {
       // asynchronously send the message
       void sendChatMessage();
     }
@@ -72,11 +73,11 @@ function ChatBox({
   async function sendChatMessage() {
     const inputBoxElement = document.getElementById(
       "chat-box-input"
-    ) as HTMLSpanElement;
+    ) as HTMLTextAreaElement;
     // get the message from the input box
-    const message = inputBoxElement.innerText.trim();
+    const message = inputBoxElement.value;
     // clear the input box
-    inputBoxElement.innerHTML = "";
+    inputBoxElement.value = "";
 
     if (message && !isSendingMessage) {
       setIsSendingMessage(true);
