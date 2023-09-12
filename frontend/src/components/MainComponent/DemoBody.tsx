@@ -1,5 +1,4 @@
 import "./DemoBody.css";
-import { ATTACKS_PHASE_1, ATTACKS_ALL } from "../../Attacks";
 import { ChatMessage } from "../../models/chat";
 import {
   DEFENCE_TYPES,
@@ -7,15 +6,11 @@ import {
   DefenceInfo,
 } from "../../models/defence";
 import { PHASE_NAMES } from "../../models/phase";
-import AttackBox from "../AttackBox/AttackBox";
 import ChatBox from "../ChatBox/ChatBox";
-import DefenceBox from "../DefenceBox/DefenceBox";
 import EmailBox from "../EmailBox/EmailBox";
-import ExportPDFLink from "../ExportChat/ExportPDFLink";
-import ModelSelectionBox from "../ModelSelectionBox/ModelSelectionBox";
 import { EmailInfo } from "../../models/email";
 import { useState } from "react";
-import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
+import ControlPanel from "../ControlPanel/ControlPanel";
 
 function DemoBody({
   currentPhase,
@@ -49,64 +44,33 @@ function DemoBody({
     new Set()
   );
 
-  function addCompletedPhase(phase: PHASE_NAMES) {
-    completedPhases.add(phase);
-    setCompletedPhases(completedPhases);
-  }
-
-  function resetButtonClicked() {
+  function resetPhaseBody() {
     completedPhases.delete(currentPhase);
     setCompletedPhases(completedPhases);
     resetPhase();
   }
 
+  function addCompletedPhase(phase: PHASE_NAMES) {
+    completedPhases.add(phase);
+    setCompletedPhases(completedPhases);
+  }
+
   return (
     <span id="main-area">
-      <div id="control-panel" className="side-bar">
-        <div id="control-strategy">
-          {/* show reduced set of attacks on phase 1 */}
-          {currentPhase === PHASE_NAMES.PHASE_1 && (
-            <AttackBox attacks={ATTACKS_PHASE_1} />
-          )}
-          {/* show all attacks on phase 2 and sandbox */}
-          {(currentPhase === PHASE_NAMES.PHASE_2 ||
-            currentPhase === PHASE_NAMES.SANDBOX) && (
-            <AttackBox attacks={ATTACKS_ALL} />
-          )}
-          {/* hide defence box on phases 0 and 1. only allow configuration in sandbox */}
-          {(currentPhase === PHASE_NAMES.PHASE_2 ||
-            currentPhase === PHASE_NAMES.SANDBOX) && (
-            <DefenceBox
-              currentPhase={currentPhase}
-              defences={defences}
-              showConfigurations={
-                currentPhase > PHASE_NAMES.PHASE_2 ? true : false
-              }
-              setDefenceActive={setDefenceActive}
-              setDefenceInactive={setDefenceInactive}
-              setDefenceConfiguration={setDefenceConfiguration}
-            />
-          )}
-          {/* hide model selection box on phases 0 and 1 */}
-          {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
-          {currentPhase === PHASE_NAMES.SANDBOX && <DocumentViewButton />}
-        </div>
-
-        <div id="control-buttons">
-          <div className="control-button">
-            <ExportPDFLink
-              messages={messages}
-              emails={emails}
-              currentPhase={currentPhase}
-            />
-          </div>
-          <button
-            className="prompt-injection-button control-button"
-            onClick={resetButtonClicked}
-          >
-            Reset
-          </button>
-        </div>
+      <div className="side-bar">
+        <ControlPanel
+          currentPhase={currentPhase}
+          defences={defences}
+          emails={emails}
+          messages={messages}
+          addChatMessage={addChatMessage}
+          resetPhase={resetPhaseBody}
+          setDefenceActive={setDefenceActive}
+          setDefenceInactive={setDefenceInactive}
+          setDefenceConfiguration={setDefenceConfiguration}
+          setEmails={setEmails}
+          setNumCompletedPhases={setNumCompletedPhases}
+        />
       </div>
       <div id="centre-area">
         <ChatBox
