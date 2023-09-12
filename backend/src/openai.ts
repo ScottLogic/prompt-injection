@@ -26,6 +26,7 @@ import {
   FunctionAskQuestionParams,
   FunctionSendEmailParams,
 } from "./models/openai";
+import { get_encoding } from "@dqbd/tiktoken";
 
 // OpenAI config
 let config: Configuration | null = null;
@@ -294,6 +295,11 @@ async function chatGptChatCompletion(
     functions: chatGptFunctions,
   });
 
+  console.debug(
+    "chat completion. token info: ",
+    JSON.stringify(chat_completion.data.usage)
+  );
+
   // get the reply
   return chat_completion.data.choices[0].message ?? null;
 }
@@ -302,8 +308,29 @@ async function chatGptChatCompletion(
 function getChatCompletionsFromHistory(
   chatHistory: ChatHistoryMessage[]
 ): ChatCompletionRequestMessage[] {
+  // limit the number of tokens sent to GPT
+  const tokenLimit = 100;
+  let currentTokens = 0;
+
+  // reverse chat history
+  const reducedChatHistory = chatHistory.reverse().filter((message) => {
+    const totalTokens = currentTokens + (message.numTokens ?? 0);
+    if (totalTokens <= tokenLimit) {
+      currentTokens = totalTokens;
+      console.debug("current tokens: ", currentTokens);
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  // reduce to only the completions
+  console.debug("Chat history: to reduce ", chatHistory.length);
+  console.debug("Reduced chat history: to show  ", reducedChatHistory.length);
+  console.log(reducedChatHistory);
+
   const completions: ChatCompletionRequestMessage[] =
-    chatHistory.length > 0
+    reducedChatHistory.reverse().length > 0
       ? (chatHistory
           .filter((message) => message.completion !== null)
           .map(
@@ -311,6 +338,7 @@ function getChatCompletionsFromHistory(
             (message) => message.completion
           ) as ChatCompletionRequestMessage[])
       : [];
+
   return completions;
 }
 
@@ -319,10 +347,27 @@ function pushCompletionToHistory(
   completion: ChatCompletionRequestMessage,
   messageType: CHAT_MESSAGE_TYPE
 ) {
+  // limit the length of the chat history
+  const maxMessageLength = 1000;
+
+  // gpt-4 and 3.5 models use cl100k_base encoding
+  const encoding = get_encoding("cl100k_base");
+
   if (messageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
+    // remove the oldest message, not including system role message
+    if (chatHistory.length >= maxMessageLength) {
+      if (chatHistory[0].completion?.role !== "system") {
+        chatHistory.shift();
+      } else {
+        chatHistory.splice(1, 1);
+      }
+    }
     chatHistory.push({
       completion: completion,
       chatMessageType: messageType,
+      numTokens: completion.content
+        ? encoding.encode(completion.content).length
+        : null,
     });
   } else {
     // do not add the bots reply which was subsequently blocked
