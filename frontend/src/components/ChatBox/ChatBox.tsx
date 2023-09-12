@@ -15,6 +15,7 @@ import { EmailInfo } from "../../models/email";
 import { PHASE_NAMES } from "../../models/phase";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import { ThreeDots } from "react-loader-spinner";
+import ContentEditable from "react-contenteditable";
 
 function ChatBox({
   messages,
@@ -47,7 +48,13 @@ function ChatBox({
       });
   }, [setEmails]);
 
-  function inputKeyPressed(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+  function inputKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+    }
+  }
+
+  function inputKeyUp(event: React.KeyboardEvent<HTMLSpanElement>) {
     if (event.key === "Enter") {
       // asynchronously send the message
       void sendChatMessage();
@@ -57,15 +64,14 @@ function ChatBox({
   async function sendChatMessage() {
     const inputBoxElement = document.getElementById(
       "chat-box-input"
-    ) as HTMLInputElement;
+    ) as HTMLSpanElement;
     // get the message from the input box
-    const message = inputBoxElement.value;
+    const message = inputBoxElement.innerText.trim();
     // clear the input box
-    inputBoxElement.value = "";
+    inputBoxElement.innerHTML = "";
 
     if (message && !isSendingMessage) {
       setIsSendingMessage(true);
-
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
         message: message,
@@ -166,13 +172,16 @@ function ChatBox({
       <ChatBoxFeed messages={messages} />
       <div id="chat-box-footer">
         <div id="chat-box-footer-messages">
-          <span
+          <ContentEditable
             id="chat-box-input"
             className="prompt-injection-input"
-            placeholder="Type here..."
+            html=""
             autoFocus
-            contentEditable
-            onKeyUp={inputKeyPressed}
+            onKeyDown={inputKeyDown}
+            onKeyUp={inputKeyUp}
+            onChange={() => {
+              return;
+            }}
           />
           <button
             id="chat-box-button-send"
