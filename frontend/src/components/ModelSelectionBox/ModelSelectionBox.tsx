@@ -66,7 +66,7 @@ function ModelSelectionBox() {
           <button
             id="model-selection-button"
             className="prompt-injection-button"
-            onClick={void submitSelectedModel}
+            onClick={() => void submitSelectedModel()}
           >
             Choose
           </button>
