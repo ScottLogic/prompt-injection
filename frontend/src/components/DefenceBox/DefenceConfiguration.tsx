@@ -26,6 +26,12 @@ function DefenceConfiguration({
     }
   }
 
+  function focusLost(event: React.FocusEvent<HTMLDivElement>) {
+    const value = event.target.innerText.trim();
+    // asynchronously set the configuration value
+    void setConfigurationValue(config.id, value);
+  }
+
   function getClassName() {
     if (isActive) {
       return "defence-config-value prompt-injection-input";
@@ -40,6 +46,7 @@ function DefenceConfiguration({
       <ContentEditable
         className={getClassName()}
         html={config.value.toString()}
+        onBlur={focusLost}
         onKeyDown={inputKeyDown}
         onKeyUp={inputKeyUp}
         onClick={(event) => {
