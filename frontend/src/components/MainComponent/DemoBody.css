@@ -22,10 +22,6 @@
   flex-direction: column;
   height: 100%;
   width: 30%;
-  overflow-y: auto;
-  padding: 0 30px;
-  scrollbar-width: thin;
-  box-sizing: border-box;
 }
 
 .side-bar-header {
@@ -34,17 +30,4 @@
   font-size: 16px;
   font-weight: 700;
   text-align: left;
-}
-
-#control-buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  height: 34px;
-  min-height: 34px;
-  padding: 32px 0;
-}
-
-.control-button {
-  width: 45%;
 }
