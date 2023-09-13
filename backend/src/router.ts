@@ -339,6 +339,7 @@ router.post("/openai/model", async (req: OpenAiSetModelRequest, res) => {
   } else if (model === req.session.gptModel) {
     res.status(200).send();
   } else if (await setGptModel(req.session.openAiApiKey, model)) {
+    req.session.gptModel = model;
     res.status(200).send();
   } else {
     res.status(401).send();
