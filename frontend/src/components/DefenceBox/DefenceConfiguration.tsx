@@ -4,9 +4,11 @@ import ContentEditable from "react-contenteditable";
 
 function DefenceConfiguration({
   config,
+  isActive,
   setConfigurationValue,
 }: {
   config: DefenceConfig;
+  isActive: boolean;
   setConfigurationValue: (configId: string, value: string) => Promise<void>;
 }) {
   function setConfiguration(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -17,11 +19,19 @@ function DefenceConfiguration({
     }
   }
 
+  function getClassName() {
+    if (isActive) {
+      return "defence-config-value prompt-injection-input";
+    } else {
+      return "defence-config-value prompt-injection-input inactive";
+    }
+  }
+
   return (
     <div>
       <span className="defence-config-name">{config.name}: </span>
       <ContentEditable
-        className="defence-config-value prompt-injection-input"
+        className={getClassName()}
         html={config.value.toString()}
         onKeyUp={setConfiguration}
         onClick={(event) => {
@@ -30,6 +40,7 @@ function DefenceConfiguration({
         onChange={() => {
           return;
         }}
+        disabled={!isActive}
       />
     </div>
   );

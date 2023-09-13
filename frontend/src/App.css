@@ -56,10 +56,10 @@
 }
 
 .prompt-injection-input {
-  background-color: var(--main-input-background-colour);
+  background-color: var(--main-input-active-background-colour);
   border-color: none;
   border-radius: 5px;
   border-style: solid;
   border-width: 1px;
-  color: var(--main-input-text-colour);
+  color: var(--main-input-active-text-colour);
 }

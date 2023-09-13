@@ -99,6 +99,7 @@ function DefenceMechanism({
                   return (
                     <DefenceConfiguration
                       key={config.id}
+                      isActive={defenceDetail.isActive}
                       config={config}
                       setConfigurationValue={setConfigurationValue}
                     />
