@@ -1,7 +1,15 @@
 import { OpenAIApi } from "openai";
-import { validateApiKey, setOpenAiApiKey } from "../../src/openai";
+import {
+  validateApiKey,
+  setOpenAiApiKey,
+  filterChatHistoryByMaxTokens,
+} from "../../src/openai";
 import { initQAModel } from "../../src/langchain";
-import { CHAT_MODELS } from "../../src/models/chat";
+import {
+  CHAT_MESSAGE_TYPE,
+  CHAT_MODELS,
+  ChatHistoryMessage,
+} from "../../src/models/chat";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
@@ -70,6 +78,181 @@ test("GIVEN an invalid API key WHEN calling setOpenAiApiKey THEN it should set t
   // once only to validate
   expect(OpenAIApi).toHaveBeenCalledTimes(1);
   expect(initQAModel).not.toHaveBeenCalled();
+});
+
+test("GIVEN chat history exceeds max token number WHEN applying filter THEN it should return the filtered chat history", () => {
+  const maxTokens = 50;
+  const chatHistory: ChatHistoryMessage[] = [
+    {
+      completion: {
+        role: "user",
+        content: "Hello, my name is Bob.",
+      },
+      numTokens: 15,
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+    {
+      completion: {
+        role: "assistant",
+        content: "Hello, how are you?",
+      },
+      numTokens: 17,
+      chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+    },
+    {
+      completion: {
+        role: "user",
+        content: "Send an email to my boss to tell him I quit.",
+      },
+      numTokens: 30,
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+  ];
+  // expect that the first message is discounted
+  const expectedFilteredChatHistory = [
+    {
+      completion: {
+        role: "assistant",
+        content: "Hello, how are you?",
+      },
+      numTokens: 17,
+      chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+    },
+    {
+      completion: {
+        role: "user",
+        content: "Send an email to my boss to tell him I quit.",
+      },
+      numTokens: 30,
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+  ];
+
+  const filteredChatHistory = filterChatHistoryByMaxTokens(
+    chatHistory,
+    maxTokens
+  );
+  expect(filteredChatHistory).toEqual(expectedFilteredChatHistory);
+});
+
+test("GIVEN chat history does not exceed max token number WHEN applying filter THEN it should return the original chat history", () => {
+  const maxTokens = 1000;
+  const chatHistory: ChatHistoryMessage[] = [
+    {
+      completion: {
+        role: "user",
+        content: "Hello, my name is Bob.",
+      },
+      numTokens: 15,
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+    {
+      completion: {
+        role: "assistant",
+        content: "Hello, how are you?",
+      },
+      numTokens: 17,
+      chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+    },
+    {
+      completion: {
+        role: "user",
+        content: "Send an email to my boss to tell him I quit.",
+      },
+      numTokens: 30,
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+  ];
+
+  const filteredChatHistory = filterChatHistoryByMaxTokens(
+    chatHistory,
+    maxTokens
+  );
+  expect(filteredChatHistory).toEqual(chatHistory);
+});
+
+test("GIVEN chat history exceeds max token number WHEN applying filter AND there is a system role in chat history THEN it should return the filtered chat history", () => {
+  const maxTokens = 50;
+  const chatHistory: ChatHistoryMessage[] = [
+    {
+      completion: {
+        role: "system",
+        content: "You are a helpful chatbot.",
+      },
+      numTokens: 15,
+      chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+    },
+    {
+      completion: {
+        role: "user",
+        content: "Hello, my name is Bob.",
+      },
+      numTokens: 15,
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+    {
+      completion: {
+        role: "assistant",
+        content: "Hello, how are you?",
+      },
+      numTokens: 17,
+      chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+    },
+    {
+      completion: {
+        role: "user",
+        content: "Send an email to my boss to tell him I quit.",
+      },
+      numTokens: 30,
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+  ];
+
+  const expectedFilteredChatHistory = [
+    {
+      completion: {
+        role: "system",
+        content: "You are a helpful chatbot.",
+      },
+      numTokens: 15,
+      chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+    },
+    {
+      completion: {
+        role: "user",
+        content: "Send an email to my boss to tell him I quit.",
+      },
+      numTokens: 30,
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+  ];
+  const filteredChatHistory = filterChatHistoryByMaxTokens(
+    chatHistory,
+    maxTokens
+  );
+  expect(filteredChatHistory.length).toEqual(2);
+  expect(filteredChatHistory).toEqual(expectedFilteredChatHistory);
+});
+
+test("GIVEN chat history most recent message exceeds max tokens alone WHEN applying filter THEN it should return this message", () => {
+  const maxTokens = 30;
+  const chatHistory: ChatHistoryMessage[] = [
+    {
+      completion: {
+        role: "user",
+        content:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
+      },
+      numTokens: 50,
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+  ];
+  const filteredChatHistory = filterChatHistoryByMaxTokens(
+    chatHistory,
+    maxTokens
+  );
+
+  expect(filteredChatHistory).toEqual(chatHistory);
 });
 
 afterEach(() => {

@@ -26,6 +26,7 @@ import {
   FunctionAskQuestionParams,
   FunctionSendEmailParams,
 } from "./models/openai";
+import { get_encoding } from "@dqbd/tiktoken";
 
 // OpenAI config
 let config: Configuration | null = null;
@@ -52,6 +53,7 @@ const chatGptFunctions = [
         },
         confirmed: {
           type: "boolean",
+          default: "false",
           description:
             "whether the user has confirmed the email is correct before sending",
         },
@@ -83,6 +85,18 @@ const chatGptFunctions = [
     },
   },
 ];
+
+// max tokens each model can use
+const chatModelMaxTokens = {
+  [CHAT_MODELS.GPT_4]: 8192,
+  [CHAT_MODELS.GPT_4_0613]: 8192,
+  [CHAT_MODELS.GPT_4_32K]: 32768,
+  [CHAT_MODELS.GPT_4_32K_0613]: 32768,
+  [CHAT_MODELS.GPT_3_5_TURBO]: 4097,
+  [CHAT_MODELS.GPT_3_5_TURBO_0613]: 4097,
+  [CHAT_MODELS.GPT_3_5_TURBO_16K]: 16385,
+  [CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16385,
+};
 
 // test the api key works with the model
 async function validateApiKey(openAiApiKey: string, gptModel: string) {
@@ -287,13 +301,13 @@ async function chatGptChatCompletion(
       chatHistory.shift();
     }
   }
-
+    
   // get start time
   const startTime = new Date().getTime();
   console.debug("Calling OpenAI chat completion...");
   const chat_completion = await openai.createChatCompletion({
     model: gptModel,
-    messages: getChatCompletionsFromHistory(chatHistory),
+    messages: getChatCompletionsFromHistory(chatHistory, gptModel),
     functions: chatGptFunctions,
   });
   // log the time taken
@@ -304,16 +318,65 @@ async function chatGptChatCompletion(
   return chat_completion.data.choices[0].message ?? null;
 }
 
+// take only the chat history to send to GPT that is within the max tokens
+function filterChatHistoryByMaxTokens(
+  list: ChatHistoryMessage[],
+  maxNumTokens: number
+): ChatHistoryMessage[] {
+  let sumTokens = 0;
+  const filteredList: ChatHistoryMessage[] = [];
+
+  // reverse list to add from most recent
+  const reverseList = list.slice().reverse();
+
+  // always add the most recent message to start of list
+  filteredList.push(reverseList[0]);
+  sumTokens += reverseList[0].numTokens ?? 0;
+
+  // if the first message is a system role add it to list
+  if (list[0].completion?.role === "system") {
+    sumTokens += list[0].numTokens ?? 0;
+    filteredList.push(list[0]);
+  }
+
+  // add elements after first message until max tokens reached
+  for (let i = 1; i < reverseList.length; i++) {
+    const element = reverseList[i];
+    if (element.completion && element.numTokens) {
+      // if we reach end and system role is there skip as it's already been added
+      if (element.completion.role === "system") {
+        continue;
+      }
+      if (sumTokens + element.numTokens <= maxNumTokens) {
+        filteredList.splice(i, 0, element);
+        sumTokens += element.numTokens;
+      } else {
+        console.debug("max tokens reached on element = ", element);
+        break;
+      }
+    }
+  }
+  return filteredList.reverse();
+}
+
 // take only the completions to send to GPT
 function getChatCompletionsFromHistory(
-  chatHistory: ChatHistoryMessage[]
+  chatHistory: ChatHistoryMessage[],
+  gptModel: CHAT_MODELS
 ): ChatCompletionRequestMessage[] {
+  // limit the number of tokens sent to GPT
+  const maxTokens = chatModelMaxTokens[gptModel];
+  console.log("gpt model = ", gptModel, "max tokens = ", maxTokens);
+
+  const reducedChatHistory: ChatHistoryMessage[] = filterChatHistoryByMaxTokens(
+    chatHistory,
+    maxTokens
+  );
   const completions: ChatCompletionRequestMessage[] =
-    chatHistory.length > 0
-      ? (chatHistory
+    reducedChatHistory.length > 0
+      ? (reducedChatHistory
           .filter((message) => message.completion !== null)
           .map(
-            // we know the completion is not null here
             (message) => message.completion
           ) as ChatCompletionRequestMessage[])
       : [];
@@ -325,10 +388,27 @@ function pushCompletionToHistory(
   completion: ChatCompletionRequestMessage,
   messageType: CHAT_MESSAGE_TYPE
 ) {
+  // limit the length of the chat history
+  const maxChatHistoryLength = 1000;
+
+  // gpt-4 and 3.5 models use cl100k_base encoding
+  const encoding = get_encoding("cl100k_base");
+
   if (messageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
+    // remove the oldest message, not including system role message
+    if (chatHistory.length >= maxChatHistoryLength) {
+      if (chatHistory[0].completion?.role !== "system") {
+        chatHistory.shift();
+      } else {
+        chatHistory.splice(1, 1);
+      }
+    }
     chatHistory.push({
       completion: completion,
       chatMessageType: messageType,
+      numTokens: completion.content
+        ? encoding.encode(completion.content).length
+        : null,
     });
   } else {
     // do not add the bots reply which was subsequently blocked
@@ -465,4 +545,10 @@ async function chatGptSendMessage(
   }
 }
 
-export { chatGptSendMessage, setOpenAiApiKey, validateApiKey, setGptModel };
+export {
+  chatGptSendMessage,
+  filterChatHistoryByMaxTokens,
+  setOpenAiApiKey,
+  validateApiKey,
+  setGptModel,
+};
