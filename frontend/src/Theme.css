@@ -23,7 +23,7 @@
   );
   --main-input-active-text-colour: var(--main-button-inactive-text-colour);
   --main-input-inactive-background-colour: #ababab;
-  --main-input-inactive-text-colour: rgb(70, 70, 70);
+  --main-input-inactive-text-colour: #464646;
 
   --main-toggle-ball-colour: #ececec;
   --main-toggle-off-colour: #ababab;
