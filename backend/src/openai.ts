@@ -382,14 +382,14 @@ function pushCompletionToHistory(
   messageType: CHAT_MESSAGE_TYPE
 ) {
   // limit the length of the chat history
-  const maxMessageLength = 1000;
+  const maxChatHistoryLength = 1000;
 
   // gpt-4 and 3.5 models use cl100k_base encoding
   const encoding = get_encoding("cl100k_base");
 
   if (messageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
     // remove the oldest message, not including system role message
-    if (chatHistory.length >= maxMessageLength) {
+    if (chatHistory.length >= maxChatHistoryLength) {
       if (chatHistory[0].completion?.role !== "system") {
         chatHistory.shift();
       } else {
