@@ -301,7 +301,7 @@ async function chatGptChatCompletion(
       chatHistory.shift();
     }
   }
-    
+
   // get start time
   const startTime = new Date().getTime();
   console.debug("Calling OpenAI chat completion...");
