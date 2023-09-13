@@ -11,8 +11,15 @@ function DefenceConfiguration({
   isActive: boolean;
   setConfigurationValue: (configId: string, value: string) => Promise<void>;
 }) {
-  function setConfiguration(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Enter") {
+  function inputKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      // stop new line from being input
+      event.preventDefault();
+    }
+  }
+
+  function inputKeyUp(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
       const value = event.currentTarget.innerText.trim();
       // asynchronously set the configuration value
       void setConfigurationValue(config.id, value);
@@ -33,7 +40,8 @@ function DefenceConfiguration({
       <ContentEditable
         className={getClassName()}
         html={config.value.toString()}
-        onKeyUp={setConfiguration}
+        onKeyDown={inputKeyDown}
+        onKeyUp={inputKeyUp}
         onClick={(event) => {
           event.stopPropagation();
         }}
