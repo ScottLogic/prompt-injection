@@ -288,11 +288,17 @@ async function chatGptChatCompletion(
     }
   }
 
+  // get start time
+  const startTime = new Date().getTime();
+  console.debug("Calling OpenAI chat completion...");
   const chat_completion = await openai.createChatCompletion({
     model: gptModel,
     messages: getChatCompletionsFromHistory(chatHistory),
     functions: chatGptFunctions,
   });
+  // log the time taken
+  const endTime = new Date().getTime();
+  console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
 
   // get the reply
   return chat_completion.data.choices[0].message ?? null;
