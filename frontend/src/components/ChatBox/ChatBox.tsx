@@ -47,8 +47,35 @@ function ChatBox({
       });
   }, [setEmails]);
 
-  function inputKeyPressed(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === "Enter") {
+  function inputChange() {
+    const inputBoxElement = document.getElementById(
+      "chat-box-input"
+    ) as HTMLSpanElement;
+
+    // scroll to the bottom
+    inputBoxElement.scrollTop =
+      inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
+
+    const maxHeightPx = 150;
+    inputBoxElement.style.height = "0";
+    if (inputBoxElement.scrollHeight > maxHeightPx) {
+      inputBoxElement.style.height = `${maxHeightPx}px`;
+      inputBoxElement.style.overflowY = "auto";
+    } else {
+      inputBoxElement.style.height = `${inputBoxElement.scrollHeight}px`;
+      inputBoxElement.style.overflowY = "hidden";
+    }
+  }
+
+  function inputKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+    }
+  }
+
+  function inputKeyUp(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    // shift+enter shouldn't send message
+    if (event.key === "Enter" && !event.shiftKey) {
       // asynchronously send the message
       void sendChatMessage();
     }
@@ -57,7 +84,7 @@ function ChatBox({
   async function sendChatMessage() {
     const inputBoxElement = document.getElementById(
       "chat-box-input"
-    ) as HTMLInputElement;
+    ) as HTMLTextAreaElement;
     // get the message from the input box
     const message = inputBoxElement.value;
     // clear the input box
@@ -65,7 +92,6 @@ function ChatBox({
 
     if (message && !isSendingMessage) {
       setIsSendingMessage(true);
-
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
         message: message,
@@ -166,13 +192,15 @@ function ChatBox({
       <ChatBoxFeed messages={messages} />
       <div id="chat-box-footer">
         <div id="chat-box-footer-messages">
-          <input
+          <textarea
             id="chat-box-input"
             className="prompt-injection-input"
-            type="text"
             placeholder="Type here..."
             autoFocus
-            onKeyUp={inputKeyPressed}
+            rows={1}
+            onChange={inputChange}
+            onKeyDown={inputKeyDown}
+            onKeyUp={inputKeyUp}
           />
           <button
             id="chat-box-button-send"
