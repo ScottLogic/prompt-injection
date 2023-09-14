@@ -30,10 +30,10 @@ function MainHeader({
         </span>
       </span>
       <span id="main-header-middle">
-        <span id="main-header-current-phase">{getLevelName(currentLevel)}</span>
+        <span id="main-header-current-level">{getLevelName(currentLevel)}</span>
       </span>
       <span id="main-header-right">
-        <span id="main-header-phase-selection">
+        <span id="main-header-level-selection">
           <LevelSelectionBox
             currentLevel={currentLevel}
             numCompletedLevels={numCompletedLevels}
