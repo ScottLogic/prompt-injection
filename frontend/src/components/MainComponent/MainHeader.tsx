@@ -1,11 +1,11 @@
 import { PHASES } from "../../Phases";
 import { PHASE_NAMES } from "../../models/phase";
 import PhaseSelectionBox from "../PhaseSelectionBox/PhaseSelectionBox";
-import "./DemoHeader.css";
+import "./MainHeader.css";
 import ProjectIcon from "./ProjectIcon";
 import ProjectIconWon from "./ProjectIconWon";
 
-function DemoHeader({
+function MainHeader({
   currentPhase,
   numCompletedPhases,
   setNewPhase,
@@ -22,18 +22,18 @@ function DemoHeader({
   const isPhaseComplete = (currentPhase as number) < numCompletedPhases;
 
   return (
-    <div id="demo-header">
-      <span id="demo-header-left">
-        <span id="demo-header-title">Prompt Injection Demo</span>
-        <span id="demo-header-icon">
+    <div id="main-header">
+      <span id="main-header-left">
+        <span id="main-header-title">Prompt Injection Demo</span>
+        <span id="main-header-icon">
           {isPhaseComplete ? <ProjectIconWon /> : <ProjectIcon />}
         </span>
       </span>
-      <span id="demo-header-middle">
-        <span id="demo-header-current-phase">{getPhaseName(currentPhase)}</span>
+      <span id="main-header-middle">
+        <span id="main-header-current-phase">{getPhaseName(currentPhase)}</span>
       </span>
-      <span id="demo-header-right">
-        <span id="demo-header-phase-selection">
+      <span id="main-header-right">
+        <span id="main-header-phase-selection">
           <PhaseSelectionBox
             currentPhase={currentPhase}
             numCompletedPhases={numCompletedPhases}
@@ -45,4 +45,4 @@ function DemoHeader({
   );
 }
 
-export default DemoHeader;
+export default MainHeader;
