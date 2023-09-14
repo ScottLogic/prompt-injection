@@ -1,5 +1,5 @@
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
-import { PHASE_NAMES } from "./phase";
+import { LEVEL_NAMES } from "./level";
 
 interface Document {
   filename: string;
@@ -7,7 +7,7 @@ interface Document {
 }
 
 interface DocumentsVector {
-  phase: PHASE_NAMES;
+  level: LEVEL_NAMES;
   docVector: MemoryVectorStore;
 }
 

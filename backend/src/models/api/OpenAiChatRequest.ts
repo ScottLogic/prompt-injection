@@ -1,11 +1,11 @@
 import { Request } from "express";
-import { PHASE_NAMES } from "../phase";
+import { LEVEL_NAMES } from "../level";
 
 type OpenAiChatRequest = Request<
   object,
   object,
   {
-    currentPhase?: PHASE_NAMES;
+    currentLevel?: LEVEL_NAMES;
     message?: string;
   },
   object

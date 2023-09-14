@@ -5,7 +5,7 @@ import {
   DefenceConfig,
   DefenceInfo,
 } from "../../models/defence";
-import { PHASE_NAMES } from "../../models/phase";
+import { LEVEL_NAMES } from "../../models/level";
 import ChatBox from "../ChatBox/ChatBox";
 import EmailBox from "../EmailBox/EmailBox";
 import { EmailInfo } from "../../models/email";
@@ -13,24 +13,24 @@ import { useState } from "react";
 import ControlPanel from "../ControlPanel/ControlPanel";
 
 function DemoBody({
-  currentPhase,
+  currentLevel,
   defences,
   emails,
   messages,
   addChatMessage,
-  resetPhase,
+  resetLevel,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
   setEmails,
-  setNumCompletedPhases,
+  setNumCompletedLevels,
 }: {
-  currentPhase: PHASE_NAMES;
+  currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
   emails: EmailInfo[];
   messages: ChatMessage[];
   addChatMessage: (message: ChatMessage) => void;
-  resetPhase: () => void;
+  resetLevel: () => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
@@ -38,48 +38,48 @@ function DemoBody({
     config: DefenceConfig[]
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
-  setNumCompletedPhases: (numCompletedPhases: number) => void;
+  setNumCompletedLevels: (numCompletedLevels: number) => void;
 }) {
-  const [completedPhases, setCompletedPhases] = useState<Set<PHASE_NAMES>>(
+  const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
     new Set()
   );
 
-  function resetPhaseBody() {
-    completedPhases.delete(currentPhase);
-    setCompletedPhases(completedPhases);
-    resetPhase();
+  function resetLevelBody() {
+    completedLevels.delete(currentLevel);
+    setCompletedLevels(completedLevels);
+    resetLevel();
   }
 
-  function addCompletedPhase(phase: PHASE_NAMES) {
-    completedPhases.add(phase);
-    setCompletedPhases(completedPhases);
+  function addCompletedLevel(level: LEVEL_NAMES) {
+    completedLevels.add(level);
+    setCompletedLevels(completedLevels);
   }
 
   return (
     <span id="main-area">
       <div className="side-bar">
         <ControlPanel
-          currentPhase={currentPhase}
+          currentLevel={currentLevel}
           defences={defences}
           emails={emails}
           messages={messages}
           addChatMessage={addChatMessage}
-          resetPhase={resetPhaseBody}
+          resetLevel={resetLevelBody}
           setDefenceActive={setDefenceActive}
           setDefenceInactive={setDefenceInactive}
           setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
-          setNumCompletedPhases={setNumCompletedPhases}
+          setNumCompletedLevels={setNumCompletedLevels}
         />
       </div>
       <div id="centre-area">
         <ChatBox
           messages={messages}
-          completedPhases={completedPhases}
-          currentPhase={currentPhase}
+          completedLevels={completedLevels}
+          currentLevel={currentLevel}
           addChatMessage={addChatMessage}
-          addCompletedPhase={addCompletedPhase}
-          setNumCompletedPhases={setNumCompletedPhases}
+          addCompletedLevel={addCompletedLevel}
+          setNumCompletedLevels={setNumCompletedLevels}
           setEmails={setEmails}
         />
       </div>

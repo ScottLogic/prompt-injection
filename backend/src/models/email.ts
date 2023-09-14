@@ -7,7 +7,7 @@ interface EmailInfo {
 interface EmailResponse {
   response: string;
   sentEmail?: EmailInfo;
-  wonPhase: boolean;
+  wonLevel: boolean;
 }
 
 export type { EmailInfo, EmailResponse };

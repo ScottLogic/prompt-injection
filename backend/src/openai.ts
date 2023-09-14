@@ -21,7 +21,7 @@ import {
   ChatHistoryMessage,
 } from "./models/chat";
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
-import { PHASE_NAMES } from "./models/phase";
+import { LEVEL_NAMES } from "./models/level";
 import {
   FunctionAskQuestionParams,
   FunctionSendEmailParams,
@@ -166,11 +166,11 @@ async function chatGptCallFunction(
   functionCall: ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
   // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX,
+  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX,
   openAiApiKey: string
 ) {
   let reply: ChatCompletionRequestMessage | null = null;
-  let wonPhase = false;
+  let wonLevel = false;
   // get the function name
   const functionName: string = functionCall.name ?? "";
 
@@ -209,10 +209,10 @@ async function chatGptCallFunction(
             params.subject,
             params.body,
             params.confirmed,
-            currentPhase
+            currentLevel
           );
           response = emailResponse.response;
-          wonPhase = emailResponse.wonPhase;
+          wonLevel = emailResponse.wonLevel;
           if (emailResponse.sentEmail) {
             sentEmails.push(emailResponse.sentEmail);
           }
@@ -238,7 +238,7 @@ async function chatGptCallFunction(
           await queryDocuments(
             params.question,
             qaPrompt,
-            currentPhase,
+            currentLevel,
             openAiApiKey
           )
         ).reply;
@@ -260,7 +260,7 @@ async function chatGptCallFunction(
     return {
       completion: reply,
       defenceInfo: defenceInfo,
-      wonPhase: wonPhase,
+      wonLevel: wonLevel,
     };
   } else {
     return null;
@@ -273,12 +273,12 @@ async function chatGptChatCompletion(
   gptModel: CHAT_MODELS,
   openai: OpenAIApi,
   // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
   // check if we need to set a system role
-  // system role is always active on phases
+  // system role is always active on levels
   if (
-    currentPhase !== PHASE_NAMES.SANDBOX ||
+    currentLevel !== LEVEL_NAMES.SANDBOX ||
     isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
     // check to see if there's already a system role
@@ -287,7 +287,7 @@ async function chatGptChatCompletion(
       chatHistory.unshift({
         completion: {
           role: "system",
-          content: getSystemRole(defences, currentPhase),
+          content: getSystemRole(defences, currentLevel),
         },
         chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
       });
@@ -419,7 +419,7 @@ async function chatGptSendMessage(
   openAiApiKey: string,
   sentEmails: EmailInfo[],
   // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
   console.log(`User message: '${message}'`);
 
@@ -430,7 +430,7 @@ async function chatGptSendMessage(
     alertedDefences: [],
     triggeredDefences: [],
   };
-  let wonPhase: boolean | undefined | null = false;
+  let wonLevel: boolean | undefined | null = false;
 
   // add user message to chat
   chatHistory = pushCompletionToHistory(
@@ -450,7 +450,7 @@ async function chatGptSendMessage(
     defences,
     gptModel,
     openai,
-    currentPhase
+    currentLevel
   );
   // check if GPT wanted to call a function
   while (reply?.function_call) {
@@ -466,11 +466,11 @@ async function chatGptSendMessage(
       defences,
       reply.function_call,
       sentEmails,
-      currentPhase,
+      currentLevel,
       openAiApiKey
     );
     if (functionCallReply) {
-      wonPhase = functionCallReply.wonPhase;
+      wonLevel = functionCallReply.wonLevel;
       // add the function call to the chat history
       chatHistory = pushCompletionToHistory(
         chatHistory,
@@ -486,15 +486,15 @@ async function chatGptSendMessage(
       defences,
       gptModel,
       openai,
-      currentPhase
+      currentLevel
     );
   }
 
   if (reply?.content) {
     // if output filter defence is active, check for blocked words/phrases
     if (
-      currentPhase === PHASE_NAMES.PHASE_2 ||
-      currentPhase === PHASE_NAMES.SANDBOX
+      currentLevel === LEVEL_NAMES.LEVEL_3 ||
+      currentLevel === LEVEL_NAMES.SANDBOX
     ) {
       const detectedPhrases = detectFilterList(
         reply.content,
@@ -531,7 +531,7 @@ async function chatGptSendMessage(
     return {
       completion: reply,
       defenceInfo: defenceInfo,
-      wonPhase: wonPhase,
+      wonLevel: wonLevel,
     };
   } else {
     return null;

@@ -33,7 +33,7 @@
   white-space: nowrap;
 }
 
-#demo-header-current-phase {
+#demo-header-current-level {
   color: var(--main-accent-colour);
   font-size: 36px;
   font-style: italic;

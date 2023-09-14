@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { DEFENCE_TYPES, DefenceConfig } from "../defence";
-import { PHASE_NAMES } from "../phase";
+import { LEVEL_NAMES } from "../level";
 
 type DefenceConfigureRequest = Request<
   object,
@@ -8,7 +8,7 @@ type DefenceConfigureRequest = Request<
   {
     config?: DefenceConfig[];
     defenceId?: DEFENCE_TYPES;
-    phase?: PHASE_NAMES;
+    level?: LEVEL_NAMES;
   },
   object
 >;
