@@ -26,9 +26,14 @@ enum CHAT_MESSAGE_TYPE {
 
 enum MODEL_CONFIG {
   TEMPERATURE = "temperature",
-  TOP_P = "top_p",
-  FREQUENCY_PENALTY = "frequency_penalty",
-  PRESENCE_PENALTY = "presence_penalty",
+  TOP_P = "topP",
+  FREQUENCY_PENALTY = "frequencyPenalty",
+  PRESENCE_PENALTY = "presencePenalty",
+}
+
+interface ChatModel {
+  id: CHAT_MODELS;
+  configuration: ChatModelConfiguration;
 }
 
 interface ChatModelConfiguration {
@@ -76,6 +81,7 @@ export type {
   ChatMessage,
   ChatResponse,
   ChatHistoryMessage,
+  ChatModel,
   ChatModelConfiguration,
 };
 export { CHAT_MODELS, CHAT_MESSAGE_TYPE, MODEL_CONFIG };

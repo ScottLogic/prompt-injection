@@ -28,7 +28,7 @@ function ModelSelection() {
   useEffect(() => {
     getGptModel()
       .then((model) => {
-        setModelInUse(model);
+        setModelInUse(model.id);
       })
       .catch((err) => {
         console.log(err);

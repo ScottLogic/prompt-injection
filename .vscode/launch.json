@@ -5,15 +5,15 @@
   "version": "0.2.0",
   "configurations": [
   
-    {
-      "name": "Launch Frontend",
-      "request": "launch",
-      "runtimeArgs": ["run", "dev"],
-      "runtimeExecutable": "npm",
-      "skipFiles": ["<node_internals>/**"],
-      "type": "node",
-      "cwd": "${workspaceFolder}\\frontend"
-    },
+    // {
+    //   "name": "Launch Frontend",
+    //   "request": "launch",
+    //   "runtimeArgs": ["run", "dev"],
+    //   "runtimeExecutable": "npm",
+    //   "skipFiles": ["<node_internals>/**"],
+    //   "type": "node",
+    //   "cwd": "${workspaceFolder}\\frontend"
+    // },
     {
       "name": "Launch Backend",
       "request": "launch",

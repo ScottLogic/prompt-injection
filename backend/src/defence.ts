@@ -277,7 +277,7 @@ function transformMessage(message: string, defences: DefenceInfo[]) {
   if (isDefenceActive(DEFENCE_TYPES.XML_TAGGING, defences)) {
     transformedMessage = transformXmlTagging(transformedMessage);
   }
-  if (message == transformedMessage) {
+  if (message === transformedMessage) {
     console.debug("No defences applied. Message unchanged.");
   } else {
     console.debug(

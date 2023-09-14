@@ -221,7 +221,7 @@ async function chatGptCallFunction(
       } else {
         console.error("No arguments provided to sendEmail function");
       }
-    } else if (functionName == "getEmailWhitelist") {
+    } else if (functionName === "getEmailWhitelist") {
       response = getEmailWhitelist(defences);
     }
     if (functionName === "askQuestion") {
@@ -307,12 +307,14 @@ async function chatGptChatCompletion(
   const startTime = new Date().getTime();
   console.debug("Calling OpenAI chat completion...");
 
+  console.debug("Talking to model", JSON.stringify(chatModel));
+
   const chat_completion = await openai.createChatCompletion({
     model: chatModel.id,
-    temperature: chatModel.configuration?.temperature ?? 1.0,
-    top_p: chatModel.configuration?.topP ?? 1.0,
-    frequency_penalty: chatModel.configuration?.frequencyPenalty ?? 0,
-    presence_penalty: chatModel.configuration?.presencePenalty ?? 0,
+    temperature: chatModel.configuration.temperature,
+    top_p: chatModel.configuration.topP,
+    frequency_penalty: chatModel.configuration.frequencyPenalty,
+    presence_penalty: chatModel.configuration.presencePenalty,
     messages: getChatCompletionsFromHistory(
       chatHistory,
       chatModelMaxTokens[chatModel.id]

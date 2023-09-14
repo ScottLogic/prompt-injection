@@ -8,7 +8,12 @@ import {
   detectTriggeredDefences,
   getInitialDefences,
 } from "./defence";
-import { CHAT_MESSAGE_TYPE, ChatHttpResponse } from "./models/chat";
+import {
+  CHAT_MESSAGE_TYPE,
+  ChatHttpResponse,
+  ChatModelConfiguration,
+  MODEL_CONFIG,
+} from "./models/chat";
 import { Document } from "./models/document";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
 import { PHASE_NAMES } from "./models/phase";
@@ -22,6 +27,7 @@ import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
 import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
 import { OpenAiSetKeyRequest } from "./models/api/OpenAiSetKeyRequest";
 import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
+import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
 
 const router = express.Router();
 
@@ -339,14 +345,74 @@ router.post("/openai/model", async (req: OpenAiSetModelRequest, res) => {
   } else if (!req.session.openAiApiKey) {
     res.status(401).send();
   } else if (await setGptModel(req.session.openAiApiKey, model)) {
-    req.session.chatModel = { id: model, configuration: config };
+    if (config) {
+      req.session.chatModel = { id: model, configuration: config };
+    } else {
+      // change model but keep configs
+      req.session.chatModel = {
+        id: model,
+        configuration: req.session.chatModel.configuration,
+      };
+    }
     console.debug("set GPT model", JSON.stringify(req.session.chatModel));
-
     res.status(200).send();
   } else {
     res.status(401).send();
   }
 });
+
+function updateConfigProperty(
+  config: ChatModelConfiguration,
+  configId: MODEL_CONFIG,
+  value: number,
+  max: number
+): ChatModelConfiguration | null {
+  if (value >= 0 && value <= max) {
+    config[configId] = value;
+    return config;
+  }
+  return null;
+}
+
+router.post(
+  "/openai/model/configure",
+  (req: OpenAiConfigureModelRequest, res) => {
+    const configId = req.body.configId as MODEL_CONFIG | undefined;
+    const value = req.body.value;
+
+    let updated = null;
+
+    if (configId && value && value >= 0) {
+      const lastConfig = req.session.chatModel.configuration;
+      switch (configId) {
+        case MODEL_CONFIG.TEMPERATURE:
+          updated = updateConfigProperty(lastConfig, configId, value, 2);
+          break;
+        case MODEL_CONFIG.TOP_P:
+          updated = updateConfigProperty(lastConfig, configId, value, 1);
+          break;
+        case MODEL_CONFIG.FREQUENCY_PENALTY:
+          updated = updateConfigProperty(lastConfig, configId, value, 2);
+          break;
+        case MODEL_CONFIG.PRESENCE_PENALTY:
+          updated = updateConfigProperty(lastConfig, configId, value, 2);
+          break;
+        default:
+          res.status(400).send();
+      }
+      if (updated) {
+        req.session.chatModel.configuration = updated;
+        console.debug(
+          "Updated model config",
+          JSON.stringify(req.session.chatModel.configuration)
+        );
+        res.status(200).send();
+      } else {
+        res.status(400).send();
+      }
+    }
+  }
+);
 
 router.get("/openai/model", (req, res) => {
   res.send(req.session.chatModel);
@@ -368,7 +434,7 @@ router.get("/documents", (_, res) => {
       const fileType = file.split(".").pop() ?? "";
       docFiles.push({
         filename: file,
-        filetype: fileType == "csv" ? "text/csv" : fileType,
+        filetype: fileType === "csv" ? "text/csv" : fileType,
       });
     });
     res.send(docFiles);

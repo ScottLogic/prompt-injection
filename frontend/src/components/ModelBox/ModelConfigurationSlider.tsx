@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import "./ModelConfigurationSlider.css";
 import { ChatModelConfiguration } from "../../models/chat";
+import { configureGptModel } from "../../service/chatService";
 
 function ModelConfigurationSlider({
   config,
@@ -11,10 +12,10 @@ function ModelConfigurationSlider({
 }) {
   const [value, setValue] = useState<number>(1);
 
-  function handleValueChange(_: Event, value: number | number[]) {
+  async function handleValueChange(_: Event, value: number | number[]) {
     const val = Array.isArray(value) ? value[0] : value;
     setValue(val);
-    console.log("config = ", config, "temp = ", val);
+    await configureGptModel(config.id, val);
   }
 
   return (
@@ -28,7 +29,7 @@ function ModelConfigurationSlider({
         step={config.step}
         valueLabelDisplay="auto"
         value={value}
-        onChange={handleValueChange}
+        onChange={(event, value) => void handleValueChange(event, value)}
         sx={{
           color: "#1fd07b",
         }}
