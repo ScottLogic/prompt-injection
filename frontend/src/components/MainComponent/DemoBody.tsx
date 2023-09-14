@@ -12,7 +12,7 @@ import ChatBox from "../ChatBox/ChatBox";
 import DefenceBox from "../DefenceBox/DefenceBox";
 import EmailBox from "../EmailBox/EmailBox";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
-import ModelSelectionBox from "../ModelSelectionBox/ModelSelectionBox";
+import ModelBox from "../ModelBox/ModelBox";
 import { EmailInfo } from "../../models/email";
 import { useState } from "react";
 import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
@@ -87,7 +87,7 @@ function DemoBody({
           />
         )}
         {/* hide model selection box on phases 0 and 1 */}
-        {currentPhase === PHASE_NAMES.SANDBOX && <ModelSelectionBox />}
+        {currentPhase === PHASE_NAMES.SANDBOX && <ModelBox />}
         {currentPhase === PHASE_NAMES.SANDBOX && <DocumentViewButton />}
 
         <div id="control-buttons">

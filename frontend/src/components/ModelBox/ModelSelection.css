@@ -1,12 +1,8 @@
-#model-selection-box {
-  padding: 1px 0;
-  position: relative;
-}
-
 #model-selection-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 10px;
 }
 
 #model-selection-row #text-area {
