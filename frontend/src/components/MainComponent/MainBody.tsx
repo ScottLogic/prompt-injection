@@ -1,4 +1,4 @@
-import "./DemoBody.css";
+import "./MainBody.css";
 import { ChatMessage } from "../../models/chat";
 import {
   DEFENCE_TYPES,
@@ -12,7 +12,7 @@ import { EmailInfo } from "../../models/email";
 import { useState } from "react";
 import ControlPanel from "../ControlPanel/ControlPanel";
 
-function DemoBody({
+function MainBody({
   currentLevel,
   defences,
   emails,
@@ -90,4 +90,4 @@ function DemoBody({
   );
 }
 
-export default DemoBody;
+export default MainBody;

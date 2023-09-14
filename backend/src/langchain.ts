@@ -190,9 +190,16 @@ async function queryDocuments(
     return { reply: "", questionAnswered: false };
   }
 
+  // get start time
+  const startTime = new Date().getTime();
+  console.debug("Calling QA model...");
   const response = (await qaChain.call({
     query: question,
   })) as QaChainReply;
+  // log the time taken
+  const endTime = new Date().getTime();
+  console.debug(`QA model call took ${endTime - startTime}ms`);
+
   console.debug(`QA model response: ${response.text}`);
   const result: ChatAnswer = {
     reply: response.text,
@@ -210,9 +217,16 @@ async function queryPromptEvaluationModel(input: string, openAIApiKey: string) {
   }
   console.log(`Checking '${input}' for malicious prompts`);
 
+  // get start time
+  const startTime = new Date().getTime();
+  console.debug("Calling prompt evaluation model...");
   const response = (await promptEvaluationChain.call({
     prompt: input,
   })) as PromptEvaluationChainReply;
+  // log the time taken
+  const endTime = new Date().getTime();
+  console.debug(`Prompt evaluation model call took ${endTime - startTime}ms`);
+
   const promptInjectionEval = formatEvaluationOutput(
     response.promptInjectionEval
   );

@@ -1,7 +1,7 @@
 import "./App.css";
 import "./Theme.css";
-import DemoHeader from "./components/MainComponent/DemoHeader";
-import DemoBody from "./components/MainComponent/DemoBody";
+import MainHeader from "./components/MainComponent/MainHeader";
+import MainBody from "./components/MainComponent/MainBody";
 import { useEffect, useState } from "react";
 import { LEVEL_NAMES } from "./models/level";
 import {
@@ -25,7 +25,7 @@ import { getCompletedLevels } from "./service/levelService";
 import { LEVELS } from "./Levels";
 
 function App() {
-  const [demoBodyKey, setDemoBodyKey] = useState<number>(0);
+  const [MainBodyKey, setMainBodyKey] = useState<number>(0);
   // start on sandbox mode
   const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
     LEVEL_NAMES.SANDBOX
@@ -128,7 +128,7 @@ function App() {
       return localDefence;
     });
     setDefencesToShow(defences);
-    setDemoBodyKey(demoBodyKey + 1);
+    setMainBodyKey(MainBodyKey + 1);
   }
 
   function addInfoMessage(message: string) {
@@ -191,23 +191,27 @@ function App() {
   return (
     <div id="app-content">
       <div id="app-content-header">
-        <DemoHeader
+        <MainHeader
           currentLevel={currentLevel}
           numCompletedLevels={numCompletedLevels}
-          setNewLevel={(newLevel) => void setNewLevel(newLevel)}
+          setNewLevel={(newLevel: LEVEL_NAMES) => void setNewLevel(newLevel)}
         />
       </div>
       <div id="app-content-body">
-        <DemoBody
-          key={demoBodyKey}
+        <MainBody
+          key={MainBodyKey}
           currentLevel={currentLevel}
           defences={defencesToShow}
           emails={emails}
           messages={messages}
           addChatMessage={addChatMessage}
           resetLevel={() => void resetLevel()}
-          setDefenceActive={(defence) => void setDefenceActive(defence)}
-          setDefenceInactive={(defence) => void setDefenceInactive(defence)}
+          setDefenceActive={(defence: DefenceInfo) =>
+            void setDefenceActive(defence)
+          }
+          setDefenceInactive={(defence: DefenceInfo) =>
+            void setDefenceInactive(defence)
+          }
           setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
           setNumCompletedLevels={setNumCompletedLevels}

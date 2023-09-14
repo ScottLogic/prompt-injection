@@ -1,4 +1,4 @@
-#demo-header {
+#main-header {
   background-color: var(--header-background-colour);
   display: flex;
   align-items: center;
@@ -10,37 +10,37 @@
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
-#demo-header-left {
+#main-header-left {
   display: flex;
   align-items: center;
   height: 100%;
   width: 100%;
 }
 
-#demo-header-title {
+#main-header-title {
   font-size: 36px;
   font-style: italic;
   font-weight: 700;
   white-space: nowrap;
 }
 
-#demo-header-icon {
+#main-header-icon {
   height: 70%;
   padding: 0 4%;
 }
 
-#demo-header-middle {
+#main-header-middle {
   white-space: nowrap;
 }
 
-#demo-header-current-level {
+#main-header-current-level {
   color: var(--main-accent-colour);
   font-size: 36px;
   font-style: italic;
   font-weight: 700;
 }
 
-#demo-header-right {
+#main-header-right {
   width: 100%;
   display: flex;
   justify-content: flex-end;

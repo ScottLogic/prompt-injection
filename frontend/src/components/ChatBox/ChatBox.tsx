@@ -87,11 +87,11 @@ function ChatBox({
     ) as HTMLTextAreaElement;
     // get the message from the input box
     const message = inputBoxElement.value;
-    // clear the input box
-    inputBoxElement.value = "";
 
     if (message && !isSendingMessage) {
       setIsSendingMessage(true);
+      // clear the input box
+      inputBoxElement.value = "";
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
         message: message,
