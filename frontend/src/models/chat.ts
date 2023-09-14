@@ -24,6 +24,22 @@ enum CHAT_MESSAGE_TYPE {
   FUNCTION_CALL,
 }
 
+enum MODEL_CONFIG {
+  TEMPERATURE = "temperature",
+  TOP_P = "top_p",
+  FREQUENCY_PENALTY = "frequency_penalty",
+  PRESENCE_PENALTY = "presence_penalty",
+}
+
+interface ChatModelConfiguration {
+  id: MODEL_CONFIG;
+  value: number;
+  min: number;
+  max: number;
+  default: number;
+  step: number;
+}
+
 interface ChatDefenceReport {
   blockedReason: string;
   isBlocked: boolean;
@@ -56,5 +72,10 @@ interface ChatHistoryMessage {
   infoMessage: string | null | undefined;
 }
 
-export type { ChatMessage, ChatResponse, ChatHistoryMessage };
-export { CHAT_MODELS, CHAT_MESSAGE_TYPE };
+export type {
+  ChatMessage,
+  ChatResponse,
+  ChatHistoryMessage,
+  ChatModelConfiguration,
+};
+export { CHAT_MODELS, CHAT_MESSAGE_TYPE, MODEL_CONFIG };
