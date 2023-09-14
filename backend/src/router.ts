@@ -206,7 +206,7 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
           const openAiReply = await chatGptSendMessage(
             req.session.phaseState[currentPhase].chatHistory,
             req.session.phaseState[currentPhase].defences,
-            req.session.gptModel,
+            req.session.chatModel,
             chatResponse.transformedMessage,
             messageIsTransformed,
             req.session.openAiApiKey,
@@ -316,7 +316,7 @@ router.post("/openai/apiKey", async (req: OpenAiSetKeyRequest, res) => {
     res.status(401).send();
     return;
   }
-  if (await setOpenAiApiKey(openAiApiKey, req.session.gptModel)) {
+  if (await setOpenAiApiKey(openAiApiKey, req.session.chatModel.id)) {
     req.session.openAiApiKey = openAiApiKey;
     res.send();
   } else {
@@ -332,14 +332,16 @@ router.get("/openai/apiKey", (req, res) => {
 // Set the ChatGPT model
 router.post("/openai/model", async (req: OpenAiSetModelRequest, res) => {
   const model = req.body.model;
+  const config = req.body.configuration;
+
   if (model === undefined) {
     res.status(400).send();
   } else if (!req.session.openAiApiKey) {
     res.status(401).send();
-  } else if (model === req.session.gptModel) {
-    res.status(200).send();
   } else if (await setGptModel(req.session.openAiApiKey, model)) {
-    req.session.gptModel = model;
+    req.session.chatModel = { id: model, configuration: config };
+    console.debug("set GPT model", JSON.stringify(req.session.chatModel));
+
     res.status(200).send();
   } else {
     res.status(401).send();
@@ -347,7 +349,7 @@ router.post("/openai/model", async (req: OpenAiSetModelRequest, res) => {
 });
 
 router.get("/openai/model", (req, res) => {
-  res.send(req.session.gptModel);
+  res.send(req.session.chatModel);
 });
 
 router.get("/phase/completed", (req, res) => {

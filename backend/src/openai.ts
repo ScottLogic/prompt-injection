@@ -19,6 +19,7 @@ import {
   CHAT_MODELS,
   ChatDefenceReport,
   ChatHistoryMessage,
+  ChatModel,
 } from "./models/chat";
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { PHASE_NAMES } from "./models/phase";
@@ -88,14 +89,14 @@ const chatGptFunctions = [
 
 // max tokens each model can use
 const chatModelMaxTokens = {
-  [CHAT_MODELS.GPT_4]: 8192,
-  [CHAT_MODELS.GPT_4_0613]: 8192,
-  [CHAT_MODELS.GPT_4_32K]: 32768,
-  [CHAT_MODELS.GPT_4_32K_0613]: 32768,
-  [CHAT_MODELS.GPT_3_5_TURBO]: 4097,
-  [CHAT_MODELS.GPT_3_5_TURBO_0613]: 4097,
-  [CHAT_MODELS.GPT_3_5_TURBO_16K]: 16385,
-  [CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16385,
+  [CHAT_MODELS.GPT_4]: 8191,
+  [CHAT_MODELS.GPT_4_0613]: 8191,
+  [CHAT_MODELS.GPT_4_32K]: 32767,
+  [CHAT_MODELS.GPT_4_32K_0613]: 32767,
+  [CHAT_MODELS.GPT_3_5_TURBO]: 4095,
+  [CHAT_MODELS.GPT_3_5_TURBO_0613]: 4095,
+  [CHAT_MODELS.GPT_3_5_TURBO_16K]: 16384,
+  [CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16384,
 };
 
 // test the api key works with the model
@@ -270,7 +271,7 @@ async function chatGptCallFunction(
 async function chatGptChatCompletion(
   chatHistory: ChatHistoryMessage[],
   defences: DefenceInfo[],
-  gptModel: CHAT_MODELS,
+  chatModel: ChatModel,
   openai: OpenAIApi,
   // default to sandbox
   currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
@@ -305,9 +306,17 @@ async function chatGptChatCompletion(
   // get start time
   const startTime = new Date().getTime();
   console.debug("Calling OpenAI chat completion...");
+
   const chat_completion = await openai.createChatCompletion({
-    model: gptModel,
-    messages: getChatCompletionsFromHistory(chatHistory, gptModel),
+    model: chatModel.id,
+    temperature: chatModel.configuration?.temperature ?? 1.0,
+    top_p: chatModel.configuration?.topP ?? 1.0,
+    frequency_penalty: chatModel.configuration?.frequencyPenalty ?? 0,
+    presence_penalty: chatModel.configuration?.presencePenalty ?? 0,
+    messages: getChatCompletionsFromHistory(
+      chatHistory,
+      chatModelMaxTokens[chatModel.id]
+    ),
     functions: chatGptFunctions,
   });
   // log the time taken
@@ -362,12 +371,9 @@ function filterChatHistoryByMaxTokens(
 // take only the completions to send to GPT
 function getChatCompletionsFromHistory(
   chatHistory: ChatHistoryMessage[],
-  gptModel: CHAT_MODELS
+  maxTokens: number
 ): ChatCompletionRequestMessage[] {
   // limit the number of tokens sent to GPT
-  const maxTokens = chatModelMaxTokens[gptModel];
-  console.log("gpt model = ", gptModel, "max tokens = ", maxTokens);
-
   const reducedChatHistory: ChatHistoryMessage[] = filterChatHistoryByMaxTokens(
     chatHistory,
     maxTokens
@@ -420,7 +426,7 @@ function pushCompletionToHistory(
 async function chatGptSendMessage(
   chatHistory: ChatHistoryMessage[],
   defences: DefenceInfo[],
-  gptModel: CHAT_MODELS,
+  chatModel: ChatModel,
   message: string,
   messageIsTransformed: boolean,
   openAiApiKey: string,
@@ -455,7 +461,7 @@ async function chatGptSendMessage(
   let reply = await chatGptChatCompletion(
     chatHistory,
     defences,
-    gptModel,
+    chatModel,
     openai,
     currentPhase
   );
@@ -491,7 +497,7 @@ async function chatGptSendMessage(
     reply = await chatGptChatCompletion(
       chatHistory,
       defences,
-      gptModel,
+      chatModel,
       openai,
       currentPhase
     );

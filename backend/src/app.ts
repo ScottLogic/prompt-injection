@@ -5,7 +5,7 @@ import session from "express-session";
 
 import { setOpenAiApiKey } from "./openai";
 import { router } from "./router";
-import { ChatHistoryMessage } from "./models/chat";
+import { ChatHistoryMessage, ChatModel } from "./models/chat";
 import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
 import { CHAT_MODELS } from "./models/chat";
@@ -20,7 +20,7 @@ declare module "express-session" {
   interface Session {
     initialised: boolean;
     openAiApiKey: string | null;
-    gptModel: CHAT_MODELS;
+    chatModel: ChatModel;
     phaseState: PhaseState[];
     numPhasesCompleted: number;
   }
@@ -34,6 +34,7 @@ declare module "express-session" {
 
 // by default runs on port 3001
 const port = process.env.PORT ?? String(3001);
+
 // use default model
 const defaultModel = CHAT_MODELS.GPT_4;
 
@@ -73,7 +74,8 @@ app.use(
 app.use((req, _res, next) => {
   // initialise session variables
   if (!req.session.initialised) {
-    req.session.gptModel = defaultModel;
+    req.session.chatModel = { id: defaultModel };
+
     req.session.numPhasesCompleted = 0;
     req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
     req.session.phaseState = [];

@@ -25,6 +25,18 @@ enum CHAT_MESSAGE_TYPE {
   FUNCTION_CALL,
 }
 
+interface ChatModel {
+  id: CHAT_MODELS;
+  configuration?: ChatModelConfiguration;
+}
+
+interface ChatModelConfiguration {
+  temperature: number;
+  topP: number;
+  frequencyPenalty: number;
+  presencePenalty: number;
+}
+
 interface ChatDefenceReport {
   blockedReason: string | null;
   isBlocked: boolean;
@@ -71,4 +83,4 @@ export type {
   ChatHttpResponse,
   ChatHistoryMessage,
 };
-export { CHAT_MODELS, CHAT_MESSAGE_TYPE };
+export { CHAT_MODELS, CHAT_MESSAGE_TYPE, ChatModel, ChatModelConfiguration };
