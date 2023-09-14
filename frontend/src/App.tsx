@@ -1,7 +1,7 @@
 import "./App.css";
 import "./Theme.css";
-import DemoHeader from "./components/MainComponent/DemoHeader";
-import DemoBody from "./components/MainComponent/DemoBody";
+import MainHeader from "./components/MainComponent/MainHeader";
+import MainBody from "./components/MainComponent/MainBody";
 import { useEffect, useState } from "react";
 import { PHASE_NAMES } from "./models/phase";
 import {
@@ -25,7 +25,7 @@ import { getCompletedPhases } from "./service/phaseService";
 import { PHASES } from "./Phases";
 
 function App() {
-  const [demoBodyKey, setDemoBodyKey] = useState<number>(0);
+  const [MainBodyKey, setMainBodyKey] = useState<number>(0);
   // start on sandbox mode
   const [currentPhase, setCurrentPhase] = useState<PHASE_NAMES>(
     PHASE_NAMES.SANDBOX
@@ -128,7 +128,7 @@ function App() {
       return localDefence;
     });
     setDefencesToShow(defences);
-    setDemoBodyKey(demoBodyKey + 1);
+    setMainBodyKey(MainBodyKey + 1);
   }
 
   function addInfoMessage(message: string) {
@@ -191,15 +191,15 @@ function App() {
   return (
     <div id="app-content">
       <div id="app-content-header">
-        <DemoHeader
+        <MainHeader
           currentPhase={currentPhase}
           numCompletedPhases={numCompletedPhases}
           setNewPhase={(newPhase) => void setNewPhase(newPhase)}
         />
       </div>
       <div id="app-content-body">
-        <DemoBody
-          key={demoBodyKey}
+        <MainBody
+          key={MainBodyKey}
           currentPhase={currentPhase}
           defences={defencesToShow}
           emails={emails}
