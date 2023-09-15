@@ -1,22 +1,26 @@
 import { Slider } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./ModelConfigurationSlider.css";
-import { ChatModelConfiguration } from "../../models/chat";
+import { CustomChatModelConfiguration } from "../../models/chat";
 import { configureGptModel } from "../../service/chatService";
 
 function ModelConfigurationSlider({
   config,
 }: {
-  config: ChatModelConfiguration;
+  config: CustomChatModelConfiguration;
 }) {
-  const [value, setValue] = useState<number>(1);
+  const [value, setValue] = useState<number>(config.value);
 
   async function handleValueChange(_: Event, value: number | number[]) {
     const val = Array.isArray(value) ? value[0] : value;
     setValue(val);
     await configureGptModel(config.id, val);
   }
+
+  useEffect(() => {
+    setValue(config.value);
+  }, [config]);
 
   return (
     <div className="model-config-slider">
@@ -25,8 +29,7 @@ function ModelConfigurationSlider({
         getAriaValueText={(value) => `${value}`}
         min={config.min}
         max={config.max}
-        defaultValue={config.default}
-        step={config.step}
+        step={0.1}
         valueLabelDisplay="auto"
         value={value}
         onChange={(event, value) => void handleValueChange(event, value)}

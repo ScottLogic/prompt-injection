@@ -33,16 +33,21 @@ enum MODEL_CONFIG {
 
 interface ChatModel {
   id: CHAT_MODELS;
-  configuration: ChatModelConfiguration;
+  configuration: ChatModelConfigurations;
 }
 
-interface ChatModelConfiguration {
+interface ChatModelConfigurations {
+  temperature: number;
+  topP: number;
+  frequencyPenalty: number;
+  presencePenalty: number;
+}
+
+interface CustomChatModelConfiguration {
   id: MODEL_CONFIG;
   value: number;
   min: number;
   max: number;
-  default: number;
-  step: number;
 }
 
 interface ChatDefenceReport {
@@ -82,6 +87,7 @@ export type {
   ChatResponse,
   ChatHistoryMessage,
   ChatModel,
-  ChatModelConfiguration,
+  ChatModelConfigurations,
+  CustomChatModelConfiguration,
 };
 export { CHAT_MODELS, CHAT_MESSAGE_TYPE, MODEL_CONFIG };

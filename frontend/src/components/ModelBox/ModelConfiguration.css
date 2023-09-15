@@ -1,3 +1,7 @@
-#model-config-row {
+#model-config-box {
   padding: 10px;
+}
+
+.model-config-row {
+  padding: 0px;
 }
