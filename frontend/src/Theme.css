@@ -29,6 +29,10 @@
   --main-toggle-off-colour: #ababab;
   --main-toggle-on-colour: var(--main-accent-colour);
 
+  --overlay-hidden-colour: #0008;
+  --overlay-background-colour: #8ad5da;
+  --overlay-text-colour: #313131;
+
   --chat-bot-colour: #d482fb;
   --chat-bot-background: linear-gradient(var(--chat-bot-colour), #f3dbfe);
   --chat-blocked-colour: var(--main-error-colour);

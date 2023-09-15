@@ -23,6 +23,7 @@ import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedPhases } from "./service/phaseService";
 import { PHASES } from "./Phases";
+import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 
 function App() {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
@@ -190,6 +191,7 @@ function App() {
 
   return (
     <div id="app-content">
+      <HandbookOverlay />
       <div id="app-content-header">
         <MainHeader
           currentPhase={currentPhase}

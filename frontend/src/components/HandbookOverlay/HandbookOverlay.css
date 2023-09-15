@@ -1,0 +1,31 @@
+#handbook-overlay {
+  background-color: var(--overlay-hidden-colour);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#handbook-overlay-content {
+  background-color: var(--overlay-background-colour);
+  color: var(--overlay-text-colour);
+
+  width: 50%;
+  height: 50%;
+  padding: 20px;
+  border-radius: 10px;
+
+  text-align: center;
+}
+
+#handbook-overlay-content h1 {
+  font-weight: 700;
+  font-size: 3rem;
+}
