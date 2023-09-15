@@ -1,7 +1,6 @@
 import { sendRequest } from "./backendService";
 import {
   CHAT_MESSAGE_TYPE,
-  CHAT_MODELS,
   ChatHistoryMessage,
   ChatMessage,
   ChatModel,

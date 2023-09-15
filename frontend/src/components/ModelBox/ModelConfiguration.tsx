@@ -4,7 +4,6 @@ import ModelConfigurationSlider from "./ModelConfigurationSlider";
 import { CustomChatModelConfiguration } from "../../models/chat";
 import { MODEL_CONFIG } from "../../models/chat";
 import { getGptModel } from "../../service/chatService";
-import { FaInfoCircle } from "react-icons/fa";
 
 function ModelConfiguration() {
   const [customChatModelConfigs, setCustomChatModel] = useState<

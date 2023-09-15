@@ -8,7 +8,6 @@ import {
   getChatHistory,
   clearChat,
   addMessageToChatHistory,
-  resetGPTModelConfigs,
 } from "./service/chatService";
 import { EmailInfo } from "./models/email";
 import { clearEmails, getSentEmails } from "./service/emailService";

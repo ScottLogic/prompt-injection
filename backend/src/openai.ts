@@ -307,8 +307,6 @@ async function chatGptChatCompletion(
   const startTime = new Date().getTime();
   console.debug("Calling OpenAI chat completion...");
 
-  console.debug("Talking to model", JSON.stringify(chatModel));
-
   const chat_completion = await openai.createChatCompletion({
     model: chatModel.id,
     temperature: chatModel.configuration.temperature,
