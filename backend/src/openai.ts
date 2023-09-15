@@ -302,12 +302,11 @@ async function chatGptChatCompletion(
       chatHistory.shift();
     }
   }
+  console.debug("Talking to model: ", JSON.stringify(chatModel));
 
   // get start time
   const startTime = new Date().getTime();
   console.debug("Calling OpenAI chat completion...");
-
-  console.debug("Talking to model: ", JSON.stringify(chatModel));
 
   const chat_completion = await openai.createChatCompletion({
     model: chatModel.id,
