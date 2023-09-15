@@ -1,4 +1,4 @@
-import { PHASE_NAMES } from "../../src/models/phase";
+import { LEVEL_NAMES } from "../../src/models/level";
 import {
   initQAModel,
   getFilepath,
@@ -18,11 +18,11 @@ jest.mock("langchain/prompts", () => ({
 }));
 
 test("GIVEN initQAModel is called with no apiKey THEN return early and log message", () => {
-  const phase = PHASE_NAMES.PHASE_0;
+  const level = LEVEL_NAMES.LEVEL_1;
   const prompt = "";
   const consoleDebugMock = jest.spyOn(console, "debug").mockImplementation();
 
-  initQAModel(phase, prompt, "");
+  initQAModel(level, prompt, "");
   expect(consoleDebugMock).toHaveBeenCalledWith(
     "No OpenAI API key set to initialise QA model"
   );
@@ -36,23 +36,23 @@ test("GIVEN initPromptEvaluationModel is called with no apiKey THEN return early
   );
 });
 
-test("GIVEN phase is 0 THEN correct filepath is returned", () => {
-  const filePath = getFilepath(PHASE_NAMES.PHASE_0);
-  expect(filePath).toBe("resources/documents/phase_0/");
+test("GIVEN level is 1 THEN correct filepath is returned", () => {
+  const filePath = getFilepath(LEVEL_NAMES.LEVEL_1);
+  expect(filePath).toBe("resources/documents/level_1/");
 });
 
-test("GIVEN phase is 1 THEN correct filepath is returned", () => {
-  const filePath = getFilepath(PHASE_NAMES.PHASE_1);
-  expect(filePath).toBe("resources/documents/phase_1/");
+test("GIVEN level is 2 THEN correct filepath is returned", () => {
+  const filePath = getFilepath(LEVEL_NAMES.LEVEL_2);
+  expect(filePath).toBe("resources/documents/level_2/");
 });
 
-test("GIVEN phase is 2 THEN correct filepath is returned", () => {
-  const filePath = getFilepath(PHASE_NAMES.PHASE_2);
-  expect(filePath).toBe("resources/documents/phase_2/");
+test("GIVEN level is 3 THEN correct filepath is returned", () => {
+  const filePath = getFilepath(LEVEL_NAMES.LEVEL_3);
+  expect(filePath).toBe("resources/documents/level_3/");
 });
 
-test("GIVEN phase is sandbox THEN correct filepath is returned", () => {
-  const filePath = getFilepath(PHASE_NAMES.SANDBOX);
+test("GIVEN level is sandbox THEN correct filepath is returned", () => {
+  const filePath = getFilepath(LEVEL_NAMES.SANDBOX);
   expect(filePath).toBe("resources/documents/common/");
 });
 

@@ -1,11 +1,11 @@
-#phase-selection-box {
+#level-selection-box {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.phase-selection-button {
+.level-selection-button {
   margin: 5px;
   padding: 5px 5px;
 }

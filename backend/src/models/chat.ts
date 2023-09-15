@@ -18,7 +18,7 @@ enum CHAT_MESSAGE_TYPE {
   INFO,
   USER,
   USER_TRANSFORMED,
-  PHASE_INFO,
+  LEVEL_INFO,
   DEFENCE_ALERTED,
   DEFENCE_TRIGGERED,
   SYSTEM,
@@ -64,15 +64,15 @@ interface ChatMalicious {
 interface ChatResponse {
   completion: ChatCompletionRequestMessage;
   defenceInfo: ChatDefenceReport;
-  wonPhase: boolean;
+  wonLevel: boolean;
 }
 
 interface ChatHttpResponse {
   reply: string;
   defenceInfo: ChatDefenceReport;
-  numPhasesCompleted: number;
+  numLevelsCompleted: number;
   transformedMessage: string;
-  wonPhase: boolean;
+  wonLevel: boolean;
 }
 
 interface ChatHistoryMessage {

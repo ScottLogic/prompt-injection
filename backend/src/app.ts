@@ -9,7 +9,7 @@ import { ChatHistoryMessage, ChatModel } from "./models/chat";
 import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
 import { defaultChatModel } from "./models/chat";
-import { PHASE_NAMES } from "./models/phase";
+import { LEVEL_NAMES } from "./models/level";
 import path from "path";
 import { getInitialDefences } from "./defence";
 import { initDocumentVectors } from "./langchain";
@@ -21,11 +21,11 @@ declare module "express-session" {
     initialised: boolean;
     openAiApiKey: string | null;
     chatModel: ChatModel;
-    phaseState: PhaseState[];
-    numPhasesCompleted: number;
+    levelState: LevelState[];
+    numLevelsCompleted: number;
   }
-  interface PhaseState {
-    phase: PHASE_NAMES;
+  interface LevelState {
+    level: LEVEL_NAMES;
     chatHistory: ChatHistoryMessage[];
     defences: DefenceInfo[];
     sentEmails: EmailInfo[];
@@ -72,15 +72,14 @@ app.use((req, _res, next) => {
   // initialise session variables
   if (!req.session.initialised) {
     req.session.chatModel = defaultChatModel;
-
-    req.session.numPhasesCompleted = 0;
+    req.session.numLevelsCompleted = 3;
     req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
-    req.session.phaseState = [];
-    // add empty states for phases 0-3
-    Object.values(PHASE_NAMES).forEach((value) => {
+    req.session.levelState = [];
+    // add empty states for levels 0-3
+    Object.values(LEVEL_NAMES).forEach((value) => {
       if (isNaN(Number(value))) {
-        req.session.phaseState.push({
-          phase: value as PHASE_NAMES,
+        req.session.levelState.push({
+          level: value as LEVEL_NAMES,
           chatHistory: [],
           defences: getInitialDefences(),
           sentEmails: [],

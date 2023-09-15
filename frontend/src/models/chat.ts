@@ -17,7 +17,7 @@ enum CHAT_MESSAGE_TYPE {
   INFO,
   USER,
   USER_TRANSFORMED,
-  PHASE_INFO,
+  LEVEL_INFO,
   DEFENCE_ALERTED,
   DEFENCE_TRIGGERED,
   SYSTEM,
@@ -67,9 +67,9 @@ interface ChatMessage {
 interface ChatResponse {
   reply: string;
   defenceInfo: ChatDefenceReport;
-  numPhasesCompleted: number;
+  numLevelsCompleted: number;
   transformedMessage: string;
-  wonPhase: boolean;
+  wonLevel: boolean;
 }
 
 interface ChatCompletionRequestMessage {

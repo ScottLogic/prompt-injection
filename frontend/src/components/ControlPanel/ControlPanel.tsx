@@ -1,12 +1,12 @@
 import "./ControlPanel.css";
-import { ATTACKS_PHASE_1, ATTACKS_ALL } from "../../Attacks";
+import { ATTACKS_LEVEL_2, ATTACKS_ALL } from "../../Attacks";
 import { ChatMessage } from "../../models/chat";
 import {
   DEFENCE_TYPES,
   DefenceConfig,
   DefenceInfo,
 } from "../../models/defence";
-import { PHASE_NAMES } from "../../models/phase";
+import { LEVEL_NAMES } from "../../models/level";
 import AttackBox from "../AttackBox/AttackBox";
 import DefenceBox from "../DefenceBox/DefenceBox";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
@@ -15,21 +15,21 @@ import { EmailInfo } from "../../models/email";
 import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
 
 function ControlPanel({
-  currentPhase,
+  currentLevel,
   defences,
   emails,
   messages,
-  resetPhase,
+  resetLevel,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
 }: {
-  currentPhase: PHASE_NAMES;
+  currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
   emails: EmailInfo[];
   messages: ChatMessage[];
   addChatMessage: (message: ChatMessage) => void;
-  resetPhase: () => void;
+  resetLevel: () => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
@@ -37,37 +37,39 @@ function ControlPanel({
     config: DefenceConfig[]
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
-  setNumCompletedPhases: (numCompletedPhases: number) => void;
+  setNumCompletedLevels: (numCompletedLevels: number) => void;
 }) {
   return (
     <div id="control-panel">
       <div id="control-strategy">
-        {/* show reduced set of attacks on phase 1 */}
-        {currentPhase === PHASE_NAMES.PHASE_1 && (
-          <AttackBox attacks={ATTACKS_PHASE_1} />
+        {/* show reduced set of attacks on level 2 */}
+        {currentLevel === LEVEL_NAMES.LEVEL_2 && (
+          <AttackBox attacks={ATTACKS_LEVEL_2} />
         )}
-        {/* show all attacks on phase 2 and sandbox */}
-        {(currentPhase === PHASE_NAMES.PHASE_2 ||
-          currentPhase === PHASE_NAMES.SANDBOX) && (
+        {/* show all attacks on level 3 and sandbox */}
+        {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
+          currentLevel === LEVEL_NAMES.SANDBOX) && (
           <AttackBox attacks={ATTACKS_ALL} />
         )}
-        {/* hide defence box on phases 0 and 1. only allow configuration in sandbox */}
-        {(currentPhase === PHASE_NAMES.PHASE_2 ||
-          currentPhase === PHASE_NAMES.SANDBOX) && (
+        {/* hide defence box on levels 1 and 2 */}
+        {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
+          currentLevel === LEVEL_NAMES.SANDBOX) && (
           <DefenceBox
-            currentPhase={currentPhase}
+            currentLevel={currentLevel}
             defences={defences}
             showConfigurations={
-              currentPhase > PHASE_NAMES.PHASE_2 ? true : false
+              // only allow configuration in sandbox
+              currentLevel === LEVEL_NAMES.SANDBOX ? true : false
             }
             setDefenceActive={setDefenceActive}
             setDefenceInactive={setDefenceInactive}
             setDefenceConfiguration={setDefenceConfiguration}
           />
         )}
-        {/* hide model selection box on phases 0 and 1 */}
-        {currentPhase === PHASE_NAMES.SANDBOX && <ModelBox />}
-        {currentPhase === PHASE_NAMES.SANDBOX && <DocumentViewButton />}
+        {/* only show model selection box in sandbox mode */}
+        {currentLevel === LEVEL_NAMES.SANDBOX && <ModelBox />}
+        {/* only show document viewer button in sandbox mode */}
+        {currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
       </div>
 
       <div id="control-buttons">
@@ -75,12 +77,12 @@ function ControlPanel({
           <ExportPDFLink
             messages={messages}
             emails={emails}
-            currentPhase={currentPhase}
+            currentLevel={currentLevel}
           />
         </div>
         <button
           className="prompt-injection-button control-button"
-          onClick={resetPhase}
+          onClick={resetLevel}
         >
           Reset
         </button>

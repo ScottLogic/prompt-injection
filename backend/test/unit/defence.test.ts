@@ -12,7 +12,7 @@ import {
 } from "../../src/defence";
 import * as langchain from "../../src/langchain";
 import { DEFENCE_TYPES } from "../../src/models/defence";
-import { PHASE_NAMES } from "../../src/models/phase";
+import { LEVEL_NAMES } from "../../src/models/level";
 import { retrievalQAPrePromptSecure } from "../../src/promptTemplates";
 
 jest.mock("../../src/langchain");
@@ -335,27 +335,27 @@ test("GIVEN a new system role has been set WHEN getting system role THEN return 
   expect(systemRole).toBe("new system role");
 });
 
-test("GIVEN system roles have been set for each phase WHEN getting system roles THEN the right system role is returned per phase", () => {
-  process.env.SYSTEM_ROLE_PHASE_0 = "phase 0 system role";
-  process.env.SYSTEM_ROLE_PHASE_1 = "phase 1 system role";
-  process.env.SYSTEM_ROLE_PHASE_2 = "phase 2 system role";
+test("GIVEN system roles have been set for each level WHEN getting system roles THEN the right system role is returned per level", () => {
+  process.env.SYSTEM_ROLE_LEVEL_1 = "level 1 system role";
+  process.env.SYSTEM_ROLE_LEVEL_2 = "level 2 system role";
+  process.env.SYSTEM_ROLE_LEVEL_3 = "level 3 system role";
   const defences = getInitialDefences();
-  const systemRolePhase0 = getSystemRole(defences, PHASE_NAMES.PHASE_0);
-  const systemRolePhase1 = getSystemRole(defences, PHASE_NAMES.PHASE_1);
-  const systemRolePhase2 = getSystemRole(defences, PHASE_NAMES.PHASE_2);
-  expect(systemRolePhase0).toBe("phase 0 system role");
-  expect(systemRolePhase1).toBe("phase 1 system role");
-  expect(systemRolePhase2).toBe("phase 2 system role");
+  const systemRoleLevel1 = getSystemRole(defences, LEVEL_NAMES.LEVEL_1);
+  const systemRoleLevel2 = getSystemRole(defences, LEVEL_NAMES.LEVEL_2);
+  const systemRoleLevel3 = getSystemRole(defences, LEVEL_NAMES.LEVEL_3);
+  expect(systemRoleLevel1).toBe("level 1 system role");
+  expect(systemRoleLevel2).toBe("level 2 system role");
+  expect(systemRoleLevel3).toBe("level 3 system role");
 });
 
-test("GIVEN system roles have not been set for each phase WHEN getting system roles THEN empty strings are returned", () => {
+test("GIVEN system roles have not been set for each level WHEN getting system roles THEN empty strings are returned", () => {
   const defences = getInitialDefences();
-  const systemRolePhase0 = getSystemRole(defences, PHASE_NAMES.PHASE_0);
-  const systemRolePhase1 = getSystemRole(defences, PHASE_NAMES.PHASE_1);
-  const systemRolePhase2 = getSystemRole(defences, PHASE_NAMES.PHASE_2);
-  expect(systemRolePhase0).toBe("");
-  expect(systemRolePhase1).toBe("");
-  expect(systemRolePhase2).toBe("");
+  const systemRoleLevel1 = getSystemRole(defences, LEVEL_NAMES.LEVEL_1);
+  const systemRoleLevel2 = getSystemRole(defences, LEVEL_NAMES.LEVEL_2);
+  const systemRoleLevel3 = getSystemRole(defences, LEVEL_NAMES.LEVEL_3);
+  expect(systemRoleLevel1).toBe("");
+  expect(systemRoleLevel2).toBe("");
+  expect(systemRoleLevel3).toBe("");
 });
 
 test("GIVEN QA LLM instructions have not been configured WHEN getting QA LLM instructions THEN return default secure prompt", () => {

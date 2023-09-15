@@ -17,7 +17,7 @@ import {
 } from "./models/chat";
 import { Document } from "./models/document";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
-import { PHASE_NAMES } from "./models/phase";
+import { LEVEL_NAMES } from "./models/level";
 import * as fs from "fs";
 import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
 import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
@@ -36,12 +36,12 @@ const router = express.Router();
 router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
-  const phase = req.body.phase;
-  if (defenceId && phase) {
+  const level = req.body.level;
+  if (defenceId && level) {
     // activate the defence
-    req.session.phaseState[phase].defences = activateDefence(
+    req.session.levelState[level].defences = activateDefence(
       defenceId,
-      req.session.phaseState[phase].defences
+      req.session.levelState[level].defences
     );
     res.send();
   } else {
@@ -54,12 +54,12 @@ router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
 router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
-  const phase = req.body.phase;
-  if (defenceId && phase) {
+  const level = req.body.level;
+  if (defenceId && level) {
     // deactivate the defence
-    req.session.phaseState[phase].defences = deactivateDefence(
+    req.session.levelState[level].defences = deactivateDefence(
       defenceId,
-      req.session.phaseState[phase].defences
+      req.session.levelState[level].defences
     );
     res.send();
   } else {
@@ -73,12 +73,12 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const config = req.body.config;
-  const phase = req.body.phase;
-  if (defenceId && config && phase && phase >= PHASE_NAMES.PHASE_0) {
+  const level = req.body.level;
+  if (defenceId && config && level && level >= LEVEL_NAMES.LEVEL_1) {
     // configure the defence
-    req.session.phaseState[phase].defences = configureDefence(
+    req.session.levelState[level].defences = configureDefence(
       defenceId,
-      req.session.phaseState[phase].defences,
+      req.session.levelState[level].defences,
       config
     );
     res.send();
@@ -90,9 +90,9 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
 
 // reset the active defences
 router.post("/defence/reset", (req: DefenceResetRequest, res) => {
-  const phase = req.body.phase;
-  if (phase !== undefined && phase >= PHASE_NAMES.PHASE_0) {
-    req.session.phaseState[phase].defences = getInitialDefences();
+  const level = req.body.level;
+  if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
+    req.session.levelState[level].defences = getInitialDefences();
     console.debug("Defences reset");
     res.send();
   } else {
@@ -101,33 +101,33 @@ router.post("/defence/reset", (req: DefenceResetRequest, res) => {
   }
 });
 
-// Get the status of all defences /defence/status?phase=1
+// Get the status of all defences /defence/status?level=1
 router.get("/defence/status", (req, res) => {
-  const phase: number | undefined = req.query.phase as number | undefined;
-  if (phase !== undefined) {
-    res.send(req.session.phaseState[phase].defences);
+  const level: number | undefined = req.query.level as number | undefined;
+  if (level !== undefined) {
+    res.send(req.session.levelState[level].defences);
   } else {
     res.statusCode = 400;
-    res.send("Missing phase");
+    res.send("Missing level");
   }
 });
 
-// Get sent emails /email/get?phase=1
+// Get sent emails /email/get?level=1
 router.get("/email/get", (req, res) => {
-  const phase: number | undefined = req.query.phase as number | undefined;
-  if (phase !== undefined) {
-    res.send(req.session.phaseState[phase].sentEmails);
+  const level: number | undefined = req.query.level as number | undefined;
+  if (level !== undefined) {
+    res.send(req.session.levelState[level].sentEmails);
   } else {
     res.statusCode = 400;
-    res.send("Missing phase");
+    res.send("Missing level");
   }
 });
 
 // clear emails
 router.post("/email/clear", (req: EmailClearRequest, res) => {
-  const phase = req.body.phase;
-  if (phase !== undefined && phase >= PHASE_NAMES.PHASE_0) {
-    req.session.phaseState[phase].sentEmails = [];
+  const level = req.body.level;
+  if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
+    req.session.levelState[level].sentEmails = [];
     console.debug("Emails cleared");
     res.send();
   } else {
@@ -147,13 +147,13 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
       alertedDefences: [],
       triggeredDefences: [],
     },
-    numPhasesCompleted: req.session.numPhasesCompleted,
+    numLevelsCompleted: req.session.numLevelsCompleted,
     transformedMessage: "",
-    wonPhase: false,
+    wonLevel: false,
   };
 
   const message = req.body.message;
-  const currentPhase = req.body.currentPhase;
+  const currentLevel = req.body.currentLevel;
 
   // must have initialised openai
   if (!req.session.openAiApiKey) {
@@ -162,29 +162,29 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
     chatResponse.defenceInfo.blockedReason =
       "Please enter a valid OpenAI API key to chat to me!";
     console.error(chatResponse.reply);
-  } else if (message === undefined || currentPhase === undefined) {
+  } else if (message === undefined || currentLevel === undefined) {
     res.statusCode = 400;
     chatResponse.defenceInfo.isBlocked = true;
     chatResponse.defenceInfo.blockedReason =
-      "Please send a message and current phase to chat to me!";
+      "Please send a message and current level to chat to me!";
   } else {
-    let numPhasesCompleted = req.session.numPhasesCompleted;
+    let numLevelsCompleted = req.session.numLevelsCompleted;
 
     if (message) {
       chatResponse.transformedMessage = message;
-      // see if this message triggers any defences (only for phase 2 and sandbox)
+      // see if this message triggers any defences (only for level 3 and sandbox)
       if (
-        currentPhase === PHASE_NAMES.PHASE_2 ||
-        currentPhase === PHASE_NAMES.SANDBOX
+        currentLevel === LEVEL_NAMES.LEVEL_3 ||
+        currentLevel === LEVEL_NAMES.SANDBOX
       ) {
         chatResponse.defenceInfo = await detectTriggeredDefences(
           message,
-          req.session.phaseState[currentPhase].defences,
+          req.session.levelState[currentLevel].defences,
           req.session.openAiApiKey
         );
         // if message is blocked, add to chat history (not as completion)
         if (chatResponse.defenceInfo.isBlocked) {
-          req.session.phaseState[currentPhase].chatHistory.push({
+          req.session.levelState[currentLevel].chatHistory.push({
             completion: null,
             chatMessageType: CHAT_MESSAGE_TYPE.USER,
             infoMessage: message,
@@ -196,36 +196,39 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
         // transform the message according to active defences
         chatResponse.transformedMessage = transformMessage(
           message,
-          req.session.phaseState[currentPhase].defences
+          req.session.levelState[currentLevel].defences
         );
         // if message has been transformed then add the original to chat history and send transformed to chatGPT
         const messageIsTransformed =
           chatResponse.transformedMessage !== message;
         if (messageIsTransformed) {
-          req.session.phaseState[currentPhase].chatHistory.push({
+          req.session.levelState[currentLevel].chatHistory.push({
             completion: null,
             chatMessageType: CHAT_MESSAGE_TYPE.USER,
             infoMessage: message,
           });
         }
+        // use default model for levels
+        const chatModel =
+          currentLevel === LEVEL_NAMES.SANDBOX
+            ? req.session.chatModel
+            : defaultChatModel;
 
         // get the chatGPT reply
         try {
           const openAiReply = await chatGptSendMessage(
-            req.session.phaseState[currentPhase].chatHistory,
-            req.session.phaseState[currentPhase].defences,
-            currentPhase == PHASE_NAMES.SANDBOX // use default model for levels
-              ? req.session.chatModel
-              : defaultChatModel,
+            req.session.levelState[currentLevel].chatHistory,
+            req.session.levelState[currentLevel].defences,
+            chatModel,
             chatResponse.transformedMessage,
             messageIsTransformed,
             req.session.openAiApiKey,
-            req.session.phaseState[currentPhase].sentEmails,
-            currentPhase
+            req.session.levelState[currentLevel].sentEmails,
+            currentLevel
           );
 
           if (openAiReply) {
-            chatResponse.wonPhase = openAiReply.wonPhase;
+            chatResponse.wonLevel = openAiReply.wonLevel;
             chatResponse.reply = openAiReply.completion.content ?? "";
 
             // combine triggered defences
@@ -252,19 +255,19 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
 
       // if the reply was blocked then add it to the chat history
       if (chatResponse.defenceInfo.isBlocked) {
-        req.session.phaseState[currentPhase].chatHistory.push({
+        req.session.levelState[currentLevel].chatHistory.push({
           completion: null,
           chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
           infoMessage: chatResponse.defenceInfo.blockedReason,
         });
       }
 
-      // enable next phase when user wins current phase
-      if (chatResponse.wonPhase) {
-        console.log("Win conditon met for phase: ", currentPhase);
-        numPhasesCompleted = currentPhase + 1;
-        req.session.numPhasesCompleted = numPhasesCompleted;
-        chatResponse.numPhasesCompleted = numPhasesCompleted;
+      // enable next level when user wins current level
+      if (chatResponse.wonLevel) {
+        console.log("Win conditon met for level: ", currentLevel);
+        numLevelsCompleted = currentLevel + 1;
+        req.session.numLevelsCompleted = numLevelsCompleted;
+        chatResponse.numLevelsCompleted = numLevelsCompleted;
       }
     } else {
       res.statusCode = 400;
@@ -279,12 +282,12 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
 
 // get the chat history
 router.get("/openai/history", (req, res) => {
-  const phase: number | undefined = req.query.phase as number | undefined;
-  if (phase !== undefined) {
-    res.send(req.session.phaseState[phase].chatHistory);
+  const level: number | undefined = req.query.level as number | undefined;
+  if (level !== undefined) {
+    res.send(req.session.levelState[level].chatHistory);
   } else {
     res.statusCode = 400;
-    res.send("Missing phase");
+    res.send("Missing level");
   }
 });
 
@@ -292,9 +295,9 @@ router.get("/openai/history", (req, res) => {
 router.post("/openai/addHistory", (req: OpenAiAddHistoryRequest, res) => {
   const message = req.body.message;
   const chatMessageType = req.body.chatMessageType;
-  const phase = req.body.phase;
-  if (message && chatMessageType && phase && phase >= PHASE_NAMES.PHASE_0) {
-    req.session.phaseState[phase].chatHistory.push({
+  const level = req.body.level;
+  if (message && chatMessageType && level && level >= LEVEL_NAMES.LEVEL_1) {
+    req.session.levelState[level].chatHistory.push({
       completion: null,
       chatMessageType: chatMessageType,
       infoMessage: message,
@@ -308,9 +311,9 @@ router.post("/openai/addHistory", (req: OpenAiAddHistoryRequest, res) => {
 
 // Clear the ChatGPT messages
 router.post("/openai/clear", (req: OpenAiClearRequest, res) => {
-  const phase = req.body.phase;
-  if (phase !== undefined && phase >= PHASE_NAMES.PHASE_0) {
-    req.session.phaseState[phase].chatHistory = [];
+  const level = req.body.level;
+  if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
+    req.session.levelState[level].chatHistory = [];
     console.debug("ChatGPT messages cleared");
     res.send();
   } else {
@@ -406,10 +409,6 @@ router.post(
       }
       if (updated) {
         req.session.chatModel.configuration = updated;
-        console.debug(
-          "Updated model config",
-          JSON.stringify(req.session.chatModel.configuration)
-        );
         res.status(200).send();
       } else {
         res.status(400).send();
@@ -422,8 +421,8 @@ router.get("/openai/model", (req, res) => {
   res.send(req.session.chatModel);
 });
 
-router.get("/phase/completed", (req, res) => {
-  res.send(req.session.numPhasesCompleted.toString());
+router.get("/level/completed", (req, res) => {
+  res.send(req.session.numLevelsCompleted.toString());
 });
 
 router.get("/documents", (_, res) => {

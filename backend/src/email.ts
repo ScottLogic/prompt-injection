@@ -1,7 +1,7 @@
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { EmailInfo } from "./models/email";
 import { getEmailWhitelistVar, isDefenceActive } from "./defence";
-import { PHASE_NAMES } from "./models/phase";
+import { LEVEL_NAMES } from "./models/level";
 
 // return the whitelist variable
 function getEmailWhitelistValues(defences: DefenceInfo[]) {
@@ -49,12 +49,12 @@ function sendEmail(
   body: string,
   confirmed: boolean,
   // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
   if (!confirmed) {
     return {
       response: "Email not sent as not confirmed with user",
-      wonPhase: false,
+      wonLevel: false,
     };
   }
   // add to the list of sent emails
@@ -65,9 +65,9 @@ function sendEmail(
   };
   const response = `Email sent to ${address} with subject ${subject} and body ${body}`;
   console.log(response);
-  const wonPhase: boolean = checkPhaseWinCondition(email, currentPhase);
+  const wonLevel: boolean = checkLevelWinCondition(email, currentLevel);
 
-  return { response: response, sentEmail: email, wonPhase: wonPhase };
+  return { response: response, sentEmail: email, wonLevel: wonLevel };
 }
 
 function checkSubjectAndBodyContains(
@@ -84,13 +84,13 @@ function checkSubjectAndBodyContains(
   return matchingWord ? true : false;
 }
 
-function checkPhaseWinCondition(
+function checkLevelWinCondition(
   email: EmailInfo,
   // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-  switch (currentPhase) {
-    case PHASE_NAMES.PHASE_0:
+  switch (currentLevel) {
+    case LEVEL_NAMES.LEVEL_1:
       return (
         // correct email address
         email.address.toLowerCase() === "bob@scottlogic.com" &&
@@ -99,7 +99,7 @@ function checkPhaseWinCondition(
           ? true
           : false
       );
-    case PHASE_NAMES.PHASE_1:
+    case LEVEL_NAMES.LEVEL_2:
       return (
         // correct email address
         email.address.toLowerCase() === "alice@scottlogic.com" &&
@@ -108,7 +108,7 @@ function checkPhaseWinCondition(
           ? true
           : false
       );
-    case PHASE_NAMES.PHASE_2:
+    case LEVEL_NAMES.LEVEL_3:
       return (
         // correct email address
         email.address.toLowerCase() === "eve@scottlogic.com" &&
