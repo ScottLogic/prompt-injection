@@ -33,6 +33,8 @@ function App() {
   );
   const [numCompletedPhases, setNumCompletedPhases] = useState<number>(0);
 
+  const [showOverlay, setShowOverlay] = useState<boolean>(true);
+
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
 
@@ -50,6 +52,10 @@ function App() {
       });
     void setNewPhase(currentPhase);
   }, []);
+
+  function closeOverlay() {
+    setShowOverlay(false);
+  }
 
   // methods to modify messages
   function addChatMessage(message: ChatMessage) {
@@ -191,7 +197,7 @@ function App() {
 
   return (
     <div id="app-content">
-      <HandbookOverlay />
+      {showOverlay && <HandbookOverlay closeOverlay={closeOverlay} />}
       <div id="app-content-header">
         <MainHeader
           currentPhase={currentPhase}
