@@ -5,8 +5,8 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
   return (
     <div
       className={
-        message.type === CHAT_MESSAGE_TYPE.PHASE_INFO
-          ? "chat-box-message chat-box-message-phase-info"
+        message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
+          ? "chat-box-message chat-box-message-level-info"
           : message.type === CHAT_MESSAGE_TYPE.USER
           ? "chat-box-message chat-box-message-user"
           : message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
@@ -19,8 +19,8 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
     >
       {message.type === CHAT_MESSAGE_TYPE.USER && <b>Input: </b>}
       {message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED && <b>Edited: </b>}
-      {message.type === CHAT_MESSAGE_TYPE.PHASE_INFO && (
-        <p className="phase-info-header">Information</p>
+      {message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
+        <p className="level-info-header">Information</p>
       )}
       {message.message}
     </div>

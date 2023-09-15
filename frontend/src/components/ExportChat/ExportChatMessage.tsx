@@ -68,7 +68,7 @@ function getMessageStyle(type: CHAT_MESSAGE_TYPE) {
       return styles.chatBoxMessage;
     case CHAT_MESSAGE_TYPE.BOT:
       return styles.chatBoxMessageBot;
-    case CHAT_MESSAGE_TYPE.PHASE_INFO:
+    case CHAT_MESSAGE_TYPE.LEVEL_INFO:
       return styles.chatBoxMessageBot;
     default:
       return styles.chatBoxMessage;

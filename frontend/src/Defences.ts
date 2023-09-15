@@ -1,6 +1,6 @@
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 
-const DEFENCE_DETAILS_PHASE: DefenceInfo[] = [
+const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
   new DefenceInfo(
     DEFENCE_TYPES.CHARACTER_LIMIT,
     "Character Limit",
@@ -49,7 +49,7 @@ const DEFENCE_DETAILS_PHASE: DefenceInfo[] = [
 ];
 
 const DEFENCE_DETAILS_ALL: DefenceInfo[] = [
-  ...DEFENCE_DETAILS_PHASE,
+  ...DEFENCE_DETAILS_LEVEL,
   new DefenceInfo(
     DEFENCE_TYPES.SYSTEM_ROLE,
     "System Role",
@@ -64,4 +64,4 @@ const DEFENCE_DETAILS_ALL: DefenceInfo[] = [
   ),
 ];
 
-export { DEFENCE_DETAILS_PHASE, DEFENCE_DETAILS_ALL };
+export { DEFENCE_DETAILS_LEVEL, DEFENCE_DETAILS_ALL };

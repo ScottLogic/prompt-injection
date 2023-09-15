@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { PHASE_NAMES } from "../phase";
+import { LEVEL_NAMES } from "../level";
 import { CHAT_MESSAGE_TYPE } from "../chat";
 
 type OpenAiAddHistoryRequest = Request<
@@ -8,7 +8,7 @@ type OpenAiAddHistoryRequest = Request<
   {
     chatMessageType?: CHAT_MESSAGE_TYPE;
     message?: string;
-    phase?: PHASE_NAMES;
+    level?: LEVEL_NAMES;
   },
   object
 >;
