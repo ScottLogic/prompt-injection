@@ -13,6 +13,7 @@ import {
   ChatHttpResponse,
   ChatModelConfiguration,
   MODEL_CONFIG,
+  defaultChatModel,
 } from "./models/chat";
 import { Document } from "./models/document";
 import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
@@ -207,12 +208,15 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
             infoMessage: message,
           });
         }
+
         // get the chatGPT reply
         try {
           const openAiReply = await chatGptSendMessage(
             req.session.phaseState[currentPhase].chatHistory,
             req.session.phaseState[currentPhase].defences,
-            req.session.chatModel,
+            currentPhase == PHASE_NAMES.SANDBOX // use default model for levels
+              ? req.session.chatModel
+              : defaultChatModel,
             chatResponse.transformedMessage,
             messageIsTransformed,
             req.session.openAiApiKey,

@@ -2,6 +2,7 @@ import {
   CHAT_MESSAGE_TYPE,
   CHAT_MODELS,
   ChatHistoryMessage,
+  ChatModel,
 } from "../../src/models/chat";
 import { chatGptSendMessage } from "../../src/openai";
 import { DEFENCE_TYPES, DefenceInfo } from "../../src/models/defence";
@@ -44,7 +45,15 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
   const chatHistory: ChatHistoryMessage[] = [];
   const defences: DefenceInfo[] = [];
   const sentEmails: EmailInfo[] = [];
-  const gptModel = CHAT_MODELS.GPT_4;
+  const chatModel: ChatModel = {
+    id: CHAT_MODELS.GPT_4,
+    configuration: {
+      temperature: 1,
+      topP: 1,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
+    },
+  };
   const openAiApiKey = "sk-12345";
 
   // Mock the createChatCompletion function
@@ -65,7 +74,7 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
   const reply = await chatGptSendMessage(
     chatHistory,
     defences,
-    gptModel,
+    chatModel,
     message,
     true,
     openAiApiKey,
@@ -94,7 +103,15 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   const chatHistory: ChatHistoryMessage[] = [];
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
-  const gptModel = CHAT_MODELS.GPT_4;
+  const chatModel: ChatModel = {
+    id: CHAT_MODELS.GPT_4,
+    configuration: {
+      temperature: 1,
+      topP: 1,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
+    },
+  };
   const openAiApiKey = "sk-12345";
 
   defences = activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, defences);
@@ -117,7 +134,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   const reply = await chatGptSendMessage(
     chatHistory,
     defences,
-    gptModel,
+    chatModel,
     message,
     true,
     openAiApiKey,
@@ -164,7 +181,16 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   ];
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
-  const gptModel = CHAT_MODELS.GPT_4;
+  const chatModel: ChatModel = {
+    id: CHAT_MODELS.GPT_4,
+    configuration: {
+      temperature: 1,
+      topP: 1,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
+    },
+  };
+
   const openAiApiKey = "sk-12345";
 
   // activate the SYSTEM_ROLE defence
@@ -188,7 +214,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   const reply = await chatGptSendMessage(
     chatHistory,
     defences,
-    gptModel,
+    chatModel,
     message,
     isOriginalMessage,
     openAiApiKey,
@@ -243,7 +269,16 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
   ];
   const defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
-  const gptModel = CHAT_MODELS.GPT_4;
+  const chatModel: ChatModel = {
+    id: CHAT_MODELS.GPT_4,
+    configuration: {
+      temperature: 1,
+      topP: 1,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
+    },
+  };
+
   const openAiApiKey = "sk-12345";
 
   // Mock the createChatCompletion function
@@ -264,7 +299,7 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
   const reply = await chatGptSendMessage(
     chatHistory,
     defences,
-    gptModel,
+    chatModel,
     message,
     true,
     openAiApiKey,
@@ -323,7 +358,16 @@ test(
     ];
     let defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
-    const gptModel = CHAT_MODELS.GPT_4;
+    const chatModel: ChatModel = {
+      id: CHAT_MODELS.GPT_4,
+      configuration: {
+        temperature: 1,
+        topP: 1,
+        frequencyPenalty: 0,
+        presencePenalty: 0,
+      },
+    };
+
     const openAiApiKey = "sk-12345";
 
     defences = activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, defences);
@@ -346,7 +390,7 @@ test(
     const reply = await chatGptSendMessage(
       chatHistory,
       defences,
-      gptModel,
+      chatModel,
       message,
       true,
       openAiApiKey,
@@ -387,7 +431,16 @@ test(
     const chatHistory: ChatHistoryMessage[] = [];
     const defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
-    const gptModel = CHAT_MODELS.GPT_4;
+    const chatModel: ChatModel = {
+      id: CHAT_MODELS.GPT_4,
+      configuration: {
+        temperature: 1,
+        topP: 1,
+        frequencyPenalty: 0,
+        presencePenalty: 0,
+      },
+    };
+
     const openAiApiKey = "sk-12345";
 
     // Mock the createChatCompletion function
@@ -428,7 +481,7 @@ test(
     const reply = await chatGptSendMessage(
       chatHistory,
       defences,
-      gptModel,
+      chatModel,
       message,
       true,
       openAiApiKey,
@@ -467,7 +520,16 @@ test(
     const chatHistory: ChatHistoryMessage[] = [];
     let defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
-    const gptModel = CHAT_MODELS.GPT_4;
+    const chatModel: ChatModel = {
+      id: CHAT_MODELS.GPT_4,
+      configuration: {
+        temperature: 1,
+        topP: 1,
+        frequencyPenalty: 0,
+        presencePenalty: 0,
+      },
+    };
+
     const openAiApiKey = "sk-12345";
     const isOriginalMessage = true;
 
@@ -511,7 +573,7 @@ test(
     const reply = await chatGptSendMessage(
       chatHistory,
       defences,
-      gptModel,
+      chatModel,
       message,
       isOriginalMessage,
       openAiApiKey,
@@ -547,7 +609,16 @@ test(
     const chatHistory: ChatHistoryMessage[] = [];
     let defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
-    const gptModel = CHAT_MODELS.GPT_4;
+    const chatModel: ChatModel = {
+      id: CHAT_MODELS.GPT_4,
+      configuration: {
+        temperature: 1,
+        topP: 1,
+        frequencyPenalty: 0,
+        presencePenalty: 0,
+      },
+    };
+
     const openAiApiKey = "sk-12345";
     const isOriginalMessage = true;
 
@@ -591,7 +662,7 @@ test(
     const reply = await chatGptSendMessage(
       chatHistory,
       defences,
-      gptModel,
+      chatModel,
       message,
       isOriginalMessage,
       openAiApiKey,
@@ -627,7 +698,16 @@ test(
     const chatHistory: ChatHistoryMessage[] = [];
     const defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
-    const gptModel = CHAT_MODELS.GPT_4;
+    const chatModel: ChatModel = {
+      id: CHAT_MODELS.GPT_4,
+      configuration: {
+        temperature: 1,
+        topP: 1,
+        frequencyPenalty: 0,
+        presencePenalty: 0,
+      },
+    };
+
     const openAiApiKey = "sk-12345";
     const isOriginalMessage = true;
 
@@ -672,7 +752,7 @@ test(
     const reply = await chatGptSendMessage(
       chatHistory,
       defences,
-      gptModel,
+      chatModel,
       message,
       isOriginalMessage,
       openAiApiKey,
@@ -702,7 +782,16 @@ test("GIVEN the output filtering defence is active WHEN the bot responds with a 
   const chatHistory: ChatHistoryMessage[] = [];
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
-  const gptModel = CHAT_MODELS.GPT_4;
+  const chatModel: ChatModel = {
+    id: CHAT_MODELS.GPT_4,
+    configuration: {
+      temperature: 1,
+      topP: 1,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
+    },
+  };
+
   const openAiApiKey = "sk-12345";
   const isOriginalMessage = true;
 
@@ -723,7 +812,7 @@ test("GIVEN the output filtering defence is active WHEN the bot responds with a 
   const reply = await chatGptSendMessage(
     chatHistory,
     defences,
-    gptModel,
+    chatModel,
     message,
     isOriginalMessage,
     openAiApiKey,
@@ -747,7 +836,15 @@ test("GIVEN the output filtering defence is active WHEN the bot responds with a 
   const chatHistory: ChatHistoryMessage[] = [];
   let defences: DefenceInfo[] = getInitialDefences();
   const sentEmails: EmailInfo[] = [];
-  const gptModel = CHAT_MODELS.GPT_4;
+  const chatModel: ChatModel = {
+    id: CHAT_MODELS.GPT_4,
+    configuration: {
+      temperature: 1,
+      topP: 1,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
+    },
+  };
   const openAiApiKey = "sk-12345";
   const isOriginalMessage = true;
 
@@ -768,7 +865,7 @@ test("GIVEN the output filtering defence is active WHEN the bot responds with a 
   const reply = await chatGptSendMessage(
     chatHistory,
     defences,
-    gptModel,
+    chatModel,
     message,
     isOriginalMessage,
     openAiApiKey,
@@ -794,7 +891,16 @@ test(
     const chatHistory: ChatHistoryMessage[] = [];
     const defences: DefenceInfo[] = getInitialDefences();
     const sentEmails: EmailInfo[] = [];
-    const gptModel = CHAT_MODELS.GPT_4;
+    const chatModel: ChatModel = {
+      id: CHAT_MODELS.GPT_4,
+      configuration: {
+        temperature: 1,
+        topP: 1,
+        frequencyPenalty: 0,
+        presencePenalty: 0,
+      },
+    };
+
     const openAiApiKey = "sk-12345";
     const isOriginalMessage = true;
 
@@ -813,7 +919,7 @@ test(
     const reply = await chatGptSendMessage(
       chatHistory,
       defences,
-      gptModel,
+      chatModel,
       message,
       isOriginalMessage,
       openAiApiKey,

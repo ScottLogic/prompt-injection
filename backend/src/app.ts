@@ -8,7 +8,7 @@ import { router } from "./router";
 import { ChatHistoryMessage, ChatModel } from "./models/chat";
 import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
-import { CHAT_MODELS } from "./models/chat";
+import { defaultChatModel } from "./models/chat";
 import { PHASE_NAMES } from "./models/phase";
 import path from "path";
 import { getInitialDefences } from "./defence";
@@ -34,17 +34,6 @@ declare module "express-session" {
 
 // by default runs on port 3001
 const port = process.env.PORT ?? String(3001);
-
-// use default model
-const defaultModel: ChatModel = {
-  id: CHAT_MODELS.GPT_4,
-  configuration: {
-    temperature: 1,
-    topP: 1,
-    frequencyPenalty: 0,
-    presencePenalty: 0,
-  },
-};
 
 // Creating express server
 const app = express();
@@ -82,7 +71,7 @@ app.use(
 app.use((req, _res, next) => {
   // initialise session variables
   if (!req.session.initialised) {
-    req.session.chatModel = defaultModel;
+    req.session.chatModel = defaultChatModel;
 
     req.session.numPhasesCompleted = 0;
     req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
@@ -121,7 +110,7 @@ app.listen(port, () => {
   if (envOpenAiKey) {
     console.debug("Initializing models with API key from environment variable");
     // asynchronously set the API key
-    void setOpenAiApiKey(envOpenAiKey, defaultModel.id).then(() => {
+    void setOpenAiApiKey(envOpenAiKey, defaultChatModel.id).then(() => {
       console.debug("OpenAI models initialized");
     });
   }

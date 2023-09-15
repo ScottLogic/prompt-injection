@@ -82,6 +82,17 @@ interface ChatHistoryMessage {
   infoMessage?: string | null;
 }
 
+// default settings for chat model
+const defaultChatModel: ChatModel = {
+  id: CHAT_MODELS.GPT_4,
+  configuration: {
+    temperature: 1,
+    topP: 1,
+    frequencyPenalty: 0,
+    presencePenalty: 0,
+  },
+};
+
 export type {
   ChatAnswer,
   ChatDefenceReport,
@@ -96,4 +107,5 @@ export {
   MODEL_CONFIG,
   ChatModel,
   ChatModelConfiguration,
+  defaultChatModel,
 };
