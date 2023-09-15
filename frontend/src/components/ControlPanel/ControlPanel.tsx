@@ -10,7 +10,7 @@ import { LEVEL_NAMES } from "../../models/level";
 import AttackBox from "../AttackBox/AttackBox";
 import DefenceBox from "../DefenceBox/DefenceBox";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
-import ModelSelectionBox from "../ModelSelectionBox/ModelSelectionBox";
+import ModelBox from "../ModelBox/ModelBox";
 import { EmailInfo } from "../../models/email";
 import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
 
@@ -67,7 +67,7 @@ function ControlPanel({
           />
         )}
         {/* only show model selection box in sandbox mode */}
-        {currentLevel === LEVEL_NAMES.SANDBOX && <ModelSelectionBox />}
+        {currentLevel === LEVEL_NAMES.SANDBOX && <ModelBox />}
         {/* only show document viewer button in sandbox mode */}
         {currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
       </div>
