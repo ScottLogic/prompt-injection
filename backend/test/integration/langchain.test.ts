@@ -22,7 +22,7 @@ import {
   setVectorisedDocuments,
 } from "../../src/langchain";
 import { DocumentsVector } from "../../src/models/document";
-import { PHASE_NAMES } from "../../src/models/phase";
+import { LEVEL_NAMES } from "../../src/models/level";
 
 import {
   retrievalQAPrePrompt,
@@ -69,10 +69,10 @@ class MockMemoryStore {
 }
 
 class MockDocumentsVector implements DocumentsVector {
-  phase: PHASE_NAMES;
+  level: LEVEL_NAMES;
   docVector: any;
-  constructor(phase: PHASE_NAMES, docVector: any) {
-    this.phase = phase;
+  constructor(level: LEVEL_NAMES, docVector: any) {
+    this.level = level;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     this.docVector = new MockMemoryStore(docVector);
   }
@@ -144,15 +144,15 @@ test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEv
   expect(mockFromTemplate).toBeCalledWith(maliciousPromptTemplate);
 });
 
-test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is initialised THEN the llm is initialized and the prompt is set to the default", () => {
-  const phase = PHASE_NAMES.PHASE_0;
+test("GIVEN the QA model is not provided a prompt and currentLevel WHEN it is initialised THEN the llm is initialized and the prompt is set to the default", () => {
+  const level = LEVEL_NAMES.LEVEL_1;
   const prompt = "";
   const apiKey = "test-api-key";
 
-  setVectorisedDocuments([new MockDocumentsVector(phase, "test-docs")]);
+  setVectorisedDocuments([new MockDocumentsVector(level, "test-docs")]);
 
   mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-  initQAModel(phase, prompt, apiKey);
+  initQAModel(level, prompt, apiKey);
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledWith(
@@ -161,13 +161,13 @@ test("GIVEN the QA model is not provided a prompt and currentPhase WHEN it is in
 });
 
 test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialized and prompt is set to the correct prompt ", () => {
-  const phase = PHASE_NAMES.PHASE_0;
+  const level = LEVEL_NAMES.LEVEL_1;
   const prompt = "this is a test prompt. ";
   const apiKey = "test-api-key";
-  setVectorisedDocuments([new MockDocumentsVector(phase, "test-docs")]);
+  setVectorisedDocuments([new MockDocumentsVector(level, "test-docs")]);
 
   mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-  initQAModel(phase, prompt, apiKey);
+  initQAModel(level, prompt, apiKey);
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledWith(
@@ -175,7 +175,7 @@ test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
   );
 });
 
-test("GIVEN application WHEN application starts THEN document vectors are loaded for all phases", async () => {
+test("GIVEN application WHEN application starts THEN document vectors are loaded for all levels", async () => {
   await initDocumentVectors();
   expect(mockLoader).toHaveBeenCalledTimes(4);
   expect(mockSplitDocuments).toHaveBeenCalledTimes(4);
@@ -183,16 +183,16 @@ test("GIVEN application WHEN application starts THEN document vectors are loaded
 
 test("GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it answers ", async () => {
   const question = "who is the CEO?";
-  const phase = PHASE_NAMES.PHASE_0;
+  const level = LEVEL_NAMES.LEVEL_1;
   const prompt = "";
   const apiKey = "test-api-key";
-  setVectorisedDocuments([new MockDocumentsVector(phase, "test-docs")]);
+  setVectorisedDocuments([new MockDocumentsVector(level, "test-docs")]);
 
   mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
   mockCall.mockResolvedValueOnce({
     text: "The CEO is Bill.",
   });
-  const answer = await queryDocuments(question, prompt, phase, apiKey);
+  const answer = await queryDocuments(question, prompt, level, apiKey);
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockCall).toBeCalledTimes(1);
   expect(answer.reply).toEqual("The CEO is Bill.");
@@ -200,12 +200,12 @@ test("GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it an
 
 test("GIVEN the QA model is not initialised WHEN a question is asked THEN it returns an empty response ", async () => {
   const question = "who is the CEO?";
-  const phase = PHASE_NAMES.PHASE_0;
+  const level = LEVEL_NAMES.LEVEL_1;
   const prompt = "";
   const apiKey = "test-api-key";
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  setVectorisedDocuments([new MockDocumentsVector(phase, "test-docs")]);
-  const answer = await queryDocuments(question, prompt, phase, apiKey);
+  setVectorisedDocuments([new MockDocumentsVector(level, "test-docs")]);
+  const answer = await queryDocuments(question, prompt, level, apiKey);
   expect(answer.reply).toEqual("");
 });
 

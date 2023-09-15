@@ -19,10 +19,10 @@ import {
   qAcontextTemplate,
   retrievalQAPrePrompt,
 } from "./promptTemplates";
-import { PHASE_NAMES } from "./models/phase";
+import { LEVEL_NAMES } from "./models/level";
 import { PromptEvaluationChainReply, QaChainReply } from "./models/langchain";
 
-// store vectorised documents for each phase as array
+// store vectorised documents for each level as array
 let vectorisedDocuments: DocumentsVector[] = [];
 
 // set the global varibale
@@ -30,19 +30,19 @@ function setVectorisedDocuments(docs: DocumentsVector[]) {
   vectorisedDocuments = docs;
 }
 
-function getFilepath(currentPhase: PHASE_NAMES) {
+function getFilepath(currentLevel: LEVEL_NAMES) {
   let filePath = "resources/documents/";
-  switch (currentPhase) {
-    case PHASE_NAMES.PHASE_0:
-      return (filePath += "phase_0/");
-    case PHASE_NAMES.PHASE_1:
-      return (filePath += "phase_1/");
-    case PHASE_NAMES.PHASE_2:
-      return (filePath += "phase_2/");
-    case PHASE_NAMES.SANDBOX:
+  switch (currentLevel) {
+    case LEVEL_NAMES.LEVEL_1:
+      return (filePath += "level_1/");
+    case LEVEL_NAMES.LEVEL_2:
+      return (filePath += "level_2/");
+    case LEVEL_NAMES.LEVEL_3:
+      return (filePath += "level_3/");
+    case LEVEL_NAMES.SANDBOX:
       return (filePath += "common/");
     default:
-      console.error(`No document filepath found for phase: ${filePath}`);
+      console.error(`No document filepath found for level: ${filePath}`);
       return "";
   }
 }
@@ -77,15 +77,15 @@ function getQAPromptTemplate(prePrompt: string) {
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;
 }
-// create and store the document vectors for each phase
+// create and store the document vectors for each level
 async function initDocumentVectors() {
   const docVectors: DocumentsVector[] = [];
 
-  for (const value of Object.values(PHASE_NAMES)) {
+  for (const value of Object.values(LEVEL_NAMES)) {
     if (!isNaN(Number(value))) {
-      const phase = value as PHASE_NAMES;
+      const level = value as LEVEL_NAMES;
       // get the documents
-      const filePath: string = getFilepath(phase);
+      const filePath: string = getFilepath(level);
       const documents: Document[] = await getDocuments(filePath);
 
       // embed and store the splits - will use env variable for API key
@@ -93,22 +93,22 @@ async function initDocumentVectors() {
 
       const vectorStore: MemoryVectorStore =
         await MemoryVectorStore.fromDocuments(documents, embeddings);
-      // store the document vectors for the phase
+      // store the document vectors for the level
       docVectors.push({
-        phase: phase,
+        level: level,
         docVector: vectorStore,
       });
     }
   }
   setVectorisedDocuments(docVectors);
   console.debug(
-    "Intitialised document vectors for each phase. count=",
+    "Intitialised document vectors for each level. count=",
     vectorisedDocuments.length
   );
 }
 
 function initQAModel(
-  phase: PHASE_NAMES,
+  level: LEVEL_NAMES,
   prePrompt: string,
   openAiApiKey: string
 ) {
@@ -116,7 +116,7 @@ function initQAModel(
     console.debug("No OpenAI API key set to initialise QA model");
     return;
   }
-  const documentVectors = vectorisedDocuments[phase].docVector;
+  const documentVectors = vectorisedDocuments[level].docVector;
 
   // initialise model
   const model = new ChatOpenAI({
@@ -181,10 +181,10 @@ function initPromptEvaluationModel(openAiApiKey: string) {
 async function queryDocuments(
   question: string,
   prePrompt: string,
-  currentPhase: PHASE_NAMES,
+  currentLevel: LEVEL_NAMES,
   openAiApiKey: string
 ) {
-  const qaChain = initQAModel(currentPhase, prePrompt, openAiApiKey);
+  const qaChain = initQAModel(currentLevel, prePrompt, openAiApiKey);
   if (!qaChain) {
     console.debug("QA chain not initialised.");
     return { reply: "", questionAnswered: false };

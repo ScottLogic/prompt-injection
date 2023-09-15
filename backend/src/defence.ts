@@ -1,7 +1,7 @@
 import { queryPromptEvaluationModel } from "./langchain";
 import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
-import { PHASE_NAMES } from "./models/phase";
+import { LEVEL_NAMES } from "./models/level";
 import { retrievalQAPrePromptSecure } from "./promptTemplates";
 
 function getInitialDefences(): DefenceInfo[] {
@@ -134,15 +134,15 @@ function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
 function getSystemRole(
   defences: DefenceInfo[],
   // by default, use sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-  switch (currentPhase) {
-    case PHASE_NAMES.PHASE_0:
-      return process.env.SYSTEM_ROLE_PHASE_0 ?? "";
-    case PHASE_NAMES.PHASE_1:
-      return process.env.SYSTEM_ROLE_PHASE_1 ?? "";
-    case PHASE_NAMES.PHASE_2:
-      return process.env.SYSTEM_ROLE_PHASE_2 ?? "";
+  switch (currentLevel) {
+    case LEVEL_NAMES.LEVEL_1:
+      return process.env.SYSTEM_ROLE_LEVEL_1 ?? "";
+    case LEVEL_NAMES.LEVEL_2:
+      return process.env.SYSTEM_ROLE_LEVEL_2 ?? "";
+    case LEVEL_NAMES.LEVEL_3:
+      return process.env.SYSTEM_ROLE_LEVEL_3 ?? "";
     default:
       return getConfigValue(
         defences,
