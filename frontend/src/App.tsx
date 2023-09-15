@@ -25,7 +25,7 @@ import { getCompletedPhases } from "./service/phaseService";
 import { PHASES } from "./Phases";
 import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 
-function App() {
+function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
   // start on sandbox mode
   const [currentPhase, setCurrentPhase] = useState<PHASE_NAMES>(
@@ -33,7 +33,7 @@ function App() {
   );
   const [numCompletedPhases, setNumCompletedPhases] = useState<number>(0);
 
-  const [showOverlay, setShowOverlay] = useState<boolean>(true);
+  const [showOverlay, setShowOverlay] = useState<boolean>(isNewUser);
 
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
@@ -48,7 +48,7 @@ function App() {
         setNumCompletedPhases(numCompletedPhases);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
     void setNewPhase(currentPhase);
   }, []);

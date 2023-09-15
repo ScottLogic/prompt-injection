@@ -25,6 +25,15 @@ import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
 
 const router = express.Router();
 
+router.get("/user/isNew", (req, res) => {
+  const isNewUser = req.session.isNewUser;
+  // log session id
+  // console.log("Session id: ", req.sessionID);
+  // console.log("isNewUser: ", isNewUser);
+  req.session.isNewUser = false;
+  res.send(isNewUser);
+});
+
 // Activate a defence
 router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence

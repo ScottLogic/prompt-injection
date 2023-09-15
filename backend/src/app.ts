@@ -19,6 +19,7 @@ dotenv.config();
 declare module "express-session" {
   interface Session {
     initialised: boolean;
+    isNewUser: boolean;
     openAiApiKey: string | null;
     gptModel: CHAT_MODELS;
     phaseState: PhaseState[];
@@ -73,6 +74,7 @@ app.use(
 app.use((req, _res, next) => {
   // initialise session variables
   if (!req.session.initialised) {
+    req.session.isNewUser = true;
     req.session.gptModel = defaultModel;
     req.session.numPhasesCompleted = 0;
     req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
@@ -90,6 +92,8 @@ app.use((req, _res, next) => {
     });
     req.session.initialised = true;
   }
+  // log the session ID
+  console.debug(`Session ID: ${req.sessionID}`);
   next();
 });
 
