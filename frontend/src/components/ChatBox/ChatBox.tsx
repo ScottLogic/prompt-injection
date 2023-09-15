@@ -47,14 +47,10 @@ function ChatBox({
       });
   }, [setEmails]);
 
-  function inputChange() {
+  function resizeInput() {
     const inputBoxElement = document.getElementById(
       "chat-box-input"
     ) as HTMLSpanElement;
-
-    // scroll to the bottom
-    inputBoxElement.scrollTop =
-      inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
 
     const maxHeightPx = 150;
     inputBoxElement.style.height = "0";
@@ -65,6 +61,18 @@ function ChatBox({
       inputBoxElement.style.height = `${inputBoxElement.scrollHeight}px`;
       inputBoxElement.style.overflowY = "hidden";
     }
+  }
+
+  function inputChange() {
+    const inputBoxElement = document.getElementById(
+      "chat-box-input"
+    ) as HTMLSpanElement;
+
+    // scroll to the bottom
+    inputBoxElement.scrollTop =
+      inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
+    // reset the height
+    resizeInput();
   }
 
   function inputKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -92,6 +100,8 @@ function ChatBox({
       setIsSendingMessage(true);
       // clear the input box
       inputBoxElement.value = "";
+      // reset the height
+      resizeInput();
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
         message: message,
