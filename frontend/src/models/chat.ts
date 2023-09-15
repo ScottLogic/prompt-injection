@@ -45,6 +45,8 @@ interface ChatModelConfigurations {
 
 interface CustomChatModelConfiguration {
   id: MODEL_CONFIG;
+  name: string;
+  info: string;
   value: number;
   min: number;
   max: number;

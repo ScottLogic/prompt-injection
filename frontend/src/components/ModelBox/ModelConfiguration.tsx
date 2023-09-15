@@ -4,6 +4,7 @@ import ModelConfigurationSlider from "./ModelConfigurationSlider";
 import { CustomChatModelConfiguration } from "../../models/chat";
 import { MODEL_CONFIG } from "../../models/chat";
 import { getGptModel } from "../../service/chatService";
+import { FaInfoCircle } from "react-icons/fa";
 
 function ModelConfiguration() {
   const [customChatModelConfigs, setCustomChatModel] = useState<
@@ -11,24 +12,32 @@ function ModelConfiguration() {
   >([
     {
       id: MODEL_CONFIG.TEMPERATURE,
+      name: "Model Temperature",
+      info: "Controls the randomness of the model. Lower means more deterministic, higher means more surprising. Default is 1.",
       value: 1,
       min: 0,
       max: 2,
     },
     {
       id: MODEL_CONFIG.TOP_P,
+      name: "Top P",
+      info: "Controls how many different words or phrases the language model considers when it’s trying to predict the next word. Default is 1. ",
       value: 1,
       min: 0,
       max: 1,
     },
     {
       id: MODEL_CONFIG.PRESENCE_PENALTY,
+      name: "Presence Penalty",
+      info: "Controls diversity of text generation. Higher presence penalty increases likelihood of using new words. Default is 0.",
       value: 0,
       min: 0,
       max: 2,
     },
     {
       id: MODEL_CONFIG.FREQUENCY_PENALTY,
+      name: "Frequency Penalty",
+      info: "Controls diversity of text generation. Higher frequency penalty decreases likelihood of using the same words. Default is 0.",
       value: 0,
       min: 0,
       max: 2,
@@ -47,7 +56,6 @@ function ModelConfiguration() {
             return newConfig;
           }
         );
-        console.log("newCustomChatModelConfigs = ", newCustomChatModelConfigs);
         setCustomChatModel(newCustomChatModelConfigs);
       })
       .catch((err) => {
@@ -57,22 +65,9 @@ function ModelConfiguration() {
 
   return (
     <div id="model-config-box">
-      <div className="model-config-row">
-        <p>Model Temperature</p>
-        <ModelConfigurationSlider config={customChatModelConfigs[0]} />
-        <div className="model-config-row">
-          <p>Top P</p>
-          <ModelConfigurationSlider config={customChatModelConfigs[1]} />
-        </div>
-        <div className="model-config-row">
-          <p>Presence Penalty</p>
-          <ModelConfigurationSlider config={customChatModelConfigs[2]} />
-        </div>
-        <div className="model-config-row">
-          <p>Frequency Penalty</p>
-          <ModelConfigurationSlider config={customChatModelConfigs[3]} />
-        </div>
-      </div>
+      {customChatModelConfigs.map((config) => (
+        <ModelConfigurationSlider config={config} />
+      ))}
     </div>
   );
 }
