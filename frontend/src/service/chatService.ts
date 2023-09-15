@@ -1,10 +1,11 @@
 import { sendRequest } from "./backendService";
 import {
   CHAT_MESSAGE_TYPE,
-  CHAT_MODELS,
   ChatHistoryMessage,
   ChatMessage,
+  ChatModel,
   ChatResponse,
+  MODEL_CONFIG,
 } from "../models/chat";
 import { LEVEL_NAMES } from "../models/level";
 
@@ -122,10 +123,23 @@ async function setGptModel(model: string): Promise<boolean> {
   return response.status === 200;
 }
 
-async function getGptModel(): Promise<CHAT_MODELS> {
+async function configureGptModel(
+  configId: MODEL_CONFIG,
+  value: number
+): Promise<boolean> {
+  const response = await sendRequest(
+    `${PATH}model/configure`,
+    "POST",
+    { "Content-Type": "application/json" },
+    JSON.stringify({ configId, value })
+  );
+  return response.status === 200;
+}
+
+async function getGptModel(): Promise<ChatModel> {
   const response = await sendRequest(`${PATH}model`, "GET");
-  const modelStr = await response.text();
-  return modelStr as CHAT_MODELS;
+  const model = (await response.json()) as ChatModel;
+  return model;
 }
 
 async function addMessageToChatHistory(
@@ -151,6 +165,7 @@ export {
   sendMessage,
   setOpenAIApiKey,
   getOpenAIApiKey,
+  configureGptModel,
   getGptModel,
   setGptModel,
   getChatHistory,

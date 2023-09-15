@@ -1,11 +1,11 @@
 // Path: frontend\src\components\ModelSelectionBox\ModelSelectionBox.tsx
 import { useEffect, useState } from "react";
-import "./ModelSelectionBox.css";
+import "./ModelSelection.css";
 import { setGptModel, getGptModel } from "../../service/chatService";
 import { CHAT_MODELS } from "../../models/chat";
 
 // return a drop down menu with the models
-function ModelSelectionBox() {
+function ModelSelection() {
   // model currently selected in the dropdown
   const [selectedModel, setSelectedModel] = useState(CHAT_MODELS.GPT_4);
   // model in use by the app
@@ -28,7 +28,7 @@ function ModelSelectionBox() {
   useEffect(() => {
     getGptModel()
       .then((model) => {
-        setModelInUse(model);
+        setModelInUse(model.id);
       })
       .catch((err) => {
         console.log(err);
@@ -40,7 +40,6 @@ function ModelSelectionBox() {
   // return a drop down menu with the models
   return (
     <div id="model-selection-box">
-      <div className="side-bar-header">Model</div>
       <div id="model-selection-row">
         <div id="text-area">
           <p>Select a model: </p>
@@ -89,4 +88,4 @@ function ModelSelectionBox() {
   );
 }
 
-export default ModelSelectionBox;
+export default ModelSelection;

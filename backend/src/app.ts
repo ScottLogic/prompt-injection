@@ -5,10 +5,10 @@ import session from "express-session";
 
 import { setOpenAiApiKey } from "./openai";
 import { router } from "./router";
-import { ChatHistoryMessage } from "./models/chat";
+import { ChatHistoryMessage, ChatModel } from "./models/chat";
 import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
-import { CHAT_MODELS } from "./models/chat";
+import { defaultChatModel } from "./models/chat";
 import { LEVEL_NAMES } from "./models/level";
 import path from "path";
 import { getInitialDefences } from "./defence";
@@ -20,7 +20,7 @@ declare module "express-session" {
   interface Session {
     initialised: boolean;
     openAiApiKey: string | null;
-    gptModel: CHAT_MODELS;
+    chatModel: ChatModel;
     levelState: LevelState[];
     numLevelsCompleted: number;
   }
@@ -34,8 +34,6 @@ declare module "express-session" {
 
 // by default runs on port 3001
 const port = process.env.PORT ?? String(3001);
-// use default model
-const defaultModel = CHAT_MODELS.GPT_4;
 
 // Creating express server
 const app = express();
@@ -73,8 +71,8 @@ app.use(
 app.use((req, _res, next) => {
   // initialise session variables
   if (!req.session.initialised) {
-    req.session.gptModel = defaultModel;
-    req.session.numLevelsCompleted = 0;
+    req.session.chatModel = defaultChatModel;
+    req.session.numLevelsCompleted = 3;
     req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
     req.session.levelState = [];
     // add empty states for levels 0-3
@@ -111,7 +109,7 @@ app.listen(port, () => {
   if (envOpenAiKey) {
     console.debug("Initializing models with API key from environment variable");
     // asynchronously set the API key
-    void setOpenAiApiKey(envOpenAiKey, defaultModel).then(() => {
+    void setOpenAiApiKey(envOpenAiKey, defaultChatModel.id).then(() => {
       console.debug("OpenAI models initialized");
     });
   }
