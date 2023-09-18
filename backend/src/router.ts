@@ -7,6 +7,7 @@ import {
   transformMessage,
   detectTriggeredDefences,
   getInitialDefences,
+  getSystemRole,
 } from "./defence";
 import {
   CHAT_MESSAGE_TYPE,
@@ -423,6 +424,20 @@ router.get("/openai/model", (req, res) => {
 
 router.get("/level/completed", (req, res) => {
   res.send(req.session.numLevelsCompleted.toString());
+});
+
+// /level/prompt?level=1
+router.get("/level/prompt", (req, res) => {
+  const level: LEVEL_NAMES | undefined = req.query.level as
+    | LEVEL_NAMES
+    | undefined;
+  if (level === undefined) {
+    res.status(400).send();
+  } else {
+    console.log("Prompt requested for level: ", LEVEL_NAMES[level]);
+    const prompt = getSystemRole(req.session.levelState[level].defences, level);
+    res.send(prompt);
+  }
 });
 
 router.get("/documents", (_, res) => {
