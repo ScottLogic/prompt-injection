@@ -348,12 +348,16 @@ function filterChatHistoryByMaxTokens(
       messages: chatHistory,
       functions: chatGptFunctions,
     }) + 5; // there is an offset of 5 between openai completion prompt_tokens
-  console.debug("estimated tokens= ", estimatedTokens);
+
   // if the estimated tokens is less than the max tokens, no need to filter
   if (estimatedTokens <= maxNumTokens) {
     return chatHistory;
   }
 
+  console.log(
+    "Filtering chat history to fit inside context window. estimated_tokens = ",
+    estimatedTokens
+  );
   let sumTokens = 0;
   const filteredList: ChatCompletionRequestMessage[] = [];
 
@@ -410,10 +414,14 @@ function getChatCompletionsFromHistory(
     completions,
     maxTokens
   );
-  console.log(
-    "Trimmed completions to fit inside context window. messages trimmed=",
-    completions.length - reducedCompletions.length
-  );
+
+  const diff = completions.length - reducedCompletions.length;
+  if (diff > 0) {
+    console.log(
+      "Trimmed completions to fit inside context window. messages trimmed=",
+      diff
+    );
+  }
   return completions;
 }
 
