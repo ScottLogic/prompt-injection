@@ -74,7 +74,7 @@ app.use((req, _res, next) => {
   if (!req.session.initialised) {
     req.session.isNewUser = true;
     req.session.chatModel = defaultChatModel;
-    req.session.numPhasesCompleted = 0;
+    req.session.numLevelsCompleted = 0;
     req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
     req.session.levelState = [];
     // add empty states for levels 0-3
