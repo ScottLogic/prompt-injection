@@ -1,15 +1,11 @@
-import { OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage, OpenAIApi } from "openai";
 import {
   validateApiKey,
   setOpenAiApiKey,
   filterChatHistoryByMaxTokens,
 } from "../../src/openai";
 import { initQAModel } from "../../src/langchain";
-import {
-  CHAT_MESSAGE_TYPE,
-  CHAT_MODELS,
-  ChatHistoryMessage,
-} from "../../src/models/chat";
+import { CHAT_MODELS } from "../../src/models/chat";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
@@ -81,50 +77,56 @@ test("GIVEN an invalid API key WHEN calling setOpenAiApiKey THEN it should set t
 });
 
 test("GIVEN chat history exceeds max token number WHEN applying filter THEN it should return the filtered chat history", () => {
-  const maxTokens = 50;
-  const chatHistory: ChatHistoryMessage[] = [
+  const maxTokens = 121;
+  const chatHistory: ChatCompletionRequestMessage[] = [
     {
-      completion: {
-        role: "user",
-        content: "Hello, my name is Bob.",
-      },
-      numTokens: 15,
-      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+      role: "user",
+      content: "Hello, my name is Bob.", // 14 tokens
+    },
+
+    {
+      role: "assistant",
+      content: "Hello, how are you?", // 13 tokens
     },
     {
-      completion: {
-        role: "assistant",
-        content: "Hello, how are you?",
-      },
-      numTokens: 17,
-      chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+      role: "user",
+      content: "Send an email to my boss to tell him I quit.", // 19 tokens
     },
     {
-      completion: {
-        role: "user",
-        content: "Send an email to my boss to tell him I quit.",
+      role: "assistant",
+      function_call: {
+        arguments:
+          '{\n  "address": "boss@example.com",\n  "subject": "Resignation",\n  "body": "Dear Boss, \\n\\nI am writing to formally resign from my position at the company, effective immediately. \\n\\nBest regards, \\nBob",\n  "confirmed": true\n}',
+        name: "sendEmail", // 75 tokens }
       },
-      numTokens: 30,
-      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+    {
+      role: "assistant",
+      content: "I have sent the email.", // 13 tokens
     },
   ];
-  // expect that the first message is discounted
-  const expectedFilteredChatHistory = [
+
+  // expect that the first message is trimmed
+  const expectedFilteredChatHistory: ChatCompletionRequestMessage[] = [
     {
-      completion: {
-        role: "assistant",
-        content: "Hello, how are you?",
-      },
-      numTokens: 17,
-      chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+      role: "assistant",
+      content: "Hello, how are you?", // 12 tokens
     },
     {
-      completion: {
-        role: "user",
-        content: "Send an email to my boss to tell him I quit.",
+      role: "user",
+      content: "Send an email to my boss to tell him I quit.", // 19 tokens
+    },
+    {
+      role: "assistant",
+      function_call: {
+        arguments:
+          '{\n  "address": "boss@example.com",\n  "subject": "Resignation",\n  "body": "Dear Boss, \\n\\nI am writing to formally resign from my position at the company, effective immediately. \\n\\nBest regards, \\nBob",\n  "confirmed": true\n}',
+        name: "sendEmail", // 75 tokens }
       },
-      numTokens: 30,
-      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+    {
+      role: "assistant",
+      content: "I have sent the email.", // 6 tokens
     },
   ];
 
@@ -132,35 +134,38 @@ test("GIVEN chat history exceeds max token number WHEN applying filter THEN it s
     chatHistory,
     maxTokens
   );
+
+  expect(filteredChatHistory.length).toBe(4);
   expect(filteredChatHistory).toEqual(expectedFilteredChatHistory);
 });
 
 test("GIVEN chat history does not exceed max token number WHEN applying filter THEN it should return the original chat history", () => {
   const maxTokens = 1000;
-  const chatHistory: ChatHistoryMessage[] = [
+  const chatHistory: ChatCompletionRequestMessage[] = [
     {
-      completion: {
-        role: "user",
-        content: "Hello, my name is Bob.",
-      },
-      numTokens: 15,
-      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+      role: "user",
+      content: "Hello, my name is Bob.", // 14 tokens
+    },
+
+    {
+      role: "assistant",
+      content: "Hello, how are you?", // 13 tokens
     },
     {
-      completion: {
-        role: "assistant",
-        content: "Hello, how are you?",
-      },
-      numTokens: 17,
-      chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+      role: "user",
+      content: "Send an email to my boss to tell him I quit.", // 19 tokens
     },
     {
-      completion: {
-        role: "user",
-        content: "Send an email to my boss to tell him I quit.",
+      role: "assistant",
+      function_call: {
+        arguments:
+          '{\n  "address": "boss@example.com",\n  "subject": "Resignation",\n  "body": "Dear Boss, \\n\\nI am writing to formally resign from my position at the company, effective immediately. \\n\\nBest regards, \\nBob",\n  "confirmed": true\n}',
+        name: "sendEmail", // 75 tokens }
       },
-      numTokens: 30,
-      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+    {
+      role: "assistant",
+      content: "I have sent the email.", // 13 tokens
     },
   ];
 
@@ -172,86 +177,86 @@ test("GIVEN chat history does not exceed max token number WHEN applying filter T
 });
 
 test("GIVEN chat history exceeds max token number WHEN applying filter AND there is a system role in chat history THEN it should return the filtered chat history", () => {
-  const maxTokens = 50;
-  const chatHistory: ChatHistoryMessage[] = [
+  const maxTokens = 121;
+
+  const chatHistory: ChatCompletionRequestMessage[] = [
     {
-      completion: {
-        role: "system",
-        content: "You are a helpful chatbot.",
-      },
-      numTokens: 15,
-      chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+      role: "system",
+      content: "You are a helpful chatbot.", // 14 tokens
     },
     {
-      completion: {
-        role: "user",
-        content: "Hello, my name is Bob.",
-      },
-      numTokens: 15,
-      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+      role: "user",
+      content: "Hello, my name is Bob.", // 14 tokens
+    },
+
+    {
+      role: "assistant",
+      content: "Hello, how are you?", // 13 tokens
     },
     {
-      completion: {
-        role: "assistant",
-        content: "Hello, how are you?",
-      },
-      numTokens: 17,
-      chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+      role: "user",
+      content: "Send an email to my boss to tell him I quit.", // 19 tokens
     },
     {
-      completion: {
-        role: "user",
-        content: "Send an email to my boss to tell him I quit.",
+      role: "assistant",
+      function_call: {
+        arguments:
+          '{\n  "address": "boss@example.com",\n  "subject": "Resignation",\n  "body": "Dear Boss, \\n\\nI am writing to formally resign from my position at the company, effective immediately. \\n\\nBest regards, \\nBob",\n  "confirmed": true\n}',
+        name: "sendEmail", // 75 tokens }
       },
-      numTokens: 30,
-      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+    {
+      role: "assistant",
+      content: "I have sent the email.", // 13 tokens
     },
   ];
 
-  const expectedFilteredChatHistory = [
+  // expect that the first message is trimmed
+  const expectedFilteredChatHistory: ChatCompletionRequestMessage[] = [
     {
-      completion: {
-        role: "system",
-        content: "You are a helpful chatbot.",
-      },
-      numTokens: 15,
-      chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+      role: "system",
+      content: "You are a helpful chatbot.", // 14 tokens
     },
     {
-      completion: {
-        role: "user",
-        content: "Send an email to my boss to tell him I quit.",
+      role: "user",
+      content: "Send an email to my boss to tell him I quit.", // 19 tokens
+    },
+    {
+      role: "assistant",
+      function_call: {
+        arguments:
+          '{\n  "address": "boss@example.com",\n  "subject": "Resignation",\n  "body": "Dear Boss, \\n\\nI am writing to formally resign from my position at the company, effective immediately. \\n\\nBest regards, \\nBob",\n  "confirmed": true\n}',
+        name: "sendEmail", // 75 tokens }
       },
-      numTokens: 30,
-      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+    },
+    {
+      role: "assistant",
+      content: "I have sent the email.", // 6 tokens
     },
   ];
+
   const filteredChatHistory = filterChatHistoryByMaxTokens(
     chatHistory,
     maxTokens
   );
-  expect(filteredChatHistory.length).toEqual(2);
+
+  expect(filteredChatHistory.length).toBe(4);
   expect(filteredChatHistory).toEqual(expectedFilteredChatHistory);
 });
 
 test("GIVEN chat history most recent message exceeds max tokens alone WHEN applying filter THEN it should return this message", () => {
   const maxTokens = 30;
-  const chatHistory: ChatHistoryMessage[] = [
+  const chatHistory: ChatCompletionRequestMessage[] = [
     {
-      completion: {
-        role: "user",
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-      },
-      numTokens: 50,
-      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+      role: "user",
+      content:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
     },
   ];
   const filteredChatHistory = filterChatHistoryByMaxTokens(
     chatHistory,
     maxTokens
   );
-
   expect(filteredChatHistory).toEqual(chatHistory);
 });
 
