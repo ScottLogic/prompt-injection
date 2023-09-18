@@ -13,7 +13,7 @@ function DefenceBox({
   setDefenceInactive,
   setDefenceConfiguration,
 }: {
-  currentPhase: number;
+  currentLevel: number;
   defences: DefenceInfo[];
   showConfigurations: boolean;
   setDefenceActive: (defence: DefenceInfo) => void;

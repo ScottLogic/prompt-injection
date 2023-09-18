@@ -1,11 +1,11 @@
 import { Request } from "express";
-import { PHASE_NAMES } from "../phase";
+import { LEVEL_NAMES } from "../level";
 
 type EmailClearRequest = Request<
   object,
   object,
   {
-    phase?: PHASE_NAMES;
+    level?: LEVEL_NAMES;
   },
   object
 >;

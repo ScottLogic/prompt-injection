@@ -17,11 +17,39 @@ enum CHAT_MESSAGE_TYPE {
   INFO,
   USER,
   USER_TRANSFORMED,
-  PHASE_INFO,
+  LEVEL_INFO,
   DEFENCE_ALERTED,
   DEFENCE_TRIGGERED,
   SYSTEM,
   FUNCTION_CALL,
+}
+
+enum MODEL_CONFIG {
+  TEMPERATURE = "temperature",
+  TOP_P = "topP",
+  FREQUENCY_PENALTY = "frequencyPenalty",
+  PRESENCE_PENALTY = "presencePenalty",
+}
+
+interface ChatModel {
+  id: CHAT_MODELS;
+  configuration: ChatModelConfigurations;
+}
+
+interface ChatModelConfigurations {
+  temperature: number;
+  topP: number;
+  frequencyPenalty: number;
+  presencePenalty: number;
+}
+
+interface CustomChatModelConfiguration {
+  id: MODEL_CONFIG;
+  name: string;
+  info: string;
+  value: number;
+  min: number;
+  max: number;
 }
 
 interface ChatDefenceReport {
@@ -39,9 +67,9 @@ interface ChatMessage {
 interface ChatResponse {
   reply: string;
   defenceInfo: ChatDefenceReport;
-  numPhasesCompleted: number;
+  numLevelsCompleted: number;
   transformedMessage: string;
-  wonPhase: boolean;
+  wonLevel: boolean;
 }
 
 interface ChatCompletionRequestMessage {
@@ -56,5 +84,12 @@ interface ChatHistoryMessage {
   infoMessage: string | null | undefined;
 }
 
-export type { ChatMessage, ChatResponse, ChatHistoryMessage };
-export { CHAT_MODELS, CHAT_MESSAGE_TYPE };
+export type {
+  ChatMessage,
+  ChatResponse,
+  ChatHistoryMessage,
+  ChatModel,
+  ChatModelConfigurations,
+  CustomChatModelConfiguration,
+};
+export { CHAT_MODELS, CHAT_MESSAGE_TYPE, MODEL_CONFIG };

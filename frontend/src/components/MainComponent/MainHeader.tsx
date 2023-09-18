@@ -1,43 +1,43 @@
-import { PHASES } from "../../Phases";
-import { PHASE_NAMES } from "../../models/phase";
-import PhaseSelectionBox from "../PhaseSelectionBox/PhaseSelectionBox";
+import { LEVELS } from "../../Levels";
+import { LEVEL_NAMES } from "../../models/level";
+import LevelSelectionBox from "../LevelSelectionBox/LevelSelectionBox";
 import "./MainHeader.css";
 import ProjectIcon from "./ProjectIcon";
 import ProjectIconWon from "./ProjectIconWon";
 
 function MainHeader({
-  currentPhase,
-  numCompletedPhases,
-  setNewPhase,
+  currentLevel,
+  numCompletedLevels,
+  setNewLevel,
 }: {
-  currentPhase: PHASE_NAMES;
-  numCompletedPhases: number;
-  setNewPhase: (newPhase: number) => void;
+  currentLevel: LEVEL_NAMES;
+  numCompletedLevels: number;
+  setNewLevel: (newLevel: number) => void;
 }) {
-  function getPhaseName(phase: PHASE_NAMES) {
-    const phaseName = PHASES.find((p) => p.id === phase)?.name;
-    return phaseName ?? "";
+  function getLevelName(level: LEVEL_NAMES) {
+    const levelName = LEVELS.find((p) => p.id === level)?.name;
+    return levelName ?? "";
   }
 
-  const isPhaseComplete = (currentPhase as number) < numCompletedPhases;
+  const isLevelComplete = (currentLevel as number) < numCompletedLevels;
 
   return (
     <div id="main-header">
       <span id="main-header-left">
         <span id="main-header-title">Prompt Injection Demo</span>
         <span id="main-header-icon">
-          {isPhaseComplete ? <ProjectIconWon /> : <ProjectIcon />}
+          {isLevelComplete ? <ProjectIconWon /> : <ProjectIcon />}
         </span>
       </span>
       <span id="main-header-middle">
-        <span id="main-header-current-phase">{getPhaseName(currentPhase)}</span>
+        <span id="main-header-current-level">{getLevelName(currentLevel)}</span>
       </span>
       <span id="main-header-right">
-        <span id="main-header-phase-selection">
-          <PhaseSelectionBox
-            currentPhase={currentPhase}
-            numCompletedPhases={numCompletedPhases}
-            setNewPhase={setNewPhase}
+        <span id="main-header-level-selection">
+          <LevelSelectionBox
+            currentLevel={currentLevel}
+            numCompletedLevels={numCompletedLevels}
+            setNewLevel={setNewLevel}
           />
         </span>
       </span>

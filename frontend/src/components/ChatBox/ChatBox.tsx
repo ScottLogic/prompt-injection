@@ -12,25 +12,25 @@ import {
   ChatResponse,
 } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
-import { PHASE_NAMES } from "../../models/phase";
+import { LEVEL_NAMES } from "../../models/level";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import { ThreeDots } from "react-loader-spinner";
 
 function ChatBox({
   messages,
-  completedPhases,
-  currentPhase,
+  completedLevels,
+  currentLevel,
   addChatMessage,
-  addCompletedPhase,
-  setNumCompletedPhases,
+  addCompletedLevel,
+  setNumCompletedLevels,
   setEmails,
 }: {
   messages: ChatMessage[];
-  completedPhases: Set<PHASE_NAMES>;
-  currentPhase: PHASE_NAMES;
+  completedLevels: Set<LEVEL_NAMES>;
+  currentLevel: LEVEL_NAMES;
   addChatMessage: (message: ChatMessage) => void;
-  addCompletedPhase: (phase: PHASE_NAMES) => void;
-  setNumCompletedPhases: (numCompletedPhases: number) => void;
+  addCompletedLevel: (level: LEVEL_NAMES) => void;
+  setNumCompletedLevels: (numCompletedLevels: number) => void;
   setEmails: (emails: EmailInfo[]) => void;
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
@@ -38,7 +38,7 @@ function ChatBox({
   // called on mount
   useEffect(() => {
     // get sent emails
-    getSentEmails(currentPhase)
+    getSentEmails(currentLevel)
       .then((sentEmails) => {
         setEmails(sentEmails);
       })
@@ -47,14 +47,10 @@ function ChatBox({
       });
   }, [setEmails]);
 
-  function inputChange() {
+  function resizeInput() {
     const inputBoxElement = document.getElementById(
       "chat-box-input"
     ) as HTMLSpanElement;
-
-    // scroll to the bottom
-    inputBoxElement.scrollTop =
-      inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
 
     const maxHeightPx = 150;
     inputBoxElement.style.height = "0";
@@ -65,6 +61,18 @@ function ChatBox({
       inputBoxElement.style.height = `${inputBoxElement.scrollHeight}px`;
       inputBoxElement.style.overflowY = "hidden";
     }
+  }
+
+  function inputChange() {
+    const inputBoxElement = document.getElementById(
+      "chat-box-input"
+    ) as HTMLSpanElement;
+
+    // scroll to the bottom
+    inputBoxElement.scrollTop =
+      inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
+    // reset the height
+    resizeInput();
   }
 
   function inputKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -92,14 +100,16 @@ function ChatBox({
       setIsSendingMessage(true);
       // clear the input box
       inputBoxElement.value = "";
+      // reset the height
+      resizeInput();
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
         message: message,
         type: CHAT_MESSAGE_TYPE.USER,
       });
 
-      const response: ChatResponse = await sendMessage(message, currentPhase);
-      setNumCompletedPhases(response.numPhasesCompleted);
+      const response: ChatResponse = await sendMessage(message, currentLevel);
+      setNumCompletedLevels(response.numLevelsCompleted);
       const transformedMessage = response.transformedMessage;
       const isTransformed = transformedMessage !== message;
       // add the transformed message to the chat box if it is different from the original message
@@ -137,7 +147,7 @@ function ChatBox({
           void addMessageToChatHistory(
             alertMsg,
             CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
-            currentPhase
+            currentLevel
           );
         }
       });
@@ -157,7 +167,7 @@ function ChatBox({
           void addMessageToChatHistory(
             triggerMsg,
             CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-            currentPhase
+            currentLevel
           );
         }
       });
@@ -166,23 +176,23 @@ function ChatBox({
       setIsSendingMessage(false);
 
       // get sent emails
-      const sentEmails: EmailInfo[] = await getSentEmails(currentPhase);
+      const sentEmails: EmailInfo[] = await getSentEmails(currentLevel);
       // update emails
       setEmails(sentEmails);
 
-      if (response.wonPhase && !completedPhases.has(currentPhase)) {
-        addCompletedPhase(currentPhase);
+      if (response.wonLevel && !completedLevels.has(currentLevel)) {
+        addCompletedLevel(currentLevel);
         const successMessage =
-          "Congratulations! You have completed this phase. Please click on the next phase to continue.";
+          "Congratulations! You have completed this level. Please click on the next level to continue.";
         addChatMessage({
-          type: CHAT_MESSAGE_TYPE.PHASE_INFO,
+          type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
           message: successMessage,
         });
         // asynchronously add the message to the chat history
         void addMessageToChatHistory(
           successMessage,
-          CHAT_MESSAGE_TYPE.PHASE_INFO,
-          currentPhase
+          CHAT_MESSAGE_TYPE.LEVEL_INFO,
+          currentLevel
         );
       }
     }

@@ -4,22 +4,22 @@ import { EmailInfo } from "../../models/email";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 
 import "./ExportPDFLink.css";
-import { PHASE_NAMES } from "../../models/phase";
+import { LEVEL_NAMES } from "../../models/level";
 
 function ExportPDFLink({
   messages,
   emails,
-  currentPhase,
+  currentLevel,
 }: {
   messages: ChatMessage[];
   emails: EmailInfo[];
-  currentPhase: PHASE_NAMES;
+  currentLevel: LEVEL_NAMES;
 }) {
   function getFileName() {
-    if (currentPhase === PHASE_NAMES.SANDBOX) {
+    if (currentLevel === LEVEL_NAMES.SANDBOX) {
       return "prompt-injection-chat-log-sandbox.pdf";
     } else {
-      return `prompt-injection-chat-log-phase-${currentPhase}.pdf`;
+      return `prompt-injection-chat-log-level-${currentLevel}.pdf`;
     }
   }
 
@@ -30,7 +30,7 @@ function ExportPDFLink({
           <ExportContent
             messages={messages}
             emails={emails}
-            currentPhase={currentPhase}
+            currentLevel={currentLevel}
           />
         }
         fileName={getFileName()}

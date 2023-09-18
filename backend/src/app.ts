@@ -5,11 +5,11 @@ import session from "express-session";
 
 import { setOpenAiApiKey } from "./openai";
 import { router } from "./router";
-import { ChatHistoryMessage } from "./models/chat";
+import { ChatHistoryMessage, ChatModel } from "./models/chat";
 import { EmailInfo } from "./models/email";
 import { DefenceInfo } from "./models/defence";
-import { CHAT_MODELS } from "./models/chat";
-import { PHASE_NAMES } from "./models/phase";
+import { defaultChatModel } from "./models/chat";
+import { LEVEL_NAMES } from "./models/level";
 import path from "path";
 import { getInitialDefences } from "./defence";
 import { initDocumentVectors } from "./langchain";
@@ -21,12 +21,12 @@ declare module "express-session" {
     initialised: boolean;
     isNewUser: boolean;
     openAiApiKey: string | null;
-    gptModel: CHAT_MODELS;
-    phaseState: PhaseState[];
-    numPhasesCompleted: number;
+    chatModel: ChatModel;
+    levelState: LevelState[];
+    numLevelsCompleted: number;
   }
-  interface PhaseState {
-    phase: PHASE_NAMES;
+  interface LevelState {
+    level: LEVEL_NAMES;
     chatHistory: ChatHistoryMessage[];
     defences: DefenceInfo[];
     sentEmails: EmailInfo[];
@@ -35,8 +35,6 @@ declare module "express-session" {
 
 // by default runs on port 3001
 const port = process.env.PORT ?? String(3001);
-// use default model
-const defaultModel = CHAT_MODELS.GPT_4;
 
 // Creating express server
 const app = express();
@@ -75,15 +73,15 @@ app.use((req, _res, next) => {
   // initialise session variables
   if (!req.session.initialised) {
     req.session.isNewUser = true;
-    req.session.gptModel = defaultModel;
+    req.session.chatModel = defaultChatModel;
     req.session.numPhasesCompleted = 0;
     req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
-    req.session.phaseState = [];
-    // add empty states for phases 0-3
-    Object.values(PHASE_NAMES).forEach((value) => {
+    req.session.levelState = [];
+    // add empty states for levels 0-3
+    Object.values(LEVEL_NAMES).forEach((value) => {
       if (isNaN(Number(value))) {
-        req.session.phaseState.push({
-          phase: value as PHASE_NAMES,
+        req.session.levelState.push({
+          level: value as LEVEL_NAMES,
           chatHistory: [],
           defences: getInitialDefences(),
           sentEmails: [],
@@ -115,7 +113,7 @@ app.listen(port, () => {
   if (envOpenAiKey) {
     console.debug("Initializing models with API key from environment variable");
     // asynchronously set the API key
-    void setOpenAiApiKey(envOpenAiKey, defaultModel).then(() => {
+    void setOpenAiApiKey(envOpenAiKey, defaultChatModel.id).then(() => {
       console.debug("OpenAI models initialized");
     });
   }

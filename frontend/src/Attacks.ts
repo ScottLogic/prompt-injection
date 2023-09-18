@@ -1,6 +1,6 @@
 import { ATTACK_TYPES, AttackInfo } from "./models/attack";
 
-const ATTACKS_PHASE_1: AttackInfo[] = [
+const ATTACKS_LEVEL_2: AttackInfo[] = [
   {
     id: ATTACK_TYPES.JAILBREAK,
     name: "Jailbreak Prompt",
@@ -30,7 +30,7 @@ const ATTACKS_PHASE_1: AttackInfo[] = [
 ];
 
 const ATTACKS_ALL: AttackInfo[] = [
-  ...ATTACKS_PHASE_1,
+  ...ATTACKS_LEVEL_2,
   {
     id: ATTACK_TYPES.DEFEINED_DICTIONARY_ATTACK,
     name: "Defined Dictionary Attack",
@@ -68,4 +68,4 @@ const ATTACKS_ALL: AttackInfo[] = [
   },
 ];
 
-export { ATTACKS_PHASE_1, ATTACKS_ALL };
+export { ATTACKS_LEVEL_2, ATTACKS_ALL };

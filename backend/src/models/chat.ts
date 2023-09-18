@@ -18,11 +18,30 @@ enum CHAT_MESSAGE_TYPE {
   INFO,
   USER,
   USER_TRANSFORMED,
-  PHASE_INFO,
+  LEVEL_INFO,
   DEFENCE_ALERTED,
   DEFENCE_TRIGGERED,
   SYSTEM,
   FUNCTION_CALL,
+}
+
+enum MODEL_CONFIG {
+  TEMPERATURE = "temperature",
+  TOP_P = "topP",
+  FREQUENCY_PENALTY = "frequencyPenalty",
+  PRESENCE_PENALTY = "presencePenalty",
+}
+
+interface ChatModel {
+  id: CHAT_MODELS;
+  configuration: ChatModelConfiguration;
+}
+
+interface ChatModelConfiguration {
+  temperature: number;
+  topP: number;
+  frequencyPenalty: number;
+  presencePenalty: number;
 }
 
 interface ChatDefenceReport {
@@ -45,15 +64,15 @@ interface ChatMalicious {
 interface ChatResponse {
   completion: ChatCompletionRequestMessage;
   defenceInfo: ChatDefenceReport;
-  wonPhase: boolean;
+  wonLevel: boolean;
 }
 
 interface ChatHttpResponse {
   reply: string;
   defenceInfo: ChatDefenceReport;
-  numPhasesCompleted: number;
+  numLevelsCompleted: number;
   transformedMessage: string;
-  wonPhase: boolean;
+  wonLevel: boolean;
 }
 
 interface ChatHistoryMessage {
@@ -63,6 +82,17 @@ interface ChatHistoryMessage {
   infoMessage?: string | null;
 }
 
+// default settings for chat model
+const defaultChatModel: ChatModel = {
+  id: CHAT_MODELS.GPT_4,
+  configuration: {
+    temperature: 1,
+    topP: 1,
+    frequencyPenalty: 0,
+    presencePenalty: 0,
+  },
+};
+
 export type {
   ChatAnswer,
   ChatDefenceReport,
@@ -71,4 +101,11 @@ export type {
   ChatHttpResponse,
   ChatHistoryMessage,
 };
-export { CHAT_MODELS, CHAT_MESSAGE_TYPE };
+export {
+  CHAT_MODELS,
+  CHAT_MESSAGE_TYPE,
+  MODEL_CONFIG,
+  ChatModel,
+  ChatModelConfiguration,
+  defaultChatModel,
+};

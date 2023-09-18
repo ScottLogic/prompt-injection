@@ -3,7 +3,7 @@ import "./Theme.css";
 import MainHeader from "./components/MainComponent/MainHeader";
 import MainBody from "./components/MainComponent/MainBody";
 import { useEffect, useState } from "react";
-import { PHASE_NAMES } from "./models/phase";
+import { LEVEL_NAMES } from "./models/level";
 import {
   getChatHistory,
   clearChat,
@@ -19,19 +19,19 @@ import {
   getDefences,
   resetActiveDefences,
 } from "./service/defenceService";
-import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_PHASE } from "./Defences";
+import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "./Defences";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
-import { getCompletedPhases } from "./service/phaseService";
-import { PHASES } from "./Phases";
+import { getCompletedLevels } from "./service/levelService";
+import { LEVELS } from "./Levels";
 import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
   // start on sandbox mode
-  const [currentPhase, setCurrentPhase] = useState<PHASE_NAMES>(
-    PHASE_NAMES.SANDBOX
+  const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
+    LEVEL_NAMES.SANDBOX
   );
-  const [numCompletedPhases, setNumCompletedPhases] = useState<number>(0);
+  const [numCompletedLevels, setNumCompletedLevels] = useState<number>(0);
 
   const [showOverlay, setShowOverlay] = useState<boolean>(isNewUser);
 
@@ -43,14 +43,14 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   // called on mount
   useEffect(() => {
-    getCompletedPhases()
-      .then((numCompletedPhases) => {
-        setNumCompletedPhases(numCompletedPhases);
+    getCompletedLevels()
+      .then((numCompletedLevels) => {
+        setNumCompletedLevels(numCompletedLevels);
       })
       .catch((err) => {
         console.error(err);
       });
-    void setNewPhase(currentPhase);
+    void setNewLevel(currentLevel);
   }, []);
 
   function closeOverlay() {
@@ -62,26 +62,26 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
   }
 
-  // for clearing phase progress
-  async function resetPhase() {
-    console.log(`resetting phase ${currentPhase}`);
+  // for clearing level progress
+  async function resetLevel() {
+    console.log(`resetting level ${currentLevel}`);
 
-    await clearChat(currentPhase);
+    await clearChat(currentLevel);
     setMessages([]);
     // add preamble to start of chat
     addChatMessage({
-      message: PHASES[currentPhase].preamble,
-      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
+      message: LEVELS[currentLevel].preamble,
+      type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
     });
 
-    await clearEmails(currentPhase);
+    await clearEmails(currentLevel);
     setEmails([]);
 
-    await resetActiveDefences(currentPhase);
+    await resetActiveDefences(currentLevel);
     // choose appropriate defences to display
     let defences =
-      currentPhase === PHASE_NAMES.PHASE_2
-        ? DEFENCE_DETAILS_PHASE
+      currentLevel === LEVEL_NAMES.LEVEL_3
+        ? DEFENCE_DETAILS_LEVEL
         : DEFENCE_DETAILS_ALL;
     defences = defences.map((defence) => {
       defence.isActive = false;
@@ -90,31 +90,31 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     setDefencesToShow(defences);
   }
 
-  // for going switching phase without clearing progress
-  async function setNewPhase(newPhase: PHASE_NAMES) {
-    console.log(`changing phase from ${currentPhase} to ${newPhase}`);
+  // for going switching level without clearing progress
+  async function setNewLevel(newLevel: LEVEL_NAMES) {
+    console.log(`changing level from ${currentLevel} to ${newLevel}`);
     setMessages([]);
-    setCurrentPhase(newPhase);
+    setCurrentLevel(newLevel);
 
-    // get emails for new phase from the backend
-    const phaseEmails = await getSentEmails(newPhase);
-    setEmails(phaseEmails);
+    // get emails for new level from the backend
+    const levelEmails = await getSentEmails(newLevel);
+    setEmails(levelEmails);
 
-    // get chat history for new phase from the backend
-    const phaseChatHistory = await getChatHistory(newPhase);
+    // get chat history for new level from the backend
+    const levelChatHistory = await getChatHistory(newLevel);
     // add the preamble to the start of the chat history
-    phaseChatHistory.unshift({
-      message: PHASES[newPhase].preamble,
-      type: CHAT_MESSAGE_TYPE.PHASE_INFO,
+    levelChatHistory.unshift({
+      message: LEVELS[newLevel].preamble,
+      type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
     });
-    setMessages(phaseChatHistory);
+    setMessages(levelChatHistory);
 
     const defences =
-      newPhase === PHASE_NAMES.PHASE_2
-        ? DEFENCE_DETAILS_PHASE
+      newLevel === LEVEL_NAMES.LEVEL_3
+        ? DEFENCE_DETAILS_LEVEL
         : DEFENCE_DETAILS_ALL;
     // fetch defences from backend
-    const remoteDefences = await getDefences(newPhase);
+    const remoteDefences = await getDefences(newLevel);
     defences.map((localDefence) => {
       const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
         return localDefence.id === remoteDefence.id;
@@ -144,11 +144,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
       type: CHAT_MESSAGE_TYPE.INFO,
     });
     // asynchronously add message to chat history
-    void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentPhase);
+    void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentLevel);
   }
 
   async function setDefenceActive(defence: DefenceInfo) {
-    await activateDefence(defence.id, currentPhase);
+    await activateDefence(defence.id, currentLevel);
     // update state
     const newDefenceDetails = defencesToShow.map((defenceDetail) => {
       if (defenceDetail.id === defence.id) {
@@ -163,7 +163,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   }
 
   async function setDefenceInactive(defence: DefenceInfo) {
-    await deactivateDefence(defence.id, currentPhase);
+    await deactivateDefence(defence.id, currentLevel);
     // update state
     const newDefenceDetails = defencesToShow.map((defenceDetail) => {
       if (defenceDetail.id === defence.id) {
@@ -181,7 +181,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     defenceId: DEFENCE_TYPES,
     config: DefenceConfig[]
   ) {
-    const success = await configureDefence(defenceId, config, currentPhase);
+    const success = await configureDefence(defenceId, config, currentLevel);
     if (success) {
       // update state
       const newDefences = defencesToShow.map((defence) => {
@@ -200,25 +200,29 @@ function App({ isNewUser }: { isNewUser: boolean }) {
       {showOverlay && <HandbookOverlay closeOverlay={closeOverlay} />}
       <div id="app-content-header">
         <MainHeader
-          currentPhase={currentPhase}
-          numCompletedPhases={numCompletedPhases}
-          setNewPhase={(newPhase) => void setNewPhase(newPhase)}
+          currentLevel={currentLevel}
+          numCompletedLevels={numCompletedLevels}
+          setNewLevel={(newLevel: LEVEL_NAMES) => void setNewLevel(newLevel)}
         />
       </div>
       <div id="app-content-body">
         <MainBody
           key={MainBodyKey}
-          currentPhase={currentPhase}
+          currentLevel={currentLevel}
           defences={defencesToShow}
           emails={emails}
           messages={messages}
           addChatMessage={addChatMessage}
-          resetPhase={() => void resetPhase()}
-          setDefenceActive={(defence) => void setDefenceActive(defence)}
-          setDefenceInactive={(defence) => void setDefenceInactive(defence)}
+          resetLevel={() => void resetLevel()}
+          setDefenceActive={(defence: DefenceInfo) =>
+            void setDefenceActive(defence)
+          }
+          setDefenceInactive={(defence: DefenceInfo) =>
+            void setDefenceInactive(defence)
+          }
           setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
-          setNumCompletedPhases={setNumCompletedPhases}
+          setNumCompletedLevels={setNumCompletedLevels}
         />
       </div>
     </div>

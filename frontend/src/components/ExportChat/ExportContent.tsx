@@ -10,7 +10,7 @@ import { ChatMessage } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
 import ExportChatBox from "./ExportChatBox";
 import ExportEmailBox from "./ExportEmailBox";
-import { PHASE_NAMES } from "../../models/phase";
+import { LEVEL_NAMES } from "../../models/level";
 
 import CombinedFonts from "../../assets/fonts/CombinedFonts.ttf";
 import NotoSerifJP from "../../assets/fonts/NotoSerifJP-Regular.otf";
@@ -59,18 +59,18 @@ const styles = StyleSheet.create({
 function ExportContent({
   messages,
   emails,
-  currentPhase,
+  currentLevel,
 }: {
   messages: ChatMessage[];
   emails: EmailInfo[];
-  currentPhase: PHASE_NAMES;
+  currentLevel: LEVEL_NAMES;
 }) {
-  function getTitle(currentPhase: PHASE_NAMES) {
+  function getTitle(currentLevel: LEVEL_NAMES) {
     const title = "Prompt injection demo chat";
-    if (currentPhase === PHASE_NAMES.SANDBOX) {
+    if (currentLevel === LEVEL_NAMES.SANDBOX) {
       return `${title} (sandbox mode)`;
     } else {
-      return `${title} (phase ${currentPhase})`;
+      return `${title} (level ${currentLevel})`;
     }
   }
 
@@ -78,7 +78,7 @@ function ExportContent({
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.headerSection}>
-          <Text style={styles.header}>{getTitle(currentPhase)}</Text>
+          <Text style={styles.header}>{getTitle(currentLevel)}</Text>
         </View>
         <View style={styles.pageContent}>
           <View style={styles.section}>

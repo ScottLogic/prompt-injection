@@ -1,41 +1,42 @@
 import { sendRequest } from "./backendService";
 import {
   CHAT_MESSAGE_TYPE,
-  CHAT_MODELS,
   ChatHistoryMessage,
   ChatMessage,
+  ChatModel,
   ChatResponse,
+  MODEL_CONFIG,
 } from "../models/chat";
-import { PHASE_NAMES } from "../models/phase";
+import { LEVEL_NAMES } from "../models/level";
 
 const PATH = "openai/";
 
-async function clearChat(phase: number) {
+async function clearChat(level: number) {
   const response = await sendRequest(
     `${PATH}clear`,
     "POST",
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ phase: phase })
+    JSON.stringify({ level: level })
   );
   return response.status === 200;
 }
 
-async function sendMessage(message: string, currentPhase: PHASE_NAMES) {
+async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
   const response = await sendRequest(
     `${PATH}chat`,
     "POST",
     { "Content-Type": "application/json" },
-    JSON.stringify({ message, currentPhase })
+    JSON.stringify({ message, currentLevel })
   );
   const data = (await response.json()) as ChatResponse;
   console.log(data);
   return data;
 }
 
-async function getChatHistory(phase: number): Promise<ChatMessage[]> {
-  const response = await sendRequest(`${PATH}history?phase=${phase}`, "GET");
+async function getChatHistory(level: number): Promise<ChatMessage[]> {
+  const response = await sendRequest(`${PATH}history?level=${level}`, "GET");
   const chatHistory = (await response.json()) as ChatHistoryMessage[];
   // convert to ChatMessage object
   const chatMessages: ChatMessage[] = [];
@@ -71,10 +72,10 @@ async function getChatHistory(phase: number): Promise<ChatMessage[]> {
           type: message.chatMessageType,
         });
         break;
-      case CHAT_MESSAGE_TYPE.PHASE_INFO:
+      case CHAT_MESSAGE_TYPE.LEVEL_INFO:
         chatMessages.push({
           message: message.infoMessage ?? "",
-          type: CHAT_MESSAGE_TYPE.PHASE_INFO,
+          type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
         });
         break;
       case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
@@ -122,16 +123,29 @@ async function setGptModel(model: string): Promise<boolean> {
   return response.status === 200;
 }
 
-async function getGptModel(): Promise<CHAT_MODELS> {
+async function configureGptModel(
+  configId: MODEL_CONFIG,
+  value: number
+): Promise<boolean> {
+  const response = await sendRequest(
+    `${PATH}model/configure`,
+    "POST",
+    { "Content-Type": "application/json" },
+    JSON.stringify({ configId, value })
+  );
+  return response.status === 200;
+}
+
+async function getGptModel(): Promise<ChatModel> {
   const response = await sendRequest(`${PATH}model`, "GET");
-  const modelStr = await response.text();
-  return modelStr as CHAT_MODELS;
+  const model = (await response.json()) as ChatModel;
+  return model;
 }
 
 async function addMessageToChatHistory(
   message: string,
   chatMessageType: CHAT_MESSAGE_TYPE,
-  phase: number
+  level: number
 ) {
   const response = await sendRequest(
     `${PATH}addHistory`,
@@ -140,7 +154,7 @@ async function addMessageToChatHistory(
     JSON.stringify({
       message: message,
       chatMessageType: chatMessageType,
-      phase: phase,
+      level: level,
     })
   );
   return response.status === 200;
@@ -151,6 +165,7 @@ export {
   sendMessage,
   setOpenAIApiKey,
   getOpenAIApiKey,
+  configureGptModel,
   getGptModel,
   setGptModel,
   getChatHistory,

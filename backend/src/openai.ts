@@ -19,9 +19,10 @@ import {
   CHAT_MODELS,
   ChatDefenceReport,
   ChatHistoryMessage,
+  ChatModel,
 } from "./models/chat";
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
-import { PHASE_NAMES } from "./models/phase";
+import { LEVEL_NAMES } from "./models/level";
 import {
   FunctionAskQuestionParams,
   FunctionSendEmailParams,
@@ -88,14 +89,14 @@ const chatGptFunctions = [
 
 // max tokens each model can use
 const chatModelMaxTokens = {
-  [CHAT_MODELS.GPT_4]: 8192,
-  [CHAT_MODELS.GPT_4_0613]: 8192,
-  [CHAT_MODELS.GPT_4_32K]: 32768,
-  [CHAT_MODELS.GPT_4_32K_0613]: 32768,
-  [CHAT_MODELS.GPT_3_5_TURBO]: 4097,
-  [CHAT_MODELS.GPT_3_5_TURBO_0613]: 4097,
-  [CHAT_MODELS.GPT_3_5_TURBO_16K]: 16385,
-  [CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16385,
+  [CHAT_MODELS.GPT_4]: 8191,
+  [CHAT_MODELS.GPT_4_0613]: 8191,
+  [CHAT_MODELS.GPT_4_32K]: 32767,
+  [CHAT_MODELS.GPT_4_32K_0613]: 32767,
+  [CHAT_MODELS.GPT_3_5_TURBO]: 4095,
+  [CHAT_MODELS.GPT_3_5_TURBO_0613]: 4095,
+  [CHAT_MODELS.GPT_3_5_TURBO_16K]: 16384,
+  [CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16384,
 };
 
 // test the api key works with the model
@@ -166,11 +167,11 @@ async function chatGptCallFunction(
   functionCall: ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
   // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX,
+  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX,
   openAiApiKey: string
 ) {
   let reply: ChatCompletionRequestMessage | null = null;
-  let wonPhase = false;
+  let wonLevel = false;
   // get the function name
   const functionName: string = functionCall.name ?? "";
 
@@ -209,10 +210,10 @@ async function chatGptCallFunction(
             params.subject,
             params.body,
             params.confirmed,
-            currentPhase
+            currentLevel
           );
           response = emailResponse.response;
-          wonPhase = emailResponse.wonPhase;
+          wonLevel = emailResponse.wonLevel;
           if (emailResponse.sentEmail) {
             sentEmails.push(emailResponse.sentEmail);
           }
@@ -220,7 +221,7 @@ async function chatGptCallFunction(
       } else {
         console.error("No arguments provided to sendEmail function");
       }
-    } else if (functionName == "getEmailWhitelist") {
+    } else if (functionName === "getEmailWhitelist") {
       response = getEmailWhitelist(defences);
     }
     if (functionName === "askQuestion") {
@@ -238,7 +239,7 @@ async function chatGptCallFunction(
           await queryDocuments(
             params.question,
             qaPrompt,
-            currentPhase,
+            currentLevel,
             openAiApiKey
           )
         ).reply;
@@ -260,7 +261,7 @@ async function chatGptCallFunction(
     return {
       completion: reply,
       defenceInfo: defenceInfo,
-      wonPhase: wonPhase,
+      wonLevel: wonLevel,
     };
   } else {
     return null;
@@ -270,15 +271,15 @@ async function chatGptCallFunction(
 async function chatGptChatCompletion(
   chatHistory: ChatHistoryMessage[],
   defences: DefenceInfo[],
-  gptModel: CHAT_MODELS,
+  chatModel: ChatModel,
   openai: OpenAIApi,
   // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
   // check if we need to set a system role
-  // system role is always active on phases
+  // system role is always active on levels
   if (
-    currentPhase !== PHASE_NAMES.SANDBOX ||
+    currentLevel !== LEVEL_NAMES.SANDBOX ||
     isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
     // check to see if there's already a system role
@@ -287,7 +288,7 @@ async function chatGptChatCompletion(
       chatHistory.unshift({
         completion: {
           role: "system",
-          content: getSystemRole(defences, currentPhase),
+          content: getSystemRole(defences, currentLevel),
         },
         chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
       });
@@ -301,13 +302,22 @@ async function chatGptChatCompletion(
       chatHistory.shift();
     }
   }
+  console.debug("Talking to model: ", JSON.stringify(chatModel));
 
   // get start time
   const startTime = new Date().getTime();
   console.debug("Calling OpenAI chat completion...");
+
   const chat_completion = await openai.createChatCompletion({
-    model: gptModel,
-    messages: getChatCompletionsFromHistory(chatHistory, gptModel),
+    model: chatModel.id,
+    temperature: chatModel.configuration.temperature,
+    top_p: chatModel.configuration.topP,
+    frequency_penalty: chatModel.configuration.frequencyPenalty,
+    presence_penalty: chatModel.configuration.presencePenalty,
+    messages: getChatCompletionsFromHistory(
+      chatHistory,
+      chatModelMaxTokens[chatModel.id]
+    ),
     functions: chatGptFunctions,
   });
   // log the time taken
@@ -362,12 +372,9 @@ function filterChatHistoryByMaxTokens(
 // take only the completions to send to GPT
 function getChatCompletionsFromHistory(
   chatHistory: ChatHistoryMessage[],
-  gptModel: CHAT_MODELS
+  maxTokens: number
 ): ChatCompletionRequestMessage[] {
   // limit the number of tokens sent to GPT
-  const maxTokens = chatModelMaxTokens[gptModel];
-  console.log("gpt model = ", gptModel, "max tokens = ", maxTokens);
-
   const reducedChatHistory: ChatHistoryMessage[] = filterChatHistoryByMaxTokens(
     chatHistory,
     maxTokens
@@ -420,13 +427,13 @@ function pushCompletionToHistory(
 async function chatGptSendMessage(
   chatHistory: ChatHistoryMessage[],
   defences: DefenceInfo[],
-  gptModel: CHAT_MODELS,
+  chatModel: ChatModel,
   message: string,
   messageIsTransformed: boolean,
   openAiApiKey: string,
   sentEmails: EmailInfo[],
   // default to sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
   console.log(`User message: '${message}'`);
 
@@ -437,7 +444,7 @@ async function chatGptSendMessage(
     alertedDefences: [],
     triggeredDefences: [],
   };
-  let wonPhase: boolean | undefined | null = false;
+  let wonLevel: boolean | undefined | null = false;
 
   // add user message to chat
   chatHistory = pushCompletionToHistory(
@@ -455,9 +462,9 @@ async function chatGptSendMessage(
   let reply = await chatGptChatCompletion(
     chatHistory,
     defences,
-    gptModel,
+    chatModel,
     openai,
-    currentPhase
+    currentLevel
   );
   // check if GPT wanted to call a function
   while (reply?.function_call) {
@@ -473,11 +480,11 @@ async function chatGptSendMessage(
       defences,
       reply.function_call,
       sentEmails,
-      currentPhase,
+      currentLevel,
       openAiApiKey
     );
     if (functionCallReply) {
-      wonPhase = functionCallReply.wonPhase;
+      wonLevel = functionCallReply.wonLevel;
       // add the function call to the chat history
       chatHistory = pushCompletionToHistory(
         chatHistory,
@@ -491,17 +498,17 @@ async function chatGptSendMessage(
     reply = await chatGptChatCompletion(
       chatHistory,
       defences,
-      gptModel,
+      chatModel,
       openai,
-      currentPhase
+      currentLevel
     );
   }
 
   if (reply?.content) {
     // if output filter defence is active, check for blocked words/phrases
     if (
-      currentPhase === PHASE_NAMES.PHASE_2 ||
-      currentPhase === PHASE_NAMES.SANDBOX
+      currentLevel === LEVEL_NAMES.LEVEL_3 ||
+      currentLevel === LEVEL_NAMES.SANDBOX
     ) {
       const detectedPhrases = detectFilterList(
         reply.content,
@@ -538,7 +545,7 @@ async function chatGptSendMessage(
     return {
       completion: reply,
       defenceInfo: defenceInfo,
-      wonPhase: wonPhase,
+      wonLevel: wonLevel,
     };
   } else {
     return null;

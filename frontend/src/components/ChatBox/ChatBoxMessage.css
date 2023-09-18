@@ -92,13 +92,13 @@
   border-color: transparent var(--chat-edited-colour);
 }
 
-.chat-box-message-phase-info .phase-info-header {
+.chat-box-message-level-info .level-info-header {
   font-weight: bold;
   margin-top: 0;
   margin-bottom: 5px;
 }
 
-.chat-box-message-phase-info {
+.chat-box-message-level-info {
   background-color: var(--email-background-colour);
   max-width: 100%;
   text-align: left;
