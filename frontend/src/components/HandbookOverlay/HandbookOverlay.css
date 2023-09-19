@@ -1,4 +1,4 @@
-#handbook-overlay {
+#handbook-overlay-screen {
   background-color: var(--overlay-hidden-colour);
 
   position: fixed;
@@ -13,19 +13,33 @@
   align-items: center;
 }
 
-#handbook-overlay-content {
+#handbook-overlay {
   background-color: var(--overlay-background-colour);
   color: var(--overlay-text-colour);
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+
   width: 50%;
   height: 50%;
-  padding: 20px;
   border-radius: 10px;
+}
+
+#handbook-overlay-content {
+  width: 80%;
 
   text-align: center;
+  overflow-y: auto;
 }
 
 #handbook-overlay-content h1 {
   font-weight: 700;
   font-size: 3rem;
+}
+
+#handbook-overlay-content p {
+  font-weight: 500;
+  font-size: 2rem;
 }
