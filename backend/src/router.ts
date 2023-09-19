@@ -33,10 +33,9 @@ import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRe
 const router = express.Router();
 
 router.get("/user/isNew", (req, res) => {
-  const isNewUser = req.session.isNewUser;
-  // log session id
-  // console.log("Session id: ", req.sessionID);
-  // console.log("isNewUser: ", isNewUser);
+  const isNewUser =
+    (!process.env.SKIP_WELCOME || process.env.SKIP_WELCOME === "false") &&
+    req.session.isNewUser;
   req.session.isNewUser = false;
   res.send(isNewUser);
 });
