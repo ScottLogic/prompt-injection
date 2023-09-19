@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@dqbd/tiktoken": "^1.0.7",
     "cors": "^2.8.5",
     "d3-dsv": "^2.0.0",
     "dotenv": "^16.3.1",
@@ -8,6 +7,7 @@
     "express-session": "^1.17.3",
     "langchain": "^0.0.113",
     "openai": "^3.3.0",
+    "openai-chat-tokens": "^0.2.7",
     "pdf-parse": "^1.1.1",
     "react": "^18.2.0"
   },
