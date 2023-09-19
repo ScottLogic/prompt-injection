@@ -17,9 +17,9 @@ function ExportPDFLink({
 }) {
   function getFileName() {
     if (currentLevel === LEVEL_NAMES.SANDBOX) {
-      return "prompt-injection-chat-log-sandbox.pdf";
+      return "spy-logic-chat-log-sandbox.pdf";
     } else {
-      return `prompt-injection-chat-log-level-${currentLevel}.pdf`;
+      return `spy-logic-chat-log-level-${currentLevel}.pdf`;
     }
   }
 

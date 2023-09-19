@@ -66,7 +66,7 @@ function ExportContent({
   currentLevel: LEVEL_NAMES;
 }) {
   function getTitle(currentLevel: LEVEL_NAMES) {
-    const title = "Prompt injection demo chat";
+    const title = "spy logic chat";
     if (currentLevel === LEVEL_NAMES.SANDBOX) {
       return `${title} (sandbox mode)`;
     } else {
