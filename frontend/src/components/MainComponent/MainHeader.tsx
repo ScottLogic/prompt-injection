@@ -1,6 +1,7 @@
 import { LEVELS } from "../../Levels";
 import { LEVEL_NAMES } from "../../models/level";
 import LevelSelectionBox from "../LevelSelectionBox/LevelSelectionBox";
+import HandbookIcon from "./HandbookIcon";
 import "./MainHeader.css";
 import ProjectIcon from "./ProjectIcon";
 import ProjectIconWon from "./ProjectIconWon";
@@ -39,6 +40,9 @@ function MainHeader({
             numCompletedLevels={numCompletedLevels}
             setNewLevel={setNewLevel}
           />
+        </span>
+        <span id="handbook-icon">
+          <HandbookIcon />
         </span>
       </span>
     </div>
