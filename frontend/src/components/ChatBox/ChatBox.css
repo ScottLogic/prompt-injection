@@ -56,3 +56,16 @@
   height: 40%;
   width: 100%;
 }
+
+#control-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 34px;
+  min-height: 34px;
+  padding-top: 20px;
+}
+
+.control-button {
+  width: 46%;
+}
