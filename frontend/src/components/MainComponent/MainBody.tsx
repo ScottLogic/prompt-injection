@@ -61,10 +61,8 @@ function MainBody({
         <ControlPanel
           currentLevel={currentLevel}
           defences={defences}
-          emails={emails}
           messages={messages}
           addChatMessage={addChatMessage}
-          resetLevel={resetLevelBody}
           setDefenceActive={setDefenceActive}
           setDefenceInactive={setDefenceInactive}
           setDefenceConfiguration={setDefenceConfiguration}
@@ -74,11 +72,13 @@ function MainBody({
       </div>
       <div id="centre-area">
         <ChatBox
-          messages={messages}
           completedLevels={completedLevels}
           currentLevel={currentLevel}
+          emails={emails}
+          messages={messages}
           addChatMessage={addChatMessage}
           addCompletedLevel={addCompletedLevel}
+          resetLevel={resetLevelBody}
           setNumCompletedLevels={setNumCompletedLevels}
           setEmails={setEmails}
         />
