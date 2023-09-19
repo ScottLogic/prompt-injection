@@ -16,23 +16,28 @@ import { LEVEL_NAMES } from "../../models/level";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import { ThreeDots } from "react-loader-spinner";
 import { getLevelPrompt } from "../../service/levelService";
+import ExportPDFLink from "../ExportChat/ExportPDFLink";
 
 function ChatBox({
-  messages,
   completedLevels,
   currentLevel,
+  emails,
+  messages,
   addChatMessage,
   addCompletedLevel,
-  setNumCompletedLevels,
+  resetLevel,
   setEmails,
+  setNumCompletedLevels,
 }: {
-  messages: ChatMessage[];
   completedLevels: Set<LEVEL_NAMES>;
   currentLevel: LEVEL_NAMES;
+  emails: EmailInfo[];
+  messages: ChatMessage[];
   addChatMessage: (message: ChatMessage) => void;
   addCompletedLevel: (level: LEVEL_NAMES) => void;
-  setNumCompletedLevels: (numCompletedLevels: number) => void;
+  resetLevel: () => void;
   setEmails: (emails: EmailInfo[]) => void;
+  setNumCompletedLevels: (numCompletedLevels: number) => void;
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
 
@@ -240,6 +245,22 @@ function ChatBox({
                 "Send"
               )}
             </span>
+          </button>
+        </div>
+
+        <div id="control-buttons">
+          <div className="control-button">
+            <ExportPDFLink
+              messages={messages}
+              emails={emails}
+              currentLevel={currentLevel}
+            />
+          </div>
+          <button
+            className="prompt-injection-button control-button"
+            onClick={resetLevel}
+          >
+            Reset
           </button>
         </div>
       </div>

@@ -9,7 +9,6 @@ import {
 import { LEVEL_NAMES } from "../../models/level";
 import AttackBox from "../AttackBox/AttackBox";
 import DefenceBox from "../DefenceBox/DefenceBox";
-import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ModelBox from "../ModelBox/ModelBox";
 import { EmailInfo } from "../../models/email";
 import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
@@ -17,19 +16,14 @@ import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
 function ControlPanel({
   currentLevel,
   defences,
-  emails,
-  messages,
-  resetLevel,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
 }: {
   currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
-  emails: EmailInfo[];
   messages: ChatMessage[];
   addChatMessage: (message: ChatMessage) => void;
-  resetLevel: () => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
@@ -70,22 +64,6 @@ function ControlPanel({
         {currentLevel === LEVEL_NAMES.SANDBOX && <ModelBox />}
         {/* only show document viewer button in sandbox mode */}
         {currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
-      </div>
-
-      <div id="control-buttons">
-        <div className="control-button">
-          <ExportPDFLink
-            messages={messages}
-            emails={emails}
-            currentLevel={currentLevel}
-          />
-        </div>
-        <button
-          className="prompt-injection-button control-button"
-          onClick={resetLevel}
-        >
-          Reset
-        </button>
       </div>
     </div>
   );
