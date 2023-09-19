@@ -90,8 +90,6 @@ app.use((req, _res, next) => {
     });
     req.session.initialised = true;
   }
-  // log the session ID
-  console.debug(`Session ID: ${req.sessionID}`);
   next();
 });
 
