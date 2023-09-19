@@ -7,7 +7,6 @@ import {
   transformMessage,
   detectTriggeredDefences,
   getInitialDefences,
-  getSystemRole,
 } from "./defence";
 import {
   CHAT_MESSAGE_TYPE,
@@ -30,6 +29,11 @@ import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
 import { OpenAiSetKeyRequest } from "./models/api/OpenAiSetKeyRequest";
 import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
 import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
+import {
+  systemRoleLevel1,
+  systemRoleLevel2,
+  systemRoleLevel3,
+} from "./promptTemplates";
 
 const router = express.Router();
 
@@ -75,7 +79,12 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
   const defenceId = req.body.defenceId;
   const config = req.body.config;
   const level = req.body.level;
-  if (defenceId && config && level && level >= LEVEL_NAMES.LEVEL_1) {
+  if (
+    defenceId &&
+    config &&
+    level !== undefined &&
+    level >= LEVEL_NAMES.LEVEL_1
+  ) {
     // configure the defence
     req.session.levelState[level].defences = configureDefence(
       defenceId,
@@ -297,7 +306,12 @@ router.post("/openai/addHistory", (req: OpenAiAddHistoryRequest, res) => {
   const message = req.body.message;
   const chatMessageType = req.body.chatMessageType;
   const level = req.body.level;
-  if (message && chatMessageType && level && level >= LEVEL_NAMES.LEVEL_1) {
+  if (
+    message &&
+    chatMessageType &&
+    level !== undefined &&
+    level >= LEVEL_NAMES.LEVEL_1
+  ) {
     req.session.levelState[level].chatHistory.push({
       completion: null,
       chatMessageType: chatMessageType,
@@ -428,15 +442,25 @@ router.get("/level/completed", (req, res) => {
 
 // /level/prompt?level=1
 router.get("/level/prompt", (req, res) => {
-  const level: LEVEL_NAMES | undefined = req.query.level as
-    | LEVEL_NAMES
-    | undefined;
-  if (level === undefined) {
+  const levelStr: string | undefined = req.query.level as string | undefined;
+  if (levelStr === undefined) {
     res.status(400).send();
   } else {
-    console.log("Prompt requested for level: ", LEVEL_NAMES[level]);
-    const prompt = getSystemRole(req.session.levelState[level].defences, level);
-    res.send(prompt);
+    const level = parseInt(levelStr) as LEVEL_NAMES;
+    switch (level) {
+      case LEVEL_NAMES.LEVEL_1:
+        res.send(systemRoleLevel1);
+        break;
+      case LEVEL_NAMES.LEVEL_2:
+        res.send(systemRoleLevel2);
+        break;
+      case LEVEL_NAMES.LEVEL_3:
+        res.send(systemRoleLevel3);
+        break;
+      default:
+        res.status(400).send();
+        break;
+    }
   }
 });
 

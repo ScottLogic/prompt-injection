@@ -147,6 +147,12 @@ async function addMessageToChatHistory(
   chatMessageType: CHAT_MESSAGE_TYPE,
   level: number
 ) {
+  console.log(
+    "Adding message to chat history: ",
+    message,
+    chatMessageType,
+    level
+  );
   const response = await sendRequest(
     `${PATH}addHistory`,
     "POST",

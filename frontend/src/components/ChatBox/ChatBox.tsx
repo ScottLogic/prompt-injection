@@ -15,6 +15,7 @@ import { EmailInfo } from "../../models/email";
 import { LEVEL_NAMES } from "../../models/level";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import { ThreeDots } from "react-loader-spinner";
+import { getLevelPrompt } from "../../service/levelService";
 
 function ChatBox({
   messages,
@@ -87,6 +88,16 @@ function ChatBox({
       // asynchronously send the message
       void sendChatMessage();
     }
+  }
+
+  async function getSuccessMessage(level: number) {
+    const prompt = await getLevelPrompt(level);
+    const successMessage = `Congratulations! You have completed this level. My original instructions were: 
+    
+    ${prompt}
+
+    Please click on the next level to continue.`;
+    return successMessage;
   }
 
   async function sendChatMessage() {
@@ -182,18 +193,22 @@ function ChatBox({
 
       if (response.wonLevel && !completedLevels.has(currentLevel)) {
         addCompletedLevel(currentLevel);
-        const successMessage =
-          "Congratulations! You have completed this level. Please click on the next level to continue.";
-        addChatMessage({
-          type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
-          message: successMessage,
-        });
-        // asynchronously add the message to the chat history
-        void addMessageToChatHistory(
-          successMessage,
-          CHAT_MESSAGE_TYPE.LEVEL_INFO,
-          currentLevel
-        );
+        getSuccessMessage(currentLevel)
+          .then((successMessage) => {
+            addChatMessage({
+              type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
+              message: successMessage,
+            });
+            // asynchronously add the message to the chat history
+            void addMessageToChatHistory(
+              successMessage,
+              CHAT_MESSAGE_TYPE.LEVEL_INFO,
+              currentLevel
+            );
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     }
   }

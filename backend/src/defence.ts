@@ -154,7 +154,7 @@ function getSystemRole(
         defences,
         DEFENCE_TYPES.SYSTEM_ROLE,
         "systemRole",
-        systemRoleDefault
+        ""
       );
   }
 }
