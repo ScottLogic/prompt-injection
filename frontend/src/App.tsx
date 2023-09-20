@@ -57,6 +57,10 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     setShowOverlay(false);
   }
 
+  function openOverlay() {
+    setShowOverlay(true);
+  }
+
   // methods to modify messages
   function addChatMessage(message: ChatMessage) {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
@@ -202,6 +206,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
         <MainHeader
           currentLevel={currentLevel}
           numCompletedLevels={numCompletedLevels}
+          openHandbook={openOverlay}
           setNewLevel={(newLevel: LEVEL_NAMES) => void setNewLevel(newLevel)}
         />
       </div>

@@ -9,10 +9,12 @@ import ProjectIconWon from "./ProjectIconWon";
 function MainHeader({
   currentLevel,
   numCompletedLevels,
+  openHandbook,
   setNewLevel,
 }: {
   currentLevel: LEVEL_NAMES;
   numCompletedLevels: number;
+  openHandbook: () => void;
   setNewLevel: (newLevel: number) => void;
 }) {
   function getLevelName(level: LEVEL_NAMES) {
@@ -41,7 +43,7 @@ function MainHeader({
             setNewLevel={setNewLevel}
           />
         </span>
-        <span id="handbook-icon">
+        <span id="handbook-icon" onClick={openHandbook}>
           <HandbookIcon />
         </span>
       </span>
