@@ -190,14 +190,14 @@ function App() {
 
   return (
     <div id="app-content">
-      <div id="app-content-header">
+      <header id="app-content-header">
         <MainHeader
           currentLevel={currentLevel}
           numCompletedLevels={numCompletedLevels}
           setNewLevel={(newLevel: LEVEL_NAMES) => void setNewLevel(newLevel)}
         />
-      </div>
-      <div id="app-content-body">
+      </header>
+      <main id="app-content-body">
         <MainBody
           key={MainBodyKey}
           currentLevel={currentLevel}
@@ -216,7 +216,7 @@ function App() {
           setEmails={setEmails}
           setNumCompletedLevels={setNumCompletedLevels}
         />
-      </div>
+      </main>
     </div>
   );
 }
