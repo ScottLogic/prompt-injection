@@ -1,0 +1,6 @@
+enum OVERLAY_TYPE {
+  WELCOME,
+  HANDBOOK,
+}
+
+export { OVERLAY_TYPE };

@@ -1,6 +1,28 @@
+import { LEVEL_NAMES } from "../../models/level";
+import { OVERLAY_TYPE } from "../../models/overlay";
+import HandbookAttacks from "./HandbookAttacks";
 import "./HandbookOverlay.css";
+import HandbookWelcome from "./HandbookWelcome";
 
-function HandbookOverlay({ closeOverlay }: { closeOverlay: () => void }) {
+function HandbookOverlay({
+  currentLevel,
+  overlayType,
+  closeOverlay,
+}: {
+  currentLevel: LEVEL_NAMES;
+  overlayType: OVERLAY_TYPE;
+  closeOverlay: () => void;
+}) {
+  function showOverlayByType() {
+    switch (overlayType) {
+      case OVERLAY_TYPE.HANDBOOK:
+        return <HandbookAttacks currentLevel={currentLevel} />;
+      case OVERLAY_TYPE.WELCOME:
+      default:
+        return <HandbookWelcome />;
+    }
+  }
+
   return (
     <div id="handbook-overlay-screen" onClick={closeOverlay}>
       <div
@@ -9,14 +31,7 @@ function HandbookOverlay({ closeOverlay }: { closeOverlay: () => void }) {
           event.stopPropagation();
         }}
       >
-        <div id="handbook-overlay-content">
-          <h1>Welcome!</h1>
-          <p>
-            Your mission, should you choose to accept it, is to go undercover
-            and spy on a rival company. Find out what they are doing, and email
-            me the details.
-          </p>
-        </div>
+        <div id="handbook-overlay-content">{showOverlayByType()}</div>
       </div>
     </div>
   );

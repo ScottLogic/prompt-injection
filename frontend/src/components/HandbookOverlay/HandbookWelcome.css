@@ -1,0 +1,9 @@
+#handbook-welcome h1 {
+  font-weight: 700;
+  font-size: 3rem;
+}
+
+#handbook-welcome p {
+  font-weight: 500;
+  font-size: 2rem;
+}
