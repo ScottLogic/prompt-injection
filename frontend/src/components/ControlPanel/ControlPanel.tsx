@@ -1,5 +1,4 @@
 import "./ControlPanel.css";
-import { ATTACKS_LEVEL_2, ATTACKS_ALL } from "../../Attacks";
 import { ChatMessage } from "../../models/chat";
 import {
   DEFENCE_TYPES,
@@ -7,7 +6,6 @@ import {
   DefenceInfo,
 } from "../../models/defence";
 import { LEVEL_NAMES } from "../../models/level";
-import AttackBox from "../AttackBox/AttackBox";
 import DefenceBox from "../DefenceBox/DefenceBox";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ModelBox from "../ModelBox/ModelBox";
@@ -42,15 +40,6 @@ function ControlPanel({
   return (
     <div id="control-panel">
       <div id="control-strategy">
-        {/* show reduced set of attacks on level 2 */}
-        {currentLevel === LEVEL_NAMES.LEVEL_2 && (
-          <AttackBox attacks={ATTACKS_LEVEL_2} />
-        )}
-        {/* show all attacks on level 3 and sandbox */}
-        {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
-          currentLevel === LEVEL_NAMES.SANDBOX) && (
-          <AttackBox attacks={ATTACKS_ALL} />
-        )}
         {/* hide defence box on levels 1 and 2 */}
         {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
           currentLevel === LEVEL_NAMES.SANDBOX) && (
