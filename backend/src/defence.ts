@@ -279,7 +279,6 @@ function transformXmlTagging(message: string) {
     escapeXml(message),
     closeTag
   );
-  console.debug("transformed msg=", transformedMessage);
   return transformedMessage;
 }
 
