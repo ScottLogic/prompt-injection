@@ -47,7 +47,12 @@ function getInitialDefences(): DefenceInfo[] {
         value: systemRoleDefault,
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.XML_TAGGING, []),
+    new DefenceInfo(DEFENCE_TYPES.XML_TAGGING, [
+      {
+        id: "prePrompt",
+        value: process.env.XML_TAGGING_PRE_PROMPT ?? "",
+      },
+    ]),
     new DefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
       {
         id: "filterUserInput",
@@ -114,7 +119,7 @@ function getRandomSequenceEnclosurePrePrompt(defences: DefenceInfo[]) {
     defences,
     DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
     "prePrompt",
-    retrievalQAPrePromptSecure
+    ""
   );
 }
 
@@ -125,6 +130,10 @@ function getRandomSequenceEnclosureLength(defences: DefenceInfo[]) {
     "length",
     String(10)
   );
+}
+
+function getXMLTaggingPrePrompt(defences: DefenceInfo[]) {
+  return getConfigValue(defences, DEFENCE_TYPES.XML_TAGGING, "prePrompt", "");
 }
 
 function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
@@ -262,12 +271,15 @@ function detectXMLTags(input: string) {
 // apply XML tagging defence to input message
 function transformXmlTagging(message: string) {
   console.debug("XML Tagging defence active.");
+  const prePrompt = getXMLTaggingPrePrompt(getInitialDefences());
   const openTag = "<user_input>";
   const closeTag = "</user_input>";
-  const transformedMessage: string = openTag.concat(
+  const transformedMessage: string = prePrompt.concat(
+    openTag,
     escapeXml(message),
     closeTag
   );
+  console.debug("transformed msg=", transformedMessage);
   return transformedMessage;
 }
 

@@ -38,7 +38,9 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
     DEFENCE_TYPES.XML_TAGGING,
     "XML Tagging",
     "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input. This is a form of prompt validation.",
-    []
+    [
+      new DefenceConfig("prePrompt", "pre-prompt")
+    ]
   ),
   new DefenceInfo(
     DEFENCE_TYPES.LLM_EVALUATION,

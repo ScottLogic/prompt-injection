@@ -116,22 +116,28 @@ test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
 test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed", () => {
   const message = "Hello";
   const defences = getInitialDefences();
+  process.env.XML_TAGGING_PRE_PROMPT = "XML_PRE_PROMPT: ";
   // activate XML_TAGGING defence
   const updatedDefences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
   const transformedMessage = transformMessage(message, updatedDefences);
   // expect the message to be surrounded by XML tags
-  expect(transformedMessage).toBe(`<user_input>${message}</user_input>`);
+  expect(transformedMessage).toBe(
+    `XML_PRE_PROMPT: <user_input>${message}</user_input>`
+  );
 });
 
 test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN transforming message THEN message is transformed AND transformed message escapes XML tags", () => {
   const message = "<>&'\"";
   const escapedMessage = "&lt;&gt;&amp;&apos;&quot;";
   const defences = getInitialDefences();
+  process.env.XML_TAGGING_PRE_PROMPT = "XML_PRE_PROMPT: ";
   // activate XML_TAGGING defence
   const updatedDefences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
   const transformedMessage = transformMessage(message, updatedDefences);
   // expect the message to be surrounded by XML tags
-  expect(transformedMessage).toBe(`<user_input>${escapedMessage}</user_input>`);
+  expect(transformedMessage).toBe(
+    `XML_PRE_PROMPT: <user_input>${escapedMessage}</user_input>`
+  );
 });
 
 test("GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered", async () => {
