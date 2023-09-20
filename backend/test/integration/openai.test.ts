@@ -8,6 +8,7 @@ import { chatGptSendMessage } from "../../src/openai";
 import { DEFENCE_TYPES, DefenceInfo } from "../../src/models/defence";
 import { EmailInfo } from "../../src/models/email";
 import { activateDefence, getInitialDefences } from "../../src/defence";
+import { systemRoleDefault } from "../../src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
@@ -97,7 +98,6 @@ test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", asy
 
 test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to chat history", async () => {
   // set the system role prompt
-  process.env.SYSTEM_ROLE = "You are a helpful assistant";
 
   const message = "Hello";
   const chatHistory: ChatHistoryMessage[] = [];
@@ -147,7 +147,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   expect(chatHistory.length).toBe(3);
   // system role is added to the start of the chat history
   expect(chatHistory[0].completion?.role).toBe("system");
-  expect(chatHistory[0].completion?.content).toBe(process.env.SYSTEM_ROLE);
+  expect(chatHistory[0].completion?.content).toBe(systemRoleDefault);
   expect(chatHistory[1].completion?.role).toBe("user");
   expect(chatHistory[1].completion?.content).toBe("Hello");
   expect(chatHistory[2].completion?.role).toBe("assistant");
@@ -158,9 +158,6 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
 });
 
 test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to the start of the chat history", async () => {
-  // set the system role prompt
-  process.env.SYSTEM_ROLE = "You are a helpful assistant";
-
   const message = "Hello";
   const isOriginalMessage = true;
   const chatHistory: ChatHistoryMessage[] = [
@@ -227,7 +224,7 @@ test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role 
   expect(chatHistory.length).toBe(5);
   // system role is added to the start of the chat history
   expect(chatHistory[0].completion?.role).toBe("system");
-  expect(chatHistory[0].completion?.content).toBe(process.env.SYSTEM_ROLE);
+  expect(chatHistory[0].completion?.content).toBe(systemRoleDefault);
   // rest of the chat history is in order
   expect(chatHistory[1].completion?.role).toBe("user");
   expect(chatHistory[1].completion?.content).toBe("I'm a user");
@@ -329,9 +326,6 @@ test(
   "GIVEN SYSTEM_ROLE defence is active AND the system role is already in the chat history " +
     "WHEN sending message THEN system role is not re-added to the chat history",
   async () => {
-    // set the system role prompt
-    process.env.SYSTEM_ROLE = "You are a helpful assistant";
-
     const message = "Hello";
     const chatHistory: ChatHistoryMessage[] = [
       {
@@ -403,7 +397,9 @@ test(
     expect(chatHistory.length).toBe(5);
     // system role is added to the start of the chat history
     expect(chatHistory[0].completion?.role).toBe("system");
-    expect(chatHistory[0].completion?.content).toBe(process.env.SYSTEM_ROLE);
+    expect(chatHistory[0].completion?.content).toBe(
+      "You are a helpful assistant"
+    );
     // rest of the chat history is in order
     expect(chatHistory[1].completion?.role).toBe("user");
     expect(chatHistory[1].completion?.content).toBe("I'm a user");

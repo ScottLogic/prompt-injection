@@ -13,7 +13,13 @@ import {
 import * as langchain from "../../src/langchain";
 import { DEFENCE_TYPES } from "../../src/models/defence";
 import { LEVEL_NAMES } from "../../src/models/level";
-import { retrievalQAPrePromptSecure } from "../../src/promptTemplates";
+import {
+  retrievalQAPrePromptSecure,
+  systemRoleDefault,
+  systemRoleLevel1,
+  systemRoleLevel2,
+  systemRoleLevel3,
+} from "../../src/promptTemplates";
 
 jest.mock("../../src/langchain");
 
@@ -310,24 +316,22 @@ test("GIVEN setting max message length WHEN configuring defence THEN defence is 
   }
 });
 
-test("GIVEN system role has not been configured WHEN getting system role THEN return empty string", () => {
+test("GIVEN system role has not been configured WHEN getting system role THEN return default system role", () => {
   const defences = getInitialDefences();
   const systemRole = getSystemRole(defences);
-  expect(systemRole).toBe("");
+  expect(systemRole).toBe(systemRoleDefault);
 });
 
 test("GIVEN system role has been configured WHEN getting system role THEN return system role", () => {
-  process.env.SYSTEM_ROLE = "system role";
   const defences = getInitialDefences();
   const systemRole = getSystemRole(defences);
-  expect(systemRole).toBe("system role");
+  expect(systemRole).toBe(systemRoleDefault);
 });
 
 test("GIVEN a new system role has been set WHEN getting system role THEN return new system role", () => {
-  process.env.SYSTEM_ROLE = "system role";
   let defences = getInitialDefences();
   let systemRole = getSystemRole(defences);
-  expect(systemRole).toBe("system role");
+  expect(systemRole).toBe(systemRoleDefault);
   defences = configureDefence(DEFENCE_TYPES.SYSTEM_ROLE, defences, [
     { id: "systemRole", value: "new system role" },
   ]);
@@ -336,26 +340,13 @@ test("GIVEN a new system role has been set WHEN getting system role THEN return 
 });
 
 test("GIVEN system roles have been set for each level WHEN getting system roles THEN the right system role is returned per level", () => {
-  process.env.SYSTEM_ROLE_LEVEL_1 = "level 1 system role";
-  process.env.SYSTEM_ROLE_LEVEL_2 = "level 2 system role";
-  process.env.SYSTEM_ROLE_LEVEL_3 = "level 3 system role";
   const defences = getInitialDefences();
-  const systemRoleLevel1 = getSystemRole(defences, LEVEL_NAMES.LEVEL_1);
-  const systemRoleLevel2 = getSystemRole(defences, LEVEL_NAMES.LEVEL_2);
-  const systemRoleLevel3 = getSystemRole(defences, LEVEL_NAMES.LEVEL_3);
-  expect(systemRoleLevel1).toBe("level 1 system role");
-  expect(systemRoleLevel2).toBe("level 2 system role");
-  expect(systemRoleLevel3).toBe("level 3 system role");
-});
-
-test("GIVEN system roles have not been set for each level WHEN getting system roles THEN empty strings are returned", () => {
-  const defences = getInitialDefences();
-  const systemRoleLevel1 = getSystemRole(defences, LEVEL_NAMES.LEVEL_1);
-  const systemRoleLevel2 = getSystemRole(defences, LEVEL_NAMES.LEVEL_2);
-  const systemRoleLevel3 = getSystemRole(defences, LEVEL_NAMES.LEVEL_3);
-  expect(systemRoleLevel1).toBe("");
-  expect(systemRoleLevel2).toBe("");
-  expect(systemRoleLevel3).toBe("");
+  const systemRole_Level1 = getSystemRole(defences, LEVEL_NAMES.LEVEL_1);
+  const systemRole_Level2 = getSystemRole(defences, LEVEL_NAMES.LEVEL_2);
+  const systemRole_Level3 = getSystemRole(defences, LEVEL_NAMES.LEVEL_3);
+  expect(systemRole_Level1).toBe(systemRoleLevel1);
+  expect(systemRole_Level2).toBe(systemRoleLevel2);
+  expect(systemRole_Level3).toBe(systemRoleLevel3);
 });
 
 test("GIVEN QA LLM instructions have not been configured WHEN getting QA LLM instructions THEN return default secure prompt", () => {

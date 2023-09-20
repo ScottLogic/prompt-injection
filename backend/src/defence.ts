@@ -2,7 +2,13 @@ import { queryPromptEvaluationModel } from "./langchain";
 import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
-import { retrievalQAPrePromptSecure } from "./promptTemplates";
+import {
+  retrievalQAPrePromptSecure,
+  systemRoleDefault,
+  systemRoleLevel1,
+  systemRoleLevel2,
+  systemRoleLevel3,
+} from "./promptTemplates";
 
 function getInitialDefences(): DefenceInfo[] {
   return [
@@ -38,7 +44,7 @@ function getInitialDefences(): DefenceInfo[] {
     new DefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
       {
         id: "systemRole",
-        value: process.env.SYSTEM_ROLE ?? "",
+        value: systemRoleDefault,
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.XML_TAGGING, []),
@@ -138,11 +144,11 @@ function getSystemRole(
 ) {
   switch (currentLevel) {
     case LEVEL_NAMES.LEVEL_1:
-      return process.env.SYSTEM_ROLE_LEVEL_1 ?? "";
+      return systemRoleLevel1;
     case LEVEL_NAMES.LEVEL_2:
-      return process.env.SYSTEM_ROLE_LEVEL_2 ?? "";
+      return systemRoleLevel2;
     case LEVEL_NAMES.LEVEL_3:
-      return process.env.SYSTEM_ROLE_LEVEL_3 ?? "";
+      return systemRoleLevel3;
     default:
       return getConfigValue(
         defences,
