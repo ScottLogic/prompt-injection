@@ -24,7 +24,7 @@ function MainHeader({
   return (
     <div id="main-header">
       <span id="main-header-left">
-        <span id="main-header-title">Prompt Injection Demo</span>
+        <span id="main-header-title">Spy Logic</span>
         <span id="main-header-icon">
           {isLevelComplete ? <ProjectIconWon /> : <ProjectIcon />}
         </span>
