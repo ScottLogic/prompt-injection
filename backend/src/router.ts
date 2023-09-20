@@ -37,6 +37,14 @@ import {
 
 const router = express.Router();
 
+router.get("/user/isNew", (req, res) => {
+  const isNewUser =
+    (!process.env.SKIP_WELCOME || process.env.SKIP_WELCOME === "false") &&
+    req.session.isNewUser;
+  req.session.isNewUser = false;
+  res.send(isNewUser);
+});
+
 // Activate a defence
 router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence

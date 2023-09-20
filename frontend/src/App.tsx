@@ -23,14 +23,17 @@ import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "./Defences";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedLevels } from "./service/levelService";
 import { LEVELS } from "./Levels";
+import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 
-function App() {
+function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
   // start on sandbox mode
   const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
     LEVEL_NAMES.SANDBOX
   );
   const [numCompletedLevels, setNumCompletedLevels] = useState<number>(0);
+
+  const [showOverlay, setShowOverlay] = useState<boolean>(isNewUser);
 
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
@@ -45,10 +48,14 @@ function App() {
         setNumCompletedLevels(numCompletedLevels);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
     void setNewLevel(currentLevel);
   }, []);
+
+  function closeOverlay() {
+    setShowOverlay(false);
+  }
 
   // methods to modify messages
   function addChatMessage(message: ChatMessage) {
@@ -190,6 +197,7 @@ function App() {
 
   return (
     <div id="app-content">
+      {showOverlay && <HandbookOverlay closeOverlay={closeOverlay} />}
       <div id="app-content-header">
         <MainHeader
           currentLevel={currentLevel}
