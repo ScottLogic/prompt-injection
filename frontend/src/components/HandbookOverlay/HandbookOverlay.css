@@ -28,18 +28,9 @@
 }
 
 #handbook-overlay-content {
-  width: 80%;
+  height: 100%;
+  padding: 0 5%;
 
   text-align: center;
   overflow-y: auto;
-}
-
-#handbook-overlay-content h1 {
-  font-weight: 700;
-  font-size: 3rem;
-}
-
-#handbook-overlay-content p {
-  font-weight: 500;
-  font-size: 2rem;
 }
