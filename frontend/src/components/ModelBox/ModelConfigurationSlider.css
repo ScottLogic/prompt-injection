@@ -31,13 +31,12 @@
 }
 
 .model-config-info-icon {
-  font-size: 21px;
-  margin-left: 1rem;
+  font-size: 1.3rem;
   margin-bottom: 0px;
 }
 
 .model-config-info-text {
   margin-top: 0px;
   padding: 0px;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
