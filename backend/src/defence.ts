@@ -269,9 +269,9 @@ function detectXMLTags(input: string) {
 }
 
 // apply XML tagging defence to input message
-function transformXmlTagging(message: string) {
+function transformXmlTagging(message: string, defences: DefenceInfo[]) {
   console.debug("XML Tagging defence active.");
-  const prePrompt = getXMLTaggingPrePrompt(getInitialDefences());
+  const prePrompt = getXMLTaggingPrePrompt(defences);
   const openTag = "<user_input>";
   const closeTag = "</user_input>";
   const transformedMessage: string = prePrompt.concat(
@@ -292,7 +292,7 @@ function transformMessage(message: string, defences: DefenceInfo[]) {
     );
   }
   if (isDefenceActive(DEFENCE_TYPES.XML_TAGGING, defences)) {
-    transformedMessage = transformXmlTagging(transformedMessage);
+    transformedMessage = transformXmlTagging(transformedMessage, defences);
   }
   if (message === transformedMessage) {
     console.debug("No defences applied. Message unchanged.");

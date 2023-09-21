@@ -115,8 +115,8 @@ test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
 
 test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed", () => {
   const message = "Hello";
-  const defences = getInitialDefences();
   process.env.XML_TAGGING_PRE_PROMPT = "XML_PRE_PROMPT: ";
+  const defences = getInitialDefences();
   // activate XML_TAGGING defence
   const updatedDefences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
   const transformedMessage = transformMessage(message, updatedDefences);
@@ -129,8 +129,8 @@ test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
 test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN transforming message THEN message is transformed AND transformed message escapes XML tags", () => {
   const message = "<>&'\"";
   const escapedMessage = "&lt;&gt;&amp;&apos;&quot;";
-  const defences = getInitialDefences();
   process.env.XML_TAGGING_PRE_PROMPT = "XML_PRE_PROMPT: ";
+  const defences = getInitialDefences();
   // activate XML_TAGGING defence
   const updatedDefences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
   const transformedMessage = transformMessage(message, updatedDefences);
