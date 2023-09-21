@@ -24,6 +24,7 @@ import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedLevels } from "./service/levelService";
 import { LEVELS } from "./Levels";
 import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
+import { OVERLAY_TYPE } from "./models/overlay";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
@@ -41,6 +42,10 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
+  const [overlayType, setOverlayType] = useState<OVERLAY_TYPE>(
+    OVERLAY_TYPE.WELCOME
+  );
+
   // called on mount
   useEffect(() => {
     getCompletedLevels()
@@ -55,6 +60,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   function closeOverlay() {
     setShowOverlay(false);
+  }
+
+  function openHandbook() {
+    setOverlayType(OVERLAY_TYPE.HANDBOOK);
+    setShowOverlay(true);
   }
 
   // methods to modify messages
@@ -197,11 +207,18 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   return (
     <div id="app-content">
-      {showOverlay && <HandbookOverlay closeOverlay={closeOverlay} />}
+      {showOverlay && (
+        <HandbookOverlay
+          currentLevel={currentLevel}
+          overlayType={overlayType}
+          closeOverlay={closeOverlay}
+        />
+      )}
       <header id="app-content-header">
         <MainHeader
           currentLevel={currentLevel}
           numCompletedLevels={numCompletedLevels}
+          openHandbook={openHandbook}
           setNewLevel={(newLevel: LEVEL_NAMES) => void setNewLevel(newLevel)}
         />
       </header>
