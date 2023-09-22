@@ -31,26 +31,62 @@ function ControlPanel({
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedLevels: (numCompletedLevels: number) => void;
 }) {
+  function getDefencesConfigure() {
+    return defences.filter((defence) => {
+      return ![
+        DEFENCE_TYPES.LLM_EVALUATION,
+        DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
+        DEFENCE_TYPES.SYSTEM_ROLE,
+      ].find((id) => id === defence.id);
+    });
+  }
+
+  function getDefencesModel() {
+    return defences.filter((defence) => {
+      return [
+        DEFENCE_TYPES.LLM_EVALUATION,
+        DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
+        DEFENCE_TYPES.SYSTEM_ROLE,
+      ].find((id) => id === defence.id);
+    });
+  }
+
   return (
     <div id="control-panel">
       <div id="control-strategy">
         {/* hide defence box on levels 1 and 2 */}
         {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
           currentLevel === LEVEL_NAMES.SANDBOX) && (
-          <DefenceBox
-            currentLevel={currentLevel}
-            defences={defences}
-            showConfigurations={
-              // only allow configuration in sandbox
-              currentLevel === LEVEL_NAMES.SANDBOX ? true : false
-            }
-            setDefenceActive={setDefenceActive}
-            setDefenceInactive={setDefenceInactive}
-            setDefenceConfiguration={setDefenceConfiguration}
-          />
+          <div id="control-defence-configuration">
+            <span className="sidebar-header">Defence Configuration</span>
+            <DefenceBox
+              currentLevel={currentLevel}
+              defences={getDefencesConfigure()}
+              showConfigurations={
+                // only allow configuration in sandbox
+                currentLevel === LEVEL_NAMES.SANDBOX ? true : false
+              }
+              setDefenceActive={setDefenceActive}
+              setDefenceInactive={setDefenceInactive}
+              setDefenceConfiguration={setDefenceConfiguration}
+            />
+          </div>
         )}
         {/* only show model selection box in sandbox mode */}
-        {currentLevel === LEVEL_NAMES.SANDBOX && <ModelBox />}
+        {currentLevel === LEVEL_NAMES.SANDBOX && (
+          <div id="control-model-configuration">
+            <span className="sidebar-header">Model configuration</span>
+            <DefenceBox
+              currentLevel={currentLevel}
+              defences={getDefencesModel()}
+              showConfigurations={true}
+              setDefenceActive={setDefenceActive}
+              setDefenceInactive={setDefenceInactive}
+              setDefenceConfiguration={setDefenceConfiguration}
+            />
+            <ModelBox />
+          </div>
+        )}
         {/* only show document viewer button in sandbox mode */}
         {currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
       </div>

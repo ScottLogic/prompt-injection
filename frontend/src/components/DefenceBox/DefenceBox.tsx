@@ -25,7 +25,6 @@ function DefenceBox({
 }) {
   return (
     <div id="strategy-box">
-      <div className="side-bar-header">Defences</div>
       {defences.map((defence, index) => {
         return (
           <DefenceMechanism
