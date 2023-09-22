@@ -11,6 +11,8 @@
 
 .control-collapsible-section {
   margin-bottom: 12px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .control-collapsible-section-header {
