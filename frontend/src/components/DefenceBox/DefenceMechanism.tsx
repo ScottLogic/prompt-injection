@@ -6,7 +6,6 @@ import {
 } from "../../models/defence";
 import { validateDefence } from "../../service/defenceService";
 import "./DefenceMechanism.css";
-import "../StrategyBox/StrategyMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
 import { TiTick, TiTimes } from "react-icons/ti";
 
@@ -73,10 +72,10 @@ function DefenceMechanism({
   return (
     <span>
       <div
-        className="strategy-mechanism defence-mechanism"
+        className="defence-mechanism defence-mechanism"
         onClick={toggleDefenceInfo}
       >
-        <div className="strategy-mechanism-header">
+        <div className="defence-mechanism-header">
           <span>{defenceDetail.name}</span>
           <label className="switch">
             <input
@@ -90,7 +89,7 @@ function DefenceMechanism({
           </label>
         </div>
         {isInfoBoxVisible ? (
-          <div className="strategy-mechanism-info-box">
+          <div className="defence-mechanism-info-box">
             <div>{defenceDetail.info}</div>
 
             {showConfigurations ? (

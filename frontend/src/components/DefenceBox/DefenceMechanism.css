@@ -1,3 +1,36 @@
+.defence-mechanism {
+  background-color: var(--main-button-inactive-background-colour);
+  border-color: transparent;
+  border-radius: 8px;
+  border-style: solid;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  cursor: default;
+}
+
+.defence-mechanism-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.defence-mechanism-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  width: 20px;
+}
+
+.defence-mechanism-info span {
+  position: relative;
+  bottom: 1px;
+}
+
+.defence-mechanism-info-box {
+  font-size: 14px;
+  margin-top: 4px;
+}
+
 .defence-mechanism-config {
   font-size: 14px;
   margin-top: 4px;

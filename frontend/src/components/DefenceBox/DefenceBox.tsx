@@ -1,4 +1,4 @@
-import "../StrategyBox/StrategyBox.css";
+import "./DefenceBox.css";
 import DefenceMechanism from "./DefenceMechanism";
 import {
   DEFENCE_TYPES,
@@ -24,7 +24,7 @@ function DefenceBox({
   ) => Promise<boolean>;
 }) {
   return (
-    <div id="strategy-box">
+    <div id="defence-box">
       {defences.map((defence, index) => {
         return (
           <DefenceMechanism
