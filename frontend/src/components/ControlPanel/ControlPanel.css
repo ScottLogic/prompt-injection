@@ -5,6 +5,28 @@
 }
 
 #control-strategy {
-  padding: 0 30px;
+  padding: 30px;
   overflow-y: auto;
+}
+
+.control-collapsible-section {
+  margin-bottom: 12px;
+}
+
+.control-collapsible-section-header {
+  background-color: var(--control-header-background-colour);
+  padding: 12px 14px;
+  cursor: default;
+}
+
+.control-collapsible-section-body {
+  /* hide this */
+  display: none;
+
+  background-color: var(--control-body-background-colour);
+}
+
+.control-collapsible-section-body-active {
+  /* show this */
+  display: block;
 }

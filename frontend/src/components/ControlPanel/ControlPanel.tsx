@@ -51,6 +51,13 @@ function ControlPanel({
     });
   }
 
+  function toggleShowCollapsibleSection(sectionId: string) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.classList.toggle("control-collapsible-section-body-active");
+    }
+  }
+
   return (
     <div id="control-panel">
       <div id="control-strategy">
@@ -58,10 +65,19 @@ function ControlPanel({
         {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
           currentLevel === LEVEL_NAMES.SANDBOX) && (
           <div className="control-collapsible-section">
-            <div className="control-collapsible-section-header">
+            <div
+              className="control-collapsible-section-header"
+              // toggle show body on click
+              onClick={() => {
+                toggleShowCollapsibleSection("control-defence-configuration");
+              }}
+            >
               Defence Configuration
             </div>
-            <div className="control-collapsible-section-body">
+            <div
+              id="control-defence-configuration"
+              className="control-collapsible-section-body"
+            >
               <DefenceBox
                 currentLevel={currentLevel}
                 defences={getDefencesConfigure()}
@@ -79,10 +95,19 @@ function ControlPanel({
         {/* only show model selection box in sandbox mode */}
         {currentLevel === LEVEL_NAMES.SANDBOX && (
           <div className="control-collapsible-section">
-            <div className="control-collapsible-section-header">
+            <div
+              className="control-collapsible-section-header"
+              // toggle show body on click
+              onClick={() => {
+                toggleShowCollapsibleSection("control-model-configuration");
+              }}
+            >
               Model Configuration
             </div>
-            <div className="control-collapsible-section-body">
+            <div
+              id="control-model-configuration"
+              className="control-collapsible-section-body"
+            >
               <DefenceBox
                 currentLevel={currentLevel}
                 defences={getDefencesModel()}

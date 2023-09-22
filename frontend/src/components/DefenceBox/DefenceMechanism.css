@@ -1,10 +1,5 @@
 .defence-mechanism {
-  background-color: var(--main-button-inactive-background-colour);
-  border-color: transparent;
-  border-radius: 8px;
-  border-style: solid;
   padding: 12px 14px;
-  margin-bottom: 8px;
   cursor: default;
 }
 
