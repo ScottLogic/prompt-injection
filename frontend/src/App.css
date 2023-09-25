@@ -45,6 +45,21 @@
   white-space: nowrap;
 }
 
+.prompt-injection-min-button {
+  /* remove button styling */
+  background-color: transparent;
+  border: none;
+  color: var(--main-button-inactive-text-colour);
+  padding: 0;
+
+  height: 100%;
+}
+
+.prompt-injection-min-button:hover {
+  /* outline on hover */
+  outline: 1px solid var(--main-border-colour);
+}
+
 .prompt-injection-button:hover:not([disabled]) {
   background-color: var(--main-button-hover-background-colour);
   color: var(--main-button-hover-text-colour);
