@@ -22,13 +22,5 @@
 }
 
 .control-collapsible-section-body {
-  /* hide this */
-  display: none;
-
   background-color: var(--control-body-background-colour);
-}
-
-.control-collapsible-section-body-active {
-  /* show this */
-  display: block;
 }

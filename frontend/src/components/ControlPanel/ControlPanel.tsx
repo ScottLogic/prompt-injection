@@ -51,29 +51,16 @@ function ControlPanel({
     });
   }
 
-  function toggleShowCollapsibleSection(sectionId: string) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.classList.toggle("control-collapsible-section-body-active");
-    }
-  }
-
   return (
     <div id="control-panel">
       <div id="control-strategy">
         {/* hide defence box on levels 1 and 2 */}
         {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
           currentLevel === LEVEL_NAMES.SANDBOX) && (
-          <div className="control-collapsible-section">
-            <div
-              className="control-collapsible-section-header"
-              // toggle show body on click
-              onClick={() => {
-                toggleShowCollapsibleSection("control-defence-configuration");
-              }}
-            >
+          <details className="control-collapsible-section">
+            <summary className="control-collapsible-section-header">
               Defence Configuration
-            </div>
+            </summary>
             <div
               id="control-defence-configuration"
               className="control-collapsible-section-body"
@@ -90,20 +77,14 @@ function ControlPanel({
                 setDefenceConfiguration={setDefenceConfiguration}
               />
             </div>
-          </div>
+          </details>
         )}
         {/* only show model selection box in sandbox mode */}
         {currentLevel === LEVEL_NAMES.SANDBOX && (
-          <div className="control-collapsible-section">
-            <div
-              className="control-collapsible-section-header"
-              // toggle show body on click
-              onClick={() => {
-                toggleShowCollapsibleSection("control-model-configuration");
-              }}
-            >
+          <details className="control-collapsible-section">
+            <summary className="control-collapsible-section-header">
               Model Configuration
-            </div>
+            </summary>
             <div
               id="control-model-configuration"
               className="control-collapsible-section-body"
@@ -118,7 +99,7 @@ function ControlPanel({
               />
               <ModelBox />
             </div>
-          </div>
+          </details>
         )}
         {/* only show document viewer button in sandbox mode */}
         {currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
