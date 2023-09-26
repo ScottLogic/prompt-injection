@@ -226,7 +226,6 @@ function ChatBox({
             id="chat-box-input"
             className="prompt-injection-input"
             placeholder="Type here..."
-            autoFocus
             rows={1}
             onChange={inputChange}
             onKeyDown={inputKeyDown}
