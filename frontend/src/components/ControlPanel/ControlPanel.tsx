@@ -37,7 +37,7 @@ function ControlPanel({
         DEFENCE_TYPES.LLM_EVALUATION,
         DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
         DEFENCE_TYPES.SYSTEM_ROLE,
-      ].find((id) => id === defence.id);
+      ].some((id) => id === defence.id);
     });
   }
 
@@ -47,7 +47,7 @@ function ControlPanel({
         DEFENCE_TYPES.LLM_EVALUATION,
         DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
         DEFENCE_TYPES.SYSTEM_ROLE,
-      ].find((id) => id === defence.id);
+      ].some((id) => id === defence.id);
     });
   }
 
