@@ -53,11 +53,15 @@
   padding: 0;
 
   height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .prompt-injection-min-button:hover {
   /* outline on hover */
-  outline: 1px solid var(--main-border-colour);
+  outline: 1px solid var(--main-button-hover-border-colour);
 }
 
 .prompt-injection-button:hover:not([disabled]) {
