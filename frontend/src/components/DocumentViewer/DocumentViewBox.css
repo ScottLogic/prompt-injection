@@ -30,12 +30,17 @@
   float: right;
   font-size: 28px;
   font-weight: bold;
+  outline: none;
+
+  max-width: 40px;
 }
 
 .document-popup-inner .close-button:hover {
   color: var(--main-button-hover-text-colour);
   text-decoration: none;
   cursor: pointer;
+  /* no outline as x is highlighted on hover */
+  outline: none;
 }
 
 .view-documents-header {
