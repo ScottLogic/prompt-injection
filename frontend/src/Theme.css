@@ -30,6 +30,11 @@
   --main-toggle-off-colour: #ababab;
   --main-toggle-on-colour: var(--main-accent-colour);
 
+  --control-header-background-colour: var(
+    --main-button-inactive-background-colour
+  );
+  --control-body-background-colour: #3a3a3a;
+
   --overlay-hidden-colour: #0008;
   --overlay-background-colour: #8ad5da;
   --overlay-attack-background-colour: #d6d6ff;
