@@ -3,41 +3,25 @@
   cursor: default;
 }
 
-.defence-mechanism-header {
+.defence-mechanism header {
   display: flex;
   justify-content: space-between;
 }
 
-.defence-mechanism-info {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 20px;
-  width: 20px;
+.defence-mechanism header h4 {
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  margin: 0;
 }
 
-.defence-mechanism-info span {
-  position: relative;
-  bottom: 1px;
-}
-
-.defence-mechanism-info-box {
-  font-size: 14px;
+.defence-mechanism > .info-box {
+  font-size: 0.875rem;
   margin-top: 4px;
-}
-
-.defence-mechanism-config {
-  font-size: 14px;
-  margin-top: 4px;
-}
-
-.defence-mechanism-config-validated {
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 
 .validation-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
 }
 
