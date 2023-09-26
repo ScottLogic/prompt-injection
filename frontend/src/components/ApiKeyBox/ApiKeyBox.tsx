@@ -71,9 +71,13 @@ function ApiKeyBox() {
         onChange={handleApiKeyChange}
         onKeyUp={(event) => void handleApiKeySubmit(event)}
       />
-      <span id="viewKey" onClick={toggleDisplayKey}>
+      <button
+        id="viewKey"
+        className="prompt-injection-min-button"
+        onClick={toggleDisplayKey}
+      >
         {keyDisplayed ? <BiHide /> : <BiShowAlt />}
-      </span>
+      </button>
 
       <div className="status-text">
         {isValidated &&
