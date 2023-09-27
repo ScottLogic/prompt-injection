@@ -25,13 +25,8 @@ function DefenceMechanism({
     config: DefenceConfig[]
   ) => Promise<boolean>;
 }) {
-  const [isInfoBoxVisible, setIsInfoBoxVisible] = useState<boolean>(false);
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const [configValidated, setConfigValidated] = useState<boolean>(true);
-
-  function toggleDefenceInfo() {
-    setIsInfoBoxVisible(!isInfoBoxVisible);
-  }
 
   async function setConfigurationValue(configId: string, value: string) {
     const configName =
@@ -70,21 +65,19 @@ function DefenceMechanism({
   }
 
   return (
-    <article className="defence-mechanism" onClick={toggleDefenceInfo}>
-      <header>
-        <h4>{defenceDetail.name}</h4>
-        <label className="switch">
-          <input
-            type="checkbox"
-            placeholder="defence-toggle"
-            onChange={toggleDefence}
-            // set checked if defence is active
-            checked={defenceDetail.isActive}
-          />
-          <span className="slider round"></span>
-        </label>
-      </header>
-      {isInfoBoxVisible && (
+    <div className="defence-mechanism">
+      <label className="switch">
+        <input
+          type="checkbox"
+          placeholder="defence-toggle"
+          onChange={toggleDefence}
+          // set checked if defence is active
+          checked={defenceDetail.isActive}
+        />
+        <span className="slider round"></span>
+      </label>
+      <details>
+        <summary>{defenceDetail.name}</summary>
         <div className="info-box">
           <p>{defenceDetail.info}</p>
 
@@ -111,8 +104,8 @@ function DefenceMechanism({
               </p>
             ))}
         </div>
-      )}
-    </article>
+      </details>
+    </div>
   );
 }
 
