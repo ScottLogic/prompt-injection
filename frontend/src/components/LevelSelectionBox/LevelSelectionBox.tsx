@@ -26,7 +26,9 @@ function LevelSelectionBox({
           return (
             <button
               className={`prompt-injection-button level-selection-button ${
-                level.id === currentLevel ? "selected" : ""
+                level.id === currentLevel
+                  ? "prompt-injection-button-selected"
+                  : ""
               }`}
               key={level.name}
               onClick={() => {

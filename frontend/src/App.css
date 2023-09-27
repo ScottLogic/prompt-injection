@@ -46,13 +46,18 @@
 }
 
 .prompt-injection-button:hover:not([disabled]) {
-  background-color: var(--main-button-hover-background-colour);
-  color: var(--main-button-hover-text-colour);
+  background-color: var(--main-button-inactive-hover-background-colour);
+  color: var(--main-button-inactive-hover-text-colour);
 }
 
-.prompt-injection-button:active {
+.prompt-injection-button-selected {
   background-color: var(--main-button-active-background-colour);
   color: var(--main-button-active-text-colour);
+}
+
+.prompt-injection-button-selected:hover:not([disabled]) {
+  background-color: var(--main-button-active-hover-background-colour);
+  color: var(--main-button-active-hover-text-colour);
 }
 
 .prompt-injection-button[disabled] {
