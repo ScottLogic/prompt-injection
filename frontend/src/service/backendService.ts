@@ -1,6 +1,6 @@
 function getBackendUrl(): string {
   const URL = import.meta.env.VITE_BACKEND_URL;
-  if (!URL) throw new Error("BACKEND_URL env variable not set");
+  if (!URL) throw new Error("VITE_BACKEND_URL env variable not set");
   return URL;
 }
 
