@@ -1,7 +1,12 @@
 function getBackendUrl(): string {
-  const URL = import.meta.env.VITE_BACKEND_URL;
-  if (!URL) throw new Error("VITE_BACKEND_URL env variable not set");
-  return URL;
+  const url = import.meta.env.VITE_BACKEND_URL;
+  if (!url) throw new Error("VITE_BACKEND_URL env variable not set");
+  return url;
+}
+
+function makeUrl(path: string): URL {
+  const url = new URL(path, getBackendUrl());
+  return url;
 }
 
 async function sendRequest(
@@ -20,7 +25,7 @@ async function sendRequest(
   if (body) {
     init.body = body;
   }
-  const response: Response = await fetch(getBackendUrl() + path, init);
+  const response: Response = await fetch(makeUrl(path), init);
   return response;
 }
 
