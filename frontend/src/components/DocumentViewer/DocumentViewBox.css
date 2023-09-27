@@ -28,7 +28,7 @@
 .document-popup-inner .close-button {
   color: var(--main-accent-colour);
   float: right;
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: bold;
   outline: none;
 
