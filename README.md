@@ -19,7 +19,8 @@ npm install
 ```
 
 ## Setup
-### Backend environment file
+### Environment file
+#### Backend
 1. Copy the example environment file `.env.example` in the backend directory and rename it to `.env`.
 1. Replace the OPENAI_API_KEY value in the `.env` file with your [OpenAI API key](https://platform.openai.com/account/api-keys).
 1. Replace the SESSION_SECRET value with a [random UUID](https://www.uuidgenerator.net/).
@@ -34,7 +35,7 @@ npm install
 | EMAIL_WHITELIST                 | kate@hotmail.com,bob@hotmail.com,@scottlogic.com | List of emails that the chat bot can 'send' emails to when the EMAIL_WHITELIST defence is active. |
 | SESSION_SECRET                  | YOUR_SESSION_SECRET | A secret string used to set up the backend user session. |
 
-### Frontend environment file
+#### Frontend
 1. Copy the example environment file `.env.example` in the frontend directory and rename it to `.env`.
 
 | env var                         | default | description |
