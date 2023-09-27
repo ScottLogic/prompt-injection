@@ -18,7 +18,7 @@
 }
 
 #main-header-title {
-  font-size: 36px;
+  font-size: 2.25rem;
   font-style: italic;
   font-weight: 700;
   white-space: nowrap;
@@ -35,7 +35,7 @@
 
 #main-header-current-level {
   color: var(--main-accent-colour);
-  font-size: 36px;
+  font-size: 2.25rem;
   font-style: italic;
   font-weight: 700;
 }
