@@ -1,6 +1,6 @@
-const URL = "http://localhost:3001/";
-
 function getBackendUrl(): string {
+  const URL = import.meta.env.VITE_BACKEND_URL;
+  if (!URL) throw new Error("BACKEND_URL env variable not set");
   return URL;
 }
 
@@ -20,7 +20,7 @@ async function sendRequest(
   if (body) {
     init.body = body;
   }
-  const response: Response = await fetch(URL + path, init);
+  const response: Response = await fetch(getBackendUrl() + path, init);
   return response;
 }
 
