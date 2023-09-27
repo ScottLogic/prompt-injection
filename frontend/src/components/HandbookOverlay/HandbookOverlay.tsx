@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { LEVEL_NAMES } from "../../models/level";
 import { OVERLAY_TYPE } from "../../models/overlay";
 import HandbookAttacks from "./HandbookAttacks";
@@ -24,13 +25,15 @@ function HandbookOverlay({
   }
 
   return (
-    <div id="handbook-overlay-screen" onClick={closeOverlay}>
-      <div
-        id="handbook-overlay"
-        onClick={(event) => {
-          event.stopPropagation();
-        }}
-      >
+    <div id="handbook-overlay-screen">
+      <div id="handbook-overlay">
+        <button
+          id="close-button"
+          className="prompt-injection-min-button"
+          onClick={closeOverlay}
+        >
+          x
+        </button>
         <div id="handbook-overlay-content">{showOverlayByType()}</div>
       </div>
     </div>

@@ -14,6 +14,8 @@
 }
 
 #handbook-overlay {
+  position: relative;
+
   background-color: var(--overlay-background-colour);
   color: var(--overlay-text-colour);
 
@@ -25,6 +27,26 @@
   width: 50%;
   height: 50%;
   border-radius: 10px;
+}
+
+#handbook-overlay > #close-button {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  max-width: 20px;
+  max-height: 20px;
+
+  color: inherit;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+#handbook-overlay > #close-button:hover {
+  color: var(--main-button-hover-text-colour);
+  text-decoration: none;
+  cursor: pointer;
+  /* no outline as x is highlighted on hover */
+  outline: none;
 }
 
 #handbook-overlay-content {
