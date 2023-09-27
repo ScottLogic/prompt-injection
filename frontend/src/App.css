@@ -45,6 +45,13 @@
   white-space: nowrap;
 }
 
+.prompt-injection-button[disabled] {
+  background-color: var(--main-button-disabled-background-colour);
+  color: var(--main-button-disabled-text-colour);
+  cursor: not-allowed;
+  border-color: transparent;
+}
+
 .prompt-injection-button:hover:not([disabled]) {
   background-color: var(--main-button-hover-background-colour);
   color: var(--main-button-hover-text-colour);

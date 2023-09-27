@@ -235,7 +235,6 @@ function ChatBox({
           <button
             id="chat-box-button-send"
             className="prompt-injection-button"
-            disabled={isSendingMessage}
             onClick={() => void sendChatMessage()}
           >
             <span id="chat-box-button-content">
