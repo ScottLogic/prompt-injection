@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { LEVEL_NAMES } from "../../models/level";
 import { OVERLAY_TYPE } from "../../models/overlay";
 import HandbookAttacks from "./HandbookAttacks";
