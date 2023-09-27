@@ -13,14 +13,14 @@
 
 #viewKey {
   color: grey;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .status-text {
   position: relative;
   text-align: center;
   margin-top: 10px;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .invalidated {
