@@ -41,7 +41,7 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
     [new DefenceConfig("prePrompt", "pre-prompt")]
   ),
   new DefenceInfo(
-    DEFENCE_TYPES.LLM_EVALUATION,
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
     "LLM Evaluation",
     "Use an LLM to evaluate the user input for malicious content or prompt injection. ",
     []
