@@ -6,7 +6,6 @@ import {
 } from "../../models/defence";
 import { validateDefence } from "../../service/defenceService";
 import "./DefenceMechanism.css";
-import "../StrategyBox/StrategyMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
 import { TiTick, TiTimes } from "react-icons/ti";
 
@@ -71,60 +70,49 @@ function DefenceMechanism({
   }
 
   return (
-    <span>
-      <div
-        className="strategy-mechanism defence-mechanism"
-        onClick={toggleDefenceInfo}
-      >
-        <div className="strategy-mechanism-header">
-          <span>{defenceDetail.name}</span>
-          <label className="switch">
-            <input
-              type="checkbox"
-              placeholder="defence-toggle"
-              onChange={toggleDefence}
-              // set checked if defence is active
-              checked={defenceDetail.isActive}
-            />
-            <span className="slider round"></span>
-          </label>
+    <article className="defence-mechanism" onClick={toggleDefenceInfo}>
+      <header>
+        <h4>{defenceDetail.name}</h4>
+        <label className="switch">
+          <input
+            type="checkbox"
+            placeholder="defence-toggle"
+            onChange={toggleDefence}
+            // set checked if defence is active
+            checked={defenceDetail.isActive}
+          />
+          <span className="slider round"></span>
+        </label>
+      </header>
+      {isInfoBoxVisible && (
+        <div className="info-box">
+          <p>{defenceDetail.info}</p>
+
+          {showConfigurations &&
+            defenceDetail.config.map((config) => {
+              return (
+                <DefenceConfiguration
+                  key={config.id}
+                  isActive={defenceDetail.isActive}
+                  config={config}
+                  setConfigurationValue={setConfigurationValue}
+                />
+              );
+            })}
+
+          {isConfigured &&
+            (configValidated ? (
+              <p className="validation-text">
+                <TiTick /> defence successfully configured
+              </p>
+            ) : (
+              <p className="validation-text">
+                <TiTimes /> invalid input - configuration failed
+              </p>
+            ))}
         </div>
-        {isInfoBoxVisible ? (
-          <div className="strategy-mechanism-info-box">
-            <div>{defenceDetail.info}</div>
-
-            {showConfigurations ? (
-              <div className="defence-mechanism-config">
-                {defenceDetail.config.map((config) => {
-                  return (
-                    <DefenceConfiguration
-                      key={config.id}
-                      isActive={defenceDetail.isActive}
-                      config={config}
-                      setConfigurationValue={setConfigurationValue}
-                    />
-                  );
-                })}
-              </div>
-            ) : null}
-
-            {isConfigured ? (
-              <div className="defence-mechanism-config-validated">
-                {configValidated ? (
-                  <p className="validation-text">
-                    <TiTick /> defence successfully configured
-                  </p>
-                ) : (
-                  <p className="validation-text">
-                    <TiTimes /> invalid input - configuration failed
-                  </p>
-                )}
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-      </div>
-    </span>
+      )}
+    </article>
   );
 }
 
