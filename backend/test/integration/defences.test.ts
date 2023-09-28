@@ -38,14 +38,19 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detect
   const apiKey = "test-api-key";
   let defences = getInitialDefences();
   // activate the defence
-  defences = activateDefence(DEFENCE_TYPES.LLM_EVALUATION, defences);
+  defences = activateDefence(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    defences
+  );
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
   const result = await detectTriggeredDefences(message, defences, apiKey);
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(true);
-  expect(result.triggeredDefences).toContain(DEFENCE_TYPES.LLM_EVALUATION);
+  expect(result.triggeredDefences).toContain(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+  );
 });
 
 test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers malice detection WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
@@ -58,14 +63,19 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers malice det
 
   let defences = getInitialDefences();
   // activate the defence
-  defences = activateDefence(DEFENCE_TYPES.LLM_EVALUATION, defences);
+  defences = activateDefence(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    defences
+  );
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
   const result = await detectTriggeredDefences(message, defences, apiKey);
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(true);
-  expect(result.triggeredDefences).toContain(DEFENCE_TYPES.LLM_EVALUATION);
+  expect(result.triggeredDefences).toContain(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+  );
 });
 
 test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers prompt injection detection WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
@@ -78,14 +88,19 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers prompt inj
 
   let defences = getInitialDefences();
   // activate the defence
-  defences = activateDefence(DEFENCE_TYPES.LLM_EVALUATION, defences);
+  defences = activateDefence(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    defences
+  );
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
   const result = await detectTriggeredDefences(message, defences, apiKey);
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(true);
-  expect(result.triggeredDefences).toContain(DEFENCE_TYPES.LLM_EVALUATION);
+  expect(result.triggeredDefences).toContain(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+  );
 });
 
 test("GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN detectTriggeredDefences is called THEN defence is not triggered AND defence is not blocked", async () => {
@@ -98,7 +113,10 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN de
 
   let defences = getInitialDefences();
   // activate the defence
-  defences = activateDefence(DEFENCE_TYPES.LLM_EVALUATION, defences);
+  defences = activateDefence(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    defences
+  );
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
@@ -123,7 +141,9 @@ test("GIVEN LLM_EVALUATION defence is not active AND prompt is malicious WHEN de
   const result = await detectTriggeredDefences(message, defences, apiKey);
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(false);
-  expect(result.alertedDefences).toContain(DEFENCE_TYPES.LLM_EVALUATION);
+  expect(result.alertedDefences).toContain(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+  );
 });
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase in the list THEN defence is triggered and the message is blocked", async () => {

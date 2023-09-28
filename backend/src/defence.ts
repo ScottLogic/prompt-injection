@@ -24,7 +24,7 @@ function getInitialDefences(): DefenceInfo[] {
         value: process.env.EMAIL_WHITELIST ?? "",
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.LLM_EVALUATION, []),
+    new DefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, []),
     new DefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
       {
         id: "prePrompt",
@@ -372,13 +372,17 @@ async function detectTriggeredDefences(
   // evaluate the message for prompt injection
   const evalPrompt = await queryPromptEvaluationModel(message, openAiApiKey);
   if (evalPrompt.isMalicious) {
-    if (isDefenceActive(DEFENCE_TYPES.LLM_EVALUATION, defences)) {
-      defenceReport.triggeredDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
+    if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
+      defenceReport.triggeredDefences.push(
+        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+      );
       console.debug("LLM evalutation defence active.");
       defenceReport.isBlocked = true;
       defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.${evalPrompt.reason}`;
     } else {
-      defenceReport.alertedDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
+      defenceReport.alertedDefences.push(
+        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+      );
     }
   }
   return defenceReport;
