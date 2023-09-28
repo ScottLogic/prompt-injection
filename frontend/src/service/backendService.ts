@@ -5,8 +5,7 @@ function getBackendUrl(): string {
 }
 
 function makeUrl(path: string): URL {
-  const url = new URL(path, getBackendUrl());
-  return url;
+  return new URL(path, getBackendUrl());
 }
 
 async function sendRequest(
