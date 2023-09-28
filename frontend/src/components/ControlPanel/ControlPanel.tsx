@@ -31,15 +31,38 @@ function ControlPanel({
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedLevels: (numCompletedLevels: number) => void;
 }) {
+  function getDefencesConfigure() {
+    return defences.filter((defence) => {
+      return ![
+        DEFENCE_TYPES.LLM_EVALUATION,
+        DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
+        DEFENCE_TYPES.SYSTEM_ROLE,
+      ].some((id) => id === defence.id);
+    });
+  }
+
+  function getDefencesModel() {
+    return defences.filter((defence) => {
+      return [
+        DEFENCE_TYPES.LLM_EVALUATION,
+        DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
+        DEFENCE_TYPES.SYSTEM_ROLE,
+      ].some((id) => id === defence.id);
+    });
+  }
+
   return (
     <div id="control-panel">
-      <div id="control-strategy">
-        {/* hide defence box on levels 1 and 2 */}
-        {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
-          currentLevel === LEVEL_NAMES.SANDBOX) && (
+      {/* hide defence box on levels 1 and 2 */}
+      {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
+        currentLevel === LEVEL_NAMES.SANDBOX) && (
+        <details className="control-collapsible-section">
+          <summary className="control-collapsible-section-header">
+            Defence Configuration
+          </summary>
           <DefenceBox
             currentLevel={currentLevel}
-            defences={defences}
+            defences={getDefencesConfigure()}
             showConfigurations={
               // only allow configuration in sandbox
               currentLevel === LEVEL_NAMES.SANDBOX ? true : false
@@ -48,12 +71,27 @@ function ControlPanel({
             setDefenceInactive={setDefenceInactive}
             setDefenceConfiguration={setDefenceConfiguration}
           />
-        )}
-        {/* only show model selection box in sandbox mode */}
-        {currentLevel === LEVEL_NAMES.SANDBOX && <ModelBox />}
-        {/* only show document viewer button in sandbox mode */}
-        {currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
-      </div>
+        </details>
+      )}
+      {/* only show model selection box in sandbox mode */}
+      {currentLevel === LEVEL_NAMES.SANDBOX && (
+        <details className="control-collapsible-section">
+          <summary className="control-collapsible-section-header">
+            Model Configuration
+          </summary>
+          <DefenceBox
+            currentLevel={currentLevel}
+            defences={getDefencesModel()}
+            showConfigurations={true}
+            setDefenceActive={setDefenceActive}
+            setDefenceInactive={setDefenceInactive}
+            setDefenceConfiguration={setDefenceConfiguration}
+          />
+          <ModelBox />
+        </details>
+      )}
+      {/* only show document viewer button in sandbox mode */}
+      {currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
     </div>
   );
 }

@@ -1,17 +1,33 @@
-.defence-mechanism-config {
-  font-size: 0.875rem;
-  margin-top: 4px;
+.defence-mechanism {
+  padding: 12px 14px;
+  cursor: default;
 }
 
-.defence-mechanism-config-validated {
-  margin-top: 10px;
-  margin-bottom: 10px;
+.defence-mechanism header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.defence-mechanism header h4 {
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  margin: 0;
+}
+
+.defence-mechanism > .info-box {
+  font-size: 0.875rem;
+  margin-top: 4px;
 }
 
 .validation-text {
   font-size: 0.875rem;
   font-weight: 600;
 }
+
+/*
+ * Modified from https://www.w3schools.com/howto/howto_css_switch.asp
+*/
 
 /* The switch - the box around the slider */
 .switch {
@@ -64,10 +80,6 @@ input:checked + .slider:before {
   -ms-transform: translateX(16px);
   transform: translateX(16px);
 }
-
-/*
- * Modified from https://www.w3schools.com/howto/howto_css_switch.asp
-*/
 
 /* Rounded sliders */
 .slider.round {
