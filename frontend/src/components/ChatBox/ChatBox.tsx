@@ -17,6 +17,7 @@ import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import { ThreeDots } from "react-loader-spinner";
 import { getLevelPrompt } from "../../service/levelService";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
+import CustomButton from "../CustomButton/CustomButton";
 
 function ChatBox({
   completedLevels,
@@ -232,19 +233,17 @@ function ChatBox({
             onKeyDown={inputKeyDown}
             onKeyUp={inputKeyUp}
           />
-          <button
-            id="chat-box-button-send"
-            className="prompt-injection-button"
-            onClick={() => void sendChatMessage()}
-          >
-            <span id="chat-box-button-content">
-              {isSendingMessage ? (
-                <ThreeDots width="24px" color="white" />
-              ) : (
-                "Send"
-              )}
-            </span>
-          </button>
+
+          <span id="chat-box-button-send">
+            {isSendingMessage ? (
+              <ThreeDots width="24px" color="white" />
+            ) : (
+              <CustomButton
+                text="Send"
+                onClick={() => void sendChatMessage()}
+              />
+            )}
+          </span>
         </div>
 
         <div id="control-buttons">
@@ -255,12 +254,9 @@ function ChatBox({
               currentLevel={currentLevel}
             />
           </div>
-          <button
-            className="prompt-injection-button control-button"
-            onClick={resetLevel}
-          >
-            Reset
-          </button>
+          <div className="control-button">
+            <CustomButton text="Reset" onClick={resetLevel} />
+          </div>
         </div>
       </div>
     </div>

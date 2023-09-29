@@ -3,9 +3,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  height: 24px;
 }
 
 .level-selection-button {
-  margin: 5px;
-  padding: 5px 5px;
+  height: 100%;
+  margin: 0 4px;
 }

@@ -1,0 +1,32 @@
+.custom-button {
+  background-color: var(--main-button-inactive-background-colour);
+  border-color: var(--main-border-colour);
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  color: var(--main-button-inactive-text-colour);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.custom-button:hover:not([disabled]) {
+  background-color: var(--main-button-inactive-hover-background-colour);
+  color: var(--main-button-inactive-hover-text-colour);
+}
+
+.selected {
+  background-color: var(--main-button-active-background-colour);
+  color: var(--main-button-active-text-colour);
+}
+
+.selected:hover:not([disabled]) {
+  background-color: var(--main-button-active-hover-background-colour);
+  color: var(--main-button-active-hover-text-colour);
+}
+
+.custom-button[disabled] {
+  background-color: var(--main-button-disabled-background-colour);
+  color: var(--main-button-disabled-text-colour);
+  cursor: not-allowed;
+  border-color: transparent;
+}

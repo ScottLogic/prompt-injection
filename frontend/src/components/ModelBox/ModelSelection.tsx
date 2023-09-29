@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "./ModelSelection.css";
 import { setGptModel, getGptModel } from "../../service/chatService";
 import { CHAT_MODELS } from "../../models/chat";
+import CustomButton from "../CustomButton/CustomButton";
 
 // return a drop down menu with the models
 function ModelSelection() {
@@ -62,13 +63,12 @@ function ModelSelection() {
           </select>
         </div>
         <div id="button-area">
-          <button
-            id="model-selection-button"
-            className="prompt-injection-button"
-            onClick={() => void submitSelectedModel()}
-          >
-            Choose
-          </button>
+          <span id="model-selection-button">
+            <CustomButton
+              text="Choose"
+              onClick={() => void submitSelectedModel()}
+            />
+          </span>
         </div>
       </div>
 

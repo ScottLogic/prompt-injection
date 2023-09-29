@@ -2,6 +2,7 @@ import { Level, LEVEL_NAMES } from "../../models/level";
 import { LEVELS } from "../../Levels";
 
 import "./LevelSelectionBox.css";
+import CustomButton from "../CustomButton/CustomButton";
 
 function LevelSelectionBox({
   currentLevel,
@@ -24,22 +25,19 @@ function LevelSelectionBox({
       <div id="level-selection-box">
         {LEVELS.map((level: Level, index: number) => {
           return (
-            <button
-              className={`prompt-injection-button level-selection-button ${
-                level.id === currentLevel
-                  ? "prompt-injection-button-selected"
-                  : ""
-              }`}
-              key={level.name}
-              onClick={() => {
-                handleLevelChange(level.id);
-              }}
-              disabled={
-                index > numCompletedLevels && level.id !== LEVEL_NAMES.SANDBOX
-              }
-            >
-              {level.name}
-            </button>
+            <span className="level-selection-button">
+              <CustomButton
+                key={level.name}
+                text={level.name}
+                onClick={() => {
+                  handleLevelChange(level.id);
+                }}
+                isDisabled={
+                  index > numCompletedLevels && level.id !== LEVEL_NAMES.SANDBOX
+                }
+                isSelected={level.id === currentLevel}
+              />
+            </span>
           );
         })}
       </div>

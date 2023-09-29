@@ -34,39 +34,6 @@
   background-color: var(--main-scrollbar-hover-colour);
 }
 
-.prompt-injection-button {
-  background-color: var(--main-button-inactive-background-colour);
-  border-color: var(--main-border-colour);
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 1px;
-  color: var(--main-button-inactive-text-colour);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.prompt-injection-button:hover:not([disabled]) {
-  background-color: var(--main-button-inactive-hover-background-colour);
-  color: var(--main-button-inactive-hover-text-colour);
-}
-
-.prompt-injection-button-selected {
-  background-color: var(--main-button-active-background-colour);
-  color: var(--main-button-active-text-colour);
-}
-
-.prompt-injection-button-selected:hover:not([disabled]) {
-  background-color: var(--main-button-active-hover-background-colour);
-  color: var(--main-button-active-hover-text-colour);
-}
-
-.prompt-injection-button[disabled] {
-  background-color: var(--main-button-disabled-background-colour);
-  color: var(--main-button-disabled-text-colour);
-  cursor: not-allowed;
-  border-color: transparent;
-}
-
 .prompt-injection-input {
   background-color: var(--main-input-active-background-colour);
   border-color: none;

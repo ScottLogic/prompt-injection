@@ -15,6 +15,7 @@
 
 #model-selection-row #button-area {
   min-width: 20%;
+  height: 24px;
 }
 
 #model-selection-info {
@@ -38,6 +39,6 @@
 }
 
 #model-selection-button {
-  padding: 5px;
   width: 100%;
+  padding-left: 10px;
 }
