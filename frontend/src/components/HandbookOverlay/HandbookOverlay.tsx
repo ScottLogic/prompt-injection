@@ -24,17 +24,16 @@ function HandbookOverlay({
   }
 
   return (
-    <div id="handbook-overlay-screen">
-      <div id="handbook-overlay">
+    <div className="handbook-overlay-screen">
+      <div className="handbook-overlay">
         <button
-          id="close-button"
-          className="prompt-injection-min-button"
+          className="prompt-injection-min-button close-button"
           onClick={closeOverlay}
           aria-label="close handbook overlay"
         >
           X
         </button>
-        <div id="handbook-overlay-content">{showOverlayByType()}</div>
+        <div className="handbook-overlay-content">{showOverlayByType()}</div>
       </div>
     </div>
   );
