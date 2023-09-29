@@ -30,7 +30,6 @@
   float: right;
   font-size: 1.75rem;
   font-weight: bold;
-  outline: none;
 
   max-width: 40px;
 }
@@ -39,8 +38,6 @@
   color: var(--main-button-hover-text-colour);
   text-decoration: none;
   cursor: pointer;
-  /* no outline as x is highlighted on hover */
-  outline: none;
 }
 
 .view-documents-header {

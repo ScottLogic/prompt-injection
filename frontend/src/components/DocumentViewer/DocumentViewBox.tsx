@@ -33,7 +33,7 @@ function DocumentViewBox({
             setShow(false);
           }}
         >
-          x
+          X
         </button>
         <div className="content">
           <div className="view-documents-header">

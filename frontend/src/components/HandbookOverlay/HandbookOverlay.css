@@ -33,11 +33,13 @@
   position: absolute;
   right: 16px;
   top: 16px;
-  max-width: 20px;
-  max-height: 20px;
+  max-width: 2rem;
+  max-height: 2rem;
+  min-height: 1.6rem;
+  padding: 5px;
 
   color: inherit;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
 }
 
@@ -45,8 +47,6 @@
   color: var(--main-button-hover-text-colour);
   text-decoration: none;
   cursor: pointer;
-  /* no outline as x is highlighted on hover */
-  outline: none;
 }
 
 #handbook-overlay-content {

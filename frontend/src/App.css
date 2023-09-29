@@ -46,7 +46,7 @@
 }
 
 .prompt-injection-min-button {
-  /* remove button styling */
+  /* remove default button styling */
   background-color: transparent;
   border-width: 1px;
   border-style: solid;
@@ -63,6 +63,8 @@
 
 .prompt-injection-min-button:hover {
   border-color: var(--main-button-hover-border-colour);
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .prompt-injection-button:hover:not([disabled]) {

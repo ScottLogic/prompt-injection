@@ -31,7 +31,7 @@ function HandbookOverlay({
           className="prompt-injection-min-button"
           onClick={closeOverlay}
         >
-          x
+          X
         </button>
         <div id="handbook-overlay-content">{showOverlayByType()}</div>
       </div>
