@@ -44,8 +44,7 @@ function MainHeader({
           />
         </span>
         <button
-          id="handbook-icon"
-          className="prompt-injection-min-button"
+          className="prompt-injection-min-button handbook-icon"
           title="Click to open the handbook"
           onClick={openHandbook}
         >
