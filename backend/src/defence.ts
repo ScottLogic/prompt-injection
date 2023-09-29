@@ -3,6 +3,8 @@ import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
 import {
+  maliciousPromptTemplate,
+  promptInjectionEvalTemplate,
   retrievalQAPrePromptSecure,
   systemRoleDefault,
   systemRoleLevel1,
@@ -24,7 +26,16 @@ function getInitialDefences(): DefenceInfo[] {
         value: process.env.EMAIL_WHITELIST ?? "",
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, []),
+    new DefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
+      {
+        id: "prompt-injection-evaluator-prompt",
+        value: promptInjectionEvalTemplate,
+      },
+      {
+        id: "malicious-prompt-evaluator-prompt",
+        value: maliciousPromptTemplate,
+      },
+    ]),
     new DefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
       {
         id: "prePrompt",
