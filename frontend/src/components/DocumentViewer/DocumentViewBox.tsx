@@ -32,6 +32,7 @@ function DocumentViewBox({
           onClick={() => {
             setShow(false);
           }}
+          aria-label="close document viewer"
         >
           X
         </button>
