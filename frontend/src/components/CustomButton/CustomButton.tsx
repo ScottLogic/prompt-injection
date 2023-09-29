@@ -14,7 +14,7 @@ function CustomButton({
   function getClassName() {
     let className = "custom-button";
     if (isSelected) {
-      className += " selected";
+      className += " custom-button-selected";
     }
     return className;
   }
