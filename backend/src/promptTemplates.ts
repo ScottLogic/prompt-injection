@@ -116,5 +116,6 @@ export {
   retrievalQAPrePrompt,
   retrievalQAPrePromptSecure,
   promptInjectionEvalTemplate,
+  promptInjectionEvalPrePrompt,
   maliciousPromptTemplate,
 };
