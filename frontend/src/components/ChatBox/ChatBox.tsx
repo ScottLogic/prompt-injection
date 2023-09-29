@@ -230,6 +230,8 @@ function ChatBox({
             onChange={inputChange}
             onKeyDown={inputKeyDown}
             onKeyUp={inputKeyUp}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
           />
           <button
             id="chat-box-button-send"
