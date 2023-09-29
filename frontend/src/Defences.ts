@@ -42,7 +42,7 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
   ),
   new DefenceInfo(
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    "LLM Evaluation",
+    "EVALUATION_LLM_INSTRUCTIONS",
     "Use an LLM to evaluate the user input for malicious content or prompt injection. ",
     []
   ),
