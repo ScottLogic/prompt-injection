@@ -231,14 +231,14 @@ async function chatGptCallFunction(
         ) as FunctionAskQuestionParams;
         console.debug(`Asking question: ${params.question}`);
         // if asking a question, call the queryDocuments
-        let qaPrompt = "";
+        let qaPrePrompt = "";
         if (isDefenceActive(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences)) {
-          qaPrompt = getQALLMprePrompt(defences);
+          qaPrePrompt = getQALLMprePrompt(defences);
         }
         response = (
           await queryDocuments(
             params.question,
-            qaPrompt,
+            qaPrePrompt,
             currentLevel,
             openAiApiKey
           )
