@@ -236,7 +236,9 @@ function ChatBox({
 
           <span id="chat-box-button-send">
             {isSendingMessage ? (
-              <ThreeDots width="24px" color="white" />
+              <span className="loader">
+                <ThreeDots width="24px" color="white" />
+              </span>
             ) : (
               <CustomButton
                 text="Send"
