@@ -47,7 +47,7 @@ const qAMainPrompt = `Use the following pieces of context to answer the question
     Question: {question}
     Answer: `;
 
-const retrievalQAPrePrompt = `You are a helpful chatbot that answers questions about the documents.
+const qAPrePrompt = `You are a helpful chatbot that answers questions about the documents.
     You should give the best answer you can, but if you don't know the answer, you can say "I don't know".
     `;
 
@@ -113,7 +113,7 @@ export {
   systemRoleLevel2,
   systemRoleLevel3,
   qAMainPrompt,
-  retrievalQAPrePrompt,
+  qAPrePrompt,
   retrievalQAPrePromptSecure,
   promptInjectionEvalTemplate,
   promptInjectionEvalPrePrompt,

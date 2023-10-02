@@ -18,7 +18,7 @@ import {
   promptInjectionEvalPrePrompt,
   promptInjectionEvalTemplate,
   qAMainPrompt,
-  retrievalQAPrePrompt,
+  qAPrePrompt,
 } from "./promptTemplates";
 import { LEVEL_NAMES } from "./models/level";
 import { PromptEvaluationChainReply, QaChainReply } from "./models/langchain";
@@ -71,7 +71,7 @@ async function getDocuments(filePath: string) {
 function getQAPromptTemplate(prePrompt: string) {
   if (!prePrompt) {
     // use the default prePrompt
-    prePrompt = retrievalQAPrePrompt;
+    prePrompt = qAPrePrompt;
   }
   const fullPrompt = prePrompt + qAMainPrompt;
   console.debug(`QA prompt: ${fullPrompt}`);

@@ -6,7 +6,7 @@ import {
   formatEvaluationOutput,
   initPromptEvaluationModel,
 } from "../../src/langchain";
-import { qAMainPrompt, retrievalQAPrePrompt } from "../../src/promptTemplates";
+import { qAMainPrompt, qAPrePrompt } from "../../src/promptTemplates";
 
 jest.mock("langchain/prompts", () => ({
   PromptTemplate: {
@@ -55,7 +55,7 @@ test("GIVEN level is sandbox THEN correct filepath is returned", () => {
 
 test("GIVEN getQAPromptTemplate is called with no prePrompt THEN correct prompt is returned", () => {
   const prompt = getQAPromptTemplate("");
-  expect(prompt).toBe(retrievalQAPrePrompt + qAMainPrompt);
+  expect(prompt).toBe(qAPrePrompt + qAMainPrompt);
 });
 
 test("GIVEN getQAPromptTemplate is called with a prePrompt THEN correct prompt is returned", () => {
