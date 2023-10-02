@@ -145,7 +145,10 @@ function getPromptInjectionEvalTemplate(prePrompt: string) {
 }
 
 // initialise the prompt evaluation model
-function initPromptEvaluationModel(prePrompt: string, openAiApiKey: string) {
+function initPromptEvaluationModel(
+  promptInjectionEvalPrePrompt: string,
+  openAiApiKey: string
+) {
   if (!openAiApiKey) {
     console.debug(
       "No OpenAI API key set to initialise prompt evaluation model"
@@ -153,7 +156,9 @@ function initPromptEvaluationModel(prePrompt: string, openAiApiKey: string) {
     return;
   }
   // create chain to detect prompt injection
-  const promptInjectionEvalTemplate = getPromptInjectionEvalTemplate(prePrompt);
+  const promptInjectionEvalTemplate = getPromptInjectionEvalTemplate(
+    promptInjectionEvalPrePrompt
+  );
 
   const promptInjectionChain = new LLMChain({
     llm: new OpenAI({
@@ -222,11 +227,11 @@ async function queryDocuments(
 // ask LLM whether the prompt is malicious
 async function queryPromptEvaluationModel(
   input: string,
-  prePrompt: string,
+  promptInjectionEvalPrePrompt: string,
   openAIApiKey: string
 ) {
   const promptEvaluationChain = initPromptEvaluationModel(
-    prePrompt,
+    promptInjectionEvalPrePrompt,
     openAIApiKey
   );
   if (!promptEvaluationChain) {
