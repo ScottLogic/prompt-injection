@@ -22,7 +22,6 @@ import {
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "./Defences";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedLevels } from "./service/levelService";
-import { LEVELS } from "./Levels";
 import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 import { OVERLAY_TYPE } from "./models/overlay";
 
@@ -67,6 +66,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     setShowOverlay(true);
   }
 
+  function openInformationOverlay() {
+    setOverlayType(OVERLAY_TYPE.INFORMATION);
+    setShowOverlay(true);
+  }
+
   // methods to modify messages
   function addChatMessage(message: ChatMessage) {
     setMessages((messages: ChatMessage[]) => [...messages, message]);
@@ -78,11 +82,6 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
     await clearChat(currentLevel);
     setMessages([]);
-    // add preamble to start of chat
-    addChatMessage({
-      message: LEVELS[currentLevel].preamble,
-      type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
-    });
 
     await clearEmails(currentLevel);
     setEmails([]);
@@ -112,11 +111,10 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
     // get chat history for new level from the backend
     const levelChatHistory = await getChatHistory(newLevel);
-    // add the preamble to the start of the chat history
-    levelChatHistory.unshift({
-      message: LEVELS[newLevel].preamble,
-      type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
-    });
+
+    // show overlay with level information if it is not sandbox
+    openInformationOverlay();
+
     setMessages(levelChatHistory);
 
     const defences =

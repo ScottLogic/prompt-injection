@@ -56,3 +56,8 @@
   text-align: center;
   overflow-y: auto;
 }
+
+.handbook-overlay h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
