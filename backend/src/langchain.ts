@@ -68,6 +68,22 @@ async function getDocuments(filePath: string) {
   return splitDocs;
 }
 
+function makePromptTemplate(
+  sessionPrePrompt: string,
+  defaultPrePrompt: string,
+  mainPrompt: string,
+  templateNameForLogging: string
+) {
+  if (!sessionPrePrompt) {
+    // use the default prePrompt
+    sessionPrePrompt = defaultPrePrompt;
+  }
+  const fullPrompt = sessionPrePrompt + mainPrompt;
+  console.debug(`${templateNameForLogging}: ${fullPrompt}`);
+  const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
+  return template;
+}
+
 // join the configurable QA preprompt to the context template
 function getQAPromptTemplate(prePrompt: string) {
   if (!prePrompt) {
