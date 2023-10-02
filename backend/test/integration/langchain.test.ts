@@ -26,7 +26,7 @@ import { LEVEL_NAMES } from "../../src/models/level";
 
 import {
   retrievalQAPrePrompt,
-  qAcontextTemplate,
+  qAMainPrompt,
   promptInjectionEvalTemplate,
   maliciousPromptTemplate,
 } from "../../src/promptTemplates";
@@ -155,9 +155,7 @@ test("GIVEN the QA model is not provided a prompt and currentLevel WHEN it is in
   initQAModel(level, prompt, apiKey);
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
-  expect(mockFromTemplate).toBeCalledWith(
-    retrievalQAPrePrompt + qAcontextTemplate
-  );
+  expect(mockFromTemplate).toBeCalledWith(retrievalQAPrePrompt + qAMainPrompt);
 });
 
 test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialized and prompt is set to the correct prompt ", () => {
@@ -171,7 +169,7 @@ test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledWith(
-    `this is a test prompt. ${qAcontextTemplate}`
+    `this is a test prompt. ${qAMainPrompt}`
   );
 });
 

@@ -17,7 +17,7 @@ import {
   maliciousPromptTemplate,
   promptInjectionEvalPrePrompt,
   promptInjectionEvalTemplate,
-  qAcontextTemplate,
+  qAMainPrompt,
   retrievalQAPrePrompt,
 } from "./promptTemplates";
 import { LEVEL_NAMES } from "./models/level";
@@ -73,7 +73,7 @@ function getQAPromptTemplate(prePrompt: string) {
     // use the default prePrompt
     prePrompt = retrievalQAPrePrompt;
   }
-  const fullPrompt = prePrompt + qAcontextTemplate;
+  const fullPrompt = prePrompt + qAMainPrompt;
   console.debug(`QA prompt: ${fullPrompt}`);
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;

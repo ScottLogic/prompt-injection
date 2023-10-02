@@ -6,10 +6,7 @@ import {
   formatEvaluationOutput,
   initPromptEvaluationModel,
 } from "../../src/langchain";
-import {
-  qAcontextTemplate,
-  retrievalQAPrePrompt,
-} from "../../src/promptTemplates";
+import { qAMainPrompt, retrievalQAPrePrompt } from "../../src/promptTemplates";
 
 jest.mock("langchain/prompts", () => ({
   PromptTemplate: {
@@ -58,12 +55,12 @@ test("GIVEN level is sandbox THEN correct filepath is returned", () => {
 
 test("GIVEN getQAPromptTemplate is called with no prePrompt THEN correct prompt is returned", () => {
   const prompt = getQAPromptTemplate("");
-  expect(prompt).toBe(retrievalQAPrePrompt + qAcontextTemplate);
+  expect(prompt).toBe(retrievalQAPrePrompt + qAMainPrompt);
 });
 
 test("GIVEN getQAPromptTemplate is called with a prePrompt THEN correct prompt is returned", () => {
   const prompt = getQAPromptTemplate("This is a test prompt");
-  expect(prompt).toBe(`This is a test prompt${qAcontextTemplate}`);
+  expect(prompt).toBe(`This is a test prompt${qAMainPrompt}`);
 });
 
 test("GIVEN llm evaluation model repsonds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason", () => {

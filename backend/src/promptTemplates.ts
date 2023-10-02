@@ -41,7 +41,7 @@ const systemRoleLevel3 = `
 `;
 
 // required for model to answer questions. should be appended to other pre-prompts
-const qAcontextTemplate = `Use the following pieces of context to answer the question at the end. 
+const qAMainPrompt = `Use the following pieces of context to answer the question at the end. 
     {context}
          
     Question: {question}
@@ -112,7 +112,7 @@ export {
   systemRoleLevel1,
   systemRoleLevel2,
   systemRoleLevel3,
-  qAcontextTemplate,
+  qAMainPrompt,
   retrievalQAPrePrompt,
   retrievalQAPrePromptSecure,
   promptInjectionEvalTemplate,
