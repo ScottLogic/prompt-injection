@@ -21,7 +21,6 @@
 .model-config-info {
   display: flex;
   align-items: center;
-  margin-right: 5px;
   margin-bottom: 0px;
 }
 
@@ -33,6 +32,7 @@
 .model-config-info-icon {
   font-size: 1.3rem;
   margin-bottom: 0px;
+  width: 10%;
 }
 
 .model-config-info-text {
