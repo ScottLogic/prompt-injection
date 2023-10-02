@@ -133,7 +133,7 @@ function initQAModel(
   });
 }
 
-// join the configurable Prompt injection preprompt to the template
+// join the configurable prompt injection eval preprompt to the template
 function getPromptInjectionEvalTemplate(prePrompt: string) {
   if (!prePrompt) {
     // use the default prePrompt
@@ -141,6 +141,18 @@ function getPromptInjectionEvalTemplate(prePrompt: string) {
   }
   const fullPrompt = prePrompt + promptInjectionEvalMainPrompt;
   console.debug(`Prompt injection evaluator prompt: ${fullPrompt}`);
+  const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
+  return template;
+}
+
+// join the configurable malicious prompt eval preprompt to the template
+function getMaliciousPromptEvalTemplate(prePrompt: string) {
+  if (!prePrompt) {
+    // use the default prePrompt
+    prePrompt = maliciousPromptEvalPrePrompt;
+  }
+  const fullPrompt = prePrompt + maliciousPromptEvalMainPrompt;
+  console.debug(`Malicious prompt evaluator prompt: ${fullPrompt}`);
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;
 }
@@ -169,16 +181,13 @@ function initPromptEvaluationModel(
   });
 
   // create chain to detect malicious prompts
-  const maliciousInputPrompt = PromptTemplate.fromTemplate(
-    maliciousPromptEvalMainPrompt // replace with configured prompt
-  );
   const maliciousInputChain = new LLMChain({
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_4,
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
-    prompt: maliciousInputPrompt,
+    prompt: getMaliciousPromptEvalTemplate(maliciousPromptEvalPrePrompt),
     outputKey: "maliciousInputEval",
   });
 
