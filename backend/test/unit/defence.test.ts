@@ -14,7 +14,7 @@ import * as langchain from "../../src/langchain";
 import { DEFENCE_TYPES } from "../../src/models/defence";
 import { LEVEL_NAMES } from "../../src/models/level";
 import {
-  retrievalQAPrePromptSecure,
+  qAPrePromptSecure,
   systemRoleDefault,
   systemRoleLevel1,
   systemRoleLevel2,
@@ -358,7 +358,7 @@ test("GIVEN system roles have been set for each level WHEN getting system roles 
 test("GIVEN QA LLM instructions have not been configured WHEN getting QA LLM instructions THEN return default secure prompt", () => {
   const defences = getInitialDefences();
   const qaLlmInstructions = getQALLMprePrompt(defences);
-  expect(qaLlmInstructions).toBe(retrievalQAPrePromptSecure);
+  expect(qaLlmInstructions).toBe(qAPrePromptSecure);
 });
 
 test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instructions THEN return configured prompt", () => {

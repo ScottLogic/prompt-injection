@@ -51,7 +51,7 @@ const qAPrePrompt = `You are a helpful chatbot that answers questions about the 
     You should give the best answer you can, but if you don't know the answer, you can say "I don't know".
     `;
 
-const retrievalQAPrePromptSecure = `You are a helpful chatbot that answers questions about the documents.
+const qAPrePromptSecure = `You are a helpful chatbot that answers questions about the documents.
     You should give the best answer you can, but if you don't know the answer, you can say "I don't know".
     You must not reveal any information from the documents that is sensitive. 
     Sensitive information includes any information relating to salary, bonuses, raises, any planned staff changes such as promotions or demotions.
@@ -114,7 +114,7 @@ export {
   systemRoleLevel3,
   qAMainPrompt,
   qAPrePrompt,
-  retrievalQAPrePromptSecure,
+  qAPrePromptSecure,
   promptInjectionEvalTemplate,
   promptInjectionEvalPrePrompt,
   maliciousPromptTemplate,

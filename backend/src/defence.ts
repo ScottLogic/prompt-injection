@@ -5,7 +5,7 @@ import { LEVEL_NAMES } from "./models/level";
 import {
   maliciousPromptTemplate,
   promptInjectionEvalTemplate,
-  retrievalQAPrePromptSecure,
+  qAPrePromptSecure,
   systemRoleDefault,
   systemRoleLevel1,
   systemRoleLevel2,
@@ -39,7 +39,7 @@ function getInitialDefences(): DefenceInfo[] {
     new DefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
       {
         id: "prePrompt",
-        value: retrievalQAPrePromptSecure,
+        value: qAPrePromptSecure,
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
