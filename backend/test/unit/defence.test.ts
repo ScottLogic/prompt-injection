@@ -9,11 +9,15 @@ import {
   isDefenceActive,
   transformMessage,
   detectFilterList,
+  getPromptInjectionEvalPrePromptFromConfig,
+  getMaliciousPromptEvalPrePromptFromConfig,
 } from "../../src/defence";
 import * as langchain from "../../src/langchain";
 import { DEFENCE_TYPES } from "../../src/models/defence";
 import { LEVEL_NAMES } from "../../src/models/level";
 import {
+  maliciousPromptEvalPrePrompt,
+  promptInjectionEvalPrePrompt,
   qAPrePromptSecure,
   systemRoleDefault,
   systemRoleLevel1,
@@ -369,6 +373,66 @@ test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instruc
   ]);
   const qaLlmInstructions = getQAPrePromptFromConfig(defences);
   expect(qaLlmInstructions).toBe(newQaLlmInstructions);
+});
+
+test("GIVEN Eval LLM instructions for prompt injection have not been configured WHEN getting prompt injection eval instructions THEN return default pre-prompt", () => {
+  const defences = getInitialDefences();
+  const configPromptInjectionEvalInstructions =
+    getPromptInjectionEvalPrePromptFromConfig(defences);
+  expect(configPromptInjectionEvalInstructions).toBe(
+    promptInjectionEvalPrePrompt
+  );
+});
+
+test("GIVEN Eval LLM instructions for prompt injection have been configured WHEN getting Eval LLM instructions THEN return configured prompt", () => {
+  const newPromptInjectionEvalInstructions =
+    "new prompt injection eval instructions";
+  let defences = getInitialDefences();
+  defences = configureDefence(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    defences,
+    [
+      {
+        id: "prompt-injection-evaluator-prompt",
+        value: newPromptInjectionEvalInstructions,
+      },
+    ]
+  );
+  const configPromptInjectionEvalInstructions =
+    getPromptInjectionEvalPrePromptFromConfig(defences);
+  expect(configPromptInjectionEvalInstructions).toBe(
+    newPromptInjectionEvalInstructions
+  );
+});
+
+test("GIVEN Eval LLM instructions for malicious prompts have not been configured WHEN getting malicious prompt eval instructions THEN return default pre-prompt", () => {
+  const defences = getInitialDefences();
+  const configMaliciousPromptEvalInstructions =
+    getMaliciousPromptEvalPrePromptFromConfig(defences);
+  expect(configMaliciousPromptEvalInstructions).toBe(
+    maliciousPromptEvalPrePrompt
+  );
+});
+
+test("GIVEN Eval LLM instructions for malicious prompts have been configured WHEN getting Eval LLM instructions THEN return configured prompt", () => {
+  const newMaliciousPromptEvalInstructions =
+    "new malicious prompt eval instructions";
+  let defences = getInitialDefences();
+  defences = configureDefence(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    defences,
+    [
+      {
+        id: "malicious-prompt-evaluator-prompt",
+        value: newMaliciousPromptEvalInstructions,
+      },
+    ]
+  );
+  const configMaliciousPromptEvalInstructions =
+    getMaliciousPromptEvalPrePromptFromConfig(defences);
+  expect(configMaliciousPromptEvalInstructions).toBe(
+    newMaliciousPromptEvalInstructions
+  );
 });
 
 test("GIVEN setting email whitelist WHEN configuring defence THEN defence is configured", () => {
