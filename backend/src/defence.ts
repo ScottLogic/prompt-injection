@@ -206,6 +206,15 @@ function getPromptInjectionEvalPrePrompt(defences: DefenceInfo[]) {
   );
 }
 
+function getMaliciousPromptEvalPrePrompt(defences: DefenceInfo[]) {
+  return getConfigValue(
+    defences,
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    "malicious-prompt-evaluator-prompt",
+    ""
+  );
+}
+
 function isDefenceActive(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   return defences.find((defence) => defence.id === id && defence.isActive)
     ? true
@@ -391,10 +400,12 @@ async function detectTriggeredDefences(
 
   // evaluate the message for prompt injection
   let promptInjectionEvalPrePrompt = "";
-  if (isDefenceActive(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences)) {
+  let maliciousPromptEvalPrePrompt = "";
+  if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
     promptInjectionEvalPrePrompt = getPromptInjectionEvalPrePrompt(defences);
+    maliciousPromptEvalPrePrompt = getMaliciousPromptEvalPrePrompt(defences); // write function that gets maliciousPromptEvalPrePrompt
   }
-  const maliciousPromptEvalPrePrompt = "";
+
   const evalPrompt = await queryPromptEvaluationModel(
     message,
     promptInjectionEvalPrePrompt,
