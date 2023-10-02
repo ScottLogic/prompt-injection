@@ -14,7 +14,8 @@ import { CHAT_MODELS, ChatAnswer } from "./models/chat";
 import { DocumentsVector } from "./models/document";
 
 import {
-  maliciousPromptTemplate,
+  maliciousPromptEvalPrePrompt,
+  maliciousPromptEvalMainPrompt,
   promptInjectionEvalPrePrompt,
   promptInjectionEvalMainPrompt,
   qAMainPrompt,
@@ -169,7 +170,7 @@ function initPromptEvaluationModel(
 
   // create chain to detect malicious prompts
   const maliciousInputPrompt = PromptTemplate.fromTemplate(
-    maliciousPromptTemplate // replace with configured prompt
+    maliciousPromptEvalMainPrompt // replace with configured prompt
   );
   const maliciousInputChain = new LLMChain({
     llm: new OpenAI({

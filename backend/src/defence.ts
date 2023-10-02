@@ -3,7 +3,7 @@ import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
 import {
-  maliciousPromptTemplate,
+  maliciousPromptEvalPrePrompt,
   promptInjectionEvalPrePrompt,
   qAPrePromptSecure,
   systemRoleDefault,
@@ -33,7 +33,7 @@ function getInitialDefences(): DefenceInfo[] {
       },
       {
         id: "malicious-prompt-evaluator-prompt",
-        value: maliciousPromptTemplate,
+        value: maliciousPromptEvalPrePrompt,
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
