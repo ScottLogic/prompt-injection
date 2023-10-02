@@ -17,6 +17,7 @@
   --main-button-inactive-text-colour: var(--main-text-colour);
   --main-button-hover-background-colour: #555555;
   --main-button-hover-text-colour: var(--main-text-colour);
+  --main-button-hover-border-colour: white;
 
   --main-input-active-background-colour: var(
     --main-button-inactive-background-colour

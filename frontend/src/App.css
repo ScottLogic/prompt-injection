@@ -45,6 +45,28 @@
   white-space: nowrap;
 }
 
+.prompt-injection-min-button {
+  /* remove default button styling */
+  background-color: transparent;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  color: var(--main-button-inactive-text-colour);
+  padding: 0;
+
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prompt-injection-min-button:hover {
+  border-color: var(--main-button-hover-border-colour);
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .prompt-injection-button:hover:not([disabled]) {
   background-color: var(--main-button-hover-background-colour);
   color: var(--main-button-hover-text-colour);

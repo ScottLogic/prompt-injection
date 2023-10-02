@@ -43,9 +43,14 @@ function MainHeader({
             setNewLevel={setNewLevel}
           />
         </span>
-        <span id="handbook-icon" onClick={openHandbook}>
+        <button
+          className="prompt-injection-min-button handbook-icon"
+          title="open the handbook"
+          aria-label="open the handbook"
+          onClick={openHandbook}
+        >
           <HandbookIcon />
-        </span>
+        </button>
       </span>
     </div>
   );
