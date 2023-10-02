@@ -5,6 +5,10 @@ import {
 } from "../../src/defence";
 import { initPromptEvaluationModel } from "../../src/langchain";
 import { DEFENCE_TYPES } from "../../src/models/defence";
+import {
+  maliciousPromptEvalPrePrompt,
+  promptInjectionEvalPrePrompt,
+} from "../../src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCall = jest.fn();
@@ -26,7 +30,11 @@ beforeEach(() => {
   process.env = {};
 
   // init langchain
-  initPromptEvaluationModel("mock-api-key");
+  initPromptEvaluationModel(
+    promptInjectionEvalPrePrompt,
+    maliciousPromptEvalPrePrompt,
+    "mock-api-key"
+  );
 });
 
 test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
