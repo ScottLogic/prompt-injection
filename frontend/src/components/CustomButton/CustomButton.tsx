@@ -1,3 +1,4 @@
+import * as classNames from "classnames";
 import "./CustomButton.css";
 
 function CustomButton({
@@ -11,16 +12,13 @@ function CustomButton({
   isDisabled?: boolean;
   isSelected?: boolean;
 }) {
-  function getClassName() {
-    let className = "custom-button";
-    if (isSelected) {
-      className += " custom-button-selected";
-    }
-    return className;
-  }
+  const buttonClass = classNames({
+    "custom-button": true,
+    "custom-button-selected": isSelected,
+  });
 
   return (
-    <button className={getClassName()} onClick={onClick} disabled={isDisabled}>
+    <button className={buttonClass} onClick={onClick} disabled={isDisabled}>
       {text}
     </button>
   );

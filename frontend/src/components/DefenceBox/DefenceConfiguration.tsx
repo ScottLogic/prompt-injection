@@ -1,6 +1,7 @@
 import "./DefenceConfiguration.css";
 import { DefenceConfig } from "../../models/defence";
 import ContentEditable from "react-contenteditable";
+import * as classNames from "classnames";
 
 function DefenceConfiguration({
   config,
@@ -32,19 +33,17 @@ function DefenceConfiguration({
     void setConfigurationValue(config.id, value);
   }
 
-  function getClassName() {
-    if (isActive) {
-      return "defence-config-value prompt-injection-input";
-    } else {
-      return "defence-config-value prompt-injection-input inactive";
-    }
-  }
+  const configClass = classNames({
+    "defence-config-value": true,
+    "prompt-injection-input": true,
+    inactive: !isActive,
+  });
 
   return (
     <div>
       <span className="defence-config-name">{config.name}: </span>
       <ContentEditable
-        className={getClassName()}
+        className={configClass}
         html={config.value.toString()}
         onBlur={focusLost}
         onKeyDown={inputKeyDown}
