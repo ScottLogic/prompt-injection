@@ -66,16 +66,6 @@ function DefenceMechanism({
 
   return (
     <div className="defence-mechanism">
-      <label className="switch">
-        <input
-          type="checkbox"
-          placeholder="defence-toggle"
-          onChange={toggleDefence}
-          // set checked if defence is active
-          checked={defenceDetail.isActive}
-        />
-        <span className="slider round"></span>
-      </label>
       <details>
         <summary>{defenceDetail.name}</summary>
         <div className="info-box">
@@ -105,6 +95,17 @@ function DefenceMechanism({
             ))}
         </div>
       </details>
+      <label className="switch">
+        <input
+          type="checkbox"
+          placeholder="defence-toggle"
+          onChange={toggleDefence}
+          // set checked if defence is active
+          checked={defenceDetail.isActive}
+          aria-label="toggle defence"
+        />
+        <span className="slider round"></span>
+      </label>
     </div>
   );
 }
