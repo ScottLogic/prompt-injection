@@ -35,7 +35,8 @@ function ModelConfigurationSlider({
         </div>
         <button
           className="model-config-info-icon prompt-injection-min-button"
-          title="Click for more info"
+          title="click for more info"
+          aria-label="click for more info"
           onClick={() => {
             toggleInfo();
           }}
