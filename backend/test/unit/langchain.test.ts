@@ -6,7 +6,12 @@ import {
   formatEvaluationOutput,
   initPromptEvaluationModel,
 } from "../../src/langchain";
-import { qAMainPrompt, qAPrePrompt } from "../../src/promptTemplates";
+import {
+  maliciousPromptEvalPrePrompt,
+  promptInjectionEvalPrePrompt,
+  qAMainPrompt,
+  qAPrePrompt,
+} from "../../src/promptTemplates";
 
 jest.mock("langchain/prompts", () => ({
   PromptTemplate: {
@@ -27,7 +32,11 @@ test("GIVEN initQAModel is called with no apiKey THEN return early and log messa
 
 test("GIVEN initPromptEvaluationModel is called with no apiKey THEN return early and log message", () => {
   const consoleDebugMock = jest.spyOn(console, "debug").mockImplementation();
-  initPromptEvaluationModel("");
+  initPromptEvaluationModel(
+    promptInjectionEvalPrePrompt,
+    maliciousPromptEvalPrePrompt,
+    ""
+  );
   expect(consoleDebugMock).toHaveBeenCalledWith(
     "No OpenAI API key set to initialise prompt evaluation model"
   );
