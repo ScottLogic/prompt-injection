@@ -438,6 +438,7 @@ export {
   getInitialDefences,
   getQALLMprePrompt,
   getPromptInjectionEvalPrePrompt,
+  getMaliciousPromptEvalPrePrompt,
   getSystemRole,
   isDefenceActive,
   transformMessage,
