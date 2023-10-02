@@ -64,10 +64,9 @@ function ModelSelection() {
         </div>
         <div id="button-area">
           <span id="model-selection-button">
-            <CustomButton
-              text="Choose"
-              onClick={() => void submitSelectedModel()}
-            />
+            <CustomButton onClick={() => void submitSelectedModel()}>
+              Choose
+            </CustomButton>
           </span>
         </div>
       </div>

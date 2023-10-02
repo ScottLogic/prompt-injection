@@ -37,11 +37,12 @@ function ExportPDFLink({
         fileName={getFileName()}
       >
         <CustomButton
-          text="Export"
           onClick={() => {
             return;
           }}
-        />
+        >
+          Export
+        </CustomButton>
       </PDFDownloadLink>{" "}
     </div>
   );

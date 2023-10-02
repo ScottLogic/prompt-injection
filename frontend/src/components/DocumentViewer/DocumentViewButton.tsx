@@ -10,11 +10,12 @@ function DocumentViewButton() {
   return (
     <div id="document-view-button-area">
       <CustomButton
-        text="View Documents"
         onClick={() => {
           setShowPopup(true);
         }}
-      />
+      >
+        View Documents
+      </CustomButton>
       <DocumentViewBox show={showPopup} setShow={setShowPopup} />
     </div>
   );

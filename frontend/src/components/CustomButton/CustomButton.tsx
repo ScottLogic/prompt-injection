@@ -2,12 +2,12 @@ import * as classNames from "classnames";
 import "./CustomButton.css";
 
 function CustomButton({
-  text,
+  children,
   onClick,
   isDisabled = false,
   isSelected = false,
 }: {
-  text: string;
+  children: React.ReactNode;
   onClick: () => void;
   isDisabled?: boolean;
   isSelected?: boolean;
@@ -19,7 +19,7 @@ function CustomButton({
 
   return (
     <button className={buttonClass} onClick={onClick} disabled={isDisabled}>
-      {text}
+      {children}
     </button>
   );
 }

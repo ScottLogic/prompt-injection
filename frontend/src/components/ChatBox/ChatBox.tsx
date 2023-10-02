@@ -241,10 +241,9 @@ function ChatBox({
                 <ThreeDots width="24px" color="white" />
               </span>
             ) : (
-              <CustomButton
-                text="Send"
-                onClick={() => void sendChatMessage()}
-              />
+              <CustomButton onClick={() => void sendChatMessage()}>
+                Send
+              </CustomButton>
             )}
           </span>
         </div>
@@ -258,7 +257,7 @@ function ChatBox({
             />
           </div>
           <div className="control-button">
-            <CustomButton text="Reset" onClick={resetLevel} />
+            <CustomButton onClick={resetLevel}>Reset</CustomButton>
           </div>
         </div>
       </div>

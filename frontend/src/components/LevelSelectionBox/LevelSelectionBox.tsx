@@ -28,7 +28,6 @@ function LevelSelectionBox({
             <span className="level-selection-button">
               <CustomButton
                 key={level.name}
-                text={level.name}
                 onClick={() => {
                   handleLevelChange(level.id);
                 }}
@@ -36,7 +35,9 @@ function LevelSelectionBox({
                   index > numCompletedLevels && level.id !== LEVEL_NAMES.SANDBOX
                 }
                 isSelected={level.id === currentLevel}
-              />
+              >
+                {level.name}
+              </CustomButton>
             </span>
           );
         })}
