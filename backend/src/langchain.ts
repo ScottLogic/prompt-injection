@@ -16,7 +16,7 @@ import { DocumentsVector } from "./models/document";
 import {
   maliciousPromptTemplate,
   promptInjectionEvalPrePrompt,
-  promptInjectionEvalTemplate,
+  promptInjectionEvalMainPrompt,
   qAMainPrompt,
   qAPrePrompt,
 } from "./promptTemplates";
@@ -138,7 +138,7 @@ function getPromptInjectionEvalTemplate(prePrompt: string) {
     // use the default prePrompt
     prePrompt = promptInjectionEvalPrePrompt;
   }
-  const fullPrompt = prePrompt + promptInjectionEvalTemplate;
+  const fullPrompt = prePrompt + promptInjectionEvalMainPrompt;
   console.debug(`Prompt injection evaluator prompt: ${fullPrompt}`);
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;

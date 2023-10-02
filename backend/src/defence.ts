@@ -4,7 +4,7 @@ import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
 import {
   maliciousPromptTemplate,
-  promptInjectionEvalTemplate,
+  promptInjectionEvalMainPrompt,
   qAPrePromptSecure,
   systemRoleDefault,
   systemRoleLevel1,
@@ -29,7 +29,7 @@ function getInitialDefences(): DefenceInfo[] {
     new DefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
       {
         id: "prompt-injection-evaluator-prompt",
-        value: promptInjectionEvalTemplate,
+        value: promptInjectionEvalMainPrompt,
       },
       {
         id: "malicious-prompt-evaluator-prompt",

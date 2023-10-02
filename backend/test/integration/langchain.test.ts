@@ -27,7 +27,7 @@ import { LEVEL_NAMES } from "../../src/models/level";
 import {
   qAPrePrompt,
   qAMainPrompt,
-  promptInjectionEvalTemplate,
+  promptInjectionEvalMainPrompt,
   maliciousPromptTemplate,
 } from "../../src/promptTemplates";
 
@@ -140,7 +140,7 @@ test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEv
   mockFromLLM.mockImplementation(() => mockPromptEvalChain);
   initPromptEvaluationModel("test-api-key");
   expect(mockFromTemplate).toBeCalledTimes(2);
-  expect(mockFromTemplate).toBeCalledWith(promptInjectionEvalTemplate);
+  expect(mockFromTemplate).toBeCalledWith(promptInjectionEvalMainPrompt);
   expect(mockFromTemplate).toBeCalledWith(maliciousPromptTemplate);
 });
 
