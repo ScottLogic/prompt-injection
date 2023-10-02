@@ -283,7 +283,7 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
       // enable next level when user wins current level
       if (chatResponse.wonLevel) {
         console.log("Win conditon met for level: ", currentLevel);
-        numLevelsCompleted = currentLevel + 1;
+        numLevelsCompleted = Math.max(numLevelsCompleted, currentLevel + 1);
         req.session.numLevelsCompleted = numLevelsCompleted;
         chatResponse.numLevelsCompleted = numLevelsCompleted;
       }

@@ -33,15 +33,16 @@ function ModelConfigurationSlider({
         <div className="model-config-title">
           <p>{config.name}</p>
         </div>
-        <div className="model-config-info-icon">
-          <span
-            onClick={() => {
-              toggleInfo();
-            }}
-          >
-            <AiOutlineInfoCircle />
-          </span>
-        </div>
+        <button
+          className="model-config-info-icon prompt-injection-min-button"
+          title="click for more info"
+          aria-label="click for more info"
+          onClick={() => {
+            toggleInfo();
+          }}
+        >
+          <AiOutlineInfoCircle />
+        </button>
       </div>
       {showInfo && <div className="model-config-info-text">{config.info}</div>}
       <div className="model-config-slider">

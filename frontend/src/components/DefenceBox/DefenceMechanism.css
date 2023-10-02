@@ -1,11 +1,19 @@
-.defence-mechanism-config {
-  font-size: 0.875rem;
-  margin-top: 4px;
+.defence-mechanism {
+  position: relative;
+  padding: 12px 14px;
+  cursor: default;
 }
 
-.defence-mechanism-config-validated {
-  margin-top: 10px;
-  margin-bottom: 10px;
+.defence-mechanism details summary {
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  margin: 0;
+}
+
+.defence-mechanism > .info-box {
+  font-size: 0.875rem;
+  margin-top: 4px;
 }
 
 .validation-text {
@@ -13,12 +21,18 @@
   font-weight: 600;
 }
 
+/*
+ * Modified from https://www.w3schools.com/howto/howto_css_switch.asp
+*/
+
 /* The switch - the box around the slider */
 .switch {
-  position: relative;
+  position: absolute;
   display: inline-block;
   width: 29px;
   height: 13px;
+  right: 16px;
+  top: 15px;
 }
 
 /* Hide default HTML checkbox */
@@ -64,10 +78,6 @@ input:checked + .slider:before {
   -ms-transform: translateX(16px);
   transform: translateX(16px);
 }
-
-/*
- * Modified from https://www.w3schools.com/howto/howto_css_switch.asp
-*/
 
 /* Rounded sliders */
 .slider.round {

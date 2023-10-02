@@ -30,6 +30,8 @@
   float: right;
   font-size: 1.75rem;
   font-weight: bold;
+
+  max-width: 40px;
 }
 
 .document-popup-inner .close-button:hover {

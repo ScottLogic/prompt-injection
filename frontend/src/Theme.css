@@ -21,6 +21,8 @@
   --main-button-active-hover-text-colour: var(--main-text-colour);
   --main-button-inactive-hover-background-colour: #555555;
   --main-button-inactive-hover-text-colour: var(--main-text-colour);
+  --main-button-hover-text-colour: var(--main-text-colour);
+  --main-button-hover-border-colour: white;
 
   --main-input-active-background-colour: var(
     --main-button-inactive-background-colour
@@ -32,6 +34,11 @@
   --main-toggle-ball-colour: #ececec;
   --main-toggle-off-colour: #ababab;
   --main-toggle-on-colour: var(--main-accent-colour);
+
+  --control-header-background-colour: var(
+    --main-button-inactive-background-colour
+  );
+  --control-body-background-colour: #3a3a3a;
 
   --overlay-hidden-colour: #0008;
   --overlay-background-colour: #8ad5da;

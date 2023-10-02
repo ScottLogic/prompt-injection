@@ -6,7 +6,6 @@ import {
 } from "../../models/defence";
 import { validateDefence } from "../../service/defenceService";
 import "./DefenceMechanism.css";
-import "../StrategyBox/StrategyMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
 import { TiTick, TiTimes } from "react-icons/ti";
 
@@ -26,13 +25,8 @@ function DefenceMechanism({
     config: DefenceConfig[]
   ) => Promise<boolean>;
 }) {
-  const [isInfoBoxVisible, setIsInfoBoxVisible] = useState<boolean>(false);
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const [configValidated, setConfigValidated] = useState<boolean>(true);
-
-  function toggleDefenceInfo() {
-    setIsInfoBoxVisible(!isInfoBoxVisible);
-  }
 
   async function setConfigurationValue(configId: string, value: string) {
     const configName =
@@ -71,60 +65,48 @@ function DefenceMechanism({
   }
 
   return (
-    <span>
-      <div
-        className="strategy-mechanism defence-mechanism"
-        onClick={toggleDefenceInfo}
-      >
-        <div className="strategy-mechanism-header">
-          <span>{defenceDetail.name}</span>
-          <label className="switch">
-            <input
-              type="checkbox"
-              placeholder="defence-toggle"
-              onChange={toggleDefence}
-              // set checked if defence is active
-              checked={defenceDetail.isActive}
-            />
-            <span className="slider round"></span>
-          </label>
+    <div className="defence-mechanism">
+      <details>
+        <summary>{defenceDetail.name}</summary>
+        <div className="info-box">
+          <p>{defenceDetail.info}</p>
+
+          {showConfigurations &&
+            defenceDetail.config.map((config) => {
+              return (
+                <DefenceConfiguration
+                  key={config.id}
+                  isActive={defenceDetail.isActive}
+                  config={config}
+                  setConfigurationValue={setConfigurationValue}
+                />
+              );
+            })}
+
+          {isConfigured &&
+            (configValidated ? (
+              <p className="validation-text">
+                <TiTick /> defence successfully configured
+              </p>
+            ) : (
+              <p className="validation-text">
+                <TiTimes /> invalid input - configuration failed
+              </p>
+            ))}
         </div>
-        {isInfoBoxVisible ? (
-          <div className="strategy-mechanism-info-box">
-            <div>{defenceDetail.info}</div>
-
-            {showConfigurations ? (
-              <div className="defence-mechanism-config">
-                {defenceDetail.config.map((config) => {
-                  return (
-                    <DefenceConfiguration
-                      key={config.id}
-                      isActive={defenceDetail.isActive}
-                      config={config}
-                      setConfigurationValue={setConfigurationValue}
-                    />
-                  );
-                })}
-              </div>
-            ) : null}
-
-            {isConfigured ? (
-              <div className="defence-mechanism-config-validated">
-                {configValidated ? (
-                  <p className="validation-text">
-                    <TiTick /> defence successfully configured
-                  </p>
-                ) : (
-                  <p className="validation-text">
-                    <TiTimes /> invalid input - configuration failed
-                  </p>
-                )}
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-      </div>
-    </span>
+      </details>
+      <label className="switch">
+        <input
+          type="checkbox"
+          placeholder="defence-toggle"
+          onChange={toggleDefence}
+          // set checked if defence is active
+          checked={defenceDetail.isActive}
+          aria-label="toggle defence"
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
   );
 }
 

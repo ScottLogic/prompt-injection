@@ -1,7 +1,11 @@
-const URL = "http://localhost:3001/";
-
 function getBackendUrl(): string {
-  return URL;
+  const url = import.meta.env.VITE_BACKEND_URL;
+  if (!url) throw new Error("VITE_BACKEND_URL env variable not set");
+  return url;
+}
+
+function makeUrl(path: string): URL {
+  return new URL(path, getBackendUrl());
 }
 
 async function sendRequest(
@@ -20,7 +24,7 @@ async function sendRequest(
   if (body) {
     init.body = body;
   }
-  const response: Response = await fetch(URL + path, init);
+  const response: Response = await fetch(makeUrl(path), init);
   return response;
 }
 

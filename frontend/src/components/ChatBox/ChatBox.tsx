@@ -227,11 +227,12 @@ function ChatBox({
             id="chat-box-input"
             className="prompt-injection-input"
             placeholder="Type here..."
-            autoFocus
             rows={1}
             onChange={inputChange}
             onKeyDown={inputKeyDown}
             onKeyUp={inputKeyUp}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
           />
 
           <span id="chat-box-button-send">

@@ -1,10 +1,18 @@
 #control-panel {
-  display: flex;
-  flex-direction: column;
   height: 100%;
+  overflow-y: auto;
+  padding: 30px;
 }
 
-#control-strategy {
-  padding: 0 30px;
-  overflow-y: auto;
+.control-collapsible-section {
+  background-color: var(--control-body-background-colour);
+  margin-bottom: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.control-collapsible-section-header {
+  background-color: var(--control-header-background-colour);
+  padding: 12px 14px;
+  cursor: default;
 }
