@@ -394,9 +394,11 @@ async function detectTriggeredDefences(
   if (isDefenceActive(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences)) {
     promptInjectionEvalPrePrompt = getPromptInjectionEvalPrePrompt(defences);
   }
+  const maliciousPromptEvalPrePrompt = "";
   const evalPrompt = await queryPromptEvaluationModel(
     message,
     promptInjectionEvalPrePrompt,
+    maliciousPromptEvalPrePrompt,
     openAiApiKey
   );
   if (evalPrompt.isMalicious) {

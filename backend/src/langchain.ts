@@ -147,6 +147,7 @@ function getPromptInjectionEvalTemplate(prePrompt: string) {
 // initialise the prompt evaluation model
 function initPromptEvaluationModel(
   promptInjectionEvalPrePrompt: string,
+  maliciousPromptEvalPrePrompt: string,
   openAiApiKey: string
 ) {
   if (!openAiApiKey) {
@@ -228,10 +229,12 @@ async function queryDocuments(
 async function queryPromptEvaluationModel(
   input: string,
   promptInjectionEvalPrePrompt: string,
+  maliciousPromptEvalPrePrompt: string,
   openAIApiKey: string
 ) {
   const promptEvaluationChain = initPromptEvaluationModel(
     promptInjectionEvalPrePrompt,
+    maliciousPromptEvalPrePrompt,
     openAIApiKey
   );
   if (!promptEvaluationChain) {
