@@ -15,6 +15,7 @@ import { DocumentsVector } from "./models/document";
 
 import {
   maliciousPromptTemplate,
+  promptInjectionEvalPrePrompt,
   promptInjectionEvalTemplate,
   qAcontextTemplate,
   retrievalQAPrePrompt,
@@ -66,7 +67,7 @@ async function getDocuments(filePath: string) {
   return splitDocs;
 }
 
-// join the configurable preprompt to the context template
+// join the configurable QA preprompt to the context template
 function getQAPromptTemplate(prePrompt: string) {
   if (!prePrompt) {
     // use the default prePrompt
@@ -131,8 +132,20 @@ function initQAModel(
   });
 }
 
+// join the configurable Prompt injection preprompt to the template
+function getPromptInjectionEvalTemplate(prePrompt: string) {
+  if (!prePrompt) {
+    // use the default prePrompt
+    prePrompt = promptInjectionEvalPrePrompt;
+  }
+  const fullPrompt = prePrompt + promptInjectionEvalTemplate;
+  console.debug(`Prompt injection evaluator prompt: ${fullPrompt}`);
+  const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
+  return template;
+}
+
 // initialise the prompt evaluation model
-function initPromptEvaluationModel(openAiApiKey: string) {
+function initPromptEvaluationModel(prePrompt: string, openAiApiKey: string) {
   if (!openAiApiKey) {
     console.debug(
       "No OpenAI API key set to initialise prompt evaluation model"
@@ -140,9 +153,7 @@ function initPromptEvaluationModel(openAiApiKey: string) {
     return;
   }
   // create chain to detect prompt injection
-  const promptInjectionPrompt = PromptTemplate.fromTemplate(
-    promptInjectionEvalTemplate
-  );
+  const promptInjectionEvalTemplate = getPromptInjectionEvalTemplate(prePrompt);
 
   const promptInjectionChain = new LLMChain({
     llm: new OpenAI({
@@ -150,13 +161,13 @@ function initPromptEvaluationModel(openAiApiKey: string) {
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
-    prompt: promptInjectionPrompt,
+    prompt: promptInjectionEvalTemplate,
     outputKey: "promptInjectionEval",
   });
 
   // create chain to detect malicious prompts
   const maliciousInputPrompt = PromptTemplate.fromTemplate(
-    maliciousPromptTemplate
+    maliciousPromptTemplate // replace with configured prompt
   );
   const maliciousInputChain = new LLMChain({
     llm: new OpenAI({
@@ -209,8 +220,15 @@ async function queryDocuments(
 }
 
 // ask LLM whether the prompt is malicious
-async function queryPromptEvaluationModel(input: string, openAIApiKey: string) {
-  const promptEvaluationChain = initPromptEvaluationModel(openAIApiKey);
+async function queryPromptEvaluationModel(
+  input: string,
+  prePrompt: string,
+  openAIApiKey: string
+) {
+  const promptEvaluationChain = initPromptEvaluationModel(
+    prePrompt,
+    openAIApiKey
+  );
   if (!promptEvaluationChain) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };

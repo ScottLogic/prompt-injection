@@ -197,6 +197,15 @@ function getQALLMprePrompt(defences: DefenceInfo[]) {
   );
 }
 
+function getPromptInjectionEvalPrePrompt(defences: DefenceInfo[]) {
+  return getConfigValue(
+    defences,
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    "prompt-injection-evaluator-prompt",
+    ""
+  );
+}
+
 function isDefenceActive(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   return defences.find((defence) => defence.id === id && defence.isActive)
     ? true
@@ -381,7 +390,15 @@ async function detectTriggeredDefences(
   }
 
   // evaluate the message for prompt injection
-  const evalPrompt = await queryPromptEvaluationModel(message, openAiApiKey);
+  let promptInjectionEvalPrePrompt = "";
+  if (isDefenceActive(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences)) {
+    promptInjectionEvalPrePrompt = getPromptInjectionEvalPrePrompt(defences);
+  }
+  const evalPrompt = await queryPromptEvaluationModel(
+    message,
+    promptInjectionEvalPrePrompt,
+    openAiApiKey
+  );
   if (evalPrompt.isMalicious) {
     if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
       defenceReport.triggeredDefences.push(
@@ -407,6 +424,7 @@ export {
   getEmailWhitelistVar,
   getInitialDefences,
   getQALLMprePrompt,
+  getPromptInjectionEvalPrePrompt,
   getSystemRole,
   isDefenceActive,
   transformMessage,
