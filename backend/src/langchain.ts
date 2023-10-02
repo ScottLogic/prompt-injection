@@ -157,17 +157,13 @@ function initPromptEvaluationModel(
     return;
   }
   // create chain to detect prompt injection
-  const promptInjectionEvalTemplate = getPromptInjectionEvalTemplate(
-    promptInjectionEvalPrePrompt
-  );
-
   const promptInjectionChain = new LLMChain({
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_4,
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
-    prompt: promptInjectionEvalTemplate,
+    prompt: getPromptInjectionEvalTemplate(promptInjectionEvalPrePrompt),
     outputKey: "promptInjectionEval",
   });
 
