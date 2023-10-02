@@ -70,16 +70,16 @@ async function getDocuments(filePath: string) {
 
 // choose between the provided preprompt and the default preprompt and prepend it to the main prompt and return the PromptTemplate
 function makePromptTemplate(
-  sessionPrePrompt: string,
+  configPrePrompt: string,
   defaultPrePrompt: string,
   mainPrompt: string,
   templateNameForLogging: string
 ) {
-  if (!sessionPrePrompt) {
+  if (!configPrePrompt) {
     // use the default prePrompt
-    sessionPrePrompt = defaultPrePrompt;
+    configPrePrompt = defaultPrePrompt;
   }
-  const fullPrompt = sessionPrePrompt + mainPrompt;
+  const fullPrompt = configPrePrompt + mainPrompt;
   console.debug(`${templateNameForLogging}: ${fullPrompt}`);
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;
