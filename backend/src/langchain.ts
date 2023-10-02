@@ -144,30 +144,6 @@ function initQAModel(
   });
 }
 
-// join the configurable prompt injection eval preprompt to the template
-function getPromptInjectionEvalTemplate(prePrompt: string) {
-  if (!prePrompt) {
-    // use the default prePrompt
-    prePrompt = promptInjectionEvalPrePrompt;
-  }
-  const fullPrompt = prePrompt + promptInjectionEvalMainPrompt;
-  console.debug(`Prompt injection evaluator prompt: ${fullPrompt}`);
-  const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
-  return template;
-}
-
-// join the configurable malicious prompt eval preprompt to the template
-function getMaliciousPromptEvalTemplate(prePrompt: string) {
-  if (!prePrompt) {
-    // use the default prePrompt
-    prePrompt = maliciousPromptEvalPrePrompt;
-  }
-  const fullPrompt = prePrompt + maliciousPromptEvalMainPrompt;
-  console.debug(`Malicious prompt evaluator prompt: ${fullPrompt}`);
-  const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
-  return template;
-}
-
 // initialise the prompt evaluation model
 function initPromptEvaluationModel(
   configPromptInjectionEvalPrePrompt: string,
@@ -181,24 +157,38 @@ function initPromptEvaluationModel(
     return;
   }
   // create chain to detect prompt injection
+  const promptInjectionEvalTemplate = makePromptTemplate(
+    configPromptInjectionEvalPrePrompt,
+    promptInjectionEvalPrePrompt,
+    promptInjectionEvalMainPrompt,
+    "Prompt injection eval prompt template"
+  );
+
   const promptInjectionChain = new LLMChain({
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_4,
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
-    prompt: getPromptInjectionEvalTemplate(configPromptInjectionEvalPrePrompt),
+    prompt: promptInjectionEvalTemplate,
     outputKey: "promptInjectionEval",
   });
 
   // create chain to detect malicious prompts
+  const maliciousPromptEvalTemplate = makePromptTemplate(
+    conficMaliciousPromptEvalPrePrompt,
+    maliciousPromptEvalPrePrompt,
+    maliciousPromptEvalMainPrompt,
+    "Malicious input eval prompt template"
+  );
+
   const maliciousInputChain = new LLMChain({
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_4,
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
-    prompt: getMaliciousPromptEvalTemplate(conficMaliciousPromptEvalPrePrompt),
+    prompt: maliciousPromptEvalTemplate,
     outputKey: "maliciousInputEval",
   });
 
