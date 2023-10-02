@@ -68,6 +68,7 @@ async function getDocuments(filePath: string) {
   return splitDocs;
 }
 
+// choose between the provided preprompt and the default preprompt and prepend it to the main prompt and return the PromptTemplate
 function makePromptTemplate(
   sessionPrePrompt: string,
   defaultPrePrompt: string,
@@ -84,17 +85,6 @@ function makePromptTemplate(
   return template;
 }
 
-// join the configurable QA preprompt to the context template
-function getQAPromptTemplate(prePrompt: string) {
-  if (!prePrompt) {
-    // use the default prePrompt
-    prePrompt = qAPrePrompt;
-  }
-  const fullPrompt = prePrompt + qAMainPrompt;
-  console.debug(`QA prompt: ${fullPrompt}`);
-  const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
-  return template;
-}
 // create and store the document vectors for each level
 async function initDocumentVectors() {
   const docVectors: DocumentsVector[] = [];
@@ -142,7 +132,12 @@ function initQAModel(
     streaming: true,
     openAIApiKey: openAiApiKey,
   });
-  const promptTemplate = getQAPromptTemplate(prePrompt);
+  const promptTemplate = makePromptTemplate(
+    prePrompt,
+    qAPrePrompt,
+    qAMainPrompt,
+    "QA prompt template"
+  );
 
   return RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
     prompt: promptTemplate,
@@ -324,7 +319,6 @@ function formatEvaluationOutput(response: string) {
 export {
   initQAModel,
   getFilepath,
-  getQAPromptTemplate,
   getDocuments,
   initPromptEvaluationModel,
   queryDocuments,
