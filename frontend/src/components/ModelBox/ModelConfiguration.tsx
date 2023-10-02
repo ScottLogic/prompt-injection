@@ -65,7 +65,7 @@ function ModelConfiguration() {
   return (
     <div id="model-config-box">
       {customChatModelConfigs.map((config) => (
-        <ModelConfigurationSlider config={config} />
+        <ModelConfigurationSlider key={config.id} config={config} />
       ))}
     </div>
   );
