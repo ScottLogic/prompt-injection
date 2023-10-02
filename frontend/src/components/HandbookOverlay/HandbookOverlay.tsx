@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
 import { OVERLAY_TYPE } from "../../models/overlay";
 import HandbookAttacks from "./HandbookAttacks";
 import HandbookInformation from "./HandbookMissionInfo";
 import "./HandbookOverlay.css";
+import HandbookOverlayTabs from "./HandbookOverlayTabs";
 import HandbookWelcome from "./HandbookWelcome";
 
 function HandbookOverlay({
@@ -14,7 +16,15 @@ function HandbookOverlay({
   overlayType: OVERLAY_TYPE;
   closeOverlay: () => void;
 }) {
-  function showOverlayByType() {
+  const [currentTab, setCurrentTab] = useState<OVERLAY_TYPE>(overlayType);
+
+  const toggleTab = (tab: OVERLAY_TYPE) => {
+    console.log("toggling tab", tab);
+    setCurrentTab(tab);
+    showOverlayByType();
+  };
+
+  function showOverlayByType(overlayType: OVERLAY_TYPE = currentTab) {
     switch (overlayType) {
       case OVERLAY_TYPE.HANDBOOK:
         return <HandbookAttacks currentLevel={currentLevel} />;
@@ -29,13 +39,16 @@ function HandbookOverlay({
   return (
     <div className="handbook-overlay-screen">
       <div className="handbook-overlay">
-        <button
-          className="prompt-injection-min-button close-button"
-          onClick={closeOverlay}
-          aria-label="close handbook overlay"
-        >
-          X
-        </button>
+        <div className="handbook-overlay-header">
+          <HandbookOverlayTabs toggleTab={toggleTab} />
+          <button
+            className="prompt-injection-min-button close-button"
+            onClick={closeOverlay}
+            aria-label="close handbook overlay"
+          >
+            X
+          </button>
+        </div>
         <div className="handbook-overlay-content">{showOverlayByType()}</div>
       </div>
     </div>

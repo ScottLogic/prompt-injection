@@ -29,6 +29,11 @@
   border-radius: 10px;
 }
 
+.handbook-overlay-header {
+  display: flex;
+  justify-content: space-between;
+}
+
 .handbook-overlay > .close-button {
   position: absolute;
   right: 16px;
@@ -55,9 +60,4 @@
 
   text-align: center;
   overflow-y: auto;
-}
-
-.handbook-overlay h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
 }

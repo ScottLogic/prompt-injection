@@ -1,0 +1,4 @@
+enum HANDBOOK_PAGES {
+  INFORMATION,
+  ATTACKS,
+}

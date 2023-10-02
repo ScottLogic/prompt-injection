@@ -1,0 +1,15 @@
+.handbook-tabs {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tabs {
+  flex: 1;
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid;
+}
+
+.active-tabs {
+  border-bottom: 1px solid transparent;
+}
