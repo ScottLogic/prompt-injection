@@ -4,7 +4,7 @@ import {
   deactivateDefence,
   detectTriggeredDefences,
   getInitialDefences,
-  getQALLMprePrompt,
+  getQAPrePromptFromConfig,
   getSystemRole,
   isDefenceActive,
   transformMessage,
@@ -357,7 +357,7 @@ test("GIVEN system roles have been set for each level WHEN getting system roles 
 
 test("GIVEN QA LLM instructions have not been configured WHEN getting QA LLM instructions THEN return default secure prompt", () => {
   const defences = getInitialDefences();
-  const qaLlmInstructions = getQALLMprePrompt(defences);
+  const qaLlmInstructions = getQAPrePromptFromConfig(defences);
   expect(qaLlmInstructions).toBe(qAPrePromptSecure);
 });
 
@@ -367,7 +367,7 @@ test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instruc
   defences = configureDefence(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences, [
     { id: "prePrompt", value: newQaLlmInstructions },
   ]);
-  const qaLlmInstructions = getQALLMprePrompt(defences);
+  const qaLlmInstructions = getQAPrePromptFromConfig(defences);
   expect(qaLlmInstructions).toBe(newQaLlmInstructions);
 });
 

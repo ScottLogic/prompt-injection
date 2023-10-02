@@ -170,8 +170,8 @@ function getMaliciousPromptEvalTemplate(prePrompt: string) {
 
 // initialise the prompt evaluation model
 function initPromptEvaluationModel(
-  promptInjectionEvalPrePrompt: string,
-  maliciousPromptEvalPrePrompt: string,
+  configPromptInjectionEvalPrePrompt: string,
+  conficMaliciousPromptEvalPrePrompt: string,
   openAiApiKey: string
 ) {
   if (!openAiApiKey) {
@@ -187,7 +187,7 @@ function initPromptEvaluationModel(
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
-    prompt: getPromptInjectionEvalTemplate(promptInjectionEvalPrePrompt),
+    prompt: getPromptInjectionEvalTemplate(configPromptInjectionEvalPrePrompt),
     outputKey: "promptInjectionEval",
   });
 
@@ -198,7 +198,7 @@ function initPromptEvaluationModel(
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
-    prompt: getMaliciousPromptEvalTemplate(maliciousPromptEvalPrePrompt),
+    prompt: getMaliciousPromptEvalTemplate(conficMaliciousPromptEvalPrePrompt),
     outputKey: "maliciousInputEval",
   });
 
@@ -245,13 +245,13 @@ async function queryDocuments(
 // ask LLM whether the prompt is malicious
 async function queryPromptEvaluationModel(
   input: string,
-  promptInjectionEvalPrePrompt: string,
-  maliciousPromptEvalPrePrompt: string,
+  configPromptInjectionEvalPrePrompt: string,
+  conficMaliciousPromptEvalPrePrompt: string,
   openAIApiKey: string
 ) {
   const promptEvaluationChain = initPromptEvaluationModel(
-    promptInjectionEvalPrePrompt,
-    maliciousPromptEvalPrePrompt,
+    configPromptInjectionEvalPrePrompt,
+    conficMaliciousPromptEvalPrePrompt,
     openAIApiKey
   );
   if (!promptEvaluationChain) {

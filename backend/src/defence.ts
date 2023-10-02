@@ -188,7 +188,7 @@ function getEmailWhitelistVar(defences: DefenceInfo[]) {
   );
 }
 
-function getQALLMprePrompt(defences: DefenceInfo[]) {
+function getQAPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
@@ -197,7 +197,7 @@ function getQALLMprePrompt(defences: DefenceInfo[]) {
   );
 }
 
-function getPromptInjectionEvalPrePrompt(defences: DefenceInfo[]) {
+function getPromptInjectionEvalPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
@@ -206,7 +206,7 @@ function getPromptInjectionEvalPrePrompt(defences: DefenceInfo[]) {
   );
 }
 
-function getMaliciousPromptEvalPrePrompt(defences: DefenceInfo[]) {
+function getMaliciousPromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
@@ -399,17 +399,19 @@ async function detectTriggeredDefences(
   }
 
   // evaluate the message for prompt injection
-  let promptInjectionEvalPrePrompt = "";
-  let maliciousPromptEvalPrePrompt = "";
+  let configPromptInjectionEvalPrePrompt = "";
+  let configMaliciousPromptEvalPrePrompt = "";
   if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
-    promptInjectionEvalPrePrompt = getPromptInjectionEvalPrePrompt(defences);
-    maliciousPromptEvalPrePrompt = getMaliciousPromptEvalPrePrompt(defences); // write function that gets maliciousPromptEvalPrePrompt
+    configPromptInjectionEvalPrePrompt =
+      getPromptInjectionEvalPrePromptFromConfig(defences);
+    configMaliciousPromptEvalPrePrompt =
+      getMaliciousPromptEvalPrePromptFromConfig(defences);
   }
 
   const evalPrompt = await queryPromptEvaluationModel(
     message,
-    promptInjectionEvalPrePrompt,
-    maliciousPromptEvalPrePrompt,
+    configPromptInjectionEvalPrePrompt,
+    configMaliciousPromptEvalPrePrompt,
     openAiApiKey
   );
   if (evalPrompt.isMalicious) {
@@ -436,9 +438,9 @@ export {
   detectTriggeredDefences,
   getEmailWhitelistVar,
   getInitialDefences,
-  getQALLMprePrompt,
-  getPromptInjectionEvalPrePrompt,
-  getMaliciousPromptEvalPrePrompt,
+  getQAPrePromptFromConfig,
+  getPromptInjectionEvalPrePromptFromConfig,
+  getMaliciousPromptEvalPrePromptFromConfig,
   getSystemRole,
   isDefenceActive,
   transformMessage,
