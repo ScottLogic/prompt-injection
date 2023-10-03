@@ -1,3 +1,5 @@
+const mockFromTemplate = jest.fn((template: string) => template);
+
 import { LEVEL_NAMES } from "../../src/models/level";
 import {
   initQAModel,
@@ -6,17 +8,12 @@ import {
   initPromptEvaluationModel,
   makePromptTemplate,
 } from "../../src/langchain";
-import { PromptTemplate } from "langchain/prompts";
 
-const mockFromTemplate = jest.fn((template: string) => template);
-
-beforeAll(() => {
-  jest.mock("langchain/prompts", () => ({
-    PromptTemplate: {
-      fromTemplate: mockFromTemplate,
-    },
-  }));
-});
+jest.mock("langchain/prompts", () => ({
+  PromptTemplate: {
+    fromTemplate: mockFromTemplate,
+  },
+}));
 
 test("GIVEN initQAModel is called with no apiKey THEN return early and log message", () => {
   const level = LEVEL_NAMES.LEVEL_1;
@@ -63,7 +60,6 @@ test("GIVEN level is sandbox THEN correct filepath is returned", () => {
 
 test("GIVEN makePromptTemplate is called with no config prePrompt THEN correct prompt is returned", () => {
   makePromptTemplate("", "defaultPrePrompt", "mainPrompt", "noName");
-  PromptTemplate.fromTemplate("defaultPrePrompt" + "mainPrompt");
   expect(mockFromTemplate).toBeCalledWith("defaultPrePrompt" + "mainPrompt");
   expect(mockFromTemplate).toBeCalledTimes(1);
 });
@@ -107,4 +103,8 @@ test("GIVEN llm evaluation model responds with an invalid format THEN formatEval
     isMalicious: false,
     reason: undefined,
   });
+});
+
+afterEach(() => {
+  mockFromTemplate.mockRestore();
 });
