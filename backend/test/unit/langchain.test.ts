@@ -8,7 +8,7 @@ import {
 } from "../../src/langchain";
 import { PromptTemplate } from "langchain/prompts";
 
-const mockFromTemplate = jest.fn(() => "");
+const mockFromTemplate = jest.fn((template: string) => template);
 
 beforeAll(() => {
   jest.mock("langchain/prompts", () => ({
@@ -64,9 +64,8 @@ test("GIVEN level is sandbox THEN correct filepath is returned", () => {
 test("GIVEN makePromptTemplate is called with no config prePrompt THEN correct prompt is returned", () => {
   makePromptTemplate("", "defaultPrePrompt", "mainPrompt", "noName");
   PromptTemplate.fromTemplate("defaultPrePrompt" + "mainPrompt");
-  //expect(mockFromTemplate).toBeCalledWith("defaultPrePrompt" + "mainPrompt");
-  // expect(mockFromTemplate).toBeCalledTimes(2);
-  expect(true).toBe(true);
+  expect(mockFromTemplate).toBeCalledWith("defaultPrePrompt" + "mainPrompt");
+  expect(mockFromTemplate).toBeCalledTimes(1);
 });
 
 test("GIVEN makePromptTemplate is called with a prePrompt THEN correct prompt is returned", () => {
@@ -76,9 +75,8 @@ test("GIVEN makePromptTemplate is called with a prePrompt THEN correct prompt is
     "mainPrompt",
     "noName"
   );
-  // PromptTemplate.fromTemplate("configPrePrompt" + "mainPrompt");
+  expect(mockFromTemplate).toBeCalledWith("configPrePrompt" + "mainPrompt");
   expect(mockFromTemplate).toBeCalledTimes(1);
-  // expect(true).toBe(true);
 });
 
 test("GIVEN llm evaluation model responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason", () => {
