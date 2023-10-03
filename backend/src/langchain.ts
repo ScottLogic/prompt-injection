@@ -316,4 +316,5 @@ export {
   formatEvaluationOutput,
   setVectorisedDocuments,
   initDocumentVectors,
+  makePromptTemplate,
 };
