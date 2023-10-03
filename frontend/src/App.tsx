@@ -28,9 +28,8 @@ import { OVERLAY_TYPE } from "./models/overlay";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
-  // start on sandbox mode
   const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
-    LEVEL_NAMES.SANDBOX
+    loadCurrentLevel()
   );
   const [numCompletedLevels, setNumCompletedLevels] = useState<number>(0);
 
@@ -46,6 +45,18 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     OVERLAY_TYPE.WELCOME
   );
 
+  function loadCurrentLevel() {
+    // get current level from local storage
+    const currentLevelStr = localStorage.getItem("currentLevel");
+    if (currentLevelStr) {
+      // start the user from where they last left off
+      return parseInt(currentLevelStr);
+    } else {
+      // by default, start on level 1
+      return LEVEL_NAMES.LEVEL_1;
+    }
+  }
+
   // called on mount
   useEffect(() => {
     getCompletedLevels()
@@ -57,6 +68,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
       });
     void setNewLevel(currentLevel);
   }, []);
+
+  useEffect(() => {
+    // save current level to local storage
+    localStorage.setItem("currentLevel", currentLevel.toString());
+  }, [currentLevel]);
 
   function closeOverlay() {
     setShowOverlay(false);
