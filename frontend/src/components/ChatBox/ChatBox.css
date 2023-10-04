@@ -53,21 +53,6 @@
   align-items: center;
 }
 
-#chat-box-button-send > .loader {
-  height: 100%;
-  width: 100%;
-
-  background-color: var(--main-button-inactive-background-colour);
-  border-color: var(--main-border-colour);
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 #chat-box-button-content {
   display: flex;
   flex-direction: column;

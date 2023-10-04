@@ -14,7 +14,6 @@ import {
 import { EmailInfo } from "../../models/email";
 import { LEVEL_NAMES } from "../../models/level";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
-import { ThreeDots } from "react-loader-spinner";
 import { getLevelPrompt } from "../../service/levelService";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ThemedButton from "../ThemedButtons/ThemedButton";
