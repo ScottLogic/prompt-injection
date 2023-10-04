@@ -74,7 +74,6 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   }, [currentLevel]);
 
   function closeOverlay() {
-    console.log("closing overlay");
     // open the mission info after welcome page for a new user
     if (overlayType === OVERLAY_TYPE.WELCOME) {
       openInformationOverlay();

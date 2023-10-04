@@ -7,7 +7,7 @@ function HandbookOverlayTabs({
   setSelectedPage: (page: HANDBOOK_PAGES) => void;
 }) {
   const tabs = [
-    {id: HANDBOOK_PAGES.MISSION_INFO, label: "Mission Info" },
+    { id: HANDBOOK_PAGES.MISSION_INFO, label: "Mission Info" },
     { id: HANDBOOK_PAGES.ATTACKS, label: "Attacks" },
     { id: HANDBOOK_PAGES.TOOLS, label: "Tools" },
   ];
@@ -19,13 +19,13 @@ function HandbookOverlayTabs({
           <input
             type="radio"
             name="tabs"
-            id={tab.id}
+            id={tab.id.toString()}
             defaultChecked={tab.id === HANDBOOK_PAGES.MISSION_INFO}
             onClick={() => {
               setSelectedPage(tab.id);
             }}
           />
-          <label htmlFor={tab.id}>{tab.label}</label>
+          <label htmlFor={tab.id.toString()}>{tab.label}</label>
         </div>
       ))}
     </div>

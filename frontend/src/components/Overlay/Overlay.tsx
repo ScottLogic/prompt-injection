@@ -17,12 +17,7 @@ function Overlay({
   function showOverlayByType() {
     switch (overlayType) {
       case OVERLAY_TYPE.HANDBOOK:
-        return (
-          <HandbookOverlay
-            currentLevel={currentLevel}
-            closeOverlay={closeOverlay}
-          />
-        );
+        return <HandbookOverlay currentLevel={currentLevel} />;
       case OVERLAY_TYPE.INFORMATION:
         return <MissionInformation currentLevel={currentLevel} />;
       case OVERLAY_TYPE.WELCOME:
