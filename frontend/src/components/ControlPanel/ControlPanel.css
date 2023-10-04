@@ -6,15 +6,13 @@
 
 .control-collapsible-section {
   background-color: var(--control-body-background-colour);
-  margin-bottom: 12px;
-  border-radius: 8px;
-  overflow: hidden;
+  margin-bottom: 0.75rem;
+  border-radius: 0.5rem;
 }
 
 .control-collapsible-section-header {
   background-color: var(--control-header-background-colour);
-  padding: 12px 14px;
+  padding: 0.75rem;
   cursor: default;
   outline-color: white;
-  border-radius: 8px;
 }
