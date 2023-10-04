@@ -18,6 +18,7 @@ import { ThreeDots } from "react-loader-spinner";
 import { getLevelPrompt } from "../../service/levelService";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ThemedButton from "../ThemedButtons/ThemedButton";
+import LoadingButton from "../ThemedButtons/LoadingButton";
 
 function ChatBox({
   completedLevels,
@@ -236,15 +237,12 @@ function ChatBox({
           />
 
           <span id="chat-box-button-send">
-            {isSendingMessage ? (
-              <span className="loader">
-                <ThreeDots width="24px" color="white" />
-              </span>
-            ) : (
-              <ThemedButton onClick={() => void sendChatMessage()}>
-                Send
-              </ThemedButton>
-            )}
+            <LoadingButton
+              onClick={() => void sendChatMessage()}
+              isLoading={isSendingMessage}
+            >
+              Send
+            </LoadingButton>
           </span>
         </div>
 

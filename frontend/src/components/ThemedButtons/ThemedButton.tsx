@@ -13,8 +13,8 @@ function ThemedButton({
   isSelected?: boolean;
 }) {
   const buttonClass = classNames({
-    "custom-button": true,
-    "custom-button-selected": isSelected,
+    "themed-button": true,
+    "themed-button-selected": isSelected,
   });
 
   return (
