@@ -92,8 +92,7 @@ function DefenceMechanism({
                 setConfigurationValue={setConfigurationValue}
               />
             );
-          })
-        }
+          })}
         {isConfigured &&
           (configValidated ? (
             <p className="validation-text">
@@ -103,8 +102,7 @@ function DefenceMechanism({
             <p className="validation-text">
               <TiTimes /> invalid input - configuration failed
             </p>
-          ))
-        }
+          ))}
       </div>
     </details>
   );
