@@ -3,7 +3,7 @@ import {
   getSystemRole,
   detectFilterList,
   getFilterList,
-  getQAPrePromptFromConfig as getQAPrePromptFromConfig,
+  getQAPrePromptFromConfig,
 } from "./defence";
 import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
 import { queryDocuments } from "./langchain";
