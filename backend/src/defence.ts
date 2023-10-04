@@ -399,14 +399,10 @@ async function detectTriggeredDefences(
   }
 
   // evaluate the message for prompt injection
-  let configPromptInjectionEvalPrePrompt = "";
-  let configMaliciousPromptEvalPrePrompt = "";
-  if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
-    configPromptInjectionEvalPrePrompt =
-      getPromptInjectionEvalPrePromptFromConfig(defences);
-    configMaliciousPromptEvalPrePrompt =
-      getMaliciousPromptEvalPrePromptFromConfig(defences);
-  }
+  const configPromptInjectionEvalPrePrompt =
+    getPromptInjectionEvalPrePromptFromConfig(defences);
+  const configMaliciousPromptEvalPrePrompt =
+    getMaliciousPromptEvalPrePromptFromConfig(defences);
 
   const evalPrompt = await queryPromptEvaluationModel(
     message,
