@@ -79,7 +79,7 @@ function makePromptTemplate(
     // use the default prePrompt
     configPrePrompt = defaultPrePrompt;
   }
-  const fullPrompt = configPrePrompt + mainPrompt;
+  const fullPrompt = `${configPrePrompt}\n${mainPrompt}`;
   console.debug(`${templateNameForLogging}: ${fullPrompt}`);
   const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
   return template;
