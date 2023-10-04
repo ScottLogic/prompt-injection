@@ -2,12 +2,8 @@
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
+  gap: 0.5rem;
 
   height: 24px;
-}
-
-.level-selection-button {
-  height: 100%;
-  margin: 0 4px;
 }

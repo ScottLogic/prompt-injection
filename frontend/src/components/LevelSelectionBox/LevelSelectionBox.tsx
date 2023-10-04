@@ -25,20 +25,18 @@ function LevelSelectionBox({
       <div id="level-selection-box">
         {LEVELS.map((level: Level, index: number) => {
           return (
-            <span className="level-selection-button">
-              <ThemedButton
-                key={level.name}
-                onClick={() => {
-                  handleLevelChange(level.id);
-                }}
-                isDisabled={
-                  index > numCompletedLevels && level.id !== LEVEL_NAMES.SANDBOX
-                }
-                isSelected={level.id === currentLevel}
-              >
-                {level.name}
-              </ThemedButton>
-            </span>
+            <ThemedButton
+              key={level.name}
+              onClick={() => {
+                handleLevelChange(level.id);
+              }}
+              isDisabled={
+                index > numCompletedLevels && level.id !== LEVEL_NAMES.SANDBOX
+              }
+              isSelected={level.id === currentLevel}
+            >
+              {level.name}
+            </ThemedButton>
           );
         })}
       </div>
