@@ -35,6 +35,11 @@
   top: 15px;
 }
 
+.switch:focus-within {
+  outline: white auto 1px;
+  border-radius: 34px;
+}
+
 /* Hide default HTML checkbox */
 .switch input {
   opacity: 0;
