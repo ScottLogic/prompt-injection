@@ -15,4 +15,6 @@
   background-color: var(--control-header-background-colour);
   padding: 12px 14px;
   cursor: default;
+  outline-color: white;
+  border-radius: 8px;
 }
