@@ -14,6 +14,9 @@ function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
     switch (handbookPage) {
       case HANDBOOK_PAGES.ATTACKS:
         return <HandbookAttacks currentLevel={currentLevel} />;
+      case HANDBOOK_PAGES.TOOLS:
+        // temporary placeholder
+        return <div> <h2> Placeholder </h2></div>; 
       case HANDBOOK_PAGES.MISSION_INFO:
       default:
         return <MissionInformation currentLevel={currentLevel} />;

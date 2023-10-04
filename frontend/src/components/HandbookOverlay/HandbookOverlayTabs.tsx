@@ -7,13 +7,9 @@ function HandbookOverlayTabs({
   setSelectedPage: (page: HANDBOOK_PAGES) => void;
 }) {
   const tabs = [
-    {
-      id: "mission-info",
-      label: "Mission Info",
-      page: HANDBOOK_PAGES.MISSION_INFO,
-    },
-    { id: "attacks", label: "Attacks", page: HANDBOOK_PAGES.ATTACKS },
-    { id: "tools", label: "Tools", page: HANDBOOK_PAGES.TOOLS },
+    {id: HANDBOOK_PAGES.MISSION_INFO, label: "Mission Info" },
+    { id: HANDBOOK_PAGES.ATTACKS, label: "Attacks" },
+    { id: HANDBOOK_PAGES.TOOLS, label: "Tools" },
   ];
 
   return (
@@ -24,9 +20,9 @@ function HandbookOverlayTabs({
             type="radio"
             name="tabs"
             id={tab.id}
-            defaultChecked={tab.page === HANDBOOK_PAGES.MISSION_INFO}
+            defaultChecked={tab.id === HANDBOOK_PAGES.MISSION_INFO}
             onClick={() => {
-              setSelectedPage(tab.page);
+              setSelectedPage(tab.id);
             }}
           />
           <label htmlFor={tab.id}>{tab.label}</label>
