@@ -246,16 +246,12 @@ function ChatBox({
         </div>
 
         <div id="control-buttons">
-          <div className="control-button">
-            <ExportPDFLink
-              messages={messages}
-              emails={emails}
-              currentLevel={currentLevel}
-            />
-          </div>
-          <div className="control-button">
-            <ThemedButton onClick={resetLevel}>Reset</ThemedButton>
-          </div>
+          <ExportPDFLink
+            messages={messages}
+            emails={emails}
+            currentLevel={currentLevel}
+          />
+          <ThemedButton onClick={resetLevel}>Reset</ThemedButton>
         </div>
       </div>
     </div>
