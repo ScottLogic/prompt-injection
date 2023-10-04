@@ -5,22 +5,16 @@ import HandbookAttacks from "./HandbookAttacks";
 import HandbookOverlayTabs from "./HandbookOverlayTabs";
 import { HANDBOOK_PAGES } from "../../models/handbook";
 
-function HandbookOverlay({
-  currentLevel,
-  closeOverlay,
-}: {
-  currentLevel: LEVEL_NAMES;
-  closeOverlay: () => void;
-}) {
+function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   const [selectedPage, setSelectedPage] = useState<HANDBOOK_PAGES>(
-    HANDBOOK_PAGES.INFORMATION
+    HANDBOOK_PAGES.MISSION_INFO
   );
 
   function setPageContent(handbookPage: HANDBOOK_PAGES) {
     switch (handbookPage) {
       case HANDBOOK_PAGES.ATTACKS:
         return <HandbookAttacks currentLevel={currentLevel} />;
-      case HANDBOOK_PAGES.INFORMATION:
+      case HANDBOOK_PAGES.MISSION_INFO:
       default:
         return <MissionInformation currentLevel={currentLevel} />;
     }

@@ -6,7 +6,6 @@ function HandbookOverlayTabs({
 }: {
   setSelectedPage: (page: HANDBOOK_PAGES) => void;
 }) {
-  // Define an array of tab data
   const tabs = [
     {
       id: "mission-info",

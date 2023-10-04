@@ -102,6 +102,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   // for going switching level without clearing progress
   async function setNewLevel(newLevel: LEVEL_NAMES) {
     console.log(`changing level from ${currentLevel} to ${newLevel}`);
+
+    if (currentLevel !== newLevel) {
+      openInformationOverlay();
+    }
+
     setMessages([]);
     setCurrentLevel(newLevel);
 
@@ -111,9 +116,6 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
     // get chat history for new level from the backend
     const levelChatHistory = await getChatHistory(newLevel);
-
-    // show overlay with level information if it is not sandbox
-    openInformationOverlay();
 
     setMessages(levelChatHistory);
 

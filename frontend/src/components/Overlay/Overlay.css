@@ -22,7 +22,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow-y: auto;
+  overflow: visible;
 
   width: 50%;
   height: 50%;
@@ -51,6 +51,7 @@
 
 .overlay-content {
   height: 100%;
+  padding: 0 5%;
 
   text-align: center;
   overflow-y: auto;

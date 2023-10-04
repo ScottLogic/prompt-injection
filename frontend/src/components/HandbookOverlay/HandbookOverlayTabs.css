@@ -21,27 +21,14 @@
   padding: 1rem 2rem;
   margin-right: 0.0625rem;
   cursor: pointer;
-  background-color: aliceblue;
-  font-size: 1.2rem;
+  background-color: var(--overlay-closed-tab-colour);
   font-weight: 700;
-  transition: background-color ease 0.3s;
-  border-radius: 5px 5px 0 0;
+  transition: background-color ease 0.1s;
+  border-radius: 0.3rem 0.3rem 0 0;
 }
 
 .tabs label:not(:first-child):not(:last-child) {
-  border-right: 1px solid #000;
-}
-
-.tabs label .material-icons {
-  margin-right: 0.3rem;
-}
-
-.tabs .tab {
-  flex-grow: 1;
-  width: 100%;
-  height: 100%;
-  display: none;
-  padding: 1rem 2rem;
+  border-right: 2px solid #000;
 }
 
 .tabs [type="radio"] {

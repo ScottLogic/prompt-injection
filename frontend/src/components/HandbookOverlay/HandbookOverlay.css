@@ -5,29 +5,9 @@
   position: relative;
 }
 
-.handbook-overlay > .close-button {
-  position: absolute;
-  right: 16px;
-  top: 16px;
-  max-width: 2rem;
-  max-height: 2rem;
-  min-height: 1.6rem;
-  padding: 5px;
-
-  color: inherit;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.handbook-overlay > .close-button:hover {
-  color: var(--main-button-hover-text-colour);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.handbook-overlay-content {
+#handbook-overlay-content {
   height: 100%;
-  padding: 0 5%;
+  padding: 5% 0;
 
   text-align: center;
   overflow-y: auto;
