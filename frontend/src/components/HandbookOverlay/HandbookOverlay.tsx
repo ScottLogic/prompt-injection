@@ -1,55 +1,36 @@
 import { useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
-import { OVERLAY_TYPE } from "../../models/overlay";
+import MissionInformation from "../Overlay/MissionInformation";
 import HandbookAttacks from "./HandbookAttacks";
-import HandbookInformation from "./HandbookMissionInfo";
-import "./HandbookOverlay.css";
 import HandbookOverlayTabs from "./HandbookOverlayTabs";
-import HandbookWelcome from "./HandbookWelcome";
+import { HANDBOOK_PAGES } from "../../models/handbook";
 
 function HandbookOverlay({
   currentLevel,
-  overlayType,
   closeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
-  overlayType: OVERLAY_TYPE;
   closeOverlay: () => void;
 }) {
-  const [currentTab, setCurrentTab] = useState<OVERLAY_TYPE>(overlayType);
+  const [selectedPage, setSelectedPage] = useState<HANDBOOK_PAGES>(
+    HANDBOOK_PAGES.INFORMATION
+  );
 
-  const toggleTab = (tab: OVERLAY_TYPE) => {
-    console.log("toggling tab", tab);
-    setCurrentTab(tab);
-    showOverlayByType();
-  };
-
-  function showOverlayByType(overlayType: OVERLAY_TYPE = currentTab) {
-    switch (overlayType) {
-      case OVERLAY_TYPE.HANDBOOK:
+  function setPageContent(handbookPage: HANDBOOK_PAGES) {
+    switch (handbookPage) {
+      case HANDBOOK_PAGES.ATTACKS:
         return <HandbookAttacks currentLevel={currentLevel} />;
-      case OVERLAY_TYPE.INFORMATION:
-        return <HandbookInformation currentLevel={currentLevel} />;
-      case OVERLAY_TYPE.WELCOME:
+      case HANDBOOK_PAGES.INFORMATION:
       default:
-        return <HandbookWelcome />;
+        return <MissionInformation currentLevel={currentLevel} />;
     }
   }
 
   return (
-    <div className="handbook-overlay-screen">
-      <div className="handbook-overlay">
-        <div className="handbook-overlay-header">
-          <HandbookOverlayTabs toggleTab={toggleTab} />
-          <button
-            className="prompt-injection-min-button close-button"
-            onClick={closeOverlay}
-            aria-label="close handbook overlay"
-          >
-            X
-          </button>
-        </div>
-        <div className="handbook-overlay-content">{showOverlayByType()}</div>
+    <div className="handbook-overlay">
+      <HandbookOverlayTabs setSelectedPage={setSelectedPage} />
+      <div className="handbook-overlay-content">
+        {setPageContent(selectedPage)}
       </div>
     </div>
   );

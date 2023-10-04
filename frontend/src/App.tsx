@@ -22,7 +22,7 @@ import {
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "./Defences";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedLevels } from "./service/levelService";
-import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
+import Overlay from "./components/Overlay/Overlay";
 import { OVERLAY_TYPE } from "./models/overlay";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
@@ -206,7 +206,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   return (
     <div id="app-content">
       {showOverlay && (
-        <HandbookOverlay
+        <Overlay
           currentLevel={currentLevel}
           overlayType={overlayType}
           closeOverlay={closeOverlay}

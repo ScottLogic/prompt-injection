@@ -1,4 +1,7 @@
 enum HANDBOOK_PAGES {
-  INFORMATION,
-  ATTACKS,
+  MISSION_INFO = "Mission Information",
+  ATTACKS = "Attacks",
+  TOOLS = "Tools",
 }
+
+export { HANDBOOK_PAGES };

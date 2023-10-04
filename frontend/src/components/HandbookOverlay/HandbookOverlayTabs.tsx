@@ -1,34 +1,38 @@
-import { useState } from "react";
-
+import { HANDBOOK_PAGES } from "../../models/handbook";
 import "./HandbookOverlayTabs.css";
-import { OVERLAY_TYPE } from "../../models/overlay";
 
 function HandbookOverlayTabs({
-  toggleTab,
+  setSelectedPage,
 }: {
-  toggleTab: (tab: OVERLAY_TYPE) => void;
+  setSelectedPage: (page: HANDBOOK_PAGES) => void;
 }) {
+  // Define an array of tab data
+  const tabs = [
+    {
+      id: "mission-info",
+      label: "Mission Info",
+      page: HANDBOOK_PAGES.MISSION_INFO,
+    },
+    { id: "attacks", label: "Attacks", page: HANDBOOK_PAGES.ATTACKS },
+    { id: "tools", label: "Tools", page: HANDBOOK_PAGES.TOOLS },
+  ];
+
   return (
-    <div>
-      <div className="handbook-tabs">
-        <div
-          className="tabs open"
-          onClick={() => {
-            toggleTab(OVERLAY_TYPE.INFORMATION);
-          }}
-        >
-          Mission Info
+    <div className="tabs">
+      {tabs.map((tab) => (
+        <div key={tab.id}>
+          <input
+            type="radio"
+            name="tabs"
+            id={tab.id}
+            defaultChecked={tab.page === HANDBOOK_PAGES.MISSION_INFO}
+            onClick={() => {
+              setSelectedPage(tab.page);
+            }}
+          />
+          <label htmlFor={tab.id}>{tab.label}</label>
         </div>
-        <div
-          className="tabs"
-          onClick={() => {
-            toggleTab(OVERLAY_TYPE.INFORMATION);
-          }}
-        >
-          Attacks
-        </div>
-        <div className="tabs">Tab 3</div>
-      </div>
+      ))}
     </div>
   );
 }

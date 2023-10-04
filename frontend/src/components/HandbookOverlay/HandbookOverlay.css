@@ -1,37 +1,8 @@
-.handbook-overlay-screen {
-  background-color: var(--overlay-hidden-colour);
-
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 100;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.handbook-overlay {
-  position: relative;
-
-  background-color: var(--overlay-background-colour);
-  color: var(--overlay-text-colour);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow-y: auto;
-
-  width: 50%;
-  height: 50%;
-  border-radius: 10px;
-}
-
 .handbook-overlay-header {
   display: flex;
   justify-content: space-between;
+  background-color: transparent;
+  position: relative;
 }
 
 .handbook-overlay > .close-button {
