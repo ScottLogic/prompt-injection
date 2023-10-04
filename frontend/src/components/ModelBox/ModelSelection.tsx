@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "./ModelSelection.css";
 import { setGptModel, getGptModel } from "../../service/chatService";
 import { CHAT_MODELS } from "../../models/chat";
-import CustomButton from "../CustomButton/CustomButton";
+import ThemedButton from "../ThemedButtons/ThemedButton";
 
 // return a drop down menu with the models
 function ModelSelection() {
@@ -64,9 +64,9 @@ function ModelSelection() {
         </div>
         <div id="button-area">
           <span id="model-selection-button">
-            <CustomButton onClick={() => void submitSelectedModel()}>
+            <ThemedButton onClick={() => void submitSelectedModel()}>
               Choose
-            </CustomButton>
+            </ThemedButton>
           </span>
         </div>
       </div>

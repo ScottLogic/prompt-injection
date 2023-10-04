@@ -1,4 +1,4 @@
-import CustomButton from "../CustomButton/CustomButton";
+import ThemedButton from "../ThemedButtons/ThemedButton";
 import DocumentViewBox from "./DocumentViewBox";
 
 import "./DocumentViewButton.css";
@@ -9,13 +9,13 @@ function DocumentViewButton() {
 
   return (
     <div id="document-view-button-area">
-      <CustomButton
+      <ThemedButton
         onClick={() => {
           setShowPopup(true);
         }}
       >
         View Documents
-      </CustomButton>
+      </ThemedButton>
       <DocumentViewBox show={showPopup} setShow={setShowPopup} />
     </div>
   );

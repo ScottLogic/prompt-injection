@@ -2,7 +2,7 @@ import { Level, LEVEL_NAMES } from "../../models/level";
 import { LEVELS } from "../../Levels";
 
 import "./LevelSelectionBox.css";
-import CustomButton from "../CustomButton/CustomButton";
+import ThemedButton from "../ThemedButtons/ThemedButton";
 
 function LevelSelectionBox({
   currentLevel,
@@ -26,7 +26,7 @@ function LevelSelectionBox({
         {LEVELS.map((level: Level, index: number) => {
           return (
             <span className="level-selection-button">
-              <CustomButton
+              <ThemedButton
                 key={level.name}
                 onClick={() => {
                   handleLevelChange(level.id);
@@ -37,7 +37,7 @@ function LevelSelectionBox({
                 isSelected={level.id === currentLevel}
               >
                 {level.name}
-              </CustomButton>
+              </ThemedButton>
             </span>
           );
         })}

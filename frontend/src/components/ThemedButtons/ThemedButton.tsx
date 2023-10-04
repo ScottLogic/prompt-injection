@@ -1,7 +1,7 @@
 import * as classNames from "classnames";
-import "./CustomButton.css";
+import "./ThemedButton.css";
 
-function CustomButton({
+function ThemedButton({
   children,
   onClick,
   isDisabled = false,
@@ -24,4 +24,4 @@ function CustomButton({
   );
 }
 
-export default CustomButton;
+export default ThemedButton;

@@ -5,7 +5,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 
 import "./ExportPDFLink.css";
 import { LEVEL_NAMES } from "../../models/level";
-import CustomButton from "../CustomButton/CustomButton";
+import ThemedButton from "../ThemedButtons/ThemedButton";
 
 function ExportPDFLink({
   messages,
@@ -36,13 +36,13 @@ function ExportPDFLink({
         }
         fileName={getFileName()}
       >
-        <CustomButton
+        <ThemedButton
           onClick={() => {
             return;
           }}
         >
           Export
-        </CustomButton>
+        </ThemedButton>
       </PDFDownloadLink>{" "}
     </div>
   );

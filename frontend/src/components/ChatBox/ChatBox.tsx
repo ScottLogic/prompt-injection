@@ -17,7 +17,7 @@ import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import { ThreeDots } from "react-loader-spinner";
 import { getLevelPrompt } from "../../service/levelService";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
-import CustomButton from "../CustomButton/CustomButton";
+import ThemedButton from "../ThemedButtons/ThemedButton";
 
 function ChatBox({
   completedLevels,
@@ -241,9 +241,9 @@ function ChatBox({
                 <ThreeDots width="24px" color="white" />
               </span>
             ) : (
-              <CustomButton onClick={() => void sendChatMessage()}>
+              <ThemedButton onClick={() => void sendChatMessage()}>
                 Send
-              </CustomButton>
+              </ThemedButton>
             )}
           </span>
         </div>
@@ -257,7 +257,7 @@ function ChatBox({
             />
           </div>
           <div className="control-button">
-            <CustomButton onClick={resetLevel}>Reset</CustomButton>
+            <ThemedButton onClick={resetLevel}>Reset</ThemedButton>
           </div>
         </div>
       </div>
