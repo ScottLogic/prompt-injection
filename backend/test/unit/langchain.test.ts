@@ -60,7 +60,7 @@ test("GIVEN level is sandbox THEN correct filepath is returned", () => {
 
 test("GIVEN makePromptTemplate is called with no config prePrompt THEN correct prompt is returned", () => {
   makePromptTemplate("", "defaultPrePrompt", "mainPrompt", "noName");
-  expect(mockFromTemplate).toBeCalledWith("defaultPrePrompt" + "mainPrompt");
+  expect(mockFromTemplate).toBeCalledWith("defaultPrePrompt\nmainPrompt");
   expect(mockFromTemplate).toBeCalledTimes(1);
 });
 
@@ -71,7 +71,7 @@ test("GIVEN makePromptTemplate is called with a prePrompt THEN correct prompt is
     "mainPrompt",
     "noName"
   );
-  expect(mockFromTemplate).toBeCalledWith("configPrePrompt" + "mainPrompt");
+  expect(mockFromTemplate).toBeCalledWith("configPrePrompt\nmainPrompt");
   expect(mockFromTemplate).toBeCalledTimes(1);
 });
 

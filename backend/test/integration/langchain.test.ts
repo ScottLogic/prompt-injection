@@ -147,10 +147,10 @@ test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEv
   );
   expect(mockFromTemplate).toBeCalledTimes(2);
   expect(mockFromTemplate).toBeCalledWith(
-    promptInjectionEvalPrePrompt + promptInjectionEvalMainPrompt
+    `${promptInjectionEvalPrePrompt}\n${promptInjectionEvalMainPrompt}`
   );
   expect(mockFromTemplate).toBeCalledWith(
-    maliciousPromptEvalPrePrompt + maliciousPromptEvalMainPrompt
+    `${maliciousPromptEvalPrePrompt}\n${maliciousPromptEvalMainPrompt}`
   );
 });
 
@@ -165,7 +165,7 @@ test("GIVEN the QA model is not provided a prompt and currentLevel WHEN it is in
   initQAModel(level, prompt, apiKey);
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
-  expect(mockFromTemplate).toBeCalledWith(qAPrePrompt + qAMainPrompt);
+  expect(mockFromTemplate).toBeCalledWith(`${qAPrePrompt}\n${qAMainPrompt}`);
 });
 
 test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialized and prompt is set to the correct prompt ", () => {
@@ -179,7 +179,7 @@ test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
   expect(mockFromLLM).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledTimes(1);
   expect(mockFromTemplate).toBeCalledWith(
-    `this is a test prompt. ${qAMainPrompt}`
+    `this is a test prompt. \n${qAMainPrompt}`
   );
 });
 
