@@ -5,7 +5,6 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 
 import "./ExportPDFLink.css";
 import { LEVEL_NAMES } from "../../models/level";
-import ThemedButton from "../ThemedButtons/ThemedButton";
 
 function ExportPDFLink({
   messages,
@@ -25,7 +24,7 @@ function ExportPDFLink({
   }
 
   return (
-    <div id="export-chat-box">
+    <div id="export-chat-box" className="themed-button">
       <PDFDownloadLink
         document={
           <ExportContent
@@ -36,13 +35,7 @@ function ExportPDFLink({
         }
         fileName={getFileName()}
       >
-        <ThemedButton
-          onClick={() => {
-            return;
-          }}
-        >
-          Export
-        </ThemedButton>
+        Export
       </PDFDownloadLink>{" "}
     </div>
   );

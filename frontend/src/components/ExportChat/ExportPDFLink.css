@@ -1,16 +1,11 @@
-#export-chat-box {
-  text-align: center;
-  height: 100%;
-  width: 100%;
-}
-
-a {
-  padding: 5 12px;
+#export-chat-box a {
   color: var(--main-button-inactive-text-colour);
   text-decoration: none;
-}
-
-button {
+  /* fill the entire space */
   height: 100%;
   width: 100%;
+  /* vertically centre text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
