@@ -24,14 +24,16 @@ function HandbookOverlay({
   }
 
   return (
-    <div id="handbook-overlay-screen" onClick={closeOverlay}>
-      <div
-        id="handbook-overlay"
-        onClick={(event) => {
-          event.stopPropagation();
-        }}
-      >
-        <div id="handbook-overlay-content">{showOverlayByType()}</div>
+    <div className="handbook-overlay-screen">
+      <div className="handbook-overlay">
+        <button
+          className="prompt-injection-min-button close-button"
+          onClick={closeOverlay}
+          aria-label="close handbook overlay"
+        >
+          X
+        </button>
+        <div className="handbook-overlay-content">{showOverlayByType()}</div>
       </div>
     </div>
   );

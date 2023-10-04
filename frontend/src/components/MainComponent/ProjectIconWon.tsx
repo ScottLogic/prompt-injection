@@ -60,7 +60,7 @@ function ProjectIconWon() {
         d="M148 274C162.5 282.667 201.2 294.8 240 274"
         stroke="#1FD07B"
         strokeWidth="13"
-        stroke-linecap="round"
+        strokeLinecap="round"
       />
     </svg>
   );

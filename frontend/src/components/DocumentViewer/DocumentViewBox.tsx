@@ -27,14 +27,15 @@ function DocumentViewBox({
   return show ? (
     <div className="document-popup">
       <div className="document-popup-inner">
-        <span
-          className="close-button"
+        <button
+          className="prompt-injection-min-button close-button"
           onClick={() => {
             setShow(false);
           }}
+          aria-label="close document viewer"
         >
-          x
-        </span>
+          X
+        </button>
         <div className="content">
           <div className="view-documents-header">
             <h3>view documents</h3>
