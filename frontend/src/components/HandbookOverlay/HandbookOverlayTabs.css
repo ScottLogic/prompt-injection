@@ -1,8 +1,3 @@
-.handbook-tabs {
-  display: flex;
-  justify-content: space-between;
-}
-
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -14,7 +9,6 @@
 }
 
 .tabs label {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +17,7 @@
   cursor: pointer;
   background-color: var(--overlay-closed-tab-colour);
   font-weight: 700;
-  transition: background-color ease 0.1s;
+  transition: ease 0.1s;
   border-radius: 10px 10px 0 0;
 }
 
