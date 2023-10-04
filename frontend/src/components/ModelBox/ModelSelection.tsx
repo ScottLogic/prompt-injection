@@ -42,33 +42,25 @@ function ModelSelection() {
   return (
     <div id="model-selection-box">
       <div id="model-selection-row">
-        <div id="text-area">
-          <p>Select a model: </p>
-        </div>
-        <div id="menu-area">
-          <select
-            id="model-selection-menu"
-            aria-label="model-select"
-            onChange={(e) => {
-              setSelectedModel(e.target.value as CHAT_MODELS);
-            }}
-            placeholder={modelInUse}
-          >
-            {chatModelOptions.map((model) => (
-              <option key={model} value={model}>
-                {model}
-              </option>
-            ))}
-            ;
-          </select>
-        </div>
-        <div id="button-area">
-          <span id="model-selection-button">
-            <ThemedButton onClick={() => void submitSelectedModel()}>
-              Choose
-            </ThemedButton>
-          </span>
-        </div>
+        <p>Select a model: </p>
+        <select
+          id="model-selection-menu"
+          aria-label="model-select"
+          onChange={(e) => {
+            setSelectedModel(e.target.value as CHAT_MODELS);
+          }}
+          placeholder={modelInUse}
+        >
+          {chatModelOptions.map((model) => (
+            <option key={model} value={model}>
+              {model}
+            </option>
+          ))}
+          ;
+        </select>
+        <ThemedButton onClick={() => void submitSelectedModel()}>
+          Choose
+        </ThemedButton>
       </div>
 
       <div id="model-selection-info">

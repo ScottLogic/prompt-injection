@@ -1,24 +1,23 @@
-#model-selection-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+#model-selection-box {
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-#model-selection-row #text-area {
-  max-width: 30%;
+#model-selection-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 4rem;
+  gap: 0.5rem;
+
+  align-items: center;
 }
 
-#model-selection-row #menu-area {
-  min-width: 50%;
+#model-selection-row p {
+  margin: 0;
 }
 
-#model-selection-row #button-area {
-  min-width: 20%;
-  height: 24px;
-}
-
-#model-selection-info {
+#model-selection-row #model-selection-info {
   align-items: center;
   text-align: center;
 }
