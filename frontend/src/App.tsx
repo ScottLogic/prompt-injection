@@ -33,8 +33,6 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   );
   const [numCompletedLevels, setNumCompletedLevels] = useState<number>(0);
 
-  const [showOverlay, setShowOverlay] = useState<boolean>(isNewUser);
-
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
 
@@ -67,6 +65,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
         console.error(err);
       });
     void setNewLevel(currentLevel);
+    // show the welcome overlay if this is a new user
+    if (isNewUser) {
+      const modalDialog = document.querySelector("dialog");
+      modalDialog?.showModal();
+    }
   }, []);
 
   useEffect(() => {
@@ -75,12 +78,14 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   }, [currentLevel]);
 
   function closeOverlay() {
-    setShowOverlay(false);
+    const modalDialog = document.querySelector("dialog");
+    modalDialog?.close();
   }
 
   function openHandbook() {
     setOverlayType(OVERLAY_TYPE.HANDBOOK);
-    setShowOverlay(true);
+    const modalDialog = document.querySelector("dialog");
+    modalDialog?.showModal();
   }
 
   // methods to modify messages
@@ -223,13 +228,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   return (
     <div id="app-content">
-      {showOverlay && (
-        <HandbookOverlay
-          currentLevel={currentLevel}
-          overlayType={overlayType}
-          closeOverlay={closeOverlay}
-        />
-      )}
+      <HandbookOverlay
+        currentLevel={currentLevel}
+        overlayType={overlayType}
+        closeOverlay={closeOverlay}
+      />
       <header id="app-content-header">
         <MainHeader
           currentLevel={currentLevel}
