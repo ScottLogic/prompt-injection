@@ -25,7 +25,7 @@
 }
 
 .defence-mechanism label.switch:focus-within {
-  outline: white auto 1px;
+  outline-style: auto;
   border-radius: 0.5rem;
 }
 

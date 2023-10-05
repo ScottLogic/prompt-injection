@@ -24,7 +24,7 @@ function DefenceBox({
   ) => Promise<boolean>;
 }) {
   return (
-    <div id="defence-box">
+    <div className="defence-box">
       {defences.map((defence, index) => {
         return (
           <DefenceMechanism
