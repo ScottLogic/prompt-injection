@@ -13,12 +13,12 @@ function HandbookOverlayTabs({
   ];
 
   return (
-    <div className="tabs">
+    <div className="handbook-tabs">
       {tabs.map((tab) => (
         <div key={tab.id}>
           <input
             type="radio"
-            name="tabs"
+            name="handbook-tabs"
             id={tab.id.toString()}
             defaultChecked={tab.id === HANDBOOK_PAGES.MISSION_INFO}
             onClick={() => {

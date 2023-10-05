@@ -29,6 +29,10 @@
   border-radius: 10px;
 }
 
+.overlay .handbook-overlay {
+  border-radius: 0;
+}
+
 .overlay > .close-button {
   position: absolute;
   right: 16px;
