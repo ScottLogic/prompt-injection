@@ -4,4 +4,10 @@ enum HANDBOOK_PAGES {
   TOOLS,
 }
 
-export { HANDBOOK_PAGES };
+const handbookPageNames: { [key in HANDBOOK_PAGES]: string } = {
+  [HANDBOOK_PAGES.MISSION_INFO]: "Mission Info",
+  [HANDBOOK_PAGES.ATTACKS]: "Attacks",
+  [HANDBOOK_PAGES.TOOLS]: "Tools",
+};
+
+export { HANDBOOK_PAGES, handbookPageNames };

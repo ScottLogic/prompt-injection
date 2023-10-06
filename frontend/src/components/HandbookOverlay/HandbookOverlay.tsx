@@ -29,7 +29,10 @@ function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
 
   return (
     <div className="handbook-overlay">
-      <HandbookOverlayTabs setSelectedPage={setSelectedPage} />
+      <HandbookOverlayTabs
+        currentLevel={currentLevel}
+        setSelectedPage={setSelectedPage}
+      />
       <div className="handbook-overlay-content">
         {setPageContent(selectedPage)}
       </div>
