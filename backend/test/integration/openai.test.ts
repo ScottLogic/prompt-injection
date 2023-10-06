@@ -7,7 +7,11 @@ import {
 import { chatGptSendMessage } from "../../src/openai";
 import { DEFENCE_TYPES, DefenceInfo } from "../../src/models/defence";
 import { EmailInfo } from "../../src/models/email";
-import { activateDefence, getInitialDefences } from "../../src/defence";
+import {
+  activateDefence,
+  configureDefence,
+  getInitialDefences,
+} from "../../src/defence";
 import { systemRoleDefault } from "../../src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method
@@ -323,8 +327,8 @@ test("GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system rol
 });
 
 test(
-  "GIVEN SYSTEM_ROLE defence is active AND the system role is already in the chat history " +
-    "WHEN sending message THEN system role is not re-added to the chat history",
+  "GIVEN SYSTEM_ROLE defence is configured AND the system role is already in the chat history " +
+    "WHEN sending message THEN system role is replaced with default value in the chat history",
   async () => {
     const message = "Hello";
     const chatHistory: ChatHistoryMessage[] = [
@@ -365,6 +369,12 @@ test(
     const openAiApiKey = "sk-12345";
 
     defences = activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, defences);
+    defences = configureDefence(DEFENCE_TYPES.SYSTEM_ROLE, defences, [
+      {
+        id: "systemRole",
+        value: "You are not a helpful assistant",
+      },
+    ]);
 
     // Mock the createChatCompletion function
     mockCreateChatCompletion.mockResolvedValueOnce({
@@ -398,7 +408,7 @@ test(
     // system role is added to the start of the chat history
     expect(chatHistory[0].completion?.role).toBe("system");
     expect(chatHistory[0].completion?.content).toBe(
-      "You are a helpful assistant"
+      "You are not a helpful assistant"
     );
     // rest of the chat history is in order
     expect(chatHistory[1].completion?.role).toBe("user");

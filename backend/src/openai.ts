@@ -282,16 +282,24 @@ async function chatGptChatCompletion(
     currentLevel !== LEVEL_NAMES.SANDBOX ||
     isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
+    const systemRoleContent = getSystemRole(defences, currentLevel);
+
     // check to see if there's already a system role
     if (!chatHistory.find((message) => message.completion?.role === "system")) {
       // add the system role to the start of the chat history
       chatHistory.unshift({
         completion: {
           role: "system",
-          content: getSystemRole(defences, currentLevel),
+          content: systemRoleContent,
         },
         chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
       });
+    } else {
+      // replace with the latest system role
+      chatHistory[0].completion = {
+        role: "system",
+        content: systemRoleContent,
+      };
     }
   } else {
     // remove the system role from the chat history
