@@ -9,7 +9,7 @@ function DefenceConfiguration({
 }: {
   config: DefenceConfig;
   isActive: boolean;
-  setConfigurationValue: (configId: string, value: string) => Promise<void>;
+  setConfigurationValue: (value: string) => void;
 }) {
   function inputKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -21,15 +21,13 @@ function DefenceConfiguration({
   function inputKeyUp(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
       const value = event.currentTarget.innerText.trim();
-      // asynchronously set the configuration value
-      void setConfigurationValue(config.id, value);
+      setConfigurationValue(value);
     }
   }
 
   function focusLost(event: React.FocusEvent<HTMLDivElement>) {
     const value = event.target.innerText.trim();
-    // asynchronously set the configuration value
-    void setConfigurationValue(config.id, value);
+    setConfigurationValue(value);
   }
 
   function getClassName() {

@@ -28,17 +28,19 @@ function DefenceMechanism({
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const [configValidated, setConfigValidated] = useState<boolean>(true);
 
-  async function setConfigurationValue(configId: string, value: string) {
-    const configName =
-      defenceDetail.config.find((config) => config.id === configId)?.name ?? "";
+  async function setConfigurationValue(config: DefenceConfig, value: string) {
+    // don't set if the value is the same
+    if (config.value === value) {
+      return;
+    }
 
-    const configIsValid = validateDefence(defenceDetail.id, configName, value);
+    const configIsValid = validateDefence(defenceDetail.id, config.name, value);
     if (configIsValid) {
-      const newConfiguration = defenceDetail.config.map((config) => {
-        if (config.id === configId) {
-          config.value = value;
+      const newConfiguration = defenceDetail.config.map((oldConfig) => {
+        if (oldConfig.id === config.id) {
+          oldConfig.value = value;
         }
-        return config;
+        return oldConfig;
       });
 
       const configured = await setDefenceConfiguration(
@@ -78,7 +80,10 @@ function DefenceMechanism({
                   key={config.id}
                   isActive={defenceDetail.isActive}
                   config={config}
-                  setConfigurationValue={setConfigurationValue}
+                  setConfigurationValue={(value: string) => {
+                    // asynchronously set the configuration value
+                    void setConfigurationValue(config, value);
+                  }}
                 />
               );
             })}
