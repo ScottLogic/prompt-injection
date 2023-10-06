@@ -35,11 +35,6 @@
   );
   --control-body-background-colour: #3a3a3a;
 
-  --overlay-hidden-colour: #000;
-  --overlay-background-colour: #8ad5da;
-  --overlay-attack-background-colour: #d6d6ff;
-  --overlay-text-colour: #313131;
-
   --chat-bot-colour: #d482fb;
   --chat-bot-background: linear-gradient(var(--chat-bot-colour), #f3dbfe);
   --chat-blocked-colour: var(--main-error-colour);
@@ -59,4 +54,12 @@
   --email-background-colour: #93ffcb;
   --email-divider-colour: var(--email-text-colour);
   --email-text-colour: #000;
+
+  --overlay-background-colour: #8ad5da;
+  --overlay-attack-background-colour: #d6d6ff;
+  --overlay-text-colour: #313131;
+}
+
+::backdrop {
+  --overlay-hidden-colour: #0008;
 }
