@@ -52,7 +52,7 @@ function ControlPanel({
   }
 
   return (
-    <div id="control-panel">
+    <div className="control-panel">
       {/* hide defence box on levels 1 and 2 */}
       {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
         currentLevel === LEVEL_NAMES.SANDBOX) && (
