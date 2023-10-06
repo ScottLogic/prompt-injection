@@ -1,5 +1,6 @@
 .handbook-overlay {
   position: relative;
+  border: none;
 
   background-color: var(--overlay-background-colour);
   color: var(--overlay-text-colour);

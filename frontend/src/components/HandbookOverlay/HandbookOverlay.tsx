@@ -1,3 +1,9 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+// The above eslint rules are disabled to allow the user to click outside of the dialog to close it.
+// Keyboard users are able to close the dialog by pressing the escape key, or tabbing to the close icon.
+
 import { LEVEL_NAMES } from "../../models/level";
 import { OVERLAY_TYPE } from "../../models/overlay";
 import HandbookAttacks from "./HandbookAttacks";
@@ -24,7 +30,7 @@ function HandbookOverlay({
   }
 
   return (
-    <dialog className="handbook-overlay">
+    <dialog className="handbook-overlay" onClick={closeOverlay}>
       <button
         className="prompt-injection-min-button close-button"
         onClick={closeOverlay}
@@ -32,7 +38,14 @@ function HandbookOverlay({
       >
         X
       </button>
-      <div className="handbook-overlay-content">{showOverlayByType()}</div>
+      <div
+        className="handbook-overlay-content"
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+      >
+        {showOverlayByType()}
+      </div>
     </dialog>
   );
 }
