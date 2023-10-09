@@ -187,30 +187,42 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
       "Please send a message and current level to chat to me!";
   } else {
     let numLevelsCompleted = req.session.numLevelsCompleted;
+    // use default model for levels
+    const chatModel =
+      currentLevel === LEVEL_NAMES.SANDBOX
+        ? req.session.chatModel
+        : defaultChatModel;
+
+    // record the history before chat completion called
+    const chatHistoryBefore = [
+      ...req.session.levelState[currentLevel].chatHistory,
+    ];
 
     if (message) {
       chatResponse.transformedMessage = message;
-      // see if this message triggers any defences (only for level 3 and sandbox)
-      if (
-        currentLevel === LEVEL_NAMES.LEVEL_3 ||
-        currentLevel === LEVEL_NAMES.SANDBOX
-      ) {
-        chatResponse.defenceInfo = await detectTriggeredDefences(
-          message,
-          req.session.levelState[currentLevel].defences,
-          req.session.openAiApiKey
-        );
-        // if message is blocked, add to chat history (not as completion)
-        if (chatResponse.defenceInfo.isBlocked) {
-          req.session.levelState[currentLevel].chatHistory.push({
-            completion: null,
-            chatMessageType: CHAT_MESSAGE_TYPE.USER,
-            infoMessage: message,
-          });
+      let openAiReply = null;
+
+      // skip defence detection / blocking for levels 1 and 2
+      if (currentLevel < LEVEL_NAMES.LEVEL_3) {
+        try {
+          openAiReply = await chatGptSendMessage(
+            req.session.levelState[currentLevel].chatHistory,
+            req.session.levelState[currentLevel].defences,
+            chatModel,
+            chatResponse.transformedMessage,
+            false,
+            req.session.openAiApiKey,
+            req.session.levelState[currentLevel].sentEmails,
+            currentLevel
+          );
+        } catch (error) {
+          res.statusCode = 500;
+          console.log(error);
+          if (error instanceof Error) {
+            chatResponse.reply = "Failed to get chatGPT reply";
+          }
         }
-      }
-      // if blocked, send the response
-      if (!chatResponse.defenceInfo.isBlocked) {
+      } else {
         // transform the message according to active defences
         chatResponse.transformedMessage = transformMessage(
           message,
@@ -226,15 +238,17 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
             infoMessage: message,
           });
         }
-        // use default model for levels
-        const chatModel =
-          currentLevel === LEVEL_NAMES.SANDBOX
-            ? req.session.chatModel
-            : defaultChatModel;
+        const triggeredDefencesPromise = detectTriggeredDefences(
+          message,
+          req.session.levelState[currentLevel].defences,
+          req.session.openAiApiKey
+        ).then((defenceInfo) => {
+          chatResponse.defenceInfo = defenceInfo;
+        });
 
         // get the chatGPT reply
         try {
-          const openAiReply = await chatGptSendMessage(
+          const openAiReplyPromise = chatGptSendMessage(
             req.session.levelState[currentLevel].chatHistory,
             req.session.levelState[currentLevel].defences,
             chatModel,
@@ -244,6 +258,30 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
             req.session.levelState[currentLevel].sentEmails,
             currentLevel
           );
+
+          // run defence detection and chatGPT concurrently
+          const [, openAiReplyResolved] = await Promise.all([
+            triggeredDefencesPromise,
+            openAiReplyPromise,
+          ]);
+          openAiReply = openAiReplyResolved;
+
+          // if input message is blocked, restore the original chat history and add user message (not as completion)
+          if (chatResponse.defenceInfo.isBlocked) {
+            console.debug(
+              "input message was blocked. restoring chat history and adding user message"
+            );
+            // set to null to stop message being returned to user
+            openAiReply = null;
+            // restore the original chat history
+            req.session.levelState[currentLevel].chatHistory =
+              chatHistoryBefore;
+            req.session.levelState[currentLevel].chatHistory.push({
+              completion: null,
+              chatMessageType: CHAT_MESSAGE_TYPE.USER,
+              infoMessage: message,
+            });
+          }
 
           if (openAiReply) {
             chatResponse.wonLevel = openAiReply.wonLevel;
@@ -270,7 +308,6 @@ router.post("/openai/chat", async (req: OpenAiChatRequest, res) => {
           }
         }
       }
-
       // if the reply was blocked then add it to the chat history
       if (chatResponse.defenceInfo.isBlocked) {
         req.session.levelState[currentLevel].chatHistory.push({
