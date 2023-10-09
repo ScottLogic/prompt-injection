@@ -51,10 +51,9 @@ function ModelSelection() {
             onChange={(e) => {
               setSelectedModel(e.target.value as CHAT_MODELS);
             }}
-            placeholder={modelInUse}
           >
             {chatModelOptions.map((model) => (
-              <option key={model} value={model}>
+              <option key={model} value={model} selected={model == modelInUse}>
                 {model}
               </option>
             ))}
