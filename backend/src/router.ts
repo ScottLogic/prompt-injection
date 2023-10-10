@@ -156,23 +156,12 @@ router.post("/email/clear", (req: EmailClearRequest, res) => {
   }
 });
 
-const initChatResponse: ChatHttpResponse = {
-  reply: "",
-  defenceInfo: {
-    blockedReason: "",
-    isBlocked: false,
-    alertedDefences: [],
-    triggeredDefences: [],
-  },
-  numLevelsCompleted: 0,
-  transformedMessage: "",
-  wonLevel: false,
-};
-
 function handleChatError(
+  res: express.Response,
   chatResponse: ChatHttpResponse,
   blocked: boolean,
-  errorMsg: string
+  errorMsg: string,
+  statusCode = 500
 ) {
   console.error(errorMsg);
   chatResponse.reply = errorMsg;
@@ -180,75 +169,78 @@ function handleChatError(
   if (blocked) {
     chatResponse.defenceInfo.blockedReason = errorMsg;
   }
-  return chatResponse;
+  res.status(statusCode).send(chatResponse);
 }
-
 // Chat to ChatGPT
 router.post(
   "/openai/chat",
   async (req: OpenAiChatRequest, res: express.Response) => {
     // set reply params
-    let chatResponse = initChatResponse;
+    const chatResponse: ChatHttpResponse = {
+      reply: "",
+      defenceInfo: {
+        blockedReason: "",
+        isBlocked: false,
+        alertedDefences: [],
+        triggeredDefences: [],
+      },
+      numLevelsCompleted: 0,
+      transformedMessage: "",
+      wonLevel: false,
+    };
     const message = req.body.message;
     const currentLevel = req.body.currentLevel;
 
     // must have initialised openai
+    if (message === undefined || currentLevel === undefined) {
+      handleChatError(
+        res,
+        chatResponse,
+        true,
+        "Please send a message and current level to chat to me!",
+        400
+      );
+      return;
+    }
+    // set the transformed message to begin with
+    chatResponse.transformedMessage = message;
     if (!req.session.openAiApiKey) {
-      chatResponse = handleChatError(
+      handleChatError(
+        res,
         chatResponse,
         true,
-        "Please enter a valid OpenAI API key to chat to me!"
+        "Please enter a valid OpenAI API key to chat to me!",
+        401
       );
-      res.status(401).send(chatResponse);
-    } else if (message === undefined || currentLevel === undefined) {
-      chatResponse = handleChatError(
-        chatResponse,
-        true,
-        "Please send a message and current level to chat to me!"
-      );
-      res.status(400).send(chatResponse);
-    } else {
-      let numLevelsCompleted = req.session.numLevelsCompleted;
-      // use default model for levels
-      const chatModel =
-        currentLevel === LEVEL_NAMES.SANDBOX
-          ? req.session.chatModel
-          : defaultChatModel;
+      return;
+    }
+    let numLevelsCompleted = req.session.numLevelsCompleted;
 
-      // record the history before chat completion called
-      const chatHistoryBefore = [
-        ...req.session.levelState[currentLevel].chatHistory,
-      ];
+    // use default model for levels, allow user to select in sandbox
+    const chatModel =
+      currentLevel === LEVEL_NAMES.SANDBOX
+        ? req.session.chatModel
+        : defaultChatModel;
 
+    // record the history before chat completion called
+    const chatHistoryBefore = [
+      ...req.session.levelState[currentLevel].chatHistory,
+    ];
+    try {
       if (message) {
-        chatResponse.transformedMessage = message;
-        // skip defence detection / blocking for levels 1 and 2
+        // skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
         if (currentLevel < LEVEL_NAMES.LEVEL_3) {
-          const lowLevelReply: ChatHttpResponse = await handleLowLevelChat(
-            req,
-            res,
-            chatResponse,
-            currentLevel,
-            chatModel
-          );
-          chatResponse.reply = lowLevelReply.reply;
-          chatResponse.wonLevel = lowLevelReply.wonLevel;
+          await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
         } else {
-          // apply the defence detection for level 3 and sandbox
-          const highLevelReply: ChatHttpResponse = await handleHigherLevelChat(
+          // apply the defence detection for level 3 and sandbox - sets chatResponse obj
+          await handleHigherLevelChat(
             req,
-            res,
             message,
             chatHistoryBefore,
             chatResponse,
             currentLevel,
             chatModel
           );
-          chatResponse.reply = highLevelReply.reply;
-          chatResponse.wonLevel = highLevelReply.wonLevel;
-          chatResponse.transformedMessage = highLevelReply.transformedMessage;
-          chatResponse.defenceInfo = highLevelReply.defenceInfo;
-          chatResponse.numLevelsCompleted = highLevelReply.numLevelsCompleted;
         }
         // if the reply was blocked then add it to the chat history
         if (chatResponse.defenceInfo.isBlocked) {
@@ -257,19 +249,22 @@ router.post(
             chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
             infoMessage: chatResponse.defenceInfo.blockedReason,
           });
-        }
-        // enable next level when user wins current level
-        if (chatResponse.wonLevel) {
-          console.log("Win conditon met for level: ", currentLevel);
-          numLevelsCompleted = Math.max(numLevelsCompleted, currentLevel + 1);
-          req.session.numLevelsCompleted = numLevelsCompleted;
-          chatResponse.numLevelsCompleted = numLevelsCompleted;
+
+          // enable next level when user wins current level
+          if (chatResponse.wonLevel) {
+            console.debug("Win conditon met for level: ", currentLevel);
+            numLevelsCompleted = Math.max(numLevelsCompleted, currentLevel + 1);
+            req.session.numLevelsCompleted = numLevelsCompleted;
+            chatResponse.numLevelsCompleted = numLevelsCompleted;
+          }
         }
       } else {
-        res.statusCode = 400;
-        chatResponse.reply = "Missing message";
-        console.error(chatResponse.reply);
+        handleChatError(res, chatResponse, true, "Missing message");
+        return;
       }
+    } catch (error) {
+      handleChatError(res, chatResponse, false, "Failed to get chatGPT reply");
+      return;
     }
     // log and send the reply with defence info
     console.log(chatResponse);
@@ -280,46 +275,38 @@ router.post(
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
   req: OpenAiChatRequest,
-  res: express.Response,
   chatResponse: ChatHttpResponse,
   currentLevel: LEVEL_NAMES,
   chatModel: ChatModel
-): Promise<ChatHttpResponse> {
-  let openAiReply = null;
+) {
   // get the chatGPT reply
-  try {
-    openAiReply = await chatGptSendMessage(
-      req.session.levelState[currentLevel].chatHistory,
-      req.session.levelState[currentLevel].defences,
-      chatModel,
-      chatResponse.transformedMessage,
-      false,
-      req.session.openAiApiKey ?? "",
-      req.session.levelState[currentLevel].sentEmails,
-      currentLevel
-    );
-    chatResponse.reply = openAiReply?.completion.content ?? "";
-    chatResponse.wonLevel = openAiReply?.wonLevel ?? false;
-  } catch (error) {
-    res.statusCode = 500;
-    console.log(error);
-    if (error instanceof Error) {
-      chatResponse.reply = "Failed to get chatGPT reply";
-    }
+  const openAiReply = await chatGptSendMessage(
+    req.session.levelState[currentLevel].chatHistory,
+    req.session.levelState[currentLevel].defences,
+    chatModel,
+    chatResponse.transformedMessage,
+    false,
+    req.session.openAiApiKey ?? "",
+    req.session.levelState[currentLevel].sentEmails,
+    currentLevel
+  );
+  chatResponse.reply = openAiReply?.completion.content ?? "";
+  chatResponse.wonLevel = openAiReply?.wonLevel ?? false;
+
+  if (openAiReply instanceof Error) {
+    throw openAiReply;
   }
-  return chatResponse;
 }
 
 // handle the chat logic for high levels (with defence detection)
 async function handleHigherLevelChat(
   req: OpenAiChatRequest,
-  res: express.Response,
   message: string,
   chatHistoryBefore: ChatHistoryMessage[],
   chatResponse: ChatHttpResponse,
   currentLevel: LEVEL_NAMES,
   chatModel: ChatModel
-): Promise<ChatHttpResponse> {
+) {
   let openAiReply = null;
 
   // transform the message according to active defences
@@ -367,9 +354,6 @@ async function handleHigherLevelChat(
 
     // if input message is blocked, restore the original chat history and add user message (not as completion)
     if (chatResponse.defenceInfo.isBlocked) {
-      console.debug(
-        "Input message was blocked. restoring chat history and adding user message"
-      );
       // set to null to stop message being returned to user
       openAiReply = null;
 
@@ -384,7 +368,6 @@ async function handleHigherLevelChat(
     }
 
     if (openAiReply) {
-      console.debug("if openai reply... ", openAiReply);
       chatResponse.wonLevel = openAiReply.wonLevel;
       chatResponse.reply = openAiReply.completion.content ?? "";
 
@@ -401,14 +384,10 @@ async function handleHigherLevelChat(
         openAiReply.defenceInfo.blockedReason;
     }
   } catch (error) {
-    chatResponse = handleChatError(
-      chatResponse,
-      false,
-      "Failed to get chatGPT reply"
-    );
-    res.status(500).send(chatResponse);
+    if (error instanceof Error) {
+      throw error;
+    }
   }
-  return chatResponse;
 }
 
 // get the chat history
