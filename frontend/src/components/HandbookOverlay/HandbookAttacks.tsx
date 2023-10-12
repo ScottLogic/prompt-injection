@@ -5,9 +5,7 @@ import "./HandbookAttacks.css";
 
 function HandbookAttacks({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   const attacks: AttackInfo[] =
-    currentLevel === LEVEL_NAMES.LEVEL_2
-      ? ATTACKS_LEVEL_2
-      : ATTACKS_ALL;
+    currentLevel === LEVEL_NAMES.LEVEL_2 ? ATTACKS_LEVEL_2 : ATTACKS_ALL;
 
   return (
     <div className="handbook-attacks">

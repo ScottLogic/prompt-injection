@@ -5,9 +5,9 @@ import MainBody from "./components/MainComponent/MainBody";
 import { useEffect, useState } from "react";
 import { LEVEL_NAMES } from "./models/level";
 import {
-  getChatHistory,
-  clearChat,
   addMessageToChatHistory,
+  clearChat,
+  getChatHistory,
 } from "./service/chatService";
 import { EmailInfo } from "./models/email";
 import { clearEmails, getSentEmails } from "./service/emailService";
@@ -25,12 +25,6 @@ import { getCompletedLevels } from "./service/levelService";
 import Overlay from "./components/Overlay/Overlay";
 import { OVERLAY_TYPE } from "./models/overlay";
 
-/*
-TODO
-- Add click handler
-- Manually test!
-*/
-
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
   const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
@@ -43,11 +37,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-
-  const [showOverlay, setShowOverlay] = useState<boolean>(isNewUser);
-  const [overlayType, setOverlayType] = useState<OVERLAY_TYPE>(
-    OVERLAY_TYPE.WELCOME
-  );
+  const [overlayType, setOverlayType] = useState<OVERLAY_TYPE | null>(null);
 
   function loadCurrentLevel() {
     // get current level from local storage
@@ -71,6 +61,9 @@ function App({ isNewUser }: { isNewUser: boolean }) {
         console.error(err);
       });
     void setNewLevel(currentLevel);
+    if (isNewUser) {
+      setOverlayType(OVERLAY_TYPE.WELCOME);
+    }
   }, []);
 
   useEffect(() => {
@@ -83,18 +76,16 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     if (overlayType === OVERLAY_TYPE.WELCOME) {
       openInformationOverlay();
     } else {
-      setShowOverlay(false);
+      setOverlayType(null);
     }
   }
 
   function openHandbook() {
     setOverlayType(OVERLAY_TYPE.HANDBOOK);
-    setShowOverlay(true);
   }
 
   function openInformationOverlay() {
     setOverlayType(OVERLAY_TYPE.INFORMATION);
-    setShowOverlay(true);
   }
 
   // methods to modify messages
@@ -233,7 +224,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   return (
     <div id="app-content">
-      {showOverlay && (
+      {overlayType !== null && (
         <Overlay
           currentLevel={currentLevel}
           overlayType={overlayType}

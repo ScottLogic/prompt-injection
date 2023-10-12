@@ -18,6 +18,6 @@
   transition: ease 0.1s;
 }
 
-.handbook-tabs button[aria-selected=true] {
+.handbook-tabs button[aria-selected="true"] {
   background-color: var(--overlay-tab-colour);
 }
