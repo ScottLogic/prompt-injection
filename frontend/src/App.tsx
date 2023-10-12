@@ -25,6 +25,12 @@ import { getCompletedLevels } from "./service/levelService";
 import Overlay from "./components/Overlay/Overlay";
 import { OVERLAY_TYPE } from "./models/overlay";
 
+/*
+TODO
+- Add click handler
+- Manually test!
+*/
+
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
   const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
@@ -32,14 +38,13 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   );
   const [numCompletedLevels, setNumCompletedLevels] = useState<number>(0);
 
-  const [showOverlay, setShowOverlay] = useState<boolean>(isNewUser);
-
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
 
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
+  const [showOverlay, setShowOverlay] = useState<boolean>(isNewUser);
   const [overlayType, setOverlayType] = useState<OVERLAY_TYPE>(
     OVERLAY_TYPE.WELCOME
   );

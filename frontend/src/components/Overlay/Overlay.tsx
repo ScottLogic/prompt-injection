@@ -4,6 +4,7 @@ import "./Overlay.css";
 import HandbookWelcome from "./OverlayWelcome";
 import HandbookOverlay from "../HandbookOverlay/HandbookOverlay";
 import MissionInformation from "../Overlay/MissionInformation";
+import { useEffect, useRef } from 'react';
 
 function Overlay({
   currentLevel,
@@ -14,31 +15,32 @@ function Overlay({
   overlayType: OVERLAY_TYPE;
   closeOverlay: () => void;
 }) {
-  function showOverlayByType() {
-    switch (overlayType) {
-      case OVERLAY_TYPE.HANDBOOK:
-        return <HandbookOverlay currentLevel={currentLevel} />;
-      case OVERLAY_TYPE.INFORMATION:
-        return <MissionInformation currentLevel={currentLevel} />;
-      case OVERLAY_TYPE.WELCOME:
-      default:
-        return <HandbookWelcome />;
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    dialogRef.current?.showModal();
+    return () => {
+      dialogRef.current?.close();
     }
-  }
+  }, []);
+
+  const overlayContent =
+    overlayType === OVERLAY_TYPE.HANDBOOK
+      ? <HandbookOverlay currentLevel={currentLevel} />
+      : overlayType === OVERLAY_TYPE.INFORMATION
+      ? <MissionInformation currentLevel={currentLevel} />
+      : <HandbookWelcome />;
 
   return (
-    <div className="overlay-screen">
-      <div className="overlay">
-        <button
-          className="prompt-injection-min-button close-button"
-          onClick={closeOverlay}
-          aria-label="close handbook overlay"
-        >
-          X
-        </button>
-        <div className="overlay-content">{showOverlayByType()}</div>
-      </div>
-    </div>
+    <dialog ref={dialogRef} className="overlay">
+      <button
+        className="prompt-injection-min-button close-button"
+        onClick={closeOverlay}
+        aria-label="close handbook overlay"
+      >
+        X
+      </button>
+      <div className="overlay-content">{overlayContent}</div>
+    </dialog>
   );
 }
 
