@@ -1,8 +1,8 @@
-import "./HandbookWelcome.css";
+import "./OverlayWelcome.css";
 
-function HandbookWelcome() {
+function OverlayWelcome() {
   return (
-    <div id="handbook-welcome">
+    <div id="welcome">
       <h1>Welcome!</h1>
       <p>
         Your mission, should you choose to accept it, is to go undercover and
@@ -13,4 +13,4 @@ function HandbookWelcome() {
   );
 }
 
-export default HandbookWelcome;
+export default OverlayWelcome;

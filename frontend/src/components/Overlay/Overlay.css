@@ -1,0 +1,62 @@
+.overlay-screen {
+  background-color: var(--overlay-hidden-colour);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay {
+  position: relative;
+
+  background-color: var(--overlay-background-colour);
+  color: var(--overlay-text-colour);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+
+  width: 50%;
+  height: 50%;
+  border-radius: 10px;
+}
+
+.overlay .handbook-overlay {
+  border-radius: 0;
+}
+
+.overlay > .close-button {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  max-width: 2rem;
+  max-height: 2rem;
+  min-height: 1.6rem;
+  padding: 5px;
+
+  color: inherit;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.overlay > .close-button:hover {
+  color: var(--main-button-hover-text-colour);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.overlay-content {
+  height: 100%;
+  padding: 0 5%;
+
+  text-align: center;
+  overflow-y: auto;
+}
