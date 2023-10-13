@@ -141,8 +141,7 @@ function getOpenAiFromKey(openAiApiKey: string) {
   config = new Configuration({
     apiKey: openAiApiKey,
   });
-  const openai = new OpenAIApi(config);
-  return openai;
+  return new OpenAIApi(config);
 }
 
 async function setGptModel(openAiApiKey: string, model: CHAT_MODELS) {
@@ -156,9 +155,8 @@ async function setGptModel(openAiApiKey: string, model: CHAT_MODELS) {
   }
 }
 
-// returns true if the function is in the list of functions available to ChatGPT
 function isChatGptFunction(functionName: string) {
-  return chatGptFunctions.find((func) => func.name === functionName);
+  return chatGptFunctions.some((func) => func.name === functionName);
 }
 
 async function chatGptCallFunction(
@@ -282,24 +280,24 @@ async function chatGptChatCompletion(
     currentLevel !== LEVEL_NAMES.SANDBOX ||
     isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
-    const systemRoleContent = getSystemRole(defences, currentLevel);
+    const completionConfig: ChatCompletionRequestMessage = {
+      role: "system",
+      content: getSystemRole(defences, currentLevel),
+    };
 
     // check to see if there's already a system role
-    if (!chatHistory.find((message) => message.completion?.role === "system")) {
+    const systemRole = chatHistory.find(
+      (message) => message.completion?.role === "system"
+    );
+    if (!systemRole) {
       // add the system role to the start of the chat history
       chatHistory.unshift({
-        completion: {
-          role: "system",
-          content: systemRoleContent,
-        },
+        completion: completionConfig,
         chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
       });
     } else {
       // replace with the latest system role
-      chatHistory[0].completion = {
-        role: "system",
-        content: systemRoleContent,
-      };
+      systemRole.completion = completionConfig;
     }
   } else {
     // remove the system role from the chat history
