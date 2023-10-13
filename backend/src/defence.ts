@@ -3,7 +3,9 @@ import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
 import {
-  retrievalQAPrePromptSecure,
+  maliciousPromptEvalPrePrompt,
+  promptInjectionEvalPrePrompt,
+  qAPrePromptSecure,
   systemRoleDefault,
   systemRoleLevel1,
   systemRoleLevel2,
@@ -24,11 +26,20 @@ function getInitialDefences(): DefenceInfo[] {
         value: process.env.EMAIL_WHITELIST ?? "",
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.LLM_EVALUATION, []),
+    new DefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
+      {
+        id: "prompt-injection-evaluator-prompt",
+        value: promptInjectionEvalPrePrompt,
+      },
+      {
+        id: "malicious-prompt-evaluator-prompt",
+        value: maliciousPromptEvalPrePrompt,
+      },
+    ]),
     new DefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
       {
         id: "prePrompt",
-        value: retrievalQAPrePromptSecure,
+        value: qAPrePromptSecure,
       },
     ]),
     new DefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
@@ -177,7 +188,7 @@ function getEmailWhitelistVar(defences: DefenceInfo[]) {
   );
 }
 
-function getQALLMprePrompt(defences: DefenceInfo[]) {
+function getQAPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
@@ -186,10 +197,26 @@ function getQALLMprePrompt(defences: DefenceInfo[]) {
   );
 }
 
+function getPromptInjectionEvalPrePromptFromConfig(defences: DefenceInfo[]) {
+  return getConfigValue(
+    defences,
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    "prompt-injection-evaluator-prompt",
+    ""
+  );
+}
+
+function getMaliciousPromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
+  return getConfigValue(
+    defences,
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    "malicious-prompt-evaluator-prompt",
+    ""
+  );
+}
+
 function isDefenceActive(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
-  return defences.find((defence) => defence.id === id && defence.isActive)
-    ? true
-    : false;
+  return defences.some((defence) => defence.id === id && defence.isActive);
 }
 
 function generateRandomString(string_length: number) {
@@ -230,8 +257,7 @@ function transformRandomSequenceEnclosure(
   const randomString: string = generateRandomString(
     Number(getRandomSequenceEnclosureLength(defences))
   );
-  const introText: string = getRandomSequenceEnclosurePrePrompt(defences);
-  const transformedMessage: string = introText.concat(
+  return getRandomSequenceEnclosurePrePrompt(defences).concat(
     randomString,
     " {{ ",
     message,
@@ -239,7 +265,6 @@ function transformRandomSequenceEnclosure(
     randomString,
     ". "
   );
-  return transformedMessage;
 }
 
 // function to escape XML characters in user input to prevent hacking with XML tagging on
@@ -274,12 +299,7 @@ function transformXmlTagging(message: string, defences: DefenceInfo[]) {
   const prePrompt = getXMLTaggingPrePrompt(defences);
   const openTag = "<user_input>";
   const closeTag = "</user_input>";
-  const transformedMessage: string = prePrompt.concat(
-    openTag,
-    escapeXml(message),
-    closeTag
-  );
-  return transformedMessage;
+  return prePrompt.concat(openTag, escapeXml(message), closeTag);
 }
 
 //apply defence string transformations to original message
@@ -370,15 +390,29 @@ async function detectTriggeredDefences(
   }
 
   // evaluate the message for prompt injection
-  const evalPrompt = await queryPromptEvaluationModel(message, openAiApiKey);
+  const configPromptInjectionEvalPrePrompt =
+    getPromptInjectionEvalPrePromptFromConfig(defences);
+  const configMaliciousPromptEvalPrePrompt =
+    getMaliciousPromptEvalPrePromptFromConfig(defences);
+
+  const evalPrompt = await queryPromptEvaluationModel(
+    message,
+    configPromptInjectionEvalPrePrompt,
+    configMaliciousPromptEvalPrePrompt,
+    openAiApiKey
+  );
   if (evalPrompt.isMalicious) {
-    if (isDefenceActive(DEFENCE_TYPES.LLM_EVALUATION, defences)) {
-      defenceReport.triggeredDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
+    if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
+      defenceReport.triggeredDefences.push(
+        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+      );
       console.debug("LLM evalutation defence active.");
       defenceReport.isBlocked = true;
       defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.${evalPrompt.reason}`;
     } else {
-      defenceReport.alertedDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
+      defenceReport.alertedDefences.push(
+        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+      );
     }
   }
   return defenceReport;
@@ -391,7 +425,9 @@ export {
   detectTriggeredDefences,
   getEmailWhitelistVar,
   getInitialDefences,
-  getQALLMprePrompt,
+  getQAPrePromptFromConfig,
+  getPromptInjectionEvalPrePromptFromConfig,
+  getMaliciousPromptEvalPrePromptFromConfig,
   getSystemRole,
   isDefenceActive,
   transformMessage,

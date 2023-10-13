@@ -3,7 +3,7 @@ import {
   getSystemRole,
   detectFilterList,
   getFilterList,
-  getQALLMprePrompt,
+  getQAPrePromptFromConfig,
 } from "./defence";
 import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
 import { queryDocuments } from "./langchain";
@@ -231,14 +231,14 @@ async function chatGptCallFunction(
         ) as FunctionAskQuestionParams;
         console.debug(`Asking question: ${params.question}`);
         // if asking a question, call the queryDocuments
-        let qaPrompt = "";
+        let configQAPrePrompt = "";
         if (isDefenceActive(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences)) {
-          qaPrompt = getQALLMprePrompt(defences);
+          configQAPrePrompt = getQAPrePromptFromConfig(defences);
         }
         response = (
           await queryDocuments(
             params.question,
-            qaPrompt,
+            configQAPrePrompt,
             currentLevel,
             openAiApiKey
           )

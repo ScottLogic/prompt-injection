@@ -4,17 +4,21 @@ import {
   deactivateDefence,
   detectTriggeredDefences,
   getInitialDefences,
-  getQALLMprePrompt,
+  getQAPrePromptFromConfig,
   getSystemRole,
   isDefenceActive,
   transformMessage,
   detectFilterList,
+  getPromptInjectionEvalPrePromptFromConfig,
+  getMaliciousPromptEvalPrePromptFromConfig,
 } from "../../src/defence";
 import * as langchain from "../../src/langchain";
 import { DEFENCE_TYPES } from "../../src/models/defence";
 import { LEVEL_NAMES } from "../../src/models/level";
 import {
-  retrievalQAPrePromptSecure,
+  maliciousPromptEvalPrePrompt,
+  promptInjectionEvalPrePrompt,
+  qAPrePromptSecure,
   systemRoleDefault,
   systemRoleLevel1,
   systemRoleLevel2,
@@ -90,9 +94,11 @@ test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
   process.env.RANDOM_SEQ_ENCLOSURE_LENGTH = String(20);
 
   const message = "Hello";
-  let defences = getInitialDefences();
   // activate RSE defence
-  defences = activateDefence(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, defences);
+  const defences = activateDefence(
+    DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
+    getInitialDefences()
+  );
 
   // regex to match the transformed message with
   const regex = new RegExp(
@@ -102,15 +108,16 @@ test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
   // check the transformed message matches the regex
   const res = transformedMessage.match(regex);
   // expect there to be a match
-  expect(res).toBeTruthy();
-  if (res) {
-    // expect there to be 3 groups
-    expect(res.length).toBe(3);
-    // expect the random sequence to have the correct length
-    expect(res[1].length).toBe(Number(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH));
-    // expect the message to be surrounded by the random sequence
-    expect(res[1]).toBe(res[2]);
-  }
+  expect(res).not.toBeNull();
+
+  // expect there to be 3 groups
+  expect(res?.length).toEqual(3);
+  // expect the random sequence to have the correct length
+  expect(res?.[1].length).toEqual(
+    Number(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH)
+  );
+  // expect the message to be surrounded by the random sequence
+  expect(res?.[1]).toEqual(res?.[2]);
 });
 
 test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed", () => {
@@ -357,8 +364,8 @@ test("GIVEN system roles have been set for each level WHEN getting system roles 
 
 test("GIVEN QA LLM instructions have not been configured WHEN getting QA LLM instructions THEN return default secure prompt", () => {
   const defences = getInitialDefences();
-  const qaLlmInstructions = getQALLMprePrompt(defences);
-  expect(qaLlmInstructions).toBe(retrievalQAPrePromptSecure);
+  const qaLlmInstructions = getQAPrePromptFromConfig(defences);
+  expect(qaLlmInstructions).toBe(qAPrePromptSecure);
 });
 
 test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instructions THEN return configured prompt", () => {
@@ -367,8 +374,68 @@ test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instruc
   defences = configureDefence(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences, [
     { id: "prePrompt", value: newQaLlmInstructions },
   ]);
-  const qaLlmInstructions = getQALLMprePrompt(defences);
+  const qaLlmInstructions = getQAPrePromptFromConfig(defences);
   expect(qaLlmInstructions).toBe(newQaLlmInstructions);
+});
+
+test("GIVEN Eval LLM instructions for prompt injection have not been configured WHEN getting prompt injection eval instructions THEN return default pre-prompt", () => {
+  const defences = getInitialDefences();
+  const configPromptInjectionEvalInstructions =
+    getPromptInjectionEvalPrePromptFromConfig(defences);
+  expect(configPromptInjectionEvalInstructions).toBe(
+    promptInjectionEvalPrePrompt
+  );
+});
+
+test("GIVEN Eval LLM instructions for prompt injection have been configured WHEN getting Eval LLM instructions THEN return configured prompt", () => {
+  const newPromptInjectionEvalInstructions =
+    "new prompt injection eval instructions";
+  let defences = getInitialDefences();
+  defences = configureDefence(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    defences,
+    [
+      {
+        id: "prompt-injection-evaluator-prompt",
+        value: newPromptInjectionEvalInstructions,
+      },
+    ]
+  );
+  const configPromptInjectionEvalInstructions =
+    getPromptInjectionEvalPrePromptFromConfig(defences);
+  expect(configPromptInjectionEvalInstructions).toBe(
+    newPromptInjectionEvalInstructions
+  );
+});
+
+test("GIVEN Eval LLM instructions for malicious prompts have not been configured WHEN getting malicious prompt eval instructions THEN return default pre-prompt", () => {
+  const defences = getInitialDefences();
+  const configMaliciousPromptEvalInstructions =
+    getMaliciousPromptEvalPrePromptFromConfig(defences);
+  expect(configMaliciousPromptEvalInstructions).toBe(
+    maliciousPromptEvalPrePrompt
+  );
+});
+
+test("GIVEN Eval LLM instructions for malicious prompts have been configured WHEN getting Eval LLM instructions THEN return configured prompt", () => {
+  const newMaliciousPromptEvalInstructions =
+    "new malicious prompt eval instructions";
+  let defences = getInitialDefences();
+  defences = configureDefence(
+    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    defences,
+    [
+      {
+        id: "malicious-prompt-evaluator-prompt",
+        value: newMaliciousPromptEvalInstructions,
+      },
+    ]
+  );
+  const configMaliciousPromptEvalInstructions =
+    getMaliciousPromptEvalPrePromptFromConfig(defences);
+  expect(configMaliciousPromptEvalInstructions).toBe(
+    newMaliciousPromptEvalInstructions
+  );
 });
 
 test("GIVEN setting email whitelist WHEN configuring defence THEN defence is configured", () => {
