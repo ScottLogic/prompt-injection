@@ -65,48 +65,46 @@ function DefenceMechanism({
   }
 
   return (
-    <div className="defence-mechanism">
-      <details>
-        <summary>{defenceDetail.name}</summary>
-        <div className="info-box">
-          <p>{defenceDetail.info}</p>
-
-          {showConfigurations &&
-            defenceDetail.config.map((config) => {
-              return (
-                <DefenceConfiguration
-                  key={config.id}
-                  isActive={defenceDetail.isActive}
-                  config={config}
-                  setConfigurationValue={setConfigurationValue}
-                />
-              );
-            })}
-
-          {isConfigured &&
-            (configValidated ? (
-              <p className="validation-text">
-                <TiTick /> defence successfully configured
-              </p>
-            ) : (
-              <p className="validation-text">
-                <TiTimes /> invalid input - configuration failed
-              </p>
-            ))}
-        </div>
-      </details>
-      <label className="switch">
-        <input
-          type="checkbox"
-          placeholder="defence-toggle"
-          onChange={toggleDefence}
-          // set checked if defence is active
-          checked={defenceDetail.isActive}
-          aria-label="toggle defence"
-        />
-        <span className="slider round"></span>
-      </label>
-    </div>
+    <details className="defence-mechanism">
+      <summary>
+        <span>{defenceDetail.name}</span>
+        <label className="switch">
+          <input
+            type="checkbox"
+            placeholder="defence-toggle"
+            onChange={toggleDefence}
+            // set checked if defence is active
+            checked={defenceDetail.isActive}
+            aria-label="toggle defence"
+          />
+          <span className="slider round"></span>
+        </label>
+      </summary>
+      <div className="info-box">
+        <p>{defenceDetail.info}</p>
+        {showConfigurations &&
+          defenceDetail.config.map((config) => {
+            return (
+              <DefenceConfiguration
+                key={config.id}
+                isActive={defenceDetail.isActive}
+                config={config}
+                setConfigurationValue={setConfigurationValue}
+              />
+            );
+          })}
+        {isConfigured &&
+          (configValidated ? (
+            <p className="validation-text">
+              <TiTick /> defence successfully configured
+            </p>
+          ) : (
+            <p className="validation-text">
+              <TiTimes /> invalid input - configuration failed
+            </p>
+          ))}
+      </div>
+    </details>
   );
 }
 

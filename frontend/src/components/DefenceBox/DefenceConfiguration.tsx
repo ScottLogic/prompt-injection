@@ -1,6 +1,9 @@
-import "./DefenceConfiguration.css";
-import { DefenceConfig } from "../../models/defence";
+import { FocusEvent, KeyboardEvent } from "react";
 import ContentEditable from "react-contenteditable";
+import * as classNames from "classnames";
+import { DefenceConfig } from "../../models/defence";
+
+import "./DefenceConfiguration.css";
 
 function DefenceConfiguration({
   config,
@@ -11,14 +14,14 @@ function DefenceConfiguration({
   isActive: boolean;
   setConfigurationValue: (configId: string, value: string) => Promise<void>;
 }) {
-  function inputKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  function inputKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
       // stop new line from being input
       event.preventDefault();
     }
   }
 
-  function inputKeyUp(event: React.KeyboardEvent<HTMLDivElement>) {
+  function inputKeyUp(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
       const value = event.currentTarget.innerText.trim();
       // asynchronously set the configuration value
@@ -26,25 +29,21 @@ function DefenceConfiguration({
     }
   }
 
-  function focusLost(event: React.FocusEvent<HTMLDivElement>) {
+  function focusLost(event: FocusEvent<HTMLDivElement>) {
     const value = event.target.innerText.trim();
     // asynchronously set the configuration value
     void setConfigurationValue(config.id, value);
   }
 
-  function getClassName() {
-    if (isActive) {
-      return "defence-config-value prompt-injection-input";
-    } else {
-      return "defence-config-value prompt-injection-input inactive";
-    }
-  }
+  const configClass = classNames("defence-config-value", {
+    inactive: !isActive,
+  });
 
   return (
     <div>
       <span className="defence-config-name">{config.name}: </span>
       <ContentEditable
-        className={getClassName()}
+        className={configClass}
         html={config.value.toString()}
         onBlur={focusLost}
         onKeyDown={inputKeyDown}

@@ -2,20 +2,6 @@
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
-}
-
-.level-selection-button {
-  margin: 5px;
-  padding: 5px 5px;
-}
-
-.selected {
-  color: var(--main-button-active-text-colour);
-  background-color: var(--main-button-active-background-colour);
-}
-
-.selected:hover {
-  color: var(--main-button-active-text-colour);
-  background-color: var(--main-button-active-background-colour);
+  align-items: stretch;
+  gap: 0.5rem;
 }

@@ -34,7 +34,7 @@ function ControlPanel({
   function getDefencesConfigure() {
     return defences.filter((defence) => {
       return ![
-        DEFENCE_TYPES.LLM_EVALUATION,
+        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
         DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
         DEFENCE_TYPES.SYSTEM_ROLE,
       ].some((id) => id === defence.id);
@@ -44,7 +44,7 @@ function ControlPanel({
   function getDefencesModel() {
     return defences.filter((defence) => {
       return [
-        DEFENCE_TYPES.LLM_EVALUATION,
+        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
         DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
         DEFENCE_TYPES.SYSTEM_ROLE,
       ].some((id) => id === defence.id);
@@ -52,7 +52,7 @@ function ControlPanel({
   }
 
   return (
-    <div id="control-panel">
+    <div className="control-panel">
       {/* hide defence box on levels 1 and 2 */}
       {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
         currentLevel === LEVEL_NAMES.SANDBOX) && (

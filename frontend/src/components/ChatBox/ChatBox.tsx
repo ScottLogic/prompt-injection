@@ -1,11 +1,5 @@
-import { useEffect, useState } from "react";
-import "./ChatBox.css";
-import ChatBoxFeed from "./ChatBoxFeed";
-import {
-  addMessageToChatHistory,
-  sendMessage,
-} from "../../service/chatService";
-import { getSentEmails } from "../../service/emailService";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import {
   CHAT_MESSAGE_TYPE,
   ChatMessage,
@@ -13,10 +7,18 @@ import {
 } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
 import { LEVEL_NAMES } from "../../models/level";
-import { DEFENCE_DETAILS_ALL } from "../../Defences";
-import { ThreeDots } from "react-loader-spinner";
+import {
+  addMessageToChatHistory,
+  sendMessage,
+} from "../../service/chatService";
+import { getSentEmails } from "../../service/emailService";
 import { getLevelPrompt } from "../../service/levelService";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
+import ThemedButton from "../ThemedButtons/ThemedButton";
+import LoadingButton from "../ThemedButtons/LoadingButton";
+import ChatBoxFeed from "./ChatBoxFeed";
+
+import "./ChatBox.css";
 
 function ChatBox({
   completedLevels,
@@ -40,6 +42,7 @@ function ChatBox({
   setNumCompletedLevels: (numCompletedLevels: number) => void;
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // called on mount
   useEffect(() => {
@@ -54,40 +57,36 @@ function ChatBox({
   }, [setEmails]);
 
   function resizeInput() {
-    const inputBoxElement = document.getElementById(
-      "chat-box-input"
-    ) as HTMLSpanElement;
-
-    const maxHeightPx = 150;
-    inputBoxElement.style.height = "0";
-    if (inputBoxElement.scrollHeight > maxHeightPx) {
-      inputBoxElement.style.height = `${maxHeightPx}px`;
-      inputBoxElement.style.overflowY = "auto";
-    } else {
-      inputBoxElement.style.height = `${inputBoxElement.scrollHeight}px`;
-      inputBoxElement.style.overflowY = "hidden";
+    if (textareaRef.current) {
+      const maxHeightPx = 150;
+      textareaRef.current.style.height = "0";
+      if (textareaRef.current.scrollHeight > maxHeightPx) {
+        textareaRef.current.style.height = `${maxHeightPx}px`;
+        textareaRef.current.style.overflowY = "auto";
+      } else {
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        textareaRef.current.style.overflowY = "hidden";
+      }
     }
   }
 
   function inputChange() {
-    const inputBoxElement = document.getElementById(
-      "chat-box-input"
-    ) as HTMLSpanElement;
-
-    // scroll to the bottom
-    inputBoxElement.scrollTop =
-      inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
-    // reset the height
-    resizeInput();
+    if (textareaRef.current) {
+      // scroll to the bottom
+      textareaRef.current.scrollTop =
+        textareaRef.current.scrollHeight - textareaRef.current.clientHeight;
+      // reset the height
+      resizeInput();
+    }
   }
 
-  function inputKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
     }
   }
 
-  function inputKeyUp(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+  function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
     // shift+enter shouldn't send message
     if (event.key === "Enter" && !event.shiftKey) {
       // asynchronously send the message
@@ -97,30 +96,26 @@ function ChatBox({
 
   async function getSuccessMessage(level: number) {
     const prompt = await getLevelPrompt(level);
-    const successMessage = `Congratulations! You have completed this level. My original instructions were: 
+    return `Congratulations! You have completed this level. My original instructions were: 
     
     ${prompt}
 
     Please click on the next level to continue.`;
-    return successMessage;
   }
 
   async function sendChatMessage() {
-    const inputBoxElement = document.getElementById(
-      "chat-box-input"
-    ) as HTMLTextAreaElement;
     // get the message from the input box
-    const message = inputBoxElement.value;
+    const message = textareaRef.current?.value;
 
-    if (message && !isSendingMessage) {
+    if (message) {
       setIsSendingMessage(true);
       // clear the input box
-      inputBoxElement.value = "";
+      textareaRef.current.value = "";
       // reset the height
       resizeInput();
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
-        message: message,
+        message,
         type: CHAT_MESSAGE_TYPE.USER,
       });
 
@@ -218,13 +213,13 @@ function ChatBox({
     }
   }
   return (
-    <div id="chat-box">
+    <div className="chat-box">
       <ChatBoxFeed messages={messages} />
-      <div id="chat-box-footer">
-        <div id="chat-box-footer-messages">
+      <div className="footer">
+        <div className="messages">
           <textarea
-            id="chat-box-input"
-            className="prompt-injection-input"
+            ref={textareaRef}
+            className="chat-box-input"
             placeholder="Type here..."
             rows={1}
             onChange={inputChange}
@@ -233,36 +228,24 @@ function ChatBox({
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
           />
-          <button
-            id="chat-box-button-send"
-            className="prompt-injection-button"
-            disabled={isSendingMessage}
-            onClick={() => void sendChatMessage()}
-          >
-            <span id="chat-box-button-content">
-              {isSendingMessage ? (
-                <ThreeDots width="24px" color="white" />
-              ) : (
-                "Send"
-              )}
-            </span>
-          </button>
+
+          <span className="send-button-wrapper">
+            <LoadingButton
+              onClick={() => void sendChatMessage()}
+              isLoading={isSendingMessage}
+            >
+              Send
+            </LoadingButton>
+          </span>
         </div>
 
-        <div id="control-buttons">
-          <div className="control-button">
-            <ExportPDFLink
-              messages={messages}
-              emails={emails}
-              currentLevel={currentLevel}
-            />
-          </div>
-          <button
-            className="prompt-injection-button control-button"
-            onClick={resetLevel}
-          >
-            Reset
-          </button>
+        <div className="control-buttons">
+          <ExportPDFLink
+            messages={messages}
+            emails={emails}
+            currentLevel={currentLevel}
+          />
+          <ThemedButton onClick={resetLevel}>Reset</ThemedButton>
         </div>
       </div>
     </div>

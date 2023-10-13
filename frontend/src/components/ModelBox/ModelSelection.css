@@ -1,43 +1,45 @@
-#model-selection-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.model-selection-box {
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-#model-selection-row #text-area {
-  max-width: 30%;
+.model-selection-box .model-selection-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  align-items: center;
 }
 
-#model-selection-row #menu-area {
-  min-width: 50%;
+.model-selection-box .model-selection-row p {
+  flex: 1 1 auto;
+  margin: 0;
 }
 
-#model-selection-row #button-area {
-  min-width: 20%;
+.model-selection-box .model-selection-row .select-wrapper {
+  display: flex;
+  gap: 0.25rem 0.5rem;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
 }
 
-#model-selection-info {
+.model-selection-box .model-selection-row select {
+  flex: 1 1 auto;
+  padding: 0.5rem;
+}
+
+.model-selection-box .model-selection-info {
   align-items: center;
   text-align: center;
 }
 
-#model-selection-info p {
+.model-selection-box .model-selection-info p {
   margin: 0;
   padding: 0;
   color: var(--main-accent-colour);
 }
 
-#p error {
+.model-selection-box .model-selection-info .error {
   color: var(--main-error-colour);
-}
-
-#model-selection-menu {
-  padding: 5px;
-  width: 100%;
-}
-
-#model-selection-button {
-  padding: 5px;
-  width: 100%;
 }

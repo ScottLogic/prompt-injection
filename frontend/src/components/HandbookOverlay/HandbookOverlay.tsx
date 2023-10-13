@@ -1,39 +1,40 @@
+import { useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
-import { OVERLAY_TYPE } from "../../models/overlay";
+import MissionInformation from "../Overlay/MissionInformation";
 import HandbookAttacks from "./HandbookAttacks";
+import HandbookOverlayTabs from "./HandbookOverlayTabs";
+import { HANDBOOK_PAGES } from "../../models/handbook";
 import "./HandbookOverlay.css";
-import HandbookWelcome from "./HandbookWelcome";
 
-function HandbookOverlay({
-  currentLevel,
-  overlayType,
-  closeOverlay,
-}: {
-  currentLevel: LEVEL_NAMES;
-  overlayType: OVERLAY_TYPE;
-  closeOverlay: () => void;
-}) {
-  function showOverlayByType() {
-    switch (overlayType) {
-      case OVERLAY_TYPE.HANDBOOK:
+function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
+  const [selectedPage, setSelectedPage] = useState<HANDBOOK_PAGES>(
+    HANDBOOK_PAGES.MISSION_INFO
+  );
+
+  function setPageContent(handbookPage: HANDBOOK_PAGES) {
+    switch (handbookPage) {
+      case HANDBOOK_PAGES.ATTACKS:
         return <HandbookAttacks currentLevel={currentLevel} />;
-      case OVERLAY_TYPE.WELCOME:
+      case HANDBOOK_PAGES.TOOLS:
+        return (
+          <div>
+            <h2> Placeholder </h2>
+          </div>
+        );
+      case HANDBOOK_PAGES.MISSION_INFO:
       default:
-        return <HandbookWelcome />;
+        return <MissionInformation currentLevel={currentLevel} />;
     }
   }
 
   return (
-    <div className="handbook-overlay-screen">
-      <div className="handbook-overlay">
-        <button
-          className="prompt-injection-min-button close-button"
-          onClick={closeOverlay}
-          aria-label="close handbook overlay"
-        >
-          X
-        </button>
-        <div className="handbook-overlay-content">{showOverlayByType()}</div>
+    <div className="handbook-overlay">
+      <HandbookOverlayTabs
+        currentLevel={currentLevel}
+        setSelectedPage={setSelectedPage}
+      />
+      <div className="handbook-overlay-content">
+        {setPageContent(selectedPage)}
       </div>
     </div>
   );

@@ -14,10 +14,12 @@ import { CHAT_MODELS, ChatAnswer } from "./models/chat";
 import { DocumentsVector } from "./models/document";
 
 import {
-  maliciousPromptTemplate,
-  promptInjectionEvalTemplate,
-  qAcontextTemplate,
-  retrievalQAPrePrompt,
+  maliciousPromptEvalPrePrompt,
+  maliciousPromptEvalMainPrompt,
+  promptInjectionEvalPrePrompt,
+  promptInjectionEvalMainPrompt,
+  qAMainPrompt,
+  qAPrePrompt,
 } from "./promptTemplates";
 import { LEVEL_NAMES } from "./models/level";
 import { PromptEvaluationChainReply, QaChainReply } from "./models/langchain";
@@ -62,21 +64,26 @@ async function getDocuments(filePath: string) {
     chunkSize: 1000,
     chunkOverlap: 0,
   });
-  const splitDocs = await textSplitter.splitDocuments(docs);
-  return splitDocs;
+
+  return await textSplitter.splitDocuments(docs);
 }
 
-// join the configurable preprompt to the context template
-function getQAPromptTemplate(prePrompt: string) {
-  if (!prePrompt) {
+// choose between the provided preprompt and the default preprompt and prepend it to the main prompt and return the PromptTemplate
+function makePromptTemplate(
+  configPrePrompt: string,
+  defaultPrePrompt: string,
+  mainPrompt: string,
+  templateNameForLogging: string
+) {
+  if (!configPrePrompt) {
     // use the default prePrompt
-    prePrompt = retrievalQAPrePrompt;
+    configPrePrompt = defaultPrePrompt;
   }
-  const fullPrompt = prePrompt + qAcontextTemplate;
-  console.debug(`QA prompt: ${fullPrompt}`);
-  const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
-  return template;
+  const fullPrompt = `${configPrePrompt}\n${mainPrompt}`;
+  console.debug(`${templateNameForLogging}: ${fullPrompt}`);
+  return PromptTemplate.fromTemplate(fullPrompt);
 }
+
 // create and store the document vectors for each level
 async function initDocumentVectors() {
   const docVectors: DocumentsVector[] = [];
@@ -124,7 +131,12 @@ function initQAModel(
     streaming: true,
     openAIApiKey: openAiApiKey,
   });
-  const promptTemplate = getQAPromptTemplate(prePrompt);
+  const promptTemplate = makePromptTemplate(
+    prePrompt,
+    qAPrePrompt,
+    qAMainPrompt,
+    "QA prompt template"
+  );
 
   return RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
     prompt: promptTemplate,
@@ -132,7 +144,11 @@ function initQAModel(
 }
 
 // initialise the prompt evaluation model
-function initPromptEvaluationModel(openAiApiKey: string) {
+function initPromptEvaluationModel(
+  configPromptInjectionEvalPrePrompt: string,
+  configMaliciousPromptEvalPrePrompt: string,
+  openAiApiKey: string
+) {
   if (!openAiApiKey) {
     console.debug(
       "No OpenAI API key set to initialise prompt evaluation model"
@@ -140,8 +156,11 @@ function initPromptEvaluationModel(openAiApiKey: string) {
     return;
   }
   // create chain to detect prompt injection
-  const promptInjectionPrompt = PromptTemplate.fromTemplate(
-    promptInjectionEvalTemplate
+  const promptInjectionEvalTemplate = makePromptTemplate(
+    configPromptInjectionEvalPrePrompt,
+    promptInjectionEvalPrePrompt,
+    promptInjectionEvalMainPrompt,
+    "Prompt injection eval prompt template"
   );
 
   const promptInjectionChain = new LLMChain({
@@ -150,21 +169,25 @@ function initPromptEvaluationModel(openAiApiKey: string) {
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
-    prompt: promptInjectionPrompt,
+    prompt: promptInjectionEvalTemplate,
     outputKey: "promptInjectionEval",
   });
 
   // create chain to detect malicious prompts
-  const maliciousInputPrompt = PromptTemplate.fromTemplate(
-    maliciousPromptTemplate
+  const maliciousPromptEvalTemplate = makePromptTemplate(
+    configMaliciousPromptEvalPrePrompt,
+    maliciousPromptEvalPrePrompt,
+    maliciousPromptEvalMainPrompt,
+    "Malicious input eval prompt template"
   );
+
   const maliciousInputChain = new LLMChain({
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_4,
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
-    prompt: maliciousInputPrompt,
+    prompt: maliciousPromptEvalTemplate,
     outputKey: "maliciousInputEval",
   });
 
@@ -209,8 +232,17 @@ async function queryDocuments(
 }
 
 // ask LLM whether the prompt is malicious
-async function queryPromptEvaluationModel(input: string, openAIApiKey: string) {
-  const promptEvaluationChain = initPromptEvaluationModel(openAIApiKey);
+async function queryPromptEvaluationModel(
+  input: string,
+  configPromptInjectionEvalPrePrompt: string,
+  configMaliciousPromptEvalPrePrompt: string,
+  openAIApiKey: string
+) {
+  const promptEvaluationChain = initPromptEvaluationModel(
+    configPromptInjectionEvalPrePrompt,
+    configMaliciousPromptEvalPrePrompt,
+    openAIApiKey
+  );
   if (!promptEvaluationChain) {
     console.debug("Prompt evaluation chain not initialised.");
     return { isMalicious: false, reason: "" };
@@ -218,13 +250,13 @@ async function queryPromptEvaluationModel(input: string, openAIApiKey: string) {
   console.log(`Checking '${input}' for malicious prompts`);
 
   // get start time
-  const startTime = new Date().getTime();
+  const startTime = Date.now();
   console.debug("Calling prompt evaluation model...");
   const response = (await promptEvaluationChain.call({
     prompt: input,
   })) as PromptEvaluationChainReply;
   // log the time taken
-  const endTime = new Date().getTime();
+  const endTime = Date.now();
   console.debug(`Prompt evaluation model call took ${endTime - startTime}ms`);
 
   const promptInjectionEval = formatEvaluationOutput(
@@ -256,7 +288,7 @@ async function queryPromptEvaluationModel(input: string, openAIApiKey: string) {
 function formatEvaluationOutput(response: string) {
   try {
     // split response on first full stop or comma
-    const splitResponse = response.split(/\.|,/);
+    const splitResponse = response.split(/[.,]/);
     const answer = splitResponse[0]?.replace(/\W/g, "").toLowerCase();
     const reason = splitResponse[1]?.trim();
     return {
@@ -276,7 +308,6 @@ function formatEvaluationOutput(response: string) {
 export {
   initQAModel,
   getFilepath,
-  getQAPromptTemplate,
   getDocuments,
   initPromptEvaluationModel,
   queryDocuments,
@@ -284,4 +315,5 @@ export {
   formatEvaluationOutput,
   setVectorisedDocuments,
   initDocumentVectors,
+  makePromptTemplate,
 };
