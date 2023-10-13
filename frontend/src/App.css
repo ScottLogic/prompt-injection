@@ -36,10 +36,8 @@
 
 .prompt-injection-button {
   background-color: var(--main-button-inactive-background-colour);
-  border-color: var(--main-border-colour);
+  border: 1px solid var(--main-border-colour);
   border-radius: 5px;
-  border-style: solid;
-  border-width: 1px;
   color: var(--main-button-inactive-text-colour);
   cursor: pointer;
   white-space: nowrap;
@@ -48,9 +46,7 @@
 .prompt-injection-min-button {
   /* remove default button styling */
   background-color: transparent;
-  border-width: 1px;
-  border-style: solid;
-  border-color: transparent;
+  border: 1px solid transparent;
   color: var(--main-button-inactive-text-colour);
   padding: 0;
 
@@ -75,13 +71,4 @@
 .prompt-injection-button:active {
   background-color: var(--main-button-active-background-colour);
   color: var(--main-button-active-text-colour);
-}
-
-.prompt-injection-input {
-  background-color: var(--main-input-active-background-colour);
-  border-color: none;
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 1px;
-  color: var(--main-input-active-text-colour);
 }

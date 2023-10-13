@@ -1,11 +1,6 @@
-import { useEffect, useState } from "react";
-import "./ChatBox.css";
-import ChatBoxFeed from "./ChatBoxFeed";
-import {
-  addMessageToChatHistory,
-  sendMessage,
-} from "../../service/chatService";
-import { getSentEmails } from "../../service/emailService";
+import { useEffect, useRef, useState } from "react";
+import { ThreeDots } from "react-loader-spinner";
+import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import {
   CHAT_MESSAGE_TYPE,
   ChatMessage,
@@ -13,10 +8,16 @@ import {
 } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
 import { LEVEL_NAMES } from "../../models/level";
-import { DEFENCE_DETAILS_ALL } from "../../Defences";
-import { ThreeDots } from "react-loader-spinner";
+import {
+  addMessageToChatHistory,
+  sendMessage,
+} from "../../service/chatService";
+import { getSentEmails } from "../../service/emailService";
 import { getLevelPrompt } from "../../service/levelService";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
+import ChatBoxFeed from "./ChatBoxFeed";
+
+import "./ChatBox.css";
 
 function ChatBox({
   completedLevels,
@@ -40,6 +41,7 @@ function ChatBox({
   setNumCompletedLevels: (numCompletedLevels: number) => void;
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // called on mount
   useEffect(() => {
@@ -54,31 +56,27 @@ function ChatBox({
   }, [setEmails]);
 
   function resizeInput() {
-    const inputBoxElement = document.getElementById(
-      "chat-box-input"
-    ) as HTMLSpanElement;
-
-    const maxHeightPx = 150;
-    inputBoxElement.style.height = "0";
-    if (inputBoxElement.scrollHeight > maxHeightPx) {
-      inputBoxElement.style.height = `${maxHeightPx}px`;
-      inputBoxElement.style.overflowY = "auto";
-    } else {
-      inputBoxElement.style.height = `${inputBoxElement.scrollHeight}px`;
-      inputBoxElement.style.overflowY = "hidden";
+    if (textareaRef.current) {
+      const maxHeightPx = 150;
+      textareaRef.current.style.height = "0";
+      if (textareaRef.current.scrollHeight > maxHeightPx) {
+        textareaRef.current.style.height = `${maxHeightPx}px`;
+        textareaRef.current.style.overflowY = "auto";
+      } else {
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        textareaRef.current.style.overflowY = "hidden";
+      }
     }
   }
 
   function inputChange() {
-    const inputBoxElement = document.getElementById(
-      "chat-box-input"
-    ) as HTMLSpanElement;
-
-    // scroll to the bottom
-    inputBoxElement.scrollTop =
-      inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
-    // reset the height
-    resizeInput();
+    if (textareaRef.current) {
+      // scroll to the bottom
+      textareaRef.current.scrollTop =
+        textareaRef.current.scrollHeight - textareaRef.current.clientHeight;
+      // reset the height
+      resizeInput();
+    }
   }
 
   function inputKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -97,30 +95,26 @@ function ChatBox({
 
   async function getSuccessMessage(level: number) {
     const prompt = await getLevelPrompt(level);
-    const successMessage = `Congratulations! You have completed this level. My original instructions were: 
+    return `Congratulations! You have completed this level. My original instructions were: 
     
     ${prompt}
 
     Please click on the next level to continue.`;
-    return successMessage;
   }
 
   async function sendChatMessage() {
-    const inputBoxElement = document.getElementById(
-      "chat-box-input"
-    ) as HTMLTextAreaElement;
     // get the message from the input box
-    const message = inputBoxElement.value;
+    const message = textareaRef.current?.value;
 
-    if (message && !isSendingMessage) {
+    if (message) {
       setIsSendingMessage(true);
       // clear the input box
-      inputBoxElement.value = "";
+      textareaRef.current.value = "";
       // reset the height
       resizeInput();
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
-        message: message,
+        message,
         type: CHAT_MESSAGE_TYPE.USER,
       });
 
@@ -223,8 +217,8 @@ function ChatBox({
       <div id="chat-box-footer">
         <div id="chat-box-footer-messages">
           <textarea
-            id="chat-box-input"
-            className="prompt-injection-input"
+            ref={textareaRef}
+            className="chat-box-input"
             placeholder="Type here..."
             rows={1}
             onChange={inputChange}
