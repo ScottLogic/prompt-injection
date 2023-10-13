@@ -1,25 +1,15 @@
 import { ThreeDots } from "react-loader-spinner";
-import ThemedButton from "./ThemedButton";
+import ThemedButton, { ThemedButtonProps } from "./ThemedButton";
 
 function LoadingButton({
   children,
-  onClick,
-  isDisabled = false,
   isLoading = false,
-  isSelected = false,
-}: {
-  children: React.ReactNode;
-  onClick: () => void;
-  isDisabled?: boolean;
+  ...buttonProps
+}: ThemedButtonProps & {
   isLoading?: boolean;
-  isSelected?: boolean;
 }) {
   return (
-    <ThemedButton
-      onClick={onClick}
-      isDisabled={isDisabled}
-      isSelected={isSelected}
-    >
+    <ThemedButton {...buttonProps}>
       {isLoading ? (
         <span className="loader">
           <ThreeDots width="24px" color="white" />

@@ -1,7 +1,9 @@
-#document-view-button-area {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  text-align: center;
+.document-view-button-wrapper {
+  display: flex;
+  padding-top: 0.5rem;
   height: 40px;
-  min-height: 40px;
+}
+/* Button fills all available width */
+.document-view-button-wrapper button {
+  flex-grow: 1;
 }

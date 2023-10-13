@@ -8,7 +8,7 @@ function DocumentViewButton() {
   const [showPopup, setShowPopup] = useState(false);
 
   return (
-    <div id="document-view-button-area">
+    <div className="document-view-button-wrapper">
       <ThemedButton
         onClick={() => {
           setShowPopup(true);
@@ -16,7 +16,7 @@ function DocumentViewButton() {
       >
         View Documents
       </ThemedButton>
-      <DocumentViewBox show={showPopup} setShow={setShowPopup} />
+      <DocumentViewBox show={showPopup} onClose={() => setShowPopup(false)} />
     </div>
   );
 }

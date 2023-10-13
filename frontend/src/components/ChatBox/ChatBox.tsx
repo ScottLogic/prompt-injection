@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { ThreeDots } from "react-loader-spinner";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import {
   CHAT_MESSAGE_TYPE,
@@ -81,13 +80,13 @@ function ChatBox({
     }
   }
 
-  function inputKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
     }
   }
 
-  function inputKeyUp(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+  function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
     // shift+enter shouldn't send message
     if (event.key === "Enter" && !event.shiftKey) {
       // asynchronously send the message
@@ -214,10 +213,10 @@ function ChatBox({
     }
   }
   return (
-    <div id="chat-box">
+    <div className="chat-box">
       <ChatBoxFeed messages={messages} />
-      <div id="chat-box-footer">
-        <div id="chat-box-footer-messages">
+      <div className="footer">
+        <div className="messages">
           <textarea
             ref={textareaRef}
             className="chat-box-input"
@@ -230,7 +229,7 @@ function ChatBox({
             autoFocus
           />
 
-          <span id="chat-box-button-send">
+          <span className="send-button-wrapper">
             <LoadingButton
               onClick={() => void sendChatMessage()}
               isLoading={isSendingMessage}
@@ -240,7 +239,7 @@ function ChatBox({
           </span>
         </div>
 
-        <div id="control-buttons">
+        <div className="control-buttons">
           <ExportPDFLink
             messages={messages}
             emails={emails}
