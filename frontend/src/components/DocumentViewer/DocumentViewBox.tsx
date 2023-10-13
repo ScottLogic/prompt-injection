@@ -7,10 +7,10 @@ import { RemoteDocument } from "../../models/document";
 
 function DocumentViewBox({
   show,
-  setShow,
+  onClose,
 }: {
   show: boolean;
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
 }) {
   const [documents, setDocuments] = useState<RemoteDocument[]>([]);
   // on mount get document uris
@@ -29,9 +29,7 @@ function DocumentViewBox({
       <div className="document-popup-inner">
         <button
           className="prompt-injection-min-button close-button"
-          onClick={() => {
-            setShow(false);
-          }}
+          onClick={onClose}
           aria-label="close document viewer"
         >
           X
@@ -50,9 +48,7 @@ function DocumentViewBox({
         </div>
       </div>
     </div>
-  ) : (
-    ""
-  );
+  ) : null;
 }
 
 export default DocumentViewBox;

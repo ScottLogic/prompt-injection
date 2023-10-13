@@ -24,7 +24,7 @@ function ExportPDFLink({
   }
 
   return (
-    <div id="export-chat-box">
+    <div id="export-chat-box" className="themed-button">
       <PDFDownloadLink
         document={
           <ExportContent
@@ -35,7 +35,7 @@ function ExportPDFLink({
         }
         fileName={getFileName()}
       >
-        <button className="prompt-injection-button">Export</button>
+        Export
       </PDFDownloadLink>{" "}
     </div>
   );
