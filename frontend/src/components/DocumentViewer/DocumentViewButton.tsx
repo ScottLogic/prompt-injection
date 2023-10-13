@@ -16,7 +16,12 @@ function DocumentViewButton() {
       >
         View Documents
       </ThemedButton>
-      <DocumentViewBox show={showPopup} onClose={() => setShowPopup(false)} />
+      <DocumentViewBox
+        show={showPopup}
+        onClose={() => {
+          setShowPopup(false);
+        }}
+      />
     </div>
   );
 }

@@ -40,32 +40,33 @@ function ModelSelection() {
 
   // return a drop down menu with the models
   return (
-    <div id="model-selection-box">
-      <div id="model-selection-row">
-        <p>Select a model: </p>
-        <select
-          id="model-selection-menu"
-          aria-label="model-select"
-          onChange={(e) => {
-            setSelectedModel(e.target.value as CHAT_MODELS);
-          }}
-          placeholder={modelInUse}
-        >
-          {chatModelOptions.map((model) => (
-            <option key={model} value={model}>
-              {model}
-            </option>
-          ))}
-          ;
-        </select>
-        <ThemedButton onClick={() => void submitSelectedModel()}>
-          Choose
-        </ThemedButton>
+    <div className="model-selection-box">
+      <div className="model-selection-row">
+        <p>Select model: </p>
+        <div className="select-wrapper">
+          <select
+            aria-label="model-select"
+            onChange={(e) => {
+              setSelectedModel(e.target.value as CHAT_MODELS);
+            }}
+            placeholder={modelInUse}
+          >
+            {chatModelOptions.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+            ;
+          </select>
+          <ThemedButton onClick={() => void submitSelectedModel()}>
+            Choose
+          </ThemedButton>
+        </div>
       </div>
 
-      <div id="model-selection-info">
+      <div className="model-selection-info">
         {errorChangingModel ? (
-          <p id="error">
+          <p className="error">
             Could not change model. You are still chatting to:
             <b> {modelInUse} </b>
           </p>

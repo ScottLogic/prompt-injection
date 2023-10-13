@@ -35,10 +35,9 @@ function DefenceConfiguration({
     void setConfigurationValue(config.id, value);
   }
 
-  const configClass = classNames(
-    "defence-config-value",
-    { "inactive": !isActive },
-  );
+  const configClass = classNames("defence-config-value", {
+    inactive: !isActive,
+  });
 
   return (
     <div>

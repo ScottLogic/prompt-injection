@@ -2,12 +2,12 @@ import * as classNames from "classnames";
 import { ReactNode } from "react";
 import "./ThemedButton.css";
 
-export type ThemedButtonProps = {
+export interface ThemedButtonProps {
   children: ReactNode;
   isDisabled?: boolean;
   isSelected?: boolean;
   onClick: () => void;
-};
+}
 
 function ThemedButton({
   children,
@@ -15,7 +15,7 @@ function ThemedButton({
   isDisabled = false,
   isSelected = false,
 }: ThemedButtonProps) {
-  const buttonClass = classNames("themed-button", { "selected": isSelected });
+  const buttonClass = classNames("themed-button", { selected: isSelected });
 
   return (
     <button className={buttonClass} onClick={onClick} disabled={isDisabled}>
