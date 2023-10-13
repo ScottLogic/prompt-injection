@@ -22,7 +22,7 @@
   width: 100%;
 }
 
-#chat-box-input {
+.chat-box-input {
   text-align: left;
   padding: 18px 12px;
   width: 85%;
@@ -32,7 +32,7 @@
   box-sizing: border-box;
   resize: none;
   background-color: inherit;
-
+  border-radius: 0.25rem;
   min-height: 53px;
   overflow-y: auto;
 

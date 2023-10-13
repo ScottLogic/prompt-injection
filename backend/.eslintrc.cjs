@@ -22,7 +22,7 @@ module.exports = {
         checksVoidReturn: false,
       },
     ],
-
+    "@typescript-eslint/unbound-method": ["error", { ignoreStatic: true }],
     "func-style": ["error", "declaration"],
     "prefer-template": "error",
   },

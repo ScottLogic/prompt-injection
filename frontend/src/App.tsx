@@ -22,15 +22,13 @@ import {
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "./Defences";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedLevels } from "./service/levelService";
-import { LEVELS } from "./Levels";
-import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
+import Overlay from "./components/Overlay/Overlay";
 import { OVERLAY_TYPE } from "./models/overlay";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
-  // start on sandbox mode
   const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
-    LEVEL_NAMES.SANDBOX
+    loadCurrentLevel()
   );
   const [numCompletedLevels, setNumCompletedLevels] = useState<number>(0);
 
@@ -46,6 +44,18 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     OVERLAY_TYPE.WELCOME
   );
 
+  function loadCurrentLevel() {
+    // get current level from local storage
+    const currentLevelStr = localStorage.getItem("currentLevel");
+    if (currentLevelStr) {
+      // start the user from where they last left off
+      return parseInt(currentLevelStr);
+    } else {
+      // by default, start on level 1
+      return LEVEL_NAMES.LEVEL_1;
+    }
+  }
+
   // called on mount
   useEffect(() => {
     getCompletedLevels()
@@ -58,12 +68,27 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     void setNewLevel(currentLevel);
   }, []);
 
+  useEffect(() => {
+    // save current level to local storage
+    localStorage.setItem("currentLevel", currentLevel.toString());
+  }, [currentLevel]);
+
   function closeOverlay() {
-    setShowOverlay(false);
+    // open the mission info after welcome page for a new user
+    if (overlayType === OVERLAY_TYPE.WELCOME) {
+      openInformationOverlay();
+    } else {
+      setShowOverlay(false);
+    }
   }
 
   function openHandbook() {
     setOverlayType(OVERLAY_TYPE.HANDBOOK);
+    setShowOverlay(true);
+  }
+
+  function openInformationOverlay() {
+    setOverlayType(OVERLAY_TYPE.INFORMATION);
     setShowOverlay(true);
   }
 
@@ -78,11 +103,6 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
     await clearChat(currentLevel);
     setMessages([]);
-    // add preamble to start of chat
-    addChatMessage({
-      message: LEVELS[currentLevel].preamble,
-      type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
-    });
 
     await clearEmails(currentLevel);
     setEmails([]);
@@ -103,6 +123,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   // for going switching level without clearing progress
   async function setNewLevel(newLevel: LEVEL_NAMES) {
     console.log(`changing level from ${currentLevel} to ${newLevel}`);
+
+    if (currentLevel !== newLevel) {
+      openInformationOverlay();
+    }
+
     setMessages([]);
     setCurrentLevel(newLevel);
 
@@ -112,11 +137,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
     // get chat history for new level from the backend
     const levelChatHistory = await getChatHistory(newLevel);
-    // add the preamble to the start of the chat history
-    levelChatHistory.unshift({
-      message: LEVELS[newLevel].preamble,
-      type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
-    });
+
     setMessages(levelChatHistory);
 
     const defences =
@@ -208,7 +229,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   return (
     <div id="app-content">
       {showOverlay && (
-        <HandbookOverlay
+        <Overlay
           currentLevel={currentLevel}
           overlayType={overlayType}
           closeOverlay={closeOverlay}
