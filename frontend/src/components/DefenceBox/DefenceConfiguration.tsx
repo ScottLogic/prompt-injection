@@ -1,5 +1,6 @@
 import { FocusEvent, KeyboardEvent } from "react";
 import ContentEditable from "react-contenteditable";
+import * as classNames from "classnames";
 import { DefenceConfig } from "../../models/defence";
 
 import "./DefenceConfiguration.css";
@@ -34,13 +35,15 @@ function DefenceConfiguration({
     void setConfigurationValue(config.id, value);
   }
 
-  const classname = `defence-config-value${isActive ? "" : " inactive"}`;
+  const configClass = classNames("defence-config-value", {
+    inactive: !isActive,
+  });
 
   return (
     <div>
       <span className="defence-config-name">{config.name}: </span>
       <ContentEditable
-        className={classname}
+        className={configClass}
         html={config.value.toString()}
         onBlur={focusLost}
         onKeyDown={inputKeyDown}

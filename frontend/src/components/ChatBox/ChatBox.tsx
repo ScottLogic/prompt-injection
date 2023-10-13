@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { ThreeDots } from "react-loader-spinner";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import {
   CHAT_MESSAGE_TYPE,
@@ -15,6 +14,8 @@ import {
 import { getSentEmails } from "../../service/emailService";
 import { getLevelPrompt } from "../../service/levelService";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
+import ThemedButton from "../ThemedButtons/ThemedButton";
+import LoadingButton from "../ThemedButtons/LoadingButton";
 import ChatBoxFeed from "./ChatBoxFeed";
 
 import "./ChatBox.css";
@@ -79,13 +80,13 @@ function ChatBox({
     }
   }
 
-  function inputKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
     }
   }
 
-  function inputKeyUp(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+  function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
     // shift+enter shouldn't send message
     if (event.key === "Enter" && !event.shiftKey) {
       // asynchronously send the message
@@ -212,10 +213,10 @@ function ChatBox({
     }
   }
   return (
-    <div id="chat-box">
+    <div className="chat-box">
       <ChatBoxFeed messages={messages} />
-      <div id="chat-box-footer">
-        <div id="chat-box-footer-messages">
+      <div className="footer">
+        <div className="messages">
           <textarea
             ref={textareaRef}
             className="chat-box-input"
@@ -227,36 +228,24 @@ function ChatBox({
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
           />
-          <button
-            id="chat-box-button-send"
-            className="prompt-injection-button"
-            disabled={isSendingMessage}
-            onClick={() => void sendChatMessage()}
-          >
-            <span id="chat-box-button-content">
-              {isSendingMessage ? (
-                <ThreeDots width="24px" color="white" />
-              ) : (
-                "Send"
-              )}
-            </span>
-          </button>
+
+          <span className="send-button-wrapper">
+            <LoadingButton
+              onClick={() => void sendChatMessage()}
+              isLoading={isSendingMessage}
+            >
+              Send
+            </LoadingButton>
+          </span>
         </div>
 
-        <div id="control-buttons">
-          <div className="control-button">
-            <ExportPDFLink
-              messages={messages}
-              emails={emails}
-              currentLevel={currentLevel}
-            />
-          </div>
-          <button
-            className="prompt-injection-button control-button"
-            onClick={resetLevel}
-          >
-            Reset
-          </button>
+        <div className="control-buttons">
+          <ExportPDFLink
+            messages={messages}
+            emails={emails}
+            currentLevel={currentLevel}
+          />
+          <ThemedButton onClick={resetLevel}>Reset</ThemedButton>
         </div>
       </div>
     </div>

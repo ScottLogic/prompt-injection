@@ -1,3 +1,4 @@
+import ThemedButton from "../ThemedButtons/ThemedButton";
 import DocumentViewBox from "./DocumentViewBox";
 
 import "./DocumentViewButton.css";
@@ -7,16 +8,20 @@ function DocumentViewButton() {
   const [showPopup, setShowPopup] = useState(false);
 
   return (
-    <div id="document-view-button-area">
-      <button
-        className="document-view-button"
+    <div className="document-view-button-wrapper">
+      <ThemedButton
         onClick={() => {
           setShowPopup(true);
         }}
       >
         View Documents
-      </button>
-      <DocumentViewBox show={showPopup} setShow={setShowPopup} />
+      </ThemedButton>
+      <DocumentViewBox
+        show={showPopup}
+        onClose={() => {
+          setShowPopup(false);
+        }}
+      />
     </div>
   );
 }

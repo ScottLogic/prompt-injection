@@ -34,15 +34,6 @@
   background-color: var(--main-scrollbar-hover-colour);
 }
 
-.prompt-injection-button {
-  background-color: var(--main-button-inactive-background-colour);
-  border: 1px solid var(--main-border-colour);
-  border-radius: 5px;
-  color: var(--main-button-inactive-text-colour);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
 .prompt-injection-min-button {
   /* remove default button styling */
   background-color: transparent;
@@ -61,14 +52,4 @@
   border-color: var(--main-button-hover-border-colour);
   text-decoration: none;
   cursor: pointer;
-}
-
-.prompt-injection-button:hover:not([disabled]) {
-  background-color: var(--main-button-hover-background-colour);
-  color: var(--main-button-hover-text-colour);
-}
-
-.prompt-injection-button:active {
-  background-color: var(--main-button-active-background-colour);
-  color: var(--main-button-active-text-colour);
 }

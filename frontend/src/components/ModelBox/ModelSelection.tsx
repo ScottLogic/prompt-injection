@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "./ModelSelection.css";
 import { setGptModel, getGptModel } from "../../service/chatService";
 import { CHAT_MODELS } from "../../models/chat";
+import ThemedButton from "../ThemedButtons/ThemedButton";
 
 // return a drop down menu with the models
 function ModelSelection() {
@@ -39,14 +40,11 @@ function ModelSelection() {
 
   // return a drop down menu with the models
   return (
-    <div id="model-selection-box">
-      <div id="model-selection-row">
-        <div id="text-area">
-          <p>Select a model: </p>
-        </div>
-        <div id="menu-area">
+    <div className="model-selection-box">
+      <div className="model-selection-row">
+        <p>Select model: </p>
+        <div className="select-wrapper">
           <select
-            id="model-selection-menu"
             aria-label="model-select"
             onChange={(e) => {
               setSelectedModel(e.target.value as CHAT_MODELS);
@@ -60,21 +58,15 @@ function ModelSelection() {
             ))}
             ;
           </select>
-        </div>
-        <div id="button-area">
-          <button
-            id="model-selection-button"
-            className="prompt-injection-button"
-            onClick={() => void submitSelectedModel()}
-          >
+          <ThemedButton onClick={() => void submitSelectedModel()}>
             Choose
-          </button>
+          </ThemedButton>
         </div>
       </div>
 
-      <div id="model-selection-info">
+      <div className="model-selection-info">
         {errorChangingModel ? (
-          <p id="error">
+          <p className="error">
             Could not change model. You are still chatting to:
             <b> {modelInUse} </b>
           </p>

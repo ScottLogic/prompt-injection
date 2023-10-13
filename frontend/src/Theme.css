@@ -15,7 +15,12 @@
   --main-button-active-text-colour: var(--main-text-colour);
   --main-button-inactive-background-colour: #313131;
   --main-button-inactive-text-colour: var(--main-text-colour);
-  --main-button-hover-background-colour: #555555;
+  --main-button-disabled-background-colour: #888888;
+  --main-button-disabled-text-colour: #111111;
+  --main-button-active-hover-background-colour: #00aaaa;
+  --main-button-active-hover-text-colour: var(--main-text-colour);
+  --main-button-inactive-hover-background-colour: #555555;
+  --main-button-inactive-hover-text-colour: var(--main-text-colour);
   --main-button-hover-text-colour: var(--main-text-colour);
   --main-button-hover-border-colour: white;
 
