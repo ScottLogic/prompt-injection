@@ -216,9 +216,7 @@ function getMaliciousPromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
 }
 
 function isDefenceActive(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
-  return defences.find((defence) => defence.id === id && defence.isActive)
-    ? true
-    : false;
+  return defences.some((defence) => defence.id === id && defence.isActive);
 }
 
 function generateRandomString(string_length: number) {
@@ -259,8 +257,7 @@ function transformRandomSequenceEnclosure(
   const randomString: string = generateRandomString(
     Number(getRandomSequenceEnclosureLength(defences))
   );
-  const introText: string = getRandomSequenceEnclosurePrePrompt(defences);
-  const transformedMessage: string = introText.concat(
+  return getRandomSequenceEnclosurePrePrompt(defences).concat(
     randomString,
     " {{ ",
     message,
@@ -268,7 +265,6 @@ function transformRandomSequenceEnclosure(
     randomString,
     ". "
   );
-  return transformedMessage;
 }
 
 // function to escape XML characters in user input to prevent hacking with XML tagging on
@@ -303,12 +299,7 @@ function transformXmlTagging(message: string, defences: DefenceInfo[]) {
   const prePrompt = getXMLTaggingPrePrompt(defences);
   const openTag = "<user_input>";
   const closeTag = "</user_input>";
-  const transformedMessage: string = prePrompt.concat(
-    openTag,
-    escapeXml(message),
-    closeTag
-  );
-  return transformedMessage;
+  return prePrompt.concat(openTag, escapeXml(message), closeTag);
 }
 
 //apply defence string transformations to original message

@@ -64,8 +64,8 @@ async function getDocuments(filePath: string) {
     chunkSize: 1000,
     chunkOverlap: 0,
   });
-  const splitDocs = await textSplitter.splitDocuments(docs);
-  return splitDocs;
+
+  return await textSplitter.splitDocuments(docs);
 }
 
 // choose between the provided preprompt and the default preprompt and prepend it to the main prompt and return the PromptTemplate
@@ -81,8 +81,7 @@ function makePromptTemplate(
   }
   const fullPrompt = `${configPrePrompt}\n${mainPrompt}`;
   console.debug(`${templateNameForLogging}: ${fullPrompt}`);
-  const template: PromptTemplate = PromptTemplate.fromTemplate(fullPrompt);
-  return template;
+  return PromptTemplate.fromTemplate(fullPrompt);
 }
 
 // create and store the document vectors for each level
@@ -147,7 +146,7 @@ function initQAModel(
 // initialise the prompt evaluation model
 function initPromptEvaluationModel(
   configPromptInjectionEvalPrePrompt: string,
-  conficMaliciousPromptEvalPrePrompt: string,
+  configMaliciousPromptEvalPrePrompt: string,
   openAiApiKey: string
 ) {
   if (!openAiApiKey) {
@@ -176,7 +175,7 @@ function initPromptEvaluationModel(
 
   // create chain to detect malicious prompts
   const maliciousPromptEvalTemplate = makePromptTemplate(
-    conficMaliciousPromptEvalPrePrompt,
+    configMaliciousPromptEvalPrePrompt,
     maliciousPromptEvalPrePrompt,
     maliciousPromptEvalMainPrompt,
     "Malicious input eval prompt template"
@@ -236,12 +235,12 @@ async function queryDocuments(
 async function queryPromptEvaluationModel(
   input: string,
   configPromptInjectionEvalPrePrompt: string,
-  conficMaliciousPromptEvalPrePrompt: string,
+  configMaliciousPromptEvalPrePrompt: string,
   openAIApiKey: string
 ) {
   const promptEvaluationChain = initPromptEvaluationModel(
     configPromptInjectionEvalPrePrompt,
-    conficMaliciousPromptEvalPrePrompt,
+    configMaliciousPromptEvalPrePrompt,
     openAIApiKey
   );
   if (!promptEvaluationChain) {
@@ -251,13 +250,13 @@ async function queryPromptEvaluationModel(
   console.log(`Checking '${input}' for malicious prompts`);
 
   // get start time
-  const startTime = new Date().getTime();
+  const startTime = Date.now();
   console.debug("Calling prompt evaluation model...");
   const response = (await promptEvaluationChain.call({
     prompt: input,
   })) as PromptEvaluationChainReply;
   // log the time taken
-  const endTime = new Date().getTime();
+  const endTime = Date.now();
   console.debug(`Prompt evaluation model call took ${endTime - startTime}ms`);
 
   const promptInjectionEval = formatEvaluationOutput(
@@ -289,7 +288,7 @@ async function queryPromptEvaluationModel(
 function formatEvaluationOutput(response: string) {
   try {
     // split response on first full stop or comma
-    const splitResponse = response.split(/\.|,/);
+    const splitResponse = response.split(/[.,]/);
     const answer = splitResponse[0]?.replace(/\W/g, "").toLowerCase();
     const reason = splitResponse[1]?.trim();
     return {

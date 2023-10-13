@@ -3,4 +3,5 @@ module.exports = {
   modulePathIgnorePatterns: ["build", "coverage", "node_modules"],
   preset: "ts-jest",
   testEnvironment: "node",
+  silent: true,
 };

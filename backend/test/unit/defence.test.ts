@@ -94,9 +94,11 @@ test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
   process.env.RANDOM_SEQ_ENCLOSURE_LENGTH = String(20);
 
   const message = "Hello";
-  let defences = getInitialDefences();
   // activate RSE defence
-  defences = activateDefence(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, defences);
+  const defences = activateDefence(
+    DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
+    getInitialDefences()
+  );
 
   // regex to match the transformed message with
   const regex = new RegExp(
@@ -106,15 +108,16 @@ test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
   // check the transformed message matches the regex
   const res = transformedMessage.match(regex);
   // expect there to be a match
-  expect(res).toBeTruthy();
-  if (res) {
-    // expect there to be 3 groups
-    expect(res.length).toBe(3);
-    // expect the random sequence to have the correct length
-    expect(res[1].length).toBe(Number(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH));
-    // expect the message to be surrounded by the random sequence
-    expect(res[1]).toBe(res[2]);
-  }
+  expect(res).not.toBeNull();
+
+  // expect there to be 3 groups
+  expect(res?.length).toEqual(3);
+  // expect the random sequence to have the correct length
+  expect(res?.[1].length).toEqual(
+    Number(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH)
+  );
+  // expect the message to be surrounded by the random sequence
+  expect(res?.[1]).toEqual(res?.[2]);
 });
 
 test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed", () => {
