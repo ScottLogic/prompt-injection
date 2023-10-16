@@ -11,6 +11,7 @@ import EmailBox from "../EmailBox/EmailBox";
 import { EmailInfo } from "../../models/email";
 import { useState } from "react";
 import ControlPanel from "../ControlPanel/ControlPanel";
+import SwitchModeButton from "../ThemedButtons/SwitchModeButton";
 
 function MainBody({
   currentLevel,
@@ -24,6 +25,7 @@ function MainBody({
   setDefenceConfiguration,
   setEmails,
   setNumCompletedLevels,
+  openWelcomeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
@@ -39,6 +41,7 @@ function MainBody({
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedLevels: (numCompletedLevels: number) => void;
+  openWelcomeOverlay: () => void;
 }) {
   const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
     new Set()
@@ -71,6 +74,14 @@ function MainBody({
         />
       </div>
       <div id="centre-area">
+        <SwitchModeButton
+          onClick={() => {
+            openWelcomeOverlay();
+          }}
+          currentLevel={currentLevel}
+        >
+          {}
+        </SwitchModeButton>
         <ChatBox
           completedLevels={completedLevels}
           currentLevel={currentLevel}
