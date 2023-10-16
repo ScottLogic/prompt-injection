@@ -15,6 +15,7 @@ module.exports = {
     "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
+    "plugin:jest-dom/recommended",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
@@ -22,7 +23,7 @@ module.exports = {
     project: true,
     tsconfigRootDir: __dirname,
   },
-  plugins: ["react-refresh", "jsx-a11y"],
+  plugins: ["react-refresh", "jsx-a11y", "jest-dom"],
   rules: {
     "@typescript-eslint/init-declarations": "error",
 
@@ -36,4 +37,12 @@ module.exports = {
       { allowConstantExport: true },
     ],
   },
+  overrides: [
+    {
+      files: ["*.test.ts{,x}"],
+      rules: {
+        "@typescript-eslint/no-empty-function": "off",
+      },
+    },
+  ],
 };
