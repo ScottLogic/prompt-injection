@@ -1,13 +1,39 @@
 .welcome {
-  padding: 0 5%;
+  padding: 0 5% 5%;
 }
 
 .welcome h1 {
   font-weight: 700;
-  font-size: 3rem;
+  font-size: 2rem;
 }
 
 .welcome p {
   font-weight: 500;
-  font-size: 2rem;
+  font-size: 1.25rem;
+}
+
+.start-level-selection-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 5%;
+  gap: 5rem;
+}
+
+.start-level-selection-buttons button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--overlay-tab-colour);
+  border-radius: 0.5rem;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  background-color: var(--overlay-background-colour);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: ease 0.1s;
+}
+
+.start-level-selection-buttons button:hover {
+  background-color: var(--overlay-tab-colour);
 }

@@ -9,6 +9,7 @@
   width: 50%;
   height: 50%;
   overflow: visible;
+  overflow-y: auto;
 }
 .overlay * {
   box-sizing: border-box;
@@ -37,6 +38,5 @@
 .overlay-content {
   height: 100%;
   padding: 1.5rem;
-  overflow: hidden;
   text-align: center;
 }
