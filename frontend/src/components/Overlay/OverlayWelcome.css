@@ -48,3 +48,7 @@
 .start-level-selection-buttons button:hover {
   background-color: var(--overlay-tab-colour);
 }
+
+.start-level-selection-buttons button[aria-pressed="true"] {
+  background-color: var(--overlay-tab-colour);
+}

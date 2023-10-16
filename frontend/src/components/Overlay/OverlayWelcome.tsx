@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
 import ProjectIconDark from "../MainComponent/ProjectIconDark";
 import "./OverlayWelcome.css";
@@ -7,6 +8,8 @@ function OverlayWelcome({
 }: {
   setStartLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
+  const [buttonChange, setButtonChange] = useState(false);
+
   return (
     <div className="welcome">
       <div className="project-icon">
@@ -33,6 +36,7 @@ function OverlayWelcome({
 
       <div className="start-level-selection-buttons">
         <button
+          aria-pressed={!buttonChange}
           onClick={() => {
             setStartLevel(LEVEL_NAMES.LEVEL_1);
           }}
@@ -42,6 +46,12 @@ function OverlayWelcome({
         <button
           onClick={() => {
             setStartLevel(LEVEL_NAMES.SANDBOX);
+          }}
+          onMouseEnter={() => {
+            setButtonChange(true);
+          }}
+          onMouseLeave={() => {
+            setButtonChange(false);
           }}
         >
           Expert

@@ -239,7 +239,6 @@ function App({ isNewUser }: { isNewUser: boolean }) {
         <Overlay
           currentLevel={currentLevel}
           overlayType={overlayType}
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           setStartLevel={setStartLevel}
           closeOverlay={closeOverlay}
         />
