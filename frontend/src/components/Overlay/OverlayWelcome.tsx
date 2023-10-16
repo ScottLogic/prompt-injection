@@ -2,13 +2,18 @@ import { useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
 import ProjectIconDark from "../MainComponent/ProjectIconDark";
 import "./OverlayWelcome.css";
+import StartLevelButton from "./StartLevelButton";
 
 function OverlayWelcome({
+  currentLevel,
   setStartLevel,
 }: {
+  currentLevel: LEVEL_NAMES;
   setStartLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
-  const [buttonChange, setButtonChange] = useState(false);
+  // highlight the default button based on current level
+  const defaultButton = currentLevel;
+  const [selectButton, setSelectButton] = useState(defaultButton);
 
   return (
     <div className="welcome">
@@ -35,27 +40,22 @@ function OverlayWelcome({
       </p>
 
       <div className="start-level-selection-buttons">
-        <button
-          aria-pressed={!buttonChange}
-          onClick={() => {
-            setStartLevel(LEVEL_NAMES.LEVEL_1);
-          }}
-        >
-          Beginner
-        </button>
-        <button
-          onClick={() => {
-            setStartLevel(LEVEL_NAMES.SANDBOX);
-          }}
-          onMouseEnter={() => {
-            setButtonChange(true);
-          }}
-          onMouseLeave={() => {
-            setButtonChange(false);
-          }}
-        >
-          Expert
-        </button>
+        <StartLevelButton
+          label="Beginner"
+          defaultButton={defaultButton}
+          targetStartLevel={LEVEL_NAMES.LEVEL_1}
+          selectedButton={selectButton}
+          setStartLevel={setStartLevel}
+          setSelectedButton={setSelectButton}
+        />
+        <StartLevelButton
+          label="Expert"
+          defaultButton={defaultButton}
+          targetStartLevel={LEVEL_NAMES.SANDBOX}
+          selectedButton={selectButton}
+          setStartLevel={setStartLevel}
+          setSelectedButton={setSelectButton}
+        />
       </div>
     </div>
   );

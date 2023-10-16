@@ -64,7 +64,10 @@ function Overlay({
     ) : overlayType === OVERLAY_TYPE.INFORMATION ? (
       <MissionInformation currentLevel={currentLevel} />
     ) : (
-      <OverlayWelcome setStartLevel={setStartLevel} />
+      <OverlayWelcome
+        currentLevel={currentLevel}
+        setStartLevel={setStartLevel}
+      />
     );
 
   return (
