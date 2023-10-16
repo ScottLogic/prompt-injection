@@ -4,12 +4,23 @@
 
 .welcome h1 {
   font-weight: 700;
+  font-size: 2.5rem;
+}
+
+.welcome h2 {
+  font-weight: 700;
   font-size: 2rem;
 }
 
 .welcome p {
   font-weight: 500;
   font-size: 1.25rem;
+}
+
+.welcome .project-icon {
+  display: flex;
+  justify-content: center;
+  height: 6rem;
 }
 
 .start-level-selection-buttons {
@@ -25,10 +36,10 @@
   justify-content: center;
   border: 1px solid var(--overlay-tab-colour);
   border-radius: 0.5rem;
-  padding: 1rem 2rem;
+  padding: 1rem 3rem;
   cursor: pointer;
   background-color: var(--overlay-background-colour);
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 700;
   line-height: 1;
   transition: ease 0.1s;

@@ -7,7 +7,7 @@
   background-color: var(--overlay-background-colour);
   color: var(--overlay-text-colour);
   width: 50%;
-  height: 50%;
+  height: 60%;
   overflow: visible;
   overflow-y: auto;
 }

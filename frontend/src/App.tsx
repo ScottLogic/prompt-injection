@@ -116,6 +116,17 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     setDefencesToShow(defences);
   }
 
+  // set the start level for a user who clicks beginner/expert
+  function setStartLevel(startLevel: LEVEL_NAMES) {
+    setNewLevel(startLevel)
+      .then(() => {
+        closeOverlay(); // close the welcome overlay
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
   // for going switching level without clearing progress
   async function setNewLevel(newLevel: LEVEL_NAMES) {
     console.log(`changing level from ${currentLevel} to ${newLevel}`);
@@ -228,6 +239,8 @@ function App({ isNewUser }: { isNewUser: boolean }) {
         <Overlay
           currentLevel={currentLevel}
           overlayType={overlayType}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          setStartLevel={setStartLevel}
           closeOverlay={closeOverlay}
         />
       )}
