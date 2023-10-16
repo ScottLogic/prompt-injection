@@ -31,7 +31,9 @@ function LevelSelectionBox({
                 handleLevelChange(level.id);
               }}
               isDisabled={
-                index > numCompletedLevels && level.id !== LEVEL_NAMES.SANDBOX
+                currentLevel === LEVEL_NAMES.SANDBOX
+                  ? level.id !== LEVEL_NAMES.SANDBOX
+                  : index > numCompletedLevels
               }
               isSelected={level.id === currentLevel}
             >
