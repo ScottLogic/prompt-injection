@@ -14,7 +14,7 @@ function Overlay({
   closeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
-  overlayTType: OVERLAY_TYPE;
+  overlayType: OVERLAY_TYPE;
   setStartLevel: (startLevel: LEVEL_NAMES) => void;
   closeOverlay: () => void;
 }) {

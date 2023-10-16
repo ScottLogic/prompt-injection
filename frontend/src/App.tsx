@@ -42,7 +42,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   function loadCurrentLevel() {
     // get current level from local storage
     const currentLevelStr = localStorage.getItem("currentLevel");
-    if (currentLevelStr) {
+    if (currentLevelStr && !isNewUser) {
       // start the user from where they last left off
       return parseInt(currentLevelStr);
     } else {
