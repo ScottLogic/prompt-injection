@@ -43,6 +43,8 @@ function MainHeader({
             setNewLevel={setNewLevel}
           />
         </span>
+        <div className="handbook-area"> 
+        {currentLevel !== LEVEL_NAMES.LEVEL_1 && ( 
         <button
           className="prompt-injection-min-button handbook-icon"
           title="open the handbook"
@@ -51,6 +53,8 @@ function MainHeader({
         >
           <HandbookIcon />
         </button>
+        )}
+        </div>
       </span>
     </div>
   );

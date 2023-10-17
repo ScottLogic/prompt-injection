@@ -1,10 +1,10 @@
-import ExportContent from "./ExportContent";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ChatMessage } from "../../models/chat";
 import { EmailInfo } from "../../models/email";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { LEVEL_NAMES } from "../../models/level";
+import ExportContent from "./ExportContent";
 
 import "./ExportPDFLink.css";
-import { LEVEL_NAMES } from "../../models/level";
 
 function ExportPDFLink({
   messages,
@@ -33,10 +33,11 @@ function ExportPDFLink({
             currentLevel={currentLevel}
           />
         }
+        className="export-chat-link"
         fileName={getFileName()}
       >
         Export
-      </PDFDownloadLink>{" "}
+      </PDFDownloadLink>
     </div>
   );
 }

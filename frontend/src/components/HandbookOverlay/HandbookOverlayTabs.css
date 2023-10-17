@@ -1,57 +1,23 @@
 .handbook-tabs {
   display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  position: absolute;
-  top: -50px; /* position above overlay */
-  left: 2rem;
-  z-index: -1;
+  gap: 0.5rem;
 }
 
-.handbook-tabs label {
+.handbook-tabs button {
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--overlay-tab-colour);
+  border-radius: 0.5rem;
   padding: 1rem 2rem;
-  margin-right: 0.0625rem;
   cursor: pointer;
-  background-color: var(--overlay-closed-tab-colour);
-  font-weight: 700;
-  transition: ease 0.1s;
-  border-radius: 10px 10px 0 0;
-}
-
-.handbook-tabs label:not(:first-child):not(:last-child) {
-  border-right: 2px solid #000;
-}
-
-.handbook-tabs [type="radio"] {
-  display: none;
-}
-
-.handbook-tabs [type="radio"]:checked + label {
   background-color: var(--overlay-background-colour);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: ease 0.1s;
 }
 
-.handbook-tabs [type="radio"]:checked + label + .tab {
-  display: block;
-}
-
-@media (min-width: 768px) {
-  body {
-    font-size: 1.125rem;
-  }
-
-  .handbook-tabs-container {
-    padding: 4rem 4rem;
-  }
-
-  .handbook-tabs label {
-    order: 1;
-    width: auto;
-  }
-
-  .handbook-tabs .tab {
-    order: 9;
-  }
+.handbook-tabs button[aria-selected="true"] {
+  background-color: var(--overlay-tab-colour);
 }

@@ -3,41 +3,29 @@ import { LEVEL_NAMES } from "../../models/level";
 import "./HandbookOverlayTabs.css";
 
 function HandbookOverlayTabs({
-  currentLevel,
-  setSelectedPage,
+  currentPage,
+  selectPage,
 }: {
   currentLevel: LEVEL_NAMES;
-  setSelectedPage: (page: HANDBOOK_PAGES) => void;
+  currentPage: HANDBOOK_PAGES;
+  selectPage: (page: HANDBOOK_PAGES) => void;
 }) {
   // the tabs that are shown depend on the current level
-  function getLevelTabs(currentLevel: LEVEL_NAMES) {
-    switch (currentLevel) {
-      case LEVEL_NAMES.LEVEL_1:
-        return [HANDBOOK_PAGES.MISSION_INFO];
-      default:
-        return [
-          HANDBOOK_PAGES.MISSION_INFO,
-          HANDBOOK_PAGES.ATTACKS,
-          HANDBOOK_PAGES.TOOLS,
-        ];
-    }
-  }
+  const tabs = [ HANDBOOK_PAGES.ATTACKS];
 
   return (
-    <div className="handbook-tabs">
-      {getLevelTabs(currentLevel).map((tab) => (
-        <div key={tab}>
-          <input
-            type="radio"
-            name="handbook-tabs"
-            id={tab.toString()}
-            defaultChecked={tab === HANDBOOK_PAGES.MISSION_INFO}
-            onClick={() => {
-              setSelectedPage(tab);
-            }}
-          />
-          <label htmlFor={tab.toString()}>{handbookPageNames[tab]}</label>
-        </div>
+    <div className="handbook-tabs" role="tablist">
+      {tabs.map((page) => (
+        <button
+          key={page}
+          role="tab"
+          aria-selected={page === currentPage}
+          onClick={() => {
+            selectPage(page);
+          }}
+        >
+          {handbookPageNames[page]}
+        </button>
       ))}
     </div>
   );
