@@ -40,9 +40,6 @@
   border: 1px solid transparent;
   color: var(--main-button-inactive-text-colour);
   padding: 0;
-
-  height: 100%;
-
   display: flex;
   align-items: center;
   justify-content: center;

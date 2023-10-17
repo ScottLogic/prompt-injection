@@ -127,7 +127,7 @@ function initQAModel(
 
   // initialise model
   const model = new ChatOpenAI({
-    modelName: CHAT_MODELS.GPT_4,
+    modelName: CHAT_MODELS.GPT_3_5_TURBO,
     streaming: true,
     openAIApiKey: openAiApiKey,
   });
@@ -165,7 +165,7 @@ function initPromptEvaluationModel(
 
   const promptInjectionChain = new LLMChain({
     llm: new OpenAI({
-      modelName: CHAT_MODELS.GPT_4,
+      modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),
@@ -183,7 +183,7 @@ function initPromptEvaluationModel(
 
   const maliciousInputChain = new LLMChain({
     llm: new OpenAI({
-      modelName: CHAT_MODELS.GPT_4,
+      modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
       openAIApiKey: openAiApiKey,
     }),

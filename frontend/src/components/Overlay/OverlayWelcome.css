@@ -1,13 +1,13 @@
-#welcome {
+.welcome {
   padding: 0 5%;
 }
 
-#welcome h1 {
+.welcome h1 {
   font-weight: 700;
   font-size: 3rem;
 }
 
-#welcome p {
+.welcome p {
   font-weight: 500;
   font-size: 2rem;
 }

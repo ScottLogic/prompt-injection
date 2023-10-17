@@ -1,11 +1,4 @@
-#export-chat-box a {
+.export-chat-link {
   color: var(--main-button-inactive-text-colour);
   text-decoration: none;
-  /* fill the entire space */
-  height: 100%;
-  width: 100%;
-  /* vertically centre text */
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
