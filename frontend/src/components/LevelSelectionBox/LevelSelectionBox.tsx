@@ -13,6 +13,10 @@ function LevelSelectionBox({
   numCompletedLevels: number;
   setNewLevel: (newLevel: number) => void;
 }) {
+  // hide all levels in sandbox, and show levels 1-3 in story mode
+  const displayLevels =
+    currentLevel !== LEVEL_NAMES.SANDBOX ? LEVELS.slice(0, 3) : [];
+
   function handleLevelChange(newLevel: LEVEL_NAMES) {
     if (newLevel !== currentLevel) {
       console.log(`Changing level to ${newLevel}`);
@@ -23,18 +27,14 @@ function LevelSelectionBox({
   return (
     <span>
       <div id="level-selection-box">
-        {LEVELS.map((level: Level, index: number) => {
+        {displayLevels.map((level: Level, index: number) => {
           return (
             <ThemedButton
               key={level.name}
               onClick={() => {
                 handleLevelChange(level.id);
               }}
-              isDisabled={
-                currentLevel === LEVEL_NAMES.SANDBOX
-                  ? level.id !== LEVEL_NAMES.SANDBOX
-                  : index > numCompletedLevels
-              }
+              isDisabled={index > numCompletedLevels}
               isSelected={level.id === currentLevel}
             >
               {level.name}
