@@ -8,7 +8,7 @@ function MissionInformation({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
     <div>
       <h2> Mission Information </h2>
       <div id="mission-info">
-        <p>{LEVELS[currentLevel].missionInfo}</p>
+        <p>{LEVELS[currentLevel].missionInfoLong}</p>
       </div>
     </div>
   );

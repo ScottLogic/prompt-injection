@@ -95,7 +95,7 @@ function checkLevelWinCondition(
         // correct email address
         email.address.toLowerCase() === "bob@scottlogic.com" &&
           // correct project name
-          checkSubjectAndBodyContains(email.subject, email.content, ["zeus"])
+          checkSubjectAndBodyContains(email.subject, email.content, ["brae"])
           ? true
           : false
       );
