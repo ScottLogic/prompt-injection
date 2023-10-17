@@ -53,7 +53,7 @@ function ModelSelection() {
             }}
           >
             {chatModelOptions.map((model) => (
-              <option key={model} value={model} selected={model == modelInUse}>
+              <option key={model} value={model} selected={model === modelInUse}>
                 {model}
               </option>
             ))}
