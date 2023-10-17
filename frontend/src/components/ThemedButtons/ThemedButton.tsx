@@ -1,4 +1,4 @@
-import * as classNames from "classnames";
+import { clsx } from "clsx";
 import { ReactNode } from "react";
 import "./ThemedButton.css";
 
@@ -15,7 +15,7 @@ function ThemedButton({
   isDisabled = false,
   isSelected = false,
 }: ThemedButtonProps) {
-  const buttonClass = classNames("themed-button", { selected: isSelected });
+  const buttonClass = clsx("themed-button", { selected: isSelected });
 
   return (
     <button className={buttonClass} onClick={onClick} disabled={isDisabled}>
