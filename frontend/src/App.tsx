@@ -121,14 +121,10 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   }
 
   // set the start level for a user who clicks beginner/expert
-  function setStartLevel(startLevel: LEVEL_NAMES) {
-    setNewLevel(startLevel)
-      .then(() => {
-        closeOverlay(); // close the welcome overlay
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  async function setStartLevel(startLevel: LEVEL_NAMES) {
+    console.log(`setting start level to ${startLevel}`);
+    await setNewLevel(startLevel);
+    closeOverlay();
   }
 
   // for going switching level without clearing progress
@@ -243,7 +239,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
         <Overlay
           currentLevel={currentLevel}
           overlayType={overlayType}
-          setStartLevel={setStartLevel}
+          setStartLevel={(level: LEVEL_NAMES) => void setStartLevel(level)}
           closeOverlay={closeOverlay}
         />
       )}
