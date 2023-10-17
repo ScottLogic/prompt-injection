@@ -1,6 +1,12 @@
-#handbook-overlay-content {
+.handbook-overlay {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   height: 100%;
+}
 
+.handbook-overlay .content {
+  flex: 0 1 auto;
   text-align: center;
   overflow-y: auto;
 }

@@ -27,11 +27,12 @@
 
 .document-popup-inner .close-button {
   color: var(--main-accent-colour);
-  float: right;
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  padding: 0.25rem 0.75rem;
   font-size: 1.75rem;
   font-weight: bold;
-
-  max-width: 40px;
 }
 
 .document-popup-inner .close-button:hover {
