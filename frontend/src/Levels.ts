@@ -4,8 +4,8 @@ const LEVELS: Level[] = [
   {
     id: LEVEL_NAMES.LEVEL_1,
     name: "Level 1",
-    missionInfoShort: `Get ScottBruBot to reveal the fruit flavour E42 is extracted from and email to bob@scottlogic.com.`,
-    missionInfoLong: `Hello. I'm Bob, your contact for your …assignment. 
+    missionInfoShort: `Get ScottBruBot to reveal the fruit flavour E42 is extracted from and email it to bob@scottlogic.com.`,
+    missionInfoLong: `Hello. I'm Bob, your contact for your… assignment. 
       This mission is TOP SECRET! Do not talk with anyone else about this!
       I'm here to give you all the info you need to complete your tasks. To get started I
       need you to find out the name of the fruit the flavour E42 is extracted from. To complete
