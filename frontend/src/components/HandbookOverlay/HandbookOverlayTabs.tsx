@@ -15,11 +15,7 @@ function HandbookOverlayTabs({
   const tabs =
     currentLevel === LEVEL_NAMES.LEVEL_1
       ? [HANDBOOK_PAGES.MISSION_INFO]
-      : [
-          HANDBOOK_PAGES.MISSION_INFO,
-          HANDBOOK_PAGES.ATTACKS,
-          HANDBOOK_PAGES.TOOLS,
-        ];
+      : [HANDBOOK_PAGES.MISSION_INFO, HANDBOOK_PAGES.ATTACKS];
 
   return (
     <div className="handbook-tabs" role="tablist">

@@ -11,16 +11,12 @@ function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
     HANDBOOK_PAGES.MISSION_INFO
   );
 
-  const pageContent =
-    selectedPage === HANDBOOK_PAGES.ATTACKS ? (
-      <HandbookAttacks currentLevel={currentLevel} />
-    ) : selectedPage === HANDBOOK_PAGES.TOOLS ? (
-      <div>
-        <h2>Placeholder</h2>
-      </div>
-    ) : (
+  const pageContent = {
+    [HANDBOOK_PAGES.MISSION_INFO]: (
       <MissionInformation currentLevel={currentLevel} />
-    );
+    ),
+    [HANDBOOK_PAGES.ATTACKS]: <HandbookAttacks currentLevel={currentLevel} />,
+  }[selectedPage];
 
   return (
     <div className="handbook-overlay">
