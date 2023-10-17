@@ -16,6 +16,7 @@ module.exports = {
   ignorePatterns: ["build", "coverage", "node_modules", "jest.config.js"],
   rules: {
     "@typescript-eslint/init-declarations": "error",
+
     "@typescript-eslint/no-misused-promises": [
       "error",
       {
@@ -25,5 +26,6 @@ module.exports = {
     "@typescript-eslint/unbound-method": ["error", { ignoreStatic: true }],
     "func-style": ["error", "declaration"],
     "prefer-template": "error",
+    eqeqeq: "error",
   },
 };

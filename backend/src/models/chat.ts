@@ -84,7 +84,7 @@ interface ChatHistoryMessage {
 
 // default settings for chat model
 const defaultChatModel: ChatModel = {
-  id: CHAT_MODELS.GPT_4,
+  id: CHAT_MODELS.GPT_3_5_TURBO,
   configuration: {
     temperature: 1,
     topP: 1,
