@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
 import ProjectIconDark from "../MainComponent/ProjectIconDark";
 import "./OverlayWelcome.css";
-import StartLevelButton from "./StartLevelButton";
+import StartLevelButtons from "../ThemedButtons/StartLevelButtons";
 
 function OverlayWelcome({
   currentLevel,
@@ -11,10 +10,6 @@ function OverlayWelcome({
   currentLevel: LEVEL_NAMES;
   setStartLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
-  // highlight the default button based on current level
-  const defaultButton = currentLevel;
-  const [selectButton, setSelectButton] = useState(defaultButton);
-
   return (
     <div className="welcome">
       <div className="project-icon">
@@ -39,24 +34,10 @@ function OverlayWelcome({
         jump straight in at the sandbox?
       </p>
 
-      <div className="start-level-selection-buttons">
-        <StartLevelButton
-          label="Beginner"
-          defaultButton={defaultButton}
-          targetStartLevel={LEVEL_NAMES.LEVEL_1}
-          selectedButton={selectButton}
-          setStartLevel={setStartLevel}
-          setSelectedButton={setSelectButton}
-        />
-        <StartLevelButton
-          label="Expert"
-          defaultButton={defaultButton}
-          targetStartLevel={LEVEL_NAMES.SANDBOX}
-          selectedButton={selectButton}
-          setStartLevel={setStartLevel}
-          setSelectedButton={setSelectButton}
-        />
-      </div>
+      <StartLevelButtons
+        currentLevel={currentLevel}
+        setStartLevel={setStartLevel}
+      />
     </div>
   );
 }

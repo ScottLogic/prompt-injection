@@ -1,5 +1,5 @@
 .welcome {
-  padding: 0 5% 5%;
+  padding: 0 1.5rem;
 }
 
 .welcome h1 {
@@ -21,34 +21,4 @@
   display: flex;
   justify-content: center;
   height: 6rem;
-}
-
-.start-level-selection-buttons {
-  display: flex;
-  justify-content: center;
-  margin-top: 5%;
-  gap: 5rem;
-}
-
-.start-level-selection-buttons button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--overlay-tab-colour);
-  border-radius: 0.5rem;
-  padding: 1rem 3rem;
-  cursor: pointer;
-  background-color: var(--overlay-background-colour);
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1;
-  transition: ease 0.1s;
-}
-
-.start-level-selection-buttons button:hover {
-  background-color: var(--overlay-tab-colour);
-}
-
-.start-level-selection-buttons button[aria-pressed="true"] {
-  background-color: var(--overlay-tab-colour);
 }
