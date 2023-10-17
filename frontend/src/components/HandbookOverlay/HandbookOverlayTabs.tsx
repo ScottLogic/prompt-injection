@@ -18,7 +18,6 @@ function HandbookOverlayTabs({
       : [
           HANDBOOK_PAGES.MISSION_INFO,
           HANDBOOK_PAGES.ATTACKS,
-          HANDBOOK_PAGES.TOOLS,
         ];
 
   return (

@@ -1,6 +1,6 @@
 import { FocusEvent, KeyboardEvent } from "react";
 import ContentEditable from "react-contenteditable";
-import * as classNames from "classnames";
+import { clsx } from "clsx";
 import { DefenceConfig } from "../../models/defence";
 
 import "./DefenceConfiguration.css";
@@ -35,7 +35,7 @@ function DefenceConfiguration({
     void setConfigurationValue(config.id, value);
   }
 
-  const configClass = classNames("defence-config-value", {
+  const configClass = clsx("defence-config-value", {
     inactive: !isActive,
   });
 
