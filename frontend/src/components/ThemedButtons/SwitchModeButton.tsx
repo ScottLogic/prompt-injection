@@ -9,7 +9,7 @@ function SwitchModeButton({
 }) {
   return (
     <ThemedButton {...buttonProps}>
-      {currentLevel == LEVEL_NAMES.SANDBOX
+      {currentLevel === LEVEL_NAMES.SANDBOX
         ? "Sandbox mode. Click here to select story mode."
         : "Story mode. Click here to select sandbox mode."}
     </ThemedButton>

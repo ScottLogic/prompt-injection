@@ -4,7 +4,6 @@ import { describe, expect, test, vi } from "vitest";
 import { LEVELS } from "../../Levels";
 import LevelSelectionBox, { LevelSelectionBoxProps } from "./LevelSelectionBox";
 
-
 const defaultProps: LevelSelectionBoxProps = {
   currentLevel: LEVELS[0].id,
   numCompletedLevels: 0,
@@ -24,7 +23,6 @@ function isSandbox(name: string) {
 const storyLevels = LEVELS.filter(({ name }) => !isSandbox(name));
 
 describe("LevelSelectionBox component tests", () => {
-
   test("renders no buttons when in sandbox mode", () => {
     const sandboxLevel = LEVELS[3];
     renderComponent({ ...defaultProps, currentLevel: sandboxLevel.id });
@@ -62,7 +60,7 @@ describe("LevelSelectionBox component tests", () => {
 
     storyLevels.forEach(({ id, name }) => {
       const button = screen.getByRole("button", { name });
-      if (id <= currentLevel.id ) {
+      if (id <= currentLevel.id) {
         expect(button).toBeEnabled();
       } else {
         expect(button).toBeDisabled();

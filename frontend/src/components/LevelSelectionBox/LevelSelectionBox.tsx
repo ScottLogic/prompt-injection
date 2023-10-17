@@ -24,24 +24,22 @@ function LevelSelectionBox({
     }
   }
   return (
-      <div id="level-selection-box">
-        {displayLevels.map((level: Level, index: number) => {
-          return (
-            <ThemedButton
-              key={level.name}
-              onClick={() => {
-                handleLevelChange(level.id);
-              }}
-              isDisabled={
-                index > numCompletedLevels 
-              }
-              isSelected={level.id === currentLevel}
-            >
-              {level.name}
-            </ThemedButton>
-          );
-        })}
-      </div>
+    <div id="level-selection-box">
+      {displayLevels.map((level: Level, index: number) => {
+        return (
+          <ThemedButton
+            key={level.name}
+            onClick={() => {
+              handleLevelChange(level.id);
+            }}
+            isDisabled={index > numCompletedLevels}
+            isSelected={level.id === currentLevel}
+          >
+            {level.name}
+          </ThemedButton>
+        );
+      })}
+    </div>
   );
 }
 
