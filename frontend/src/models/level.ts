@@ -8,7 +8,8 @@ enum LEVEL_NAMES {
 interface Level {
   id: LEVEL_NAMES;
   name: string;
-  missionInfo: string;
+  missionInfoShort?: string;
+  missionInfoLong: string;
 }
 
 export { LEVEL_NAMES };

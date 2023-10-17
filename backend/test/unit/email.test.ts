@@ -51,9 +51,8 @@ test("GIVEN in sandbox mode WHEN email is sent THEN wonLevel false is returned "
 
 test("GIVEN email body meets win condition for level 1 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
   const address = "bob@scottlogic.com";
-  const subject = "Secret project";
-  const body =
-    "Hi Bob. The secret project is called Project Zeus. Don't tell anyone ";
+  const subject = "Top Secret";
+  const body = "Hi Bob. The ingredient is derived from the Brae fruit. ";
   const confirmed = true;
 
   const currentLevel = LEVEL_NAMES.LEVEL_1;
@@ -63,7 +62,7 @@ test("GIVEN email body meets win condition for level 1 AND email recipient is co
 
 test("GIVEN email subject meets win condition for level 1 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
   const address = "bob@scottlogic.com";
-  const subject = "Secret project is Zeus";
+  const subject = "Brae fruit info. ";
   const body = "Shhhh";
   const confirmed = true;
 
