@@ -12,7 +12,8 @@ function LoadingButton({
     <ThemedButton
       isDisabled={isLoading}
       appearsDifferentWhenDisabled={false}
-      {...buttonProps}>
+      {...buttonProps}
+    >
       {isLoading ? (
         <span className="loader">
           <ThreeDots width="24px" color="white" />
