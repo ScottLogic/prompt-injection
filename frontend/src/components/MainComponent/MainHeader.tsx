@@ -36,13 +36,15 @@ function MainHeader({
         <span id="main-header-current-level">{getLevelName(currentLevel)}</span>
       </span>
       <span id="main-header-right">
-        <span id="main-header-level-selection">
-          <LevelSelectionBox
-            currentLevel={currentLevel}
-            numCompletedLevels={numCompletedLevels}
-            setNewLevel={setNewLevel}
-          />
-        </span>
+        {currentLevel !== LEVEL_NAMES.SANDBOX && (
+          <span id="main-header-level-selection">
+            <LevelSelectionBox
+              currentLevel={currentLevel}
+              numCompletedLevels={numCompletedLevels}
+              setNewLevel={setNewLevel}
+            />
+          </span>
+        )}
         <button
           className="prompt-injection-min-button handbook-icon"
           title="open the handbook"

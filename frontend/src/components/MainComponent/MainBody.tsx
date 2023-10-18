@@ -75,13 +75,11 @@ function MainBody({
       </div>
       <div id="centre-area">
         <SwitchModeButton
+          currentLevel={currentLevel}
           onClick={() => {
             openWelcomeOverlay();
           }}
-          currentLevel={currentLevel}
-        >
-          {}
-        </SwitchModeButton>
+        />
         <ChatBox
           completedLevels={completedLevels}
           currentLevel={currentLevel}

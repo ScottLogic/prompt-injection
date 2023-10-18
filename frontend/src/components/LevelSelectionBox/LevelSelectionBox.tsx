@@ -14,9 +14,10 @@ function LevelSelectionBox({
   numCompletedLevels,
   setNewLevel,
 }: LevelSelectionBoxProps) {
-  // hide all levels in sandbox, and show levels 1-3 in story mode
-  const displayLevels =
-    currentLevel !== LEVEL_NAMES.SANDBOX ? LEVELS.slice(0, 3) : [];
+  // display levels 1-3
+  const displayLevels = LEVELS.filter(
+    (level) => level.id !== LEVEL_NAMES.SANDBOX
+  );
 
   function handleLevelChange(newLevel: LEVEL_NAMES) {
     if (newLevel !== currentLevel) {

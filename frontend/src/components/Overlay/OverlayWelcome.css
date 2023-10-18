@@ -1,5 +1,7 @@
 .welcome {
   padding: 0 1.5rem;
+  overflow-y: auto;
+  margin-top: 2rem;
 }
 
 .welcome h1 {

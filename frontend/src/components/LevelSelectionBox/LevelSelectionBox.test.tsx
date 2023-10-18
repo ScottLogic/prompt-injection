@@ -23,13 +23,6 @@ function isSandbox(name: string) {
 const storyLevels = LEVELS.filter(({ name }) => !isSandbox(name));
 
 describe("LevelSelectionBox component tests", () => {
-  test("renders no buttons when in sandbox mode", () => {
-    const sandboxLevel = LEVELS[3];
-    renderComponent({ ...defaultProps, currentLevel: sandboxLevel.id });
-
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
-  });
-
   test("renders one button per level, when not in sandbox", () => {
     renderComponent();
 

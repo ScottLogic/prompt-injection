@@ -1,18 +1,18 @@
-import ThemedButton, { ThemedButtonProps } from "./ThemedButton";
 import { LEVEL_NAMES } from "../../models/level";
 
 function SwitchModeButton({
   currentLevel,
-  ...buttonProps
-}: ThemedButtonProps & {
-  currentLevel?: LEVEL_NAMES;
+  onClick,
+}: {
+  currentLevel: LEVEL_NAMES;
+  onClick: () => void;
 }) {
   return (
-    <ThemedButton {...buttonProps}>
+    <button className="themed-button" onClick={onClick}>
       {currentLevel === LEVEL_NAMES.SANDBOX
         ? "Sandbox mode. Click here to select story mode."
         : "Story mode. Click here to select sandbox mode."}
-    </ThemedButton>
+    </button>
   );
 }
 

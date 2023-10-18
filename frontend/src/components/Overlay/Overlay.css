@@ -36,7 +36,8 @@
 }
 
 .overlay-content {
-  height: 100%;
   padding: 1.5rem;
   text-align: center;
+  overflow: hidden;
+  display: flex;
 }

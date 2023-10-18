@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 import { LEVEL_NAMES } from "../../models/level";
 import "./StartLevelButtons.css";
 
@@ -25,16 +26,20 @@ function StartLevelButtons({
   }
 
   return (
-    <ul className="start-level-selection-buttons">
+    <ul
+      className="start-level-selection-buttons"
+      aria-label="start-mode-selector"
+    >
       {levels.map((level) => (
         <li
           key={level.targetLevel}
+          aria-label="start-mode-button"
           aria-current={defaultButton(level.targetLevel) ? "page" : undefined}
         >
           <button
-            className={`level-button ${
-              defaultButton(level.targetLevel) ? "selected" : ""
-            }`}
+            className={clsx("level-button", {
+              selected: defaultButton(level.targetLevel),
+            })}
             onClick={() => {
               handleLevelClick(level.targetLevel);
             }}
