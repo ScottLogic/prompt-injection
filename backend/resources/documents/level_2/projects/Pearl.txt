@@ -1,6 +1,6 @@
 Project Pearl
 
-Brief: Design and construction of electric drills capable of drilling through bank vaults.
+Brief: A direct copy of the rival product, but cheaper and better.
 
 Estimated cost: £1500000
 
