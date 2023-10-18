@@ -232,7 +232,8 @@ function ChatBox({
           <span className="send-button-wrapper">
             <LoadingButton
               onClick={() => void sendChatMessage()}
-              isLoading={isSendingMessage}>
+              isLoading={isSendingMessage}
+            >
               Send
             </LoadingButton>
           </span>
