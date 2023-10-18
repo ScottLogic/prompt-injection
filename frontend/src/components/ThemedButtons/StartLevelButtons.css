@@ -1,7 +1,6 @@
 .start-level-selection-buttons {
   display: flex;
   justify-content: center;
-  margin-top: 1.5rem 0;
   gap: 5rem;
   list-style: none;
   padding: 0;

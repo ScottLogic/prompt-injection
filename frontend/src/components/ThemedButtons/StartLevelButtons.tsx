@@ -28,12 +28,11 @@ function StartLevelButtons({
   return (
     <ul
       className="start-level-selection-buttons"
-      aria-label="start-mode-selector"
+      aria-label="start mode selector"
     >
       {levels.map((level) => (
         <li
           key={level.targetLevel}
-          aria-label="start-mode-button"
           aria-current={defaultButton(level.targetLevel) ? "page" : undefined}
         >
           <button
