@@ -1,19 +1,11 @@
-import { useCallback, useEffect, useRef } from "react";
-import { LEVEL_NAMES } from "../../models/level";
-import { OVERLAY_TYPE } from "../../models/overlay";
-import HandbookOverlay from "../HandbookOverlay/HandbookOverlay";
-import MissionInformation from "./MissionInformation";
-import HandbookWelcome from "./OverlayWelcome";
-
+import { ReactNode, useCallback, useEffect, useRef } from "react";
 import "./Overlay.css";
 
 function Overlay({
-  currentLevel,
-  overlayType,
+  children,
   closeOverlay,
 }: {
-  currentLevel: LEVEL_NAMES;
-  overlayType: OVERLAY_TYPE;
+  children: ReactNode;
   closeOverlay: () => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -54,16 +46,7 @@ function Overlay({
       window.removeEventListener("keydown", handleEscape);
       window.removeEventListener("click", handleOverlayClick);
     };
-  }, [overlayType]);
-
-  const overlayContent =
-    overlayType === OVERLAY_TYPE.HANDBOOK ? (
-      <HandbookOverlay currentLevel={currentLevel} />
-    ) : overlayType === OVERLAY_TYPE.INFORMATION ? (
-      <MissionInformation currentLevel={currentLevel} />
-    ) : (
-      <HandbookWelcome />
-    );
+  }, []);
 
   return (
     <dialog ref={dialogRef} className="overlay">
@@ -74,8 +57,9 @@ function Overlay({
       >
         X
       </button>
+
       <div ref={contentRef} className="overlay-content">
-        {overlayContent}
+        {children}
       </div>
     </dialog>
   );

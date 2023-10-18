@@ -4,8 +4,15 @@ import HandbookAttacks from "./HandbookAttacks";
 import HandbookOverlayTabs from "./HandbookOverlayTabs";
 import { HANDBOOK_PAGES, handbookPageNames } from "../../models/handbook";
 import "./HandbookOverlay.css";
+import Overlay from "../Overlay/Overlay";
 
-function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
+function HandbookOverlay({
+  currentLevel,
+  closeOverlay,
+}: {
+  currentLevel: LEVEL_NAMES;
+  closeOverlay: () => void;
+}) {
   const [selectedPage, setSelectedPage] = useState<HANDBOOK_PAGES>(
     HANDBOOK_PAGES.ATTACKS
   );
@@ -15,20 +22,22 @@ function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   }[selectedPage];
 
   return (
-    <div className="handbook-overlay">
-      <HandbookOverlayTabs
-        currentLevel={currentLevel}
-        currentPage={selectedPage}
-        selectPage={setSelectedPage}
-      />
-      <div
-        className="content"
-        role="tabpanel"
-        aria-label={handbookPageNames[selectedPage]}
-      >
-        {pageContent}
+    <Overlay closeOverlay={closeOverlay}>
+      <div className="handbook-overlay">
+        <HandbookOverlayTabs
+          currentLevel={currentLevel}
+          currentPage={selectedPage}
+          selectPage={setSelectedPage}
+        />
+        <div
+          className="content"
+          role="tabpanel"
+          aria-label={handbookPageNames[selectedPage]}
+        >
+          {pageContent}
+        </div>
       </div>
-    </div>
+    </Overlay>
   );
 }
 

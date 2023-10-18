@@ -2,15 +2,24 @@ import { LEVEL_NAMES } from "../../models/level";
 import { LEVELS } from "../../Levels";
 
 import "./MissionInformation.css";
+import Overlay from "./Overlay";
 
-function MissionInformation({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
+function MissionInformation({
+  currentLevel,
+  closeOverlay,
+}: {
+  currentLevel: LEVEL_NAMES;
+  closeOverlay: () => void;
+}) {
   return (
-    <div>
-      <h2> Mission Information </h2>
-      <div id="mission-info">
-        <p>{LEVELS[currentLevel].missionInfoLong}</p>
+    <Overlay closeOverlay={closeOverlay}>
+      <div className="mission-info-page">
+        <h2> Mission Information </h2>
+        <div id="mission-info">
+          <p>{LEVELS[currentLevel].missionInfoLong}</p>
+        </div>
       </div>
-    </div>
+    </Overlay>
   );
 }
 
