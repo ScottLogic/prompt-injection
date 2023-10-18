@@ -249,14 +249,6 @@ router.post(
             chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
             infoMessage: chatResponse.defenceInfo.blockedReason,
           });
-
-          // enable next level when user wins current level
-          if (chatResponse.wonLevel) {
-            console.debug("Win conditon met for level: ", currentLevel);
-            numLevelsCompleted = Math.max(numLevelsCompleted, currentLevel + 1);
-            req.session.numLevelsCompleted = numLevelsCompleted;
-            chatResponse.numLevelsCompleted = numLevelsCompleted;
-          }
         }
       } else {
         handleChatError(res, chatResponse, true, "Missing message");
@@ -266,6 +258,15 @@ router.post(
       handleChatError(res, chatResponse, false, "Failed to get chatGPT reply");
       return;
     }
+
+    // enable next level when user wins current level
+    if (chatResponse.wonLevel) {
+      console.debug("Win conditon met for level: ", currentLevel);
+      numLevelsCompleted = Math.max(numLevelsCompleted, currentLevel + 1);
+      req.session.numLevelsCompleted = numLevelsCompleted;
+      chatResponse.numLevelsCompleted = numLevelsCompleted;
+    }
+
     // log and send the reply with defence info
     console.log(chatResponse);
     res.send(chatResponse);
