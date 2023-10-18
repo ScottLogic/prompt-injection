@@ -229,7 +229,7 @@ function ChatBox({
             autoFocus
           />
 
-          <span>
+          <span className="send-button-wrapper">
             <LoadingButton
               onClick={() => void sendChatMessage()}
               isLoading={isSendingMessage}>
