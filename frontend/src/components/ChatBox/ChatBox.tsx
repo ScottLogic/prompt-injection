@@ -88,7 +88,7 @@ function ChatBox({
 
   function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
     // shift+enter shouldn't send message
-    if (event.key === "Enter" && !event.shiftKey) {
+    if (event.key === "Enter" && !event.shiftKey && !isSendingMessage) {
       // asynchronously send the message
       void sendChatMessage();
     }
