@@ -24,21 +24,19 @@ function ExportPDFLink({
   }
 
   return (
-    <div id="export-chat-box" className="themed-button">
-      <PDFDownloadLink
-        document={
-          <ExportContent
-            messages={messages}
-            emails={emails}
-            currentLevel={currentLevel}
-          />
-        }
-        className="export-chat-link"
-        fileName={getFileName()}
-      >
-        Export
-      </PDFDownloadLink>
-    </div>
+    <PDFDownloadLink
+      document={
+        <ExportContent
+          messages={messages}
+          emails={emails}
+          currentLevel={currentLevel}
+        />
+      }
+      className="themed-button export-chat-link"
+      fileName={getFileName()}
+    >
+      Export
+    </PDFDownloadLink>
   );
 }
 
