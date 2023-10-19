@@ -28,7 +28,7 @@
   border-radius: 0.25rem;
   padding: 1rem 0.75rem;
   height: 100%;
-  min-height: 4rem;
+  min-height: 3rem;
   flex: 1 1 auto;
   resize: none;
   overflow-y: auto;
@@ -44,7 +44,7 @@
   justify-content: stretch;
   align-items: stretch;
   height: 100%;
-  max-height: 4rem;
+  max-height: 3rem;
 }
 
 .chat-box .footer .control-buttons {
