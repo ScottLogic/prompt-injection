@@ -41,7 +41,7 @@
 }
 
 .defence-mechanism label.switch > input:focus + .slider {
-  box-shadow: 0 0 1px var(--main-toggle-on-colour);
+  box-shadow: 0 0 0.063rem var(--main-toggle-on-colour);
 }
 
 .defence-mechanism label.switch > input:checked + .slider:before {

@@ -1,10 +1,10 @@
 .chat-box-message {
   color: var(--chat-message-text-colour);
-  border-radius: 8px;
+  border-radius: 0.5rem;
   border-style: solid;
-  border-width: 1px;
-  margin-top: 16px;
-  padding: 8px;
+  border-width: 0.063rem;
+  margin-top: 1rem;
+  padding: 0.5rem;
   max-width: 85%;
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
@@ -19,7 +19,7 @@
 
 .chat-box-message-ai {
   background: var(--chat-bot-background);
-  border-radius: 0px 8px 8px 8px;
+  border-radius: 0rem 0.5rem 0.5rem 0.5rem;
   margin-right: auto;
 }
 
@@ -30,9 +30,9 @@
   /* reduce the damage in FF3.0 */
   display: block;
   width: 0;
-  top: 0px; /* controls vertical position */
-  left: -10px; /* value = - border-left-width - border-right-width */
-  border-width: 6px 0px 0px 10px;
+  top: 0rem; /* controls vertical position */
+  left: -0.625rem; /* value = - border-left-width - border-right-width */
+  border-width: 0.375rem 0rem 0rem 0.625rem;
   border-color: var(--chat-bot-colour) transparent;
 }
 
@@ -48,14 +48,15 @@
   display: block;
   width: 0;
   top: 0px; /* controls vertical position */
-  left: -10px; /* value = - border-left-width - border-right-width */
-  border-width: 6px 0px 0px 10px;
+  left: -0.625rem; /* value = - border-left-width - border-right-width */
+  border-width: 0.375rem 0rem 0rem 0.625rem;
   border-color: var(--chat-blocked-colour) transparent;
 }
 
 .chat-box-message-user {
   background: var(--chat-user-background);
   border-radius: 8px 0px 8px 8px;
+  float: right;
   margin-left: auto;
 }
 
@@ -66,9 +67,9 @@
   /* reduce the damage in FF3.0 */
   display: block;
   width: 0;
-  top: 0px; /* controls vertical position */
-  right: -10px; /* value = - border-left-width - border-right-width */
-  border-width: 0 0 6px 10px;
+  top: 0rem; /* controls vertical position */
+  right: -0.625rem; /* value = - border-left-width - border-right-width */
+  border-width: 0 0 0.375rem 0.625rem;
   border-color: transparent var(--chat-user-colour);
 }
 
@@ -83,16 +84,16 @@
   /* reduce the damage in FF3.0 */
   display: block;
   width: 0;
-  top: 0px; /* controls vertical position */
-  right: -10px; /* value = - border-left-width - border-right-width */
-  border-width: 0 0 6px 10px;
+  top: 0rem; /* controls vertical position */
+  right: -0.625rem; /* value = - border-left-width - border-right-width */
+  border-width: 0 0 0.375rem 0.625rem;
   border-color: transparent var(--chat-edited-colour);
 }
 
 .chat-box-message-level-info .level-info-header {
   font-weight: bold;
   margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: 0.313rem;
 }
 
 .chat-box-message-level-info {

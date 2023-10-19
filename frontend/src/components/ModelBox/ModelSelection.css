@@ -1,5 +1,5 @@
 .model-selection-box {
-  padding: 10px;
+  padding: 0.625rem;;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

@@ -10,6 +10,6 @@
   flex-direction: column-reverse;
   flex-grow: 1;
   overflow-y: auto;
-  padding: 32px 30px;
+  padding: 2rem 1.875rem;
   scrollbar-width: thin;
 }
