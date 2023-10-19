@@ -3,17 +3,19 @@ import { LEVEL_NAMES } from "../../models/level";
 import { OVERLAY_TYPE } from "../../models/overlay";
 import HandbookOverlay from "../HandbookOverlay/HandbookOverlay";
 import MissionInformation from "./MissionInformation";
-import HandbookWelcome from "./OverlayWelcome";
+import OverlayWelcome from "./OverlayWelcome";
 
 import "./Overlay.css";
 
 function Overlay({
   currentLevel,
   overlayType,
+  setStartLevel,
   closeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
   overlayType: OVERLAY_TYPE;
+  setStartLevel: (startLevel: LEVEL_NAMES) => void;
   closeOverlay: () => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -68,7 +70,10 @@ function Overlay({
     ) : overlayType === OVERLAY_TYPE.INFORMATION ? (
       <MissionInformation currentLevel={currentLevel} />
     ) : (
-      <HandbookWelcome />
+      <OverlayWelcome
+        currentLevel={currentLevel}
+        setStartLevel={setStartLevel}
+      />
     );
 
   return (
