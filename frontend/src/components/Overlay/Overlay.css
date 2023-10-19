@@ -40,4 +40,5 @@
   text-align: center;
   overflow: hidden;
   display: flex;
+  height: 100%;
 }
