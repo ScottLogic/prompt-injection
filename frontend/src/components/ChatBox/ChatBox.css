@@ -21,6 +21,7 @@
   align-items: flex-end;
   gap: 0.5rem;
   width: 100%;
+  --defaultHeight: 3rem;
 }
 
 .chat-box .footer .messages .chat-box-input {
@@ -28,7 +29,7 @@
   border-radius: 0.25rem;
   padding: 1rem 0.75rem;
   height: 100%;
-  min-height: 3rem;
+  min-height: var(--defaultHeight);
   flex: 1 1 auto;
   resize: none;
   overflow-y: auto;
@@ -44,7 +45,7 @@
   justify-content: stretch;
   align-items: stretch;
   height: 100%;
-  max-height: 3rem;
+  max-height: var(--defaultHeight);
 }
 
 .chat-box .footer .control-buttons {
