@@ -22,8 +22,10 @@ import {
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "./Defences";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedLevels } from "./service/levelService";
-import Overlay from "./components/Overlay/Overlay";
 import { OVERLAY_TYPE } from "./models/overlay";
+import OverlayWelcome from "./components/Overlay/OverlayWelcome";
+import MissionInformation from "./components/Overlay/MissionInformation";
+import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
@@ -83,9 +85,30 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   function openHandbook() {
     setOverlayType(OVERLAY_TYPE.HANDBOOK);
   }
-
   function openInformationOverlay() {
     setOverlayType(OVERLAY_TYPE.INFORMATION);
+  }
+
+  function openOverlay(overlayType: OVERLAY_TYPE) {
+    switch (overlayType) {
+      case OVERLAY_TYPE.WELCOME:
+        return <OverlayWelcome closeOverlay={closeOverlay} />;
+      case OVERLAY_TYPE.INFORMATION:
+        return (
+          <MissionInformation
+            currentLevel={currentLevel}
+            closeOverlay={closeOverlay}
+          />
+        );
+      case OVERLAY_TYPE.HANDBOOK:
+        return (
+          <HandbookOverlay
+            currentLevel={currentLevel}
+            closeOverlay={closeOverlay}
+          />
+        );
+      default:
+    }
   }
 
   // methods to modify messages
@@ -221,16 +244,9 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     }
     return success;
   }
-
   return (
     <div id="app-content">
-      {overlayType !== null && (
-        <Overlay
-          currentLevel={currentLevel}
-          overlayType={overlayType}
-          closeOverlay={closeOverlay}
-        />
-      )}
+      {overlayType !== null && openOverlay(overlayType)}
       <header id="app-content-header">
         <MainHeader
           currentLevel={currentLevel}
@@ -257,6 +273,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
           setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
           setNumCompletedLevels={setNumCompletedLevels}
+          openInfoOverlay={openInformationOverlay}
         />
       </main>
     </div>

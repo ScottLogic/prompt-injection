@@ -3,6 +3,7 @@ import { LEVELS } from "../../Levels";
 
 import "./MissionInformation.css";
 import Overlay from "./Overlay";
+import OverlayButton from "../ThemedButtons/OverlayButton";
 
 function MissionInformation({
   currentLevel,
@@ -13,10 +14,11 @@ function MissionInformation({
 }) {
   return (
     <Overlay closeOverlay={closeOverlay}>
-      <div className="mission-info-page">
+      <div className="mission-info">
         <h2> Mission Information </h2>
-        <div id="mission-info">
-          <p>{LEVELS[currentLevel].missionInfoLong}</p>
+        <p>{LEVELS[currentLevel].missionInfoLong}</p>
+        <div className="button-area">
+          <OverlayButton onClick={closeOverlay}>OK</OverlayButton>
         </div>
       </div>
     </Overlay>

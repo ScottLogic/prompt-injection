@@ -10,6 +10,7 @@ import DefenceBox from "../DefenceBox/DefenceBox";
 import ModelBox from "../ModelBox/ModelBox";
 import { EmailInfo } from "../../models/email";
 import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
+import ShortMissionInfoButton from "../ShortMissionInfoButton/ShortMIssionInfoButton";
 
 function ControlPanel({
   currentLevel,
@@ -17,6 +18,7 @@ function ControlPanel({
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
+  openInfoOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
@@ -30,6 +32,7 @@ function ControlPanel({
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedLevels: (numCompletedLevels: number) => void;
+  openInfoOverlay: () => void;
 }) {
   function getDefencesConfigure() {
     return defences.filter((defence) => {
@@ -53,6 +56,11 @@ function ControlPanel({
 
   return (
     <div className="control-panel">
+      <ShortMissionInfoButton
+        currentLevel={currentLevel}
+        openOverlay={openInfoOverlay}
+      />
+
       {/* hide defence box on levels 1 and 2 */}
       {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
         currentLevel === LEVEL_NAMES.SANDBOX) && (

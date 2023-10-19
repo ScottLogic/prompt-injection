@@ -24,6 +24,7 @@ function MainBody({
   setDefenceConfiguration,
   setEmails,
   setNumCompletedLevels,
+  openInfoOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
@@ -39,6 +40,7 @@ function MainBody({
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedLevels: (numCompletedLevels: number) => void;
+  openInfoOverlay: () => void;
 }) {
   const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
     new Set()
@@ -68,6 +70,7 @@ function MainBody({
           setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
           setNumCompletedLevels={setNumCompletedLevels}
+          openInfoOverlay={openInfoOverlay}
         />
       </div>
       <div id="centre-area">

@@ -1,3 +1,12 @@
+.mission-info h2 {
+  font-size: 2rem;
+}
+
 .mission-info p {
   font-size: 1.5rem;
+}
+
+.button-area {
+  display: flex;
+  justify-content: center;
 }
