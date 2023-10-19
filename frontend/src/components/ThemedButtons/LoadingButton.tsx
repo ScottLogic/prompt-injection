@@ -1,5 +1,6 @@
 import { ThreeDots } from "react-loader-spinner";
 import ThemedButton, { ThemedButtonProps } from "./ThemedButton";
+import "./Loader.css";
 
 function LoadingButton({
   children,
@@ -10,13 +11,8 @@ function LoadingButton({
 }) {
   return (
     <ThemedButton {...buttonProps}>
-      {isLoading ? (
-        <span className="loader">
-          <ThreeDots width="24px" color="white" />
-        </span>
-      ) : (
-        children
-      )}
+      {children}
+      <ThreeDots width="24px" color="white" wrapperClass="loader" />
     </ThemedButton>
   );
 }
