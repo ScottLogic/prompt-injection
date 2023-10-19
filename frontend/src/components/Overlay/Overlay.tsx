@@ -30,7 +30,7 @@ function Overlay({
 
   const handleEscape = useCallback(
     (event: KeyboardEvent) => {
-      event.code === "Escape" && closeOverlay();
+      event.code === "Escape" && handleClose();
     },
     [closeOverlay]
   );
@@ -65,11 +65,16 @@ function Overlay({
       <HandbookWelcome />
     );
 
+  function handleClose() {
+    dialogRef.current?.close();
+    closeOverlay();
+  }
+
   return (
     <dialog ref={dialogRef} className="overlay">
       <button
         className="prompt-injection-min-button close-button"
-        onClick={closeOverlay}
+        onClick={handleClose}
         aria-label="close handbook overlay"
       >
         X
