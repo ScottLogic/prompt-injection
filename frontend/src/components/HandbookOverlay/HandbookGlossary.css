@@ -1,7 +1,15 @@
 .handbook-terms {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   text-align: left;
 }
 
-.handbook-terms p {
+.handbook-terms .term {
   font-size: 1rem;
+}
+
+.handbook-terms .term dt {
+  font-size: 1.125rem;
+  font-weight: bold;
 }

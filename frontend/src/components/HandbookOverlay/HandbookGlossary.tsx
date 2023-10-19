@@ -3,14 +3,14 @@ import "./HandbookGlossary.css";
 
 function HandbookGlossary() {
   return (
-    <div className="handbook-terms">
-      {GLOSSARY.map((glossaryEntry) => (
-        <article className="term" key={glossaryEntry.term}>
-          <h3 role="term">{glossaryEntry.term}</h3>
-          <p role="definition">{glossaryEntry.definition}</p>
-        </article>
+    <dl className="handbook-terms">
+      {GLOSSARY.map(({ term, definition }) => (
+        <div className="term" key={term}>
+          <dt>{term}</dt>
+          <dd>{definition}</dd>
+        </div>
       ))}
-    </div>
+    </dl>
   );
 }
 
