@@ -10,10 +10,10 @@ function HandbookAttacks({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   return (
     <div className="handbook-attacks">
       {attacks.map((attack) => (
-        <span className="attack" key={attack.id}>
-          <h3>{attack.name}</h3>
-          <p>{attack.info}</p>
-        </span>
+        <article className="attack" key={attack.id}>
+          <h3 role="term">{attack.name}</h3>
+          <p role="definition">{attack.info}</p>
+        </article>
       ))}
     </div>
   );

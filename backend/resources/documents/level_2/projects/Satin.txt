@@ -1,6 +1,6 @@
 Project Satin 
 
-Brief: Build a new website for a fintech startup. Tech stack is React frontend and Typescript backend.
+Brief: A diet version of our beloved ScottBru drink.
 
 Estimated cost: £15000
 

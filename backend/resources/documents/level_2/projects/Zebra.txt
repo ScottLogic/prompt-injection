@@ -1,6 +1,6 @@
 Project Zebra 
 
-Brief: Build a new payment system for a online banking start up. Tech stack is Java, Springboot backend with React frontend.  
+Brief: A special drink to celebrate the company anniversary.  
 
 Estimated cost: £25000
 
