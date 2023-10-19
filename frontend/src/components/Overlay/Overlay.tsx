@@ -14,7 +14,7 @@ function Overlay({
   closeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
-  overlayType: OVERLAY_TYPE;
+  overlayType: OVERLAY_TYPE | null;
   setStartLevel: (startLevel: LEVEL_NAMES) => void;
   closeOverlay: () => void;
 }) {
@@ -44,19 +44,19 @@ function Overlay({
   );
 
   useEffect(() => {
-    dialogRef.current?.showModal();
-    return () => {
-      dialogRef.current?.close();
-    };
-  }, []);
-
-  useEffect(() => {
     window.addEventListener("keydown", handleEscape);
     setTimeout(() => {
       // Need timeout, else dialog consumes same click that
       // opened it and closes immediately!
       window.addEventListener("click", handleOverlayClick);
     });
+
+    if (overlayType === null) {
+      // null overlay type indicates we should not have an overlay
+      dialogRef.current?.close();
+    } else {
+      dialogRef.current?.showModal();
+    }
 
     return () => {
       window.removeEventListener("keydown", handleEscape);
