@@ -19,11 +19,17 @@ function Overlay({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  function handleClose() {
+    // close the dialog element first to give focus back to the last focused element
+    dialogRef.current?.close();
+    closeOverlay();
+  }
+
   const handleOverlayClick = useCallback(
     (event: MouseEvent) => {
       contentRef.current &&
         !event.composedPath().includes(contentRef.current) &&
-        closeOverlay();
+        handleClose();
     },
     [closeOverlay, contentRef]
   );
@@ -64,11 +70,6 @@ function Overlay({
     ) : (
       <HandbookWelcome />
     );
-
-  function handleClose() {
-    dialogRef.current?.close();
-    closeOverlay();
-  }
 
   return (
     <dialog ref={dialogRef} className="overlay">
