@@ -75,7 +75,7 @@ function DefenceMechanism({
             onChange={toggleDefence}
             // set checked if defence is active
             checked={defenceDetail.isActive}
-            aria-label="toggle defence"
+            aria-label={defenceDetail.name}
           />
           <span className="slider round"></span>
         </label>
