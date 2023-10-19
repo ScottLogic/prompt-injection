@@ -20,13 +20,15 @@ function isSandbox(name: string) {
   return /Sandbox/i.test(name);
 }
 
+const storyLevels = LEVELS.filter(({ name }) => !isSandbox(name));
+
 describe("LevelSelectionBox component tests", () => {
-  test("renders one button per level", () => {
+  test("renders one button per level, when not in sandbox", () => {
     renderComponent();
 
     const levelButtons = screen.getAllByRole("button");
-    expect(levelButtons).toHaveLength(LEVELS.length);
-    LEVELS.forEach(({ name }) => {
+    expect(levelButtons).toHaveLength(storyLevels.length);
+    storyLevels.forEach(({ name }) => {
       expect(screen.getByRole("button", { name })).toBeInTheDocument();
     });
   });
@@ -43,15 +45,15 @@ describe("LevelSelectionBox component tests", () => {
     expect(selectedButtons[0]).toHaveAccessibleName(currentLevel.name);
   });
 
-  test("renders buttons ahead of current level disabled, except sandbox", () => {
+  test("renders buttons ahead of current level disabled", () => {
     const numCompletedLevels = 1;
     const currentLevel = LEVELS[numCompletedLevels];
 
     renderComponent({ ...defaultProps, numCompletedLevels });
 
-    LEVELS.forEach(({ id, name }) => {
+    storyLevels.forEach(({ id, name }) => {
       const button = screen.getByRole("button", { name });
-      if (id <= currentLevel.id || isSandbox(name)) {
+      if (id <= currentLevel.id) {
         expect(button).toBeEnabled();
       } else {
         expect(button).toBeDisabled();
@@ -59,7 +61,7 @@ describe("LevelSelectionBox component tests", () => {
     });
   });
 
-  test.each(LEVELS)(
+  test.each(storyLevels)(
     `fires callback on click, unless current level [$name] clicked`,
     async (level) => {
       const currentLevel = LEVELS[0];

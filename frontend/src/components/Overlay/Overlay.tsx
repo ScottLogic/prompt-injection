@@ -3,34 +3,42 @@ import { LEVEL_NAMES } from "../../models/level";
 import { OVERLAY_TYPE } from "../../models/overlay";
 import HandbookOverlay from "../HandbookOverlay/HandbookOverlay";
 import MissionInformation from "./MissionInformation";
-import HandbookWelcome from "./OverlayWelcome";
+import OverlayWelcome from "./OverlayWelcome";
 
 import "./Overlay.css";
 
 function Overlay({
   currentLevel,
   overlayType,
+  setStartLevel,
   closeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
   overlayType: OVERLAY_TYPE;
+  setStartLevel: (startLevel: LEVEL_NAMES) => void;
   closeOverlay: () => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  function handleClose() {
+    // close the dialog element first to give focus back to the last focused element
+    dialogRef.current?.close();
+    closeOverlay();
+  }
+
   const handleOverlayClick = useCallback(
     (event: MouseEvent) => {
       contentRef.current &&
         !event.composedPath().includes(contentRef.current) &&
-        closeOverlay();
+        handleClose();
     },
     [closeOverlay, contentRef]
   );
 
   const handleEscape = useCallback(
     (event: KeyboardEvent) => {
-      event.code === "Escape" && closeOverlay();
+      event.code === "Escape" && handleClose();
     },
     [closeOverlay]
   );
@@ -62,14 +70,17 @@ function Overlay({
     ) : overlayType === OVERLAY_TYPE.INFORMATION ? (
       <MissionInformation currentLevel={currentLevel} />
     ) : (
-      <HandbookWelcome />
+      <OverlayWelcome
+        currentLevel={currentLevel}
+        setStartLevel={setStartLevel}
+      />
     );
 
   return (
     <dialog ref={dialogRef} className="overlay">
       <button
         className="prompt-injection-min-button close-button"
-        onClick={closeOverlay}
+        onClick={handleClose}
         aria-label="close handbook overlay"
       >
         X

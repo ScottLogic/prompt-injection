@@ -1,13 +1,26 @@
 .welcome {
-  padding: 0 5%;
+  padding: 0 1.5rem;
+  overflow-y: auto;
+  margin-top: 2rem;
 }
 
 .welcome h1 {
   font-weight: 700;
-  font-size: 3rem;
+  font-size: 2.5rem;
+}
+
+.welcome h2 {
+  font-weight: 700;
+  font-size: 2rem;
 }
 
 .welcome p {
   font-weight: 500;
-  font-size: 2rem;
+  font-size: 1.25rem;
+}
+
+.welcome .project-icon {
+  display: flex;
+  justify-content: center;
+  height: 6rem;
 }

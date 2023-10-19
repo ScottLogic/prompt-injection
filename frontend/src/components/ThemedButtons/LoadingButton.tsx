@@ -11,7 +11,11 @@ function LoadingButton({
   isLoading?: boolean;
 }) {
   return (
-    <ThemedButton {...buttonProps}>
+    <ThemedButton
+      isDisabled={isLoading}
+      appearsDifferentWhenDisabled={false}
+      {...buttonProps}
+    >
       {children}
       {isLoading && (
         <ThreeDots width="24px" color="white" wrapperClass="loader" />
