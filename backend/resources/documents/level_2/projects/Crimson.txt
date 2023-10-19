@@ -1,6 +1,6 @@
 Project Crimson
 
-Brief: New data pipeline for energy company dealing with billing and payments. Tech stack includes Java, Spark, Kafka.
+Brief: A new soft drink for the UK market.
 
 Estimated cost: £650000
 
