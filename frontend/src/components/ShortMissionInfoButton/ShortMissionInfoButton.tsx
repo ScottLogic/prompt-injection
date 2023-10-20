@@ -1,6 +1,8 @@
 import { LEVELS } from "../../Levels";
 import { LEVEL_NAMES } from "../../models/level";
 
+import "./ShortMissionInfoButton.css";
+
 function ShortMissionInfoButton({
   currentLevel,
   openOverlay,

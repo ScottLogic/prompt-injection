@@ -10,7 +10,7 @@ import DefenceBox from "../DefenceBox/DefenceBox";
 import ModelBox from "../ModelBox/ModelBox";
 import { EmailInfo } from "../../models/email";
 import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
-import ShortMissionInfoButton from "../ShortMissionInfoButton/ShortMIssionInfoButton";
+import SwitchModeButton from "../ThemedButtons/SwitchModeButton";
 
 function ControlPanel({
   currentLevel,
@@ -18,7 +18,7 @@ function ControlPanel({
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
-  openInfoOverlay,
+  openWelcomeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
@@ -32,7 +32,7 @@ function ControlPanel({
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedLevels: (numCompletedLevels: number) => void;
-  openInfoOverlay: () => void;
+  openWelcomeOverlay: () => void;
 }) {
   function getDefencesConfigure() {
     return defences.filter((defence) => {
@@ -56,11 +56,6 @@ function ControlPanel({
 
   return (
     <div className="control-panel">
-      <ShortMissionInfoButton
-        currentLevel={currentLevel}
-        openOverlay={openInfoOverlay}
-      />
-
       {/* hide defence box on levels 1 and 2 */}
       {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
         currentLevel === LEVEL_NAMES.SANDBOX) && (
@@ -100,6 +95,12 @@ function ControlPanel({
       )}
       {/* only show document viewer button in sandbox mode */}
       {currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
+      <SwitchModeButton
+        currentLevel={currentLevel}
+        onClick={() => {
+          openWelcomeOverlay();
+        }}
+      />
     </div>
   );
 }

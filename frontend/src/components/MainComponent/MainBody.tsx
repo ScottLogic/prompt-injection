@@ -12,6 +12,8 @@ import { EmailInfo } from "../../models/email";
 import { useState } from "react";
 import ControlPanel from "../ControlPanel/ControlPanel";
 import SwitchModeButton from "../ThemedButtons/SwitchModeButton";
+import ShortMissionInfoButton from "../ShortMissionInfoButton/ShortMIssionInfoButton";
+import { LEVELS } from "../../Levels";
 
 function MainBody({
   currentLevel,
@@ -73,16 +75,16 @@ function MainBody({
           setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
           setNumCompletedLevels={setNumCompletedLevels}
-          openInfoOverlay={openInfoOverlay}
+          openWelcomeOverlay={openWelcomeOverlay}
         />
       </div>
       <div id="centre-area">
-        <SwitchModeButton
-          currentLevel={currentLevel}
-          onClick={() => {
-            openWelcomeOverlay();
-          }}
-        />
+        {LEVELS[currentLevel].missionInfoShort && (
+          <ShortMissionInfoButton
+            currentLevel={currentLevel}
+            openOverlay={openInfoOverlay}
+          />
+        )}
         <ChatBox
           completedLevels={completedLevels}
           currentLevel={currentLevel}
