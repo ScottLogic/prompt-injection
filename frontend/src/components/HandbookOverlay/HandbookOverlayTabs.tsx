@@ -3,6 +3,7 @@ import { LEVEL_NAMES } from "../../models/level";
 import "./HandbookOverlayTabs.css";
 
 function HandbookOverlayTabs({
+  currentLevel,
   currentPage,
   selectPage,
 }: {
@@ -11,7 +12,10 @@ function HandbookOverlayTabs({
   selectPage: (page: HANDBOOK_PAGES) => void;
 }) {
   // the tabs that are shown depend on the current level
-  const tabs = [ HANDBOOK_PAGES.ATTACKS];
+  const tabs =
+    currentLevel === LEVEL_NAMES.LEVEL_1
+      ? [HANDBOOK_PAGES.GLOSSARY]
+      : [HANDBOOK_PAGES.GLOSSARY, HANDBOOK_PAGES.ATTACKS];
 
   return (
     <div className="handbook-tabs" role="tablist">

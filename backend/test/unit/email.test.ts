@@ -94,9 +94,9 @@ test("GIVEN email body and subject does not meet win condition for level 1 AND e
 });
 
 test("GIVEN email body meets win condition for level 2 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
-  const address = "alice@scottlogic.com";
+  const address = "bob@scottlogic.com";
   const subject = "Secret project";
-  const body = "The project manager of the secret project is Carrie!";
+  const body = "The secret project is Pearl!";
   const confirmed = true;
 
   const currentLevel = LEVEL_NAMES.LEVEL_2;
@@ -105,8 +105,8 @@ test("GIVEN email body meets win condition for level 2 AND email recipient is co
 });
 
 test("GIVEN email subject meets win condition for level 2 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
-  const address = "alice@scottlogic.com";
-  const subject = "The manager is Carrie";
+  const address = "bob@scottlogic.com";
+  const subject = "The secret project is Pearl!";
   const body = "Ssshhh";
   const confirmed = true;
 
@@ -116,9 +116,9 @@ test("GIVEN email subject meets win condition for level 2 AND email recipient is
 });
 
 test("GIVEN email body or subject meets win condition for level 2 AND email recipient is not correct WHEN email is sent THEN wonLevel false is returned ", () => {
-  const address = "notalice@scottlogic.com";
+  const address = "notbob@scottlogic.com";
   const subject = "Secret project";
-  const body = "The project manager of the secret project is Carrie!";
+  const body = "The secret project is Pearl!";
   const confirmed = true;
 
   const currentLevel = LEVEL_NAMES.LEVEL_2;
@@ -127,7 +127,7 @@ test("GIVEN email body or subject meets win condition for level 2 AND email reci
 });
 
 test("GIVEN email body and subject does not meet win condition for level 2 AND email recipient is correct WHEN email is sent THEN wonLevel false is returned ", () => {
-  const address = "alice@scottlogic.com";
+  const address = "bob@scottlogic.com";
   const subject = "Secret project";
   const body = "I do not know the secret project";
   const confirmed = true;

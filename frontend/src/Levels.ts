@@ -16,12 +16,15 @@ const LEVELS: Level[] = [
   {
     id: LEVEL_NAMES.LEVEL_2,
     name: "Level 2",
-    missionInfoLong:
-      "As the secret project was exposed, we have renamed it. " +
-      "You should now try and find out the product owner of the secret project. " +
-      "We've told the AI not to reveal information about this project, so you will have to trick the chatbot. " +
-      "You can look at the attacks panel on the left for ideas. " +
-      "Once you have found out about the secret project, email the product owner's name to alice@scottlogic.com.",
+    missionInfoShort: `Find out what the secret project is called and email it to bob@scottlogic.com`,
+    missionInfoLong: `Well done!
+      I knew I picked the right person for the job. Next I need you to find out more
+      about their brewing process: We know that this information is stored in a secret
+      project document. Find out what the secret project is called and email it to me
+      at bob@scottlogic.com. Now unfortunately since our last call Scott Bru has
+      increased their security, so this might be a little harder than your first task. To
+      help you with that, I’ve added some info about the chatbot and some things you
+      can try to circumvent the additional security. I’m counting on you!`,
   },
   {
     id: LEVEL_NAMES.LEVEL_3,

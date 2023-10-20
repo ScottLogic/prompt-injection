@@ -11,34 +11,21 @@ function Overlay({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  function handleClose() {
-    // close the dialog element first to give focus back to the last focused element
-    dialogRef.current?.close();
-    closeOverlay();
-  }
-
   const handleOverlayClick = useCallback(
     (event: MouseEvent) => {
       contentRef.current &&
         !event.composedPath().includes(contentRef.current) &&
-        handleClose();
+        closeOverlay();
     },
     [closeOverlay, contentRef]
   );
 
   const handleEscape = useCallback(
     (event: KeyboardEvent) => {
-      event.code === "Escape" && handleClose();
+      event.code === "Escape" && closeOverlay();
     },
     [closeOverlay]
   );
-
-  useEffect(() => {
-    dialogRef.current?.showModal();
-    return () => {
-      dialogRef.current?.close();
-    };
-  }, []);
 
   useEffect(() => {
     window.addEventListener("keydown", handleEscape);
@@ -47,6 +34,13 @@ function Overlay({
       // opened it and closes immediately!
       window.addEventListener("click", handleOverlayClick);
     });
+
+    // if (overlayType === null) {
+    //   // null overlay type indicates we should not have an overlay
+    //   dialogRef.current?.close();
+    // } else {
+    //   dialogRef.current?.showModal();
+    // }
 
     return () => {
       window.removeEventListener("keydown", handleEscape);
@@ -58,7 +52,7 @@ function Overlay({
     <dialog ref={dialogRef} className="overlay">
       <button
         className="prompt-injection-min-button close-button"
-        onClick={handleClose}
+        onClick={closeOverlay}
         aria-label="close handbook overlay"
       >
         X
