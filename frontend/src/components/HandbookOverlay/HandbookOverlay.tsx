@@ -5,6 +5,7 @@ import HandbookAttacks from "./HandbookAttacks";
 import HandbookOverlayTabs from "./HandbookOverlayTabs";
 import { HANDBOOK_PAGES, handbookPageNames } from "../../models/handbook";
 import "./HandbookOverlay.css";
+import HandbookGlossary from "./HandbookGlossary";
 
 function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   const [selectedPage, setSelectedPage] = useState<HANDBOOK_PAGES>(
@@ -16,6 +17,7 @@ function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
       <MissionInformation currentLevel={currentLevel} />
     ),
     [HANDBOOK_PAGES.ATTACKS]: <HandbookAttacks currentLevel={currentLevel} />,
+    [HANDBOOK_PAGES.GLOSSARY]: <HandbookGlossary />,
   }[selectedPage];
 
   return (
