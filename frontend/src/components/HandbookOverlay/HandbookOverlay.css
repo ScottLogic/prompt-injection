@@ -7,6 +7,5 @@
 
 .handbook-overlay .content {
   flex: 0 1 auto;
-  text-align: left;
   overflow-y: auto;
 }
