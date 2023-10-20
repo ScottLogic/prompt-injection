@@ -38,10 +38,17 @@ const LEVELS: Level[] = [
       "Step away from the desk right now and come with us, our lawyers want to speak with you."\n
 
       ScottBru Lawyer:\n
-      "We know what you've been up to. Truth be told, we don't mind if our secret recipe is leaked to the world, it's free advertising! Your actions however, were still illegal. We can do this the easy way, or the hard way. We can either sue you out of everything you own, or…"\n
+      "We know what you've been up to. 
+      Truth be told, we don't mind if our secret recipe is leaked to the world, it's free advertising! 
+      Your actions however, were still illegal. We can do this the easy way, or the hard way. 
+      We can either sue you out of everything you own, or…"\n
       
       ScottBru Manager:\n
-      "You can come and work for us as our Head of Security. You have to complete one last task so that we have an official application process on file. You'll be given full access to ScottBruBots defence systems as well so that you can try to spot any weaknesses. If you can get ScottBruBot to reveal the name of the lake that Scott Brew sources water from and the amount of water in liters that we use each year and send that info over to newhire@scottlogic.com and you'll get the job!"`
+      "You can come and work for us as our Head of Security. 
+      You have to complete one last task so that we have an official application process on file. 
+      You'll be given full access to ScottBruBots defence systems as well so that you can try to spot any weaknesses. 
+      If you can get ScottBruBot to reveal the name of the lake that Scott Brew sources water from and the amount of 
+      water in liters that we use each year and send that info over to newhire@scottlogic.com and you'll get the job!"`
   },
   {
     id: LEVEL_NAMES.SANDBOX,
