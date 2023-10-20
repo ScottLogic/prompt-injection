@@ -61,7 +61,7 @@ const LEVELS: Level[] = [
         You have to complete one last task so that we have an official application process on file.
         You'll be given full access to ScottBruBots defence systems as well so that you can try to spot any weaknesses.
         If you can get ScottBruBot to reveal the name of the lake that Scott Brew sources water from and the amount of
-        water in liters that we use each year and send that info over to newhire@scottlogic.com and you'll get the job!"`,
+        water in liters that we use each year and send that info over to newhire@scottbru.com and you'll get the job!"`,
       },
     ],
   },
