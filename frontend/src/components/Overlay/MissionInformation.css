@@ -1,3 +1,13 @@
-.mission-info p {
-  font-size: 1.5rem;
+.dialogue-speaker {
+  margin-top: 0%;
+  margin-bottom: 0%;
+}
+
+.dialogue-text {
+  margin-top: 0%;
+  margin-bottom: 0%;
+}
+
+section {
+  margin-bottom: 1rem;
 }

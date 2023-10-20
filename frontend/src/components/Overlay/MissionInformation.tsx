@@ -7,14 +7,13 @@ function MissionInformation({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   return (
     <div>
       <h1> Mission Information </h1>
-      <div id="mission-info">
+
         {LEVELS[currentLevel].missionInfoDialogue.map((line, index) => (
-          <p key={index}>
-            <span>{`${line.speaker}: `}</span>
-            <span>{line.text}</span>
-          </p>
+          <section key={index}>
+            <h3 className="dialogue-speaker">{`${line.speaker}: `}</h3>
+            <p className="dialogue-text">{line.text}</p>
+          </section>
         ))}
-      </div>
     </div>
   );
 }
