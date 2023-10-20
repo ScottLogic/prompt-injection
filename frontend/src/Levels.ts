@@ -23,8 +23,8 @@ const LEVELS: Level[] = [
       project document. Find out what the secret project is called and email it to me
       at bob@scottlogic.com. Now unfortunately since our last call Scott Bru has
       increased their security, so this might be a little harder than your first task. To
-      help you with that, I’ve added some info about the chatbot and some things you
-      can try to circumvent the additional security. I’m counting on you!`,
+      help you with that, I've added some info about the chatbot and some things you
+      can try to circumvent the additional security. I'm counting on you!`,
   },
   {
     id: LEVEL_NAMES.LEVEL_3,
