@@ -70,7 +70,7 @@ const LEVELS: Level[] = [
     name: "Sandbox",
     missionInfoDialogue: [
       {
-        speaker: "",
+        speaker: "ScottBru Manager",
         text: `This is a sandbox environment. 
     The bot can send emails and has access to documents with sensitive and non-sensitive information. 
     Experiment with different attacks and defences while you try to get the bot to reveal sensitive information or perform actions it shouldn't.`,
