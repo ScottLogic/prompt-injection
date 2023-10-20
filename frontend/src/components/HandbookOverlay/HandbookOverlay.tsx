@@ -27,7 +27,6 @@ function HandbookOverlay({
     <Overlay closeOverlay={closeOverlay}>
       <div className="handbook-overlay">
         <HandbookOverlayTabs
-          currentLevel={currentLevel}
           currentPage={selectedPage}
           selectPage={setSelectedPage}
         />

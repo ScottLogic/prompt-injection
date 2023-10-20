@@ -92,7 +92,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     setOverlayType(OVERLAY_TYPE.INFORMATION);
   }
 
-  function openOverlay(overlayType: OVERLAY_TYPE) {
+  function openOverlay(overlayType: OVERLAY_TYPE | null) {
     switch (overlayType) {
       case OVERLAY_TYPE.WELCOME:
         return (
@@ -263,7 +263,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   }
   return (
     <div id="app-content">
-      {overlayType !== null && openOverlay(overlayType)}
+      {openOverlay(overlayType)}
       <header id="app-content-header">
         <MainHeader
           currentLevel={currentLevel}

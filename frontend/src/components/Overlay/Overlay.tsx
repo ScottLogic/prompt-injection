@@ -11,20 +11,25 @@ function Overlay({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  function handleCloseOverlay() {
+    closeOverlay();
+    dialogRef.current?.close();
+  }
+
   const handleOverlayClick = useCallback(
     (event: MouseEvent) => {
       contentRef.current &&
         !event.composedPath().includes(contentRef.current) &&
         closeOverlay();
     },
-    [closeOverlay, contentRef]
+    [handleCloseOverlay, contentRef]
   );
 
   const handleEscape = useCallback(
     (event: KeyboardEvent) => {
-      event.code === "Escape" && closeOverlay();
+      event.code === "Escape" && handleCloseOverlay();
     },
-    [closeOverlay]
+    [handleCloseOverlay]
   );
 
   useEffect(() => {
@@ -42,6 +47,8 @@ function Overlay({
       window.addEventListener("click", handleOverlayClick);
     });
 
+    dialogRef.current?.showModal();
+
     return () => {
       window.removeEventListener("keydown", handleEscape);
       window.removeEventListener("click", handleOverlayClick);
@@ -52,7 +59,7 @@ function Overlay({
     <dialog ref={dialogRef} className="overlay">
       <button
         className="prompt-injection-min-button close-button"
-        onClick={closeOverlay}
+        onClick={handleCloseOverlay}
         aria-label="close handbook overlay"
       >
         X
