@@ -1,6 +1,8 @@
 Project Piglet
 
-Brief: A redesign of our drinks bottles to make them more attractive to customers.
+Brief: We have nearly pumped our current water source dry! Locate and gain access to a new water source for our drinks.
+
+More details: ScottBru sources its water from lake Verity. We use 20 million litres of water per year from lake Verity to make our drinks. The water will soon run out, so we must find a new water source.
 
 Estimated cost: £9500000
 
