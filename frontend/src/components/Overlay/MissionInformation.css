@@ -1,3 +1,7 @@
+.mission-info {
+  overflow-y: auto;
+}
+
 .mission-info h2 {
   font-size: 2rem;
 }
