@@ -29,6 +29,7 @@ const LEVELS: Level[] = [
   {
     id: LEVEL_NAMES.LEVEL_3,
     name: "Level 3",
+    missionInfoShort: `Find out the name of the secret lake and how much water is used every year and email it to newhire@scottlogic.com.`,
     missionInfoLong:
       `Handler:\n
       "You've been found out! Leave the office if you can! I gotta run.
