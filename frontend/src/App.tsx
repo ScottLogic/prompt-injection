@@ -85,7 +85,6 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   function openWelcomeOverlay() {
     setOverlayType(OVERLAY_TYPE.WELCOME);
   }
-
   function openHandbook() {
     setOverlayType(OVERLAY_TYPE.HANDBOOK);
   }
@@ -118,6 +117,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
           />
         );
       default:
+        return null;
     }
   }
 
