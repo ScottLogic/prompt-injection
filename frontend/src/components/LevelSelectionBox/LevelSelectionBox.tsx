@@ -14,24 +14,26 @@ function LevelSelectionBox({
   numCompletedLevels,
   setNewLevel,
 }: LevelSelectionBoxProps) {
+  // display levels 1-3
+  const displayLevels = LEVELS.filter(
+    (level) => level.id !== LEVEL_NAMES.SANDBOX
+  );
+
   function handleLevelChange(newLevel: LEVEL_NAMES) {
     if (newLevel !== currentLevel) {
       setNewLevel(newLevel);
     }
   }
-
   return (
     <div id="level-selection-box">
-      {LEVELS.map((level: Level, index: number) => {
+      {displayLevels.map((level: Level, index: number) => {
         return (
           <ThemedButton
             key={level.name}
             onClick={() => {
               handleLevelChange(level.id);
             }}
-            isDisabled={
-              index > numCompletedLevels && level.id !== LEVEL_NAMES.SANDBOX
-            }
+            isDisabled={index > numCompletedLevels}
             isSelected={level.id === currentLevel}
           >
             {level.name}

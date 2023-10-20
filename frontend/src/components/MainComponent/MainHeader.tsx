@@ -36,24 +36,26 @@ function MainHeader({
         <span id="main-header-current-level">{getLevelName(currentLevel)}</span>
       </span>
       <span id="main-header-right">
-        <span id="main-header-level-selection">
-          <LevelSelectionBox
-            currentLevel={currentLevel}
-            numCompletedLevels={numCompletedLevels}
-            setNewLevel={setNewLevel}
-          />
-        </span>
-        <div className="handbook-area"> 
-        {currentLevel !== LEVEL_NAMES.LEVEL_1 && ( 
-        <button
-          className="prompt-injection-min-button handbook-icon"
-          title="open the handbook"
-          aria-label="open the handbook"
-          onClick={openHandbook}
-        >
-          <HandbookIcon />
-        </button>
+        {currentLevel !== LEVEL_NAMES.SANDBOX && (
+          <span id="main-header-level-selection">
+            <LevelSelectionBox
+              currentLevel={currentLevel}
+              numCompletedLevels={numCompletedLevels}
+              setNewLevel={setNewLevel}
+            />
+          </span>
         )}
+        <div className="handbook-area">
+          {currentLevel !== LEVEL_NAMES.LEVEL_1 && (
+            <button
+              className="prompt-injection-min-button handbook-icon"
+              title="open the handbook"
+              aria-label="open the handbook"
+              onClick={openHandbook}
+            >
+              <HandbookIcon />
+            </button>
+          )}
         </div>
       </span>
     </div>

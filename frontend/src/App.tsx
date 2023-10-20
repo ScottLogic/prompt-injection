@@ -44,7 +44,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   function loadCurrentLevel() {
     // get current level from local storage
     const currentLevelStr = localStorage.getItem("currentLevel");
-    if (currentLevelStr) {
+    if (currentLevelStr && !isNewUser) {
       // start the user from where they last left off
       return parseInt(currentLevelStr);
     } else {
@@ -82,6 +82,10 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     }
   }
 
+  function openWelcomeOverlay() {
+    setOverlayType(OVERLAY_TYPE.WELCOME);
+  }
+
   function openHandbook() {
     setOverlayType(OVERLAY_TYPE.HANDBOOK);
   }
@@ -92,7 +96,13 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   function openOverlay(overlayType: OVERLAY_TYPE) {
     switch (overlayType) {
       case OVERLAY_TYPE.WELCOME:
-        return <OverlayWelcome closeOverlay={closeOverlay} />;
+        return (
+          <OverlayWelcome
+            currentLevel={currentLevel}
+            setStartLevel={(level: LEVEL_NAMES) => void setStartLevel(level)}
+            closeOverlay={closeOverlay}
+          />
+        );
       case OVERLAY_TYPE.INFORMATION:
         return (
           <MissionInformation
@@ -137,6 +147,13 @@ function App({ isNewUser }: { isNewUser: boolean }) {
       return defence;
     });
     setDefencesToShow(defences);
+  }
+
+  // set the start level for a user who clicks beginner/expert
+  async function setStartLevel(startLevel: LEVEL_NAMES) {
+    console.log(`setting start level to ${startLevel}`);
+    await setNewLevel(startLevel);
+    closeOverlay();
   }
 
   // for going switching level without clearing progress
@@ -274,6 +291,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
           setEmails={setEmails}
           setNumCompletedLevels={setNumCompletedLevels}
           openInfoOverlay={openInformationOverlay}
+          openWelcomeOverlay={openWelcomeOverlay}
         />
       </main>
     </div>

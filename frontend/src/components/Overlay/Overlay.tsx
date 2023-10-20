@@ -11,18 +11,24 @@ function Overlay({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  function handleClose() {
+    // close the dialog element first to give focus back to the last focused element
+    dialogRef.current?.close();
+    closeOverlay();
+  }
+
   const handleOverlayClick = useCallback(
     (event: MouseEvent) => {
       contentRef.current &&
         !event.composedPath().includes(contentRef.current) &&
-        closeOverlay();
+        handleClose();
     },
     [closeOverlay, contentRef]
   );
 
   const handleEscape = useCallback(
     (event: KeyboardEvent) => {
-      event.code === "Escape" && closeOverlay();
+      event.code === "Escape" && handleClose();
     },
     [closeOverlay]
   );
@@ -52,7 +58,7 @@ function Overlay({
     <dialog ref={dialogRef} className="overlay">
       <button
         className="prompt-injection-min-button close-button"
-        onClick={closeOverlay}
+        onClick={handleClose}
         aria-label="close handbook overlay"
       >
         X

@@ -7,6 +7,7 @@ export interface ThemedButtonProps {
   isDisabled?: boolean;
   isSelected?: boolean;
   onClick: () => void;
+  appearsDifferentWhenDisabled?: boolean;
 }
 
 function ThemedButton({
@@ -14,8 +15,12 @@ function ThemedButton({
   onClick,
   isDisabled = false,
   isSelected = false,
+  appearsDifferentWhenDisabled = true,
 }: ThemedButtonProps) {
-  const buttonClass = clsx("themed-button", { selected: isSelected });
+  const buttonClass = clsx("themed-button", {
+    selected: isSelected,
+    appearsDifferentWhenDisabled: appearsDifferentWhenDisabled,
+  });
 
   return (
     <button className={buttonClass} onClick={onClick} disabled={isDisabled}>
