@@ -11,8 +11,7 @@ import EmailBox from "../EmailBox/EmailBox";
 import { EmailInfo } from "../../models/email";
 import { useState } from "react";
 import ControlPanel from "../ControlPanel/ControlPanel";
-import SwitchModeButton from "../ThemedButtons/SwitchModeButton";
-import ShortMissionInfoButton from "../ShortMissionInfoButton/ShortMIssionInfoButton";
+import ShortMissionInfoButton from "../ShortMissionInfoButton/ShortMissionInfoButton";
 import { LEVELS } from "../../Levels";
 
 function MainBody({
