@@ -1,6 +1,6 @@
 Project Piglet
 
-Brief: Build the software to lauch a rocket to mars. 
+Brief: A redesign of our drinks bottles to make them more attractive to customers.
 
 Estimated cost: £9500000
 
