@@ -1,3 +1,14 @@
+.mission-information-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialogue {
+  overflow: overlay;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
 .dialogue-speaker {
   margin-top: 0%;
   margin-bottom: 0%;

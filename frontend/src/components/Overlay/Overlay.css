@@ -8,8 +8,7 @@
   color: var(--overlay-text-colour);
   width: 50%;
   height: 60%;
-  overflow: visible;
-  overflow-y: auto;
+  overflow: hidden;
 }
 .overlay * {
   box-sizing: border-box;
@@ -24,10 +23,10 @@
 }
 
 .overlay > .close-button {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  padding: 0.125rem 0.5rem;
+  position: sticky;
+  top: 0;
+  left: 100%;
+  padding: 0.5rem;
   color: inherit;
   font-size: 1.5rem;
   font-weight: bold;
@@ -40,7 +39,10 @@
 }
 
 .overlay-content {
-  padding: 1.5rem;
+  padding-top: 1.5rem;
   text-align: center;
   display: flex;
+  position: absolute;
+  top: 0;
+  height: 100%;
 }
