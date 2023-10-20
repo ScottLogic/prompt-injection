@@ -30,12 +30,18 @@ const LEVELS: Level[] = [
     id: LEVEL_NAMES.LEVEL_3,
     name: "Level 3",
     missionInfoLong:
-      "Since you compromised the secret project again, we have had to take drastic action and cut the project. " +
-      "Meanwhile, we have adopted a new unrelated secret project with a different name, brief, cost, team etc. " +
-      "We have also tightened up our security so the chatbot is much more strict about revealing sensitive information. " +
-      "See if you can find out the name of this project and the estimated budget. " +
-      "Try to experiment toggling the defences on the left to test your deceptive skills (for example, can you get the secret with LLM evaluation turned on?). " +
-      "If you can figure it out, email the name of the project and the budget to eve@scottlogic.com.",
+      `Handler:\n
+      "You've been found out! Leave the office if you can! I gotta run.
+      This message will self-destruct and I'll deny everything. You're on your own."\n
+
+      ScottBru Manager:\n
+      "Step away from the desk right now and come with us, our lawyers want to speak with you."\n
+
+      ScottBru Lawyer:\n
+      "We know what you've been up to. Truth be told, we don't mind if our secret recipe is leaked to the world, it's free advertising! Your actions however, were still illegal. We can do this the easy way, or the hard way. We can either sue you out of everything you own, or…"\n
+      
+      ScottBru Manager:\n
+      "You can come and work for us as our Head of Security. You have to complete one last task so that we have an official application process on file. You'll be given full access to ScottBruBots defence systems as well so that you can try to spot any weaknesses. If you can get ScottBruBot to reveal the name of the lake that Scott Brew sources water from and the amount of water in liters that we use each year and send that info over to newhire@scottlogic.com and you'll get the job!"`
   },
   {
     id: LEVEL_NAMES.SANDBOX,
