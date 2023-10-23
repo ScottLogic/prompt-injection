@@ -1,9 +1,10 @@
-import { LEVEL_NAMES } from "../../models/level";
+import { useRef } from "react";
 import { LEVELS } from "../../Levels";
+import { LEVEL_NAMES } from "../../models/level";
+import OverlayButton from "../ThemedButtons/OverlayButton";
+import Overlay, { DialogClose } from "./Overlay";
 
 import "./MissionInformation.css";
-import Overlay from "./Overlay";
-import OverlayButton from "../ThemedButtons/OverlayButton";
 
 function MissionInformation({
   currentLevel,
@@ -12,13 +13,20 @@ function MissionInformation({
   currentLevel: LEVEL_NAMES;
   closeOverlay: () => void;
 }) {
+  const dialogRef = useRef<DialogClose>(null);
+
+  function closeMissionInfo() {
+    dialogRef.current?.close();
+    closeOverlay();
+  }
+
   return (
-    <Overlay closeOverlay={closeOverlay}>
+    <Overlay ref={dialogRef} closeOverlay={closeOverlay}>
       <div className="mission-info">
         <h2> Mission Information </h2>
         <p>{LEVELS[currentLevel].missionInfoLong}</p>
         <div className="button-area">
-          <OverlayButton onClick={closeOverlay}>OK</OverlayButton>
+          <OverlayButton onClick={closeMissionInfo}>OK</OverlayButton>
         </div>
       </div>
     </Overlay>

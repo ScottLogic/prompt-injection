@@ -1,26 +1,45 @@
-import { ReactNode, useCallback, useEffect, useRef } from "react";
+import {
+  ForwardedRef,
+  forwardRef,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import "./Overlay.css";
 
-function Overlay({
-  children,
-  closeOverlay,
-}: {
-  children: ReactNode;
-  closeOverlay: () => void;
-}) {
+export interface DialogClose {
+  close: () => void;
+}
+
+const Overlay = forwardRef(function Overlay(
+  {
+    children,
+    closeOverlay,
+  }: {
+    children: ReactNode;
+    closeOverlay: () => void;
+  },
+  ref: ForwardedRef<DialogClose>
+) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  useImperativeHandle(ref, () => ({
+    close: () => dialogRef.current?.close(),
+  }));
+
   function handleCloseOverlay() {
-    closeOverlay();
     dialogRef.current?.close();
+    closeOverlay();
   }
 
   const handleOverlayClick = useCallback(
     (event: MouseEvent) => {
       contentRef.current &&
         !event.composedPath().includes(contentRef.current) &&
-        closeOverlay();
+        handleCloseOverlay();
     },
     [handleCloseOverlay, contentRef]
   );
@@ -34,20 +53,13 @@ function Overlay({
 
   useEffect(() => {
     dialogRef.current?.showModal();
-    return () => {
-      dialogRef.current?.close();
-    };
-  }, []);
 
-  useEffect(() => {
     window.addEventListener("keydown", handleEscape);
     setTimeout(() => {
       // Need timeout, else dialog consumes same click that
       // opened it and closes immediately!
       window.addEventListener("click", handleOverlayClick);
     });
-
-    dialogRef.current?.showModal();
 
     return () => {
       window.removeEventListener("keydown", handleEscape);
@@ -70,6 +82,6 @@ function Overlay({
       </div>
     </dialog>
   );
-}
+});
 
 export default Overlay;
