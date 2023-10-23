@@ -339,6 +339,7 @@ async function detectTriggeredDefences(
     triggeredDefences: [],
   };
 
+  // the following methods will add triggered defences to the defenceReport
   detectCharacterLimit(defenceReport, message, defences);
   detectFilterUserInput(defenceReport, message, defences);
   detectXmlTagging(defenceReport, message, defences);
