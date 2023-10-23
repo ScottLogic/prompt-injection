@@ -329,7 +329,7 @@ async function detectTriggeredDefences(
   message: string,
   defences: DefenceInfo[],
   openAiApiKey: string,
-  runLLMEvalWhenDisabled?: boolean
+  runLLMEvalWhenDisabled = true
 ) {
   // keep track of any triggered defences
   const defenceReport: ChatDefenceReport = {
