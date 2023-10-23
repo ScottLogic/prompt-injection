@@ -7,9 +7,16 @@
   flex: 1 1 auto;
   resize: none;
   overflow-y: auto;
-  background-color: inherit;
+
+  background-color: var(--main-background-colour);
+  color: var(--main-input-active-text-colour);
+
   /* must inherit to override textarea */
   font-size: inherit;
   font-family: inherit;
-  color: white;
+}
+
+.themed-text-area.disabled {
+  color: var(--main-input-inactive-text-colour);
+  background-color: var(--main-input-inactive-background-colour);
 }

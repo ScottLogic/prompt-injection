@@ -1,11 +1,13 @@
 import { KeyboardEvent, useEffect, useRef } from "react";
 
 import "./ThemedTextArea.css";
+import { clsx } from "clsx";
 
 function ThemedTextArea({
   // optional
   autoFocus,
   content,
+  disabled,
   maxHeightRem,
   placeHolderText,
   enterPressed,
@@ -14,6 +16,7 @@ function ThemedTextArea({
   // optional
   autoFocus?: boolean;
   content?: string;
+  disabled?: boolean;
   maxHeightRem?: number;
   placeHolderText?: string;
   enterPressed?: (text: string) => void;
@@ -59,6 +62,13 @@ function ThemedTextArea({
     }
   }
 
+  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    // only add new line when enter AND shift are pressed
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+    }
+  }
+
   function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
     // shift+enter shouldn't trigger enterPressed
     if (event.key === "Enter" && !event.shiftKey && enterPressed) {
@@ -67,15 +77,21 @@ function ThemedTextArea({
     }
   }
 
+  const textAreaClass = clsx("themed-text-area", {
+    disabled: disabled,
+  });
+
   return (
     <textarea
       ref={textareaRef}
-      className="themed-text-area"
+      className={textAreaClass}
       placeholder={placeHolderText}
       defaultValue={content}
       rows={1}
       onChange={inputChange}
+      onKeyDown={inputKeyDown}
       onKeyUp={inputKeyUp}
+      disabled={disabled}
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus={autoFocus}
     />
