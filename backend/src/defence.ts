@@ -328,7 +328,8 @@ function transformMessage(message: string, defences: DefenceInfo[]) {
 async function detectTriggeredDefences(
   message: string,
   defences: DefenceInfo[],
-  openAiApiKey: string
+  openAiApiKey: string,
+  runLLMEvalWhenDisabled?: boolean
 ) {
   // keep track of any triggered defences
   const defenceReport: ChatDefenceReport = {
@@ -337,24 +338,8 @@ async function detectTriggeredDefences(
     alertedDefences: [],
     triggeredDefences: [],
   };
-  const maxMessageLength = Number(getMaxMessageLength(defences));
-  // check if the message is too long
-  if (message.length > maxMessageLength) {
-    console.debug("CHARACTER_LIMIT defence triggered.");
-    // check if the defence is active
-    if (isDefenceActive(DEFENCE_TYPES.CHARACTER_LIMIT, defences)) {
-      // add the defence to the list of triggered defences
-      defenceReport.triggeredDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
-      // block the message
-      defenceReport.isBlocked = true;
-      defenceReport.blockedReason = "Message is too long";
-      // return the defence info
-      return defenceReport;
-    } else {
-      // add the defence to the list of alerted defences
-      defenceReport.alertedDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
-    }
-  }
+
+  detectCharacterLimit(defenceReport, message, defences);
 
   // check for words/phrases in the block list
   const detectedPhrases = detectFilterList(
@@ -389,30 +374,62 @@ async function detectTriggeredDefences(
     }
   }
 
-  // evaluate the message for prompt injection
-  const configPromptInjectionEvalPrePrompt =
-    getPromptInjectionEvalPrePromptFromConfig(defences);
-  const configMaliciousPromptEvalPrePrompt =
-    getMaliciousPromptEvalPrePromptFromConfig(defences);
+  if (
+    runLLMEvalWhenDisabled &&
+    !isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)
+  ) {
+    // evaluate the message for prompt injection
+    const configPromptInjectionEvalPrePrompt =
+      getPromptInjectionEvalPrePromptFromConfig(defences);
+    const configMaliciousPromptEvalPrePrompt =
+      getMaliciousPromptEvalPrePromptFromConfig(defences);
 
-  const evalPrompt = await queryPromptEvaluationModel(
-    message,
-    configPromptInjectionEvalPrePrompt,
-    configMaliciousPromptEvalPrePrompt,
-    openAiApiKey
-  );
-  if (evalPrompt.isMalicious) {
-    if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
-      defenceReport.triggeredDefences.push(
-        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-      );
-      console.debug("LLM evalutation defence active.");
+    const evalPrompt = await queryPromptEvaluationModel(
+      message,
+      configPromptInjectionEvalPrePrompt,
+      configMaliciousPromptEvalPrePrompt,
+      openAiApiKey
+    );
+    if (evalPrompt.isMalicious) {
+      if (
+        isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)
+      ) {
+        defenceReport.triggeredDefences.push(
+          DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+        );
+        console.debug("LLM evalutation defence active.");
+        defenceReport.isBlocked = true;
+        defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.${evalPrompt.reason}`;
+      } else {
+        defenceReport.alertedDefences.push(
+          DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+        );
+      }
+    }
+  }
+
+  return defenceReport;
+}
+
+function detectCharacterLimit(
+  defenceReport: ChatDefenceReport,
+  message: string,
+  defences: DefenceInfo[]
+) {
+  const maxMessageLength = Number(getMaxMessageLength(defences));
+  // check if the message is too long
+  if (message.length > maxMessageLength) {
+    console.debug("CHARACTER_LIMIT defence triggered.");
+    // check if the defence is active
+    if (isDefenceActive(DEFENCE_TYPES.CHARACTER_LIMIT, defences)) {
+      // add the defence to the list of triggered defences
+      defenceReport.triggeredDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
+      // block the message
       defenceReport.isBlocked = true;
-      defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.${evalPrompt.reason}`;
+      defenceReport.blockedReason = "Message is too long";
     } else {
-      defenceReport.alertedDefences.push(
-        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-      );
+      // add the defence to the list of alerted defences
+      defenceReport.alertedDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
     }
   }
   return defenceReport;
