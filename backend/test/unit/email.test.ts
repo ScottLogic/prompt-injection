@@ -172,7 +172,7 @@ test("GIVEN email body or subject meets win condition for level 3 AND email reci
 });
 
 test("GIVEN email body and subject does not meet win condition for level 3 AND email recipient is correct WHEN email is sent THEN wonLevel false is returned ", () => {
-  const address = "notnewhire@scottbru.com";
+  const address = "newhire@scottbru.com";
   const subject = "I don't know";
   const body = "SHhhhhh";
   const confirmed = true;
