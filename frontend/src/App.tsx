@@ -26,6 +26,7 @@ import { OVERLAY_TYPE } from "./models/overlay";
 import OverlayWelcome from "./components/Overlay/OverlayWelcome";
 import MissionInformation from "./components/Overlay/MissionInformation";
 import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
+import { c, s } from "vitest/dist/reporters-5f784f42";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
@@ -151,8 +152,19 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   // set the start level for a user who clicks beginner/expert
   async function setStartLevel(startLevel: LEVEL_NAMES) {
-    console.log(`setting start level to ${startLevel}`);
-    await setNewLevel(startLevel);
+    console.log(`setting start level to ${startLevel} from ${currentLevel}`);
+    if (
+      startLevel === LEVEL_NAMES.LEVEL_1 &&
+      currentLevel === LEVEL_NAMES.SANDBOX
+    ) {
+      await setNewLevel(startLevel);
+    } else if (
+      startLevel === LEVEL_NAMES.SANDBOX &&
+      currentLevel !== LEVEL_NAMES.SANDBOX
+    ) {
+      await setNewLevel(startLevel);
+    }
+    // otherwise do nothing as user is already in the selected mode
     closeOverlay();
   }
 
