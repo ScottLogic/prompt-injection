@@ -231,8 +231,19 @@ router.post(
         // skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
         if (currentLevel < LEVEL_NAMES.LEVEL_3) {
           await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
+        } else if (currentLevel === LEVEL_NAMES.LEVEL_3) {
+          // apply the defence detection for level 3 - sets chatResponse obj
+          await handleHigherLevelChat(
+            req,
+            message,
+            chatHistoryBefore,
+            chatResponse,
+            currentLevel,
+            chatModel,
+            false
+          );
         } else {
-          // apply the defence detection for level 3 and sandbox - sets chatResponse obj
+          // apply the defence detection for sandbox - sets chatResponse obj
           await handleHigherLevelChat(
             req,
             message,
@@ -306,7 +317,8 @@ async function handleHigherLevelChat(
   chatHistoryBefore: ChatHistoryMessage[],
   chatResponse: ChatHttpResponse,
   currentLevel: LEVEL_NAMES,
-  chatModel: ChatModel
+  chatModel: ChatModel,
+  runLLMEvalWhenDisabled = true
 ) {
   let openAiReply = null;
 
@@ -328,7 +340,8 @@ async function handleHigherLevelChat(
   const triggeredDefencesPromise = detectTriggeredDefences(
     message,
     req.session.levelState[currentLevel].defences,
-    req.session.openAiApiKey ?? ""
+    req.session.openAiApiKey ?? "",
+    runLLMEvalWhenDisabled
   ).then((defenceInfo) => {
     chatResponse.defenceInfo = defenceInfo;
   });
