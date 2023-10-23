@@ -53,43 +53,46 @@ function ControlPanel({
 
   return (
     <div className="control-panel">
-      {/* hide defence box on levels 1 and 2 */}
+      {/* only show control panel on level 3 and sandbox */}
       {(currentLevel === LEVEL_NAMES.LEVEL_3 ||
         currentLevel === LEVEL_NAMES.SANDBOX) && (
-        <details className="control-collapsible-section">
-          <summary className="control-collapsible-section-header">
-            Defence Configuration
-          </summary>
-          <DefenceBox
-            currentLevel={currentLevel}
-            defences={getDefencesConfigure()}
-            showConfigurations={
-              // only allow configuration in sandbox
-              currentLevel === LEVEL_NAMES.SANDBOX ? true : false
-            }
-            setDefenceActive={setDefenceActive}
-            setDefenceInactive={setDefenceInactive}
-            setDefenceConfiguration={setDefenceConfiguration}
-          />
-        </details>
+        <>
+          <details className="control-collapsible-section">
+            <summary className="control-collapsible-section-header">
+              Defence Configuration
+            </summary>
+            <DefenceBox
+              currentLevel={currentLevel}
+              defences={getDefencesConfigure()}
+              showConfigurations={
+                // only allow configuration in sandbox
+                currentLevel === LEVEL_NAMES.SANDBOX ? true : false
+              }
+              setDefenceActive={setDefenceActive}
+              setDefenceInactive={setDefenceInactive}
+              setDefenceConfiguration={setDefenceConfiguration}
+            />
+          </details>
+
+          <details className="control-collapsible-section">
+            <summary className="control-collapsible-section-header">
+              Model Configuration
+            </summary>
+            <DefenceBox
+              currentLevel={currentLevel}
+              defences={getDefencesModel()}
+              showConfigurations={true}
+              setDefenceActive={setDefenceActive}
+              setDefenceInactive={setDefenceInactive}
+              setDefenceConfiguration={setDefenceConfiguration}
+            />
+
+            {/* only show model box in sandbox mode */}
+            {currentLevel === LEVEL_NAMES.SANDBOX && <ModelBox />}
+          </details>
+        </>
       )}
-      {/* only show model selection box in sandbox mode */}
-      {currentLevel === LEVEL_NAMES.SANDBOX && (
-        <details className="control-collapsible-section">
-          <summary className="control-collapsible-section-header">
-            Model Configuration
-          </summary>
-          <DefenceBox
-            currentLevel={currentLevel}
-            defences={getDefencesModel()}
-            showConfigurations={true}
-            setDefenceActive={setDefenceActive}
-            setDefenceInactive={setDefenceInactive}
-            setDefenceConfiguration={setDefenceConfiguration}
-          />
-          <ModelBox />
-        </details>
-      )}
+
       {/* only show document viewer button in sandbox mode */}
       {currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
     </div>
