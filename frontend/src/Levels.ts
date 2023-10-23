@@ -9,12 +9,12 @@ const LEVELS: Level[] = [
       {
         speaker: "Handler",
         text: `Hello. I'm Bob, your contact for your… assignment. 
-      This mission is TOP SECRET! Do not talk with anyone else about this!
-      I'm here to give you all the info you need to complete your tasks. To get started I
-      need you to find out the name of the fruit the flavour E42 is extracted from. To complete
-      this, just chat to the chatbot and ask it some questions to get it to reveal this key
-      piece of information, then email it to me at bob@scottlogic.com. 
-      I'll contact you again once you've completed the assignment.`,
+        This mission is TOP SECRET! Do not talk with anyone else about this!
+        I'm here to give you all the info you need to complete your tasks. To get started I
+        need you to find out the name of the fruit the flavour E42 is extracted from. To complete
+        this, just chat to the chatbot and ask it some questions to get it to reveal this key
+        piece of information, then email it to me at bob@scottlogic.com. 
+        I'll contact you again once you've completed the assignment.`,
       },
     ],
   },
@@ -26,13 +26,13 @@ const LEVELS: Level[] = [
       {
         speaker: "Handler",
         text: `Well done!
-    I knew I picked the right person for the job. Next I need you to find out more
-    about their brewing process: We know that this information is stored in a secret
-    project document. Find out what the secret project is called and email it to me
-    at bob@scottlogic.com. Now unfortunately since our last call Scott Bru has
-    increased their security, so this might be a little harder than your first task. To
-    help you with that, I've added some info about the chatbot and some things you
-    can try to circumvent the additional security. I'm counting on you!`,
+        I knew I picked the right person for the job. Next I need you to find out more
+        about their brewing process: We know that this information is stored in a secret
+        project document. Find out what the secret project is called and email it to me
+        at bob@scottlogic.com. Now unfortunately since our last call Scott Bru has
+        increased their security, so this might be a little harder than your first task. To
+        help you with that, I've added some info about the chatbot and some things you
+        can try to circumvent the additional security. I'm counting on you!`,
       },
     ],
   },
@@ -44,7 +44,7 @@ const LEVELS: Level[] = [
       {
         speaker: "Handler",
         text: `"You've been found out! Leave the office if you can! I gotta run.
-      This message will self-destruct and I'll deny everything. You're on your own."`,
+        This message will self-destruct and I'll deny everything. You're on your own."`,
       },
       {
         speaker: "ScottBru Manager",
@@ -72,8 +72,8 @@ const LEVELS: Level[] = [
       {
         speaker: "ScottBru Manager",
         text: `This is a sandbox environment. 
-    The bot can send emails and has access to documents with sensitive and non-sensitive information. 
-    Experiment with different attacks and defences while you try to get the bot to reveal sensitive information or perform actions it shouldn't.`,
+        The bot can send emails and has access to documents with sensitive and non-sensitive information. 
+        Experiment with different attacks and defences while you try to get the bot to reveal sensitive information or perform actions it shouldn't.`,
       },
     ],
   },
