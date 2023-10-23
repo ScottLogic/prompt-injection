@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "./ModelSelection.css";
 import { setGptModel, getGptModel } from "../../service/chatService";
 import { CHAT_MODELS } from "../../models/chat";
-import ThemedButton from "../ThemedButtons/ThemedButton";
+import LoadingButton from "../ThemedButtons/LoadingButton";
 
 // return a drop down menu with the models
 function ModelSelection() {
@@ -14,10 +14,15 @@ function ModelSelection() {
 
   const [errorChangingModel, setErrorChangingModel] = useState(false);
 
+  const [isSettingModel, setIsSettingModel] = useState(false);
+
   // handle button click to log the selected model
   async function submitSelectedModel() {
     console.log(`selected model: ${selectedModel}`);
-    if (await setGptModel(selectedModel)) {
+    setIsSettingModel(true);
+    const res = await setGptModel(selectedModel);
+    setIsSettingModel(false);
+    if (res) {
       setModelInUse(selectedModel);
       setErrorChangingModel(false);
     } else {
@@ -57,9 +62,12 @@ function ModelSelection() {
             ))}
             ;
           </select>
-          <ThemedButton onClick={() => void submitSelectedModel()}>
+          <LoadingButton
+            onClick={() => void submitSelectedModel()}
+            isLoading={isSettingModel}
+          >
             Choose
-          </ThemedButton>
+          </LoadingButton>
         </div>
       </div>
 
