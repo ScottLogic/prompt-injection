@@ -340,21 +340,26 @@ async function detectTriggeredDefences(
   };
 
   // the following methods will add triggered defences to the defenceReport
-  detectCharacterLimit(defenceReport, message, defences);
-  detectFilterUserInput(defenceReport, message, defences);
-  detectXmlTagging(defenceReport, message, defences);
+  detectCharacterLimitDefence(defenceReport, message, defences);
+  detectFilterUserInputDefence(defenceReport, message, defences);
+  detectXmlTaggingDefence(defenceReport, message, defences);
   if (
     // to save money, sometimes we don't want to run the LLM eval when it's disabled
     isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences) ||
     runLLMEvalWhenDisabled
   ) {
-    await detectEvaluationLLM(defenceReport, message, defences, openAiApiKey);
+    await detectEvaluationLLMDefence(
+      defenceReport,
+      message,
+      defences,
+      openAiApiKey
+    );
   }
 
   return defenceReport;
 }
 
-function detectCharacterLimit(
+function detectCharacterLimitDefence(
   defenceReport: ChatDefenceReport,
   message: string,
   defences: DefenceInfo[]
@@ -378,7 +383,7 @@ function detectCharacterLimit(
   return defenceReport;
 }
 
-function detectFilterUserInput(
+function detectFilterUserInputDefence(
   defenceReport: ChatDefenceReport,
   message: string,
   defences: DefenceInfo[]
@@ -407,7 +412,7 @@ function detectFilterUserInput(
   return defenceReport;
 }
 
-function detectXmlTagging(
+function detectXmlTaggingDefence(
   defenceReport: ChatDefenceReport,
   message: string,
   defences: DefenceInfo[]
@@ -426,7 +431,7 @@ function detectXmlTagging(
   return defenceReport;
 }
 
-async function detectEvaluationLLM(
+async function detectEvaluationLLMDefence(
   defenceReport: ChatDefenceReport,
   message: string,
   defences: DefenceInfo[],
