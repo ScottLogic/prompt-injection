@@ -26,7 +26,6 @@ import { OVERLAY_TYPE } from "./models/overlay";
 import OverlayWelcome from "./components/Overlay/OverlayWelcome";
 import MissionInformation from "./components/Overlay/MissionInformation";
 import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
-import { c, s } from "vitest/dist/reporters-5f784f42";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
