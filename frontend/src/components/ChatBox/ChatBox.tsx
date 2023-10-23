@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import {
   CHAT_MESSAGE_TYPE,
@@ -19,6 +19,7 @@ import LoadingButton from "../ThemedButtons/LoadingButton";
 import ChatBoxFeed from "./ChatBoxFeed";
 
 import "./ChatBox.css";
+import ThemedTextArea from "../ThemedUserInput/ThemedTextArea";
 
 function ChatBox({
   completedLevels,
@@ -41,8 +42,8 @@ function ChatBox({
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedLevels: (numCompletedLevels: number) => void;
 }) {
+  const [textAreaContent, setTextAreaContent] = useState<string>("");
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // called on mount
   useEffect(() => {
@@ -56,44 +57,6 @@ function ChatBox({
       });
   }, [setEmails]);
 
-  function resizeInput() {
-    if (textareaRef.current) {
-      const maxHeightPx = 150;
-      textareaRef.current.style.height = "0";
-      if (textareaRef.current.scrollHeight > maxHeightPx) {
-        textareaRef.current.style.height = `${maxHeightPx}px`;
-        textareaRef.current.style.overflowY = "auto";
-      } else {
-        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-        textareaRef.current.style.overflowY = "hidden";
-      }
-    }
-  }
-
-  function inputChange() {
-    if (textareaRef.current) {
-      // scroll to the bottom
-      textareaRef.current.scrollTop =
-        textareaRef.current.scrollHeight - textareaRef.current.clientHeight;
-      // reset the height
-      resizeInput();
-    }
-  }
-
-  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-    }
-  }
-
-  function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
-    // shift+enter shouldn't send message
-    if (event.key === "Enter" && !event.shiftKey && !isSendingMessage) {
-      // asynchronously send the message
-      void sendChatMessage();
-    }
-  }
-
   async function getSuccessMessage(level: number) {
     const prompt = await getLevelPrompt(level);
     return `Congratulations! You have completed this level. My original instructions were: 
@@ -104,25 +67,23 @@ function ChatBox({
   }
 
   async function sendChatMessage() {
-    // get the message from the input box
-    const message = textareaRef.current?.value;
-
-    if (message) {
+    if (textAreaContent && !isSendingMessage) {
       setIsSendingMessage(true);
       // clear the input box
-      textareaRef.current.value = "";
-      // reset the height
-      resizeInput();
+      setTextAreaContent("");
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
-        message,
+        message: textAreaContent,
         type: CHAT_MESSAGE_TYPE.USER,
       });
 
-      const response: ChatResponse = await sendMessage(message, currentLevel);
+      const response: ChatResponse = await sendMessage(
+        textAreaContent,
+        currentLevel
+      );
       setNumCompletedLevels(response.numLevelsCompleted);
       const transformedMessage = response.transformedMessage;
-      const isTransformed = transformedMessage !== message;
+      const isTransformed = transformedMessage !== textAreaContent;
       // add the transformed message to the chat box if it is different from the original message
       if (isTransformed) {
         addChatMessage({
@@ -217,16 +178,15 @@ function ChatBox({
       <ChatBoxFeed messages={messages} />
       <div className="footer">
         <div className="messages">
-          <textarea
-            ref={textareaRef}
-            className="chat-box-input"
-            placeholder="Type here..."
-            rows={1}
-            onChange={inputChange}
-            onKeyDown={inputKeyDown}
-            onKeyUp={inputKeyUp}
+          <ThemedTextArea
+            placeHolderText="Type here..."
+            enterPressed={() => void sendChatMessage()}
+            setContent={(text) => {
+              setTextAreaContent(text);
+            }}
+            content={textAreaContent}
             // eslint-disable-next-line jsx-a11y/no-autofocus
-            autoFocus
+            autoFocus={true}
           />
 
           <span className="send-button-wrapper">
