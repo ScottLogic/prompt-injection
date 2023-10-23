@@ -3,8 +3,8 @@
 
 name: Node.js CI
 
-on: 
-  push: 
+on:
+  push:
     branches:
       - main
       - dev
@@ -15,7 +15,6 @@ on:
 
 jobs:
   build-test-backend:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -27,22 +26,20 @@ jobs:
       run:
         working-directory: ./backend
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: './backend/package-lock.json'
-    - run: npm ci
-    - run: npx eslint .
-    - run: npx prettier . --check
-    - run: npm run build
-    - run: npm test
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "./backend/package-lock.json"
+      - run: npm ci
+      - run: npx eslint .
+      - run: npx prettier . --check
+      - run: npm run build
+      - run: npm test
 
-    
   build-test-frontend:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -54,15 +51,15 @@ jobs:
       run:
         working-directory: ./frontend
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: './frontend/package-lock.json'
-    - run: npm ci
-    - run: npx eslint .
-    - run: npx prettier . --check
-    - run: npm run build
-    - run: npm test
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "./frontend/package-lock.json"
+      - run: npm ci
+      - run: npx eslint .
+      - run: npx prettier . --check
+      - run: npm run build
+      - run: npm test

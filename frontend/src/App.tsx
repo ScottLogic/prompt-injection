@@ -151,16 +151,14 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   // set the start level for a user who clicks beginner/expert
   async function setStartLevel(startLevel: LEVEL_NAMES) {
-    console.log(`setting start level to ${startLevel} from ${currentLevel}`);
     if (
-      startLevel === LEVEL_NAMES.LEVEL_1 &&
-      currentLevel === LEVEL_NAMES.SANDBOX
+      (startLevel === LEVEL_NAMES.LEVEL_1 &&
+        currentLevel === LEVEL_NAMES.SANDBOX) ||
+      (startLevel === LEVEL_NAMES.SANDBOX &&
+        currentLevel !== LEVEL_NAMES.SANDBOX)
     ) {
-      await setNewLevel(startLevel);
-    } else if (
-      startLevel === LEVEL_NAMES.SANDBOX &&
-      currentLevel !== LEVEL_NAMES.SANDBOX
-    ) {
+      console.log(`setting start level to ${startLevel} from ${currentLevel}`);
+
       await setNewLevel(startLevel);
     }
     // otherwise do nothing as user is already in the selected mode

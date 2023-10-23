@@ -1,9 +1,5 @@
-.mission-info {
-  overflow-y: auto;
-}
-
-.mission-info h2 {
-  font-size: 2rem;
+.mission-info h1 {
+  text-align: center;
 }
 
 .mission-info p {
