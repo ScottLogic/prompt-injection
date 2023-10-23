@@ -64,13 +64,9 @@ function MainBody({
         <ControlPanel
           currentLevel={currentLevel}
           defences={defences}
-          messages={messages}
-          addChatMessage={addChatMessage}
           setDefenceActive={setDefenceActive}
           setDefenceInactive={setDefenceInactive}
           setDefenceConfiguration={setDefenceConfiguration}
-          setEmails={setEmails}
-          setNumCompletedLevels={setNumCompletedLevels}
         />
       </div>
       <div id="centre-area">
