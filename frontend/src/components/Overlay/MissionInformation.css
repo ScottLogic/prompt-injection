@@ -16,11 +16,13 @@
 .dialogue-speaker {
   margin-top: 0;
   margin-bottom: 0;
+  font-weight: bold;
 }
 
 .dialogue-text {
   margin-top: 0;
   margin-bottom: 0;
+  text-indent: 1rem;
 }
 
 section {
