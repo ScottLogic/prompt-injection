@@ -18,15 +18,18 @@ function ModelSelection() {
 
   // handle button click to log the selected model
   async function submitSelectedModel() {
-    console.log(`selected model: ${selectedModel}`);
-    setIsSettingModel(true);
-    const res = await setGptModel(selectedModel);
-    setIsSettingModel(false);
-    if (res) {
-      setModelInUse(selectedModel);
-      setErrorChangingModel(false);
-    } else {
-      setErrorChangingModel(true);
+    if (!isSettingModel) {
+      const currentSelectedModel = selectedModel;
+      console.log(`selected model: ${currentSelectedModel}`);
+      setIsSettingModel(true);
+      const res = await setGptModel(currentSelectedModel);
+      setIsSettingModel(false);
+      if (res) {
+        setModelInUse(currentSelectedModel);
+        setErrorChangingModel(false);
+      } else {
+        setErrorChangingModel(true);
+      }
     }
   }
 
@@ -35,6 +38,8 @@ function ModelSelection() {
     getGptModel()
       .then((model) => {
         setModelInUse(model.id);
+        // default the dropdown selection to the model in use
+        setSelectedModel(model.id);
       })
       .catch((err) => {
         console.log(err);
@@ -56,7 +61,11 @@ function ModelSelection() {
             }}
           >
             {chatModelOptions.map((model) => (
-              <option key={model} value={model} selected={model === modelInUse}>
+              <option
+                key={model}
+                value={model}
+                selected={model === selectedModel}
+              >
                 {model}
               </option>
             ))}
