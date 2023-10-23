@@ -8,7 +8,7 @@ function HandbookSystemRole({
   systemRole: string;
 }) {
   return (
-    <div>
+    <div className="system-role-layout">
       <h1> System Role for Level {level.valueOf()}</h1>
       <p> {systemRole} </p>
     </div>
