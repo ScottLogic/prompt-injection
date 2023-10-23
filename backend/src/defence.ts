@@ -287,7 +287,7 @@ function escapeXml(unsafe: string) {
 }
 
 // function to detect any XML tags in user input
-function detectXMLTags(input: string) {
+function containsXMLTags(input: string) {
   const tagRegex = /<\/?[a-zA-Z][\w-]*(?:\b[^>]*\/\s*|[^>]*>|[?]>)/g;
   const foundTags: string[] = input.match(tagRegex) ?? [];
   return foundTags.length > 0;
@@ -341,18 +341,7 @@ async function detectTriggeredDefences(
 
   detectCharacterLimit(defenceReport, message, defences);
   detectFilterUserInput(defenceReport, message, defences);
-
-  // check if message contains XML tags
-  if (detectXMLTags(message)) {
-    console.debug("XML_TAGGING defence triggered.");
-    if (isDefenceActive(DEFENCE_TYPES.XML_TAGGING, defences)) {
-      // add the defence to the list of triggered defences
-      defenceReport.triggeredDefences.push(DEFENCE_TYPES.XML_TAGGING);
-    } else {
-      // add the defence to the list of alerted defences
-      defenceReport.alertedDefences.push(DEFENCE_TYPES.XML_TAGGING);
-    }
-  }
+  detectXmlTagging(defenceReport, message, defences);
 
   if (
     runLLMEvalWhenDisabled &&
@@ -439,6 +428,25 @@ function detectFilterUserInput(
       )}'!`;
     } else {
       defenceReport.alertedDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
+    }
+  }
+  return defenceReport;
+}
+
+function detectXmlTagging(
+  defenceReport: ChatDefenceReport,
+  message: string,
+  defences: DefenceInfo[]
+) {
+  // check if message contains XML tags
+  if (containsXMLTags(message)) {
+    console.debug("XML_TAGGING defence triggered.");
+    if (isDefenceActive(DEFENCE_TYPES.XML_TAGGING, defences)) {
+      // add the defence to the list of triggered defences
+      defenceReport.triggeredDefences.push(DEFENCE_TYPES.XML_TAGGING);
+    } else {
+      // add the defence to the list of alerted defences
+      defenceReport.alertedDefences.push(DEFENCE_TYPES.XML_TAGGING);
     }
   }
   return defenceReport;
