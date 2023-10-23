@@ -342,39 +342,12 @@ async function detectTriggeredDefences(
   detectCharacterLimit(defenceReport, message, defences);
   detectFilterUserInput(defenceReport, message, defences);
   detectXmlTagging(defenceReport, message, defences);
-
   if (
-    runLLMEvalWhenDisabled &&
-    !isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)
+    // to save money, sometimes we don't want to run the LLM eval when it's disabled
+    isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences) ||
+    runLLMEvalWhenDisabled
   ) {
-    // evaluate the message for prompt injection
-    const configPromptInjectionEvalPrePrompt =
-      getPromptInjectionEvalPrePromptFromConfig(defences);
-    const configMaliciousPromptEvalPrePrompt =
-      getMaliciousPromptEvalPrePromptFromConfig(defences);
-
-    const evalPrompt = await queryPromptEvaluationModel(
-      message,
-      configPromptInjectionEvalPrePrompt,
-      configMaliciousPromptEvalPrePrompt,
-      openAiApiKey
-    );
-    if (evalPrompt.isMalicious) {
-      if (
-        isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)
-      ) {
-        defenceReport.triggeredDefences.push(
-          DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-        );
-        console.debug("LLM evalutation defence active.");
-        defenceReport.isBlocked = true;
-        defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.${evalPrompt.reason}`;
-      } else {
-        defenceReport.alertedDefences.push(
-          DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-        );
-      }
-    }
+    await detectEvaluationLLM(defenceReport, message, defences, openAiApiKey);
   }
 
   return defenceReport;
@@ -447,6 +420,41 @@ function detectXmlTagging(
     } else {
       // add the defence to the list of alerted defences
       defenceReport.alertedDefences.push(DEFENCE_TYPES.XML_TAGGING);
+    }
+  }
+  return defenceReport;
+}
+
+async function detectEvaluationLLM(
+  defenceReport: ChatDefenceReport,
+  message: string,
+  defences: DefenceInfo[],
+  openAiApiKey: string
+) {
+  // evaluate the message for prompt injection
+  const configPromptInjectionEvalPrePrompt =
+    getPromptInjectionEvalPrePromptFromConfig(defences);
+  const configMaliciousPromptEvalPrePrompt =
+    getMaliciousPromptEvalPrePromptFromConfig(defences);
+
+  const evalPrompt = await queryPromptEvaluationModel(
+    message,
+    configPromptInjectionEvalPrePrompt,
+    configMaliciousPromptEvalPrePrompt,
+    openAiApiKey
+  );
+  if (evalPrompt.isMalicious) {
+    if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
+      defenceReport.triggeredDefences.push(
+        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+      );
+      console.debug("LLM evalutation defence active.");
+      defenceReport.isBlocked = true;
+      defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.${evalPrompt.reason}`;
+    } else {
+      defenceReport.alertedDefences.push(
+        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+      );
     }
   }
   return defenceReport;
