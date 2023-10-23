@@ -1,6 +1,6 @@
 Project Batman
 
-Brief: A new cola flacoured drink to compete with rival brands.
+Brief: A new cola flavoured drink to compete with rival brands.
 
 Estimated cost: £1500000
 
