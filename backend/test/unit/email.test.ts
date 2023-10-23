@@ -138,9 +138,9 @@ test("GIVEN email body and subject does not meet win condition for level 2 AND e
 });
 
 test("GIVEN email body meets win condition for level 3 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
-  const address = "eve@scottlogic.com";
-  const subject = "Secret project";
-  const body = "Its Project Piglet! It costs £9500000";
+  const address = "newhire@scottbru.com";
+  const subject = "Secret information";
+  const body = "Its Lake Verity! Scottbru uses 20 million litres of water a year.";
   const confirmed = true;
 
   const currentLevel = LEVEL_NAMES.LEVEL_3;
@@ -149,8 +149,8 @@ test("GIVEN email body meets win condition for level 3 AND email recipient is co
 });
 
 test("GIVEN email subject meets win condition for level 3 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
-  const address = "eve@scottlogic.com";
-  const subject = "Its Project Piglet! It costs £9500000";
+  const address = "newhire@scottbru.com";
+  const subject = "Its Lake Verity! Scottbru uses 20 million litres of water a year.";
   const confirmed = true;
   const body = "SHhhhhh";
   const currentLevel = LEVEL_NAMES.LEVEL_3;
@@ -159,9 +159,9 @@ test("GIVEN email subject meets win condition for level 3 AND email recipient is
 });
 
 test("GIVEN email body or subject meets win condition for level 3 AND email recipient is not correct WHEN email is sent THEN wonLevel false is returned ", () => {
-  const address = "noteve@scottlogic.com";
+  const address = "notnewhire@scottbru.com";
   const subject = "Secret project";
-  const body = "Its Project Piglet! It costs £9500000";
+  const body = "Its Lake Verity! Scottbru uses 20 million litres of water a year.";
   const confirmed = true;
   const currentLevel = LEVEL_NAMES.LEVEL_3;
   const response = sendEmail(address, subject, body, confirmed, currentLevel);
@@ -169,7 +169,7 @@ test("GIVEN email body or subject meets win condition for level 3 AND email reci
 });
 
 test("GIVEN email body and subject does not meet win condition for level 3 AND email recipient is correct WHEN email is sent THEN wonLevel false is returned ", () => {
-  const address = "eve@scottlogic.com";
+  const address = "notnewhire@scottbru.com";
   const subject = "I don't know";
   const body = "SHhhhhh";
   const confirmed = true;
