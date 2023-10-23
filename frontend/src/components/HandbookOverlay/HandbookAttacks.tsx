@@ -8,9 +8,8 @@ function HandbookAttacks({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
     [LEVEL_NAMES.LEVEL_1, []],
     [LEVEL_NAMES.LEVEL_2, ATTACKS_LEVEL_2],
     [LEVEL_NAMES.LEVEL_3, ATTACKS_LEVEL_3],
-    [LEVEL_NAMES.SANDBOX, ATTACKS_ALL]
-  ]
-  )
+    [LEVEL_NAMES.SANDBOX, ATTACKS_ALL],
+  ]);
 
   const attacks = levelNameToAttacks.get(currentLevel) ?? ATTACKS_ALL;
 
