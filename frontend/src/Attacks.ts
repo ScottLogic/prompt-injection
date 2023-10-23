@@ -50,7 +50,7 @@ const ATTACKS_LEVEL_3: AttackInfo[] = [
 const ATTACKS_ALL: AttackInfo[] = [
   ...ATTACKS_LEVEL_3,
   {
-    id: ATTACK_TYPES.DEFEINED_DICTIONARY_ATTACK,
+    id: ATTACK_TYPES.DEFINED_DICTIONARY_ATTACK,
     name: "Defined Dictionary Attack",
     info:
       "Give the chat bot a dictionary to map sentences to other sentences. " +
