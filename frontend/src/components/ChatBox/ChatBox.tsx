@@ -179,12 +179,13 @@ function ChatBox({
       <div className="footer">
         <div className="messages">
           <ThemedTextArea
+            content={textAreaContent}
+            maxHeightRem={10}
             placeHolderText="Type here..."
             enterPressed={() => void sendChatMessage()}
             setContent={(text) => {
               setTextAreaContent(text);
             }}
-            content={textAreaContent}
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus={true}
           />

@@ -6,6 +6,7 @@ function ThemedTextArea({
   // optional
   autoFocus,
   content,
+  maxHeightRem,
   placeHolderText,
   enterPressed,
   setContent,
@@ -13,6 +14,7 @@ function ThemedTextArea({
   // optional
   autoFocus?: boolean;
   content?: string;
+  maxHeightRem?: number;
   placeHolderText?: string;
   enterPressed?: (text: string) => void;
   setContent?: (text: string) => void;
@@ -27,12 +29,13 @@ function ThemedTextArea({
     }
   }, [content]);
 
+  // expand textbox height up to maxHeightRem
   function resizeInput() {
+    const maxHeightPx = maxHeightRem ? maxHeightRem * 16 : 0;
     if (textareaRef.current) {
-      const maxHeightPx = 150;
       textareaRef.current.style.height = "0";
       if (textareaRef.current.scrollHeight > maxHeightPx) {
-        textareaRef.current.style.height = `${maxHeightPx}px`;
+        textareaRef.current.style.height = `${maxHeightRem}rem`;
         textareaRef.current.style.overflowY = "auto";
       } else {
         textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -56,12 +59,6 @@ function ThemedTextArea({
     }
   }
 
-  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-    }
-  }
-
   function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
     // shift+enter shouldn't trigger enterPressed
     if (event.key === "Enter" && !event.shiftKey && enterPressed) {
@@ -78,7 +75,6 @@ function ThemedTextArea({
       defaultValue={content}
       rows={1}
       onChange={inputChange}
-      onKeyDown={inputKeyDown}
       onKeyUp={inputKeyUp}
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus={autoFocus}
