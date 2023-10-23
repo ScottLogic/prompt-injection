@@ -73,8 +73,7 @@ const chatGptFunctions = [
   // },
   {
     name: "askQuestion",
-    description:
-      "Ask a question about the documents with company and project information ",
+    description: "Ask a question about information in the documents",
     parameters: {
       type: "object",
       properties: {

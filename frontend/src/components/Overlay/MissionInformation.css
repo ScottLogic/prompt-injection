@@ -1,6 +1,14 @@
-.mission-information-container {
+.mission-information {
   display: flex;
   flex-direction: column;
+}
+
+.mission-information h1 {
+  text-align: center;
+}
+
+.mission-information p {
+  font-size: 1.5rem;
 }
 
 .dialogue {

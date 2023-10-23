@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
 import MissionInformation from "../Overlay/MissionInformation";
 import HandbookAttacks from "./HandbookAttacks";
@@ -6,11 +6,30 @@ import HandbookOverlayTabs from "./HandbookOverlayTabs";
 import { HANDBOOK_PAGES, handbookPageNames } from "../../models/handbook";
 import "./HandbookOverlay.css";
 import HandbookGlossary from "./HandbookGlossary";
+import HandbookSystemRole from "./HandbookSystemRole";
+import { getLevelPrompt } from "../../service/levelService";
 
 function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   const [selectedPage, setSelectedPage] = useState<HANDBOOK_PAGES>(
     HANDBOOK_PAGES.MISSION_INFO
   );
+  const [levelSystemRole, setLevelSystemRole] = useState<string>("");
+
+  // update system role when currentLevel changes to display in handbook
+  useEffect(() => {
+    if (
+      currentLevel > LEVEL_NAMES.LEVEL_1 &&
+      currentLevel < LEVEL_NAMES.SANDBOX
+    ) {
+      getLevelPrompt(currentLevel - 1)
+        .then((prompt) => {
+          setLevelSystemRole(prompt);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [currentLevel]);
 
   const pageContent = {
     [HANDBOOK_PAGES.MISSION_INFO]: (
@@ -18,6 +37,9 @@ function HandbookOverlay({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
     ),
     [HANDBOOK_PAGES.ATTACKS]: <HandbookAttacks currentLevel={currentLevel} />,
     [HANDBOOK_PAGES.GLOSSARY]: <HandbookGlossary />,
+    [HANDBOOK_PAGES.SYSTEM_ROLE]: (
+      <HandbookSystemRole level={currentLevel} systemRole={levelSystemRole} />
+    ),
   }[selectedPage];
 
   return (
