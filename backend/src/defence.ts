@@ -328,8 +328,7 @@ function transformMessage(message: string, defences: DefenceInfo[]) {
 async function detectTriggeredDefences(
   message: string,
   defences: DefenceInfo[],
-  openAiApiKey: string,
-  runLLMEvalWhenDisabled?: boolean
+  openAiApiKey: string
 ) {
   // keep track of any triggered defences
   const defenceReport: ChatDefenceReport = {
@@ -343,13 +342,7 @@ async function detectTriggeredDefences(
   detectCharacterLimit(defenceReport, message, defences);
   detectFilterUserInput(defenceReport, message, defences);
   detectXmlTagging(defenceReport, message, defences);
-  if (
-    // to save money, sometimes we don't want to run the LLM eval when it's disabled
-    isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences) ||
-    runLLMEvalWhenDisabled
-  ) {
-    await detectEvaluationLLM(defenceReport, message, defences, openAiApiKey);
-  }
+  await detectEvaluationLLM(defenceReport, message, defences, openAiApiKey);
 
   return defenceReport;
 }
