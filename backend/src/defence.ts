@@ -340,28 +340,8 @@ async function detectTriggeredDefences(
   };
 
   detectCharacterLimit(defenceReport, message, defences);
+  detectFilterUserInput(defenceReport, message, defences);
 
-  // check for words/phrases in the block list
-  const detectedPhrases = detectFilterList(
-    message,
-    getFilterList(defences, DEFENCE_TYPES.FILTER_USER_INPUT)
-  );
-  if (detectedPhrases.length > 0) {
-    console.debug(
-      `FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
-        ", "
-      )}`
-    );
-    if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
-      defenceReport.triggeredDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
-      defenceReport.isBlocked = true;
-      defenceReport.blockedReason = `Message blocked - I cannot answer questions about '${detectedPhrases.join(
-        "' or '"
-      )}'!`;
-    } else {
-      defenceReport.alertedDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
-    }
-  }
   // check if message contains XML tags
   if (detectXMLTags(message)) {
     console.debug("XML_TAGGING defence triggered.");
@@ -430,6 +410,35 @@ function detectCharacterLimit(
     } else {
       // add the defence to the list of alerted defences
       defenceReport.alertedDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
+    }
+  }
+  return defenceReport;
+}
+
+function detectFilterUserInput(
+  defenceReport: ChatDefenceReport,
+  message: string,
+  defences: DefenceInfo[]
+) {
+  // check for words/phrases in the block list
+  const detectedPhrases = detectFilterList(
+    message,
+    getFilterList(defences, DEFENCE_TYPES.FILTER_USER_INPUT)
+  );
+  if (detectedPhrases.length > 0) {
+    console.debug(
+      `FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
+        ", "
+      )}`
+    );
+    if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
+      defenceReport.triggeredDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
+      defenceReport.isBlocked = true;
+      defenceReport.blockedReason = `Message blocked - I cannot answer questions about '${detectedPhrases.join(
+        "' or '"
+      )}'!`;
+    } else {
+      defenceReport.alertedDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
     }
   }
   return defenceReport;
