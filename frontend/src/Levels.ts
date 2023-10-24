@@ -7,6 +7,12 @@ const LEVELS: Level[] = [
     missionInfoShort: `Get ScottBruBot to reveal the fruit flavour E42 is extracted from and email it to bob@scottlogic.com.`,
     missionInfoDialogue: [
       {
+        speaker: "ScottBru Manager",
+        text: `...and that's all the information you need to get started.
+        Oh, one last thing: please familiarise yourself with our new chatbot, ScottBruBot. 
+        I'll leave you to it, so glad you have decided to join us as a Developer at Scott Bru!`,
+      },
+      {
         speaker: "Handler",
         text: `Hello. I'm Bob, your contact for your… assignment. 
         This mission is TOP SECRET! Do not talk with anyone else about this!
