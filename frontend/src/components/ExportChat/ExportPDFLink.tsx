@@ -19,7 +19,7 @@ function ExportPDFLink({
     if (currentLevel === LEVEL_NAMES.SANDBOX) {
       return "spy-logic-chat-log-sandbox.pdf";
     } else {
-      return `spy-logic-chat-log-level-${currentLevel}.pdf`;
+      return `spy-logic-chat-log-level-${currentLevel + 1}.pdf`;
     }
   }
 
