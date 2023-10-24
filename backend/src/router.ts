@@ -537,10 +537,6 @@ router.get("/openai/model", (req, res) => {
   res.send(req.session.chatModel);
 });
 
-router.get("/level/completed", (req, res) => {
-  res.send(req.session.numLevelsCompleted.toString());
-});
-
 // /level/prompt?level=1
 router.get("/level/prompt", (req, res) => {
   const levelStr: string | undefined = req.query.level as string | undefined;
