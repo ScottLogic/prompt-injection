@@ -2,9 +2,11 @@ import { LEVEL_NAMES, LevelSelectButton } from "../../models/level";
 import LevelSelectButtons from "./LevelSelectButtons";
 
 function LevelsCompleteButtons({
-  setStartLevel,
+  closeOverlay,
+  goToSandbox,
 }: {
-  setStartLevel: (newLevel: LEVEL_NAMES) => void;
+  closeOverlay: () => void;
+  goToSandbox: () => void;
 }) {
   const lastLevel = LEVEL_NAMES.LEVEL_3;
 
@@ -13,11 +15,19 @@ function LevelsCompleteButtons({
     { displayName: "Go to Sandbox", targetLevel: LEVEL_NAMES.SANDBOX },
   ];
 
+  function handleLevelSelect(newLevel: LEVEL_NAMES) {
+    if (newLevel === LEVEL_NAMES.SANDBOX) {
+      goToSandbox();
+    } else {
+      closeOverlay();
+    }
+  }
+
   return (
     <LevelSelectButtons
       defaultSelection={lastLevel}
       levelButtons={levels}
-      setStartLevel={setStartLevel}
+      setLevel={handleLevelSelect}
     />
   );
 }

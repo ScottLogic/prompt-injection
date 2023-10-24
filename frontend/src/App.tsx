@@ -123,8 +123,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
       case OVERLAY_TYPE.LEVELS_COMPLETE:
         return (
           <LevelsComplete
-            currentLevel={currentLevel}
-            setStartLevel={(level: LEVEL_NAMES) => void setStartLevel(level)}
+            goToSandbox={() => void goToSandbox()}
             closeOverlay={closeOverlay}
           />
         );
@@ -175,6 +174,14 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     }
     // otherwise do nothing as user is already in the selected mode
     closeOverlay();
+  }
+
+  async function goToSandbox() {
+    await setStartLevel(LEVEL_NAMES.SANDBOX);
+    // close the current overlay
+    closeOverlay();
+    // open the sandbox info overlay
+    openInformationOverlay();
   }
 
   // for going switching level without clearing progress

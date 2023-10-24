@@ -1,0 +1,21 @@
+.mission-dialogue {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.mission-dialogue h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.mission-dialogue p {
+  margin-top: 0;
+  margin-bottom: 0;
+  text-indent: 1rem;
+}
+
+.mission-dialogue section {
+  margin-bottom: 1rem;
+}

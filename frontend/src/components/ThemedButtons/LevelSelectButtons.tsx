@@ -5,16 +5,12 @@ import "./LevelSelectButtons.css";
 function LevelSelectButtons({
   defaultSelection,
   levelButtons,
-  setStartLevel,
+  setLevel,
 }: {
   levelButtons: LevelSelectButton[];
   defaultSelection: LEVEL_NAMES;
-  setStartLevel: (newLevel: LEVEL_NAMES) => void;
+  setLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
-  function handleLevelClick(level: LEVEL_NAMES) {
-    setStartLevel(level);
-  }
-
   function defaultButton(targetLevel: LEVEL_NAMES) {
     return targetLevel === defaultSelection;
   }
@@ -33,7 +29,7 @@ function LevelSelectButtons({
               selected: defaultButton(levelButton.targetLevel),
             })}
             onClick={() => {
-              handleLevelClick(levelButton.targetLevel);
+              setLevel(levelButton.targetLevel);
             }}
           >
             {levelButton.displayName}

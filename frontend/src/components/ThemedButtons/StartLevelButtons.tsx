@@ -17,7 +17,7 @@ function StartLevelButtons({
     <LevelSelectButtons
       defaultSelection={currentLevel}
       levelButtons={levels}
-      setStartLevel={setStartLevel}
+      setLevel={setStartLevel}
     />
   );
 }

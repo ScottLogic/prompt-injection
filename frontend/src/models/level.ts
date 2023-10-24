@@ -23,4 +23,4 @@ interface LevelSelectButton {
 }
 
 export { LEVEL_NAMES };
-export type { Level, LevelSelectButton };
+export type { DialogueLine, Level, LevelSelectButton };
