@@ -85,6 +85,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     localStorage.setItem("currentLevel", currentLevel.toString());
   }, [currentLevel]);
 
+  useEffect(() => {
+    // save number of completed levels to local storage
+    localStorage.setItem("numCompletedLevels", numCompletedLevels.toString());
+  }, [numCompletedLevels]);
+
   function closeOverlay() {
     // open the mission info after welcome page for a new user
     if (overlayType === OVERLAY_TYPE.WELCOME) {
