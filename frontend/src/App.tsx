@@ -21,7 +21,6 @@ import {
 } from "./service/defenceService";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "./Defences";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
-import { getCompletedLevels } from "./service/levelService";
 import Overlay from "./components/Overlay/Overlay";
 import { OVERLAY_TYPE } from "./models/overlay";
 
@@ -67,13 +66,6 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   // called on mount
   useEffect(() => {
-    getCompletedLevels()
-      .then((numCompletedLevels) => {
-        setNumCompletedLevels(numCompletedLevels);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
     void setNewLevel(currentLevel);
     if (isNewUser) {
       setOverlayType(OVERLAY_TYPE.WELCOME);
