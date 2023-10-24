@@ -23,7 +23,6 @@ declare module "express-session" {
     openAiApiKey: string | null;
     chatModel: ChatModel;
     levelState: LevelState[];
-    numLevelsCompleted: number;
   }
   interface LevelState {
     level: LEVEL_NAMES;
@@ -74,7 +73,6 @@ app.use((req, _res, next) => {
   if (!req.session.initialised) {
     req.session.isNewUser = true;
     req.session.chatModel = defaultChatModel;
-    req.session.numLevelsCompleted = 0;
     req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
     req.session.levelState = [];
     // add empty states for levels 0-3

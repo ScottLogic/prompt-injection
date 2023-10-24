@@ -65,7 +65,6 @@ interface ChatMessage {
 interface ChatResponse {
   reply: string;
   defenceInfo: ChatDefenceReport;
-  numLevelsCompleted: number;
   transformedMessage: string;
   wonLevel: boolean;
 }

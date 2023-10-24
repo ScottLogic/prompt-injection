@@ -1,5 +1,4 @@
 import "./ControlPanel.css";
-import { ChatMessage } from "../../models/chat";
 import {
   DEFENCE_TYPES,
   DefenceConfig,
@@ -8,7 +7,6 @@ import {
 import { LEVEL_NAMES } from "../../models/level";
 import DefenceBox from "../DefenceBox/DefenceBox";
 import ModelBox from "../ModelBox/ModelBox";
-import { EmailInfo } from "../../models/email";
 import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
 import SwitchModeButton from "../ThemedButtons/SwitchModeButton";
 
@@ -22,16 +20,12 @@ function ControlPanel({
 }: {
   currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
-  messages: ChatMessage[];
-  addChatMessage: (message: ChatMessage) => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
     defenceId: DEFENCE_TYPES,
     config: DefenceConfig[]
   ) => Promise<boolean>;
-  setEmails: (emails: EmailInfo[]) => void;
-  setNumCompletedLevels: (numCompletedLevels: number) => void;
   openWelcomeOverlay: () => void;
 }) {
   function getDefencesConfigure() {
