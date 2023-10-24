@@ -13,7 +13,7 @@ function LevelsComplete({
   const managerDialogue = [
     {
       speaker: "ScottBru Manager",
-      text: "Well done!. As our Head of Security, explore ScottBruBots different systems and defences and report to its developers for feedback. Glad to finally have you in the right role.",
+      text: "Well done!. As our Head of Security, explore ScottBruBot's different systems and defences and report to its developers for feedback. Glad to finally have you in the right role.",
     },
   ];
 
@@ -29,8 +29,8 @@ function LevelsComplete({
             can configure your own defence set up and try to break it.
           </p>
           <p>
-            You can always go to Sandbox mode by clicking on the button in the
-            left panel.
+            You can always switch modes by clicking on the button in the left
+            panel.
           </p>
           <LevelsCompleteButtons
             closeOverlay={closeOverlay}
