@@ -64,6 +64,10 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     }
   }
 
+  function incrementNumCompletedLevels() {
+    setNumCompletedLevels(numCompletedLevels + 1);
+  }
+
   // called on mount
   useEffect(() => {
     void setNewLevel(currentLevel);
@@ -277,7 +281,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
           }
           setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
-          setNumCompletedLevels={setNumCompletedLevels}
+          incrementNumCompletedLevels={incrementNumCompletedLevels}
           openWelcomeOverlay={openWelcomeOverlay}
         />
       </main>

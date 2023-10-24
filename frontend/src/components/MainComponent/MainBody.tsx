@@ -24,7 +24,7 @@ function MainBody({
   setDefenceInactive,
   setDefenceConfiguration,
   setEmails,
-  setNumCompletedLevels,
+  incrementNumCompletedLevels,
   openWelcomeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
@@ -40,7 +40,7 @@ function MainBody({
     config: DefenceConfig[]
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
-  setNumCompletedLevels: (numCompletedLevels: number) => void;
+  incrementNumCompletedLevels: () => void;
   openWelcomeOverlay: () => void;
 }) {
   const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
@@ -84,7 +84,7 @@ function MainBody({
           addChatMessage={addChatMessage}
           addCompletedLevel={addCompletedLevel}
           resetLevel={resetLevelBody}
-          setNumCompletedLevels={setNumCompletedLevels}
+          incrementNumCompletedLevels={incrementNumCompletedLevels}
           setEmails={setEmails}
         />
       </div>
