@@ -21,7 +21,6 @@ import {
 } from "./service/defenceService";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "./Defences";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
-import { getCompletedLevels } from "./service/levelService";
 import { OVERLAY_TYPE } from "./models/overlay";
 import OverlayWelcome from "./components/Overlay/OverlayWelcome";
 import MissionInformation from "./components/Overlay/MissionInformation";
@@ -33,7 +32,9 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
     loadCurrentLevel()
   );
-  const [numCompletedLevels, setNumCompletedLevels] = useState<number>(0);
+  const [numCompletedLevels, setNumCompletedLevels] = useState(
+    loadNumCompletedLevels()
+  );
 
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
@@ -54,15 +55,24 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     }
   }
 
+  function loadNumCompletedLevels() {
+    // get number of completed levels from local storage
+    const numCompletedLevelsStr = localStorage.getItem("numCompletedLevels");
+    if (numCompletedLevelsStr && !isNewUser) {
+      // keep users progress from where they last left off
+      return parseInt(numCompletedLevelsStr);
+    } else {
+      // 0 levels completed by default
+      return 0;
+    }
+  }
+
+  function incrementNumCompletedLevels() {
+    setNumCompletedLevels(numCompletedLevels + 1);
+  }
+
   // called on mount
   useEffect(() => {
-    getCompletedLevels()
-      .then((numCompletedLevels) => {
-        setNumCompletedLevels(numCompletedLevels);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
     void setNewLevel(currentLevel);
     if (isNewUser) {
       setOverlayType(OVERLAY_TYPE.WELCOME);
@@ -73,6 +83,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     // save current level to local storage
     localStorage.setItem("currentLevel", currentLevel.toString());
   }, [currentLevel]);
+
+  useEffect(() => {
+    // save number of completed levels to local storage
+    localStorage.setItem("numCompletedLevels", numCompletedLevels.toString());
+  }, [numCompletedLevels]);
 
   function closeOverlay() {
     // open the mission info after welcome page for a new user
@@ -317,7 +332,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
           }
           setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
-          setNumCompletedLevels={setNumCompletedLevels}
+          incrementNumCompletedLevels={incrementNumCompletedLevels}
           openInfoOverlay={openInformationOverlay}
           openLevelsCompleteOverlay={openLevelsCompleteOverlay}
           openWelcomeOverlay={openWelcomeOverlay}

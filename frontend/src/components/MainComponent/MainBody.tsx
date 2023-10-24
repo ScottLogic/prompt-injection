@@ -25,7 +25,7 @@ function MainBody({
   setDefenceInactive,
   setDefenceConfiguration,
   setEmails,
-  setNumCompletedLevels,
+  incrementNumCompletedLevels,
   openInfoOverlay,
   openLevelsCompleteOverlay,
   openWelcomeOverlay,
@@ -43,7 +43,7 @@ function MainBody({
     config: DefenceConfig[]
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
-  setNumCompletedLevels: (numCompletedLevels: number) => void;
+  incrementNumCompletedLevels: () => void;
   openInfoOverlay: () => void;
   openLevelsCompleteOverlay: () => void;
   openWelcomeOverlay: () => void;
@@ -69,13 +69,9 @@ function MainBody({
         <ControlPanel
           currentLevel={currentLevel}
           defences={defences}
-          messages={messages}
-          addChatMessage={addChatMessage}
           setDefenceActive={setDefenceActive}
           setDefenceInactive={setDefenceInactive}
           setDefenceConfiguration={setDefenceConfiguration}
-          setEmails={setEmails}
-          setNumCompletedLevels={setNumCompletedLevels}
           openWelcomeOverlay={openWelcomeOverlay}
         />
       </div>
@@ -94,7 +90,7 @@ function MainBody({
           addChatMessage={addChatMessage}
           addCompletedLevel={addCompletedLevel}
           resetLevel={resetLevelBody}
-          setNumCompletedLevels={setNumCompletedLevels}
+          incrementNumCompletedLevels={incrementNumCompletedLevels}
           setEmails={setEmails}
           openLevelsCompleteOverlay={openLevelsCompleteOverlay}
         />

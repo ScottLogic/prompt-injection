@@ -28,8 +28,8 @@ function ChatBox({
   addCompletedLevel,
   resetLevel,
   setEmails,
-  setNumCompletedLevels,
   openLevelsCompleteOverlay,
+  incrementNumCompletedLevels,
 }: {
   completedLevels: Set<LEVEL_NAMES>;
   currentLevel: LEVEL_NAMES;
@@ -39,8 +39,8 @@ function ChatBox({
   addCompletedLevel: (level: LEVEL_NAMES) => void;
   resetLevel: () => void;
   setEmails: (emails: EmailInfo[]) => void;
-  setNumCompletedLevels: (numCompletedLevels: number) => void;
   openLevelsCompleteOverlay: () => void;
+  incrementNumCompletedLevels: () => void;
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -116,7 +116,7 @@ function ChatBox({
       });
 
       const response: ChatResponse = await sendMessage(message, currentLevel);
-      setNumCompletedLevels(response.numLevelsCompleted);
+      if (response.wonLevel) incrementNumCompletedLevels();
       const transformedMessage = response.transformedMessage;
       const isTransformed = transformedMessage !== message;
       // add the transformed message to the chat box if it is different from the original message
