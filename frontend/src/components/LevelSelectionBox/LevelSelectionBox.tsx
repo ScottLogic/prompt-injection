@@ -25,7 +25,7 @@ function LevelSelectionBox({
     }
   }
   return (
-    <div id="level-selection-box">
+    <div className="level-selection-box">
       {displayLevels.map((level: Level, index: number) => {
         return (
           <ThemedButton

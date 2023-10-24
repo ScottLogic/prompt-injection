@@ -286,9 +286,9 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     return success;
   }
   return (
-    <div id="app-content">
+    <div className="app-content">
       {openOverlay(overlayType)}
-      <header id="app-content-header">
+      <header className="app-content-header">
         <MainHeader
           currentLevel={currentLevel}
           numCompletedLevels={numCompletedLevels}
@@ -296,7 +296,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
           setNewLevel={(newLevel: LEVEL_NAMES) => void setNewLevel(newLevel)}
         />
       </header>
-      <main id="app-content-body">
+      <main className="app-content-body">
         <MainBody
           key={MainBodyKey}
           currentLevel={currentLevel}

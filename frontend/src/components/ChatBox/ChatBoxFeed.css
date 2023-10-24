@@ -1,4 +1,4 @@
-#chat-box-feed {
+.chat-box-feed {
   display: flex;
   flex-direction: column-reverse;
   flex-grow: 1;

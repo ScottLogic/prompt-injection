@@ -5,7 +5,7 @@ import ChatBoxInfoText from "./ChatBoxInfoText";
 
 function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
   return (
-    <div id="chat-box-feed">
+    <div className="chat-box-feed">
       {[...messages].reverse().map((message, index) => {
         if (
           message.type === CHAT_MESSAGE_TYPE.INFO ||

@@ -1,17 +1,17 @@
-#api-key-box {
+.api-key-box {
   padding: 16px 32px;
   position: relative;
   box-sizing: border-box;
 }
 
-#api-key-box input {
+.api-key-box input {
   width: 90%;
   padding-top: 10px;
   padding-bottom: 10px;
   margin-right: 10px;
 }
 
-#viewKey {
+.viewKey {
   color: grey;
   font-size: 1rem;
 }

@@ -1,4 +1,4 @@
-#level-selection-box {
+.level-selection-box {
   position: relative;
   display: flex;
   justify-content: center;
