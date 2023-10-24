@@ -1,5 +1,3 @@
-// ApiKeyBox.tsx
-
 import { useState, useEffect } from "react";
 import { setOpenAIApiKey, getOpenAIApiKey } from "../../service/chatService";
 import { BiHide, BiShowAlt } from "react-icons/bi";

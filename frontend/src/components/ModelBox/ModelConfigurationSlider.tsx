@@ -28,7 +28,7 @@ function ModelConfigurationSlider({
   }, [config]);
 
   return (
-    <div className="model-config-row">
+    <div>
       <div className="model-config-info">
         <div className="model-config-title">
           <p>{config.name}</p>

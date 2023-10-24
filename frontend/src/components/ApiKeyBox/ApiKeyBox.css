@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-#api-key-box input {
+.api-key-box input {
   width: 90%;
   padding-top: 10px;
   padding-bottom: 10px;
