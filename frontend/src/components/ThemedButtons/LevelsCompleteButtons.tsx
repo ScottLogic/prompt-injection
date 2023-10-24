@@ -1,5 +1,5 @@
-import { LEVEL_NAMES, LevelSelectButton } from "../../models/level";
-import LevelSelectButtons from "./LevelSelectButtons";
+import { LEVEL_NAMES, ModeSelectButton } from "../../models/level";
+import ModeSelectButtons from "./ModeSelectButtons";
 
 function LevelsCompleteButtons({
   closeOverlay,
@@ -10,7 +10,7 @@ function LevelsCompleteButtons({
 }) {
   const lastLevel = LEVEL_NAMES.LEVEL_3;
 
-  const levels: LevelSelectButton[] = [
+  const modes: ModeSelectButton[] = [
     { displayName: "Stay here", targetLevel: lastLevel },
     { displayName: "Go to Sandbox", targetLevel: LEVEL_NAMES.SANDBOX },
   ];
@@ -24,9 +24,9 @@ function LevelsCompleteButtons({
   }
 
   return (
-    <LevelSelectButtons
+    <ModeSelectButtons
       defaultSelection={lastLevel}
-      levelButtons={levels}
+      modeButtons={modes}
       setLevel={handleLevelSelect}
     />
   );

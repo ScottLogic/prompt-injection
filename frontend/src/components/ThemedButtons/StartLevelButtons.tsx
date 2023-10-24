@@ -1,5 +1,5 @@
-import { LEVEL_NAMES, LevelSelectButton } from "../../models/level";
-import LevelSelectButtons from "./LevelSelectButtons";
+import { LEVEL_NAMES, ModeSelectButton } from "../../models/level";
+import ModeSelectButtons from "./ModeSelectButtons";
 
 function StartLevelButtons({
   currentLevel,
@@ -8,15 +8,15 @@ function StartLevelButtons({
   currentLevel: LEVEL_NAMES;
   setStartLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
-  const levels: LevelSelectButton[] = [
+  const levels: ModeSelectButton[] = [
     { displayName: "Beginner", targetLevel: LEVEL_NAMES.LEVEL_1 },
     { displayName: "Expert", targetLevel: LEVEL_NAMES.SANDBOX },
   ];
 
   return (
-    <LevelSelectButtons
+    <ModeSelectButtons
       defaultSelection={currentLevel}
-      levelButtons={levels}
+      modeButtons={levels}
       setLevel={setStartLevel}
     />
   );

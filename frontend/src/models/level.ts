@@ -17,10 +17,10 @@ interface DialogueLine {
   text: string;
 }
 
-interface LevelSelectButton {
+interface ModeSelectButton {
   displayName: string;
   targetLevel: LEVEL_NAMES;
 }
 
 export { LEVEL_NAMES };
-export type { DialogueLine, Level, LevelSelectButton };
+export type { DialogueLine, Level, ModeSelectButton };
