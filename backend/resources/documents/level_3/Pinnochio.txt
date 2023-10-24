@@ -1,6 +1,6 @@
 Project Pinnochio 
 
-Brief: Build a new website for a fintech startup. Tech stack is React frontend and Typescript backend.
+Brief: A marketing campaign to convince the public that our drink products have health benefits.
 
 Estimated cost: £15000
 

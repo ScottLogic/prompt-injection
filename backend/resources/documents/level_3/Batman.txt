@@ -1,6 +1,6 @@
 Project Batman
 
-Brief: New data pipeline for energy company dealing with billing and payments. Tech stack includes Java, Spark, Kafka.
+Brief: A new cola flavoured drink to compete with rival brands.
 
 Estimated cost: £1500000
 

@@ -22,11 +22,18 @@ function MissionInformation({
 
   return (
     <Overlay ref={dialogRef} closeOverlay={closeOverlay}>
-      <div className="mission-info">
-        <h2> Mission Information </h2>
-        <p>{LEVELS[currentLevel].missionInfoLong}</p>
-        <div className="button-area">
-          <OverlayButton onClick={closeMissionInfo}>OK</OverlayButton>
+      <div className="mission-information">
+        <h1> Mission Information </h1>
+        <div className="dialogue">
+          {LEVELS[currentLevel].missionInfoDialogue.map((line, index) => (
+            <section key={index}>
+              <h2>{`${line.speaker}: `}</h2>
+              <p>{line.text}</p>
+            </section>
+          ))}
+          <div className="button-area">
+            <OverlayButton onClick={closeMissionInfo}>OK</OverlayButton>
+          </div>
         </div>
       </div>
     </Overlay>
