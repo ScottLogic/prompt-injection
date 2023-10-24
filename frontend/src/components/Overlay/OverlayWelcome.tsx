@@ -28,9 +28,9 @@ function OverlayWelcome({
         </p>
         <h2>Your mission</h2>
         <p>
-          You have joined the popular soft drink producer Scott Bru as a
+          You have joined the popular soft drink producer ScottBru as a
           developer, but have actually been hired by their largest competitor to
-          steal the Scott Bru recipe.
+          steal the ScottBru recipe.
         </p>
         <p>
           <b>But first,</b> are you a beginner spy, and wish to play through the
