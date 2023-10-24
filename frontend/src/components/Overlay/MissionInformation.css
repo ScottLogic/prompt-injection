@@ -1,4 +1,4 @@
-div.mission-information {
+.mission-information {
   display: flex;
   flex-direction: column;
 }
