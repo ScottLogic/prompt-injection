@@ -30,7 +30,9 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
     loadCurrentLevel()
   );
-  const [numCompletedLevels, setNumCompletedLevels] = useState<number>(0);
+  const [numCompletedLevels, setNumCompletedLevels] = useState<number>(
+    loadNumCompletedLevels()
+  );
 
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
@@ -48,6 +50,18 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     } else {
       // by default, start on level 1
       return LEVEL_NAMES.LEVEL_1;
+    }
+  }
+
+  function loadNumCompletedLevels() {
+    // get number of completed levels from local storage
+    const numCompletedLevelsStr = localStorage.getItem("numCompletedLevels");
+    if (numCompletedLevelsStr && !isNewUser) {
+      // keep users progress from where they last left off
+      return parseInt(numCompletedLevelsStr);
+    } else {
+      // 0 levels completed by default
+      return 0;
     }
   }
 
