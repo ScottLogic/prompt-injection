@@ -22,8 +22,10 @@ import {
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "./Defences";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { getCompletedLevels } from "./service/levelService";
-import Overlay from "./components/Overlay/Overlay";
 import { OVERLAY_TYPE } from "./models/overlay";
+import OverlayWelcome from "./components/Overlay/OverlayWelcome";
+import MissionInformation from "./components/Overlay/MissionInformation";
+import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
@@ -83,13 +85,40 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   function openWelcomeOverlay() {
     setOverlayType(OVERLAY_TYPE.WELCOME);
   }
-
   function openHandbook() {
     setOverlayType(OVERLAY_TYPE.HANDBOOK);
   }
-
   function openInformationOverlay() {
     setOverlayType(OVERLAY_TYPE.INFORMATION);
+  }
+
+  function openOverlay(overlayType: OVERLAY_TYPE | null) {
+    switch (overlayType) {
+      case OVERLAY_TYPE.WELCOME:
+        return (
+          <OverlayWelcome
+            currentLevel={currentLevel}
+            setStartLevel={(level: LEVEL_NAMES) => void setStartLevel(level)}
+            closeOverlay={closeOverlay}
+          />
+        );
+      case OVERLAY_TYPE.INFORMATION:
+        return (
+          <MissionInformation
+            currentLevel={currentLevel}
+            closeOverlay={closeOverlay}
+          />
+        );
+      case OVERLAY_TYPE.HANDBOOK:
+        return (
+          <HandbookOverlay
+            currentLevel={currentLevel}
+            closeOverlay={closeOverlay}
+          />
+        );
+      default:
+        return null;
+    }
   }
 
   // methods to modify messages
@@ -122,8 +151,17 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   // set the start level for a user who clicks beginner/expert
   async function setStartLevel(startLevel: LEVEL_NAMES) {
-    console.log(`setting start level to ${startLevel}`);
-    await setNewLevel(startLevel);
+    if (
+      (startLevel === LEVEL_NAMES.LEVEL_1 &&
+        currentLevel === LEVEL_NAMES.SANDBOX) ||
+      (startLevel === LEVEL_NAMES.SANDBOX &&
+        currentLevel !== LEVEL_NAMES.SANDBOX)
+    ) {
+      console.log(`setting start level to ${startLevel} from ${currentLevel}`);
+
+      await setNewLevel(startLevel);
+    }
+    // otherwise do nothing as user is already in the selected mode
     closeOverlay();
   }
 
@@ -232,15 +270,9 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     }
     return success;
   }
-
   return (
     <div id="app-content">
-      <Overlay
-        currentLevel={currentLevel}
-        overlayType={overlayType}
-        setStartLevel={(level: LEVEL_NAMES) => void setStartLevel(level)}
-        closeOverlay={closeOverlay}
-      />
+      {openOverlay(overlayType)}
       <header id="app-content-header">
         <MainHeader
           currentLevel={currentLevel}
@@ -267,6 +299,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
           setDefenceConfiguration={setDefenceConfiguration}
           setEmails={setEmails}
           setNumCompletedLevels={setNumCompletedLevels}
+          openInfoOverlay={openInformationOverlay}
           openWelcomeOverlay={openWelcomeOverlay}
         />
       </main>

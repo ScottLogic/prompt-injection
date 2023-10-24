@@ -64,6 +64,15 @@
   --email-background-colour: #93ffcb;
   --email-divider-colour: var(--email-text-colour);
   --email-text-colour: #000;
+
+  --short-mission-button-background-colour: var(
+    --control-header-background-colour
+  );
+  --short-mission-button-text-colour: var(--main-button-inactive-text-colour);
+  --short-mission-button-border-colour: var(--main-button-hover-border-colour);
+  --short-mission-button-hover-background-colour: var(
+    --control-body-background-colour
+  );
 }
 
 ::backdrop {

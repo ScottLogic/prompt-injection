@@ -29,3 +29,8 @@ div.mission-information {
 .mission-information .dialogue section {
   margin-bottom: 1rem;
 }
+
+.button-area {
+  display: flex;
+  justify-content: center;
+}
