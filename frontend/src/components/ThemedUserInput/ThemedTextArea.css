@@ -1,10 +1,10 @@
 .themed-text-area {
   box-sizing: border-box;
   border-radius: 0.25rem;
-  padding: 1rem 0.75rem;
-  height: 100%;
-  min-height: var(--defaultHeight);
-  flex: 1 1 auto;
+  padding: 0.25em;
+  /* height: 100%; */
+  width: 100%;
+  min-height: 1em;
   resize: none;
   overflow-y: auto;
 

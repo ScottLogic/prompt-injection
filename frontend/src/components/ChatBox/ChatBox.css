@@ -21,7 +21,6 @@
   align-items: flex-end;
   gap: 0.5rem;
   width: 100%;
-  --defaultHeight: 3rem;
 }
 
 .chat-box .footer .messages .send-button-wrapper {
@@ -29,7 +28,7 @@
   justify-content: stretch;
   align-items: stretch;
   height: 100%;
-  max-height: var(--defaultHeight);
+  max-height: 3rem;
 }
 
 .chat-box .footer .control-buttons {

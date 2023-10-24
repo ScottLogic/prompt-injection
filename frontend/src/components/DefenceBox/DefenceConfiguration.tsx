@@ -22,8 +22,8 @@ function DefenceConfiguration({
   // }
 
   return (
-    <div>
-      <span className="defence-config-name">{config.name}: </span>
+    <div className="defence-configuration">
+      <span>{config.name}: </span>
       <ThemedTextArea
         content={value}
         enterPressed={() => {
