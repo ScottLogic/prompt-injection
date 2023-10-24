@@ -27,6 +27,7 @@ function MainBody({
   setEmails,
   setNumCompletedLevels,
   openInfoOverlay,
+  openLevelsCompleteOverlay,
   openWelcomeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
@@ -44,6 +45,7 @@ function MainBody({
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedLevels: (numCompletedLevels: number) => void;
   openInfoOverlay: () => void;
+  openLevelsCompleteOverlay: () => void;
   openWelcomeOverlay: () => void;
 }) {
   const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
@@ -94,6 +96,7 @@ function MainBody({
           resetLevel={resetLevelBody}
           setNumCompletedLevels={setNumCompletedLevels}
           setEmails={setEmails}
+          openLevelsCompleteOverlay={openLevelsCompleteOverlay}
         />
       </div>
       <div className="side-bar">
