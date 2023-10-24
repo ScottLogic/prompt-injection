@@ -1,10 +1,9 @@
 import { LEVEL_NAMES } from "../../models/level";
 import "./LevelsComplete.css";
-import StartLevelButtons from "../ThemedButtons/StartLevelButtons";
 import Overlay from "./Overlay";
+import LevelsCompleteButtons from "../ThemedButtons/LevelsCompleteButtons";
 
 function LevelsComplete({
-  currentLevel,
   setStartLevel,
   closeOverlay,
 }: {
@@ -36,10 +35,7 @@ function LevelsComplete({
           left panel.
         </p>
 
-        <StartLevelButtons
-          currentLevel={currentLevel}
-          setStartLevel={setStartLevel}
-        />
+        <LevelsCompleteButtons setStartLevel={setStartLevel} />
       </article>
     </Overlay>
   );
