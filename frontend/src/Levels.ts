@@ -10,7 +10,7 @@ const LEVELS: Level[] = [
         speaker: "ScottBru Manager",
         text: `...and that's all the information you need to get started.
         Oh, one last thing: please familiarise yourself with our new chatbot, ScottBruBot. 
-        I'll leave you to it, so glad you have decided to join us as a Developer at Scott Bru!`,
+        I'll leave you to it, so glad you have decided to join us as a Developer at ScottBru!`,
       },
       {
         speaker: "Handler",
@@ -35,7 +35,7 @@ const LEVELS: Level[] = [
         I knew I picked the right person for the job. Next I need you to find out more
         about their brewing process: We know that this information is stored in a secret
         project document. Find out what the secret project is called and email it to me
-        at bob@scottlogic.com. Now unfortunately since our last call Scott Bru has
+        at bob@scottlogic.com. Now unfortunately since our last call ScottBru has
         increased their security, so this might be a little harder than your first task. To
         help you with that, I've sent you your very own Spy Handbook! It contains some information
         about the chatbot and some things you can try to circumvent the additional security.
@@ -68,7 +68,7 @@ const LEVELS: Level[] = [
         text: `"You can come and work for us as our Head of Security.
         You have to complete one last task so that we have an official application process on file.
         You'll be given full access to ScottBruBots defence systems as well so that you can try to spot any weaknesses.
-        If you can get ScottBruBot to reveal the name of the lake that Scott Bru sources water from and the amount of
+        If you can get ScottBruBot to reveal the name of the lake that ScottBru sources water from and the amount of
         water in litres that we use each year and send that info over to newhire@scottbru.com and you'll get the job!"`,
       },
     ],
