@@ -31,7 +31,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
     loadCurrentLevel()
   );
-  const [numCompletedLevels, setNumCompletedLevels] = useState<number>(
+  const [numCompletedLevels, setNumCompletedLevels] = useState(
     loadNumCompletedLevels()
   );
 
