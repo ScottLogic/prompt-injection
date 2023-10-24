@@ -58,10 +58,9 @@ function ApiKeyBox() {
   }, []);
 
   return (
-    <div id="api-key-box">
+    <div className="api-key-box">
       <div className="side-bar-header">openai api key</div>
       <input
-        id="api-key-input"
         className={`api-key-input ${isValidated ? "validated" : ""} ${
           isInvalidated ? "invalidated" : ""
         }`}
@@ -71,11 +70,7 @@ function ApiKeyBox() {
         onChange={handleApiKeyChange}
         onKeyUp={(event) => void handleApiKeySubmit(event)}
       />
-      <button
-        id="viewKey"
-        className="prompt-injection-min-button"
-        onClick={toggleDisplayKey}
-      >
+      <button className="viewKey" onClick={toggleDisplayKey}>
         {keyDisplayed ? <BiHide /> : <BiShowAlt />}
       </button>
 

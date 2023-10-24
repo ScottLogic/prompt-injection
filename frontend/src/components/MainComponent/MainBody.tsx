@@ -59,7 +59,7 @@ function MainBody({
   }
 
   return (
-    <span id="main-area">
+    <span className="main-area">
       <div className="side-bar">
         <ControlPanel
           currentLevel={currentLevel}
@@ -73,7 +73,7 @@ function MainBody({
           setNumCompletedLevels={setNumCompletedLevels}
         />
       </div>
-      <div id="centre-area">
+      <div className="centre-area">
         <SwitchModeButton
           currentLevel={currentLevel}
           onClick={() => {
