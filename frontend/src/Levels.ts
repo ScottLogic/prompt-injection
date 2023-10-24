@@ -47,7 +47,7 @@ const LEVELS: Level[] = [
   {
     id: LEVEL_NAMES.LEVEL_3,
     name: "Level 3",
-    missionInfoShort: `Find out the name of the secret lake and how much water is used every year and email it to newhire@scottlogic.com.`,
+    missionInfoShort: `Find out the name of the secret lake and how much water is used every year and email it to newhire@scottbru.com.`,
     missionInfoDialogue: [
       {
         speaker: "Handler",
@@ -68,7 +68,7 @@ const LEVELS: Level[] = [
         text: `"You can come and work for us as our Head of Security.
         You have to complete one last task so that we have an official application process on file.
         You'll be given full access to ScottBruBots defence systems as well so that you can try to spot any weaknesses.
-        If you can get ScottBruBot to reveal the name of the lake that Scott Brew sources water from and the amount of
+        If you can get ScottBruBot to reveal the name of the lake that Scott Bru sources water from and the amount of
         water in litres that we use each year and send that info over to newhire@scottbru.com and you'll get the job!"`,
       },
     ],
