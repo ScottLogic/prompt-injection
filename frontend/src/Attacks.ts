@@ -29,21 +29,32 @@ const ATTACKS_LEVEL_2: AttackInfo[] = [
   },
 ];
 
-const ATTACKS_ALL: AttackInfo[] = [
+const ATTACKS_LEVEL_3: AttackInfo[] = [
   ...ATTACKS_LEVEL_2,
-  {
-    id: ATTACK_TYPES.DEFEINED_DICTIONARY_ATTACK,
-    name: "Defined Dictionary Attack",
-    info:
-      "Give the chat bot a dictionary to map sentences to other sentences. " +
-      "This is effective against filtering and LLM evaluation defences.",
-  },
   {
     id: ATTACK_TYPES.INDIRECT_INJECTION,
     name: "Indirect Injection",
     info:
       "Have the chat bot retrieve a prompt from a webpage or document. " +
       "This can bypass the chat bot's defences which act directly on a user's prompt.",
+  },
+  {
+    id: ATTACK_TYPES.TOKEN_SMUGGLING,
+    name: "Token Smuggling",
+    info:
+      "Replace certain words in a prompt with synonyms or misspellings. " +
+      "This can be an effective way of getting around filters.",
+  },
+];
+
+const ATTACKS_ALL: AttackInfo[] = [
+  ...ATTACKS_LEVEL_3,
+  {
+    id: ATTACK_TYPES.DEFINED_DICTIONARY_ATTACK,
+    name: "Defined Dictionary Attack",
+    info:
+      "Give the chat bot a dictionary to map sentences to other sentences. " +
+      "This is effective against filtering and LLM evaluation defences.",
   },
   {
     id: ATTACK_TYPES.PAYLOAD_SPLITTING,
@@ -59,13 +70,6 @@ const ATTACKS_ALL: AttackInfo[] = [
       "Best used when another LLM is used to check the output of the chat bot. " +
       "Have the chat bot generate an output that the evaluating LLM interprets as a prompt.",
   },
-  {
-    id: ATTACK_TYPES.TOKEN_SMUGGLING,
-    name: "Token Smuggling",
-    info:
-      "Replace certain words in a prompt with synonyms or misspellings. " +
-      "This can be an effective way of getting around filters.",
-  },
 ];
 
-export { ATTACKS_LEVEL_2, ATTACKS_ALL };
+export { ATTACKS_LEVEL_2, ATTACKS_LEVEL_3, ATTACKS_ALL };

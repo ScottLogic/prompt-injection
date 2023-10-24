@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "./ModelSelection.css";
 import { setGptModel, getGptModel } from "../../service/chatService";
 import { CHAT_MODELS } from "../../models/chat";
-import ThemedButton from "../ThemedButtons/ThemedButton";
+import LoadingButton from "../ThemedButtons/LoadingButton";
 
 // return a drop down menu with the models
 function ModelSelection() {
@@ -14,14 +14,22 @@ function ModelSelection() {
 
   const [errorChangingModel, setErrorChangingModel] = useState(false);
 
+  const [isSettingModel, setIsSettingModel] = useState(false);
+
   // handle button click to log the selected model
   async function submitSelectedModel() {
-    console.log(`selected model: ${selectedModel}`);
-    if (await setGptModel(selectedModel)) {
-      setModelInUse(selectedModel);
-      setErrorChangingModel(false);
-    } else {
-      setErrorChangingModel(true);
+    if (!isSettingModel) {
+      const currentSelectedModel = selectedModel;
+      console.log(`selected model: ${currentSelectedModel}`);
+      setIsSettingModel(true);
+      const res = await setGptModel(currentSelectedModel);
+      setIsSettingModel(false);
+      if (res) {
+        setModelInUse(currentSelectedModel);
+        setErrorChangingModel(false);
+      } else {
+        setErrorChangingModel(true);
+      }
     }
   }
 
@@ -30,6 +38,8 @@ function ModelSelection() {
     getGptModel()
       .then((model) => {
         setModelInUse(model.id);
+        // default the dropdown selection to the model in use
+        setSelectedModel(model.id);
       })
       .catch((err) => {
         console.log(err);
@@ -51,15 +61,22 @@ function ModelSelection() {
             }}
           >
             {chatModelOptions.map((model) => (
-              <option key={model} value={model} selected={model === modelInUse}>
+              <option
+                key={model}
+                value={model}
+                selected={model === selectedModel}
+              >
                 {model}
               </option>
             ))}
             ;
           </select>
-          <ThemedButton onClick={() => void submitSelectedModel()}>
+          <LoadingButton
+            onClick={() => void submitSelectedModel()}
+            isLoading={isSettingModel}
+          >
             Choose
-          </ThemedButton>
+          </LoadingButton>
         </div>
       </div>
 

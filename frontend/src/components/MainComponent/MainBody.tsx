@@ -11,7 +11,8 @@ import EmailBox from "../EmailBox/EmailBox";
 import { EmailInfo } from "../../models/email";
 import { useState } from "react";
 import ControlPanel from "../ControlPanel/ControlPanel";
-import SwitchModeButton from "../ThemedButtons/SwitchModeButton";
+import ShortMissionInfoButton from "../ShortMissionInfoButton/ShortMissionInfoButton";
+import { LEVELS } from "../../Levels";
 
 function MainBody({
   currentLevel,
@@ -25,6 +26,7 @@ function MainBody({
   setDefenceConfiguration,
   setEmails,
   incrementNumCompletedLevels,
+  openInfoOverlay,
   openWelcomeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
@@ -41,6 +43,7 @@ function MainBody({
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
   incrementNumCompletedLevels: () => void;
+  openInfoOverlay: () => void;
   openWelcomeOverlay: () => void;
 }) {
   const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
@@ -67,15 +70,16 @@ function MainBody({
           setDefenceActive={setDefenceActive}
           setDefenceInactive={setDefenceInactive}
           setDefenceConfiguration={setDefenceConfiguration}
+          openWelcomeOverlay={openWelcomeOverlay}
         />
       </div>
       <div id="centre-area">
-        <SwitchModeButton
-          currentLevel={currentLevel}
-          onClick={() => {
-            openWelcomeOverlay();
-          }}
-        />
+        {LEVELS[currentLevel].missionInfoShort && (
+          <ShortMissionInfoButton
+            currentLevel={currentLevel}
+            openOverlay={openInfoOverlay}
+          />
+        )}
         <ChatBox
           completedLevels={completedLevels}
           currentLevel={currentLevel}

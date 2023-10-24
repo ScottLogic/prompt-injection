@@ -1,9 +1,9 @@
-.document-view-button-wrapper {
+.switch-mode-button-container {
   display: flex;
   padding-top: 0.5rem;
-  height: 2.5rem;
+  height: 40px;
 }
 /* Button fills all available width */
-.document-view-button-wrapper button {
+.switch-mode-button-container button {
   flex-grow: 1;
 }

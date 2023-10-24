@@ -1,3 +1,36 @@
-.mission-info p {
-  font-size: 1.5rem;
+.mission-information {
+  display: flex;
+  flex-direction: column;
+}
+
+.mission-information h1 {
+  text-align: center;
+}
+
+.mission-information .dialogue {
+  overflow: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.mission-information .dialogue h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.mission-information .dialogue p {
+  margin-top: 0;
+  margin-bottom: 0;
+  text-indent: 1rem;
+}
+
+.mission-information .dialogue section {
+  margin-bottom: 1rem;
+}
+
+.button-area {
+  display: flex;
+  justify-content: center;
 }

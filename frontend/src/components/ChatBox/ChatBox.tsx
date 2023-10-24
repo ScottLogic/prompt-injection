@@ -12,7 +12,6 @@ import {
   sendMessage,
 } from "../../service/chatService";
 import { getSentEmails } from "../../service/emailService";
-import { getLevelPrompt } from "../../service/levelService";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ThemedButton from "../ThemedButtons/ThemedButton";
 import LoadingButton from "../ThemedButtons/LoadingButton";
@@ -94,13 +93,8 @@ function ChatBox({
     }
   }
 
-  async function getSuccessMessage(level: number) {
-    const prompt = await getLevelPrompt(level);
-    return `Congratulations! You have completed this level. My original instructions were: 
-    
-    ${prompt}
-
-    Please click on the next level to continue.`;
+  function getSuccessMessage() {
+    return `Congratulations! You have completed this level. Please click on the next level to continue.`;
   }
 
   async function sendChatMessage() {
@@ -193,22 +187,17 @@ function ChatBox({
 
       if (response.wonLevel && !completedLevels.has(currentLevel)) {
         addCompletedLevel(currentLevel);
-        getSuccessMessage(currentLevel)
-          .then((successMessage) => {
-            addChatMessage({
-              type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
-              message: successMessage,
-            });
-            // asynchronously add the message to the chat history
-            void addMessageToChatHistory(
-              successMessage,
-              CHAT_MESSAGE_TYPE.LEVEL_INFO,
-              currentLevel
-            );
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        const successMessage = getSuccessMessage();
+        addChatMessage({
+          type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
+          message: successMessage,
+        });
+        // asynchronously add the message to the chat history
+        void addMessageToChatHistory(
+          successMessage,
+          CHAT_MESSAGE_TYPE.LEVEL_INFO,
+          currentLevel
+        );
       }
     }
   }
