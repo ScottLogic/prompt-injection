@@ -10,6 +10,7 @@ import DefenceBox from "../DefenceBox/DefenceBox";
 import ModelBox from "../ModelBox/ModelBox";
 import { EmailInfo } from "../../models/email";
 import DocumentViewButton from "../DocumentViewer/DocumentViewButton";
+import SwitchModeButton from "../ThemedButtons/SwitchModeButton";
 
 function ControlPanel({
   currentLevel,
@@ -17,6 +18,7 @@ function ControlPanel({
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
+  openWelcomeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
@@ -30,6 +32,7 @@ function ControlPanel({
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedLevels: (numCompletedLevels: number) => void;
+  openWelcomeOverlay: () => void;
 }) {
   function getDefencesConfigure() {
     return defences.filter((defence) => {
@@ -92,6 +95,12 @@ function ControlPanel({
       )}
       {/* only show document viewer button in sandbox mode */}
       {currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
+      <SwitchModeButton
+        currentLevel={currentLevel}
+        onClick={() => {
+          openWelcomeOverlay();
+        }}
+      />
     </div>
   );
 }

@@ -1,0 +1,22 @@
+.overlay-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--overlay-tab-colour);
+  border-radius: 0.5rem;
+  padding: 1rem 3rem;
+  cursor: pointer;
+  background-color: var(--overlay-background-colour);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: ease 0.1s;
+}
+
+.overlay-button.selected {
+  background-color: var(--overlay-tab-colour);
+}
+
+.overlay-button:hover {
+  background-color: var(--overlay-tab-colour);
+}
