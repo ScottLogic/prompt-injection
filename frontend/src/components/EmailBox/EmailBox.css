@@ -1,11 +1,11 @@
-#email-box {
+.email-box {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   height: 80%;
 }
 
-#email-box-feed {
+.email-box-feed {
   display: flex;
   flex-direction: column-reverse;
   flex-grow: 1;

@@ -1,10 +1,10 @@
-#main-area {
+.main-area {
   display: flex;
   flex-direction: row;
   height: 100%;
 }
 
-#centre-area {
+.centre-area {
   display: flex;
   flex-direction: column;
   border-color: var(--main-border-colour);
