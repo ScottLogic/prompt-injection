@@ -1,4 +1,4 @@
-.start-level-selection-buttons {
+.level-selection-buttons {
   display: flex;
   justify-content: center;
   gap: 5rem;
@@ -6,7 +6,7 @@
   padding: 0;
 }
 
-.start-level-selection-buttons .level-button {
+.level-selection-buttons .level-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,10 +21,10 @@
   transition: ease 0.1s;
 }
 
-.start-level-selection-buttons .level-button.selected {
+.level-selection-buttons .level-button.selected {
   background-color: var(--overlay-tab-colour);
 }
 
-.start-level-selection-buttons button:hover {
+.level-selection-buttons button:hover {
   background-color: var(--overlay-tab-colour);
 }
