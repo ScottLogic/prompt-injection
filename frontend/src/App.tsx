@@ -48,7 +48,6 @@ function App() {
       return isNewUserStr === "true";
     } else {
       // is new user by default
-      localStorage.setItem("isNewUser", "true");
       return true;
     }
   }
@@ -90,6 +89,11 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // save isNewUser to local storage
+    localStorage.setItem("isNewUser", isNewUser.toString());
+  });
+
+  useEffect(() => {
     // save current level to local storage
     localStorage.setItem("currentLevel", currentLevel.toString());
   }, [currentLevel]);
@@ -103,7 +107,6 @@ function App() {
     // open the mission info after welcome page for a new user
     if (overlayType === OVERLAY_TYPE.WELCOME) {
       setIsNewUser(false);
-      localStorage.setItem("isNewUser", "false");
       openInformationOverlay();
     } else {
       setOverlayType(null);
