@@ -10,6 +10,7 @@ function ThemedTextArea({
   disabled,
   maxHeightRem,
   placeHolderText,
+  spacing,
   enterPressed,
   setContent,
 }: {
@@ -19,6 +20,7 @@ function ThemedTextArea({
   disabled?: boolean;
   maxHeightRem?: number;
   placeHolderText?: string;
+  spacing?: "loose" | "tight";
   enterPressed?: (text: string) => void;
   setContent?: (text: string) => void;
 }) {
@@ -28,7 +30,7 @@ function ThemedTextArea({
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.value = content ?? "";
-      resizeInput();
+      // resizeInput();
     }
   }, [content]);
 
@@ -79,6 +81,7 @@ function ThemedTextArea({
 
   const textAreaClass = clsx("themed-text-area", {
     disabled: disabled,
+    "spacing-loose": spacing === "loose",
   });
 
   return (
