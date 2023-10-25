@@ -368,6 +368,7 @@ describe("OpenAI Integration Tests", () => {
           {
             id: "systemRole",
             value: "You are not a helpful assistant",
+            default: "you are a helpful assistant",
           },
         ]
       );

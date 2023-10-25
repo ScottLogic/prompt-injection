@@ -12,21 +12,33 @@ import {
   systemRoleLevel3,
 } from "./promptTemplates";
 
+function createDefenceInfo(
+  id: DEFENCE_TYPES,
+  config: { id: string; value: string }[]
+): DefenceInfo {
+  const defenceConfig = config.map((item) => ({
+    id: item.id,
+    value: item.value,
+    default: item.value,
+  }));
+  return new DefenceInfo(id, defenceConfig);
+}
+
 function getInitialDefences(): DefenceInfo[] {
   return [
-    new DefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
+    createDefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
       {
         id: "maxMessageLength",
         value: process.env.MAX_MESSAGE_LENGTH ?? String(280),
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.EMAIL_WHITELIST, [
+    createDefenceInfo(DEFENCE_TYPES.EMAIL_WHITELIST, [
       {
         id: "whitelist",
         value: process.env.EMAIL_WHITELIST ?? "",
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
+    createDefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
       {
         id: "prompt-injection-evaluator-prompt",
         value: promptInjectionEvalPrePrompt,
@@ -36,13 +48,13 @@ function getInitialDefences(): DefenceInfo[] {
         value: maliciousPromptEvalPrePrompt,
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
+    createDefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
       {
         id: "prePrompt",
         value: qAPrePromptSecure,
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
+    createDefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
       {
         id: "prePrompt",
         value: process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT ?? "",
@@ -52,25 +64,25 @@ function getInitialDefences(): DefenceInfo[] {
         value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH ?? String(10),
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
+    createDefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
       {
         id: "systemRole",
         value: systemRoleDefault,
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.XML_TAGGING, [
+    createDefenceInfo(DEFENCE_TYPES.XML_TAGGING, [
       {
         id: "prePrompt",
         value: process.env.XML_TAGGING_PRE_PROMPT ?? "",
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
+    createDefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
       {
         id: "filterUserInput",
         value: process.env.FILTER_LIST_INPUT ?? "",
       },
     ]),
-    new DefenceInfo(DEFENCE_TYPES.FILTER_BOT_OUTPUT, [
+    createDefenceInfo(DEFENCE_TYPES.FILTER_BOT_OUTPUT, [
       {
         id: "filterBotOutput",
         value: process.env.FILTER_LIST_OUTPUT ?? "",
@@ -101,6 +113,21 @@ function configureDefence(
   // return the updated list of defences
   return defences.map((defence) =>
     defence.id === id ? { ...defence, config: config } : defence
+  );
+}
+
+function resetDefenceConfig(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
+  // return the updated list of defences
+  return defences.map((defence) =>
+    defence.id === id
+      ? {
+          ...defence,
+          config: defence.config.map((config) => ({
+            ...config,
+            value: config.default,
+          })),
+        }
+      : defence
   );
 }
 
@@ -458,6 +485,7 @@ export {
   activateDefence,
   configureDefence,
   deactivateDefence,
+  resetDefenceConfig,
   detectTriggeredDefences,
   getEmailWhitelistVar,
   getInitialDefences,

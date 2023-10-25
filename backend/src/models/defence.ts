@@ -13,6 +13,7 @@ enum DEFENCE_TYPES {
 interface DefenceConfig {
   id: string;
   value: string;
+  default: string;
 }
 
 class DefenceInfo {

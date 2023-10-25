@@ -2,6 +2,7 @@ import {
   activateDefence,
   configureDefence,
   deactivateDefence,
+  resetDefenceConfig,
   detectTriggeredDefences,
   getInitialDefences,
   getQAPrePromptFromConfig,
@@ -176,6 +177,7 @@ test(
       {
         id: "maxMessageLength",
         value: String(3),
+        default: String(3),
       },
     ]);
     const defenceReport = await detectTriggeredDefences(
@@ -206,6 +208,7 @@ test(
       {
         id: "maxMessageLength",
         value: String(280),
+        default: String(280),
       },
     ]);
     const defenceReport = await detectTriggeredDefences(
@@ -232,6 +235,7 @@ test(
       {
         id: "maxMessageLength",
         value: String(3),
+        default: String(280),
       },
     ]);
     const defenceReport = await detectTriggeredDefences(
@@ -312,9 +316,12 @@ test("GIVEN setting max message length WHEN configuring defence THEN defence is 
     {
       id: "maxMessageLength",
       value: String(20),
+      default: String(3),
     },
   ]);
-  const config = [{ id: "maxMessageLength", value: String(10) }];
+  const config = [
+    { id: "maxMessageLength", value: String(10), default: String(280) },
+  ];
   defences = configureDefence(defence, defences, config);
   const matchingDefence = defences.find((d) => d.id === defence);
   expect(matchingDefence).toBeTruthy();
@@ -346,7 +353,7 @@ test("GIVEN a new system role has been set WHEN getting system role THEN return 
   let systemRole = getSystemRole(defences);
   expect(systemRole).toBe(systemRoleDefault);
   defences = configureDefence(DEFENCE_TYPES.SYSTEM_ROLE, defences, [
-    { id: "systemRole", value: "new system role" },
+    { id: "systemRole", value: "new system role", default: systemRoleDefault },
   ]);
   systemRole = getSystemRole(defences);
   expect(systemRole).toBe("new system role");
@@ -372,7 +379,11 @@ test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instruc
   const newQaLlmInstructions = "new QA LLM instructions";
   let defences = getInitialDefences();
   defences = configureDefence(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences, [
-    { id: "prePrompt", value: newQaLlmInstructions },
+    {
+      id: "prePrompt",
+      value: newQaLlmInstructions,
+      default: qAPrePromptSecure,
+    },
   ]);
   const qaLlmInstructions = getQAPrePromptFromConfig(defences);
   expect(qaLlmInstructions).toBe(newQaLlmInstructions);
@@ -398,6 +409,7 @@ test("GIVEN Eval LLM instructions for prompt injection have been configured WHEN
       {
         id: "prompt-injection-evaluator-prompt",
         value: newPromptInjectionEvalInstructions,
+        default: promptInjectionEvalPrePrompt,
       },
     ]
   );
@@ -428,6 +440,7 @@ test("GIVEN Eval LLM instructions for malicious prompts have been configured WHE
       {
         id: "malicious-prompt-evaluator-prompt",
         value: newMaliciousPromptEvalInstructions,
+        default: "this is the default prompt",
       },
     ]
   );
@@ -446,10 +459,15 @@ test("GIVEN setting email whitelist WHEN configuring defence THEN defence is con
     {
       id: "whitelist",
       value: "someone@example.com,someone_else@example.com",
+      default: "defaultpeople@example.com",
     },
   ]);
   const config = [
-    { id: "whitelist", value: "someone@example.com,someone_else@example.com" },
+    {
+      id: "whitelist",
+      value: "someone@example.com,someone_else@example.com",
+      default: "defaultpeople@example.com",
+    },
   ];
   const updatedDefences = configureDefence(defence, defences, config);
   const matchingDefence = updatedDefences.find((d) => d.id === defence);
@@ -471,8 +489,8 @@ test("GIVEN user configures random sequence enclosure WHEN configuring defence T
   const newPrePrompt = "new pre prompt";
   const newLength = String(100);
   const config = [
-    { id: "length", value: newLength },
-    { id: "prePrompt", value: newPrePrompt },
+    { id: "length", value: newLength, default: String(20) },
+    { id: "prePrompt", value: newPrePrompt, default: "default pre prompt" },
   ];
   // configure RSE length
   defences = configureDefence(defence, defences, config);
@@ -495,4 +513,69 @@ test("GIVEN user configures random sequence enclosure WHEN configuring defence T
       expect(matchingDefenceConfig.value).toBe(config[1].value);
     }
   }
+});
+
+test("GIVEN user has configured defence WHEN resetting defence config THEN defence config is reset", () => {
+  const defence = DEFENCE_TYPES.SYSTEM_ROLE;
+  let defences = getInitialDefences();
+
+  // configure defence
+  const config = [
+    {
+      id: "systemRole",
+      value: "new system role",
+      default: "default system role",
+    },
+  ];
+  defences = configureDefence(defence, defences, config);
+  // reset defence config
+  defences = resetDefenceConfig(defence, defences);
+  // expect defence config to be reset
+  const matchingDefence = defences.find((d) => d.id === defence);
+  expect(matchingDefence).toBeTruthy();
+  expect(matchingDefence?.config[0].value).toBe("default system role");
+});
+
+test("GIVEN user has configured two defence WHEN resetting one defence config THEN that defence config is reset and the other stays same", () => {
+  let defences = getInitialDefences();
+  // configure defence
+  const sysRoleConfig = [
+    {
+      id: "systemRole",
+      value: "new system role",
+      default: "default system role",
+    },
+  ];
+  const characterLimitConfig = [
+    {
+      id: "maxMessageLength",
+      value: String(10),
+      default: String(280),
+    },
+  ];
+
+  defences = configureDefence(
+    DEFENCE_TYPES.SYSTEM_ROLE,
+    defences,
+    sysRoleConfig
+  );
+  defences = configureDefence(
+    DEFENCE_TYPES.CHARACTER_LIMIT,
+    defences,
+    characterLimitConfig
+  );
+
+  defences = resetDefenceConfig(DEFENCE_TYPES.SYSTEM_ROLE, defences);
+  // expect defence config to be reset
+  const matchingSysRoleDefence = defences.find(
+    (d) => d.id === DEFENCE_TYPES.SYSTEM_ROLE
+  );
+  expect(matchingSysRoleDefence).toBeTruthy();
+  expect(matchingSysRoleDefence?.config[0].value).toBe("default system role");
+
+  const matchingCharacterLimitDefence = defences.find(
+    (d) => d.id === DEFENCE_TYPES.CHARACTER_LIMIT
+  );
+  expect(matchingCharacterLimitDefence).toBeTruthy();
+  expect(matchingCharacterLimitDefence?.config[0].value).toBe(String(10));
 });
