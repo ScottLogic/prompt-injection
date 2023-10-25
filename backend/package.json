@@ -6,6 +6,7 @@
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "langchain": "^0.0.113",
+    "memorystore": "^1.6.7",
     "openai": "^3.3.0",
     "openai-chat-tokens": "^0.2.7",
     "pdf-parse": "^1.1.1",
@@ -29,6 +30,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon -r dotenv/config src/app.ts",
+    "api:start": "docker compose up -d",
+    "api:logs": "docker compose logs -f",
+    "api:stop": "docker compose down",
     "format": "prettier --write .",
     "lint": "eslint . --fix",
     "test": "jest"
