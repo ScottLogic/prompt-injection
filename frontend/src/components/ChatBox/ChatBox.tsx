@@ -83,6 +83,9 @@ function ChatBox({
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
     }
+    if (event.key === "ArrowUp" && event.ctrlKey) {
+      event.preventDefault();
+    }
   }
 
   function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
