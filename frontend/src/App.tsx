@@ -91,7 +91,7 @@ function App() {
   useEffect(() => {
     // save isNewUser to local storage
     localStorage.setItem("isNewUser", isNewUser.toString());
-  });
+  }, [isNewUser]);
 
   useEffect(() => {
     // save current level to local storage
