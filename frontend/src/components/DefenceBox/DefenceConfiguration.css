@@ -11,6 +11,21 @@
   white-space: pre-line;
 }
 
+.defence-config-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.defence-config-name {
+  flex: 1;
+}
+
+.defence-config-reset-button {
+  margin-right: 0.125rem;
+  color: var(--main-background-colour);
+  border-radius: 0.25rem;
+}
+
 .defence-config-value.inactive {
   color: var(--main-input-inactive-text-colour);
   background-color: var(--main-input-inactive-background-colour);

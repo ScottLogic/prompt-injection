@@ -46,4 +46,11 @@ class DefenceInfo {
   isTriggered: boolean;
 }
 
+interface DefenceResetResponse {
+  id: string;
+  value: string;
+  default: string;
+}
+
 export { DEFENCE_TYPES, DefenceConfig, DefenceInfo };
+export type { DefenceResetResponse };

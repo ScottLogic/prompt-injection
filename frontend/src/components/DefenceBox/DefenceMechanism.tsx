@@ -4,7 +4,10 @@ import {
   DefenceConfig,
   DefenceInfo,
 } from "../../models/defence";
-import { validateDefence } from "../../service/defenceService";
+import {
+  resetDefenceConfig,
+  validateDefence,
+} from "../../service/defenceService";
 import "./DefenceMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
 import { TiTick, TiTimes } from "react-icons/ti";
@@ -27,6 +30,11 @@ function DefenceMechanism({
 }) {
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const [configValidated, setConfigValidated] = useState<boolean>(true);
+
+  async function resetConfigurationValue(configId: string): Promise<string> {
+    const defaultValue = await resetDefenceConfig(defenceDetail.id, configId);
+    return defaultValue.value;
+  }
 
   async function setConfigurationValue(configId: string, value: string) {
     const configName =
@@ -90,6 +98,7 @@ function DefenceMechanism({
                 isActive={defenceDetail.isActive}
                 config={config}
                 setConfigurationValue={setConfigurationValue}
+                resetConfigurationValue={resetConfigurationValue}
               />
             );
           })}
