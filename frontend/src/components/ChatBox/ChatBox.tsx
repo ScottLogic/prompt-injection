@@ -92,12 +92,19 @@ function ChatBox({
       void sendChatMessage();
     }
     if (event.key === "ArrowUp") {
-      recallPreviousMessage();
+      recallPreviousSentMessage();
     }
   }
 
-  function recallPreviousMessage() {
-    // recall previous message
+  function recallPreviousSentMessage() {
+    const sentMessages = messages.filter(
+      (message) => message.type === CHAT_MESSAGE_TYPE.USER
+    );
+    const previousSentMessage = sentMessages[sentMessages.length - 1]?.message;
+    if (previousSentMessage && textareaRef.current) {
+      textareaRef.current.value = previousSentMessage;
+      resizeInput();
+    }
   }
 
   function getSuccessMessage() {
