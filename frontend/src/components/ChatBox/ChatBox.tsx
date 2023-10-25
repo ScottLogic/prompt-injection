@@ -91,6 +91,13 @@ function ChatBox({
       // asynchronously send the message
       void sendChatMessage();
     }
+    if (event.key === "ArrowUp") {
+      recallPreviousMessage();
+    }
+  }
+
+  function recallPreviousMessage() {
+    // recall previous message
   }
 
   function getSuccessMessage() {
