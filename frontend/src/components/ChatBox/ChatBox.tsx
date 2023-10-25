@@ -188,6 +188,7 @@ function ChatBox({
             }}
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus={true}
+            spacing="loose"
           />
 
           <span className="send-button-wrapper">
