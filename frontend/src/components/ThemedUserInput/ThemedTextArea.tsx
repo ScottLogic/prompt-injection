@@ -30,21 +30,33 @@ function ThemedTextArea({
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.value = content ?? "";
-      // resizeInput();
+      resizeInput();
     }
   }, [content]);
 
   // expand textbox height up to maxHeightRem
   function resizeInput() {
-    const maxHeightPx = maxHeightRem ? maxHeightRem * 16 : 0;
     if (textareaRef.current) {
+      const remToPxMultiplier = 16;
+      // modified from https://www.cryer.co.uk/resources/javascript/script21_auto_grow_text_box.htm#gsc.tab=0
+      // set to 0 height first to shrink the textarea if needed
       textareaRef.current.style.height = "0";
-      if (textareaRef.current.scrollHeight > maxHeightPx) {
-        textareaRef.current.style.height = `${maxHeightRem}rem`;
-        textareaRef.current.style.overflowY = "auto";
-      } else {
-        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-        textareaRef.current.style.overflowY = "hidden";
+      if (textareaRef.current.clientHeight < textareaRef.current.scrollHeight) {
+        if (
+          maxHeightRem &&
+          textareaRef.current.scrollHeight > maxHeightRem * remToPxMultiplier
+        ) {
+          // max height reached, start scrolling
+          textareaRef.current.style.height = `${maxHeightRem}rem`;
+        } else {
+          // expand the textarea
+          // need to set the height to the scroll height first
+          textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+          textareaRef.current.style.height = `${
+            textareaRef.current.scrollHeight * 2 -
+            textareaRef.current.clientHeight
+          }px`;
+        }
       }
     }
   }
