@@ -8,7 +8,7 @@ function ThemedTextArea({
   autoFocus,
   content,
   disabled,
-  maxHeightRem,
+  maxLines,
   placeHolderText,
   spacing,
   enterPressed,
@@ -18,7 +18,7 @@ function ThemedTextArea({
   autoFocus?: boolean;
   content?: string;
   disabled?: boolean;
-  maxHeightRem?: number;
+  maxLines?: number;
   placeHolderText?: string;
   spacing?: "loose" | "tight";
   enterPressed?: (text: string) => void;
@@ -34,20 +34,51 @@ function ThemedTextArea({
     }
   }, [content]);
 
+  function getNumLines() {
+    if (textareaRef.current) {
+      const computedStyle = getComputedStyle(textareaRef.current);
+      // height of text is scrollHeight - vertical padding
+      const padding =
+        parseFloat(computedStyle.paddingTop) +
+        parseFloat(computedStyle.paddingBottom);
+      const textHeight = textareaRef.current.scrollHeight - padding;
+      const lineHeight = parseFloat(computedStyle.lineHeight);
+      const numLines = Math.floor(textHeight / lineHeight);
+      return numLines;
+    } else {
+      // by default, return one line
+      return 1;
+    }
+  }
+
+  function getMaxHeightPx() {
+    // max height is maxLines * lineHeight + vertical padding
+    if (textareaRef.current) {
+      const computedStyle = getComputedStyle(textareaRef.current);
+      const padding =
+        parseFloat(computedStyle.paddingTop) +
+        parseFloat(computedStyle.paddingBottom);
+      const lineHeight = parseFloat(computedStyle.lineHeight);
+      const maxHeight = maxLines ? maxLines * lineHeight + padding : 0;
+      return maxHeight;
+    } else {
+      // by default, return 0
+      return 0;
+    }
+  }
+
   // expand textbox height up to maxHeightRem
   function resizeInput() {
     if (textareaRef.current) {
-      const remToPxMultiplier = 16;
+      const numLines = getNumLines();
       // modified from https://www.cryer.co.uk/resources/javascript/script21_auto_grow_text_box.htm#gsc.tab=0
       // set to 0 height first to shrink the textarea if needed
       textareaRef.current.style.height = "0";
       if (textareaRef.current.clientHeight < textareaRef.current.scrollHeight) {
-        if (
-          maxHeightRem &&
-          textareaRef.current.scrollHeight > maxHeightRem * remToPxMultiplier
-        ) {
-          // max height reached, start scrolling
-          textareaRef.current.style.height = `${maxHeightRem}rem`;
+        if (maxLines && numLines > maxLines) {
+          // max height reached, stop expanding and start scrolling
+          textareaRef.current.style.height = `${getMaxHeightPx()}px`;
+          textareaRef.current.style.overflow = "auto";
         } else {
           // expand the textarea
           // need to set the height to the scroll height first
@@ -56,6 +87,8 @@ function ThemedTextArea({
             textareaRef.current.scrollHeight * 2 -
             textareaRef.current.clientHeight
           }px`;
+          // don't show scrollbars
+          textareaRef.current.style.overflow = "hidden";
         }
       }
     }

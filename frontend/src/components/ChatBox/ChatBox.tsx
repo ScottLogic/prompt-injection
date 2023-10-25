@@ -180,7 +180,7 @@ function ChatBox({
         <div className="messages">
           <ThemedTextArea
             content={textAreaContent}
-            maxHeightRem={10}
+            maxLines={10}
             placeHolderText="Type here..."
             enterPressed={() => void sendChatMessage()}
             setContent={(text) => {

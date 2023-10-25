@@ -31,7 +31,7 @@ function DefenceConfiguration({
         }}
         setContent={setValue}
         disabled={!isActive}
-        maxHeightRem={10}
+        maxLines={10}
       />
       {/* <ContentEditable
         className={configClass}

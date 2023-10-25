@@ -14,6 +14,10 @@
   /* must inherit to override textarea styling */
   font-size: inherit;
   font-family: inherit;
+
+  /* must set line height to be able to calculate number of lines
+  this is relative to font size of the text area */
+  line-height: 1.25em;
 }
 
 .themed-text-area.spacing-loose {
