@@ -524,16 +524,16 @@ test("GIVEN user has configured defence WHEN resetting defence config THEN defen
     {
       id: "systemRole",
       value: "new system role",
-      default: "default system role",
+      default: systemRoleDefault,
     },
   ];
   defences = configureDefence(defence, defences, config);
   // reset defence config
-  defences = resetDefenceConfig(defence, defences);
+  defences = resetDefenceConfig(defence, "systemRole", defences);
   // expect defence config to be reset
   const matchingDefence = defences.find((d) => d.id === defence);
   expect(matchingDefence).toBeTruthy();
-  expect(matchingDefence?.config[0].value).toBe("default system role");
+  expect(matchingDefence?.config[0].value).toBe(systemRoleDefault);
 });
 
 test("GIVEN user has configured two defence WHEN resetting one defence config THEN that defence config is reset and the other stays same", () => {
@@ -543,7 +543,7 @@ test("GIVEN user has configured two defence WHEN resetting one defence config TH
     {
       id: "systemRole",
       value: "new system role",
-      default: "default system role",
+      default: systemRoleDefault,
     },
   ];
   const characterLimitConfig = [
@@ -565,13 +565,17 @@ test("GIVEN user has configured two defence WHEN resetting one defence config TH
     characterLimitConfig
   );
 
-  defences = resetDefenceConfig(DEFENCE_TYPES.SYSTEM_ROLE, defences);
+  defences = resetDefenceConfig(
+    DEFENCE_TYPES.SYSTEM_ROLE,
+    "systemRole",
+    defences
+  );
   // expect defence config to be reset
   const matchingSysRoleDefence = defences.find(
-    (d) => d.id === DEFENCE_TYPES.SYSTEM_ROLE
+    (d) => d.id === DEFENCE_TYPES.SYSTEM_ROLE && d.config[0].id === "systemRole"
   );
   expect(matchingSysRoleDefence).toBeTruthy();
-  expect(matchingSysRoleDefence?.config[0].value).toBe("default system role");
+  expect(matchingSysRoleDefence?.config[0].value).toBe(systemRoleDefault);
 
   const matchingCharacterLimitDefence = defences.find(
     (d) => d.id === DEFENCE_TYPES.CHARACTER_LIMIT

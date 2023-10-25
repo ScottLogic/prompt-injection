@@ -7,6 +7,7 @@ import {
   transformMessage,
   detectTriggeredDefences,
   getInitialDefences,
+  resetDefenceConfig,
 } from "./defence";
 import {
   CHAT_MESSAGE_TYPE,
@@ -36,6 +37,8 @@ import {
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
+import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
+import { DefenceConfig } from "./models/defence";
 
 const router = express.Router();
 
@@ -115,6 +118,34 @@ router.post("/defence/reset", (req: DefenceResetRequest, res) => {
     req.session.levelState[level].defences = getInitialDefences();
     console.debug("Defences reset");
     res.send();
+  } else {
+    res.statusCode = 400;
+    res.send();
+  }
+});
+
+// reset one defence config and return the new config
+router.post("/defence/resetConfig", (req: DefenceConfigResetRequest, res) => {
+  const defenceId = req.body.defenceId;
+  const configId = req.body.configId;
+  const level = LEVEL_NAMES.SANDBOX; //configuration only available in sandbox
+  if (defenceId && configId) {
+    req.session.levelState[level].defences = resetDefenceConfig(
+      defenceId,
+      configId,
+      req.session.levelState[level].defences
+    );
+    const updatedDefenceConfig: DefenceConfig | undefined =
+      req.session.levelState[level].defences
+        .find((defence) => defence.id === defenceId)
+        ?.config.find((config) => config.id === configId);
+
+    if (updatedDefenceConfig) {
+      res.send(updatedDefenceConfig);
+    } else {
+      res.statusCode = 400;
+      res.send();
+    }
   } else {
     res.statusCode = 400;
     res.send();

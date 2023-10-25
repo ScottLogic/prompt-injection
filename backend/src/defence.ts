@@ -108,24 +108,43 @@ function deactivateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
 function configureDefence(
   id: DEFENCE_TYPES,
   defences: DefenceInfo[],
-  config: DefenceConfig[]
-) {
-  // return the updated list of defences
-  return defences.map((defence) =>
-    defence.id === id ? { ...defence, config: config } : defence
-  );
-}
-
-function resetDefenceConfig(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
+  updatedConfig: DefenceConfig[]
+): DefenceInfo[] {
   // return the updated list of defences
   return defences.map((defence) =>
     defence.id === id
       ? {
           ...defence,
-          config: defence.config.map((config) => ({
-            ...config,
-            value: config.default,
-          })),
+          config: defence.config.map((config) => {
+            const updatedConfigItem = updatedConfig.find(
+              (item) => item.id === config.id
+            );
+            return updatedConfigItem
+              ? { ...config, value: updatedConfigItem.value }
+              : config;
+          }),
+        }
+      : defence
+  );
+}
+
+function resetDefenceConfig(
+  id: DEFENCE_TYPES,
+  configId: string,
+  defences: DefenceInfo[]
+): DefenceInfo[] {
+  return defences.map((defence) =>
+    defence.id === id
+      ? {
+          ...defence,
+          config: defence.config.map((config) =>
+            config.id === configId
+              ? {
+                  ...config,
+                  value: config.default,
+                }
+              : config
+          ),
         }
       : defence
   );
@@ -134,21 +153,19 @@ function resetDefenceConfig(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
 function getConfigValue(
   defences: DefenceInfo[],
   defenceId: DEFENCE_TYPES,
-  configId: string,
-  defaultValue: string
+  configId: string
 ) {
-  const configValue: string | undefined = defences
+  const config: DefenceConfig | undefined = defences
     .find((defence) => defence.id === defenceId)
-    ?.config.find((config) => config.id === configId)?.value;
-  return configValue ?? defaultValue;
+    ?.config.find((config) => config.id === configId);
+  return config?.value ?? config?.default ?? "";
 }
 
 function getMaxMessageLength(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.CHARACTER_LIMIT,
-    "maxMessageLength",
-    String(280)
+    "maxMessageLength"
   );
 }
 
@@ -156,8 +173,7 @@ function getRandomSequenceEnclosurePrePrompt(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-    "prePrompt",
-    ""
+    "prePrompt"
   );
 }
 
@@ -165,13 +181,12 @@ function getRandomSequenceEnclosureLength(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-    "length",
-    String(10)
+    "length"
   );
 }
 
 function getXMLTaggingPrePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(defences, DEFENCE_TYPES.XML_TAGGING, "prePrompt", "");
+  return getConfigValue(defences, DEFENCE_TYPES.XML_TAGGING, "prePrompt");
 }
 
 function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
@@ -180,8 +195,7 @@ function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
     type,
     type === DEFENCE_TYPES.FILTER_USER_INPUT
       ? "filterUserInput"
-      : "filterBotOutput",
-    ""
+      : "filterBotOutput"
   );
 }
 function getSystemRole(
@@ -197,30 +211,19 @@ function getSystemRole(
     case LEVEL_NAMES.LEVEL_3:
       return systemRoleLevel3;
     default:
-      return getConfigValue(
-        defences,
-        DEFENCE_TYPES.SYSTEM_ROLE,
-        "systemRole",
-        ""
-      );
+      return getConfigValue(defences, DEFENCE_TYPES.SYSTEM_ROLE, "systemRole");
   }
 }
 
 function getEmailWhitelistVar(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.EMAIL_WHITELIST,
-    "whitelist",
-    ""
-  );
+  return getConfigValue(defences, DEFENCE_TYPES.EMAIL_WHITELIST, "whitelist");
 }
 
 function getQAPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
-    "prePrompt",
-    ""
+    "prePrompt"
   );
 }
 
@@ -228,8 +231,7 @@ function getPromptInjectionEvalPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    "prompt-injection-evaluator-prompt",
-    ""
+    "prompt-injection-evaluator-prompt"
   );
 }
 
@@ -237,8 +239,7 @@ function getMaliciousPromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    "malicious-prompt-evaluator-prompt",
-    ""
+    "malicious-prompt-evaluator-prompt"
   );
 }
 
