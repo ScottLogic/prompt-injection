@@ -91,7 +91,7 @@ function ChatBox({
       // asynchronously send the message
       void sendChatMessage();
     }
-    if (event.key === "ArrowUp") {
+    if (event.key === "ArrowUp" && event.ctrlKey) {
       recallPreviousSentMessage();
     }
   }
