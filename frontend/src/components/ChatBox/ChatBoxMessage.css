@@ -19,8 +19,8 @@
 .chat-box-message-ai {
   background: var(--chat-bot-background);
   border-radius: 0px 8px 8px 8px;
-  float: left;
   margin-right: auto;
+  text-align: left;
 }
 
 .chat-box-message-ai:before {
@@ -56,7 +56,6 @@
 .chat-box-message-user {
   background: var(--chat-user-background);
   border-radius: 8px 0px 8px 8px;
-  float: right;
   margin-left: auto;
   text-align: right;
 }
@@ -100,4 +99,5 @@
 .chat-box-message-level-info {
   background-color: var(--email-background-colour);
   max-width: 100%;
+  text-align: left;
 }
