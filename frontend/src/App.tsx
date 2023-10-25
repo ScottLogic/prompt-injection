@@ -28,12 +28,11 @@ import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 
 function App() {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
-  const [isNewUser, setIsNewUser] = useState(loadIsNewUser());
-  const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
-    loadCurrentLevel()
-  );
+  const [isNewUser, setIsNewUser] = useState(loadIsNewUser);
+  const [currentLevel, setCurrentLevel] =
+    useState<LEVEL_NAMES>(loadCurrentLevel);
   const [numCompletedLevels, setNumCompletedLevels] = useState(
-    loadNumCompletedLevels()
+    loadNumCompletedLevels
   );
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
