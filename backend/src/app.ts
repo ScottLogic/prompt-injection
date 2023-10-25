@@ -19,7 +19,6 @@ dotenv.config();
 declare module "express-session" {
   interface Session {
     initialised: boolean;
-    isNewUser: boolean;
     openAiApiKey: string | null;
     chatModel: ChatModel;
     levelState: LevelState[];
@@ -71,7 +70,6 @@ app.use(
 app.use((req, _res, next) => {
   // initialise session variables
   if (!req.session.initialised) {
-    req.session.isNewUser = true;
     req.session.chatModel = defaultChatModel;
     req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
     req.session.levelState = [];
