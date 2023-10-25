@@ -44,8 +44,9 @@ function App() {
   function loadIsNewUser() {
     // get isNewUser from local storage
     const isNewUserStr = localStorage.getItem("isNewUser");
-    if (isNewUserStr) return isNewUserStr === "true";
-    else {
+    if (isNewUserStr) {
+      return isNewUserStr === "true";
+    } else {
       // is new user by default
       localStorage.setItem("isNewUser", "true");
       return true;
