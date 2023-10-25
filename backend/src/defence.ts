@@ -133,6 +133,7 @@ function resetDefenceConfig(
   configId: string,
   defences: DefenceInfo[]
 ): DefenceInfo[] {
+  // return updated list of defences
   return defences.map((defence) =>
     defence.id === id
       ? {
@@ -153,19 +154,21 @@ function resetDefenceConfig(
 function getConfigValue(
   defences: DefenceInfo[],
   defenceId: DEFENCE_TYPES,
-  configId: string
+  configId: string,
+  backupDefault = ""
 ) {
   const config: DefenceConfig | undefined = defences
     .find((defence) => defence.id === defenceId)
     ?.config.find((config) => config.id === configId);
-  return config?.value ?? config?.default ?? "";
+  return config?.value ?? config?.default ?? backupDefault;
 }
 
 function getMaxMessageLength(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.CHARACTER_LIMIT,
-    "maxMessageLength"
+    "maxMessageLength",
+    String(280)
   );
 }
 
