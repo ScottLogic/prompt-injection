@@ -12,8 +12,8 @@ const GLOSSARY: GlossaryEntry[] = [
   },
   {
     term: "Prompt",
-    definition: `A prompt is a bit of text that fed as the input into into a chatbot.
-    It can be any string but is usually a question, instruciton or statement written in human language.
+    definition: `A prompt is a bit of text that is fed as the input into an LLM.
+    It can be any text but is usually a question, instruction or statement written in human language.
     The chatbot will use the prompt alongside the conversation history and the System Role to generate a response.`,
   },
   {
