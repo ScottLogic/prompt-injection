@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useRef } from "react";
+import { KeyboardEvent, FocusEvent, useEffect, useRef } from "react";
 
 import "./ThemedTextArea.css";
 import { clsx } from "clsx";
@@ -12,6 +12,7 @@ function ThemedTextArea({
   placeHolderText,
   spacing,
   enterPressed,
+  onBlur,
   setContent,
 }: {
   // optional
@@ -22,6 +23,7 @@ function ThemedTextArea({
   placeHolderText?: string;
   spacing?: "loose" | "tight";
   enterPressed?: (text: string) => void;
+  onBlur?: (text: string) => void;
   setContent?: (text: string) => void;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -67,7 +69,7 @@ function ThemedTextArea({
     }
   }
 
-  // expand textbox height up to maxHeightRem
+  // expand textbox height up to maxLines
   function resizeInput() {
     if (textareaRef.current) {
       const numLines = getNumLines();
@@ -124,6 +126,13 @@ function ThemedTextArea({
     }
   }
 
+  function onFocusLost(event: FocusEvent<HTMLTextAreaElement>) {
+    if (onBlur) {
+      const text = event.target.innerText;
+      onBlur(text);
+    }
+  }
+
   const textAreaClass = clsx("themed-text-area", {
     disabled: disabled,
     "spacing-loose": spacing === "loose",
@@ -136,6 +145,7 @@ function ThemedTextArea({
       placeholder={placeHolderText}
       defaultValue={content}
       rows={1}
+      onBlur={onFocusLost}
       onChange={inputChange}
       onKeyDown={inputKeyDown}
       onKeyUp={inputKeyUp}

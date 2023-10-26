@@ -15,28 +15,24 @@ function DefenceConfiguration({
 }) {
   const [value, setValue] = useState<string>(config.value);
 
-  // function focusLost(event: FocusEvent<HTMLDivElement>) {
-  //   const value = event.target.innerText.trim();
-  //   // asynchronously set the configuration value
-  //   void setConfigurationValue(config.id, value);
-  // }
+  function applyConfigurationValue() {
+    // only apply the value if it's different
+    if (value !== config.value) {
+      void setConfigurationValue(config.id, value);
+    }
+  }
 
   return (
     <div className="defence-configuration">
       <span>{config.name}: </span>
       <ThemedTextArea
         content={value}
-        enterPressed={() => {
-          void setConfigurationValue(config.id, value);
-        }}
         setContent={setValue}
         disabled={!isActive}
         maxLines={10}
+        enterPressed={applyConfigurationValue}
+        onBlur={applyConfigurationValue}
       />
-      {/* <ContentEditable
-        className={configClass}
-        onBlur={focusLost}
-      /> */}
     </div>
   );
 }
