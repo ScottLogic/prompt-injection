@@ -42,7 +42,8 @@ function ChatBox({
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [howFarBack, setHowFarBack] = useState(0);
+  const [recalledMessageReverseIndex, setRecalledMessageReverseIndex] =
+    useState(0);
 
   // called on mount
   useEffect(() => {
@@ -107,20 +108,22 @@ function ChatBox({
       (message) => message.type === CHAT_MESSAGE_TYPE.USER
     );
 
-    const nextHowFarBack = incrementWithClamping(
-      howFarBack,
+    const nextrecalledMessageReverseIndex = incrementWithClamping(
+      recalledMessageReverseIndex,
       increment,
       0,
       sentMessages.length
     );
 
     // recall the message from the history. If at current time, clear the chatbox
-    const index = sentMessages.length - nextHowFarBack;
+    const index = sentMessages.length - nextrecalledMessageReverseIndex;
     const recalledMessage =
-      nextHowFarBack === 0 ? "" : sentMessages[index]?.message ?? "";
+      nextrecalledMessageReverseIndex === 0
+        ? ""
+        : sentMessages[index]?.message ?? "";
 
     setContentsOfChatBox(recalledMessage);
-    setHowFarBack(nextHowFarBack);
+    setRecalledMessageReverseIndex(nextrecalledMessageReverseIndex);
   }
 
   function incrementWithClamping(
@@ -253,7 +256,7 @@ function ChatBox({
         );
       }
     }
-    setHowFarBack(0);
+    setRecalledMessageReverseIndex(0);
   }
 
   return (
