@@ -18,7 +18,6 @@
 .chat-box-message-ai {
   background: var(--chat-bot-background);
   border-radius: 0rem 0.5rem 0.5rem 0.5rem;
-  margin-right: auto;
 }
 
 .chat-box-message-ai:before {
