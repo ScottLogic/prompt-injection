@@ -97,17 +97,20 @@ function ChatBox({
       // asynchronously send the message
       void sendChatMessage();
     } else if (event.key === "ArrowUp" && event.ctrlKey) {
-      recallSentMessageFromHistory(1);
+      recallSentMessageFromHistory("backward");
     } else if (event.key === "ArrowDown" && event.ctrlKey) {
-      recallSentMessageFromHistory(-1);
+      recallSentMessageFromHistory("forward");
     }
   }
 
-  function recallSentMessageFromHistory(increment: number) {
+  type Direction = "backward" | "forward";
+
+  function recallSentMessageFromHistory(direction: Direction) {
     const sentMessages = messages.filter(
       (message) => message.type === CHAT_MESSAGE_TYPE.USER
     );
 
+    const increment = direction === "backward" ? 1 : -1;
     const nextrecalledMessageReverseIndex = incrementWithClamping(
       recalledMessageReverseIndex,
       increment,
