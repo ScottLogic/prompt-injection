@@ -28,6 +28,7 @@ function ChatBox({
   addCompletedLevel,
   resetLevel,
   setEmails,
+  openLevelsCompleteOverlay,
   incrementNumCompletedLevels,
 }: {
   completedLevels: Set<LEVEL_NAMES>;
@@ -38,6 +39,7 @@ function ChatBox({
   addCompletedLevel: (level: LEVEL_NAMES) => void;
   resetLevel: () => void;
   setEmails: (emails: EmailInfo[]) => void;
+  openLevelsCompleteOverlay: () => void;
   incrementNumCompletedLevels: () => void;
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
@@ -198,6 +200,10 @@ function ChatBox({
           CHAT_MESSAGE_TYPE.LEVEL_INFO,
           currentLevel
         );
+        // if this is the last level, show the level complete overlay
+        if (currentLevel === LEVEL_NAMES.LEVEL_3) {
+          openLevelsCompleteOverlay();
+        }
       }
     }
   }

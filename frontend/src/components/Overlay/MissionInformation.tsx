@@ -5,6 +5,7 @@ import OverlayButton from "../ThemedButtons/OverlayButton";
 import Overlay, { DialogClose } from "./Overlay";
 
 import "./MissionInformation.css";
+import MissionDialogue from "./MissionDialogue";
 
 function MissionInformation({
   currentLevel,
@@ -24,13 +25,10 @@ function MissionInformation({
     <Overlay ref={dialogRef} closeOverlay={closeOverlay}>
       <div className="mission-information">
         <h1> Mission Information </h1>
-        <div className="dialogue">
-          {LEVELS[currentLevel].missionInfoDialogue.map((line, index) => (
-            <section key={index}>
-              <h2>{`${line.speaker}: `}</h2>
-              <p>{line.text}</p>
-            </section>
-          ))}
+        <div className="content">
+          <MissionDialogue
+            dialogueLines={LEVELS[currentLevel].missionInfoDialogue}
+          />
           <div className="button-area">
             <OverlayButton onClick={closeMissionInfo}>OK</OverlayButton>
           </div>
