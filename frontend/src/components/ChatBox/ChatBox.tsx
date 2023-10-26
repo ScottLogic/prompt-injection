@@ -16,6 +16,7 @@ import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ThemedButton from "../ThemedButtons/ThemedButton";
 import LoadingButton from "../ThemedButtons/LoadingButton";
 import ChatBoxFeed from "./ChatBoxFeed";
+import useIncrementer from "../../hooks/useIncrementer";
 
 import "./ChatBox.css";
 
@@ -42,7 +43,12 @@ function ChatBox({
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const recalledMessageReverseIndex = useRef(0);
+  const [
+    recalledMessageReverseIndex,
+    recallLaterMessage,
+    recallEarlierMessage,
+    resetRecallToLatest,
+  ] = useIncrementer();
 
   // called on mount
   useEffect(() => {
@@ -107,38 +113,22 @@ function ChatBox({
       (message) => message.type === CHAT_MESSAGE_TYPE.USER
     );
 
-    const increment = direction === "backward" ? 1 : -1;
-    recalledMessageReverseIndex.current = incrementWithClamping(
-      recalledMessageReverseIndex.current,
-      increment,
-      sentMessages.length
+    if (direction === "forward") recallEarlierMessage();
+    else recallLaterMessage(sentMessages.length);
+  }
+
+  useEffect(() => {
+    const sentMessages = messages.filter(
+      (message) => message.type === CHAT_MESSAGE_TYPE.USER
     );
 
     // recall the message from the history. If at current time, clear the chatbox
-    const index = sentMessages.length - recalledMessageReverseIndex.current;
+    const index = sentMessages.length - recalledMessageReverseIndex;
     const recalledMessage =
-      recalledMessageReverseIndex.current === 0
-        ? ""
-        : sentMessages[index]?.message ?? "";
+      index === sentMessages.length ? "" : sentMessages[index]?.message ?? "";
 
     setContentsOfChatBox(recalledMessage);
-  }
-
-  function incrementWithClamping(
-    valueToIncrement: number,
-    incrementAmount: number,
-    max: number
-  ) {
-    const min = 0;
-    if (
-      min <= valueToIncrement + incrementAmount &&
-      valueToIncrement + incrementAmount <= max
-    ) {
-      return valueToIncrement + incrementAmount;
-    } else {
-      return valueToIncrement;
-    }
-  }
+  }, [recalledMessageReverseIndex]);
 
   function setContentsOfChatBox(newContents: string) {
     if (textareaRef.current) {
@@ -254,7 +244,7 @@ function ChatBox({
         );
       }
     }
-    recalledMessageReverseIndex.current = 0;
+    resetRecallToLatest();
   }
 
   return (
