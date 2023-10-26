@@ -16,7 +16,7 @@ import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ThemedButton from "../ThemedButtons/ThemedButton";
 import LoadingButton from "../ThemedButtons/LoadingButton";
 import ChatBoxFeed from "./ChatBoxFeed";
-import useIncrementer from "../../hooks/useIncrementer";
+import useUnitStepper from "../../hooks/useUnitStepper";
 
 import "./ChatBox.css";
 
@@ -48,7 +48,7 @@ function ChatBox({
     recallLaterMessage,
     recallEarlierMessage,
     resetRecallToLatest,
-  ] = useIncrementer();
+  ] = useUnitStepper();
 
   // called on mount
   useEffect(() => {

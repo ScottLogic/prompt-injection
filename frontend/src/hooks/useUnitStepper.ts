@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function useIncrementer(initialValue = 0) {
+function useUnitStepper(initialValue = 0) {
   const [value, setValue] = useState(initialValue);
 
   function increase(maxCap?: number) {
@@ -18,4 +18,4 @@ function useIncrementer(initialValue = 0) {
   return [value, increase, decrease, reset] as const;
 }
 
-export default useIncrementer;
+export default useUnitStepper;
