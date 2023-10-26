@@ -140,8 +140,6 @@ function ChatBox({
           ""
         : sentMessages[index]?.message ?? "";
 
-    console.log(`howFarBack: ${nextHowFarBack}, index: ${index}`);
-
     setContentsOfChatBox(recalledMessage);
     setHowFarBack(nextHowFarBack);
   }
