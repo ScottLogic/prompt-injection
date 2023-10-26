@@ -19,7 +19,7 @@ import LoadingButton from "../ThemedButtons/LoadingButton";
 import ChatBoxFeed from "./ChatBoxFeed";
 
 import "./ChatBox.css";
-import ThemedTextArea from "../ThemedUserInput/ThemedTextArea";
+import ChatBoxInput from "./ChatBoxInput";
 
 function ChatBox({
   completedLevels,
@@ -42,7 +42,7 @@ function ChatBox({
   setEmails: (emails: EmailInfo[]) => void;
   setNumCompletedLevels: (numCompletedLevels: number) => void;
 }) {
-  const [textAreaContent, setTextAreaContent] = useState<string>("");
+  const [chatInput, setChatInput] = useState<string>("");
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
 
   // called on mount
@@ -67,23 +67,20 @@ function ChatBox({
   }
 
   async function sendChatMessage() {
-    if (textAreaContent && !isSendingMessage) {
+    if (chatInput && !isSendingMessage) {
       setIsSendingMessage(true);
       // clear the input box
-      setTextAreaContent("");
+      setChatInput("");
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
-        message: textAreaContent,
+        message: chatInput,
         type: CHAT_MESSAGE_TYPE.USER,
       });
 
-      const response: ChatResponse = await sendMessage(
-        textAreaContent,
-        currentLevel
-      );
+      const response: ChatResponse = await sendMessage(chatInput, currentLevel);
       setNumCompletedLevels(response.numLevelsCompleted);
       const transformedMessage = response.transformedMessage;
-      const isTransformed = transformedMessage !== textAreaContent;
+      const isTransformed = transformedMessage !== chatInput;
       // add the transformed message to the chat box if it is different from the original message
       if (isTransformed) {
         addChatMessage({
@@ -178,19 +175,11 @@ function ChatBox({
       <ChatBoxFeed messages={messages} />
       <div className="footer">
         <div className="messages">
-          <ThemedTextArea
-            placeHolderText="Type here..."
-            content={textAreaContent}
-            setContent={(text) => {
-              setTextAreaContent(text);
-            }}
-            spacing="loose"
-            maxLines={10}
+          <ChatBoxInput
+            content={chatInput}
+            setContent={setChatInput}
             enterPressed={() => void sendChatMessage()}
-            // eslint-disable-next-line jsx-a11y/no-autofocus
-            autoFocus={true}
           />
-
           <span className="send-button-wrapper">
             <LoadingButton
               onClick={() => void sendChatMessage()}
