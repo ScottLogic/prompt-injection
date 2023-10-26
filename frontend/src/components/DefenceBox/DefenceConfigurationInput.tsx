@@ -1,40 +1,47 @@
 import ThemedTextArea from "../ThemedUserInput/ThemedTextArea";
 import ThemedNumberInput from "../ThemedUserInput/ThemedNumberInput";
+import { useState } from "react";
 
 function DefenceConfigurationInput({
-  content,
+  defaultValue,
   disabled,
   inputType,
-  maxLines,
-  setContent,
   setConfigurationValue,
 }: {
-  content: string;
+  defaultValue: string;
   disabled: boolean;
   inputType: "text" | "number";
-  maxLines: number;
-  setContent: (text: string) => void;
-  setConfigurationValue: () => void;
+  setConfigurationValue: (value: string) => void;
 }) {
+  const [value, setValue] = useState<string>(defaultValue);
+
   if (inputType === "text") {
     return (
       <ThemedTextArea
-        content={content}
-        setContent={setContent}
+        content={value}
+        setContent={setValue}
         disabled={disabled}
-        maxLines={maxLines}
-        enterPressed={setConfigurationValue}
-        onBlur={setConfigurationValue}
+        maxLines={10}
+        enterPressed={() => {
+          setConfigurationValue(value);
+        }}
+        onBlur={() => {
+          setConfigurationValue(value);
+        }}
       />
     );
   } else {
     return (
       <ThemedNumberInput
-        content={content}
-        setContent={setContent}
+        content={value}
+        setContent={setValue}
         disabled={disabled}
-        enterPressed={setConfigurationValue}
-        onBlur={setConfigurationValue}
+        enterPressed={() => {
+          setConfigurationValue(value);
+        }}
+        onBlur={() => {
+          setConfigurationValue(value);
+        }}
       />
     );
   }

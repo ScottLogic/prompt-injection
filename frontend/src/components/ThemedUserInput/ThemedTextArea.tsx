@@ -1,4 +1,4 @@
-import { KeyboardEvent, FocusEvent, useEffect, useRef } from "react";
+import { KeyboardEvent, useEffect, useRef } from "react";
 
 import "./ThemedTextArea.css";
 import { clsx } from "clsx";
@@ -22,8 +22,8 @@ function ThemedTextArea({
   maxLines?: number;
   placeHolderText?: string;
   spacing?: "loose" | "tight";
-  enterPressed?: (text: string) => void;
-  onBlur?: (text: string) => void;
+  enterPressed?: () => void;
+  onBlur?: () => void;
   setContent?: (text: string) => void;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -120,15 +120,13 @@ function ThemedTextArea({
   function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
     // shift+enter shouldn't trigger enterPressed
     if (event.key === "Enter" && !event.shiftKey && enterPressed) {
-      const message = textareaRef.current?.value ?? "";
-      enterPressed(message);
+      enterPressed();
     }
   }
 
-  function onFocusLost(event: FocusEvent<HTMLTextAreaElement>) {
+  function onFocusLost() {
     if (onBlur) {
-      const text = event.target.innerText;
-      onBlur(text);
+      onBlur();
     }
   }
 

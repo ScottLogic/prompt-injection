@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { DefenceConfig } from "../../models/defence";
 
 import "./DefenceConfiguration.css";
@@ -13,10 +12,7 @@ function DefenceConfiguration({
   isActive: boolean;
   setConfigurationValue: (configId: string, value: string) => Promise<void>;
 }) {
-  const [value, setValue] = useState<string>(config.value);
-
-  function setConfigurationValueIfDifferent() {
-    // only apply the value if it's different
+  function setConfigurationValueIfDifferent(value: string) {
     if (value !== config.value) {
       void setConfigurationValue(config.id, value.trim());
     }
@@ -26,10 +22,8 @@ function DefenceConfiguration({
     <div className="defence-configuration">
       <span>{config.name}: </span>
       <DefenceConfigurationInput
-        content={value}
-        setContent={setValue}
+        defaultValue={config.value}
         disabled={!isActive}
-        maxLines={10}
         inputType={config.inputType}
         setConfigurationValue={setConfigurationValueIfDifferent}
       />
