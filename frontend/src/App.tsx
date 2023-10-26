@@ -25,6 +25,7 @@ import { OVERLAY_TYPE } from "./models/overlay";
 import OverlayWelcome from "./components/Overlay/OverlayWelcome";
 import MissionInformation from "./components/Overlay/MissionInformation";
 import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
+import LevelsComplete from "./components/Overlay/LevelsComplete";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
@@ -106,6 +107,9 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   function openInformationOverlay() {
     setOverlayType(OVERLAY_TYPE.INFORMATION);
   }
+  function openLevelsCompleteOverlay() {
+    setOverlayType(OVERLAY_TYPE.LEVELS_COMPLETE);
+  }
 
   function openOverlay(overlayType: OVERLAY_TYPE | null) {
     switch (overlayType) {
@@ -128,6 +132,13 @@ function App({ isNewUser }: { isNewUser: boolean }) {
         return (
           <HandbookOverlay
             currentLevel={currentLevel}
+            closeOverlay={closeOverlay}
+          />
+        );
+      case OVERLAY_TYPE.LEVELS_COMPLETE:
+        return (
+          <LevelsComplete
+            goToSandbox={() => void goToSandbox()}
             closeOverlay={closeOverlay}
           />
         );
@@ -178,6 +189,14 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     }
     // otherwise do nothing as user is already in the selected mode
     closeOverlay();
+  }
+
+  async function goToSandbox() {
+    await setStartLevel(LEVEL_NAMES.SANDBOX);
+    // close the current overlay
+    closeOverlay();
+    // open the sandbox info overlay
+    openInformationOverlay();
   }
 
   // for going switching level without clearing progress
@@ -315,6 +334,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
           setEmails={setEmails}
           incrementNumCompletedLevels={incrementNumCompletedLevels}
           openInfoOverlay={openInformationOverlay}
+          openLevelsCompleteOverlay={openLevelsCompleteOverlay}
           openWelcomeOverlay={openWelcomeOverlay}
         />
       </main>
