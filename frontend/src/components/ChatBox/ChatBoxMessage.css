@@ -63,7 +63,7 @@
   /* reduce the damage in FF3.0 */
   display: block;
   width: 0;
-  top: 0rem; /* controls vertical position */
+  top: 0; /* controls vertical position */
   right: -0.625rem; /* value = - border-left-width - border-right-width */
   border-width: 0 0 0.375rem 0.625rem;
   border-color: transparent var(--chat-user-colour);
@@ -80,7 +80,7 @@
   /* reduce the damage in FF3.0 */
   display: block;
   width: 0;
-  top: 0rem; /* controls vertical position */
+  top: 0; /* controls vertical position */
   right: -0.625rem; /* value = - border-left-width - border-right-width */
   border-width: 0 0 0.375rem 0.625rem;
   border-color: transparent var(--chat-edited-colour);
