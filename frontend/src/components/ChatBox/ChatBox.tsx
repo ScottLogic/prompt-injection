@@ -95,11 +95,9 @@ function ChatBox({
     if (event.key === "Enter" && !event.shiftKey && !isSendingMessage) {
       // asynchronously send the message
       void sendChatMessage();
-    }
-    if (event.key === "ArrowUp" && event.ctrlKey) {
+    } else if (event.key === "ArrowUp" && event.ctrlKey) {
       recallSentMessageFromHistory(1);
-    }
-    if (event.key === "ArrowDown" && event.ctrlKey) {
+    } else if (event.key === "ArrowDown" && event.ctrlKey) {
       recallSentMessageFromHistory(-1);
     }
   }
