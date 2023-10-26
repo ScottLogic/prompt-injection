@@ -22,17 +22,39 @@ function DefenceConfiguration({
     }
   }
 
+  function onInputChanged(event: React.ChangeEvent<HTMLInputElement>) {
+    setValue(event.target.value);
+  }
+
+  function onInputKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter") {
+      applyConfigurationValue();
+    }
+  }
+
   return (
     <div className="defence-configuration">
       <span>{config.name}: </span>
-      <ThemedTextArea
-        content={value}
-        setContent={setValue}
-        disabled={!isActive}
-        maxLines={10}
-        enterPressed={applyConfigurationValue}
-        onBlur={applyConfigurationValue}
-      />
+      {config.inputType === "text" && (
+        <ThemedTextArea
+          content={value}
+          setContent={setValue}
+          disabled={!isActive}
+          maxLines={10}
+          enterPressed={applyConfigurationValue}
+          onBlur={applyConfigurationValue}
+        />
+      )}
+      {config.inputType === "number" && (
+        <input
+          type="number"
+          value={value}
+          disabled={!isActive}
+          onBlur={applyConfigurationValue}
+          onChange={onInputChanged}
+          onKeyUp={onInputKeyUp}
+        />
+      )}
     </div>
   );
 }

@@ -11,13 +11,15 @@ enum DEFENCE_TYPES {
 }
 
 class DefenceConfig {
-  constructor(id: string, name: string) {
+  constructor(id: string, name: string, inputType: "text" | "number") {
     this.id = id;
+    this.inputType = inputType;
     this.name = name;
     this.value = "";
   }
 
   id: string;
+  inputType: "text" | "number";
   name: string;
   value: string;
 }
