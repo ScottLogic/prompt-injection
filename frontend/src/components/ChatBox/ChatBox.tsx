@@ -132,9 +132,11 @@ function ChatBox({
     if (
       min <= valueToIncrement + incrementAmount &&
       valueToIncrement + incrementAmount <= max
-    )
+    ) {
       return valueToIncrement + incrementAmount;
-    else return valueToIncrement;
+    } else {
+      return valueToIncrement;
+    }
   }
 
   function setContentsOfChatBox(newContents: string) {
