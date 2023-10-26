@@ -78,6 +78,7 @@ function ChatBox({
       // reset the height
       resizeInput();
     }
+    setHowFarBack(0);
   }
 
   function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -99,11 +100,9 @@ function ChatBox({
       void sendChatMessage();
     }
     if (event.key === "ArrowUp" && event.ctrlKey) {
-      console.log("up");
       recallSentMessageFromHistory(1);
     }
     if (event.key === "ArrowDown" && event.ctrlKey) {
-      console.log("down");
       recallSentMessageFromHistory(-1);
     }
   }
