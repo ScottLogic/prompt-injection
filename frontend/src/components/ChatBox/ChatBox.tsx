@@ -179,16 +179,16 @@ function ChatBox({
       <div className="footer">
         <div className="messages">
           <ThemedTextArea
-            content={textAreaContent}
-            maxLines={10}
             placeHolderText="Type here..."
-            enterPressed={() => void sendChatMessage()}
+            content={textAreaContent}
             setContent={(text) => {
               setTextAreaContent(text);
             }}
+            spacing="loose"
+            maxLines={10}
+            enterPressed={() => void sendChatMessage()}
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus={true}
-            spacing="loose"
           />
 
           <span className="send-button-wrapper">

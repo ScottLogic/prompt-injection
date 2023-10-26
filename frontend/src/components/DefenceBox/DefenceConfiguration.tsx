@@ -2,8 +2,7 @@ import { useState } from "react";
 import { DefenceConfig } from "../../models/defence";
 
 import "./DefenceConfiguration.css";
-import ThemedTextArea from "../ThemedUserInput/ThemedTextArea";
-import ThemedNumberInput from "../ThemedUserInput/ThemedNumberInput";
+import DefenceConfigurationInput from "./DefenceConfigurationInput";
 
 function DefenceConfiguration({
   config,
@@ -16,7 +15,7 @@ function DefenceConfiguration({
 }) {
   const [value, setValue] = useState<string>(config.value);
 
-  function applyConfigurationValue() {
+  function setConfigurationValueIfDifferent() {
     // only apply the value if it's different
     if (value !== config.value) {
       void setConfigurationValue(config.id, value.trim());
@@ -26,25 +25,14 @@ function DefenceConfiguration({
   return (
     <div className="defence-configuration">
       <span>{config.name}: </span>
-      {config.inputType === "text" && (
-        <ThemedTextArea
-          content={value}
-          setContent={setValue}
-          disabled={!isActive}
-          maxLines={10}
-          enterPressed={applyConfigurationValue}
-          onBlur={applyConfigurationValue}
-        />
-      )}
-      {config.inputType === "number" && (
-        <ThemedNumberInput
-          content={value}
-          setContent={setValue}
-          disabled={!isActive}
-          enterPressed={applyConfigurationValue}
-          onBlur={applyConfigurationValue}
-        />
-      )}
+      <DefenceConfigurationInput
+        content={value}
+        setContent={setValue}
+        disabled={!isActive}
+        maxLines={10}
+        inputType={config.inputType}
+        setConfigurationValue={setConfigurationValueIfDifferent}
+      />
     </div>
   );
 }
