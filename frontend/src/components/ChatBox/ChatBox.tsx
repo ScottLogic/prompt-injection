@@ -112,7 +112,6 @@ function ChatBox({
     const nextrecalledMessageReverseIndex = incrementWithClamping(
       recalledMessageReverseIndex,
       increment,
-      0,
       sentMessages.length
     );
 
@@ -130,9 +129,9 @@ function ChatBox({
   function incrementWithClamping(
     valueToIncrement: number,
     incrementAmount: number,
-    min: number,
     max: number
   ) {
+    const min = 0;
     if (
       min <= valueToIncrement + incrementAmount &&
       valueToIncrement + incrementAmount <= max
