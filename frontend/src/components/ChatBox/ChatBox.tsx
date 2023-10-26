@@ -116,13 +116,10 @@ function ChatBox({
       sentMessages.length
     );
 
-    // recall the message from the history
+    // recall the message from the history. If at current time, clear the chatbox
     const index = sentMessages.length - nextHowFarBack;
     const recalledMessage =
-      nextHowFarBack === 0
-        ? // if we are at current time, clear the chatbox
-          ""
-        : sentMessages[index]?.message ?? "";
+      nextHowFarBack === 0 ? "" : sentMessages[index]?.message ?? "";
 
     setContentsOfChatBox(recalledMessage);
     setHowFarBack(nextHowFarBack);
