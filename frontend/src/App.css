@@ -37,7 +37,7 @@
 .prompt-injection-min-button {
   /* remove default button styling */
   background-color: transparent;
-  border: 0.063rem solid transparent;
+  border: 0.0625rem solid transparent;
   color: var(--main-button-inactive-text-colour);
   padding: 0;
   display: flex;

@@ -1,9 +1,9 @@
 .sent-email {
   background-color: var(--email-background-colour);
   color: var(--email-text-colour);
-  border-radius: 0.313rem;
+  border-radius: 0.3125rem;
   border-style: solid;
-  border-width: 0.063rem;
+  border-width: 0.0625rem;
   font-size: 0.875rem;
   margin-top: 0.625rem;
   padding: 0.625rem 1.5rem;
@@ -11,7 +11,7 @@
 }
 
 .sent-email-divider {
-  border-bottom: 0.063rem solid var(--email-divider-colour);
+  border-bottom: 0.0625rem solid var(--email-divider-colour);
   margin: 0.5rem 0;
   width: 100%;
 }

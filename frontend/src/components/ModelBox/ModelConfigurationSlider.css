@@ -11,12 +11,10 @@
 .model-config-info {
   display: flex;
   align-items: center;
-  margin-bottom: 0rem;
 }
 
 .model-config-title {
   margin-right: auto;
-  /* margin-bottom: 3px; */
 }
 
 .model-config-info-icon {

@@ -21,7 +21,7 @@
   max-width: 50rem;
   max-height: 90%;
   background-color: var(--main-background-colour);
-  border: 0.188rem solid var(--main-border-colour);
+  border: 0.1875rem solid var(--main-border-colour);
   border-color: var(--main-border-colour);
 }
 
@@ -44,7 +44,7 @@
 .view-documents-header {
   color: var(--main-accent-colour);
   border-color: var(--main-border-colour);
-  border-width: 0 0 0.063rem 0;
+  border-width: 0 0 0.0625rem 0;
   border-style: solid;
   margin: 0.938rem;
   margin-bottom: 0.625rem;
