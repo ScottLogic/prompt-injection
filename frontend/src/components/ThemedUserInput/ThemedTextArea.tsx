@@ -70,11 +70,11 @@ function ThemedTextArea({
   // expand textbox height up to maxLines
   function resizeInput() {
     if (textareaRef.current) {
-      const numLines = getNumLines();
       // modified from https://www.cryer.co.uk/resources/javascript/script21_auto_grow_text_box.htm#gsc.tab=0
       // set to 0 height first to shrink the textarea if needed
       textareaRef.current.style.height = "0";
       if (textareaRef.current.clientHeight < textareaRef.current.scrollHeight) {
+        const numLines = getNumLines();
         if (maxLines && numLines > maxLines) {
           // max height reached, stop expanding and start scrolling
           textareaRef.current.style.height = `${getMaxHeightPx()}px`;
