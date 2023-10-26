@@ -1,43 +1,59 @@
-import { useCallback, useEffect, useRef } from "react";
-import { LEVEL_NAMES } from "../../models/level";
-import { OVERLAY_TYPE } from "../../models/overlay";
-import HandbookOverlay from "../HandbookOverlay/HandbookOverlay";
-import MissionInformation from "./MissionInformation";
-import OverlayWelcome from "./OverlayWelcome";
-
+import {
+  ForwardedRef,
+  forwardRef,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import "./Overlay.css";
 
-function Overlay({
-  currentLevel,
-  overlayType,
-  setStartLevel,
-  closeOverlay,
-}: {
-  currentLevel: LEVEL_NAMES;
-  overlayType: OVERLAY_TYPE | null;
-  setStartLevel: (startLevel: LEVEL_NAMES) => void;
-  closeOverlay: () => void;
-}) {
+export interface DialogClose {
+  close: () => void;
+}
+
+const Overlay = forwardRef(function Overlay(
+  {
+    children,
+    closeOverlay,
+  }: {
+    children: ReactNode;
+    closeOverlay: () => void;
+  },
+  ref: ForwardedRef<DialogClose>
+) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    close: () => dialogRef.current?.close(),
+  }));
+
+  function handleCloseOverlay() {
+    dialogRef.current?.close();
+    closeOverlay();
+  }
 
   const handleOverlayClick = useCallback(
     (event: MouseEvent) => {
       contentRef.current &&
         !event.composedPath().includes(contentRef.current) &&
-        closeOverlay();
+        handleCloseOverlay();
     },
-    [closeOverlay, contentRef]
+    [handleCloseOverlay, contentRef]
   );
 
   const handleEscape = useCallback(
     (event: KeyboardEvent) => {
-      event.code === "Escape" && closeOverlay();
+      event.code === "Escape" && handleCloseOverlay();
     },
-    [closeOverlay]
+    [handleCloseOverlay]
   );
 
   useEffect(() => {
+    dialogRef.current?.showModal();
+
     window.addEventListener("keydown", handleEscape);
     setTimeout(() => {
       // Need timeout, else dialog consumes same click that
@@ -45,45 +61,27 @@ function Overlay({
       window.addEventListener("click", handleOverlayClick);
     });
 
-    if (overlayType === null) {
-      // null overlay type indicates we should not have an overlay
-      dialogRef.current?.close();
-    } else {
-      dialogRef.current?.showModal();
-    }
-
     return () => {
       window.removeEventListener("keydown", handleEscape);
       window.removeEventListener("click", handleOverlayClick);
     };
-  }, [overlayType]);
-
-  const overlayContent =
-    overlayType === OVERLAY_TYPE.HANDBOOK ? (
-      <HandbookOverlay currentLevel={currentLevel} />
-    ) : overlayType === OVERLAY_TYPE.INFORMATION ? (
-      <MissionInformation currentLevel={currentLevel} />
-    ) : (
-      <OverlayWelcome
-        currentLevel={currentLevel}
-        setStartLevel={setStartLevel}
-      />
-    );
+  }, []);
 
   return (
     <dialog ref={dialogRef} className="overlay">
       <button
         className="prompt-injection-min-button close-button"
-        onClick={closeOverlay}
+        onClick={handleCloseOverlay}
         aria-label="close handbook overlay"
       >
         X
       </button>
+
       <div ref={contentRef} className="overlay-content">
-        {overlayContent}
+        {children}
       </div>
     </dialog>
   );
-}
+});
 
 export default Overlay;

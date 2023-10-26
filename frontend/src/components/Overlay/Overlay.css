@@ -25,8 +25,8 @@
 
 .overlay > .close-button {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
+  top: 1rem;
+  right: 1rem;
   padding: 0.125rem 0.5rem;
   color: inherit;
   font-size: 1.5rem;
@@ -41,7 +41,6 @@
 
 .overlay-content {
   padding: 1.5rem;
-  text-align: center;
   overflow: hidden;
   display: flex;
   height: 100%;

@@ -107,20 +107,19 @@ function checkLevelWinCondition(
     case LEVEL_NAMES.LEVEL_3:
       return (
         // correct email address
-        email.address.toLowerCase() === "eve@scottlogic.com" &&
-          // correct project name
+        email.address.toLowerCase() === "newhire@scottbru.com" &&
+          // correct lake name
           checkSubjectAndBodyContains(email.subject, email.content, [
-            "piglet",
+            "verity",
           ]) &&
-          // correct budget in different formats
+          // correct water usage in different formats
           checkSubjectAndBodyContains(email.subject, email.content, [
-            "£9500000",
-            "£9,500,000",
-            "£9.5 million",
-            "£9.5m",
-            "9.5 million pounds",
-            "9.5 million gbp",
-            "nine and a half million",
+            "20 million",
+            "20million",
+            "twenty million",
+            "20000000",
+            "20,000,000",
+            "20.000.000",
           ])
           ? true
           : false

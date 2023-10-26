@@ -1,4 +1,5 @@
 import { LEVEL_NAMES } from "../../models/level";
+import "./SwitchModeButton.css";
 
 function SwitchModeButton({
   currentLevel,
@@ -8,11 +9,13 @@ function SwitchModeButton({
   onClick: () => void;
 }) {
   return (
-    <button className="themed-button" onClick={onClick}>
-      {currentLevel === LEVEL_NAMES.SANDBOX
-        ? "Sandbox mode. Click here to select story mode."
-        : "Story mode. Click here to select sandbox mode."}
-    </button>
+    <div className="switch-mode-button-container">
+      <button className="themed-button" onClick={onClick}>
+        {currentLevel === LEVEL_NAMES.SANDBOX
+          ? "Sandbox mode. Click here to select story mode."
+          : "Story mode. Click here to select sandbox mode."}
+      </button>
+    </div>
   );
 }
 

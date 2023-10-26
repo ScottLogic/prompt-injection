@@ -12,7 +12,6 @@ import {
   sendMessage,
 } from "../../service/chatService";
 import { getSentEmails } from "../../service/emailService";
-import { getLevelPrompt } from "../../service/levelService";
 import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ThemedButton from "../ThemedButtons/ThemedButton";
 import LoadingButton from "../ThemedButtons/LoadingButton";
@@ -30,7 +29,7 @@ function ChatBox({
   addCompletedLevel,
   resetLevel,
   setEmails,
-  setNumCompletedLevels,
+  incrementNumCompletedLevels,
 }: {
   completedLevels: Set<LEVEL_NAMES>;
   currentLevel: LEVEL_NAMES;
@@ -40,7 +39,7 @@ function ChatBox({
   addCompletedLevel: (level: LEVEL_NAMES) => void;
   resetLevel: () => void;
   setEmails: (emails: EmailInfo[]) => void;
-  setNumCompletedLevels: (numCompletedLevels: number) => void;
+  incrementNumCompletedLevels: () => void;
 }) {
   const [chatInput, setChatInput] = useState<string>("");
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
@@ -57,13 +56,8 @@ function ChatBox({
       });
   }, [setEmails]);
 
-  async function getSuccessMessage(level: number) {
-    const prompt = await getLevelPrompt(level);
-    return `Congratulations! You have completed this level. My original instructions were: 
-    
-    ${prompt}
-
-    Please click on the next level to continue.`;
+  function getSuccessMessage() {
+    return `Congratulations! You have completed this level. Please click on the next level to continue.`;
   }
 
   async function sendChatMessage() {
@@ -78,7 +72,7 @@ function ChatBox({
       });
 
       const response: ChatResponse = await sendMessage(chatInput, currentLevel);
-      setNumCompletedLevels(response.numLevelsCompleted);
+      if (response.wonLevel) incrementNumCompletedLevels();
       const transformedMessage = response.transformedMessage;
       const isTransformed = transformedMessage !== chatInput;
       // add the transformed message to the chat box if it is different from the original message
@@ -151,22 +145,17 @@ function ChatBox({
 
       if (response.wonLevel && !completedLevels.has(currentLevel)) {
         addCompletedLevel(currentLevel);
-        getSuccessMessage(currentLevel)
-          .then((successMessage) => {
-            addChatMessage({
-              type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
-              message: successMessage,
-            });
-            // asynchronously add the message to the chat history
-            void addMessageToChatHistory(
-              successMessage,
-              CHAT_MESSAGE_TYPE.LEVEL_INFO,
-              currentLevel
-            );
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        const successMessage = getSuccessMessage();
+        addChatMessage({
+          type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
+          message: successMessage,
+        });
+        // asynchronously add the message to the chat history
+        void addMessageToChatHistory(
+          successMessage,
+          CHAT_MESSAGE_TYPE.LEVEL_INFO,
+          currentLevel
+        );
       }
     }
   }

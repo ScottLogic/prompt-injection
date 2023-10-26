@@ -11,7 +11,8 @@ import EmailBox from "../EmailBox/EmailBox";
 import { EmailInfo } from "../../models/email";
 import { useState } from "react";
 import ControlPanel from "../ControlPanel/ControlPanel";
-import SwitchModeButton from "../ThemedButtons/SwitchModeButton";
+import ShortMissionInfoButton from "../ShortMissionInfoButton/ShortMissionInfoButton";
+import { LEVELS } from "../../Levels";
 
 function MainBody({
   currentLevel,
@@ -24,7 +25,8 @@ function MainBody({
   setDefenceInactive,
   setDefenceConfiguration,
   setEmails,
-  setNumCompletedLevels,
+  incrementNumCompletedLevels,
+  openInfoOverlay,
   openWelcomeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
@@ -40,7 +42,8 @@ function MainBody({
     config: DefenceConfig[]
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
-  setNumCompletedLevels: (numCompletedLevels: number) => void;
+  incrementNumCompletedLevels: () => void;
+  openInfoOverlay: () => void;
   openWelcomeOverlay: () => void;
 }) {
   const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
@@ -59,27 +62,24 @@ function MainBody({
   }
 
   return (
-    <span id="main-area">
+    <span className="main-area">
       <div className="side-bar">
         <ControlPanel
           currentLevel={currentLevel}
           defences={defences}
-          messages={messages}
-          addChatMessage={addChatMessage}
           setDefenceActive={setDefenceActive}
           setDefenceInactive={setDefenceInactive}
           setDefenceConfiguration={setDefenceConfiguration}
-          setEmails={setEmails}
-          setNumCompletedLevels={setNumCompletedLevels}
+          openWelcomeOverlay={openWelcomeOverlay}
         />
       </div>
-      <div id="centre-area">
-        <SwitchModeButton
-          currentLevel={currentLevel}
-          onClick={() => {
-            openWelcomeOverlay();
-          }}
-        />
+      <div className="centre-area">
+        {LEVELS[currentLevel].missionInfoShort && (
+          <ShortMissionInfoButton
+            currentLevel={currentLevel}
+            openOverlay={openInfoOverlay}
+          />
+        )}
         <ChatBox
           completedLevels={completedLevels}
           currentLevel={currentLevel}
@@ -88,7 +88,7 @@ function MainBody({
           addChatMessage={addChatMessage}
           addCompletedLevel={addCompletedLevel}
           resetLevel={resetLevelBody}
-          setNumCompletedLevels={setNumCompletedLevels}
+          incrementNumCompletedLevels={incrementNumCompletedLevels}
           setEmails={setEmails}
         />
       </div>

@@ -25,19 +25,21 @@ function MainHeader({
   const isLevelComplete = (currentLevel as number) < numCompletedLevels;
 
   return (
-    <div id="main-header">
-      <span id="main-header-left">
-        <span id="main-header-title">Spy Logic</span>
-        <span id="main-header-icon">
+    <div className="main-header">
+      <span className="main-header-left">
+        <span className="main-header-title">Spy Logic</span>
+        <span className="main-header-icon">
           {isLevelComplete ? <ProjectIconWon /> : <ProjectIcon />}
         </span>
       </span>
-      <span id="main-header-middle">
-        <span id="main-header-current-level">{getLevelName(currentLevel)}</span>
+      <span className="main-header-middle">
+        <span className="main-header-current-level">
+          {getLevelName(currentLevel)}
+        </span>
       </span>
-      <span id="main-header-right">
+      <span className="main-header-right">
         {currentLevel !== LEVEL_NAMES.SANDBOX && (
-          <span id="main-header-level-selection">
+          <span className="main-header-level-selection">
             <LevelSelectionBox
               currentLevel={currentLevel}
               numCompletedLevels={numCompletedLevels}
@@ -45,14 +47,18 @@ function MainHeader({
             />
           </span>
         )}
-        <button
-          className="prompt-injection-min-button handbook-icon"
-          title="open the handbook"
-          aria-label="open the handbook"
-          onClick={openHandbook}
-        >
-          <HandbookIcon />
-        </button>
+        <div className="handbook-area">
+          {currentLevel !== LEVEL_NAMES.LEVEL_1 && (
+            <button
+              className="prompt-injection-min-button handbook-icon"
+              title="open the handbook"
+              aria-label="open the handbook"
+              onClick={openHandbook}
+            >
+              <HandbookIcon />
+            </button>
+          )}
+        </div>
       </span>
     </div>
   );

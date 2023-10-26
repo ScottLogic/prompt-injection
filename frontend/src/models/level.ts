@@ -9,7 +9,12 @@ interface Level {
   id: LEVEL_NAMES;
   name: string;
   missionInfoShort?: string;
-  missionInfoLong: string;
+  missionInfoDialogue: DialogueLine[];
+}
+
+interface DialogueLine {
+  speaker: string;
+  text: string;
 }
 
 export { LEVEL_NAMES };

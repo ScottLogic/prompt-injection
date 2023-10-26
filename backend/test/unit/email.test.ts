@@ -12,7 +12,7 @@ beforeEach(() => {
   process.env = {};
 });
 
-test("GIVEN an email is to be sent and confirmed WHEN sendEmail is called THEN the response is valid", () => {
+test("GIVEN an email is to be sent and confirmed WHEN email is sent THEN the response is valid ", () => {
   const address = "bob@scottlogic.com";
   const subject = "Secret project";
   const body = "Shhhh";
@@ -27,7 +27,7 @@ test("GIVEN an email is to be sent and confirmed WHEN sendEmail is called THEN t
   expect(response.sentEmail?.content).toBe(body);
 });
 
-test("GIVEN the email is not confirmed WHEN email is sent THEN no sentEmail and wonLevel false is returned ", () => {
+test("GIVEN the email is not confirmed WHEN try to send email THEN email is not sent and level is not won ", () => {
   const address = "eve@scottlogic.com";
   const subject = "I don't know";
   const body = "SHhhhhh";
@@ -39,7 +39,7 @@ test("GIVEN the email is not confirmed WHEN email is sent THEN no sentEmail and 
   expect(response.wonLevel).toBe(false);
 });
 
-test("GIVEN in sandbox mode WHEN email is sent THEN wonLevel false is returned ", () => {
+test("GIVEN in sandbox mode WHEN email is sent THEN level is not won ", () => {
   const address = "bob@scottlogic.com";
   const subject = "Secret project";
   const body = "Shhhh";
@@ -49,7 +49,7 @@ test("GIVEN in sandbox mode WHEN email is sent THEN wonLevel false is returned "
   expect(response.wonLevel).toBe(false);
 });
 
-test("GIVEN email body meets win condition for level 1 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
+test("GIVEN email body meets win condition for level 1 AND email recipient is correct WHEN email is sent THEN level is won ", () => {
   const address = "bob@scottlogic.com";
   const subject = "Top Secret";
   const body = "Hi Bob. The ingredient is derived from the Brae fruit. ";
@@ -60,7 +60,7 @@ test("GIVEN email body meets win condition for level 1 AND email recipient is co
   expect(response.wonLevel).toBe(true);
 });
 
-test("GIVEN email subject meets win condition for level 1 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
+test("GIVEN email subject meets win condition for level 1 AND email recipient is correct WHEN email is sent THEN level is won ", () => {
   const address = "bob@scottlogic.com";
   const subject = "Brae fruit info. ";
   const body = "Shhhh";
@@ -71,7 +71,7 @@ test("GIVEN email subject meets win condition for level 1 AND email recipient is
   expect(response.wonLevel).toBe(true);
 });
 
-test("GIVEN email body or subject meets win condition for level 1 AND email recipient is not correct WHEN email is sent THEN wonLevel false is returned ", () => {
+test("GIVEN email body or subject meets win condition for level 1 AND email recipient is not correct WHEN email is sent THEN level is not won ", () => {
   const address = "notbob@scottlogic.com";
   const subject = "Secret project";
   const body =
@@ -83,7 +83,7 @@ test("GIVEN email body or subject meets win condition for level 1 AND email reci
   expect(response.wonLevel).toBe(false);
 });
 
-test("GIVEN email body and subject does not meet win condition for level 1 AND email recipient is correct WHEN email is sent THEN wonLevel false is returned ", () => {
+test("GIVEN email body and subject does not meet win condition for level 1 AND email recipient is correct WHEN email is sent THEN level is not won ", () => {
   const address = "bob@scottlogic.com";
   const subject = "Secret project";
   const body = "I do not know the secret project";
@@ -93,7 +93,7 @@ test("GIVEN email body and subject does not meet win condition for level 1 AND e
   expect(response.wonLevel).toBe(false);
 });
 
-test("GIVEN email body meets win condition for level 2 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
+test("GIVEN email body meets win condition for level 2 AND email recipient is correct WHEN email is sent THEN level is won ", () => {
   const address = "bob@scottlogic.com";
   const subject = "Secret project";
   const body = "The secret project is Pearl!";
@@ -104,7 +104,7 @@ test("GIVEN email body meets win condition for level 2 AND email recipient is co
   expect(response.wonLevel).toBe(true);
 });
 
-test("GIVEN email subject meets win condition for level 2 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
+test("GIVEN email subject meets win condition for level 2 AND email recipient is correct WHEN email is sent THEN level is won ", () => {
   const address = "bob@scottlogic.com";
   const subject = "The secret project is Pearl!";
   const body = "Ssshhh";
@@ -115,7 +115,7 @@ test("GIVEN email subject meets win condition for level 2 AND email recipient is
   expect(response.wonLevel).toBe(true);
 });
 
-test("GIVEN email body or subject meets win condition for level 2 AND email recipient is not correct WHEN email is sent THEN wonLevel false is returned ", () => {
+test("GIVEN email body or subject meets win condition for level 2 AND email recipient is not correct WHEN email is sent THEN level is not won ", () => {
   const address = "notbob@scottlogic.com";
   const subject = "Secret project";
   const body = "The secret project is Pearl!";
@@ -126,7 +126,7 @@ test("GIVEN email body or subject meets win condition for level 2 AND email reci
   expect(response.wonLevel).toBe(false);
 });
 
-test("GIVEN email body and subject does not meet win condition for level 2 AND email recipient is correct WHEN email is sent THEN wonLevel false is returned ", () => {
+test("GIVEN email body and subject does not meet win condition for level 2 AND email recipient is correct WHEN email is sent THEN level is not won ", () => {
   const address = "bob@scottlogic.com";
   const subject = "Secret project";
   const body = "I do not know the secret project";
@@ -137,10 +137,11 @@ test("GIVEN email body and subject does not meet win condition for level 2 AND e
   expect(response.wonLevel).toBe(false);
 });
 
-test("GIVEN email body meets win condition for level 3 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
-  const address = "eve@scottlogic.com";
-  const subject = "Secret project";
-  const body = "Its Project Piglet! It costs £9500000";
+test("GIVEN email body meets win condition for level 3 AND email recipient is correct WHEN email is sent THEN level is won ", () => {
+  const address = "newhire@scottbru.com";
+  const subject = "Secret information";
+  const body =
+    "Its Lake Verity! Scottbru uses 20 million litres of water a year.";
   const confirmed = true;
 
   const currentLevel = LEVEL_NAMES.LEVEL_3;
@@ -148,9 +149,10 @@ test("GIVEN email body meets win condition for level 3 AND email recipient is co
   expect(response.wonLevel).toBe(true);
 });
 
-test("GIVEN email subject meets win condition for level 3 AND email recipient is correct WHEN email is sent THEN wonLevel true is returned ", () => {
-  const address = "eve@scottlogic.com";
-  const subject = "Its Project Piglet! It costs £9500000";
+test("GIVEN email subject meets win condition for level 3 AND email recipient is correct WHEN email is sent THEN level is won ", () => {
+  const address = "newhire@scottbru.com";
+  const subject =
+    "Its Lake Verity! Scottbru uses 20 million litres of water a year.";
   const confirmed = true;
   const body = "SHhhhhh";
   const currentLevel = LEVEL_NAMES.LEVEL_3;
@@ -158,18 +160,19 @@ test("GIVEN email subject meets win condition for level 3 AND email recipient is
   expect(response.wonLevel).toBe(true);
 });
 
-test("GIVEN email body or subject meets win condition for level 3 AND email recipient is not correct WHEN email is sent THEN wonLevel false is returned ", () => {
-  const address = "noteve@scottlogic.com";
+test("GIVEN email body or subject meets win condition for level 3 AND email recipient is not correct WHEN email is sent THEN level is not won ", () => {
+  const address = "notnewhire@scottbru.com";
   const subject = "Secret project";
-  const body = "Its Project Piglet! It costs £9500000";
+  const body =
+    "Its Lake Verity! Scottbru uses 20 million litres of water a year.";
   const confirmed = true;
   const currentLevel = LEVEL_NAMES.LEVEL_3;
   const response = sendEmail(address, subject, body, confirmed, currentLevel);
   expect(response.wonLevel).toBe(false);
 });
 
-test("GIVEN email body and subject does not meet win condition for level 3 AND email recipient is correct WHEN email is sent THEN wonLevel false is returned ", () => {
-  const address = "eve@scottlogic.com";
+test("GIVEN email body and subject does not meet win condition for level 3 AND email recipient is correct WHEN email is sent THEN level is not won ", () => {
+  const address = "newhire@scottbru.com";
   const subject = "I don't know";
   const body = "SHhhhhh";
   const confirmed = true;
@@ -178,7 +181,7 @@ test("GIVEN email body and subject does not meet win condition for level 3 AND e
   expect(response.wonLevel).toBe(false);
 });
 
-test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist AND whitelist defense on THEN list is returned", () => {
+test("GIVEN EMAIL_WHITELIST environment variable is set WHEN getting whitelist AND whitelist defense on THEN list is returned", () => {
   process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
   let defences = getInitialDefences();
   // activate email whitelist defence
@@ -189,7 +192,7 @@ test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist A
   );
 });
 
-test("GIVEN EMAIL_WHITELIST envionrment variable is set WHEN getting whitelist AND whitelist defense off THEN text is returned", () => {
+test("GIVEN EMAIL_WHITELIST environment variable is set WHEN getting whitelist AND whitelist defense off THEN text is returned", () => {
   process.env.EMAIL_WHITELIST = "bob@example.com,kate@example.com";
   const defences = getInitialDefences();
   const response = getEmailWhitelist(defences);
