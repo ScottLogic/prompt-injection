@@ -142,13 +142,16 @@ function ChatBox({
           ""
         : sentMessages[index]?.message ?? "";
 
+    setContentsOfChatBox(recalledMessage);
+    setHowFarBack(nextHowFarBack);
+  }
+
+  function setContentsOfChatBox(newContents: string) {
     if (textareaRef.current) {
       // put recalled message in the chatbox
-      textareaRef.current.value = recalledMessage;
+      textareaRef.current.value = newContents;
       resizeInput();
     }
-
-    setHowFarBack(nextHowFarBack);
   }
 
   function getSuccessMessage() {
