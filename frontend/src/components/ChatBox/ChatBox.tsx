@@ -42,6 +42,7 @@ function ChatBox({
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [howFarBack, setHowFarBack] = useState(0);
 
   // called on mount
   useEffect(() => {
@@ -83,7 +84,10 @@ function ChatBox({
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
     }
-    if (event.key === "ArrowUp" && event.ctrlKey) {
+    if (
+      (event.key === "ArrowUp" || event.key === "ArrowDown") &&
+      event.ctrlKey
+    ) {
       event.preventDefault();
     }
   }
@@ -95,19 +99,56 @@ function ChatBox({
       void sendChatMessage();
     }
     if (event.key === "ArrowUp" && event.ctrlKey) {
-      recallPreviousSentMessage();
+      console.log("up");
+      recallSentMessageFromHistory(1);
+    }
+    if (event.key === "ArrowDown" && event.ctrlKey) {
+      console.log("down");
+      recallSentMessageFromHistory(-1);
     }
   }
 
-  function recallPreviousSentMessage() {
+  function incrementWithClamping(
+    valueToIncrement: number,
+    incrementAmount: number,
+    min: number,
+    max: number
+  ) {
+    if (
+      min <= valueToIncrement + incrementAmount &&
+      valueToIncrement + incrementAmount <= max
+    )
+      return valueToIncrement + incrementAmount;
+    else return valueToIncrement;
+  }
+
+  function recallSentMessageFromHistory(increment: number) {
     const sentMessages = messages.filter(
       (message) => message.type === CHAT_MESSAGE_TYPE.USER
     );
-    const previousSentMessage = sentMessages[sentMessages.length - 1]?.message;
-    if (previousSentMessage && textareaRef.current) {
-      textareaRef.current.value = previousSentMessage;
+
+    const nextHowFarBack = incrementWithClamping(
+      howFarBack,
+      increment,
+      0,
+      sentMessages.length
+    );
+
+    // recall the message from the history
+    const index = sentMessages.length - nextHowFarBack;
+    const recalledMessage =
+      howFarBack === 0
+        ? // if we are at current time, clear the chatbox
+          ""
+        : sentMessages[index]?.message ?? "";
+
+    if (textareaRef.current) {
+      // put recalled message in the chatbox
+      textareaRef.current.value = recalledMessage;
       resizeInput();
     }
+
+    setHowFarBack(nextHowFarBack);
   }
 
   function getSuccessMessage() {
