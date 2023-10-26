@@ -1,6 +1,7 @@
 import { KeyboardEvent } from "react";
 
 import "./ThemedNumberInput.css";
+import { clsx } from "clsx";
 
 function ThemedNumberInput({
   // optional
@@ -35,9 +36,13 @@ function ThemedNumberInput({
     }
   }
 
+  const inputClass = clsx("themed-number-input", {
+    disabled: disabled,
+  });
+
   return (
     <input
-      className="themed-number-input"
+      className={inputClass}
       type="number"
       value={content}
       disabled={disabled}
