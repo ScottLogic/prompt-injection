@@ -13,7 +13,9 @@ function LevelsComplete({
   const managerDialogue = [
     {
       speaker: "ScottBru Manager",
-      text: "Well done!. As our Head of Security, explore ScottBruBot's different systems and defences and report to its developers for feedback. Glad to finally have you in the right role.",
+      text: `Congratulations on becoming our new Head of Security! 
+      You can now fully explore and adjust ScottBruBot's system, defences, prompts and more.
+      Glad to finally have you in the right role.`,
     },
   ];
 
