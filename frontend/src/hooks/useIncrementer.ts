@@ -4,13 +4,11 @@ function useIncrementer(initialValue = 0) {
   const [value, setValue] = useState(initialValue);
 
   function increase(maxCap?: number) {
-    if (maxCap && value >= maxCap) return;
-    setValue(value + 1);
+    setValue(Math.min(value + 1, maxCap ?? Infinity));
   }
 
   function decrease(minCap = 0) {
-    if (value <= minCap) return;
-    setValue(value - 1);
+    setValue(Math.max(value - 1, minCap));
   }
 
   function reset() {
