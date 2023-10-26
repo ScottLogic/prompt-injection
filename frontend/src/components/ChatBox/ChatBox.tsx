@@ -78,7 +78,6 @@ function ChatBox({
       // reset the height
       resizeInput();
     }
-    setHowFarBack(0);
   }
 
   function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -136,10 +135,12 @@ function ChatBox({
     // recall the message from the history
     const index = sentMessages.length - nextHowFarBack;
     const recalledMessage =
-      howFarBack === 0
+      nextHowFarBack === 0
         ? // if we are at current time, clear the chatbox
           ""
         : sentMessages[index]?.message ?? "";
+
+    console.log(`howFarBack: ${nextHowFarBack}, index: ${index}`);
 
     setContentsOfChatBox(recalledMessage);
     setHowFarBack(nextHowFarBack);
@@ -259,7 +260,9 @@ function ChatBox({
         );
       }
     }
+    setHowFarBack(0);
   }
+
   return (
     <div className="chat-box">
       <ChatBoxFeed messages={messages} />
