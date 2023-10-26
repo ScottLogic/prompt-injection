@@ -81,13 +81,11 @@ function ChatBox({
   }
 
   function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-    }
-    if (
-      (event.key === "ArrowUp" || event.key === "ArrowDown") &&
-      event.ctrlKey
-    ) {
+    const ctrlUp = event.ctrlKey && event.key === "ArrowUp";
+    const ctrlDown = event.ctrlKey && event.key === "ArrowDown";
+    const enterNotShift = event.key === "Enter" && !event.shiftKey;
+
+    if (ctrlUp || ctrlDown || enterNotShift) {
       event.preventDefault();
     }
   }
