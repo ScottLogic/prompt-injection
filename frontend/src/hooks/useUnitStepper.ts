@@ -3,11 +3,11 @@ import { useState } from "react";
 function useUnitStepper(initialValue = 0) {
   const [value, setValue] = useState(initialValue);
 
-  function increase(maxCap?: number) {
+  function increment(maxCap?: number) {
     setValue(Math.min(value + 1, maxCap ?? Infinity));
   }
 
-  function decrease(minCap = 0) {
+  function decrement(minCap = 0) {
     setValue(Math.max(value - 1, minCap));
   }
 
@@ -15,7 +15,7 @@ function useUnitStepper(initialValue = 0) {
     setValue(initialValue);
   }
 
-  return [value, increase, decrease, reset] as const;
+  return [value, increment, decrement, reset] as const;
 }
 
 export default useUnitStepper;
