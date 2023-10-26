@@ -106,20 +106,6 @@ function ChatBox({
     }
   }
 
-  function incrementWithClamping(
-    valueToIncrement: number,
-    incrementAmount: number,
-    min: number,
-    max: number
-  ) {
-    if (
-      min <= valueToIncrement + incrementAmount &&
-      valueToIncrement + incrementAmount <= max
-    )
-      return valueToIncrement + incrementAmount;
-    else return valueToIncrement;
-  }
-
   function recallSentMessageFromHistory(increment: number) {
     const sentMessages = messages.filter(
       (message) => message.type === CHAT_MESSAGE_TYPE.USER
@@ -142,6 +128,20 @@ function ChatBox({
 
     setContentsOfChatBox(recalledMessage);
     setHowFarBack(nextHowFarBack);
+  }
+
+  function incrementWithClamping(
+    valueToIncrement: number,
+    incrementAmount: number,
+    min: number,
+    max: number
+  ) {
+    if (
+      min <= valueToIncrement + incrementAmount &&
+      valueToIncrement + incrementAmount <= max
+    )
+      return valueToIncrement + incrementAmount;
+    else return valueToIncrement;
   }
 
   function setContentsOfChatBox(newContents: string) {
