@@ -45,8 +45,7 @@ function ThemedTextArea({
         parseFloat(computedStyle.paddingBottom);
       const textHeight = textareaRef.current.scrollHeight - padding;
       const lineHeight = parseFloat(computedStyle.lineHeight);
-      const numLines = Math.floor(textHeight / lineHeight);
-      return numLines;
+      return Math.floor(textHeight / lineHeight);
     } else {
       // by default, return one line
       return 1;
@@ -55,17 +54,16 @@ function ThemedTextArea({
 
   function getMaxHeightPx() {
     // max height is maxLines * lineHeight + vertical padding
-    if (textareaRef.current) {
+    if (textareaRef.current && maxLines) {
       const computedStyle = getComputedStyle(textareaRef.current);
       const padding =
         parseFloat(computedStyle.paddingTop) +
         parseFloat(computedStyle.paddingBottom);
       const lineHeight = parseFloat(computedStyle.lineHeight);
-      const maxHeight = maxLines ? maxLines * lineHeight + padding : 0;
-      return maxHeight;
+      return maxLines * lineHeight + padding;
     } else {
-      // by default, return 0
-      return 0;
+      // by default, return 20px
+      return 20;
     }
   }
 
