@@ -103,9 +103,7 @@ function ChatBox({
     }
   }
 
-  type Direction = "backward" | "forward";
-
-  function recallSentMessageFromHistory(direction: Direction) {
+  function recallSentMessageFromHistory(direction: "backward" | "forward") {
     const sentMessages = messages.filter(
       (message) => message.type === CHAT_MESSAGE_TYPE.USER
     );
