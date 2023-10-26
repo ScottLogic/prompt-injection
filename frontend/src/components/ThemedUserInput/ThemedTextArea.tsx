@@ -98,8 +98,7 @@ function ThemedTextArea({
 
   function inputChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     if (setContent) {
-      const text = event.target.value;
-      setContent(text);
+      setContent(event.target.value);
     }
 
     if (textareaRef.current) {

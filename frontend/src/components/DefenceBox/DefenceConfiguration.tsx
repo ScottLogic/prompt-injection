@@ -3,6 +3,7 @@ import { DefenceConfig } from "../../models/defence";
 
 import "./DefenceConfiguration.css";
 import ThemedTextArea from "../ThemedUserInput/ThemedTextArea";
+import ThemedNumberInput from "../ThemedUserInput/ThemedNumberInput";
 
 function DefenceConfiguration({
   config,
@@ -22,16 +23,6 @@ function DefenceConfiguration({
     }
   }
 
-  function onInputChanged(event: React.ChangeEvent<HTMLInputElement>) {
-    setValue(event.target.value);
-  }
-
-  function onInputKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === "Enter") {
-      applyConfigurationValue();
-    }
-  }
-
   return (
     <div className="defence-configuration">
       <span>{config.name}: </span>
@@ -46,13 +37,12 @@ function DefenceConfiguration({
         />
       )}
       {config.inputType === "number" && (
-        <input
-          type="number"
-          value={value}
+        <ThemedNumberInput
+          content={value}
+          setContent={setValue}
           disabled={!isActive}
+          enterPressed={applyConfigurationValue}
           onBlur={applyConfigurationValue}
-          onChange={onInputChanged}
-          onKeyUp={onInputKeyUp}
         />
       )}
     </div>

@@ -1,0 +1,19 @@
+.themed-number-input {
+  box-sizing: border-box;
+  border-radius: 0.25rem;
+  border-style: solid;
+  border-width: 1px;
+  padding: 0.1rem;
+
+  background-color: var(--main-background-colour);
+  color: var(--main-input-active-text-colour);
+
+  /* must inherit to override input styling */
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.themed-number-input.disabled {
+  color: var(--main-input-inactive-text-colour);
+  background-color: var(--main-input-inactive-background-colour);
+}
