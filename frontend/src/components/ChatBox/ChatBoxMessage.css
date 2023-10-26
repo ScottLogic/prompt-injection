@@ -52,9 +52,8 @@
 
 .chat-box-message-user {
   background: var(--chat-user-background);
-  border-radius: 8px 0px 8px 8px;
-  float: right;
-  margin-left: auto;
+  border-radius: 0.5rem 0 0.5rem 0.5rem;
+  align-self: flex-end;
 }
 
 .chat-box-message-user:after {
