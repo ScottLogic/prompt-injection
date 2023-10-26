@@ -148,7 +148,6 @@ function ChatBox({
 
   function setContentsOfChatBox(newContents: string) {
     if (textareaRef.current) {
-      // put recalled message in the chatbox
       textareaRef.current.value = newContents;
       resizeInput();
     }
