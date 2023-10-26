@@ -18,7 +18,7 @@ function DefenceConfiguration({
   function applyConfigurationValue() {
     // only apply the value if it's different
     if (value !== config.value) {
-      void setConfigurationValue(config.id, value);
+      void setConfigurationValue(config.id, value.trim());
     }
   }
 
