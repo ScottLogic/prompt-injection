@@ -15,7 +15,12 @@ function useUnitStepper(initialValue = 0) {
     setValue(initialValue);
   }
 
-  return [value, increment, decrement, reset] as const;
+  return {
+    value: value,
+    increment: increment,
+    decrement: decrement,
+    reset: reset,
+  };
 }
 
 export default useUnitStepper;

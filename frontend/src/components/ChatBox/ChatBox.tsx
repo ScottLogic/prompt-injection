@@ -43,12 +43,12 @@ function ChatBox({
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [
-    recalledMessageReverseIndex,
-    recallLaterMessage,
-    recallEarlierMessage,
-    resetRecallToLatest,
-  ] = useUnitStepper();
+  const {
+    value: recalledMessageReverseIndex,
+    increment: recallLaterMessage,
+    decrement: recallEarlierMessage,
+    reset: resetRecallToLatest,
+  } = useUnitStepper();
 
   // called on mount
   useEffect(() => {
