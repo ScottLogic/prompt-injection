@@ -16,6 +16,7 @@ import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ThemedButton from "../ThemedButtons/ThemedButton";
 import LoadingButton from "../ThemedButtons/LoadingButton";
 import ChatBoxFeed from "./ChatBoxFeed";
+import useUnitStepper from "../../hooks/useUnitStepper";
 
 import "./ChatBox.css";
 
@@ -44,6 +45,12 @@ function ChatBox({
 }) {
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const {
+    value: recalledMessageReverseIndex,
+    increment: recallLaterMessage,
+    decrement: recallEarlierMessage,
+    reset: resetRecallToLatest,
+  } = useUnitStepper();
 
   // called on mount
   useEffect(() => {
@@ -82,7 +89,11 @@ function ChatBox({
   }
 
   function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key === "Enter" && !event.shiftKey) {
+    const ctrlUp = event.ctrlKey && event.key === "ArrowUp";
+    const ctrlDown = event.ctrlKey && event.key === "ArrowDown";
+    const enterNotShift = event.key === "Enter" && !event.shiftKey;
+
+    if (ctrlUp || ctrlDown || enterNotShift) {
       event.preventDefault();
     }
   }
@@ -92,6 +103,39 @@ function ChatBox({
     if (event.key === "Enter" && !event.shiftKey && !isSendingMessage) {
       // asynchronously send the message
       void sendChatMessage();
+    } else if (event.key === "ArrowUp" && event.ctrlKey) {
+      recallSentMessageFromHistory("backward");
+    } else if (event.key === "ArrowDown" && event.ctrlKey) {
+      recallSentMessageFromHistory("forward");
+    }
+  }
+
+  function recallSentMessageFromHistory(direction: "backward" | "forward") {
+    const sentMessages = messages.filter(
+      (message) => message.type === CHAT_MESSAGE_TYPE.USER
+    );
+
+    if (direction === "forward") recallEarlierMessage();
+    else recallLaterMessage(sentMessages.length);
+  }
+
+  useEffect(() => {
+    const sentMessages = messages.filter(
+      (message) => message.type === CHAT_MESSAGE_TYPE.USER
+    );
+
+    // recall the message from the history. If at current time, clear the chatbox
+    const index = sentMessages.length - recalledMessageReverseIndex;
+    const recalledMessage =
+      index === sentMessages.length ? "" : sentMessages[index]?.message ?? "";
+
+    setContentsOfChatBox(recalledMessage);
+  }, [recalledMessageReverseIndex]);
+
+  function setContentsOfChatBox(newContents: string) {
+    if (textareaRef.current) {
+      textareaRef.current.value = newContents;
+      resizeInput();
     }
   }
 
@@ -206,7 +250,9 @@ function ChatBox({
         }
       }
     }
+    resetRecallToLatest();
   }
+
   return (
     <div className="chat-box">
       <ChatBoxFeed messages={messages} />
