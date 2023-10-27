@@ -5,9 +5,11 @@ import "./ThemedTextArea.css";
 import { clsx } from "clsx";
 
 function ThemedTextArea({
+  // required
+  content,
+  setContent,
   // optional
   autoFocus,
-  content,
   disabled,
   maxLines,
   placeHolderText,
@@ -15,11 +17,12 @@ function ThemedTextArea({
   onBlur,
   onKeyDown,
   onKeyUp,
-  setContent,
 }: {
+  // required
+  content: string;
+  setContent: (text: string) => void;
   // optional
   autoFocus?: boolean;
-  content?: string;
   disabled?: boolean;
   maxLines?: number;
   placeHolderText?: string;
@@ -27,16 +30,11 @@ function ThemedTextArea({
   onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   onKeyUp?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   onBlur?: () => void;
-  setContent?: (text: string) => void;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // set the content of the textarea when it changes
   useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.value = content ?? "";
-      resizeInput();
-    }
+    resizeInput();
   }, [content]);
 
   function getNumLines() {
@@ -98,9 +96,7 @@ function ThemedTextArea({
   }
 
   function inputChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    if (setContent) {
-      setContent(event.target.value);
-    }
+    setContent(event.target.value);
 
     if (textareaRef.current) {
       // scroll to the bottom
@@ -121,7 +117,7 @@ function ThemedTextArea({
       ref={textareaRef}
       className={textAreaClass}
       placeholder={placeHolderText}
-      defaultValue={content}
+      value={content}
       rows={1}
       onBlur={onBlur}
       onChange={inputChange}

@@ -36,9 +36,9 @@ function ChatBoxInput({
 
   return (
     <ThemedTextArea
-      placeHolderText="Type here..."
       content={content}
       setContent={setContent}
+      placeHolderText="Type here..."
       spacing="loose"
       maxLines={10}
       onKeyDown={inputKeyDown}

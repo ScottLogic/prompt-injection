@@ -4,24 +4,24 @@ import "./ThemedInput.css";
 import { clsx } from "clsx";
 
 function ThemedNumberInput({
-  // optional
+  // required
   content,
+  setContent,
+  // optional
   disabled,
   enterPressed,
   onBlur,
-  setContent,
 }: {
+  // required
+  content: string;
+  setContent: (text: string) => void;
   // optional
-  content?: string;
   disabled?: boolean;
   enterPressed?: () => void;
   onBlur?: () => void;
-  setContent?: (text: string) => void;
 }) {
   function inputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    if (setContent) {
-      setContent(event.target.value);
-    }
+    setContent(event.target.value);
   }
 
   function inputKeyUp(event: KeyboardEvent<HTMLInputElement>) {
