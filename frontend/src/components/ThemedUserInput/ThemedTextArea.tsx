@@ -110,12 +110,6 @@ function ThemedTextArea({
     }
   }
 
-  function onFocusLost() {
-    if (onBlur) {
-      onBlur();
-    }
-  }
-
   const textAreaClass = clsx("themed-text-area", {
     disabled: disabled,
     "spacing-loose": spacing === "loose",
@@ -128,7 +122,7 @@ function ThemedTextArea({
       placeholder={placeHolderText}
       defaultValue={content}
       rows={1}
-      onBlur={onFocusLost}
+      onBlur={onBlur}
       onChange={inputChange}
       onKeyDown={onKeyDown}
       onKeyUp={onKeyUp}

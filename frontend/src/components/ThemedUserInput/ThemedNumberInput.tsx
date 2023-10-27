@@ -30,12 +30,6 @@ function ThemedNumberInput({
     }
   }
 
-  function onFocusLost() {
-    if (onBlur) {
-      onBlur();
-    }
-  }
-
   const inputClass = clsx("themed-number-input", {
     disabled: disabled,
   });
@@ -46,7 +40,7 @@ function ThemedNumberInput({
       type="number"
       value={content}
       disabled={disabled}
-      onBlur={onFocusLost}
+      onBlur={onBlur}
       onChange={inputChange}
       onKeyUp={inputKeyUp}
     />
