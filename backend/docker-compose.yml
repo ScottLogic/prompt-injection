@@ -1,0 +1,9 @@
+services:
+  prompt-injection-api:
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+    build: .
+    image: "scottlogic/prompt-injection-api"
+    ports:
+      - "3001:3001"
