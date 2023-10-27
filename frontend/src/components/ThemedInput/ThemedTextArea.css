@@ -1,0 +1,13 @@
+.themed-text-area {
+  /* must set line height to be able to calculate number of lines
+  this is relative to font size of the text area */
+  line-height: 1.25em;
+
+  width: 100%;
+  resize: none;
+  overflow-y: auto;
+}
+
+.themed-text-area.spacing-loose {
+  padding: 1rem;
+}

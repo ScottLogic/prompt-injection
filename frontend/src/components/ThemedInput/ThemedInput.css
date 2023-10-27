@@ -1,4 +1,4 @@
-.themed-number-input {
+.themed-input {
   box-sizing: border-box;
   border-radius: 0.25rem;
   border-style: solid;
@@ -8,12 +8,12 @@
   background-color: var(--main-background-colour);
   color: var(--main-input-active-text-colour);
 
-  /* must inherit to override input styling */
+  /* must inherit to override default styling */
   font-size: inherit;
   font-family: inherit;
 }
 
-.themed-number-input.disabled {
+.themed-input.disabled {
   color: var(--main-input-inactive-text-colour);
   background-color: var(--main-input-inactive-background-colour);
 }

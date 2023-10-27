@@ -1,5 +1,6 @@
 import { KeyboardEvent, useEffect, useRef } from "react";
 
+import "./ThemedInput.css";
 import "./ThemedTextArea.css";
 import { clsx } from "clsx";
 
@@ -110,7 +111,7 @@ function ThemedTextArea({
     }
   }
 
-  const textAreaClass = clsx("themed-text-area", {
+  const textAreaClass = clsx("themed-input", "themed-text-area", {
     disabled: disabled,
     "spacing-loose": spacing === "loose",
   });
