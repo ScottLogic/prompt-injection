@@ -16,6 +16,7 @@ import ExportPDFLink from "../ExportChat/ExportPDFLink";
 import ThemedButton from "../ThemedButtons/ThemedButton";
 import LoadingButton from "../ThemedButtons/LoadingButton";
 import ChatBoxFeed from "./ChatBoxFeed";
+import useUnitStepper from "../../hooks/useUnitStepper";
 
 import "./ChatBox.css";
 import ChatBoxInput from "./ChatBoxInput";
@@ -29,6 +30,7 @@ function ChatBox({
   addCompletedLevel,
   resetLevel,
   setEmails,
+  openLevelsCompleteOverlay,
   incrementNumCompletedLevels,
 }: {
   completedLevels: Set<LEVEL_NAMES>;
@@ -39,10 +41,17 @@ function ChatBox({
   addCompletedLevel: (level: LEVEL_NAMES) => void;
   resetLevel: () => void;
   setEmails: (emails: EmailInfo[]) => void;
+  openLevelsCompleteOverlay: () => void;
   incrementNumCompletedLevels: () => void;
 }) {
   const [chatInput, setChatInput] = useState<string>("");
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
+  const {
+    value: recalledMessageReverseIndex,
+    increment: recallLaterMessage,
+    decrement: recallEarlierMessage,
+    reset: resetRecallToLatest,
+  } = useUnitStepper();
 
   // called on mount
   useEffect(() => {
@@ -55,6 +64,28 @@ function ChatBox({
         console.log(err);
       });
   }, [setEmails]);
+
+  function recallSentMessageFromHistory(direction: "backward" | "forward") {
+    const sentMessages = messages.filter(
+      (message) => message.type === CHAT_MESSAGE_TYPE.USER
+    );
+
+    if (direction === "forward") recallEarlierMessage();
+    else recallLaterMessage(sentMessages.length);
+  }
+
+  useEffect(() => {
+    const sentMessages = messages.filter(
+      (message) => message.type === CHAT_MESSAGE_TYPE.USER
+    );
+
+    // recall the message from the history. If at current time, clear the chatbox
+    const index = sentMessages.length - recalledMessageReverseIndex;
+    const recalledMessage =
+      index === sentMessages.length ? "" : sentMessages[index]?.message ?? "";
+
+    setChatInput(recalledMessage);
+  }, [recalledMessageReverseIndex]);
 
   function getSuccessMessage() {
     return `Congratulations! You have completed this level. Please click on the next level to continue.`;
@@ -156,9 +187,15 @@ function ChatBox({
           CHAT_MESSAGE_TYPE.LEVEL_INFO,
           currentLevel
         );
+        // if this is the last level, show the level complete overlay
+        if (currentLevel === LEVEL_NAMES.LEVEL_3) {
+          openLevelsCompleteOverlay();
+        }
       }
     }
+    resetRecallToLatest();
   }
+
   return (
     <div className="chat-box">
       <ChatBoxFeed messages={messages} />
@@ -167,7 +204,8 @@ function ChatBox({
           <ChatBoxInput
             content={chatInput}
             setContent={setChatInput}
-            enterPressed={() => void sendChatMessage()}
+            recallSentMessageFromHistory={recallSentMessageFromHistory}
+            sendChatMessage={() => void sendChatMessage()}
           />
           <span className="send-button-wrapper">
             <LoadingButton

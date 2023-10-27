@@ -1,6 +1,6 @@
 import ThemedTextArea from "../ThemedUserInput/ThemedTextArea";
 import ThemedNumberInput from "../ThemedUserInput/ThemedNumberInput";
-import { useState } from "react";
+import { KeyboardEvent, useState } from "react";
 
 function DefenceConfigurationInput({
   defaultValue,
@@ -15,6 +15,20 @@ function DefenceConfigurationInput({
 }) {
   const [value, setValue] = useState<string>(defaultValue);
 
+  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+    }
+  }
+
+  function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
+    // shift+enter shouldn't send message
+    if (event.key === "Enter" && !event.shiftKey) {
+      // asynchronously send the message
+      setConfigurationValue(value);
+    }
+  }
+
   if (inputType === "text") {
     return (
       <ThemedTextArea
@@ -22,12 +36,11 @@ function DefenceConfigurationInput({
         setContent={setValue}
         disabled={disabled}
         maxLines={10}
-        enterPressed={() => {
-          setConfigurationValue(value);
-        }}
         onBlur={() => {
           setConfigurationValue(value);
         }}
+        onKeyDown={inputKeyDown}
+        onKeyUp={inputKeyUp}
       />
     );
   } else {

@@ -11,8 +11,9 @@ function ThemedTextArea({
   maxLines,
   placeHolderText,
   spacing,
-  enterPressed,
   onBlur,
+  onKeyDown,
+  onKeyUp,
   setContent,
 }: {
   // optional
@@ -22,7 +23,8 @@ function ThemedTextArea({
   maxLines?: number;
   placeHolderText?: string;
   spacing?: "loose" | "tight";
-  enterPressed?: () => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
+  onKeyUp?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   onBlur?: () => void;
   setContent?: (text: string) => void;
 }) {
@@ -108,20 +110,6 @@ function ThemedTextArea({
     }
   }
 
-  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    // only add new line when enter AND shift are pressed
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-    }
-  }
-
-  function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
-    // shift+enter shouldn't trigger enterPressed
-    if (event.key === "Enter" && !event.shiftKey && enterPressed) {
-      enterPressed();
-    }
-  }
-
   function onFocusLost() {
     if (onBlur) {
       onBlur();
@@ -142,8 +130,8 @@ function ThemedTextArea({
       rows={1}
       onBlur={onFocusLost}
       onChange={inputChange}
-      onKeyDown={inputKeyDown}
-      onKeyUp={inputKeyUp}
+      onKeyDown={onKeyDown}
+      onKeyUp={onKeyUp}
       disabled={disabled}
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus={autoFocus}
