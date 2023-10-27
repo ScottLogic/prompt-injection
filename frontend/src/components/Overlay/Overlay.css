@@ -22,10 +22,6 @@
   font-size: 1.25rem;
 }
 
-.overlay::backdrop {
-  background-color: var(--overlay-hidden-colour);
-}
-
 .overlay > .close-button {
   position: absolute;
   top: 1rem;

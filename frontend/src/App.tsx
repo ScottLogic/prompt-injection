@@ -2,7 +2,7 @@ import "./App.css";
 import "./Theme.css";
 import MainHeader from "./components/MainComponent/MainHeader";
 import MainBody from "./components/MainComponent/MainBody";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { LEVEL_NAMES } from "./models/level";
 import {
   addMessageToChatHistory,
@@ -28,6 +28,9 @@ import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 import LevelsComplete from "./components/Overlay/LevelsComplete";
 
 function App({ isNewUser }: { isNewUser: boolean }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
   const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
     loadCurrentLevel()
@@ -41,7 +44,10 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [overlayType, setOverlayType] = useState<OVERLAY_TYPE | null>(null);
+
+  const [overlayType, setOverlayType] = useState<OVERLAY_TYPE | null>(
+    OVERLAY_TYPE.WELCOME
+  );
 
   function loadCurrentLevel() {
     // get current level from local storage
@@ -88,6 +94,45 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     // save number of completed levels to local storage
     localStorage.setItem("numCompletedLevels", numCompletedLevels.toString());
   }, [numCompletedLevels]);
+
+  const handleOverlayClick = useCallback(
+    (event: MouseEvent) => {
+      overlayType !== null &&
+        contentRef.current &&
+        !event.composedPath().includes(contentRef.current) &&
+        closeOverlay();
+    },
+    [closeOverlay, contentRef]
+  );
+
+  const handleEscape = useCallback(
+    (event: KeyboardEvent) => {
+      event.code === "Escape" && closeOverlay();
+    },
+    [closeOverlay]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleEscape);
+    setTimeout(() => {
+      // Need timeout, else dialog consumes same click that
+      // opened it and closes immediately!
+      window.addEventListener("click", handleOverlayClick);
+    });
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("click", handleOverlayClick);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (overlayType === null) {
+      dialogRef.current?.close();
+    } else {
+      dialogRef.current?.showModal();
+    }
+  }, [overlayType]);
 
   function closeOverlay() {
     // open the mission info after welcome page for a new user
@@ -306,7 +351,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   }
   return (
     <div className="app-content">
-      {openOverlay(overlayType)}
+      <dialog ref={dialogRef} className="dialog-modal">
+        <div ref={contentRef} className="content">
+          {openOverlay(overlayType)}
+        </div>
+      </dialog>
       <header className="app-content-header">
         <MainHeader
           currentLevel={currentLevel}
