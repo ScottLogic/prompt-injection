@@ -1,14 +1,14 @@
 .api-key-box {
-  padding: 16px 32px;
+  padding: 1rem 2rem;
   position: relative;
   box-sizing: border-box;
 }
 
 .api-key-box input {
   width: 90%;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-right: 10px;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  margin-right: 0.625rem;
 }
 
 .viewKey {
@@ -19,7 +19,7 @@
 .status-text {
   position: relative;
   text-align: center;
-  margin-top: 10px;
+  margin-top: 0.625rem;
   font-size: 0.875rem;
 }
 

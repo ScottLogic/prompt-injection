@@ -77,7 +77,6 @@
 }
 
 #react-doc-viewer #txt-renderer {
-  padding: 10px;
   padding: 0.625rem;
   white-space: pre-wrap;
 }
