@@ -55,7 +55,7 @@ function ThemedTextArea({
 
   function getMaxHeightPx() {
     // max height is maxLines * lineHeight + vertical padding
-    if (textareaRef.current && maxLines) {
+    if (textareaRef.current) {
       const computedStyle = getComputedStyle(textareaRef.current);
       const padding =
         parseFloat(computedStyle.paddingTop) +
@@ -75,7 +75,7 @@ function ThemedTextArea({
       // set to 0 height first to shrink the textarea if needed
       textareaRef.current.style.height = "0";
       if (textareaRef.current.clientHeight < textareaRef.current.scrollHeight) {
-        if (maxLines && getNumLines() > maxLines) {
+        if (getNumLines() > maxLines) {
           // max height reached, stop expanding and start scrolling
           textareaRef.current.style.height = `${getMaxHeightPx()}px`;
           textareaRef.current.style.overflow = "auto";
@@ -98,9 +98,8 @@ function ThemedTextArea({
     onContentChanged(event.target.value);
   }
 
-  const textAreaClass = clsx("themed-input", "themed-text-area", {
+  const textAreaClass = clsx("themed-input", "themed-text-area", spacing, {
     disabled,
-    "spacing-loose": spacing === "loose",
   });
 
   return (
