@@ -1,0 +1,52 @@
+Resources:
+  PermissionsBoundary:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Statement:
+          # ----- Begin base policy ---------------
+          # If permission boundaries do not have an explicit allow
+          # then the effect is deny
+          - Sid: ExplicitAllowAll
+            Action: "*"
+            Effect: Allow
+            Resource: "*"
+          # Default permissions to prevent privilege escalation
+          - Sid: DenyAccessIfRequiredPermBoundaryIsNotBeingApplied
+            Action:
+              - iam:CreateUser
+              - iam:CreateRole
+              - iam:PutRolePermissionsBoundary
+              - iam:PutUserPermissionsBoundary
+            Condition:
+              StringNotEquals:
+                iam:PermissionsBoundary:
+                  Fn::Sub: arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/spylogic-developer-policy
+            Effect: Deny
+            Resource: "*"
+          - Sid: DenyPermBoundaryIAMPolicyAlteration
+            Action:
+              - iam:CreatePolicyVersion
+              - iam:DeletePolicy
+              - iam:DeletePolicyVersion
+              - iam:SetDefaultPolicyVersion
+            Effect: Deny
+            Resource:
+              Fn::Sub: arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/spylogic-developer-policy
+          - Sid: DenyRemovalOfPermBoundaryFromAnyUserOrRole
+            Action:
+              - iam:DeleteUserPermissionsBoundary
+              - iam:DeleteRolePermissionsBoundary
+            Effect: Deny
+            Resource: "*"
+          # ----- End base policy ---------------
+          # -- Begin Custom Organization Policy --
+          - Sid: DenyModifyingConfig
+            Effect: Deny
+            Action: config:*
+            Resource: "*"
+          # -- End Custom Organization Policy --
+        Version: "2012-10-17"
+      Description: "CDK Bootstrap Permission Boundary for Spy Logic"
+      ManagedPolicyName: spylogic-developer-policy
+      Path: /
