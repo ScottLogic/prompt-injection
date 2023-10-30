@@ -33,7 +33,7 @@ function DefenceConfigurationInput({
     return (
       <ThemedTextArea
         content={value}
-        setContent={setValue}
+        onContentChanged={setValue}
         disabled={disabled}
         maxLines={10}
         onBlur={() => {
@@ -47,7 +47,7 @@ function DefenceConfigurationInput({
     return (
       <ThemedNumberInput
         content={value}
-        setContent={setValue}
+        onContentChanged={setValue}
         disabled={disabled}
         enterPressed={() => {
           setConfigurationValue(value);

@@ -7,7 +7,7 @@ import { clsx } from "clsx";
 function ThemedTextArea({
   // required
   content,
-  setContent,
+  onContentChanged,
   // optional
   autoFocus,
   disabled,
@@ -20,7 +20,7 @@ function ThemedTextArea({
 }: {
   // required
   content: string;
-  setContent: (text: string) => void;
+  onContentChanged: (newContent: string) => void;
   // optional
   autoFocus?: boolean;
   disabled?: boolean;
@@ -96,7 +96,7 @@ function ThemedTextArea({
   }
 
   function inputChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    setContent(event.target.value);
+    onContentChanged(event.target.value);
 
     if (textareaRef.current) {
       // scroll to the bottom

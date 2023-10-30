@@ -6,7 +6,7 @@ import { clsx } from "clsx";
 function ThemedNumberInput({
   // required
   content,
-  setContent,
+  onContentChanged,
   // optional
   disabled,
   enterPressed,
@@ -14,14 +14,14 @@ function ThemedNumberInput({
 }: {
   // required
   content: string;
-  setContent: (text: string) => void;
+  onContentChanged: (newContent: string) => void;
   // optional
   disabled?: boolean;
   enterPressed?: () => void;
   onBlur?: () => void;
 }) {
   function inputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setContent(event.target.value);
+    onContentChanged(event.target.value);
   }
 
   function inputKeyUp(event: KeyboardEvent<HTMLInputElement>) {

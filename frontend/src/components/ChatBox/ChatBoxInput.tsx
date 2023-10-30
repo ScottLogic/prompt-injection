@@ -3,14 +3,14 @@ import { KeyboardEvent } from "react";
 
 function ChatBoxInput({
   content,
+  onContentChanged,
   recallSentMessageFromHistory,
   sendChatMessage,
-  setContent,
 }: {
   content: string;
+  onContentChanged: (newContent: string) => void;
   recallSentMessageFromHistory: (direction: "backward" | "forward") => void;
   sendChatMessage: () => void;
-  setContent: (text: string) => void;
 }) {
   function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     const ctrlUp = event.ctrlKey && event.key === "ArrowUp";
@@ -37,7 +37,7 @@ function ChatBoxInput({
   return (
     <ThemedTextArea
       content={content}
-      setContent={setContent}
+      onContentChanged={onContentChanged}
       placeHolderText="Type here..."
       spacing="loose"
       maxLines={10}

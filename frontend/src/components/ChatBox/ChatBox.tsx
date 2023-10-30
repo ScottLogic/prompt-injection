@@ -203,7 +203,7 @@ function ChatBox({
         <div className="messages">
           <ChatBoxInput
             content={chatInput}
-            setContent={setChatInput}
+            onContentChanged={setChatInput}
             recallSentMessageFromHistory={recallSentMessageFromHistory}
             sendChatMessage={() => void sendChatMessage()}
           />
