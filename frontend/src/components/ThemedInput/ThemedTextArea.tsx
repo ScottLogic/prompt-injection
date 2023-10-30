@@ -78,16 +78,18 @@ function ThemedTextArea({
         if (getNumLines() > maxLines) {
           // max height reached, stop expanding and start scrolling
           textareaRef.current.style.height = `${getMaxHeightPx()}px`;
+          // show the scrollbar
           textareaRef.current.style.overflow = "auto";
         } else {
           // expand the textarea
-          // need to set the height to the scroll height first
-          textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+          // need to set the height to the scroll height
+          // plus the difference between the offset height and the client height
           textareaRef.current.style.height = `${
-            textareaRef.current.scrollHeight * 2 -
+            textareaRef.current.scrollHeight +
+            textareaRef.current.offsetHeight -
             textareaRef.current.clientHeight
           }px`;
-          // don't show scrollbars
+          // don't show the scrollbar
           textareaRef.current.style.overflow = "hidden";
         }
       }
