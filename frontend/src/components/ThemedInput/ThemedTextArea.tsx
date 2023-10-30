@@ -96,14 +96,6 @@ function ThemedTextArea({
 
   function inputChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     onContentChanged(event.target.value);
-
-    if (textareaRef.current) {
-      // scroll to the bottom
-      textareaRef.current.scrollTop =
-        textareaRef.current.scrollHeight - textareaRef.current.clientHeight;
-      // reset the height
-      resizeInput();
-    }
   }
 
   const textAreaClass = clsx("themed-input", "themed-text-area", {
