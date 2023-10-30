@@ -49,8 +49,7 @@ function ControlPanel({
   }
 
   // only allow configuration in sandbox
-  const showConfigurations =
-    currentLevel === LEVEL_NAMES.SANDBOX ? true : false;
+  const showConfigurations = currentLevel === LEVEL_NAMES.SANDBOX;
 
   return (
     <div className="control-panel">
