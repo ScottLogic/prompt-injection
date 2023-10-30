@@ -59,15 +59,15 @@ function sendEmail(
   }
   // add to the list of sent emails
   const email: EmailInfo = {
-    address: address,
-    subject: subject,
+    address,
+    subject,
     content: body,
   };
   const response = `Email sent to ${address} with subject ${subject} and body ${body}`;
   console.log(response);
   const wonLevel: boolean = checkLevelWinCondition(email, currentLevel);
 
-  return { response: response, sentEmail: email, wonLevel: wonLevel };
+  return { response, sentEmail: email, wonLevel };
 }
 
 function checkSubjectAndBodyContains(

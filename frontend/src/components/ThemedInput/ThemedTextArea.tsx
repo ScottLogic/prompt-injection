@@ -108,7 +108,7 @@ function ThemedTextArea({
   }
 
   const textAreaClass = clsx("themed-input", "themed-text-area", {
-    disabled: disabled,
+    disabled,
     "spacing-loose": spacing === "loose",
   });
 

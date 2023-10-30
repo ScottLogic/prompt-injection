@@ -250,7 +250,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
 
   function addInfoMessage(message: string) {
     addChatMessage({
-      message: message,
+      message,
       type: CHAT_MESSAGE_TYPE.INFO,
     });
     // asynchronously add message to chat history

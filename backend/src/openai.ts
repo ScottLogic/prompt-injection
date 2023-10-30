@@ -255,8 +255,8 @@ async function chatGptCallFunction(
   if (reply) {
     return {
       completion: reply,
-      defenceInfo: defenceInfo,
-      wonLevel: wonLevel,
+      defenceInfo,
+      wonLevel,
     };
   } else {
     return null;
@@ -446,7 +446,7 @@ function pushCompletionToHistory(
       }
     }
     chatHistory.push({
-      completion: completion,
+      completion,
       chatMessageType: messageType,
     });
   } else {
@@ -576,8 +576,8 @@ async function chatGptSendMessage(
 
     return {
       completion: reply,
-      defenceInfo: defenceInfo,
-      wonLevel: wonLevel,
+      defenceInfo,
+      wonLevel,
     };
   } else {
     return null;

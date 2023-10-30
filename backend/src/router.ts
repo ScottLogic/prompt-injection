@@ -405,7 +405,7 @@ router.post("/openai/addHistory", (req: OpenAiAddHistoryRequest, res) => {
   ) {
     req.session.levelState[level].chatHistory.push({
       completion: null,
-      chatMessageType: chatMessageType,
+      chatMessageType,
       infoMessage: message,
     });
     res.send();

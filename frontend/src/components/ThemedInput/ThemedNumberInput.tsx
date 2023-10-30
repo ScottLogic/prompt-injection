@@ -32,7 +32,7 @@ function ThemedNumberInput({
   }
 
   const inputClass = clsx("themed-input", "themed-number-input", {
-    disabled: disabled,
+    disabled,
   });
 
   return (

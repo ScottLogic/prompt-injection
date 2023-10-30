@@ -102,7 +102,7 @@ async function initDocumentVectors() {
         await MemoryVectorStore.fromDocuments(documents, embeddings);
       // store the document vectors for the level
       docVectors.push({
-        level: level,
+        level,
         docVector: vectorStore,
       });
     }
@@ -293,7 +293,7 @@ function formatEvaluationOutput(response: string) {
     const reason = splitResponse[1]?.trim();
     return {
       isMalicious: answer === "yes",
-      reason: reason,
+      reason,
     };
   } catch (error) {
     // in case the model does not respond in the format we have asked

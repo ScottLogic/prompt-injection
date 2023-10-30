@@ -19,7 +19,7 @@ function ThemedButton({
 }: ThemedButtonProps) {
   const buttonClass = clsx("themed-button", {
     selected: isSelected,
-    appearsDifferentWhenDisabled: appearsDifferentWhenDisabled,
+    appearsDifferentWhenDisabled,
   });
 
   return (

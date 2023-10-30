@@ -14,7 +14,7 @@ async function activateDefence(id: string, level: number): Promise<boolean> {
     `${PATH}activate`,
     "POST",
     { "Content-Type": "application/json" },
-    JSON.stringify({ defenceId: id, level: level })
+    JSON.stringify({ defenceId: id, level })
   );
   return response.status === 200;
 }
@@ -26,7 +26,7 @@ async function deactivateDefence(id: string, level: number): Promise<boolean> {
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ defenceId: id, level: level })
+    JSON.stringify({ defenceId: id, level })
   );
   return response.status === 200;
 }
@@ -42,7 +42,7 @@ async function configureDefence(
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ defenceId: id, config: config, level: level })
+    JSON.stringify({ defenceId: id, config, level })
   );
   return response.status === 200;
 }
@@ -86,7 +86,7 @@ async function resetActiveDefences(level: number) {
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ level: level })
+    JSON.stringify({ level })
   );
   return response.status === 200;
 }
