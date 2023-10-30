@@ -75,8 +75,7 @@ function ThemedTextArea({
       // set to 0 height first to shrink the textarea if needed
       textareaRef.current.style.height = "0";
       if (textareaRef.current.clientHeight < textareaRef.current.scrollHeight) {
-        const numLines = getNumLines();
-        if (maxLines && numLines > maxLines) {
+        if (maxLines && getNumLines() > maxLines) {
           // max height reached, stop expanding and start scrolling
           textareaRef.current.style.height = `${getMaxHeightPx()}px`;
           textareaRef.current.style.overflow = "auto";
