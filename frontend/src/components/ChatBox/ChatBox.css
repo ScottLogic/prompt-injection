@@ -11,7 +11,7 @@
   flex-direction: column;
   width: 100%;
   font-size: 0.75rem;
-  padding: 32px;
+  padding: 2rem;
   box-sizing: border-box;
 }
 
@@ -51,7 +51,7 @@
 .chat-box .footer .control-buttons {
   display: flex;
   height: 2rem;
-  margin-top: 20px;
+  margin-top: 1.25rem;
   column-gap: 1rem;
 }
 

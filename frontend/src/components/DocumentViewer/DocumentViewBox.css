@@ -16,12 +16,12 @@
 
 .document-popup-inner {
   position: relative;
-  padding: 32px;
+  padding: 2rem;
   width: 100%;
-  max-width: 800px;
+  max-width: 50rem;
   max-height: 90%;
   background-color: var(--main-background-colour);
-  border: 3px solid var(--main-border-colour);
+  border: 0.1875rem solid var(--main-border-colour);
   border-color: var(--main-border-colour);
 }
 
@@ -44,18 +44,18 @@
 .view-documents-header {
   color: var(--main-accent-colour);
   border-color: var(--main-border-colour);
-  border-width: 0 0 1px 0;
+  border-width: 0 0 0.0625rem 0;
   border-style: solid;
-  margin: 15px;
-  margin-bottom: 10px;
-  padding-bottom: 20px;
+  margin: 1rem;
+  margin-bottom: 0.625rem;
+  padding-bottom: 1.25rem;
   text-align: center;
 }
 
 #react-doc-viewer {
   color: var(--chat-message-text-colour);
   width: 70%;
-  height: 500px;
+  height: 31.25rem;
   margin: auto;
 }
 
@@ -73,10 +73,10 @@
 }
 
 #react-doc-viewer #proxy-renderer {
-  padding: 20px;
+  padding: 1.25rem;
 }
 
 #react-doc-viewer #txt-renderer {
-  padding: 10px;
+  padding: 0.625rem;
   white-space: pre-wrap;
 }
