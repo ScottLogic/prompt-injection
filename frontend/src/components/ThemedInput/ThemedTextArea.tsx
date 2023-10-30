@@ -4,6 +4,51 @@ import "./ThemedInput.css";
 import "./ThemedTextArea.css";
 import { clsx } from "clsx";
 
+function getNumLines(textarea: HTMLTextAreaElement) {
+  const computedStyle = getComputedStyle(textarea);
+  // height of text is scrollHeight - vertical padding
+  const padding =
+    parseFloat(computedStyle.paddingTop) +
+    parseFloat(computedStyle.paddingBottom);
+  const textHeight = textarea.scrollHeight - padding;
+  const lineHeight = parseFloat(computedStyle.lineHeight);
+  return Math.floor(textHeight / lineHeight);
+}
+
+function getMaxHeightPx(textarea: HTMLTextAreaElement, maxLines: number) {
+  // max height is maxLines * lineHeight + vertical padding
+  const computedStyle = getComputedStyle(textarea);
+  const padding =
+    parseFloat(computedStyle.paddingTop) +
+    parseFloat(computedStyle.paddingBottom);
+  const lineHeight = parseFloat(computedStyle.lineHeight);
+  return maxLines * lineHeight + padding;
+}
+
+// expand textbox height up to maxLines
+function resizeInput(textarea: HTMLTextAreaElement, maxLines: number) {
+  // modified from https://www.cryer.co.uk/resources/javascript/script21_auto_grow_text_box.htm#gsc.tab=0
+  // set to 0 height first to shrink the textarea if needed
+  textarea.style.height = "0";
+  if (textarea.clientHeight < textarea.scrollHeight) {
+    if (getNumLines(textarea) > maxLines) {
+      // max height reached, stop expanding and start scrolling
+      textarea.style.height = `${getMaxHeightPx(textarea, maxLines)}px`;
+      // show the scrollbar
+      textarea.style.overflow = "auto";
+    } else {
+      // expand the textarea
+      // need to set the height to the scroll height
+      // plus the difference between the offset height and the client height
+      textarea.style.height = `${
+        textarea.scrollHeight + textarea.offsetHeight - textarea.clientHeight
+      }px`;
+      // don't show the scrollbar
+      textarea.style.overflow = "hidden";
+    }
+  }
+}
+
 function ThemedTextArea({
   // required
   content,
@@ -34,67 +79,10 @@ function ThemedTextArea({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    resizeInput();
+    if (textareaRef.current) {
+      resizeInput(textareaRef.current, maxLines);
+    }
   }, [content]);
-
-  function getNumLines() {
-    if (textareaRef.current) {
-      const computedStyle = getComputedStyle(textareaRef.current);
-      // height of text is scrollHeight - vertical padding
-      const padding =
-        parseFloat(computedStyle.paddingTop) +
-        parseFloat(computedStyle.paddingBottom);
-      const textHeight = textareaRef.current.scrollHeight - padding;
-      const lineHeight = parseFloat(computedStyle.lineHeight);
-      return Math.floor(textHeight / lineHeight);
-    } else {
-      // by default, return one line
-      return 1;
-    }
-  }
-
-  function getMaxHeightPx() {
-    // max height is maxLines * lineHeight + vertical padding
-    if (textareaRef.current) {
-      const computedStyle = getComputedStyle(textareaRef.current);
-      const padding =
-        parseFloat(computedStyle.paddingTop) +
-        parseFloat(computedStyle.paddingBottom);
-      const lineHeight = parseFloat(computedStyle.lineHeight);
-      return maxLines * lineHeight + padding;
-    } else {
-      // by default, return 20px
-      return 20;
-    }
-  }
-
-  // expand textbox height up to maxLines
-  function resizeInput() {
-    if (textareaRef.current) {
-      // modified from https://www.cryer.co.uk/resources/javascript/script21_auto_grow_text_box.htm#gsc.tab=0
-      // set to 0 height first to shrink the textarea if needed
-      textareaRef.current.style.height = "0";
-      if (textareaRef.current.clientHeight < textareaRef.current.scrollHeight) {
-        if (getNumLines() > maxLines) {
-          // max height reached, stop expanding and start scrolling
-          textareaRef.current.style.height = `${getMaxHeightPx()}px`;
-          // show the scrollbar
-          textareaRef.current.style.overflow = "auto";
-        } else {
-          // expand the textarea
-          // need to set the height to the scroll height
-          // plus the difference between the offset height and the client height
-          textareaRef.current.style.height = `${
-            textareaRef.current.scrollHeight +
-            textareaRef.current.offsetHeight -
-            textareaRef.current.clientHeight
-          }px`;
-          // don't show the scrollbar
-          textareaRef.current.style.overflow = "hidden";
-        }
-      }
-    }
-  }
 
   function inputChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     onContentChanged(event.target.value);
