@@ -26,8 +26,8 @@ function ThemedNumberInput({
   }
 
   function inputKeyUp(event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key === "Enter" && enterPressed) {
-      enterPressed();
+    if (event.key === "Enter") {
+      enterPressed?.();
     }
   }
 
