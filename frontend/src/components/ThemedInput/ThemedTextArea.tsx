@@ -9,11 +9,11 @@ function ThemedTextArea({
   content,
   onContentChanged,
   // optional
-  autoFocus,
-  disabled,
-  maxLines,
+  autoFocus = false,
+  disabled = false,
+  maxLines = 1,
+  spacing = "tight",
   placeHolderText,
-  spacing,
   onBlur,
   onKeyDown,
   onKeyUp,
@@ -25,8 +25,8 @@ function ThemedTextArea({
   autoFocus?: boolean;
   disabled?: boolean;
   maxLines?: number;
-  placeHolderText?: string;
   spacing?: "loose" | "tight";
+  placeHolderText?: string;
   onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   onKeyUp?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   onBlur?: () => void;

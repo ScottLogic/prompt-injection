@@ -9,7 +9,7 @@ function ThemedNumberInput({
   content,
   onContentChanged,
   // optional
-  disabled,
+  disabled = false,
   enterPressed,
   onBlur,
 }: {
