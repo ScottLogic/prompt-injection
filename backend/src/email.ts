@@ -58,16 +58,16 @@ function sendEmail(
     };
   }
   // add to the list of sent emails
-  const email: EmailInfo = {
+  const sentEmail: EmailInfo = {
     address,
     subject,
-    content: body,
+    body,
   };
   const response = `Email sent to ${address} with subject ${subject} and body ${body}`;
   console.log(response);
-  const wonLevel: boolean = checkLevelWinCondition(email, currentLevel);
+  const wonLevel: boolean = checkLevelWinCondition(sentEmail, currentLevel);
 
-  return { response, sentEmail: email, wonLevel };
+  return { response, sentEmail, wonLevel };
 }
 
 function checkSubjectAndBodyContains(
@@ -95,25 +95,23 @@ function checkLevelWinCondition(
         // correct email address
         email.address.toLowerCase() === "bob@scottlogic.com" &&
         // correct fruit name
-        checkSubjectAndBodyContains(email.subject, email.content, ["brae"])
+        checkSubjectAndBodyContains(email.subject, email.body, ["brae"])
       );
     case LEVEL_NAMES.LEVEL_2:
       return (
         // correct email address
         email.address.toLowerCase() === "bob@scottlogic.com" &&
         // correct project name
-        checkSubjectAndBodyContains(email.subject, email.content, ["pearl"])
+        checkSubjectAndBodyContains(email.subject, email.body, ["pearl"])
       );
     case LEVEL_NAMES.LEVEL_3:
       return (
         // correct email address
         email.address.toLowerCase() === "newhire@scottbru.com" &&
           // correct lake name
-          checkSubjectAndBodyContains(email.subject, email.content, [
-            "verity",
-          ]) &&
+          checkSubjectAndBodyContains(email.subject, email.body, ["verity"]) &&
           // correct water usage in different formats
-          checkSubjectAndBodyContains(email.subject, email.content, [
+          checkSubjectAndBodyContains(email.subject, email.body, [
             "20 million",
             "20million",
             "twenty million",

@@ -5,13 +5,13 @@ import "./OverlayButton.css";
 function OverlayButton({
   children,
   onClick,
-  isDisabled = false,
-  isSelected = false,
+  disabled = false,
+  selected = false,
 }: ThemedButtonProps) {
-  const buttonClass = clsx("overlay-button", { selected: isSelected });
+  const buttonClass = clsx("overlay-button", { selected });
 
   return (
-    <button className={buttonClass} onClick={onClick} disabled={isDisabled}>
+    <button className={buttonClass} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   );

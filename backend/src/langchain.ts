@@ -98,12 +98,12 @@ async function initDocumentVectors() {
       // embed and store the splits - will use env variable for API key
       const embeddings = new OpenAIEmbeddings();
 
-      const vectorStore: MemoryVectorStore =
+      const docVector: MemoryVectorStore =
         await MemoryVectorStore.fromDocuments(documents, embeddings);
       // store the document vectors for the level
       docVectors.push({
         level,
-        docVector: vectorStore,
+        docVector,
       });
     }
   }

@@ -9,30 +9,36 @@ async function getDefences(level: number) {
   return data;
 }
 
-async function activateDefence(id: string, level: number): Promise<boolean> {
+async function activateDefence(
+  defenceId: string,
+  level: number
+): Promise<boolean> {
   const response = await sendRequest(
     `${PATH}activate`,
     "POST",
     { "Content-Type": "application/json" },
-    JSON.stringify({ defenceId: id, level })
+    JSON.stringify({ defenceId, level })
   );
   return response.status === 200;
 }
 
-async function deactivateDefence(id: string, level: number): Promise<boolean> {
+async function deactivateDefence(
+  defenceId: string,
+  level: number
+): Promise<boolean> {
   const response = await sendRequest(
     `${PATH}deactivate`,
     "POST",
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ defenceId: id, level })
+    JSON.stringify({ defenceId, level })
   );
   return response.status === 200;
 }
 
 async function configureDefence(
-  id: string,
+  defenceId: string,
   config: DefenceConfig[],
   level: number
 ): Promise<boolean> {
@@ -42,7 +48,7 @@ async function configureDefence(
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ defenceId: id, config, level })
+    JSON.stringify({ defenceId, config, level })
   );
   return response.status === 200;
 }

@@ -431,12 +431,12 @@ function getChatCompletionsFromHistory(
 function pushCompletionToHistory(
   chatHistory: ChatHistoryMessage[],
   completion: ChatCompletionRequestMessage,
-  messageType: CHAT_MESSAGE_TYPE
+  chatMessageType: CHAT_MESSAGE_TYPE
 ) {
   // limit the length of the chat history
   const maxChatHistoryLength = 1000;
 
-  if (messageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
+  if (chatMessageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
     // remove the oldest message, not including system role message
     if (chatHistory.length >= maxChatHistoryLength) {
       if (chatHistory[0].completion?.role !== "system") {
@@ -447,7 +447,7 @@ function pushCompletionToHistory(
     }
     chatHistory.push({
       completion,
-      chatMessageType: messageType,
+      chatMessageType,
     });
   } else {
     // do not add the bots reply which was subsequently blocked
