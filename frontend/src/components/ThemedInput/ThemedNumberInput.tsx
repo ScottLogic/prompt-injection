@@ -21,7 +21,7 @@ function ThemedNumberInput({
   enterPressed?: () => void;
   onBlur?: () => void;
 }) {
-  function inputChange(event: React.ChangeEvent<HTMLInputElement>) {
+  function inputChanged(event: React.ChangeEvent<HTMLInputElement>) {
     onContentChanged(event.target.value);
   }
 
@@ -42,7 +42,7 @@ function ThemedNumberInput({
       value={content}
       disabled={disabled}
       onBlur={onBlur}
-      onChange={inputChange}
+      onChange={inputChanged}
       onKeyUp={inputKeyUp}
     />
   );
