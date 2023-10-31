@@ -49,7 +49,7 @@ function configureDefence(
 function getDefaultDefenceValue(
   id: DEFENCE_TYPES,
   configId: string
-): DefenceConfig | null {
+): DefenceConfig {
   const defence = defaultDefences.find((defence) => defence.id === id);
   if (!defence) {
     throw new Error(`Defence type ${id} not found in default defences.`);
@@ -72,9 +72,8 @@ function resetDefenceConfig(
   const configItem = defences
     .find((defence) => defence.id === id)
     ?.config.find((item) => item.id === configId);
-
   const defaultValue = getDefaultDefenceValue(id, configId);
-  if (!configItem || !defaultValue) {
+  if (!configItem) {
     throw new Error(
       `Config item ${configId} not found for defence ${id} in default defences.`
     );

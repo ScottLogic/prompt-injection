@@ -135,8 +135,6 @@ router.post("/defence/resetConfig", (req: DefenceConfigResetRequest, res) => {
         .find((defence) => defence.id === defenceId)
         ?.config.find((config) => config.id === configId);
 
-    console.log("updated config", updatedDefenceConfig);
-
     if (updatedDefenceConfig) {
       res.send(updatedDefenceConfig);
     } else {

@@ -16,6 +16,7 @@
 		"jest.disabledWorkspaceFolders": [
 			"prompt-injection",
 			"frontend"
-		]
+		], 
+		"jest.setupFiles": ["<rootDir>/backend/test/setupEnvVars.ts"]
 	}
 }

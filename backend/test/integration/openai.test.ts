@@ -7,11 +7,8 @@ import {
 import { chatGptSendMessage } from "../../src/openai";
 import { DEFENCE_TYPES, DefenceInfo } from "../../src/models/defence";
 import { EmailInfo } from "../../src/models/email";
-import {
-  activateDefence,
-  configureDefence,
-  getInitialDefences,
-} from "../../src/defence";
+import { activateDefence, configureDefence } from "../../src/defence";
+import { defaultDefences } from "../../src/defaultDefences";
 import { systemRoleDefault } from "../../src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method
@@ -74,11 +71,6 @@ const chatResponseAssistantEmailConfirm = {
 };
 
 describe("OpenAI Integration Tests", () => {
-  beforeEach(() => {
-    // clear environment variables
-    process.env = {};
-  });
-
   test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", async () => {
     const message = "Hello";
     const chatHistory: ChatHistoryMessage[] = [];
@@ -142,7 +134,7 @@ describe("OpenAI Integration Tests", () => {
 
     const defences = activateDefence(
       DEFENCE_TYPES.SYSTEM_ROLE,
-      getInitialDefences()
+      defaultDefences
     );
 
     // Mock the createChatCompletion function
@@ -210,7 +202,7 @@ describe("OpenAI Integration Tests", () => {
     // activate the SYSTEM_ROLE defence
     const defences = activateDefence(
       DEFENCE_TYPES.SYSTEM_ROLE,
-      getInitialDefences()
+      defaultDefences
     );
 
     // Mock the createChatCompletion function
@@ -273,7 +265,7 @@ describe("OpenAI Integration Tests", () => {
         chatMessageType: CHAT_MESSAGE_TYPE.BOT,
       },
     ];
-    const defences: DefenceInfo[] = getInitialDefences();
+    const defences: DefenceInfo[] = defaultDefences;
     const sentEmails: EmailInfo[] = [];
     const chatModel: ChatModel = {
       id: CHAT_MODELS.GPT_4,
@@ -363,12 +355,11 @@ describe("OpenAI Integration Tests", () => {
 
       const defences = configureDefence(
         DEFENCE_TYPES.SYSTEM_ROLE,
-        activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, getInitialDefences()),
+        activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, defaultDefences),
         [
           {
             id: "systemRole",
             value: "You are not a helpful assistant",
-            default: "you are a helpful assistant",
           },
         ]
       );
@@ -418,12 +409,21 @@ describe("OpenAI Integration Tests", () => {
       "WHEN sending message " +
       "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is alerted",
     async () => {
-      // set email whitelist
-      process.env.EMAIL_WHITELIST = "";
-
       const message = "Hello";
       const chatHistory: ChatHistoryMessage[] = [];
-      const defences: DefenceInfo[] = getInitialDefences();
+      
+      // set email whitelist to empty
+      const defences: DefenceInfo[] = configureDefence(
+        DEFENCE_TYPES.EMAIL_WHITELIST,
+        defaultDefences,
+        [
+          {
+            id: "whitelist",
+            value: "",
+          },
+        ]
+      );
+
       const sentEmails: EmailInfo[] = [];
       const chatModel: ChatModel = {
         id: CHAT_MODELS.GPT_4,
@@ -481,7 +481,16 @@ describe("OpenAI Integration Tests", () => {
       "THEN email is not sent AND message is blocked AND EMAIL_WHITELIST defence is triggered",
     async () => {
       // set email whitelist
-      process.env.EMAIL_WHITELIST = "";
+      const defences: DefenceInfo[] = configureDefence(
+        DEFENCE_TYPES.EMAIL_WHITELIST,
+        activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defaultDefences),
+        [
+          {
+            id: "whitelist",
+            value: "",
+          },
+        ]
+      );
 
       const message = "Hello";
       const chatHistory: ChatHistoryMessage[] = [];
@@ -498,10 +507,6 @@ describe("OpenAI Integration Tests", () => {
 
       const openAiApiKey = "sk-12345";
       const isOriginalMessage = true;
-      const defences = activateDefence(
-        DEFENCE_TYPES.EMAIL_WHITELIST,
-        getInitialDefences()
-      );
 
       // Mock the createChatCompletion function
       mockCreateChatCompletion
@@ -563,7 +568,7 @@ describe("OpenAI Integration Tests", () => {
       const isOriginalMessage = true;
       const defences = activateDefence(
         DEFENCE_TYPES.EMAIL_WHITELIST,
-        getInitialDefences()
+        defaultDefences
       );
 
       // Mock the createChatCompletion function
@@ -607,11 +612,18 @@ describe("OpenAI Integration Tests", () => {
       "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is not triggered",
     async () => {
       // set email whitelist
-      process.env.EMAIL_WHITELIST = "bob@example.com";
-
       const message = "Send an email to bob@example.com saying hi";
       const chatHistory: ChatHistoryMessage[] = [];
-      const defences: DefenceInfo[] = getInitialDefences();
+      const defences: DefenceInfo[] = configureDefence(
+        DEFENCE_TYPES.EMAIL_WHITELIST,
+        defaultDefences,
+        [
+          {
+            id: "whitelist",
+            value: "",
+          },
+        ]
+      );
       const sentEmails: EmailInfo[] = [];
       const chatModel: ChatModel = {
         id: CHAT_MODELS.GPT_4,
@@ -664,7 +676,6 @@ describe("OpenAI Integration Tests", () => {
     }
   );
   test("GIVEN the output filtering defence is active WHEN the bot responds with a message containing a phrase in the list THEN the defence is triggered and the message is blocked", async () => {
-    process.env.FILTER_LIST_OUTPUT = "secret project,password";
     const message = "What is the secret Project?";
 
     const chatHistory: ChatHistoryMessage[] = [];
@@ -683,7 +694,7 @@ describe("OpenAI Integration Tests", () => {
     const isOriginalMessage = true;
     const defences = activateDefence(
       DEFENCE_TYPES.FILTER_BOT_OUTPUT,
-      getInitialDefences()
+      defaultDefences
     );
 
     mockCreateChatCompletion.mockResolvedValueOnce(
@@ -711,7 +722,6 @@ describe("OpenAI Integration Tests", () => {
   });
 
   test("GIVEN the output filtering defence is active WHEN the bot responds with a message containing a phrase not in the list THEN the message is not blocked", async () => {
-    process.env.FILTER_LIST_OUTPUT = "secret project,password";
     const message = "What is the secret Project?";
 
     const chatHistory: ChatHistoryMessage[] = [];
@@ -729,7 +739,7 @@ describe("OpenAI Integration Tests", () => {
     const isOriginalMessage = true;
     const defences = activateDefence(
       DEFENCE_TYPES.FILTER_BOT_OUTPUT,
-      getInitialDefences()
+      defaultDefences
     );
 
     mockCreateChatCompletion.mockResolvedValueOnce(
@@ -759,11 +769,10 @@ describe("OpenAI Integration Tests", () => {
       "WHEN the bot responds with a message containing a phrase in the list " +
       "THEN the defence is triggered AND the message is not blocked",
     async () => {
-      process.env.FILTER_LIST_OUTPUT = "secret project,password";
       const message = "What is the secret Project?";
 
       const chatHistory: ChatHistoryMessage[] = [];
-      const defences = getInitialDefences();
+      const defences = defaultDefences;
       const sentEmails: EmailInfo[] = [];
       const chatModel: ChatModel = {
         id: CHAT_MODELS.GPT_4,
