@@ -18,7 +18,7 @@ import {
   defaultChatModel,
 } from "./models/chat";
 import { Document } from "./models/document";
-import { chatGptSendMessage, setOpenAiApiKey, setGptModel } from "./openai";
+import { chatGptSendMessage, setGptModel } from "./openai";
 import { LEVEL_NAMES } from "./models/level";
 import * as fs from "fs";
 import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
@@ -28,7 +28,6 @@ import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
 import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
 import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
 import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
-import { OpenAiSetKeyRequest } from "./models/api/OpenAiSetKeyRequest";
 import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
 import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
 import {
@@ -418,26 +417,6 @@ router.post("/openai/clear", (req: OpenAiClearRequest, res) => {
     res.statusCode = 400;
     res.send();
   }
-});
-
-// Set API key
-router.post("/openai/apiKey", async (req: OpenAiSetKeyRequest, res) => {
-  const openAiApiKey = req.body.openAiApiKey;
-  if (!openAiApiKey) {
-    res.status(401).send();
-    return;
-  }
-  if (await setOpenAiApiKey(openAiApiKey, req.session.chatModel.id)) {
-    req.session.openAiApiKey = openAiApiKey;
-    res.send();
-  } else {
-    res.status(401).send();
-  }
-});
-
-// Get API key
-router.get("/openai/apiKey", (req, res) => {
-  res.send(req.session.openAiApiKey);
 });
 
 // Set the ChatGPT model

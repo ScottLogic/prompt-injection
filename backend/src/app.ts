@@ -85,8 +85,21 @@ app.use((req, _res, next) => {
 });
 
 app.use("/", router);
+
+// serve the documents folder
+app.use(
+  "/documents",
+  express.static(path.join(__dirname, "../resources/documents/common"))
+);
+
 app.listen(port, () => {
-  console.log(`Server is running on port: ${port}`);
+  const envOpenAiKey = process.env.OPENAI_API_KEY;
+  if (!envOpenAiKey) {
+    console.error(
+      "OpenAI API key not found in environment vars - cannot continue!"
+    );
+    process.exit(1);
+  }
 
   // initialise the documents on app startup
   initDocumentVectors()
@@ -97,19 +110,10 @@ app.listen(port, () => {
       console.error("Error initialising document vectors", err);
     });
 
-  // for dev purposes only - set the API key from the environment variable
-  const envOpenAiKey = process.env.OPENAI_API_KEY;
-  if (envOpenAiKey) {
-    console.debug("Initializing models with API key from environment variable");
-    // asynchronously set the API key
-    void setOpenAiApiKey(envOpenAiKey, defaultChatModel.id).then(() => {
-      console.debug("OpenAI models initialized");
-    });
-  }
+  // Set API key from environment variable
+  console.debug("Initializing models with API key from environment variable");
+  void setOpenAiApiKey(envOpenAiKey, defaultChatModel.id).then(() => {
+    console.debug("OpenAI models initialized");
+    console.log(`Server is running on port: ${port}`);
+  });
 });
-
-// serve the documents folder
-app.use(
-  "/documents",
-  express.static(path.join(__dirname, "../resources/documents/common"))
-);

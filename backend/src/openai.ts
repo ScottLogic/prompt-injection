@@ -29,9 +29,6 @@ import {
 } from "./models/openai";
 import { promptTokensEstimate } from "openai-chat-tokens";
 
-// OpenAI config
-let config: Configuration | null = null;
-
 // functions available to ChatGPT
 const chatGptFunctions = [
   {
@@ -119,7 +116,8 @@ async function setOpenAiApiKey(openAiApiKey: string, gptModel: string) {
   // initialise models with the new key
   if (await validateApiKey(openAiApiKey, gptModel)) {
     console.debug("Setting API key and initialising models");
-    initOpenAi(openAiApiKey);
+    getOpenAiFromKey(openAiApiKey);
+    console.debug("OpenAI initialised");
     return true;
   } else {
     // set to empty in case it was previously set
@@ -128,17 +126,8 @@ async function setOpenAiApiKey(openAiApiKey: string, gptModel: string) {
   }
 }
 
-function initOpenAi(openAiApiKey: string) {
-  // make sure it's possible to get OpenAiApi object from the key
-  getOpenAiFromKey(openAiApiKey);
-  console.debug("OpenAI initialised");
-}
-
 function getOpenAiFromKey(openAiApiKey: string) {
-  config = new Configuration({
-    apiKey: openAiApiKey,
-  });
-  return new OpenAIApi(config);
+  return new OpenAIApi(new Configuration({ apiKey: openAiApiKey }));
 }
 
 async function setGptModel(openAiApiKey: string, model: CHAT_MODELS) {
