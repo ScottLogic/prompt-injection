@@ -4,8 +4,11 @@
   line-height: 1.25em;
 
   width: 100%;
-  resize: none;
   overflow-y: auto;
+
+  /* the textarea is automatically resized as the user types */
+  /* disable user resizing */
+  resize: none;
 }
 
 .themed-text-area.loose {
