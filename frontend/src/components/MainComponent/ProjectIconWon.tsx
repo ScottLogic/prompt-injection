@@ -1,6 +1,7 @@
 function ProjectIconWon() {
   return (
     <svg
+      aria-hidden
       width="100%"
       height="100%"
       viewBox="0 0 385 355"
