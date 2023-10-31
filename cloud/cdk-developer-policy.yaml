@@ -21,7 +21,7 @@ Resources:
             Condition:
               StringNotEquals:
                 iam:PermissionsBoundary:
-                  Fn::Sub: arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/spylogic-developer-policy
+                  Fn::Sub: arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/cdk-developer-policy
             Effect: Deny
             Resource: "*"
           - Sid: DenyPermBoundaryIAMPolicyAlteration
@@ -32,7 +32,7 @@ Resources:
               - iam:SetDefaultPolicyVersion
             Effect: Deny
             Resource:
-              Fn::Sub: arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/spylogic-developer-policy
+              Fn::Sub: arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/cdk-developer-policy
           - Sid: DenyRemovalOfPermBoundaryFromAnyUserOrRole
             Action:
               - iam:DeleteUserPermissionsBoundary
@@ -47,6 +47,6 @@ Resources:
             Resource: "*"
           # -- End Custom Organization Policy --
         Version: "2012-10-17"
-      Description: "CDK Bootstrap Permission Boundary for Spy Logic"
-      ManagedPolicyName: spylogic-developer-policy
+      Description: "CDK Bootstrap Permission Boundary"
+      ManagedPolicyName: cdk-developer-policy
       Path: /
