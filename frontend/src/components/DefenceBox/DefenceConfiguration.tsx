@@ -54,7 +54,7 @@ function DefenceConfiguration({
   return (
     <div>
       <div className="defence-config-header">
-        <div className="defence-config-name">{config.name}</div>
+        <p>{config.name}</p>
         <ThemedButton onClick={() => void resetConfiguration()}>
           reset
         </ThemedButton>
