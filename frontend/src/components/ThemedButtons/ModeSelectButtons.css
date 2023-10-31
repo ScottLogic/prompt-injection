@@ -1,4 +1,4 @@
-.start-level-selection-buttons {
+.mode-selection-buttons {
   display: flex;
   justify-content: center;
   gap: 5rem;
@@ -6,11 +6,11 @@
   padding: 0;
 }
 
-.start-level-selection-buttons .level-button {
+.mode-selection-buttons .mode-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--overlay-tab-colour);
+  border: 0.0625rem solid var(--overlay-tab-colour);
   border-radius: 0.5rem;
   padding: 1rem 3rem;
   cursor: pointer;
@@ -21,10 +21,10 @@
   transition: ease 0.1s;
 }
 
-.start-level-selection-buttons .level-button.selected {
+.mode-selection-buttons .mode-button.selected {
   background-color: var(--overlay-tab-colour);
 }
 
-.start-level-selection-buttons button:hover {
+.mode-selection-buttons button:hover {
   background-color: var(--overlay-tab-colour);
 }

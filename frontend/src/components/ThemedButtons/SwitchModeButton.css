@@ -1,7 +1,7 @@
 .switch-mode-button-container {
   display: flex;
   padding-top: 0.5rem;
-  height: 40px;
+  height: 2.5rem;
 }
 /* Button fills all available width */
 .switch-mode-button-container button {
