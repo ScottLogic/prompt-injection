@@ -41,7 +41,7 @@ function DefenceConfiguration({
 
   return (
     <div>
-      <span className="defence-config-name">{config.name}: </span>
+      <span>{config.name}: </span>
       <ContentEditable
         className={configClass}
         html={config.value.toString()}
