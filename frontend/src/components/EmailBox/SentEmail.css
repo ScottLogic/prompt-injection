@@ -10,7 +10,7 @@
   white-space: pre-wrap;
 }
 
-.sent-email-divider {
+.divider-line {
   border-bottom: 0.0625rem solid var(--email-divider-colour);
   margin: 0.5rem 0;
   width: 100%;
