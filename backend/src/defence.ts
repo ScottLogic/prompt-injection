@@ -68,39 +68,34 @@ function resetDefenceConfig(
   configId: string,
   defences: DefenceInfo[]
 ): DefenceInfo[] {
-  // return updated list of defences
-  const configItem = defences
-    .find((defence) => defence.id === id)
-    ?.config.find((item) => item.id === configId);
   const defaultValue = getDefaultDefenceValue(id, configId);
-  if (!configItem) {
-    throw new Error(
-      `Config item ${configId} not found for defence ${id} in default defences.`
-    );
-  }
+
   return configureDefence(id, defences, [
-    { ...configItem, value: defaultValue.value },
+    { ...defaultValue, value: defaultValue.value },
   ]);
 }
 
 function getConfigValue(
   defences: DefenceInfo[],
   defenceId: DEFENCE_TYPES,
-  configId: string,
-  backupDefault = ""
+  configId: string
 ) {
   const config: DefenceConfig | undefined = defences
     .find((defence) => defence.id === defenceId)
     ?.config.find((config) => config.id === configId);
-  return config?.value ?? backupDefault;
+  if (!config) {
+    throw new Error(
+      `Config item ${configId} not found for defence ${defenceId} in default defences.`
+    );
+  }
+  return config.value;
 }
 
 function getMaxMessageLength(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.CHARACTER_LIMIT,
-    "maxMessageLength",
-    String(280)
+    "maxMessageLength"
   );
 }
 

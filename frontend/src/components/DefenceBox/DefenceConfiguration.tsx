@@ -4,6 +4,7 @@ import { clsx } from "clsx";
 import { DefenceConfig } from "../../models/defence";
 
 import "./DefenceConfiguration.css";
+import ThemedButton from "../ThemedButtons/ThemedButton";
 
 function DefenceConfiguration({
   config,
@@ -54,12 +55,9 @@ function DefenceConfiguration({
     <div>
       <div className="defence-config-header">
         <div className="defence-config-name">{config.name}</div>
-        <button
-          className="defence-config-reset-button"
-          onClick={() => void resetConfiguration()}
-        >
+        <ThemedButton onClick={() => void resetConfiguration()}>
           reset
-        </button>
+        </ThemedButton>
       </div>
       <ContentEditable
         className={configClass}
