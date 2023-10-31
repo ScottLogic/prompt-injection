@@ -67,7 +67,7 @@ function DefenceMechanism({
   return (
     <details className="defence-mechanism">
       <summary>
-        <span>{defenceDetail.name}</span>
+        <span aria-hidden>{defenceDetail.name}</span>
         <label className="switch">
           <input
             type="checkbox"
