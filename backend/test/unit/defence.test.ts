@@ -95,11 +95,13 @@ test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
 
   // regex to match the transformed message with
   const regex = new RegExp(
-    `^${process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT}(.{${process.env.RANDOM_SEQ_ENCLOSURE_LENGTH}}) {{ ${message} }} (.{${process.env.RANDOM_SEQ_ENCLOSURE_LENGTH}})\\. $`
+    `^RSE_PRE_PROMPT (.{20}) {{ ${message} }} (.{20})\\. $`
   );
+
   const transformedMessage = transformMessage(message, defences);
   // check the transformed message matches the regex
   const res = transformedMessage.match(regex);
+
   // expect there to be a match
   expect(res).not.toBeNull();
 

@@ -74,7 +74,7 @@ describe("OpenAI Integration Tests", () => {
   test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", async () => {
     const message = "Hello";
     const chatHistory: ChatHistoryMessage[] = [];
-    const defences: DefenceInfo[] = [];
+    const defences: DefenceInfo[] = defaultDefences;
     const sentEmails: EmailInfo[] = [];
     const chatModel: ChatModel = {
       id: CHAT_MODELS.GPT_4,
@@ -411,7 +411,7 @@ describe("OpenAI Integration Tests", () => {
     async () => {
       const message = "Hello";
       const chatHistory: ChatHistoryMessage[] = [];
-      
+
       // set email whitelist to empty
       const defences: DefenceInfo[] = configureDefence(
         DEFENCE_TYPES.EMAIL_WHITELIST,
@@ -548,9 +548,6 @@ describe("OpenAI Integration Tests", () => {
       "WHEN sending message " +
       "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is not triggered",
     async () => {
-      // set email whitelist
-      process.env.EMAIL_WHITELIST = "bob@example.com";
-
       const message = "Send an email to bob@example.com saying hi";
       const chatHistory: ChatHistoryMessage[] = [];
       const sentEmails: EmailInfo[] = [];
@@ -637,9 +634,6 @@ describe("OpenAI Integration Tests", () => {
 
       const openAiApiKey = "sk-12345";
       const isOriginalMessage = true;
-
-      // set email whitelist
-      process.env.EMAIL_WHITELIST = "bob@example.com";
 
       // Mock the createChatCompletion function
       mockCreateChatCompletion

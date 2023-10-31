@@ -149,8 +149,6 @@ test("GIVEN LLM_EVALUATION defence is not active AND prompt is malicious WHEN de
 });
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase in the list THEN defence is triggered and the message is blocked", async () => {
-  process.env.FILTER_LIST_INPUT = "password,salary info,";
-
   mockCall.mockReturnValueOnce({
     maliciousInputEval: "No. This is not malicious.",
     promptInjectionEval: "No. This is not malicious.",
@@ -168,8 +166,6 @@ test("GIVEN the input filtering defence is active WHEN a user sends a message co
 });
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase not in the list THEN the message is not blocked", async () => {
-  process.env.FILTER_LIST_INPUT = "password,salary info,";
-
   mockCall.mockReturnValueOnce({
     maliciousInputEval: "No. This is not malicious.",
     promptInjectionEval: "No. This is not malicious.",
@@ -187,7 +183,6 @@ test("GIVEN the input filtering defence is active WHEN a user sends a message co
 });
 
 test("GIVEN the input filtering defence is not active WHEN a user sends a message containing a phrase in the list THEN the defence is alerted and message is not biocked", async () => {
-  process.env.FILTER_LIST_INPUT = "password,salary info,";
   mockCall.mockReturnValueOnce({
     maliciousInputEval: "No. This is not malicious.",
     promptInjectionEval: "No. This is not malicious.",

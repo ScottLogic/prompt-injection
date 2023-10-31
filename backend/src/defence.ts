@@ -69,7 +69,6 @@ function resetDefenceConfig(
   defences: DefenceInfo[]
 ): DefenceInfo[] {
   const defaultValue = getDefaultDefenceValue(id, configId);
-
   return configureDefence(id, defences, [
     { ...defaultValue, value: defaultValue.value },
   ]);
