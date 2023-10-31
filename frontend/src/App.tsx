@@ -126,14 +126,6 @@ function App({ isNewUser }: { isNewUser: boolean }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (overlayType === null) {
-      dialogRef.current?.close();
-    } else {
-      dialogRef.current?.showModal();
-    }
-  }, [overlayType]);
-
   function closeOverlay() {
     // open the mission info after welcome page for a new user
     if (overlayType === OVERLAY_TYPE.WELCOME) {
@@ -157,6 +149,13 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   }
 
   function openOverlay(overlayType: OVERLAY_TYPE | null) {
+    if (overlayType === null) {
+      dialogRef.current?.close();
+      return null;
+    } else {
+      dialogRef.current?.showModal();
+    }
+
     switch (overlayType) {
       case OVERLAY_TYPE.WELCOME:
         return (
