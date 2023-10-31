@@ -6,9 +6,9 @@ import {
   configureDefence,
   transformMessage,
   detectTriggeredDefences,
-  getInitialDefences,
   resetDefenceConfig,
 } from "./defence";
+import { defaultDefences } from "./defaultDefences";
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
@@ -107,7 +107,7 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
 router.post("/defence/reset", (req: DefenceResetRequest, res) => {
   const level = req.body.level;
   if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
-    req.session.levelState[level].defences = getInitialDefences();
+    req.session.levelState[level].defences = defaultDefences;
     console.debug("Defences reset");
     res.send();
   } else {
@@ -127,10 +127,15 @@ router.post("/defence/resetConfig", (req: DefenceConfigResetRequest, res) => {
       configId,
       req.session.levelState[level].defences
     );
+
+    console.log(req.session.levelState[level].defences);
+
     const updatedDefenceConfig: DefenceConfig | undefined =
       req.session.levelState[level].defences
         .find((defence) => defence.id === defenceId)
         ?.config.find((config) => config.id === configId);
+
+    console.log("updated config", updatedDefenceConfig);
 
     if (updatedDefenceConfig) {
       res.send(updatedDefenceConfig);

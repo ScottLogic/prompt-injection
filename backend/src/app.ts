@@ -12,7 +12,7 @@ import { DefenceInfo } from "./models/defence";
 import { defaultChatModel } from "./models/chat";
 import { LEVEL_NAMES } from "./models/level";
 import path from "path";
-import { getInitialDefences } from "./defence";
+import { defaultDefences } from "./defaultDefences";
 import { initDocumentVectors } from "./langchain";
 
 dotenv.config();
@@ -76,7 +76,7 @@ app.use((req, _res, next) => {
       .map((value) => ({
         level: value as LEVEL_NAMES,
         chatHistory: [],
-        defences: getInitialDefences(),
+        defences: defaultDefences,
         sentEmails: [],
       }));
     req.session.initialised = true;

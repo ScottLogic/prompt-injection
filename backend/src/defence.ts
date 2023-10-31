@@ -3,93 +3,11 @@ import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
 import {
-  maliciousPromptEvalPrePrompt,
-  promptInjectionEvalPrePrompt,
-  qAPrePromptSecure,
-  systemRoleDefault,
   systemRoleLevel1,
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
-
-function createDefenceInfo(
-  id: DEFENCE_TYPES,
-  config: { id: string; value: string }[]
-): DefenceInfo {
-  const defenceConfig = config.map((item) => ({
-    id: item.id,
-    value: item.value,
-    default: item.value,
-  }));
-  return new DefenceInfo(id, defenceConfig);
-}
-
-function getInitialDefences(): DefenceInfo[] {
-  return [
-    createDefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
-      {
-        id: "maxMessageLength",
-        value: process.env.MAX_MESSAGE_LENGTH ?? String(280),
-      },
-    ]),
-    createDefenceInfo(DEFENCE_TYPES.EMAIL_WHITELIST, [
-      {
-        id: "whitelist",
-        value: process.env.EMAIL_WHITELIST ?? "",
-      },
-    ]),
-    createDefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
-      {
-        id: "prompt-injection-evaluator-prompt",
-        value: promptInjectionEvalPrePrompt,
-      },
-      {
-        id: "malicious-prompt-evaluator-prompt",
-        value: maliciousPromptEvalPrePrompt,
-      },
-    ]),
-    createDefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
-      {
-        id: "prePrompt",
-        value: qAPrePromptSecure,
-      },
-    ]),
-    createDefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
-      {
-        id: "prePrompt",
-        value: process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT ?? "",
-      },
-      {
-        id: "length",
-        value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH ?? String(10),
-      },
-    ]),
-    createDefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
-      {
-        id: "systemRole",
-        value: systemRoleDefault,
-      },
-    ]),
-    createDefenceInfo(DEFENCE_TYPES.XML_TAGGING, [
-      {
-        id: "prePrompt",
-        value: process.env.XML_TAGGING_PRE_PROMPT ?? "",
-      },
-    ]),
-    createDefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
-      {
-        id: "filterUserInput",
-        value: process.env.FILTER_LIST_INPUT ?? "",
-      },
-    ]),
-    createDefenceInfo(DEFENCE_TYPES.FILTER_BOT_OUTPUT, [
-      {
-        id: "filterBotOutput",
-        value: process.env.FILTER_LIST_OUTPUT ?? "",
-      },
-    ]),
-  ];
-}
+import { defaultDefences } from "./defaultDefences";
 
 function activateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   // return the updated list of defences
@@ -128,27 +46,42 @@ function configureDefence(
   );
 }
 
+function getDefaultDefenceValue(
+  id: DEFENCE_TYPES,
+  configId: string
+): DefenceConfig | null {
+  const defence = defaultDefences.find((defence) => defence.id === id);
+  if (!defence) {
+    throw new Error(`Defence type ${id} not found in default defences.`);
+  }
+  const configItem = defence.config.find((item) => item.id === configId);
+  if (!configItem) {
+    throw new Error(
+      `Config item ${configId} not found for defence ${id} in default defences.`
+    );
+  }
+  return configItem;
+}
+
 function resetDefenceConfig(
   id: DEFENCE_TYPES,
   configId: string,
   defences: DefenceInfo[]
 ): DefenceInfo[] {
   // return updated list of defences
-  return defences.map((defence) =>
-    defence.id === id
-      ? {
-          ...defence,
-          config: defence.config.map((config) =>
-            config.id === configId
-              ? {
-                  ...config,
-                  value: config.default,
-                }
-              : config
-          ),
-        }
-      : defence
-  );
+  const configItem = defences
+    .find((defence) => defence.id === id)
+    ?.config.find((item) => item.id === configId);
+
+  const defaultValue = getDefaultDefenceValue(id, configId);
+  if (!configItem || !defaultValue) {
+    throw new Error(
+      `Config item ${configId} not found for defence ${id} in default defences.`
+    );
+  }
+  return configureDefence(id, defences, [
+    { ...configItem, value: defaultValue.value },
+  ]);
 }
 
 function getConfigValue(
@@ -160,7 +93,7 @@ function getConfigValue(
   const config: DefenceConfig | undefined = defences
     .find((defence) => defence.id === defenceId)
     ?.config.find((config) => config.id === configId);
-  return config?.value ?? config?.default ?? backupDefault;
+  return config?.value ?? backupDefault;
 }
 
 function getMaxMessageLength(defences: DefenceInfo[]) {
@@ -492,7 +425,6 @@ export {
   resetDefenceConfig,
   detectTriggeredDefences,
   getEmailWhitelistVar,
-  getInitialDefences,
   getQAPrePromptFromConfig,
   getPromptInjectionEvalPrePromptFromConfig,
   getMaliciousPromptEvalPrePromptFromConfig,

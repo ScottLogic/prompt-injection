@@ -49,7 +49,6 @@ class DefenceInfo {
 interface DefenceResetResponse {
   id: string;
   value: string;
-  default: string;
 }
 
 export { DEFENCE_TYPES, DefenceConfig, DefenceInfo };
