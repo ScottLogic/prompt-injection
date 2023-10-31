@@ -27,21 +27,31 @@ import MissionInformation from "./components/Overlay/MissionInformation";
 import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 import LevelsComplete from "./components/Overlay/LevelsComplete";
 
-function App({ isNewUser }: { isNewUser: boolean }) {
+function App() {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
-  const [currentLevel, setCurrentLevel] = useState<LEVEL_NAMES>(
-    loadCurrentLevel()
-  );
+  const [isNewUser, setIsNewUser] = useState(loadIsNewUser);
+  const [currentLevel, setCurrentLevel] =
+    useState<LEVEL_NAMES>(loadCurrentLevel);
   const [numCompletedLevels, setNumCompletedLevels] = useState(
-    loadNumCompletedLevels()
+    loadNumCompletedLevels
   );
-
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
 
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [overlayType, setOverlayType] = useState<OVERLAY_TYPE | null>(null);
+
+  function loadIsNewUser() {
+    // get isNewUser from local storage
+    const isNewUserStr = localStorage.getItem("isNewUser");
+    if (isNewUserStr) {
+      return isNewUserStr === "true";
+    } else {
+      // is new user by default
+      return true;
+    }
+  }
 
   function loadCurrentLevel() {
     // get current level from local storage
@@ -80,6 +90,11 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   }, []);
 
   useEffect(() => {
+    // save isNewUser to local storage
+    localStorage.setItem("isNewUser", isNewUser.toString());
+  }, [isNewUser]);
+
+  useEffect(() => {
     // save current level to local storage
     localStorage.setItem("currentLevel", currentLevel.toString());
   }, [currentLevel]);
@@ -92,6 +107,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   function closeOverlay() {
     // open the mission info after welcome page for a new user
     if (overlayType === OVERLAY_TYPE.WELCOME) {
+      setIsNewUser(false);
       openInformationOverlay();
     } else {
       setOverlayType(null);

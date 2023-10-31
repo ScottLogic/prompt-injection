@@ -8,12 +8,11 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: true,
-    tsconfigRootDir: __dirname,
+    project: ["./tsconfig.json", "./test/tsconfig.json"],
   },
   plugins: ["@typescript-eslint"],
   root: true,
-  ignorePatterns: ["build", "coverage", "node_modules", "jest.config.js"],
+  ignorePatterns: ["build", "coverage", "node_modules"],
   rules: {
     "@typescript-eslint/init-declarations": "error",
 

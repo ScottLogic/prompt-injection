@@ -11,22 +11,16 @@
 .model-config-info {
   display: flex;
   align-items: center;
-  margin-bottom: 0px;
 }
 
 .model-config-title {
   margin-right: auto;
-  /* margin-bottom: 3px; */
 }
 
 .model-config-info-icon {
   font-size: 1.3rem;
-  margin-bottom: 0px;
-  width: 10%;
 }
 
 .model-config-info-text {
-  margin-top: 0px;
-  padding: 0px;
   font-size: 0.875rem;
 }

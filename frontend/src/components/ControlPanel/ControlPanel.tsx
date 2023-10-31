@@ -48,6 +48,9 @@ function ControlPanel({
     });
   }
 
+  // only allow configuration in sandbox
+  const showConfigurations = currentLevel === LEVEL_NAMES.SANDBOX;
+
   return (
     <div className="control-panel">
       {/* only show control panel on level 3 and sandbox */}
@@ -61,10 +64,7 @@ function ControlPanel({
             <DefenceBox
               currentLevel={currentLevel}
               defences={getDefencesConfigure()}
-              showConfigurations={
-                // only allow configuration in sandbox
-                currentLevel === LEVEL_NAMES.SANDBOX ? true : false
-              }
+              showConfigurations={showConfigurations}
               setDefenceActive={setDefenceActive}
               setDefenceInactive={setDefenceInactive}
               setDefenceConfiguration={setDefenceConfiguration}
@@ -78,14 +78,14 @@ function ControlPanel({
             <DefenceBox
               currentLevel={currentLevel}
               defences={getDefencesModel()}
-              showConfigurations={true}
+              showConfigurations={showConfigurations}
               setDefenceActive={setDefenceActive}
               setDefenceInactive={setDefenceInactive}
               setDefenceConfiguration={setDefenceConfiguration}
             />
 
             {/* only show model box in sandbox mode */}
-            {currentLevel === LEVEL_NAMES.SANDBOX && <ModelBox />}
+            {showConfigurations && <ModelBox />}
           </details>
         </>
       )}
