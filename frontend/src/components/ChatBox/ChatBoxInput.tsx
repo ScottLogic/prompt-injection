@@ -12,24 +12,31 @@ function ChatBoxInput({
   recallSentMessageFromHistory: (direction: "backward" | "forward") => void;
   sendChatMessage: () => void;
 }) {
-  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    const ctrlUp = event.ctrlKey && event.key === "ArrowUp";
-    const ctrlDown = event.ctrlKey && event.key === "ArrowDown";
-    const enterNotShift = event.key === "Enter" && !event.shiftKey;
+  function isCtrlUp(event: KeyboardEvent<HTMLTextAreaElement>) {
+    return event.ctrlKey && event.key === "ArrowUp";
+  }
 
-    if (ctrlUp || ctrlDown || enterNotShift) {
+  function isCtrlDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    return event.ctrlKey && event.key === "ArrowDown";
+  }
+
+  function isEnterNotShift(event: KeyboardEvent<HTMLTextAreaElement>) {
+    return event.key === "Enter" && !event.shiftKey;
+  }
+
+  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (isCtrlUp(event) || isCtrlDown(event) || isEnterNotShift(event)) {
       event.preventDefault();
     }
   }
 
   function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
     // shift+enter shouldn't send message
-    if (event.key === "Enter" && !event.shiftKey) {
-      // asynchronously send the message
+    if (isEnterNotShift(event)) {
       sendChatMessage();
-    } else if (event.key === "ArrowUp" && event.ctrlKey) {
+    } else if (isCtrlUp(event)) {
       recallSentMessageFromHistory("backward");
-    } else if (event.key === "ArrowDown" && event.ctrlKey) {
+    } else if (isCtrlDown(event)) {
       recallSentMessageFromHistory("forward");
     }
   }
