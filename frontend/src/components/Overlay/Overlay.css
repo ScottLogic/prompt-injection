@@ -8,6 +8,7 @@
   color: var(--overlay-text-colour);
   width: 50%;
   height: fit-content;
+  max-height: 80%;
   overflow: visible;
   overflow-y: auto;
 }
