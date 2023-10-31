@@ -34,9 +34,9 @@ function ChatBoxInput({
     // shift+enter shouldn't send message
     if (isEnterNotShift(event)) {
       sendChatMessage();
-    } else if (isCtrlUp(event)) {
-      recallSentMessageFromHistory("backward");
     } else if (isCtrlDown(event)) {
+      recallSentMessageFromHistory("backward");
+    } else if (isCtrlUp(event)) {
       recallSentMessageFromHistory("forward");
     }
   }

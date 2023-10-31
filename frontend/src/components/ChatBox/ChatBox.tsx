@@ -70,7 +70,7 @@ function ChatBox({
       (message) => message.type === CHAT_MESSAGE_TYPE.USER
     );
 
-    if (direction === "forward") recallEarlierMessage();
+    if (direction === "backward") recallEarlierMessage();
     else recallLaterMessage(sentMessages.length);
   }
 
