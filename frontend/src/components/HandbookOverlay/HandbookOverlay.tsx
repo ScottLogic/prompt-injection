@@ -7,6 +7,7 @@ import "./HandbookOverlay.css";
 import HandbookGlossary from "./HandbookGlossary";
 import HandbookSystemRole from "./HandbookSystemRole";
 import { getLevelPrompt } from "../../service/levelService";
+import HandbookCloseIcon from "./HandbookCloseIcon";
 
 function HandbookOverlay({
   currentLevel,
@@ -46,6 +47,14 @@ function HandbookOverlay({
 
   return (
     <div className="handbook-overlay">
+      <button
+        className="prompt-injection-min-button close-button"
+        title="open the handbook"
+        aria-label="open the handbook"
+        onClick={closeOverlay}
+      >
+        <HandbookCloseIcon />
+      </button>
       <div className="spine">
         <HandbookOverlayTabs
           currentLevel={currentLevel}
