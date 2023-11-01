@@ -103,6 +103,13 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
     return;
   }
 
+  if (configurationAllowedOnLevel(level)) {
+    res.statusCode = 400;
+    res.statusMessage = "Configuration not allowed on this level";
+    res.send();
+    return;
+  }
+
   if (configValueBreachesCharacterLimit(config)) {
     res.statusCode = 400;
     res.statusMessage = "Config value exceeds character limit";
