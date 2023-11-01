@@ -36,6 +36,7 @@ import {
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
+import { DefenceConfig } from "./models/defence";
 
 const router = express.Router();
 
@@ -79,24 +80,43 @@ router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
   }
 });
 
+function configValueBreachesCharacterLimit(config: DefenceConfig[]) {
+  const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
+
+  const allValuesWithinLimit = config.every(
+    (c) => c.value.length <= CONFIG_VALUE_CHARACTER_LIMIT
+  );
+  return !allValuesWithinLimit;
+}
+
 // Configure a defence
 router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const config = req.body.config;
   const level = req.body.level;
-  if (defenceId && config && level && configurationAllowedOnLevel(level)) {
-    // configure the defence
-    req.session.levelState[level].defences = configureDefence(
-      defenceId,
-      req.session.levelState[level].defences,
-      config
-    );
-    res.send();
-  } else {
+
+  if (!defenceId || !config || !level) {
     res.statusCode = 400;
+    res.statusMessage = "Missing defenceId, config or level";
     res.send();
+    return;
   }
+
+  if (configValueBreachesCharacterLimit(config)) {
+    res.statusCode = 400;
+    res.statusMessage = "Config value exceeds character limit";
+    res.send();
+    return;
+  }
+
+  // configure the defence
+  req.session.levelState[level].defences = configureDefence(
+    defenceId,
+    req.session.levelState[level].defences,
+    config
+  );
+  res.send();
 });
 
 // reset the active defences
