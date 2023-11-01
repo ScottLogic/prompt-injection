@@ -384,23 +384,34 @@ router.get("/openai/history", (req, res) => {
   }
 });
 
-// add an info message to chat history
+// add a bot info welcome message info message to chat history
 router.post("/openai/addHistory", (req: OpenAiAddHistoryRequest, res) => {
   const message = req.body.message;
   const chatMessageType = req.body.chatMessageType;
   const level = req.body.level;
   if (
     message &&
-    chatMessageType &&
+    chatMessageType !== undefined &&
     level !== undefined &&
     level >= LEVEL_NAMES.LEVEL_1
   ) {
-    req.session.levelState[level].chatHistory.push({
+    const chatMsg: ChatHistoryMessage = {
       completion: null,
       chatMessageType: chatMessageType,
       infoMessage: message,
-    });
-    res.send();
+    };
+    if (chatMessageType === CHAT_MESSAGE_TYPE.BOT) {
+      // if bot message then add as a completion
+      chatMsg.completion = {
+        content: message,
+        role: "assistant",
+      };
+    } else {
+      // otherwise it is an info message
+      chatMsg.infoMessage = message;
+    }
+    req.session.levelState[level].chatHistory.push(chatMsg);
+    res.send(chatMsg);
   } else {
     res.statusCode = 400;
     res.send();

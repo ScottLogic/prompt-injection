@@ -173,7 +173,9 @@ function App() {
     console.log(`resetting level ${currentLevel}`);
 
     await clearChat(currentLevel);
-    setMessages([]);
+
+    // clear messages and add welcome message to start of chat
+    setMessagesWithWelcome([], currentLevel);
 
     await clearEmails(currentLevel);
     setEmails([]);
@@ -233,7 +235,8 @@ function App() {
     // get chat history for new level from the backend
     const levelChatHistory = await getChatHistory(newLevel);
 
-    setMessages(levelChatHistory);
+    // add welcome message to start of chat if not already there
+    setMessagesWithWelcome(levelChatHistory, newLevel);
 
     const defences =
       newLevel === LEVEL_NAMES.LEVEL_3
@@ -262,6 +265,34 @@ function App() {
     });
     setDefencesToShow(defences);
     setMainBodyKey(MainBodyKey + 1);
+  }
+
+  function setMessagesWithWelcome(
+    chatHistory: ChatMessage[],
+    level: LEVEL_NAMES
+  ) {
+    const welcomeMessage: ChatMessage = {
+      message: `Hello! I am ScottBruBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
+      type: CHAT_MESSAGE_TYPE.BOT,
+    };
+
+    // return true if there is a message from bot in the chat history
+    function hasBot() {
+      return chatHistory.some((message) => {
+        return message.type === CHAT_MESSAGE_TYPE.BOT;
+      });
+    }
+
+    // if there is no welcome message in the chat history already, add it to the chat history
+    if (level < LEVEL_NAMES.SANDBOX && !hasBot()) {
+      void addMessageToChatHistory(
+        welcomeMessage.message,
+        CHAT_MESSAGE_TYPE.BOT,
+        level
+      );
+      chatHistory.unshift(welcomeMessage);
+    }
+    setMessages(chatHistory);
   }
 
   function addInfoMessage(message: string) {
