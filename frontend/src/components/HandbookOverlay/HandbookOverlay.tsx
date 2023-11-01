@@ -4,7 +4,6 @@ import HandbookAttacks from "./HandbookAttacks";
 import HandbookOverlayTabs from "./HandbookOverlayTabs";
 import { HANDBOOK_PAGES, handbookPageNames } from "../../models/handbook";
 import "./HandbookOverlay.css";
-import Overlay from "../Overlay/Overlay";
 import HandbookGlossary from "./HandbookGlossary";
 import HandbookSystemRole from "./HandbookSystemRole";
 import { getLevelPrompt } from "../../service/levelService";
@@ -46,22 +45,22 @@ function HandbookOverlay({
   }[selectedPage];
 
   return (
-    <Overlay closeOverlay={closeOverlay}>
-      <div className="handbook-overlay">
+    <div className="handbook-overlay">
+      <section className="spine">
         <HandbookOverlayTabs
           currentLevel={currentLevel}
           currentPage={selectedPage}
           selectPage={setSelectedPage}
         />
-        <div
-          className="content"
-          role="tabpanel"
-          aria-label={handbookPageNames[selectedPage]}
-        >
-          {pageContent}
-        </div>
+      </section>
+      <div
+        className="content"
+        role="tabpanel"
+        aria-label={handbookPageNames[selectedPage]}
+      >
+        {pageContent}
       </div>
-    </Overlay>
+    </div>
   );
 }
 
