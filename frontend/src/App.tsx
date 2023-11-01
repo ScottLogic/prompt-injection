@@ -45,9 +45,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  const [overlayType, setOverlayType] = useState<OVERLAY_TYPE | null>(
-    OVERLAY_TYPE.WELCOME
-  );
+  const [overlayType, setOverlayType] = useState<OVERLAY_TYPE | null>(null);
 
   function loadCurrentLevel() {
     // get current level from local storage
@@ -81,7 +79,7 @@ function App({ isNewUser }: { isNewUser: boolean }) {
   useEffect(() => {
     void setNewLevel(currentLevel);
     if (isNewUser) {
-      setOverlayType(OVERLAY_TYPE.WELCOME);
+      openWelcomeOverlay();
     }
   }, []);
 
