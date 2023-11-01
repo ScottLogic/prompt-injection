@@ -39,12 +39,16 @@ import {
 
 const router = express.Router();
 
+function configurationAllowedOnLevel(level: LEVEL_NAMES) {
+  return level >= LEVEL_NAMES.LEVEL_3;
+}
+
 // Activate a defence
 router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const level = req.body.level;
-  if (defenceId && level) {
+  if (defenceId && level && configurationAllowedOnLevel(level)) {
     // activate the defence
     req.session.levelState[level].defences = activateDefence(
       defenceId,
@@ -62,7 +66,7 @@ router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const level = req.body.level;
-  if (defenceId && level) {
+  if (defenceId && level && configurationAllowedOnLevel(level)) {
     // deactivate the defence
     req.session.levelState[level].defences = deactivateDefence(
       defenceId,
@@ -81,12 +85,7 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
   const defenceId = req.body.defenceId;
   const config = req.body.config;
   const level = req.body.level;
-  if (
-    defenceId &&
-    config &&
-    level &&
-    level >= LEVEL_NAMES.LEVEL_1
-  ) {
+  if (defenceId && config && level && configurationAllowedOnLevel(level)) {
     // configure the defence
     req.session.levelState[level].defences = configureDefence(
       defenceId,
@@ -103,7 +102,7 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
 // reset the active defences
 router.post("/defence/reset", (req: DefenceResetRequest, res) => {
   const level = req.body.level;
-  if (level && level >= LEVEL_NAMES.LEVEL_1) {
+  if (level && configurationAllowedOnLevel(level)) {
     req.session.levelState[level].defences = getInitialDefences();
     console.debug("Defences reset");
     res.send();
