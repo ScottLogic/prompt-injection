@@ -98,12 +98,12 @@ async function initDocumentVectors() {
       // embed and store the splits - will use env variable for API key
       const embeddings = new OpenAIEmbeddings();
 
-      const vectorStore: MemoryVectorStore =
+      const docVector: MemoryVectorStore =
         await MemoryVectorStore.fromDocuments(documents, embeddings);
       // store the document vectors for the level
       docVectors.push({
-        level: level,
-        docVector: vectorStore,
+        level,
+        docVector,
       });
     }
   }
@@ -293,7 +293,7 @@ function formatEvaluationOutput(response: string) {
     const reason = splitResponse[1]?.trim();
     return {
       isMalicious: answer === "yes",
-      reason: reason,
+      reason,
     };
   } catch (error) {
     // in case the model does not respond in the format we have asked

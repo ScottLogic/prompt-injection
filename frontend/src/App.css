@@ -20,14 +20,14 @@
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 0.625rem;
 }
 
 /* draggable scrolling handle */
 ::-webkit-scrollbar-thumb {
   background-color: var(--main-scrollbar-colour);
   border-color: var(--main-scrollbar-border-colour);
-  border-radius: 20px;
+  border-radius: 1.25rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -37,7 +37,7 @@
 .prompt-injection-min-button {
   /* remove default button styling */
   background-color: transparent;
-  border: 1px solid transparent;
+  border: 0.0625rem solid transparent;
   color: var(--main-button-inactive-text-colour);
   padding: 0;
   display: flex;

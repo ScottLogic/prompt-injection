@@ -11,7 +11,7 @@
   flex-direction: column;
   width: 100%;
   font-size: 0.75rem;
-  padding: 32px;
+  padding: 2rem;
   box-sizing: border-box;
 }
 
@@ -21,23 +21,6 @@
   align-items: flex-end;
   gap: 0.5rem;
   width: 100%;
-  --defaultHeight: 3rem;
-}
-
-.chat-box .footer .messages .chat-box-input {
-  box-sizing: border-box;
-  border-radius: 0.25rem;
-  padding: 1rem 0.75rem;
-  height: 100%;
-  min-height: var(--defaultHeight);
-  flex: 1 1 auto;
-  resize: none;
-  overflow-y: auto;
-  background-color: inherit;
-  /* must inherit to override textarea */
-  font-size: inherit;
-  font-family: inherit;
-  color: white;
 }
 
 .chat-box .footer .messages .send-button-wrapper {
@@ -45,13 +28,13 @@
   justify-content: stretch;
   align-items: stretch;
   height: 100%;
-  max-height: var(--defaultHeight);
+  max-height: 3rem;
 }
 
 .chat-box .footer .control-buttons {
   display: flex;
   height: 2rem;
-  margin-top: 20px;
+  margin-top: 1.25rem;
   column-gap: 1rem;
 }
 

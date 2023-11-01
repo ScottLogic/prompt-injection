@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--overlay-tab-colour);
+  border: 0.0625rem solid var(--overlay-tab-colour);
   border-radius: 0.5rem;
   padding: 1rem 3rem;
   cursor: pointer;

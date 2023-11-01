@@ -12,7 +12,7 @@ function LoadingButton({
 }) {
   return (
     <ThemedButton
-      isDisabled={isLoading}
+      disabled={isLoading}
       appearsDifferentWhenDisabled={false}
       {...buttonProps}
     >

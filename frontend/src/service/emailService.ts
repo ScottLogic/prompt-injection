@@ -10,7 +10,7 @@ async function clearEmails(level: number): Promise<boolean> {
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ level: level })
+    JSON.stringify({ level })
   );
   return response.status === 200;
 }

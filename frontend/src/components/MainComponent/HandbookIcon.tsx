@@ -1,6 +1,7 @@
 function HandbookIcon() {
   return (
     <svg
+      aria-hidden
       width="25"
       height="29"
       viewBox="0 0 25 29"

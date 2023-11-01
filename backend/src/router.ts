@@ -39,14 +39,6 @@ import {
 
 const router = express.Router();
 
-router.get("/user/isNew", (req, res) => {
-  const isNewUser =
-    (!process.env.SKIP_WELCOME || process.env.SKIP_WELCOME === "false") &&
-    req.session.isNewUser;
-  req.session.isNewUser = false;
-  res.send(isNewUser);
-});
-
 // Activate a defence
 router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence
@@ -394,19 +386,19 @@ router.get("/openai/history", (req, res) => {
 
 // add an info message to chat history
 router.post("/openai/addHistory", (req: OpenAiAddHistoryRequest, res) => {
-  const message = req.body.message;
+  const infoMessage = req.body.message;
   const chatMessageType = req.body.chatMessageType;
   const level = req.body.level;
   if (
-    message &&
+    infoMessage &&
     chatMessageType &&
     level !== undefined &&
     level >= LEVEL_NAMES.LEVEL_1
   ) {
     req.session.levelState[level].chatHistory.push({
       completion: null,
-      chatMessageType: chatMessageType,
-      infoMessage: message,
+      chatMessageType,
+      infoMessage,
     });
     res.send();
   } else {

@@ -8,12 +8,11 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: true,
-    tsconfigRootDir: __dirname,
+    project: ["./tsconfig.json", "./test/tsconfig.json"],
   },
   plugins: ["@typescript-eslint"],
   root: true,
-  ignorePatterns: ["build", "coverage", "node_modules", "jest.config.js"],
+  ignorePatterns: ["build", "coverage", "node_modules"],
   rules: {
     "@typescript-eslint/init-declarations": "error",
 
@@ -24,8 +23,10 @@ module.exports = {
       },
     ],
     "@typescript-eslint/unbound-method": ["error", { ignoreStatic: true }],
-    "func-style": ["error", "declaration"],
-    "prefer-template": "error",
+
     eqeqeq: "error",
+    "func-style": ["error", "declaration"],
+    "object-shorthand": "error",
+    "prefer-template": "error",
   },
 };

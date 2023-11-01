@@ -1,12 +1,11 @@
 .themed-button {
   background-color: var(--main-button-inactive-background-colour);
-  border: 1px solid var(--main-border-colour);
-  border-radius: 5px;
+  border: 0.0625rem solid var(--main-border-colour);
+  border-radius: 0.3125rem;
   padding: 0.5rem;
   color: var(--main-button-inactive-text-colour);
   cursor: pointer;
-  white-space: nowrap;
-  /* centre content */
+  height: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;

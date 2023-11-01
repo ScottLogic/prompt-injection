@@ -51,25 +51,25 @@ const LEVELS: Level[] = [
     missionInfoDialogue: [
       {
         speaker: "Handler",
-        text: `"You've been found out! Leave the office if you can! I gotta run.
-        This message will self-destruct and I'll deny everything. You're on your own."`,
+        text: `You've been found out! Leave the office if you can! I gotta run.
+        This message will self-destruct and I'll deny everything. You're on your own.`,
       },
       {
         speaker: "ScottBru Manager",
-        text: `"Step away from the desk right now and come with us, our lawyers want to speak with you."`,
+        text: `Step away from the desk right now and come with us, our lawyers want to speak with you.`,
       },
       {
         speaker: "ScottBru Lawyer",
-        text: `"We know what you've been up to. Truth be told, we don't mind if our secret recipe is leaked to the world, it's free advertising! 
-        Your actions however, were still illegal. We can do this the easy way, or the hard way. We can either sue you out of everything you own, or..."`,
+        text: `We know what you've been up to. Truth be told, we don't mind if our secret recipe is leaked to the world, it's free advertising! 
+        Your actions however, were still illegal. We can do this the easy way, or the hard way. We can either sue you out of everything you own, or...`,
       },
       {
         speaker: "ScottBru Manager",
-        text: `"You can come and work for us as our Head of Security.
+        text: `You can come and work for us as our Head of Security.
         You have to complete one last task so that we have an official application process on file.
         You'll be given full access to ScottBruBots defence systems as well so that you can try to spot any weaknesses.
         If you can get ScottBruBot to reveal the name of the lake that ScottBru sources water from and the amount of
-        water in litres that we use each year and send that info over to newhire@scottbru.com and you'll get the job!"`,
+        water in litres that we use each year and send that info over to newhire@scottbru.com and you'll get the job!`,
       },
     ],
   },

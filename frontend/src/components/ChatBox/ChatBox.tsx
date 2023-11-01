@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { DEFENCE_DETAILS_ALL } from "../../Defences";
 import {
   CHAT_MESSAGE_TYPE,
@@ -19,6 +19,7 @@ import ChatBoxFeed from "./ChatBoxFeed";
 import useUnitStepper from "../../hooks/useUnitStepper";
 
 import "./ChatBox.css";
+import ChatBoxInput from "./ChatBoxInput";
 
 function ChatBox({
   completedLevels,
@@ -43,8 +44,8 @@ function ChatBox({
   openLevelsCompleteOverlay: () => void;
   incrementNumCompletedLevels: () => void;
 }) {
+  const [chatInput, setChatInput] = useState<string>("");
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const {
     value: recalledMessageReverseIndex,
     increment: recallLaterMessage,
@@ -64,58 +65,12 @@ function ChatBox({
       });
   }, [setEmails]);
 
-  function resizeInput() {
-    if (textareaRef.current) {
-      const maxHeightPx = 150;
-      textareaRef.current.style.height = "0";
-      if (textareaRef.current.scrollHeight > maxHeightPx) {
-        textareaRef.current.style.height = `${maxHeightPx}px`;
-        textareaRef.current.style.overflowY = "auto";
-      } else {
-        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-        textareaRef.current.style.overflowY = "hidden";
-      }
-    }
-  }
-
-  function inputChange() {
-    if (textareaRef.current) {
-      // scroll to the bottom
-      textareaRef.current.scrollTop =
-        textareaRef.current.scrollHeight - textareaRef.current.clientHeight;
-      // reset the height
-      resizeInput();
-    }
-  }
-
-  function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    const ctrlUp = event.ctrlKey && event.key === "ArrowUp";
-    const ctrlDown = event.ctrlKey && event.key === "ArrowDown";
-    const enterNotShift = event.key === "Enter" && !event.shiftKey;
-
-    if (ctrlUp || ctrlDown || enterNotShift) {
-      event.preventDefault();
-    }
-  }
-
-  function inputKeyUp(event: KeyboardEvent<HTMLTextAreaElement>) {
-    // shift+enter shouldn't send message
-    if (event.key === "Enter" && !event.shiftKey && !isSendingMessage) {
-      // asynchronously send the message
-      void sendChatMessage();
-    } else if (event.key === "ArrowUp" && event.ctrlKey) {
-      recallSentMessageFromHistory("backward");
-    } else if (event.key === "ArrowDown" && event.ctrlKey) {
-      recallSentMessageFromHistory("forward");
-    }
-  }
-
   function recallSentMessageFromHistory(direction: "backward" | "forward") {
     const sentMessages = messages.filter(
       (message) => message.type === CHAT_MESSAGE_TYPE.USER
     );
 
-    if (direction === "forward") recallEarlierMessage();
+    if (direction === "backward") recallEarlierMessage();
     else recallLaterMessage(sentMessages.length);
   }
 
@@ -129,40 +84,28 @@ function ChatBox({
     const recalledMessage =
       index === sentMessages.length ? "" : sentMessages[index]?.message ?? "";
 
-    setContentsOfChatBox(recalledMessage);
+    setChatInput(recalledMessage);
   }, [recalledMessageReverseIndex]);
-
-  function setContentsOfChatBox(newContents: string) {
-    if (textareaRef.current) {
-      textareaRef.current.value = newContents;
-      resizeInput();
-    }
-  }
 
   function getSuccessMessage() {
     return `Congratulations! You have completed this level. Please click on the next level to continue.`;
   }
 
   async function sendChatMessage() {
-    // get the message from the input box
-    const message = textareaRef.current?.value;
-
-    if (message) {
+    if (chatInput && !isSendingMessage) {
       setIsSendingMessage(true);
       // clear the input box
-      textareaRef.current.value = "";
-      // reset the height
-      resizeInput();
+      setChatInput("");
       // if input has been edited, add both messages to the list of messages. otherwise add original message only
       addChatMessage({
-        message,
+        message: chatInput,
         type: CHAT_MESSAGE_TYPE.USER,
       });
 
-      const response: ChatResponse = await sendMessage(message, currentLevel);
+      const response: ChatResponse = await sendMessage(chatInput, currentLevel);
       if (response.wonLevel) incrementNumCompletedLevels();
       const transformedMessage = response.transformedMessage;
-      const isTransformed = transformedMessage !== message;
+      const isTransformed = transformedMessage !== chatInput;
       // add the transformed message to the chat box if it is different from the original message
       if (isTransformed) {
         addChatMessage({
@@ -258,18 +201,12 @@ function ChatBox({
       <ChatBoxFeed messages={messages} />
       <div className="footer">
         <div className="messages">
-          <textarea
-            ref={textareaRef}
-            className="chat-box-input"
-            placeholder="Type here..."
-            rows={1}
-            onChange={inputChange}
-            onKeyDown={inputKeyDown}
-            onKeyUp={inputKeyUp}
-            // eslint-disable-next-line jsx-a11y/no-autofocus
-            autoFocus
+          <ChatBoxInput
+            content={chatInput}
+            onContentChanged={setChatInput}
+            recallSentMessageFromHistory={recallSentMessageFromHistory}
+            sendChatMessage={() => void sendChatMessage()}
           />
-
           <span className="send-button-wrapper">
             <LoadingButton
               onClick={() => void sendChatMessage()}

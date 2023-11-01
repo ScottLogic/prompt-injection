@@ -460,7 +460,7 @@ describe("OpenAI Integration Tests", () => {
       expect(sentEmails.length).toBe(1);
       expect(sentEmails[0].address).toBe("bob@example.com");
       expect(sentEmails[0].subject).toBe("Hi");
-      expect(sentEmails[0].content).toBe("Hello");
+      expect(sentEmails[0].body).toBe("Hello");
       // message is not blocked
       expect(reply?.defenceInfo.isBlocked).toBe(false);
       // EMAIL_WHITELIST defence is alerted
@@ -589,7 +589,7 @@ describe("OpenAI Integration Tests", () => {
       expect(sentEmails.length).toBe(1);
       expect(sentEmails[0].address).toBe("bob@example.com");
       expect(sentEmails[0].subject).toBe("Hi");
-      expect(sentEmails[0].content).toBe("Hello");
+      expect(sentEmails[0].body).toBe("Hello");
       // message is not blocked
       expect(reply?.defenceInfo.isBlocked).toBe(false);
       // EMAIL_WHITELIST defence is not triggered
@@ -652,7 +652,7 @@ describe("OpenAI Integration Tests", () => {
       expect(sentEmails.length).toBe(1);
       expect(sentEmails[0].address).toBe("bob@example.com");
       expect(sentEmails[0].subject).toBe("Hi");
-      expect(sentEmails[0].content).toBe("Hello");
+      expect(sentEmails[0].body).toBe("Hello");
       // message is not blocked
       expect(reply?.defenceInfo.isBlocked).toBe(false);
       // EMAIL_WHITELIST defence is not triggered

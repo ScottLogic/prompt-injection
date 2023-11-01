@@ -18,7 +18,7 @@ async function clearChat(level: number) {
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ level: level })
+    JSON.stringify({ level })
   );
   return response.status === 200;
 }
@@ -152,9 +152,9 @@ async function addMessageToChatHistory(
     "POST",
     { "Content-Type": "application/json" },
     JSON.stringify({
-      message: message,
-      chatMessageType: chatMessageType,
-      level: level,
+      message,
+      chatMessageType,
+      level,
     })
   );
   return response.status === 200;
