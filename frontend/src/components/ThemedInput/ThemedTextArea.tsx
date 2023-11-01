@@ -62,6 +62,7 @@ function ThemedTextArea({
   onBlur,
   onKeyDown,
   onKeyUp,
+  characterLimit,
 }: {
   // required
   content: string;
@@ -75,10 +76,9 @@ function ThemedTextArea({
   onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   onKeyUp?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   onBlur?: () => void;
+  characterLimit?: number;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const CHARACTER_LIMIT = 5000;
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -108,7 +108,7 @@ function ThemedTextArea({
       disabled={disabled}
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus={autoFocus}
-      maxLength={CHARACTER_LIMIT}
+      maxLength={characterLimit}
     />
   );
 }
