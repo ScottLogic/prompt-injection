@@ -4,6 +4,7 @@
   margin-top: 1rem;
   padding: 0.5rem;
   max-width: 85%;
+  width: max-content;
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
   -ms-hyphens: auto;
