@@ -54,4 +54,5 @@
 hr {
   border-top: 0.0625rem solid var(--chat-message-text-colour);
   border-bottom: transparent;
+  margin: 0.5rem 0;
 }
