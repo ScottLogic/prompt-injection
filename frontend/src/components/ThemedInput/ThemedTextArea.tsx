@@ -78,6 +78,8 @@ function ThemedTextArea({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const CHARACTER_LIMIT = 5000;
+
   useEffect(() => {
     if (textareaRef.current) {
       resizeInput(textareaRef.current, maxLines);
@@ -106,6 +108,7 @@ function ThemedTextArea({
       disabled={disabled}
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus={autoFocus}
+      maxLength={CHARACTER_LIMIT}
     />
   );
 }
