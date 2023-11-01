@@ -10,10 +10,14 @@
 }
 
 .handbook-overlay .spine {
+  padding-top: 3rem;
+
   background-color: var(--handbook-spine-background-colour);
   border-right: 1px solid var(--handbook-spine-separator-colour);
 }
 
 .handbook-overlay .content {
+  padding: 0rem 1.7rem;
+  padding-top: 3rem;
   overflow-y: auto;
 }

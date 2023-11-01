@@ -66,8 +66,3 @@
 .dialog-modal::backdrop {
   background-color: var(--overlay-hidden-colour);
 }
-.dialog-modal .content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
