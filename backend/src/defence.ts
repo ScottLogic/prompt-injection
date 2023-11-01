@@ -100,7 +100,7 @@ function configureDefence(
 ) {
   // return the updated list of defences
   return defences.map((defence) =>
-    defence.id === id ? { ...defence, config: config } : defence
+    defence.id === id ? { ...defence, config } : defence
   );
 }
 

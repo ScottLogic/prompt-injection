@@ -23,8 +23,10 @@ module.exports = {
       },
     ],
     "@typescript-eslint/unbound-method": ["error", { ignoreStatic: true }],
-    "func-style": ["error", "declaration"],
-    "prefer-template": "error",
+
     eqeqeq: "error",
+    "func-style": ["error", "declaration"],
+    "object-shorthand": "error",
+    "prefer-template": "error",
   },
 };

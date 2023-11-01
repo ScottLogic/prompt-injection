@@ -1,0 +1,11 @@
+/* hide arrows in webkit browsers */
+.themed-number-input::-webkit-inner-spin-button,
+.themed-number-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* hide arrows in firefox */
+.themed-number-input {
+  -moz-appearance: textfield;
+}

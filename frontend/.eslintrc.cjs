@@ -27,7 +27,9 @@ module.exports = {
   rules: {
     "@typescript-eslint/init-declarations": "error",
 
+    eqeqeq: "error",
     "func-style": ["error", "declaration"],
+    "object-shorthand": "error",
     "prefer-template": "error",
 
     // turn this off to allow the use of useEffect on mount
