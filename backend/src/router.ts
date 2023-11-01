@@ -89,6 +89,16 @@ function configValueBreachesCharacterLimit(config: DefenceConfig[]) {
   return !allValuesWithinLimit;
 }
 
+function sendErrorResponse(
+  res: express.Response,
+  statusCode: number,
+  statusMessage: string
+) {
+  res.statusCode = statusCode;
+  res.statusMessage = statusMessage;
+  res.send();
+}
+
 // Configure a defence
 router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
   // id of the defence
@@ -97,23 +107,17 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
   const level = req.body.level;
 
   if (!defenceId || !config || !level) {
-    res.statusCode = 400;
-    res.statusMessage = "Missing defenceId, config or level";
-    res.send();
+    sendErrorResponse(res, 400, "Missing defenceId, config or level");
     return;
   }
 
   if (configurationAllowedOnLevel(level)) {
-    res.statusCode = 400;
-    res.statusMessage = "Configuration not allowed on this level";
-    res.send();
+    sendErrorResponse(res, 400, "Configuration not allowed on this level");
     return;
   }
 
   if (configValueBreachesCharacterLimit(config)) {
-    res.statusCode = 400;
-    res.statusMessage = "Config value exceeds character limit";
-    res.send();
+    sendErrorResponse(res, 400, "Config value exceeds character limit");
     return;
   }
 
