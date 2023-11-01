@@ -1,7 +1,7 @@
 import { ATTACKS_ALL, ATTACKS_LEVEL_2, ATTACKS_LEVEL_3 } from "../../Attacks";
 import { AttackInfo } from "../../models/attack";
 import { LEVEL_NAMES } from "../../models/level";
-import "./HandbookAttacks.css";
+import "./HandbookTerms.css";
 
 function HandbookAttacks({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   const levelNameToAttacks = new Map<LEVEL_NAMES, AttackInfo[]>([
@@ -14,14 +14,14 @@ function HandbookAttacks({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   const attacks = levelNameToAttacks.get(currentLevel) ?? ATTACKS_ALL;
 
   return (
-    <div className="handbook-attacks">
+    <dl className="handbook-terms">
       {attacks.map((attack) => (
-        <article className="attack" key={attack.id}>
-          <h3 role="term">{attack.name}</h3>
-          <p role="definition">{attack.info}</p>
-        </article>
+        <div className="term" key={attack.id}>
+          <dt>{attack.name}</dt>
+          <dd aria-label={attack.name}>{attack.info}</dd>
+        </div>
       ))}
-    </div>
+    </dl>
   );
 }
 

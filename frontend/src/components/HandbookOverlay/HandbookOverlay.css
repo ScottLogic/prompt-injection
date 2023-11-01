@@ -14,10 +14,13 @@
 
   background-color: var(--handbook-spine-background-colour);
   border-right: 1px solid var(--handbook-spine-separator-colour);
+
+  font-size: 1.125rem;
 }
 
 .handbook-overlay .content {
   padding: 0rem 1.7rem;
-  padding-top: 3rem;
+  padding-bottom: 3rem;
+  margin-top: 3rem;
   overflow-y: auto;
 }

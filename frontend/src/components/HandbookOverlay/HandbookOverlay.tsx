@@ -46,13 +46,13 @@ function HandbookOverlay({
 
   return (
     <div className="handbook-overlay">
-      <section className="spine">
+      <div className="spine">
         <HandbookOverlayTabs
           currentLevel={currentLevel}
           currentPage={selectedPage}
           selectPage={setSelectedPage}
         />
-      </section>
+      </div>
       <div
         className="content"
         role="tabpanel"
