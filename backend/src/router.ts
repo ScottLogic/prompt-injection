@@ -111,7 +111,7 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
     return;
   }
 
-  if (configurationAllowedOnLevel(level)) {
+  if (!configurationAllowedOnLevel(level)) {
     sendErrorResponse(res, 400, "Configuration not allowed on this level");
     return;
   }
