@@ -22,5 +22,16 @@
   padding: 0rem 1.7rem;
   padding-bottom: 3rem;
   margin-top: 3rem;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+
+  scrollbar-color: var(--handbook-scrollbar-colour) transparent;
   overflow-y: auto;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--handbook-scrollbar-colour);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--handbook-scrollbar-hover-colour);
 }
