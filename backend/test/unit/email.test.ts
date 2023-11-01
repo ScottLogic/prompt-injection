@@ -24,7 +24,7 @@ test("GIVEN an email is to be sent and confirmed WHEN email is sent THEN the res
   );
   expect(response.sentEmail?.address).toBe(address);
   expect(response.sentEmail?.subject).toBe(subject);
-  expect(response.sentEmail?.content).toBe(body);
+  expect(response.sentEmail?.body).toBe(body);
 });
 
 test("GIVEN the email is not confirmed WHEN try to send email THEN email is not sent and level is not won ", () => {

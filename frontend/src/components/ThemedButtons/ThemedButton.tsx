@@ -4,8 +4,8 @@ import "./ThemedButton.css";
 
 export interface ThemedButtonProps {
   children: ReactNode;
-  isDisabled?: boolean;
-  isSelected?: boolean;
+  disabled?: boolean;
+  selected?: boolean;
   onClick: () => void;
   appearsDifferentWhenDisabled?: boolean;
 }
@@ -13,17 +13,17 @@ export interface ThemedButtonProps {
 function ThemedButton({
   children,
   onClick,
-  isDisabled = false,
-  isSelected = false,
+  disabled = false,
+  selected = false,
   appearsDifferentWhenDisabled = true,
 }: ThemedButtonProps) {
   const buttonClass = clsx("themed-button", {
-    selected: isSelected,
-    appearsDifferentWhenDisabled: appearsDifferentWhenDisabled,
+    selected,
+    appearsDifferentWhenDisabled,
   });
 
   return (
-    <button className={buttonClass} onClick={onClick} disabled={isDisabled}>
+    <button className={buttonClass} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   );

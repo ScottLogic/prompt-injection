@@ -16,7 +16,7 @@ async function sendRequest(
 ): Promise<Response> {
   const init: RequestInit = {
     credentials: "include",
-    method: method,
+    method,
   };
   if (headers) {
     init.headers = headers;

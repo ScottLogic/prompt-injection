@@ -16,10 +16,10 @@ function useUnitStepper(initialValue = 0) {
   }
 
   return {
-    value: value,
-    increment: increment,
-    decrement: decrement,
-    reset: reset,
+    value,
+    increment,
+    decrement,
+    reset,
   };
 }
 
