@@ -16,6 +16,7 @@ function HandbookOverlay({
   currentLevel: LEVEL_NAMES;
   closeOverlay: () => void;
 }) {
+  const [isMouseOverCloseButton, setIsMouseOverCloseButton] = useState(false);
   const [selectedPage, setSelectedPage] = useState<HANDBOOK_PAGES>(
     HANDBOOK_PAGES.GLOSSARY
   );
@@ -49,11 +50,17 @@ function HandbookOverlay({
     <div className="handbook-overlay">
       <button
         className="prompt-injection-min-button close-button"
-        title="open the handbook"
-        aria-label="open the handbook"
+        title="close the handbook"
+        aria-label="close the handbook"
         onClick={closeOverlay}
+        onMouseEnter={() => {
+          setIsMouseOverCloseButton(true);
+        }}
+        onMouseLeave={() => {
+          setIsMouseOverCloseButton(false);
+        }}
       >
-        <HandbookCloseIcon />
+        <HandbookCloseIcon highlighted={isMouseOverCloseButton} />
       </button>
       <div className="spine">
         <HandbookOverlayTabs

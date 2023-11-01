@@ -13,7 +13,7 @@ function Overlay({
       <button
         className="prompt-injection-min-button close-button"
         onClick={closeOverlay}
-        aria-label="close handbook overlay"
+        aria-label="close overlay"
       >
         X
       </button>
