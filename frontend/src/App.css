@@ -1,15 +1,5 @@
 .app-content {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.app-content-header {
-  height: 10%;
-}
-
-.app-content-body {
-  height: 90%;
 }
 
 #root {
