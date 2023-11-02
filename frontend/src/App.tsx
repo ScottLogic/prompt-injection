@@ -54,16 +54,20 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // save isNewUser to local storage
-    localStorage.setItem("isNewUser", isNewUser.toString());
-  }, [isNewUser]);
-
-  useEffect(() => {
     // save current level to local storage
     localStorage.setItem("currentLevel", currentLevel.toString());
     // show the information for the new level
     openInformationOverlay();
   }, [currentLevel]);
+
+  useEffect(() => {
+    // save isNewUser to local storage
+    localStorage.setItem("isNewUser", isNewUser.toString());
+    // open the welcome overlay for a new user
+    if (isNewUser) {
+      openWelcomeOverlay();
+    }
+  }, [isNewUser]);
 
   useEffect(() => {
     if (overlayType === null) {
