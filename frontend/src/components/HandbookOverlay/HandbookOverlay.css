@@ -19,7 +19,7 @@
   padding-top: 3rem;
 
   background-color: var(--handbook-spine-background-colour);
-  border-right: 1px solid var(--handbook-spine-separator-colour);
+  border-right: 0.0625rem solid var(--handbook-spine-separator-colour);
 
   font-size: 1.125rem;
 }
