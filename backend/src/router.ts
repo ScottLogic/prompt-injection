@@ -126,9 +126,6 @@ router.post("/defence/resetConfig", (req: DefenceConfigResetRequest, res) => {
       configId,
       req.session.levelState[level].defences
     );
-
-    console.log(req.session.levelState[level].defences);
-
     const updatedDefenceConfig: DefenceConfig | undefined =
       req.session.levelState[level].defences
         .find((defence) => defence.id === defenceId)
