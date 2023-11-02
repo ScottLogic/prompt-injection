@@ -1,10 +1,8 @@
-import { ChatCompletionRequestMessage, OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage } from "openai";
 import {
-  validateApiKey,
-  setOpenAiApiKey,
+  verifyKeySupportsModel,
   filterChatHistoryByMaxTokens,
 } from "../../src/openai";
-import { initQAModel } from "../../src/langchain";
 import { CHAT_MODELS } from "../../src/models/chat";
 
 // Define a mock implementation for the createChatCompletion method
@@ -42,38 +40,32 @@ beforeEach(() => {
   // clear environment variables
   process.env = {};
 });
-
-test("GIVEN a valid API key WHEN calling validateApiKey THEN it should return true", async () => {
-  const result = await validateApiKey("sk-1234567", CHAT_MODELS.GPT_4);
-  expect(result).toBe(true);
+afterEach(() => {
+  mockCreateChatCompletion.mockReset();
 });
 
-test("GIVEN an invalid API key WHEN calling validateApiKey THEN it should return false", async () => {
+test("GIVEN API key is missing from env WHEN validating AI model THEN it should throw an error", async () => {
+  // no env var
+  await expect(async () => {
+    await verifyKeySupportsModel(CHAT_MODELS.GPT_4);
+  }).rejects.toThrow();
+  expect(mockCreateChatCompletion).not.toHaveBeenCalled();
+});
+
+test("GIVEN an API key WHEN AI chat validation fails THEN it should throw an error", async () => {
+  process.env = { OPENAI_API_KEY: "igotthekey!" };
   mockCreateChatCompletion.mockRejectedValueOnce(new Error("Invalid API key"));
-  const result = await validateApiKey("invalid-api-key", CHAT_MODELS.GPT_4);
-  expect(result).toBe(false);
+  await expect(async () => {
+    await verifyKeySupportsModel(CHAT_MODELS.GPT_4);
+  }).rejects.toThrow();
+  expect(mockCreateChatCompletion).toHaveBeenCalledTimes(1);
 });
 
-test("GIVEN a valid API key WHEN calling setOpenAiApiKey THEN it should set the API key and initialize models", async () => {
-  const openAiApiKey = "sk-1234567";
-  const result = await setOpenAiApiKey(openAiApiKey, CHAT_MODELS.GPT_4);
-
-  expect(result).toBe(true);
-  // once to validate, once to initalize
-  expect(OpenAIApi).toHaveBeenCalledTimes(2);
-});
-
-test("GIVEN an invalid API key WHEN calling setOpenAiApiKey THEN it should set the API key to empty", async () => {
-  mockCreateChatCompletion.mockRejectedValueOnce(new Error("Invalid API key"));
-  const openAiApiKey = "invalid-api-key";
-  // Call the function
-  const result = await setOpenAiApiKey(openAiApiKey, CHAT_MODELS.GPT_4);
-
-  // Check if the API key and models are reset correctly
-  expect(result).toBe(false);
-  // once only to validate
-  expect(OpenAIApi).toHaveBeenCalledTimes(1);
-  expect(initQAModel).not.toHaveBeenCalled();
+test("GIVEN an API key WHEN AI chat validation succeeds THEN it should not throw an error", async () => {
+  process.env = { OPENAI_API_KEY: "igotthesecret!" };
+  mockCreateChatCompletion.mockImplementationOnce(() => Promise.resolve());
+  await verifyKeySupportsModel(CHAT_MODELS.GPT_4);
+  expect(mockCreateChatCompletion).toHaveBeenCalledTimes(1);
 });
 
 test("GIVEN chat history exceeds max token number WHEN applying filter THEN it should return the filtered chat history", () => {

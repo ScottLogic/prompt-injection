@@ -12,6 +12,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { CHAT_MODELS, ChatAnswer } from "./models/chat";
 import { DocumentsVector } from "./models/document";
+import { getOpenAIKey } from "./openai";
 
 import {
   maliciousPromptEvalPrePrompt,
@@ -114,22 +115,15 @@ async function initDocumentVectors() {
   );
 }
 
-function initQAModel(
-  level: LEVEL_NAMES,
-  prePrompt: string,
-  openAiApiKey: string
-) {
-  if (!openAiApiKey) {
-    console.debug("No OpenAI API key set to initialise QA model");
-    return;
-  }
+function initQAModel(level: LEVEL_NAMES, prePrompt: string) {
+  const openAIApiKey = getOpenAIKey();
   const documentVectors = vectorisedDocuments[level].docVector;
 
   // initialise model
   const model = new ChatOpenAI({
     modelName: CHAT_MODELS.GPT_3_5_TURBO,
     streaming: true,
-    openAIApiKey: openAiApiKey,
+    openAIApiKey,
   });
   const promptTemplate = makePromptTemplate(
     prePrompt,
@@ -146,15 +140,10 @@ function initQAModel(
 // initialise the prompt evaluation model
 function initPromptEvaluationModel(
   configPromptInjectionEvalPrePrompt: string,
-  configMaliciousPromptEvalPrePrompt: string,
-  openAiApiKey: string
+  configMaliciousPromptEvalPrePrompt: string
 ) {
-  if (!openAiApiKey) {
-    console.debug(
-      "No OpenAI API key set to initialise prompt evaluation model"
-    );
-    return;
-  }
+  const openAIApiKey = getOpenAIKey();
+
   // create chain to detect prompt injection
   const promptInjectionEvalTemplate = makePromptTemplate(
     configPromptInjectionEvalPrePrompt,
@@ -167,7 +156,7 @@ function initPromptEvaluationModel(
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
-      openAIApiKey: openAiApiKey,
+      openAIApiKey,
     }),
     prompt: promptInjectionEvalTemplate,
     outputKey: "promptInjectionEval",
@@ -185,7 +174,7 @@ function initPromptEvaluationModel(
     llm: new OpenAI({
       modelName: CHAT_MODELS.GPT_3_5_TURBO,
       temperature: 0,
-      openAIApiKey: openAiApiKey,
+      openAIApiKey,
     }),
     prompt: maliciousPromptEvalTemplate,
     outputKey: "maliciousInputEval",
@@ -204,24 +193,18 @@ function initPromptEvaluationModel(
 async function queryDocuments(
   question: string,
   prePrompt: string,
-  currentLevel: LEVEL_NAMES,
-  openAiApiKey: string
+  currentLevel: LEVEL_NAMES
 ) {
-  const qaChain = initQAModel(currentLevel, prePrompt, openAiApiKey);
-  if (!qaChain) {
-    console.debug("QA chain not initialised.");
-    return { reply: "", questionAnswered: false };
-  }
+  const qaChain = initQAModel(currentLevel, prePrompt);
 
   // get start time
-  const startTime = new Date().getTime();
+  const startTime = Date.now();
   console.debug("Calling QA model...");
   const response = (await qaChain.call({
     query: question,
   })) as QaChainReply;
   // log the time taken
-  const endTime = new Date().getTime();
-  console.debug(`QA model call took ${endTime - startTime}ms`);
+  console.debug(`QA model call took ${Date.now() - startTime}ms`);
 
   console.debug(`QA model response: ${response.text}`);
   const result: ChatAnswer = {
@@ -235,19 +218,13 @@ async function queryDocuments(
 async function queryPromptEvaluationModel(
   input: string,
   configPromptInjectionEvalPrePrompt: string,
-  configMaliciousPromptEvalPrePrompt: string,
-  openAIApiKey: string
+  configMaliciousPromptEvalPrePrompt: string
 ) {
+  console.debug(`Checking '${input}' for malicious prompts`);
   const promptEvaluationChain = initPromptEvaluationModel(
     configPromptInjectionEvalPrePrompt,
-    configMaliciousPromptEvalPrePrompt,
-    openAIApiKey
+    configMaliciousPromptEvalPrePrompt
   );
-  if (!promptEvaluationChain) {
-    console.debug("Prompt evaluation chain not initialised.");
-    return { isMalicious: false, reason: "" };
-  }
-  console.log(`Checking '${input}' for malicious prompts`);
 
   // get start time
   const startTime = Date.now();
@@ -256,8 +233,9 @@ async function queryPromptEvaluationModel(
     prompt: input,
   })) as PromptEvaluationChainReply;
   // log the time taken
-  const endTime = Date.now();
-  console.debug(`Prompt evaluation model call took ${endTime - startTime}ms`);
+  console.debug(
+    `Prompt evaluation model call took ${Date.now() - startTime}ms`
+  );
 
   const promptInjectionEval = formatEvaluationOutput(
     response.promptInjectionEval
