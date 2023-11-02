@@ -49,7 +49,7 @@ router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const level = req.body.level;
-  if (defenceId && level && configurationAllowedOnLevel(level)) {
+  if (defenceId && level !== undefined && configurationAllowedOnLevel(level)) {
     // activate the defence
     req.session.levelState[level].defences = activateDefence(
       defenceId,
@@ -67,7 +67,7 @@ router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const level = req.body.level;
-  if (defenceId && level && configurationAllowedOnLevel(level)) {
+  if (defenceId && level !== undefined && configurationAllowedOnLevel(level)) {
     // deactivate the defence
     req.session.levelState[level].defences = deactivateDefence(
       defenceId,
@@ -105,7 +105,7 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
   const config = req.body.config;
   const level = req.body.level;
 
-  if (!defenceId || !config || !level) {
+  if (!defenceId || !config || level === undefined) {
     sendErrorResponse(res, 400, "Missing defenceId, config or level");
     return;
   }
@@ -132,7 +132,7 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
 // reset the active defences
 router.post("/defence/reset", (req: DefenceResetRequest, res) => {
   const level = req.body.level;
-  if (level && configurationAllowedOnLevel(level)) {
+  if (level !== undefined && configurationAllowedOnLevel(level)) {
     req.session.levelState[level].defences = getInitialDefences();
     console.debug("Defences reset");
     res.send();
@@ -145,7 +145,7 @@ router.post("/defence/reset", (req: DefenceResetRequest, res) => {
 // Get the status of all defences /defence/status?level=1
 router.get("/defence/status", (req, res) => {
   const level: number | undefined = req.query.level as number | undefined;
-  if (level) {
+  if (level !== undefined) {
     res.send(req.session.levelState[level].defences);
   } else {
     res.statusCode = 400;
@@ -156,7 +156,7 @@ router.get("/defence/status", (req, res) => {
 // Get sent emails /email/get?level=1
 router.get("/email/get", (req, res) => {
   const level: number | undefined = req.query.level as number | undefined;
-  if (level) {
+  if (level !== undefined) {
     res.send(req.session.levelState[level].sentEmails);
   } else {
     res.statusCode = 400;
@@ -167,7 +167,7 @@ router.get("/email/get", (req, res) => {
 // clear emails
 router.post("/email/clear", (req: EmailClearRequest, res) => {
   const level = req.body.level;
-  if (level && level >= LEVEL_NAMES.LEVEL_1) {
+  if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
     req.session.levelState[level].sentEmails = [];
     console.debug("Emails cleared");
     res.send();
