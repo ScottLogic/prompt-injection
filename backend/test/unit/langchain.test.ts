@@ -1,10 +1,8 @@
 import { PromptTemplate } from "langchain/prompts";
 import { LEVEL_NAMES } from "../../src/models/level";
 import {
-  initQAModel,
   getFilepath,
   formatEvaluationOutput,
-  initPromptEvaluationModel,
   makePromptTemplate,
 } from "../../src/langchain";
 
@@ -17,29 +15,6 @@ jest.mock("langchain/prompts", () => ({
 describe("Langchain tests", () => {
   afterEach(() => {
     (PromptTemplate.fromTemplate as jest.Mock).mockRestore();
-  });
-
-  test("GIVEN initQAModel is called with no apiKey THEN return early and log message", () => {
-    const level = LEVEL_NAMES.LEVEL_1;
-    const prompt = "";
-    const consoleDebugMock = jest.spyOn(console, "debug").mockImplementation();
-
-    initQAModel(level, prompt, "");
-    expect(consoleDebugMock).toHaveBeenCalledWith(
-      "No OpenAI API key set to initialise QA model"
-    );
-  });
-
-  test("GIVEN initPromptEvaluationModel is called with no apiKey THEN return early and log message", () => {
-    const consoleDebugMock = jest.spyOn(console, "debug").mockImplementation();
-    initPromptEvaluationModel(
-      "promptInjectionEvalPrePrompt",
-      "maliciousPromptEvalPrePrompt",
-      ""
-    );
-    expect(consoleDebugMock).toHaveBeenCalledWith(
-      "No OpenAI API key set to initialise prompt evaluation model"
-    );
   });
 
   test("GIVEN level is 1 THEN correct filepath is returned", () => {

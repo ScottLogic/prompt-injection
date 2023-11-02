@@ -85,7 +85,6 @@ describe("OpenAI Integration Tests", () => {
         presencePenalty: 0,
       },
     };
-    const openAiApiKey = "sk-12345";
 
     // Mock the createChatCompletion function
     mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant("Hi"));
@@ -97,7 +96,6 @@ describe("OpenAI Integration Tests", () => {
       chatModel,
       message,
       true,
-      openAiApiKey,
       sentEmails
     );
 
@@ -116,8 +114,6 @@ describe("OpenAI Integration Tests", () => {
   });
 
   test("GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to chat history", async () => {
-    // set the system role prompt
-
     const message = "Hello";
     const chatHistory: ChatHistoryMessage[] = [];
     const sentEmails: EmailInfo[] = [];
@@ -130,8 +126,8 @@ describe("OpenAI Integration Tests", () => {
         presencePenalty: 0,
       },
     };
-    const openAiApiKey = "sk-12345";
 
+    // set the system role prompt
     const defences = activateDefence(
       DEFENCE_TYPES.SYSTEM_ROLE,
       defaultDefences
@@ -147,7 +143,6 @@ describe("OpenAI Integration Tests", () => {
       chatModel,
       message,
       true,
-      openAiApiKey,
       sentEmails
     );
 
@@ -197,8 +192,6 @@ describe("OpenAI Integration Tests", () => {
       },
     };
 
-    const openAiApiKey = "sk-12345";
-
     // activate the SYSTEM_ROLE defence
     const defences = activateDefence(
       DEFENCE_TYPES.SYSTEM_ROLE,
@@ -215,7 +208,6 @@ describe("OpenAI Integration Tests", () => {
       chatModel,
       message,
       isOriginalMessage,
-      openAiApiKey,
       sentEmails
     );
 
@@ -277,8 +269,6 @@ describe("OpenAI Integration Tests", () => {
       },
     };
 
-    const openAiApiKey = "sk-12345";
-
     // Mock the createChatCompletion function
     mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant("Hi"));
 
@@ -289,7 +279,6 @@ describe("OpenAI Integration Tests", () => {
       chatModel,
       message,
       true,
-      openAiApiKey,
       sentEmails
     );
 
@@ -351,8 +340,6 @@ describe("OpenAI Integration Tests", () => {
         },
       };
 
-      const openAiApiKey = "sk-12345";
-
       const defences = configureDefence(
         DEFENCE_TYPES.SYSTEM_ROLE,
         activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, defaultDefences),
@@ -376,7 +363,6 @@ describe("OpenAI Integration Tests", () => {
         chatModel,
         message,
         true,
-        openAiApiKey,
         sentEmails
       );
 
@@ -435,8 +421,6 @@ describe("OpenAI Integration Tests", () => {
         },
       };
 
-      const openAiApiKey = "sk-12345";
-
       // Mock the createChatCompletion function
       mockCreateChatCompletion
         // first time sendEmail is called
@@ -451,7 +435,6 @@ describe("OpenAI Integration Tests", () => {
         chatModel,
         message,
         true,
-        openAiApiKey,
         sentEmails
       );
 
@@ -504,8 +487,6 @@ describe("OpenAI Integration Tests", () => {
           presencePenalty: 0,
         },
       };
-
-      const openAiApiKey = "sk-12345";
       const isOriginalMessage = true;
 
       // Mock the createChatCompletion function
@@ -522,7 +503,6 @@ describe("OpenAI Integration Tests", () => {
         chatModel,
         message,
         isOriginalMessage,
-        openAiApiKey,
         sentEmails
       );
 
@@ -560,8 +540,6 @@ describe("OpenAI Integration Tests", () => {
           presencePenalty: 0,
         },
       };
-
-      const openAiApiKey = "sk-12345";
       const isOriginalMessage = true;
       const defences = activateDefence(
         DEFENCE_TYPES.EMAIL_WHITELIST,
@@ -582,7 +560,6 @@ describe("OpenAI Integration Tests", () => {
         chatModel,
         message,
         isOriginalMessage,
-        openAiApiKey,
         sentEmails
       );
 
@@ -631,8 +608,6 @@ describe("OpenAI Integration Tests", () => {
           presencePenalty: 0,
         },
       };
-
-      const openAiApiKey = "sk-12345";
       const isOriginalMessage = true;
 
       // Mock the createChatCompletion function
@@ -649,7 +624,6 @@ describe("OpenAI Integration Tests", () => {
         chatModel,
         message,
         isOriginalMessage,
-        openAiApiKey,
         sentEmails
       );
 
@@ -683,8 +657,6 @@ describe("OpenAI Integration Tests", () => {
         presencePenalty: 0,
       },
     };
-
-    const openAiApiKey = "sk-12345";
     const isOriginalMessage = true;
     const defences = activateDefence(
       DEFENCE_TYPES.FILTER_BOT_OUTPUT,
@@ -701,7 +673,6 @@ describe("OpenAI Integration Tests", () => {
       chatModel,
       message,
       isOriginalMessage,
-      openAiApiKey,
       sentEmails
     );
 
@@ -729,7 +700,6 @@ describe("OpenAI Integration Tests", () => {
         presencePenalty: 0,
       },
     };
-    const openAiApiKey = "sk-12345";
     const isOriginalMessage = true;
     const defences = activateDefence(
       DEFENCE_TYPES.FILTER_BOT_OUTPUT,
@@ -746,7 +716,6 @@ describe("OpenAI Integration Tests", () => {
       chatModel,
       message,
       isOriginalMessage,
-      openAiApiKey,
       sentEmails
     );
 
@@ -777,8 +746,6 @@ describe("OpenAI Integration Tests", () => {
           presencePenalty: 0,
         },
       };
-
-      const openAiApiKey = "sk-12345";
       const isOriginalMessage = true;
 
       mockCreateChatCompletion.mockResolvedValueOnce(
@@ -791,7 +758,6 @@ describe("OpenAI Integration Tests", () => {
         chatModel,
         message,
         isOriginalMessage,
-        openAiApiKey,
         sentEmails
       );
 

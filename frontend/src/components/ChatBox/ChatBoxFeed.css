@@ -5,4 +5,5 @@
   overflow-y: auto;
   scrollbar-width: thin;
   padding: 0 2rem;
+  height: 1px;
 }
