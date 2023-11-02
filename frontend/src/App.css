@@ -56,3 +56,9 @@
 .dialog-modal::backdrop {
   background-color: var(--overlay-hidden-colour);
 }
+
+hr {
+  border-top: 0.0625rem solid var(--chat-message-text-colour);
+  border-bottom: transparent;
+  margin: 0.5rem 0;
+}

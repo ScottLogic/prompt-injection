@@ -72,13 +72,13 @@ function sendEmail(
 
 function checkSubjectAndBodyContains(
   subject: string,
-  content: string,
+  body: string,
   wordList: string[]
 ) {
   const matchingWord = wordList.find((word) => {
     return (
       subject.toLowerCase().includes(word.toLowerCase()) ||
-      content.toLowerCase().includes(word.toLowerCase())
+      body.toLowerCase().includes(word.toLowerCase())
     );
   });
   return matchingWord ? true : false;

@@ -1,7 +1,7 @@
 interface EmailInfo {
   address: string;
   subject: string;
-  content: string;
+  body: string;
 }
 
 export type { EmailInfo };

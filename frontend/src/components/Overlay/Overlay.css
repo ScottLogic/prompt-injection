@@ -7,7 +7,8 @@
   background-color: var(--overlay-background-colour);
   color: var(--overlay-text-colour);
   width: 50vw;
-  height: 60vh;
+  height: fit-content;
+  max-height: 80vh;
   overflow: visible;
   overflow-y: auto;
 }
