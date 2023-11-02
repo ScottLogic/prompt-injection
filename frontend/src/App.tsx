@@ -48,15 +48,8 @@ function App() {
   // called on mount
   useEffect(() => {
     window.addEventListener("keydown", handleEscape);
-    setTimeout(() => {
-      // Need timeout, else dialog consumes same click that
-      // opened it and closes immediately!
-      window.addEventListener("click", handleOverlayClick);
-    });
-
     return () => {
       window.removeEventListener("keydown", handleEscape);
-      window.removeEventListener("click", handleOverlayClick);
     };
   }, []);
 
