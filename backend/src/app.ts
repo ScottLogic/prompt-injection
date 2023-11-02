@@ -4,7 +4,7 @@ import express from "express";
 import memoryStoreFactory from "memorystore";
 import session from "express-session";
 
-import { setOpenAiApiKey } from "./openai";
+import { verifyKeySupportsModel } from "./openai";
 import { router } from "./router";
 import { ChatHistoryMessage, ChatModel } from "./models/chat";
 import { EmailInfo } from "./models/email";
@@ -20,7 +20,6 @@ dotenv.config();
 declare module "express-session" {
   interface Session {
     initialised: boolean;
-    openAiApiKey: string | null;
     chatModel: ChatModel;
     levelState: LevelState[];
   }
@@ -69,7 +68,6 @@ app.use((req, _res, next) => {
   // initialise session variables first time
   if (!req.session.initialised) {
     req.session.chatModel = defaultChatModel;
-    req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
     // add empty states for levels 0-3
     req.session.levelState = Object.values(LEVEL_NAMES)
       .filter((value) => Number.isNaN(Number(value)))
@@ -93,27 +91,29 @@ app.use(
 );
 
 app.listen(port, () => {
-  const envOpenAiKey = process.env.OPENAI_API_KEY;
-  if (!envOpenAiKey) {
-    console.error(
-      "OpenAI API key not found in environment vars - cannot continue!"
-    );
-    process.exit(1);
-  }
+  // Set API key from environment variable
+  console.debug("Validating OpenAI API key...");
+  const verifyKeyPromise = verifyKeySupportsModel(defaultChatModel.id).then(
+    () => {
+      console.debug("OpenAI initialized");
+    }
+  );
 
   // initialise the documents on app startup
-  initDocumentVectors()
+  const vectorsPromise = initDocumentVectors()
     .then(() => {
-      console.debug("Document vectors initialised");
+      console.debug("Document vector store initialized");
     })
     .catch((err) => {
-      console.error("Error initialising document vectors", err);
+      throw new Error(`Error initializing document vectors: ${err}`);
     });
 
-  // Set API key from environment variable
-  console.debug("Initializing models with API key from environment variable");
-  void setOpenAiApiKey(envOpenAiKey, defaultChatModel.id).then(() => {
-    console.debug("OpenAI models initialized");
-    console.log(`Server is running on port: ${port}`);
-  });
+  Promise.all([verifyKeyPromise, vectorsPromise])
+    .then(() => {
+      console.log(`Server is running on port ${port}`);
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
 });

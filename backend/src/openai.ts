@@ -93,52 +93,37 @@ const chatModelMaxTokens = {
   [CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16384,
 };
 
-// test the api key works with the model
-async function validateApiKey(openAiApiKey: string, gptModel: string) {
-  try {
-    const testOpenAI: OpenAIApi = new OpenAIApi(
-      new Configuration({ apiKey: openAiApiKey })
-    );
-    await testOpenAI.createChatCompletion({
-      model: gptModel,
-      messages: [{ role: "user", content: "this is a test prompt" }],
-    });
-    return true;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.debug(`Error validating API key: ${error.message}`);
+const getOpenAIKey = (() => {
+  let openAIKey: string | undefined = undefined;
+  return () => {
+    if (!openAIKey) {
+      openAIKey = process.env.OPENAI_API_KEY;
+      if (!openAIKey) {
+        throw new Error(
+          "OpenAI API key not found in environment vars - cannot continue!"
+        );
+      }
     }
-    return false;
-  }
+    return openAIKey;
+  };
+})();
+
+/**
+ * Checks the given model is supported by the OpenAI API key
+ * @throws Error if the key cannot be used with the model
+ */
+async function verifyKeySupportsModel(gptModel: string) {
+  const apiKey = getOpenAIKey();
+  const testOpenAI: OpenAIApi = new OpenAIApi(new Configuration({ apiKey }));
+  await testOpenAI.createChatCompletion({
+    model: gptModel,
+    messages: [{ role: "user", content: "this is a test prompt" }],
+  });
 }
 
-async function setOpenAiApiKey(openAiApiKey: string, gptModel: string) {
-  // initialise models with the new key
-  if (await validateApiKey(openAiApiKey, gptModel)) {
-    console.debug("Setting API key and initialising models");
-    getOpenAiFromKey(openAiApiKey);
-    console.debug("OpenAI initialised");
-    return true;
-  } else {
-    // set to empty in case it was previously set
-    console.debug("Invalid API key. Cannot initialise OpenAI models");
-    return false;
-  }
-}
-
-function getOpenAiFromKey(openAiApiKey: string) {
-  return new OpenAIApi(new Configuration({ apiKey: openAiApiKey }));
-}
-
-async function setGptModel(openAiApiKey: string, model: CHAT_MODELS) {
-  console.debug(`Setting GPT model to: ${model}`);
-  if (await validateApiKey(openAiApiKey, model)) {
-    console.debug(`Set GPT model to: ${model}`);
-    return true;
-  } else {
-    console.debug(`Could not validate openAiApiKey with model=${model}`);
-    return false;
-  }
+function getOpenAIApi() {
+  const apiKey = getOpenAIKey();
+  return new OpenAIApi(new Configuration({ apiKey }));
 }
 
 function isChatGptFunction(functionName: string) {
@@ -151,8 +136,7 @@ async function chatGptCallFunction(
   functionCall: ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
   // default to sandbox
-  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX,
-  openAiApiKey: string
+  currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
   let reply: ChatCompletionRequestMessage | null = null;
   let wonLevel = false;
@@ -220,12 +204,7 @@ async function chatGptCallFunction(
           configQAPrePrompt = getQAPrePromptFromConfig(defences);
         }
         response = (
-          await queryDocuments(
-            params.question,
-            configQAPrePrompt,
-            currentLevel,
-            openAiApiKey
-          )
+          await queryDocuments(params.question, configQAPrePrompt, currentLevel)
         ).reply;
       } else {
         console.error("No arguments provided to askQuestion function");
@@ -451,7 +430,6 @@ async function chatGptSendMessage(
   chatModel: ChatModel,
   message: string,
   messageIsTransformed: boolean,
-  openAiApiKey: string,
   sentEmails: EmailInfo[],
   // default to sandbox
   currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
@@ -479,7 +457,7 @@ async function chatGptSendMessage(
       : CHAT_MESSAGE_TYPE.USER
   );
 
-  const openai = getOpenAiFromKey(openAiApiKey);
+  const openai = getOpenAIApi();
   let reply = await chatGptChatCompletion(
     chatHistory,
     defences,
@@ -501,8 +479,7 @@ async function chatGptSendMessage(
       defences,
       reply.function_call,
       sentEmails,
-      currentLevel,
-      openAiApiKey
+      currentLevel
     );
     if (functionCallReply) {
       wonLevel = functionCallReply.wonLevel;
@@ -576,7 +553,6 @@ async function chatGptSendMessage(
 export {
   chatGptSendMessage,
   filterChatHistoryByMaxTokens,
-  setOpenAiApiKey,
-  validateApiKey,
-  setGptModel,
+  getOpenAIKey,
+  verifyKeySupportsModel,
 };

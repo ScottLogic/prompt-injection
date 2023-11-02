@@ -18,7 +18,7 @@ import {
   defaultChatModel,
 } from "./models/chat";
 import { Document } from "./models/document";
-import { chatGptSendMessage, setGptModel } from "./openai";
+import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
 import { LEVEL_NAMES } from "./models/level";
 import * as fs from "fs";
 import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
@@ -194,16 +194,6 @@ router.post(
     }
     // set the transformed message to begin with
     chatResponse.transformedMessage = message;
-    if (!req.session.openAiApiKey) {
-      handleChatError(
-        res,
-        chatResponse,
-        true,
-        "Please enter a valid OpenAI API key to chat to me!",
-        401
-      );
-      return;
-    }
 
     // use default model for levels, allow user to select in sandbox
     const chatModel =
@@ -268,16 +258,11 @@ async function handleLowLevelChat(
     chatModel,
     chatResponse.transformedMessage,
     false,
-    req.session.openAiApiKey ?? "",
     req.session.levelState[currentLevel].sentEmails,
     currentLevel
   );
   chatResponse.reply = openAiReply?.completion.content ?? "";
   chatResponse.wonLevel = openAiReply?.wonLevel ?? false;
-
-  if (openAiReply instanceof Error) {
-    throw openAiReply;
-  }
 }
 
 // handle the chat logic for high levels (with defence detection)
@@ -308,8 +293,7 @@ async function handleHigherLevelChat(
   // detect defences on input message
   const triggeredDefencesPromise = detectTriggeredDefences(
     message,
-    req.session.levelState[currentLevel].defences,
-    req.session.openAiApiKey ?? ""
+    req.session.levelState[currentLevel].defences
   ).then((defenceInfo) => {
     chatResponse.defenceInfo = defenceInfo;
   });
@@ -322,7 +306,6 @@ async function handleHigherLevelChat(
       chatModel,
       chatResponse.transformedMessage,
       messageIsTransformed,
-      req.session.openAiApiKey ?? "",
       req.session.levelState[currentLevel].sentEmails,
       currentLevel
     );
@@ -421,27 +404,24 @@ router.post("/openai/clear", (req: OpenAiClearRequest, res) => {
 
 // Set the ChatGPT model
 router.post("/openai/model", async (req: OpenAiSetModelRequest, res) => {
-  const model = req.body.model;
-  const config = req.body.configuration;
+  const { model } = req.body;
 
   if (model === undefined) {
     res.status(400).send();
-  } else if (!req.session.openAiApiKey) {
-    res.status(401).send();
-  } else if (await setGptModel(req.session.openAiApiKey, model)) {
-    if (config) {
-      req.session.chatModel = { id: model, configuration: config };
-    } else {
-      // change model but keep configs
-      req.session.chatModel = {
-        id: model,
-        configuration: req.session.chatModel.configuration,
-      };
-    }
-    console.debug("set GPT model", JSON.stringify(req.session.chatModel));
-    res.status(200).send();
   } else {
-    res.status(401).send();
+    try {
+      // Verify model is valid for our key (it should be!)
+      await verifyKeySupportsModel(model);
+      // Keep same config if not given in request.
+      const configuration =
+        req.body.configuration ?? req.session.chatModel.configuration;
+      req.session.chatModel = { id: model, configuration };
+      console.debug("GPT model set:", JSON.stringify(req.session.chatModel));
+      res.status(200).send();
+    } catch (err) {
+      console.log("GPT model could not be set: ", err);
+      res.status(401).send();
+    }
   }
 });
 

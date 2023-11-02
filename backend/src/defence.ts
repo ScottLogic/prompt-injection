@@ -327,8 +327,7 @@ function transformMessage(message: string, defences: DefenceInfo[]) {
 // detects triggered defences in original message and blocks the message if necessary
 async function detectTriggeredDefences(
   message: string,
-  defences: DefenceInfo[],
-  openAiApiKey: string
+  defences: DefenceInfo[]
 ) {
   // keep track of any triggered defences
   const defenceReport: ChatDefenceReport = {
@@ -342,7 +341,7 @@ async function detectTriggeredDefences(
   detectCharacterLimit(defenceReport, message, defences);
   detectFilterUserInput(defenceReport, message, defences);
   detectXmlTagging(defenceReport, message, defences);
-  await detectEvaluationLLM(defenceReport, message, defences, openAiApiKey);
+  await detectEvaluationLLM(defenceReport, message, defences);
 
   return defenceReport;
 }
@@ -422,8 +421,7 @@ function detectXmlTagging(
 async function detectEvaluationLLM(
   defenceReport: ChatDefenceReport,
   message: string,
-  defences: DefenceInfo[],
-  openAiApiKey: string
+  defences: DefenceInfo[]
 ) {
   // evaluate the message for prompt injection
   const configPromptInjectionEvalPrePrompt =
@@ -434,8 +432,7 @@ async function detectEvaluationLLM(
   const evalPrompt = await queryPromptEvaluationModel(
     message,
     configPromptInjectionEvalPrePrompt,
-    configMaliciousPromptEvalPrePrompt,
-    openAiApiKey
+    configMaliciousPromptEvalPrePrompt
   );
   if (evalPrompt.isMalicious) {
     if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
