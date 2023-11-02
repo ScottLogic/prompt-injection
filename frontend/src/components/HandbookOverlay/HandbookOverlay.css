@@ -36,6 +36,13 @@
   scrollbar-color: var(--handbook-scrollbar-colour) transparent;
 }
 
+.handbook-overlay .content h1 {
+  font-size: 1.125rem;
+}
+.handbook-overlay .content p {
+  font-size: 1rem;
+}
+
 /* webkit scrollbar styling */
 .handbook-overlay .content::-webkit-scrollbar-thumb {
   background-color: var(--handbook-scrollbar-colour);
