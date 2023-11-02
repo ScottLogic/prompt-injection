@@ -68,7 +68,7 @@ async function resetDefenceConfig(
     {
       "Content-Type": "application/json",
     },
-    JSON.stringify({ defenceId: defenceId, configId: configId })
+    JSON.stringify({ defenceId, configId })
   );
   const data = (await response.json()) as DefenceResetResponse;
   return data;
