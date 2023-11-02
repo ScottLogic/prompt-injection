@@ -175,6 +175,8 @@ function App() {
     await clearChat(currentLevel);
     setMessages([]);
 
+    currentLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
+
     await clearEmails(currentLevel);
     setEmails([]);
 
@@ -223,7 +225,6 @@ function App() {
       openInformationOverlay();
     }
 
-    setMessages([]);
     setCurrentLevel(newLevel);
 
     // get emails for new level from the backend
@@ -232,8 +233,9 @@ function App() {
 
     // get chat history for new level from the backend
     const levelChatHistory = await getChatHistory(newLevel);
-
     setMessages(levelChatHistory);
+    // add welcome message for levels only
+    newLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
 
     const defences =
       newLevel === LEVEL_NAMES.LEVEL_3
@@ -262,6 +264,14 @@ function App() {
     });
     setDefencesToShow(defences);
     setMainBodyKey(MainBodyKey + 1);
+  }
+
+  function addWelcomeMessage() {
+    const welcomeMessage: ChatMessage = {
+      message: `Hello! I'm ScottBruBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
+      type: CHAT_MESSAGE_TYPE.BOT,
+    };
+    setMessages((messages: ChatMessage[]) => [welcomeMessage, ...messages]);
   }
 
   function addInfoMessage(message: string) {
