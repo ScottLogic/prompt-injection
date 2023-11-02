@@ -45,6 +45,9 @@ function App() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   const [overlayType, setOverlayType] = useState<OVERLAY_TYPE | null>(null);
+  const [overlayComponent, setOverlayComponent] = useState<JSX.Element | null>(
+    null
+  );
 
   function loadIsNewUser() {
     // get isNewUser from local storage
@@ -91,6 +94,18 @@ function App() {
     if (isNewUser) {
       openWelcomeOverlay();
     }
+
+    window.addEventListener("keydown", handleEscape);
+    setTimeout(() => {
+      // Need timeout, else dialog consumes same click that
+      // opened it and closes immediately!
+      window.addEventListener("click", handleOverlayClick);
+    });
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("click", handleOverlayClick);
+    };
   }, []);
 
   useEffect(() => {
@@ -108,6 +123,62 @@ function App() {
     localStorage.setItem("numCompletedLevels", numCompletedLevels.toString());
   }, [numCompletedLevels]);
 
+  useEffect(() => {
+    if (overlayType === null) {
+      dialogRef.current?.close();
+    } else {
+      dialogRef.current?.showModal();
+    }
+
+    switch (overlayType) {
+      case OVERLAY_TYPE.WELCOME:
+        setOverlayComponent(
+          <OverlayWelcome
+            currentLevel={currentLevel}
+            setStartLevel={(level: LEVEL_NAMES) => void setStartLevel(level)}
+            closeOverlay={closeOverlay}
+          />
+        );
+        break;
+      case OVERLAY_TYPE.INFORMATION:
+        setOverlayComponent(
+          <MissionInformation
+            currentLevel={currentLevel}
+            closeOverlay={closeOverlay}
+          />
+        );
+        break;
+      case OVERLAY_TYPE.HANDBOOK:
+        setOverlayComponent(
+          <HandbookOverlay
+            currentLevel={currentLevel}
+            closeOverlay={closeOverlay}
+          />
+        );
+        break;
+      case OVERLAY_TYPE.LEVELS_COMPLETE:
+        setOverlayComponent(
+          <LevelsComplete
+            goToSandbox={() => void goToSandbox()}
+            closeOverlay={closeOverlay}
+          />
+        );
+        break;
+      default:
+        setOverlayComponent(null);
+    }
+
+    // must re-bind event listener after changing overlay type
+    setTimeout(() => {
+      // Need timeout, else dialog consumes same click that
+      // opened it and closes immediately!
+      window.addEventListener("click", handleOverlayClick);
+    });
+    return () => {
+      window.removeEventListener("click", handleOverlayClick);
+    };
+  }, [overlayType]);
+
   const handleOverlayClick = useCallback(
     (event: MouseEvent) => {
       overlayType !== null &&
@@ -115,7 +186,7 @@ function App() {
         !event.composedPath().includes(contentRef.current) &&
         closeOverlay();
     },
-    [closeOverlay, contentRef]
+    [closeOverlay, contentRef, overlayType]
   );
 
   const handleEscape = useCallback(
@@ -124,20 +195,6 @@ function App() {
     },
     [closeOverlay]
   );
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleEscape);
-    setTimeout(() => {
-      // Need timeout, else dialog consumes same click that
-      // opened it and closes immediately!
-      window.addEventListener("click", handleOverlayClick);
-    });
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-      window.removeEventListener("click", handleOverlayClick);
-    };
-  }, []);
 
   function closeOverlay() {
     // open the mission info after welcome page for a new user
@@ -160,49 +217,6 @@ function App() {
   }
   function openLevelsCompleteOverlay() {
     setOverlayType(OVERLAY_TYPE.LEVELS_COMPLETE);
-  }
-
-  function openOverlay(overlayType: OVERLAY_TYPE | null) {
-    if (overlayType === null) {
-      dialogRef.current?.close();
-      return null;
-    } else {
-      dialogRef.current?.showModal();
-    }
-
-    switch (overlayType) {
-      case OVERLAY_TYPE.WELCOME:
-        return (
-          <OverlayWelcome
-            currentLevel={currentLevel}
-            setStartLevel={(level: LEVEL_NAMES) => void setStartLevel(level)}
-            closeOverlay={closeOverlay}
-          />
-        );
-      case OVERLAY_TYPE.INFORMATION:
-        return (
-          <MissionInformation
-            currentLevel={currentLevel}
-            closeOverlay={closeOverlay}
-          />
-        );
-      case OVERLAY_TYPE.HANDBOOK:
-        return (
-          <HandbookOverlay
-            currentLevel={currentLevel}
-            closeOverlay={closeOverlay}
-          />
-        );
-      case OVERLAY_TYPE.LEVELS_COMPLETE:
-        return (
-          <LevelsComplete
-            goToSandbox={() => void goToSandbox()}
-            closeOverlay={closeOverlay}
-          />
-        );
-      default:
-        return null;
-    }
   }
 
   // methods to modify messages
@@ -366,7 +380,7 @@ function App() {
     <div className="app-content">
       <dialog ref={dialogRef} className="dialog-modal">
         <div ref={contentRef} className="content">
-          {openOverlay(overlayType)}
+          {overlayComponent}
         </div>
       </dialog>
       <header className="app-content-header">
