@@ -1,30 +1,35 @@
 import app from "./app";
 import { initDocumentVectors } from "./langchain";
-import { setOpenAiApiKey } from "./openai";
+import { verifyKeySupportsModel } from "./openai";
 import { defaultChatModel } from "./models/chat";
 
 // by default runs on port 3001
 const port = process.env.PORT ?? String(3001);
 
 app.listen(port, () => {
-  console.log(`Server is running on port: ${port}`);
+  // Set API key from environment variable
+  console.debug("Validating OpenAI API key...");
+  const verifyKeyPromise = verifyKeySupportsModel(defaultChatModel.id).then(
+    () => {
+      console.debug("OpenAI initialized");
+    }
+  );
 
   // initialise the documents on app startup
-  initDocumentVectors()
+  const vectorsPromise = initDocumentVectors()
     .then(() => {
-      console.debug("Document vectors initialised");
+      console.debug("Document vector store initialized");
     })
     .catch((err) => {
-      console.error("Error initialising document vectors", err);
+      throw new Error(`Error initializing document vectors: ${err}`);
     });
 
-  // for dev purposes only - set the API key from the environment variable
-  const envOpenAiKey = process.env.OPENAI_API_KEY;
-  if (envOpenAiKey) {
-    console.debug("Initializing models with API key from environment variable");
-    // asynchronously set the API key
-    void setOpenAiApiKey(envOpenAiKey, defaultChatModel.id).then(() => {
-      console.debug("OpenAI models initialized");
+  Promise.all([verifyKeyPromise, vectorsPromise])
+    .then(() => {
+      console.log(`Server is running on port ${port}`);
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
     });
-  }
 });
