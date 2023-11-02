@@ -105,7 +105,7 @@ const getOpenAIKey = (() => {
 			openAIKey = process.env.OPENAI_API_KEY;
 			if (!openAIKey) {
 				throw new Error(
-					'OpenAI API key not found in environment vars - cannot continue!'
+					'OPENAI_API_KEY not found in environment vars, cannot continue!'
 				);
 			}
 		}

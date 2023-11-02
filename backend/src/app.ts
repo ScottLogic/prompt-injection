@@ -20,6 +20,13 @@ declare module 'express-session' {
 	}
 }
 
+// Check mandatory ENV vars
+const sessionSigningSecret = process.env.SESSION_SECRET;
+if (!sessionSigningSecret) {
+  console.error("SESSION_SECRET not found in environment vars, cannot continue!");
+  process.exit(1);
+}
+
 const app = express();
 const isProd = app.get('env') === 'production';
 
@@ -32,7 +39,7 @@ const sessionOpts: session.SessionOptions = {
 	store: new (memoryStoreFactory(session))({
 		checkPeriod: maxAge,
 	}),
-	secret: process.env.SESSION_SECRET ?? 'secret',
+	secret: sessionSigningSecret,
 	name: 'prompt-injection.sid',
 	resave: false,
 	saveUninitialized: true,
