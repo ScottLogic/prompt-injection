@@ -11,7 +11,7 @@ function SentEmail({ emailDetails }: { emailDetails: EmailInfo }) {
         <b>Subject:</b> {emailDetails.subject}
       </div>
       <hr />
-      <div className="sent-email-content">{emailDetails.content}</div>
+      <div className="sent-email-content">{emailDetails.body}</div>
     </div>
   );
 }
