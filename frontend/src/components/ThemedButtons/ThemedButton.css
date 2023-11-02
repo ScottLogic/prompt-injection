@@ -5,7 +5,7 @@
   padding: 0.5rem;
   color: var(--main-button-inactive-text-colour);
   cursor: pointer;
-  height: fit-content;
+  min-height: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;

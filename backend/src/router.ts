@@ -397,7 +397,7 @@ router.post("/openai/addHistory", (req: OpenAiAddHistoryRequest, res) => {
   ) {
     const chatMsg: ChatHistoryMessage = {
       completion: null,
-      chatMessageType: chatMessageType,
+      chatMessageType,
       infoMessage: message,
     };
     if (chatMessageType === CHAT_MESSAGE_TYPE.BOT) {

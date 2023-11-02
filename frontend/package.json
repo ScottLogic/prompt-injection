@@ -18,7 +18,6 @@
     "@react-pdf/renderer": "^3.1.12",
     "clsx": "^2.0.0",
     "react": "^18.2.0",
-    "react-contenteditable": "^3.3.7",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "react-loader-spinner": "^5.4.5"

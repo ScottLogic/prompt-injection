@@ -83,9 +83,10 @@ function App() {
 
   // called on mount
   useEffect(() => {
-    void setNewLevel(currentLevel);
     if (isNewUser) {
       setOverlayType(OVERLAY_TYPE.WELCOME);
+    } else {
+      void setNewLevel(currentLevel);
     }
   }, []);
 
@@ -196,6 +197,7 @@ function App() {
   // set the start level for a user who clicks beginner/expert
   async function setStartLevel(startLevel: LEVEL_NAMES) {
     if (
+      isNewUser ||
       (startLevel === LEVEL_NAMES.LEVEL_1 &&
         currentLevel === LEVEL_NAMES.SANDBOX) ||
       (startLevel === LEVEL_NAMES.SANDBOX &&
@@ -275,16 +277,15 @@ function App() {
       message: `Hello! I am ScottBruBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
       type: CHAT_MESSAGE_TYPE.BOT,
     };
-
-    // return true if there is a message from bot in the chat history
-    function hasBot() {
+    // check if there is a welcome message in the chat history
+    function hasWelcomeMessage() {
       return chatHistory.some((message) => {
-        return message.type === CHAT_MESSAGE_TYPE.BOT;
+        return message.message === welcomeMessage.message;
       });
     }
 
-    // if there is no welcome message in the chat history already, add it to the chat history
-    if (level < LEVEL_NAMES.SANDBOX && !hasBot()) {
+    // if there is messages from bot in the chat history already, add the welcome message
+    if (level < LEVEL_NAMES.SANDBOX && !hasWelcomeMessage()) {
       void addMessageToChatHistory(
         welcomeMessage.message,
         CHAT_MESSAGE_TYPE.BOT,
@@ -297,7 +298,7 @@ function App() {
 
   function addInfoMessage(message: string) {
     addChatMessage({
-      message: message,
+      message,
       type: CHAT_MESSAGE_TYPE.INFO,
     });
     // asynchronously add message to chat history
