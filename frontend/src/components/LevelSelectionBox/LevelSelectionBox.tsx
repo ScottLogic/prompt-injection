@@ -33,8 +33,8 @@ function LevelSelectionBox({
             onClick={() => {
               handleLevelChange(level.id);
             }}
-            isDisabled={index > numCompletedLevels}
-            isSelected={level.id === currentLevel}
+            disabled={index > numCompletedLevels}
+            selected={level.id === currentLevel}
           >
             {level.name}
           </ThemedButton>

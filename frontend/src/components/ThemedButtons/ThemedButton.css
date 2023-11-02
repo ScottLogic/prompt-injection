@@ -5,8 +5,7 @@
   padding: 0.5rem;
   color: var(--main-button-inactive-text-colour);
   cursor: pointer;
-  white-space: nowrap;
-  /* centre content */
+  height: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -26,23 +26,11 @@ function deactivateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
 function configureDefence(
   id: DEFENCE_TYPES,
   defences: DefenceInfo[],
-  updatedConfig: DefenceConfig[]
+  config: DefenceConfig[]
 ): DefenceInfo[] {
   // return the updated list of defences
   return defences.map((defence) =>
-    defence.id === id
-      ? {
-          ...defence,
-          config: defence.config.map((config) => {
-            const updatedConfigItem = updatedConfig.find(
-              (item) => item.id === config.id
-            );
-            return updatedConfigItem
-              ? { ...config, value: updatedConfigItem.value }
-              : config;
-          }),
-        }
-      : defence
+    defence.id === id ? { ...defence, config } : defence
   );
 }
 
