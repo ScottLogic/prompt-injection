@@ -7,7 +7,7 @@ import LevelSelectionBox, { LevelSelectionBoxProps } from "./LevelSelectionBox";
 const defaultProps: LevelSelectionBoxProps = {
   currentLevel: LEVELS[0].id,
   numCompletedLevels: 0,
-  setNewLevel: () => {},
+  setCurrentLevel: () => {},
 };
 
 function renderComponent(props: LevelSelectionBoxProps = defaultProps) {
@@ -65,20 +65,20 @@ describe("LevelSelectionBox component tests", () => {
     `fires callback on click, unless current level [$name] clicked`,
     async (level) => {
       const currentLevel = LEVELS[0];
-      const setNewLevel = vi.fn();
+      const setCurrentLevel = vi.fn();
       const { user } = renderComponent({
         currentLevel: LEVELS[0].id,
         numCompletedLevels: 3,
-        setNewLevel,
+        setCurrentLevel,
       });
 
       await user.click(screen.getByRole("button", { name: level.name }));
 
       if (level === currentLevel) {
-        expect(setNewLevel).not.toHaveBeenCalled();
+        expect(setCurrentLevel).not.toHaveBeenCalled();
       } else {
-        expect(setNewLevel).toHaveBeenCalledOnce();
-        expect(setNewLevel).toHaveBeenCalledWith(level.id);
+        expect(setCurrentLevel).toHaveBeenCalledOnce();
+        expect(setCurrentLevel).toHaveBeenCalledWith(level.id);
       }
     }
   );
