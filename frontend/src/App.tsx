@@ -61,6 +61,8 @@ function App() {
   useEffect(() => {
     // save current level to local storage
     localStorage.setItem("currentLevel", currentLevel.toString());
+    // show the information for the new level
+    openInformationOverlay();
   }, [currentLevel]);
 
   useEffect(() => {
@@ -200,6 +202,7 @@ function App() {
         openInformationOverlay={openInformationOverlay}
         openLevelsCompleteOverlay={openLevelsCompleteOverlay}
         openWelcomeOverlay={openWelcomeOverlay}
+        setCurrentLevel={setCurrentLevel}
       />
     </div>
   );

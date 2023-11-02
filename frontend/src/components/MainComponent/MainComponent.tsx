@@ -32,6 +32,7 @@ function MainComponent({
   openInformationOverlay,
   openLevelsCompleteOverlay,
   openWelcomeOverlay,
+  setCurrentLevel,
 }: {
   currentLevel: LEVEL_NAMES;
   isNewUser: boolean;
@@ -39,6 +40,7 @@ function MainComponent({
   openInformationOverlay: () => void;
   openLevelsCompleteOverlay: () => void;
   openWelcomeOverlay: () => void;
+  setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
   const [numCompletedLevels, setNumCompletedLevels] = useState(
@@ -68,11 +70,15 @@ function MainComponent({
 
   // called on mount
   useEffect(() => {
-    void setNewLevel(currentLevel);
     if (isNewUser) {
       openWelcomeOverlay();
     }
   }, []);
+
+  useEffect(() => {
+    console.log(`current level changed to ${currentLevel}`);
+    void setNewLevel(currentLevel);
+  }, [currentLevel]);
 
   useEffect(() => {
     // save isNewUser to local storage
@@ -119,12 +125,6 @@ function MainComponent({
 
   // for going switching level without clearing progress
   async function setNewLevel(newLevel: LEVEL_NAMES) {
-    console.log(`changing level from ${currentLevel} to ${newLevel}`);
-
-    if (currentLevel !== newLevel) {
-      openInformationOverlay();
-    }
-
     setMessages([]);
 
     // get emails for new level from the backend
@@ -228,7 +228,7 @@ function MainComponent({
           currentLevel={currentLevel}
           numCompletedLevels={numCompletedLevels}
           openHandbook={openHandbook}
-          setNewLevel={(newLevel: LEVEL_NAMES) => void setNewLevel(newLevel)}
+          setCurrentLevel={setCurrentLevel}
         />
       </header>
       <main>

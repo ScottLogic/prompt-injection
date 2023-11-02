@@ -10,12 +10,12 @@ function MainHeader({
   currentLevel,
   numCompletedLevels,
   openHandbook,
-  setNewLevel,
+  setCurrentLevel,
 }: {
   currentLevel: LEVEL_NAMES;
   numCompletedLevels: number;
   openHandbook: () => void;
-  setNewLevel: (newLevel: number) => void;
+  setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
   function getLevelName(level: LEVEL_NAMES) {
     const levelName = LEVELS.find((p) => p.id === level)?.name;
@@ -43,7 +43,7 @@ function MainHeader({
             <LevelSelectionBox
               currentLevel={currentLevel}
               numCompletedLevels={numCompletedLevels}
-              setNewLevel={setNewLevel}
+              setCurrentLevel={setCurrentLevel}
             />
           </span>
         )}
