@@ -92,11 +92,10 @@ function configValueBreachesCharacterLimit(config: DefenceConfig[]) {
 function sendErrorResponse(
   res: express.Response,
   statusCode: number,
-  statusMessage: string
+  errorMessage: string
 ) {
   res.statusCode = statusCode;
-  res.statusMessage = statusMessage;
-  res.send();
+  res.send(errorMessage);
 }
 
 // Configure a defence
