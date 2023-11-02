@@ -80,7 +80,7 @@ router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
   }
 });
 
-function configValueBreachesCharacterLimit(config: DefenceConfig[]) {
+function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
   const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
 
   const allValuesWithinLimit = config.every(
@@ -115,7 +115,7 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
     return;
   }
 
-  if (configValueBreachesCharacterLimit(config)) {
+  if (configValueExceedsCharacterLimit(config)) {
     sendErrorResponse(res, 400, "Config value exceeds character limit");
     return;
   }
