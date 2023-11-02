@@ -13,7 +13,7 @@ import {
   getMaliciousPromptEvalPrePromptFromConfig,
 } from "../../src/defence";
 import * as langchain from "../../src/langchain";
-import { DEFENCE_TYPES } from "../../src/models/defence";
+import { DEFENCE_TYPES, DefenceConfig } from "../../src/models/defence";
 import { LEVEL_NAMES } from "../../src/models/level";
 import {
   maliciousPromptEvalPrePrompt,
@@ -149,13 +149,8 @@ test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
 
 test("GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered", async () => {
   const message = "Hello";
-  const apiKey = "test-api-key";
   const defences = getInitialDefences();
-  const defenceReport = await detectTriggeredDefences(
-    message,
-    defences,
-    apiKey
-  );
+  const defenceReport = await detectTriggeredDefences(message, defences);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
   expect(defenceReport.triggeredDefences.length).toBe(0);
@@ -167,22 +162,13 @@ test(
     "THEN CHARACTER_LIMIT defence is triggered AND the message is blocked",
   async () => {
     const message = "Hello";
-    const apiKey = "test-api-key";
-    let defences = getInitialDefences();
-    // activate CHARACTER_LIMIT defence
-    defences = activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defences);
-    // configure CHARACTER_LIMIT defence
-    defences = configureDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defences, [
-      {
-        id: "maxMessageLength",
-        value: String(3),
-      },
-    ]);
-    const defenceReport = await detectTriggeredDefences(
-      message,
-      defences,
-      apiKey
+    // activate and configure CHARACTER_LIMIT defence
+    const defences = configureDefence(
+      DEFENCE_TYPES.CHARACTER_LIMIT,
+      activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, getInitialDefences()),
+      [{ id: "maxMessageLength", value: String(3) }]
     );
+    const defenceReport = await detectTriggeredDefences(message, defences);
     expect(defenceReport.blockedReason).toBe("Message is too long");
     expect(defenceReport.isBlocked).toBe(true);
     expect(defenceReport.triggeredDefences).toContain(
@@ -197,22 +183,13 @@ test(
     "THEN CHARACTER_LIMIT defence is not triggered AND the message is not blocked",
   async () => {
     const message = "Hello";
-    const defences = getInitialDefences();
-    const apiKey = "test-api-key";
-    // activate CHARACTER_LIMIT defence
-    activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defences);
-    // configure CHARACTER_LIMIT defence
-    configureDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defences, [
-      {
-        id: "maxMessageLength",
-        value: String(280),
-      },
-    ]);
-    const defenceReport = await detectTriggeredDefences(
-      message,
-      defences,
-      apiKey
+    // activate and configure CHARACTER_LIMIT defence
+    const defences = configureDefence(
+      DEFENCE_TYPES.CHARACTER_LIMIT,
+      activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, getInitialDefences()),
+      [{ id: "maxMessageLength", value: String(280) }]
     );
+    const defenceReport = await detectTriggeredDefences(message, defences);
     expect(defenceReport.blockedReason).toBe(null);
     expect(defenceReport.isBlocked).toBe(false);
     expect(defenceReport.triggeredDefences.length).toBe(0);
@@ -225,20 +202,18 @@ test(
     "THEN CHARACTER_LIMIT defence is alerted AND the message is not blocked",
   async () => {
     const message = "Hello";
-    let defences = getInitialDefences();
-    const apiKey = "test-api-key";
     // configure CHARACTER_LIMIT defence
-    defences = configureDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defences, [
-      {
-        id: "maxMessageLength",
-        value: String(3),
-      },
-    ]);
-    const defenceReport = await detectTriggeredDefences(
-      message,
-      defences,
-      apiKey
+    const defences = configureDefence(
+      DEFENCE_TYPES.CHARACTER_LIMIT,
+      getInitialDefences(),
+      [
+        {
+          id: "maxMessageLength",
+          value: String(3),
+        },
+      ]
     );
+    const defenceReport = await detectTriggeredDefences(message, defences);
     expect(defenceReport.blockedReason).toBe(null);
     expect(defenceReport.isBlocked).toBe(false);
     expect(defenceReport.alertedDefences).toContain(
@@ -249,15 +224,12 @@ test(
 
 test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is triggered", async () => {
   const message = "<Hello>";
-  let defences = getInitialDefences();
-  const apiKey = "test-api-key";
   // activate XML_TAGGING defence
-  defences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
-  const defenceReport = await detectTriggeredDefences(
-    message,
-    defences,
-    apiKey
+  const defences = activateDefence(
+    DEFENCE_TYPES.XML_TAGGING,
+    getInitialDefences()
   );
+  const defenceReport = await detectTriggeredDefences(message, defences);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
   expect(defenceReport.triggeredDefences).toContain(DEFENCE_TYPES.XML_TAGGING);
@@ -265,13 +237,8 @@ test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN det
 
 test("GIVEN XML_TAGGING defence is inactive AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is alerted", async () => {
   const message = "<Hello>";
-  const apiKey = "test-api-key";
   const defences = getInitialDefences();
-  const defenceReport = await detectTriggeredDefences(
-    message,
-    defences,
-    apiKey
-  );
+  const defenceReport = await detectTriggeredDefences(message, defences);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
   expect(defenceReport.alertedDefences).toContain(DEFENCE_TYPES.XML_TAGGING);
@@ -306,27 +273,19 @@ test("GIVEN message does not contain phrases from the filter list WHEN detecting
 
 test("GIVEN setting max message length WHEN configuring defence THEN defence is configured", () => {
   const defence = DEFENCE_TYPES.CHARACTER_LIMIT;
-  let defences = getInitialDefences();
   // configure CHARACTER_LIMIT defence
-  defences = configureDefence(defence, defences, [
-    {
-      id: "maxMessageLength",
-      value: String(20),
-    },
-  ]);
-  const config = [{ id: "maxMessageLength", value: String(10) }];
-  defences = configureDefence(defence, defences, config);
+  const config: DefenceConfig = {
+    id: "maxMessageLength",
+    value: String(10),
+  };
+  const defences = configureDefence(defence, getInitialDefences(), [config]);
   const matchingDefence = defences.find((d) => d.id === defence);
-  expect(matchingDefence).toBeTruthy();
-  if (matchingDefence) {
-    const matchingDefenceConfig = matchingDefence.config.find(
-      (c) => c.id === config[0].id
-    );
-    expect(matchingDefenceConfig).toBeTruthy();
-    if (matchingDefenceConfig) {
-      expect(matchingDefenceConfig.value).toBe(config[0].value);
-    }
-  }
+  expect(matchingDefence).toBeDefined();
+  const matchingDefenceConfig = matchingDefence?.config.find(
+    (c) => c.id === config.id
+  );
+  expect(matchingDefenceConfig).toBeDefined();
+  expect(matchingDefenceConfig?.value).toBe(config.value);
 });
 
 test("GIVEN system role has not been configured WHEN getting system role THEN return default system role", () => {
@@ -342,13 +301,16 @@ test("GIVEN system role has been configured WHEN getting system role THEN return
 });
 
 test("GIVEN a new system role has been set WHEN getting system role THEN return new system role", () => {
-  let defences = getInitialDefences();
-  let systemRole = getSystemRole(defences);
+  const initialDefences = getInitialDefences();
+  let systemRole = getSystemRole(initialDefences);
   expect(systemRole).toBe(systemRoleDefault);
-  defences = configureDefence(DEFENCE_TYPES.SYSTEM_ROLE, defences, [
-    { id: "systemRole", value: "new system role" },
-  ]);
-  systemRole = getSystemRole(defences);
+
+  const defencesWithSystemRole = configureDefence(
+    DEFENCE_TYPES.SYSTEM_ROLE,
+    initialDefences,
+    [{ id: "systemRole", value: "new system role" }]
+  );
+  systemRole = getSystemRole(defencesWithSystemRole);
   expect(systemRole).toBe("new system role");
 });
 
@@ -370,10 +332,11 @@ test("GIVEN QA LLM instructions have not been configured WHEN getting QA LLM ins
 
 test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instructions THEN return configured prompt", () => {
   const newQaLlmInstructions = "new QA LLM instructions";
-  let defences = getInitialDefences();
-  defences = configureDefence(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences, [
-    { id: "prePrompt", value: newQaLlmInstructions },
-  ]);
+  const defences = configureDefence(
+    DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
+    getInitialDefences(),
+    [{ id: "prePrompt", value: newQaLlmInstructions }]
+  );
   const qaLlmInstructions = getQAPrePromptFromConfig(defences);
   expect(qaLlmInstructions).toBe(newQaLlmInstructions);
 });
@@ -390,10 +353,9 @@ test("GIVEN Eval LLM instructions for prompt injection have not been configured 
 test("GIVEN Eval LLM instructions for prompt injection have been configured WHEN getting Eval LLM instructions THEN return configured prompt", () => {
   const newPromptInjectionEvalInstructions =
     "new prompt injection eval instructions";
-  let defences = getInitialDefences();
-  defences = configureDefence(
+  const defences = configureDefence(
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    defences,
+    getInitialDefences(),
     [
       {
         id: "prompt-injection-evaluator-prompt",
@@ -420,10 +382,9 @@ test("GIVEN Eval LLM instructions for malicious prompts have not been configured
 test("GIVEN Eval LLM instructions for malicious prompts have been configured WHEN getting Eval LLM instructions THEN return configured prompt", () => {
   const newMaliciousPromptEvalInstructions =
     "new malicious prompt eval instructions";
-  let defences = getInitialDefences();
-  defences = configureDefence(
+  const defences = configureDefence(
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    defences,
+    getInitialDefences(),
     [
       {
         id: "malicious-prompt-evaluator-prompt",
@@ -467,7 +428,6 @@ test("GIVEN setting email whitelist WHEN configuring defence THEN defence is con
 
 test("GIVEN user configures random sequence enclosure WHEN configuring defence THEN defence is configured", () => {
   const defence = DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE;
-  let defences = getInitialDefences();
   const newPrePrompt = "new pre prompt";
   const newLength = String(100);
   const config = [
@@ -475,7 +435,7 @@ test("GIVEN user configures random sequence enclosure WHEN configuring defence T
     { id: "prePrompt", value: newPrePrompt },
   ];
   // configure RSE length
-  defences = configureDefence(defence, defences, config);
+  const defences = configureDefence(defence, getInitialDefences(), config);
   // expect the RSE length to be updated
   const matchingDefence = defences.find((d) => d.id === defence);
   expect(matchingDefence).toBeTruthy();

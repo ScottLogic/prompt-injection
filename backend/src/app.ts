@@ -18,7 +18,6 @@ dotenv.config();
 declare module "express-session" {
   interface Session {
     initialised: boolean;
-    openAiApiKey: string | null;
     chatModel: ChatModel;
     levelState: LevelState[];
   }
@@ -65,7 +64,6 @@ app.use((req, _res, next) => {
   // initialise session variables first time
   if (!req.session.initialised) {
     req.session.chatModel = defaultChatModel;
-    req.session.openAiApiKey = process.env.OPENAI_API_KEY ?? null;
     // add empty states for levels 0-3
     req.session.levelState = Object.values(LEVEL_NAMES)
       .filter((value) => Number.isNaN(Number(value)))

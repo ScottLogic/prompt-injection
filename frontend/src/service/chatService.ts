@@ -97,22 +97,6 @@ async function getChatHistory(level: number): Promise<ChatMessage[]> {
   return chatMessages;
 }
 
-async function setOpenAIApiKey(openAiApiKey: string): Promise<boolean> {
-  const response = await sendRequest(
-    `${PATH}openAiApiKey`,
-    "POST",
-    { "Content-Type": "application/json" },
-    JSON.stringify({ openAiApiKey })
-  );
-  return response.status === 200;
-}
-
-async function getOpenAIApiKey(): Promise<string> {
-  const response = await sendRequest(`${PATH}openAiApiKey`, "GET");
-  const data = await response.text();
-  return data;
-}
-
 async function setGptModel(model: string): Promise<boolean> {
   const response = await sendRequest(
     `${PATH}model`,
@@ -138,8 +122,7 @@ async function configureGptModel(
 
 async function getGptModel(): Promise<ChatModel> {
   const response = await sendRequest(`${PATH}model`, "GET");
-  const model = (await response.json()) as ChatModel;
-  return model;
+  return (await response.json()) as ChatModel;
 }
 
 async function addMessageToChatHistory(
@@ -163,8 +146,6 @@ async function addMessageToChatHistory(
 export {
   clearChat,
   sendMessage,
-  setOpenAIApiKey,
-  getOpenAIApiKey,
   configureGptModel,
   getGptModel,
   setGptModel,

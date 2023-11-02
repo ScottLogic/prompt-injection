@@ -28,7 +28,7 @@ function ExportEmailMessage({ email }: { email: EmailInfo }) {
       <Text style={styles.text}>to: {email.address}</Text>
       <Text style={styles.text}>subject: {email.subject}</Text>
       <Text style={styles.sentEmailDivider}></Text>
-      <Text style={styles.text}>{email.content}</Text>
+      <Text style={styles.text}>{email.body}</Text>
     </View>
   );
 }
