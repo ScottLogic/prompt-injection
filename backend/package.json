@@ -31,7 +31,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon -r dotenv/config src/app.ts",
+    "dev": "nodemon -r dotenv/config src/server.ts",
     "api:start": "docker compose up -d",
     "api:logs": "docker compose logs -f",
     "api:stop": "docker compose down",
