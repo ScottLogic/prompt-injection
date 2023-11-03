@@ -3,7 +3,7 @@
   flex-direction: row;
 
   height: 85vh;
-  width: 40vw;
+  aspect-ratio: 7/8;
 
   background-color: var(--handbook-background-colour);
   color: var(--handbook-text-colour);
