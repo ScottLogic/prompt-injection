@@ -16,9 +16,7 @@ describe("/defence/configure", () => {
       level: LEVEL_NAMES.SANDBOX,
     };
 
-    const response = await request(app).post("/defence/configure").send(body);
-
-    expect(response.status).toBe(200);
+    await request(app).post("/defence/configure").send(body).expect(200);
   });
 
   it("WHEN missing defenceId THEN does not configure defences", async () => {
@@ -33,10 +31,11 @@ describe("/defence/configure", () => {
       level: LEVEL_NAMES.LEVEL_1,
     };
 
-    const response = await request(app).post("/defence/configure").send(body);
-
-    expect(response.status).toBe(400);
-    expect(response.text).toBe("Missing defenceId, config or level");
+    await request(app)
+      .post("/defence/configure")
+      .send(body)
+      .expect(400)
+      .expect("Missing defenceId, config or level");
   });
 
   it("WHEN configuration value exceeds character limit THEN does not configure defences", async () => {
@@ -54,9 +53,10 @@ describe("/defence/configure", () => {
       level: LEVEL_NAMES.SANDBOX,
     };
 
-    const response = await request(app).post("/defence/configure").send(body);
-
-    expect(response.status).toBe(400);
-    expect(response.text).toBe("Config value exceeds character limit");
+    await request(app)
+      .post("/defence/configure")
+      .send(body)
+      .expect(400)
+      .expect("Config value exceeds character limit");
   });
 });
