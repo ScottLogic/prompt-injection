@@ -64,7 +64,7 @@ function MainBody({
   }
 
   return (
-    <span className="main-area">
+    <main className="main-area">
       <div className="side-bar">
         <ControlPanel
           currentLevel={currentLevel}
@@ -98,7 +98,7 @@ function MainBody({
       <div className="side-bar">
         <EmailBox emails={emails} />
       </div>
-    </span>
+    </main>
   );
 }
 

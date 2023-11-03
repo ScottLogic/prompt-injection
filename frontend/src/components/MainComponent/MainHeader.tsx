@@ -25,7 +25,7 @@ function MainHeader({
   const isLevelComplete = (currentLevel as number) < numCompletedLevels;
 
   return (
-    <div className="main-header">
+    <header className="main-header">
       <span className="main-header-left">
         <span className="main-header-title">Spy Logic</span>
         <span className="main-header-icon">
@@ -60,7 +60,7 @@ function MainHeader({
           )}
         </div>
       </span>
-    </div>
+    </header>
   );
 }
 

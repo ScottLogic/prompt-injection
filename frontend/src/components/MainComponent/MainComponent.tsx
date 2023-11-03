@@ -204,39 +204,36 @@ function MainComponent({
     }
     return success;
   }
+
   return (
     <div className="main-component">
-      <header>
-        <MainHeader
-          currentLevel={currentLevel}
-          numCompletedLevels={numCompletedLevels}
-          openHandbook={openHandbook}
-          setCurrentLevel={setCurrentLevel}
-        />
-      </header>
-      <main>
-        <MainBody
-          key={MainBodyKey}
-          currentLevel={currentLevel}
-          defences={defencesToShow}
-          emails={emails}
-          messages={messages}
-          addChatMessage={addChatMessage}
-          resetLevel={() => void resetLevel()}
-          setDefenceActive={(defence: DefenceInfo) =>
-            void setDefenceActive(defence)
-          }
-          setDefenceInactive={(defence: DefenceInfo) =>
-            void setDefenceInactive(defence)
-          }
-          setDefenceConfiguration={setDefenceConfiguration}
-          setEmails={setEmails}
-          incrementNumCompletedLevels={incrementNumCompletedLevels}
-          openInfoOverlay={openInformationOverlay}
-          openLevelsCompleteOverlay={openLevelsCompleteOverlay}
-          openWelcomeOverlay={openWelcomeOverlay}
-        />
-      </main>
+      <MainHeader
+        currentLevel={currentLevel}
+        numCompletedLevels={numCompletedLevels}
+        openHandbook={openHandbook}
+        setCurrentLevel={setCurrentLevel}
+      />
+      <MainBody
+        key={MainBodyKey}
+        currentLevel={currentLevel}
+        defences={defencesToShow}
+        emails={emails}
+        messages={messages}
+        addChatMessage={addChatMessage}
+        resetLevel={() => void resetLevel()}
+        setDefenceActive={(defence: DefenceInfo) =>
+          void setDefenceActive(defence)
+        }
+        setDefenceInactive={(defence: DefenceInfo) =>
+          void setDefenceInactive(defence)
+        }
+        setDefenceConfiguration={setDefenceConfiguration}
+        setEmails={setEmails}
+        incrementNumCompletedLevels={incrementNumCompletedLevels}
+        openInfoOverlay={openInformationOverlay}
+        openLevelsCompleteOverlay={openLevelsCompleteOverlay}
+        openWelcomeOverlay={openWelcomeOverlay}
+      />
     </div>
   );
 }
