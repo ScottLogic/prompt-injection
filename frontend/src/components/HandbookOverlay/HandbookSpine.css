@@ -1,9 +1,19 @@
-.handbook-tabs {
+.handbook-spine {
   display: flex;
   flex-direction: column;
+
+  min-width: 6rem;
+  max-width: 6rem;
+
+  padding-top: 3rem;
+  border-right: 0.0625rem solid var(--handbook-spine-separator-colour);
+
+  background-color: var(--handbook-spine-background-colour);
+
+  font-size: 1.125rem;
 }
 
-.handbook-tabs button {
+.handbook-spine button {
   /* remove default button styling */
   background: none;
   border: none;
@@ -14,11 +24,11 @@
   text-align: left;
 }
 
-.handbook-tabs button:hover {
+.handbook-spine button:hover {
   background-color: var(--handbook-tab-hover-colour);
 }
 
-.handbook-tabs button[aria-selected="true"] {
+.handbook-spine button[aria-selected="true"] {
   background-color: var(--handbook-tab-selected-colour);
   color: var(--handbook-text-selected-colour);
 }

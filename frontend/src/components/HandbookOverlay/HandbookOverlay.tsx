@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
 import HandbookAttacks from "./HandbookAttacks";
-import HandbookOverlayTabs from "./HandbookOverlayTabs";
+import HandbookSpine from "./HandbookSpine";
 import { HANDBOOK_PAGES, handbookPageNames } from "../../models/handbook";
 import "./HandbookOverlay.css";
 import HandbookGlossary from "./HandbookGlossary";
@@ -62,13 +62,11 @@ function HandbookOverlay({
       >
         <HandbookCloseIcon highlighted={isMouseOverCloseButton} />
       </button>
-      <div className="spine">
-        <HandbookOverlayTabs
-          currentLevel={currentLevel}
-          currentPage={selectedPage}
-          selectPage={setSelectedPage}
-        />
-      </div>
+      <HandbookSpine
+        currentLevel={currentLevel}
+        currentPage={selectedPage}
+        selectPage={setSelectedPage}
+      />
       <div
         className="content"
         role="tabpanel"

@@ -15,18 +15,6 @@
   right: 0.25rem;
 }
 
-.handbook-overlay .spine {
-  min-width: 6rem;
-  max-width: 6rem;
-
-  padding-top: 3rem;
-  border-right: 0.0625rem solid var(--handbook-spine-separator-colour);
-
-  background-color: var(--handbook-spine-background-colour);
-
-  font-size: 1.125rem;
-}
-
 .handbook-overlay .content {
   padding: 0rem 1.7rem;
   padding-bottom: 3rem;

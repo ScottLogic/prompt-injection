@@ -1,8 +1,8 @@
 import { HANDBOOK_PAGES, handbookPageNames } from "../../models/handbook";
 import { LEVEL_NAMES } from "../../models/level";
-import "./HandbookOverlayTabs.css";
+import "./HandbookSpine.css";
 
-function HandbookOverlayTabs({
+function HandbookSpine({
   currentLevel,
   currentPage,
   selectPage,
@@ -22,7 +22,7 @@ function HandbookOverlayTabs({
       : [HANDBOOK_PAGES.GLOSSARY, HANDBOOK_PAGES.ATTACKS];
 
   return (
-    <div className="handbook-tabs" role="tablist">
+    <div className="handbook-spine" role="tablist">
       {tabs.map((page) => (
         <button
           key={page}
@@ -39,4 +39,4 @@ function HandbookOverlayTabs({
   );
 }
 
-export default HandbookOverlayTabs;
+export default HandbookSpine;
