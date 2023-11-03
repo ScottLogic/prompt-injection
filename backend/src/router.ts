@@ -39,16 +39,12 @@ import { DefenceConfig } from "./models/defence";
 
 const router = express.Router();
 
-function configurationAllowedOnLevel(level: LEVEL_NAMES) {
-  return level >= LEVEL_NAMES.LEVEL_3;
-}
-
 // Activate a defence
 router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const level = req.body.level;
-  if (defenceId && level !== undefined && configurationAllowedOnLevel(level)) {
+  if (defenceId && level !== undefined) {
     // activate the defence
     req.session.levelState[level].defences = activateDefence(
       defenceId,
@@ -66,7 +62,7 @@ router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const level = req.body.level;
-  if (defenceId && level !== undefined && configurationAllowedOnLevel(level)) {
+  if (defenceId && level !== undefined) {
     // deactivate the defence
     req.session.levelState[level].defences = deactivateDefence(
       defenceId,
@@ -109,11 +105,6 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
     return;
   }
 
-  if (!configurationAllowedOnLevel(level)) {
-    sendErrorResponse(res, 400, "Configuration not allowed on this level");
-    return;
-  }
-
   if (configValueExceedsCharacterLimit(config)) {
     sendErrorResponse(res, 400, "Config value exceeds character limit");
     return;
@@ -131,7 +122,7 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
 // reset the active defences
 router.post("/defence/reset", (req: DefenceResetRequest, res) => {
   const level = req.body.level;
-  if (level !== undefined && configurationAllowedOnLevel(level)) {
+  if (level !== undefined) {
     req.session.levelState[level].defences = getInitialDefences();
     console.debug("Defences reset");
     res.send();
