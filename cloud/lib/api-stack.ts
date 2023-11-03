@@ -1,20 +1,27 @@
-import { Stack, StackProps } from "aws-cdk-lib/core";
+import { UserPool, UserPoolClient, UserPoolDomain } from 'aws-cdk-lib/aws-cognito';
 import { Vpc } from "aws-cdk-lib/aws-ec2";
 import { DockerImageAsset } from "aws-cdk-lib/aws-ecr-assets";
 import { Cluster, ContainerImage, Secret as EnvSecret } from "aws-cdk-lib/aws-ecs";
 import { ApplicationLoadBalancedFargateService } from "aws-cdk-lib/aws-ecs-patterns";
+import { ListenerAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import { AuthenticateCognitoAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
 import { Secret } from "aws-cdk-lib/aws-secretsmanager";
+import { Stack, StackProps } from "aws-cdk-lib/core";
 import { Construct } from "constructs";
 import { join } from "node:path";
 
-import { resourceName, stageName } from "./resourceNamingUtils";
+import { resourceName } from "./resourceNamingUtils";
+
+type ApiStackProps = StackProps & {
+  userPool: UserPool;
+  userPoolClient: UserPoolClient;
+  userPoolDomain: UserPoolDomain;
+};
 
 export class ApiStack extends Stack {
-  stage: string;
-
-  constructor(scope: Construct, id: string, props: StackProps) {
+  constructor(scope: Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
-    this.stage = stageName(scope);
+    const { userPool, userPoolClient, userPoolDomain } = props;
 
     const generateResourceName = resourceName(scope);
 
@@ -36,6 +43,7 @@ export class ApiStack extends Stack {
     // Create a load-balanced Fargate service and make it public
     const containerPort = 3001;
     const serviceName = generateResourceName("fargate");
+    const loadBalancerName = generateResourceName("alb");
     const fargateService = new ApplicationLoadBalancedFargateService(
       this,
       serviceName,
@@ -57,10 +65,22 @@ export class ApiStack extends Stack {
           },
         },
         memoryLimitMiB: 512, // Default is 512
-        loadBalancerName: generateResourceName("elb"),
+        loadBalancerName,
         publicLoadBalancer: true, // Default is true
       },
     );
+
+    // Hook up Cognito to load balancer
+    // https://stackoverflow.com/q/71124324
+    const authActionName = generateResourceName("alb-auth");
+    fargateService.listener.addAction(authActionName, {
+      action: new AuthenticateCognitoAction({
+        userPool,
+        userPoolClient,
+        userPoolDomain,
+        next: ListenerAction.forward([fargateService.targetGroup]),
+      })
+    });
     fargateService.targetGroup.configureHealthCheck({ path: "/openai/model" });
   }
 }
