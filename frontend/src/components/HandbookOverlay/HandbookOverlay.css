@@ -9,10 +9,17 @@
   color: var(--handbook-text-colour);
 }
 
-.handbook-overlay > .close-button {
+.handbook-overlay .close-button {
   position: absolute;
   top: 0.25rem;
   right: 0.25rem;
+}
+.handbook-overlay .close-button:hover svg rect {
+  fill: black;
+  stroke: white;
+}
+.handbook-overlay .close-button:hover svg path {
+  fill: white;
 }
 
 .handbook-overlay .content {
