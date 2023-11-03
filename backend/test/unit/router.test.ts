@@ -17,6 +17,9 @@ describe("/defence/configure", () => {
     };
 
     await request(app).post("/defence/configure").send(body).expect(200);
+    // also need to check that the session was changed to include updated config
+
+    console.log(app);
   });
 
   it("WHEN missing defenceId THEN does not configure defences", async () => {
