@@ -79,7 +79,6 @@ function App() {
 
   function incrementNumCompletedLevels(completedLevel: LEVEL_NAMES) {
     setNumCompletedLevels(completedLevel + 1);
-    console.log("incrementing num completed levels to", completedLevel + 1);
   }
 
   // called on mount
