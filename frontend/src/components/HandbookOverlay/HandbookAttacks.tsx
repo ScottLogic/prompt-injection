@@ -18,7 +18,7 @@ function HandbookAttacks({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
       {attacks.map((attack) => (
         <div className="term" key={attack.id}>
           <dt>{attack.name}</dt>
-          <dd aria-label={attack.name}>{attack.info}</dd>
+          <dd>{attack.info}</dd>
         </div>
       ))}
     </dl>

@@ -7,7 +7,7 @@ function HandbookGlossary() {
       {GLOSSARY.map(({ term, definition }) => (
         <div className="term" key={term}>
           <dt>{term}</dt>
-          <dd aria-label={term}>{definition}</dd>
+          <dd>{definition}</dd>
         </div>
       ))}
     </dl>
