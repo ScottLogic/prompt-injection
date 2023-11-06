@@ -4,7 +4,6 @@ import express from "express";
 import memoryStoreFactory from "memorystore";
 import session from "express-session";
 
-import { verifyKeySupportsModel } from "./openai";
 import { router } from "./router";
 import { ChatHistoryMessage, ChatModel } from "./models/chat";
 import { EmailInfo } from "./models/email";
@@ -13,7 +12,6 @@ import { defaultChatModel } from "./models/chat";
 import { LEVEL_NAMES } from "./models/level";
 import path from "path";
 import { getInitialDefences } from "./defence";
-import { initDocumentVectors } from "./langchain";
 
 dotenv.config();
 
@@ -31,8 +29,6 @@ declare module "express-session" {
   }
 }
 
-// by default runs on port 3001
-const port = process.env.PORT ?? String(3001);
 const app = express();
 const isProd = app.get("env") === "production";
 
@@ -90,30 +86,4 @@ app.use(
   express.static(path.join(__dirname, "../resources/documents/common"))
 );
 
-app.listen(port, () => {
-  // Set API key from environment variable
-  console.debug("Validating OpenAI API key...");
-  const verifyKeyPromise = verifyKeySupportsModel(defaultChatModel.id).then(
-    () => {
-      console.debug("OpenAI initialized");
-    }
-  );
-
-  // initialise the documents on app startup
-  const vectorsPromise = initDocumentVectors()
-    .then(() => {
-      console.debug("Document vector store initialized");
-    })
-    .catch((err) => {
-      throw new Error(`Error initializing document vectors: ${err}`);
-    });
-
-  Promise.all([verifyKeyPromise, vectorsPromise])
-    .then(() => {
-      console.log(`Server is running on port ${port}`);
-    })
-    .catch((err) => {
-      console.error(err);
-      process.exit(1);
-    });
-});
+export default app;
