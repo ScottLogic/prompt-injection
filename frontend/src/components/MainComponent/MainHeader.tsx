@@ -10,12 +10,12 @@ function MainHeader({
   currentLevel,
   numCompletedLevels,
   openHandbook,
-  setNewLevel,
+  setCurrentLevel,
 }: {
   currentLevel: LEVEL_NAMES;
   numCompletedLevels: number;
   openHandbook: () => void;
-  setNewLevel: (newLevel: number) => void;
+  setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
   function getLevelName(level: LEVEL_NAMES) {
     const levelName = LEVELS.find((p) => p.id === level)?.name;
@@ -25,7 +25,7 @@ function MainHeader({
   const isLevelComplete = (currentLevel as number) < numCompletedLevels;
 
   return (
-    <div className="main-header">
+    <header className="main-header">
       <span className="main-header-left">
         <span className="main-header-title">Spy Logic</span>
         <span className="main-header-icon">
@@ -43,7 +43,7 @@ function MainHeader({
             <LevelSelectionBox
               currentLevel={currentLevel}
               numCompletedLevels={numCompletedLevels}
-              setNewLevel={setNewLevel}
+              setCurrentLevel={setCurrentLevel}
             />
           </span>
         )}
@@ -60,7 +60,7 @@ function MainHeader({
           )}
         </div>
       </span>
-    </div>
+    </header>
   );
 }
 

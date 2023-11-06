@@ -6,9 +6,9 @@
   padding: 0;
   background-color: var(--overlay-background-colour);
   color: var(--overlay-text-colour);
-  width: 50%;
+  width: 50vw;
   height: fit-content;
-  max-height: 80%;
+  max-height: 80vh;
   overflow: visible;
   overflow-y: auto;
 }
@@ -21,10 +21,6 @@
 }
 .overlay p {
   font-size: 1.25rem;
-}
-
-.overlay::backdrop {
-  background-color: var(--overlay-hidden-colour);
 }
 
 .overlay > .close-button {
