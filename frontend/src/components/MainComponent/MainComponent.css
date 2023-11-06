@@ -1,0 +1,13 @@
+.main-component {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-component header {
+  height: 10%;
+}
+
+.main-component main {
+  height: 90%;
+}

@@ -45,6 +45,16 @@
   --overlay-attack-background-colour: #d6d6ff;
   --overlay-text-colour: #313131;
 
+  --handbook-background-colour: #fff;
+  --handbook-spine-background-colour: #d3d3d3;
+  --handbook-spine-separator-colour: #000;
+  --handbook-tab-selected-colour: #313131;
+  --handbook-tab-hover-colour: #31313133;
+  --handbook-text-colour: var(--handbook-tab-selected-colour);
+  --handbook-text-selected-colour: var(--handbook-background-colour);
+  --handbook-scrollbar-colour: #d9d9d9;
+  --handbook-scrollbar-hover-colour: #b9b9b9;
+
   --chat-bot-colour: #d482fb;
   --chat-bot-background: linear-gradient(var(--chat-bot-colour), #f3dbfe);
   --chat-blocked-colour: var(--main-error-colour);

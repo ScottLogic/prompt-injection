@@ -2,7 +2,7 @@
   box-sizing: border-box;
   border-radius: 0.25rem;
   border-style: solid;
-  border-width: 1px;
+  border-width: 0.0625rem;
   padding: 0.1rem;
 
   background-color: var(--main-background-colour);

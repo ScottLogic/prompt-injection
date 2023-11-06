@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
 import HandbookAttacks from "./HandbookAttacks";
-import HandbookOverlayTabs from "./HandbookOverlayTabs";
-import { HANDBOOK_PAGES, handbookPageNames } from "../../models/handbook";
+import HandbookSpine from "./HandbookSpine";
+import { HANDBOOK_PAGES } from "../../models/handbook";
 import "./HandbookOverlay.css";
-import Overlay from "../Overlay/Overlay";
 import HandbookGlossary from "./HandbookGlossary";
 import HandbookSystemRole from "./HandbookSystemRole";
 import { getLevelPrompt } from "../../service/levelService";
+import HandbookCloseIcon from "./HandbookCloseIcon";
 
 function HandbookOverlay({
   currentLevel,
@@ -46,22 +46,30 @@ function HandbookOverlay({
   }[selectedPage];
 
   return (
-    <Overlay closeOverlay={closeOverlay}>
-      <div className="handbook-overlay">
-        <HandbookOverlayTabs
-          currentLevel={currentLevel}
-          currentPage={selectedPage}
-          selectPage={setSelectedPage}
-        />
-        <div
-          className="content"
-          role="tabpanel"
-          aria-label={handbookPageNames[selectedPage]}
-        >
-          {pageContent}
-        </div>
+    <div className="handbook-overlay">
+      <button
+        className="prompt-injection-min-button close-button"
+        title="close the handbook"
+        aria-label="close the handbook"
+        onClick={closeOverlay}
+      >
+        <HandbookCloseIcon />
+      </button>
+      <HandbookSpine
+        currentLevel={currentLevel}
+        currentPage={selectedPage}
+        selectPage={setSelectedPage}
+      />
+      <div
+        id={`handbook-page-${selectedPage}`}
+        className="content"
+        role="tabpanel"
+        tabIndex={0}
+        aria-labelledby={`handbook-tab-${selectedPage}`}
+      >
+        {pageContent}
       </div>
-    </Overlay>
+    </div>
   );
 }
 

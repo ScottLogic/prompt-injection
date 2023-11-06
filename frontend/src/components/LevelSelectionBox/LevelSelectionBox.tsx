@@ -6,13 +6,13 @@ import "./LevelSelectionBox.css";
 export interface LevelSelectionBoxProps {
   currentLevel: LEVEL_NAMES;
   numCompletedLevels: number;
-  setNewLevel: (newLevel: number) => void;
+  setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }
 
 function LevelSelectionBox({
   currentLevel,
   numCompletedLevels,
-  setNewLevel,
+  setCurrentLevel,
 }: LevelSelectionBoxProps) {
   // display levels 1-3
   const displayLevels = LEVELS.filter(
@@ -21,7 +21,7 @@ function LevelSelectionBox({
 
   function handleLevelChange(newLevel: LEVEL_NAMES) {
     if (newLevel !== currentLevel) {
-      setNewLevel(newLevel);
+      setCurrentLevel(newLevel);
     }
   }
   return (
