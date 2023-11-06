@@ -2,7 +2,7 @@ import { Text, View, StyleSheet } from "@react-pdf/renderer";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "../../models/chat";
 
 const styles = StyleSheet.create({
-  chatBoxMessage: {
+  chatBoxMessageBot: {
     borderColor: "#888",
     borderRadius: 8,
     borderStyle: "solid",
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     float: "left",
     textAlign: "left",
   },
-  chatBoxMessageBot: {
+  chatBoxMessage: {
     borderColor: "#888",
     borderRadius: 8,
     borderStyle: "solid",
