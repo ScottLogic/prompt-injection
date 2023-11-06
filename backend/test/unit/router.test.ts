@@ -1,6 +1,10 @@
 import request from "supertest";
 import app from "../../src/app";
 import { LEVEL_NAMES } from "../../src/models/level";
+import { configureDefence } from "../../src/defence";
+
+jest.mock("../../src/defence");
+const mocked = configureDefence as jest.MockedFunction<typeof configureDefence>;
 
 describe("/defence/configure", () => {
   it("WHEN passed a sensible config value THEN configures defences", async () => {
@@ -16,10 +20,10 @@ describe("/defence/configure", () => {
       level: LEVEL_NAMES.SANDBOX,
     };
 
-    await request(app).post("/defence/configure").send(body).expect(200);
-    // also need to check that the session was changed to include updated config
+    mocked.mockReturnValueOnce([]);
 
-    console.log(app);
+    await request(app).post("/defence/configure").send(body).expect(200);
+    expect(mocked).toBeCalledTimes(1);
   });
 
   it("WHEN missing defenceId THEN does not configure defences", async () => {
