@@ -88,7 +88,9 @@ function ChatBox({
   }, [recalledMessageReverseIndex]);
 
   function getSuccessMessage() {
-    return `Congratulations! You have completed this level. Please click on the next level to continue.`;
+    return currentLevel < LEVEL_NAMES.LEVEL_3
+      ? `Congratulations! You have completed this level. Please click on the next level to continue.`
+      : `Congratulations, you have completed the final level of your assignment!`;
   }
 
   async function sendChatMessage() {
