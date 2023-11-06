@@ -88,6 +88,7 @@ function MainComponent({
 
     await clearChat(currentLevel);
     setMessages([]);
+    currentLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
 
     await clearEmails(currentLevel);
     setEmails([]);
@@ -107,8 +108,6 @@ function MainComponent({
 
   // for going switching level without clearing progress
   async function setNewLevel(newLevel: LEVEL_NAMES) {
-    setMessages([]);
-
     // get emails for new level from the backend
     const levelEmails = await getSentEmails(newLevel);
     setEmails(levelEmails);
@@ -117,6 +116,8 @@ function MainComponent({
     const levelChatHistory = await getChatHistory(newLevel);
 
     setMessages(levelChatHistory);
+    // add welcome message for levels only
+    newLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
 
     const defences =
       newLevel === LEVEL_NAMES.LEVEL_3
@@ -202,6 +203,14 @@ function MainComponent({
       setDefencesToShow(newDefences);
     }
     return success;
+  }
+
+  function addWelcomeMessage() {
+    const welcomeMessage: ChatMessage = {
+      message: `Hello! I'm ScottBruBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
+      type: CHAT_MESSAGE_TYPE.BOT,
+    };
+    setMessages((messages: ChatMessage[]) => [welcomeMessage, ...messages]);
   }
 
   return (
