@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
 import HandbookAttacks from "./HandbookAttacks";
 import HandbookSpine from "./HandbookSpine";
-import { HANDBOOK_PAGES, handbookPageNames } from "../../models/handbook";
+import { HANDBOOK_PAGES } from "../../models/handbook";
 import "./HandbookOverlay.css";
 import HandbookGlossary from "./HandbookGlossary";
 import HandbookSystemRole from "./HandbookSystemRole";
@@ -61,10 +61,11 @@ function HandbookOverlay({
         selectPage={setSelectedPage}
       />
       <div
-        tabIndex={0}
+        id={`handbook-page-${selectedPage}`}
         className="content"
         role="tabpanel"
-        aria-label={handbookPageNames[selectedPage]}
+        tabIndex={0}
+        aria-labelledby={`handbook-tab-${selectedPage}`}
       >
         {pageContent}
       </div>

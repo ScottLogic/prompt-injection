@@ -26,7 +26,9 @@ function HandbookSpine({
       {tabs.map((page) => (
         <button
           key={page}
+          id={`handbook-tab-${page}`}
           role="tab"
+          aria-controls={`handbook-page-${page}`}
           aria-selected={page === currentPage}
           onClick={() => {
             selectPage(page);
