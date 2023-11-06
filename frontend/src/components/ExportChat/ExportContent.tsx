@@ -70,7 +70,7 @@ function ExportContent({
     if (currentLevel === LEVEL_NAMES.SANDBOX) {
       return `${title} (sandbox mode)`;
     } else {
-      return `${title} (level ${currentLevel})`;
+      return `${title} (level ${currentLevel + 1})`;
     }
   }
 
