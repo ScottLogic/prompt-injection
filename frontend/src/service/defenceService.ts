@@ -1,4 +1,9 @@
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "../models/defence";
+import {
+  DEFENCE_TYPES,
+  DefenceConfig,
+  DefenceInfo,
+  DefenceResetResponse,
+} from "../models/defence";
 import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
@@ -53,6 +58,22 @@ async function configureDefence(
   return response.status === 200;
 }
 
+async function resetDefenceConfig(
+  defenceId: string,
+  configId: string
+): Promise<DefenceResetResponse> {
+  const response = await sendRequest(
+    `${PATH}resetConfig`,
+    "POST",
+    {
+      "Content-Type": "application/json",
+    },
+    JSON.stringify({ defenceId, configId })
+  );
+  const data = (await response.json()) as DefenceResetResponse;
+  return data;
+}
+
 function validatePositiveNumberConfig(config: string) {
   // config is a number greater than zero
   return !isNaN(Number(config)) && Number(config) > 0;
@@ -102,6 +123,7 @@ export {
   activateDefence,
   deactivateDefence,
   configureDefence,
+  resetDefenceConfig,
   resetActiveDefences,
   validateDefence,
 };

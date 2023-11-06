@@ -12,6 +12,7 @@ const jestConfig: JestConfigWithTsJest = {
     ],
   },
   silent: true,
+  setupFiles: ["<rootDir>/test/setupEnvVars.ts"],
 };
 
 export default jestConfig;
