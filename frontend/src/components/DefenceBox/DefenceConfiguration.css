@@ -2,7 +2,7 @@
   width: 100%;
 }
 
-.defence-configuration-header {
+.defence-configuration .header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.25rem;

@@ -26,10 +26,13 @@ function DefenceConfiguration({
 
   return (
     <div className="defence-configuration">
-      <div className="defence-configuration-header">
+      <div className="header">
         <span>{config.name}: </span>
-        <ThemedButton onClick={() => void resetConfiguration()}>
-          reset to default
+        <ThemedButton
+          onClick={() => void resetConfiguration()}
+          title="reset to default"
+        >
+          reset
         </ThemedButton>
       </div>
       <DefenceConfigurationInput
