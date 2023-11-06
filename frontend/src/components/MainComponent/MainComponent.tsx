@@ -68,7 +68,7 @@ function MainComponent({
   }
 
   useEffect(() => {
-    console.log(`current level changed to ${currentLevel}`);
+    console.log(`current level changed to ${currentLevel + 1}`);
     void setNewLevel(currentLevel);
   }, [currentLevel]);
 
