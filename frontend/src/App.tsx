@@ -77,8 +77,8 @@ function App() {
     }
   }
 
-  function incrementNumCompletedLevels() {
-    setNumCompletedLevels(numCompletedLevels + 1);
+  function incrementNumCompletedLevels(completedLevel: LEVEL_NAMES) {
+    setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
   }
 
   // called on mount

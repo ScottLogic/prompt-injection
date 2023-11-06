@@ -43,7 +43,7 @@ function MainBody({
     config: DefenceConfig[]
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
-  incrementNumCompletedLevels: () => void;
+  incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
   openInfoOverlay: () => void;
   openLevelsCompleteOverlay: () => void;
   openWelcomeOverlay: () => void;
