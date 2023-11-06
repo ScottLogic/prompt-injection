@@ -6,8 +6,9 @@ import {
   configureDefence,
   transformMessage,
   detectTriggeredDefences,
-  getInitialDefences,
+  resetDefenceConfig,
 } from "./defence";
+import { defaultDefences } from "./defaultDefences";
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
@@ -35,6 +36,8 @@ import {
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
+import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
+import { DefenceConfig } from "./models/defence";
 
 const router = express.Router();
 
@@ -43,7 +46,7 @@ router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const level = req.body.level;
-  if (defenceId && level) {
+  if (defenceId && level !== undefined) {
     // activate the defence
     req.session.levelState[level].defences = activateDefence(
       defenceId,
@@ -61,7 +64,7 @@ router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const level = req.body.level;
-  if (defenceId && level) {
+  if (defenceId && level !== undefined) {
     // deactivate the defence
     req.session.levelState[level].defences = deactivateDefence(
       defenceId,
@@ -74,24 +77,56 @@ router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
   }
 });
 
+function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
+  const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
+
+  const allValuesWithinLimit = config.every(
+    (c) => c.value.length <= CONFIG_VALUE_CHARACTER_LIMIT
+  );
+  return !allValuesWithinLimit;
+}
+
+function sendErrorResponse(
+  res: express.Response,
+  statusCode: number,
+  errorMessage: string
+) {
+  res.statusCode = statusCode;
+  res.send(errorMessage);
+}
+
 // Configure a defence
 router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
   // id of the defence
   const defenceId = req.body.defenceId;
   const config = req.body.config;
   const level = req.body.level;
-  if (
-    defenceId &&
-    config &&
-    level !== undefined &&
-    level >= LEVEL_NAMES.LEVEL_1
-  ) {
-    // configure the defence
-    req.session.levelState[level].defences = configureDefence(
-      defenceId,
-      req.session.levelState[level].defences,
-      config
-    );
+
+  if (!defenceId || !config || level === undefined) {
+    sendErrorResponse(res, 400, "Missing defenceId, config or level");
+    return;
+  }
+
+  if (configValueExceedsCharacterLimit(config)) {
+    sendErrorResponse(res, 400, "Config value exceeds character limit");
+    return;
+  }
+
+  // configure the defence
+  req.session.levelState[level].defences = configureDefence(
+    defenceId,
+    req.session.levelState[level].defences,
+    config
+  );
+  res.send();
+});
+
+// reset the active defences
+router.post("/defence/reset", (req: DefenceResetRequest, res) => {
+  const level = req.body.level;
+  if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
+    req.session.levelState[level].defences = defaultDefences;
+    console.debug("Defences reset");
     res.send();
   } else {
     res.statusCode = 400;
@@ -99,13 +134,28 @@ router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
   }
 });
 
-// reset the active defences
-router.post("/defence/reset", (req: DefenceResetRequest, res) => {
-  const level = req.body.level;
-  if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
-    req.session.levelState[level].defences = getInitialDefences();
-    console.debug("Defences reset");
-    res.send();
+// reset one defence config and return the new config
+router.post("/defence/resetConfig", (req: DefenceConfigResetRequest, res) => {
+  const defenceId = req.body.defenceId;
+  const configId = req.body.configId;
+  const level = LEVEL_NAMES.SANDBOX; //configuration only available in sandbox
+  if (defenceId && configId) {
+    req.session.levelState[level].defences = resetDefenceConfig(
+      defenceId,
+      configId,
+      req.session.levelState[level].defences
+    );
+    const updatedDefenceConfig: DefenceConfig | undefined =
+      req.session.levelState[level].defences
+        .find((defence) => defence.id === defenceId)
+        ?.config.find((config) => config.id === configId);
+
+    if (updatedDefenceConfig) {
+      res.send(updatedDefenceConfig);
+    } else {
+      res.statusCode = 400;
+      res.send();
+    }
   } else {
     res.statusCode = 400;
     res.send();

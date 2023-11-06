@@ -2,8 +2,8 @@ import {
   activateDefence,
   configureDefence,
   deactivateDefence,
+  resetDefenceConfig,
   detectTriggeredDefences,
-  getInitialDefences,
   getQAPrePromptFromConfig,
   getSystemRole,
   isDefenceActive,
@@ -12,6 +12,7 @@ import {
   getPromptInjectionEvalPrePromptFromConfig,
   getMaliciousPromptEvalPrePromptFromConfig,
 } from "../../src/defence";
+import { defaultDefences } from "../../src/defaultDefences";
 import * as langchain from "../../src/langchain";
 import { DEFENCE_TYPES, DefenceConfig } from "../../src/models/defence";
 import { LEVEL_NAMES } from "../../src/models/level";
@@ -28,9 +29,6 @@ import {
 jest.mock("../../src/langchain");
 
 beforeEach(() => {
-  // clear environment variables
-  process.env = {};
-
   jest
     .mocked(langchain.queryPromptEvaluationModel)
     .mockResolvedValue({ isMalicious: false, reason: "" });
@@ -38,21 +36,21 @@ beforeEach(() => {
 
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {
   const defence = DEFENCE_TYPES.SYSTEM_ROLE;
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const updatedActiveDefences = activateDefence(defence, defences);
   expect(isDefenceActive(defence, updatedActiveDefences)).toBe(true);
 });
 
 test("GIVEN defence is active WHEN activating defence THEN defence is active", () => {
   const defence = DEFENCE_TYPES.SYSTEM_ROLE;
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const updatedActiveDefences = activateDefence(defence, defences);
   expect(isDefenceActive(defence, updatedActiveDefences)).toBe(true);
 });
 
 test("GIVEN defence is active WHEN deactivating defence THEN defence is not active", () => {
   const defence = DEFENCE_TYPES.SYSTEM_ROLE;
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   activateDefence(defence, defences);
   const updatedActiveDefences = deactivateDefence(defence, defences);
   expect(updatedActiveDefences).not.toContain(defence);
@@ -60,14 +58,14 @@ test("GIVEN defence is active WHEN deactivating defence THEN defence is not acti
 
 test("GIVEN defence is not active WHEN deactivating defence THEN defence is not active", () => {
   const defence = DEFENCE_TYPES.SYSTEM_ROLE;
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const updatedActiveDefences = deactivateDefence(defence, defences);
   expect(updatedActiveDefences).not.toContain(defence);
 });
 
 test("GIVEN defence is active WHEN checking if defence is active THEN return true", () => {
   const defence = DEFENCE_TYPES.SYSTEM_ROLE;
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const updatedDefences = activateDefence(defence, defences);
   const isActive = isDefenceActive(defence, updatedDefences);
   expect(isActive).toBe(true);
@@ -75,55 +73,49 @@ test("GIVEN defence is active WHEN checking if defence is active THEN return tru
 
 test("GIVEN defence is not active WHEN checking if defence is active THEN return false", () => {
   const defence = DEFENCE_TYPES.SYSTEM_ROLE;
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const isActive = isDefenceActive(defence, defences);
   expect(isActive).toBe(false);
 });
 
 test("GIVEN no defences are active WHEN transforming message THEN message is not transformed", () => {
   const message = "Hello";
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const transformedMessage = transformMessage(message, defences);
   expect(transformedMessage).toBe(message);
 });
 
 test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming message THEN message is transformed", () => {
-  // set RSE prompt
-  process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT = "RSE_PRE_PROMPT ";
-  // set RSE length
-  process.env.RANDOM_SEQ_ENCLOSURE_LENGTH = String(20);
-
   const message = "Hello";
   // activate RSE defence
   const defences = activateDefence(
     DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-    getInitialDefences()
+    defaultDefences
   );
 
   // regex to match the transformed message with
   const regex = new RegExp(
-    `^${process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT}(.{${process.env.RANDOM_SEQ_ENCLOSURE_LENGTH}}) {{ ${message} }} (.{${process.env.RANDOM_SEQ_ENCLOSURE_LENGTH}})\\. $`
+    `^RSE_PRE_PROMPT (.{20}) {{ ${message} }} (.{20})\\. $`
   );
+
   const transformedMessage = transformMessage(message, defences);
   // check the transformed message matches the regex
   const res = transformedMessage.match(regex);
+
   // expect there to be a match
   expect(res).not.toBeNull();
 
   // expect there to be 3 groups
   expect(res?.length).toEqual(3);
   // expect the random sequence to have the correct length
-  expect(res?.[1].length).toEqual(
-    Number(process.env.RANDOM_SEQ_ENCLOSURE_LENGTH)
-  );
+  expect(res?.[1].length).toEqual(20);
   // expect the message to be surrounded by the random sequence
   expect(res?.[1]).toEqual(res?.[2]);
 });
 
 test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed", () => {
   const message = "Hello";
-  process.env.XML_TAGGING_PRE_PROMPT = "XML_PRE_PROMPT: ";
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   // activate XML_TAGGING defence
   const updatedDefences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
   const transformedMessage = transformMessage(message, updatedDefences);
@@ -136,8 +128,7 @@ test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
 test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN transforming message THEN message is transformed AND transformed message escapes XML tags", () => {
   const message = "<>&'\"";
   const escapedMessage = "&lt;&gt;&amp;&apos;&quot;";
-  process.env.XML_TAGGING_PRE_PROMPT = "XML_PRE_PROMPT: ";
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   // activate XML_TAGGING defence
   const updatedDefences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
   const transformedMessage = transformMessage(message, updatedDefences);
@@ -149,7 +140,7 @@ test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
 
 test("GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered", async () => {
   const message = "Hello";
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const defenceReport = await detectTriggeredDefences(message, defences);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
@@ -165,7 +156,7 @@ test(
     // activate and configure CHARACTER_LIMIT defence
     const defences = configureDefence(
       DEFENCE_TYPES.CHARACTER_LIMIT,
-      activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, getInitialDefences()),
+      activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defaultDefences),
       [{ id: "maxMessageLength", value: String(3) }]
     );
     const defenceReport = await detectTriggeredDefences(message, defences);
@@ -186,7 +177,7 @@ test(
     // activate and configure CHARACTER_LIMIT defence
     const defences = configureDefence(
       DEFENCE_TYPES.CHARACTER_LIMIT,
-      activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, getInitialDefences()),
+      activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defaultDefences),
       [{ id: "maxMessageLength", value: String(280) }]
     );
     const defenceReport = await detectTriggeredDefences(message, defences);
@@ -205,7 +196,7 @@ test(
     // configure CHARACTER_LIMIT defence
     const defences = configureDefence(
       DEFENCE_TYPES.CHARACTER_LIMIT,
-      getInitialDefences(),
+      defaultDefences,
       [
         {
           id: "maxMessageLength",
@@ -225,10 +216,7 @@ test(
 test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is triggered", async () => {
   const message = "<Hello>";
   // activate XML_TAGGING defence
-  const defences = activateDefence(
-    DEFENCE_TYPES.XML_TAGGING,
-    getInitialDefences()
-  );
+  const defences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defaultDefences);
   const defenceReport = await detectTriggeredDefences(message, defences);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
@@ -237,7 +225,7 @@ test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN det
 
 test("GIVEN XML_TAGGING defence is inactive AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is alerted", async () => {
   const message = "<Hello>";
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const defenceReport = await detectTriggeredDefences(message, defences);
   expect(defenceReport.blockedReason).toBe(null);
   expect(defenceReport.isBlocked).toBe(false);
@@ -278,7 +266,7 @@ test("GIVEN setting max message length WHEN configuring defence THEN defence is 
     id: "maxMessageLength",
     value: String(10),
   };
-  const defences = configureDefence(defence, getInitialDefences(), [config]);
+  const defences = configureDefence(defence, defaultDefences, [config]);
   const matchingDefence = defences.find((d) => d.id === defence);
   expect(matchingDefence).toBeDefined();
   const matchingDefenceConfig = matchingDefence?.config.find(
@@ -289,19 +277,19 @@ test("GIVEN setting max message length WHEN configuring defence THEN defence is 
 });
 
 test("GIVEN system role has not been configured WHEN getting system role THEN return default system role", () => {
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const systemRole = getSystemRole(defences);
   expect(systemRole).toBe(systemRoleDefault);
 });
 
 test("GIVEN system role has been configured WHEN getting system role THEN return system role", () => {
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const systemRole = getSystemRole(defences);
   expect(systemRole).toBe(systemRoleDefault);
 });
 
 test("GIVEN a new system role has been set WHEN getting system role THEN return new system role", () => {
-  const initialDefences = getInitialDefences();
+  const initialDefences = defaultDefences;
   let systemRole = getSystemRole(initialDefences);
   expect(systemRole).toBe(systemRoleDefault);
 
@@ -315,7 +303,7 @@ test("GIVEN a new system role has been set WHEN getting system role THEN return 
 });
 
 test("GIVEN system roles have been set for each level WHEN getting system roles THEN the right system role is returned per level", () => {
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const systemRole_Level1 = getSystemRole(defences, LEVEL_NAMES.LEVEL_1);
   const systemRole_Level2 = getSystemRole(defences, LEVEL_NAMES.LEVEL_2);
   const systemRole_Level3 = getSystemRole(defences, LEVEL_NAMES.LEVEL_3);
@@ -325,7 +313,7 @@ test("GIVEN system roles have been set for each level WHEN getting system roles 
 });
 
 test("GIVEN QA LLM instructions have not been configured WHEN getting QA LLM instructions THEN return default secure prompt", () => {
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const qaLlmInstructions = getQAPrePromptFromConfig(defences);
   expect(qaLlmInstructions).toBe(qAPrePromptSecure);
 });
@@ -334,7 +322,7 @@ test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instruc
   const newQaLlmInstructions = "new QA LLM instructions";
   const defences = configureDefence(
     DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
-    getInitialDefences(),
+    defaultDefences,
     [{ id: "prePrompt", value: newQaLlmInstructions }]
   );
   const qaLlmInstructions = getQAPrePromptFromConfig(defences);
@@ -342,7 +330,7 @@ test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instruc
 });
 
 test("GIVEN Eval LLM instructions for prompt injection have not been configured WHEN getting prompt injection eval instructions THEN return default pre-prompt", () => {
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const configPromptInjectionEvalInstructions =
     getPromptInjectionEvalPrePromptFromConfig(defences);
   expect(configPromptInjectionEvalInstructions).toBe(
@@ -355,7 +343,7 @@ test("GIVEN Eval LLM instructions for prompt injection have been configured WHEN
     "new prompt injection eval instructions";
   const defences = configureDefence(
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    getInitialDefences(),
+    defaultDefences,
     [
       {
         id: "prompt-injection-evaluator-prompt",
@@ -371,7 +359,7 @@ test("GIVEN Eval LLM instructions for prompt injection have been configured WHEN
 });
 
 test("GIVEN Eval LLM instructions for malicious prompts have not been configured WHEN getting malicious prompt eval instructions THEN return default pre-prompt", () => {
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   const configMaliciousPromptEvalInstructions =
     getMaliciousPromptEvalPrePromptFromConfig(defences);
   expect(configMaliciousPromptEvalInstructions).toBe(
@@ -384,7 +372,7 @@ test("GIVEN Eval LLM instructions for malicious prompts have been configured WHE
     "new malicious prompt eval instructions";
   const defences = configureDefence(
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    getInitialDefences(),
+    defaultDefences,
     [
       {
         id: "malicious-prompt-evaluator-prompt",
@@ -401,7 +389,7 @@ test("GIVEN Eval LLM instructions for malicious prompts have been configured WHE
 
 test("GIVEN setting email whitelist WHEN configuring defence THEN defence is configured", () => {
   const defence = DEFENCE_TYPES.EMAIL_WHITELIST;
-  const defences = getInitialDefences();
+  const defences = defaultDefences;
   // configure EMAIL_WHITELIST defence
   configureDefence(defence, defences, [
     {
@@ -410,7 +398,10 @@ test("GIVEN setting email whitelist WHEN configuring defence THEN defence is con
     },
   ]);
   const config = [
-    { id: "whitelist", value: "someone@example.com,someone_else@example.com" },
+    {
+      id: "whitelist",
+      value: "someone@example.com,someone_else@example.com",
+    },
   ];
   const updatedDefences = configureDefence(defence, defences, config);
   const matchingDefence = updatedDefences.find((d) => d.id === defence);
@@ -435,7 +426,7 @@ test("GIVEN user configures random sequence enclosure WHEN configuring defence T
     { id: "prePrompt", value: newPrePrompt },
   ];
   // configure RSE length
-  const defences = configureDefence(defence, getInitialDefences(), config);
+  const defences = configureDefence(defence, defaultDefences, config);
   // expect the RSE length to be updated
   const matchingDefence = defences.find((d) => d.id === defence);
   expect(matchingDefence).toBeTruthy();
@@ -455,4 +446,74 @@ test("GIVEN user configures random sequence enclosure WHEN configuring defence T
       expect(matchingDefenceConfig.value).toBe(config[1].value);
     }
   }
+});
+
+test("GIVEN user has configured defence WHEN resetting defence config THEN defence config is reset", () => {
+  const defence = DEFENCE_TYPES.SYSTEM_ROLE;
+  let defences = defaultDefences;
+
+  // configure defence
+  const config = [
+    {
+      id: "systemRole",
+      value: "new system role",
+    },
+  ];
+  defences = configureDefence(defence, defences, config);
+  // reset defence config
+  defences = resetDefenceConfig(
+    DEFENCE_TYPES.SYSTEM_ROLE,
+    "systemRole",
+    defences
+  );
+  // expect defence config to be reset
+  const matchingDefence = defences.find((d) => d.id === defence);
+  expect(matchingDefence).toBeTruthy();
+  expect(matchingDefence?.config[0].value).toBe(systemRoleDefault);
+});
+
+test("GIVEN user has configured two defence WHEN resetting one defence config THEN that defence config is reset and the other stays same", () => {
+  let defences = defaultDefences;
+  // configure defence
+  const sysRoleConfig = [
+    {
+      id: "systemRole",
+      value: "new system role",
+    },
+  ];
+  const characterLimitConfig = [
+    {
+      id: "maxMessageLength",
+      value: String(10),
+    },
+  ];
+
+  defences = configureDefence(
+    DEFENCE_TYPES.SYSTEM_ROLE,
+    defences,
+    sysRoleConfig
+  );
+  defences = configureDefence(
+    DEFENCE_TYPES.CHARACTER_LIMIT,
+    defences,
+    characterLimitConfig
+  );
+
+  defences = resetDefenceConfig(
+    DEFENCE_TYPES.SYSTEM_ROLE,
+    "systemRole",
+    defences
+  );
+  // expect defence config to be reset
+  const matchingSysRoleDefence = defences.find(
+    (d) => d.id === DEFENCE_TYPES.SYSTEM_ROLE && d.config[0].id === "systemRole"
+  );
+  expect(matchingSysRoleDefence).toBeTruthy();
+  expect(matchingSysRoleDefence?.config[0].value).toBe(systemRoleDefault);
+
+  const matchingCharacterLimitDefence = defences.find(
+    (d) => d.id === DEFENCE_TYPES.CHARACTER_LIMIT
+  );
+  expect(matchingCharacterLimitDefence).toBeTruthy();
+  expect(matchingCharacterLimitDefence?.config[0].value).toBe(String(10));
 });
