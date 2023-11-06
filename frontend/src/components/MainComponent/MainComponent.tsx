@@ -68,7 +68,11 @@ function MainComponent({
   }
 
   useEffect(() => {
-    console.log(`current level changed to ${currentLevel + 1}`);
+    console.log(
+      `current level changed to ${
+        currentLevel === LEVEL_NAMES.SANDBOX ? "sandbox" : currentLevel + 1
+      }`
+    );
     void setNewLevel(currentLevel);
   }, [currentLevel]);
 
