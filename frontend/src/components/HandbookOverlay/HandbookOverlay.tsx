@@ -61,6 +61,7 @@ function HandbookOverlay({
         selectPage={setSelectedPage}
       />
       <div
+        tabIndex={0}
         className="content"
         role="tabpanel"
         aria-label={handbookPageNames[selectedPage]}
