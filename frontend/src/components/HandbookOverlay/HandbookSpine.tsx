@@ -15,11 +15,11 @@ function HandbookSpine({
   const tabs =
     currentLevel > LEVEL_NAMES.LEVEL_1 && currentLevel < LEVEL_NAMES.SANDBOX
       ? [
-          HANDBOOK_PAGES.GLOSSARY,
           HANDBOOK_PAGES.ATTACKS,
           HANDBOOK_PAGES.SYSTEM_ROLE,
+          HANDBOOK_PAGES.GLOSSARY,
         ]
-      : [HANDBOOK_PAGES.GLOSSARY, HANDBOOK_PAGES.ATTACKS];
+      : [HANDBOOK_PAGES.ATTACKS, HANDBOOK_PAGES.GLOSSARY];
 
   return (
     <div className="handbook-spine" role="tablist">
