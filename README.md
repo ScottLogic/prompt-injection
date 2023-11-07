@@ -1,17 +1,29 @@
 # prompt-injection
 
-Application which investigates defensive measures against prompt injection attacks on an LLM, with a focus on the exposure of external tools.
+Welcome to the Scott Logic prompt injection open source project! 
+As generative AI and LLMs become more prevalent, it becomes more important to learn about the dangers of prompt injection.
+This project aims to teach people about prompt injection attacks that can be used on generative AI, and how to defend against such attacks.
 
-## Install
+This project is split into two parts:
 
-### Backend
+#### Story mode
+
+Go undercover and use prompt injection attacks on ScottBrewBot, a clever but flawed generative AI bot. Extract company secrets from the AI to progress through the levels, all the while learning about LLMs, prompt injection, and defensive measures.
+
+#### Sandbox mode
+
+Activate and configure a number of different prompt injection defence measures to create your own security system. Then talk to the AI and try to crack it!
+
+## Installation
+
+#### Backend
 
 ```
 cd backend/
 npm install
 ```
 
-### Frontend
+#### Frontend
 
 ```
 cd frontend/
@@ -59,18 +71,18 @@ npm run format
 ```
 in both the backend and frontend directories.
 
-## Deploy
+## Deployment
 
 This project includes a VS Code launch file, so the project can be deployed from there if VS Code is used. Otherwise the code can be run manually:
 
-### Backend
+#### Backend
 
 ```
 cd backend/
 npm run dev
 ```
 
-### Frontend
+#### Frontend
 
 ```
 cd frontend/
@@ -79,14 +91,14 @@ npm run dev
 
 ## Test
 
-### Backend
+#### Backend
 
 ```
 cd backend/
 npm run test
 ```
 
-### Frontend
+#### Frontend
 
 ```
 cd frontend/
@@ -108,7 +120,7 @@ The current CombinedFont.ttf contains:
 * NotoSerifGurmukhi-Regular.ttf
 * NotoSansHebrew-Regular.ttf
 
-## Contribute
+## Contributing
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
