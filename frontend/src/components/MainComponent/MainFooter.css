@@ -25,6 +25,7 @@
   text-decoration: underline;
 }
 
-.main-footer .links .link-separator {
+.main-footer .links a:not(:last-child)::after {
+  content: "|";
   padding: 0 0.75rem;
 }
