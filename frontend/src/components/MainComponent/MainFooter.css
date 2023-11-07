@@ -1,6 +1,6 @@
 .main-footer {
   width: 100%;
-  background-color: #444444;
+  background-color: var(--footer-background-colour);
   display: flex;
   flex-direction: row;
   align-items: center;
