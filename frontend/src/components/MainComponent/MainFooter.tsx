@@ -4,7 +4,9 @@ import ScottLogicLogo from "./ScottLogicLogo";
 function MainFooter() {
   return (
     <footer className="main-footer">
-      <ScottLogicLogo />
+      <a href="https://www.scottlogic.com/">
+        <ScottLogicLogo />
+      </a>
     </footer>
   );
 }
