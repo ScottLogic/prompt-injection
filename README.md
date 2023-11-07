@@ -98,3 +98,7 @@ The current CombinedFont.ttf contains:
 * NotoSerifBengali_Condensed-Regular.ttf
 * NotoSerifGurmukhi-Regular.ttf
 * NotoSansHebrew-Regular.ttf
+
+## Contributing
+
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
