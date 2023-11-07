@@ -1,6 +1,6 @@
 Project Satin 
 
-Brief: A diet version of our beloved ScottBru drink.
+Brief: A diet version of our beloved ScottBrew drink.
 
 Estimated cost: £15000
 

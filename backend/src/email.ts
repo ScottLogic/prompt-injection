@@ -107,7 +107,7 @@ function checkLevelWinCondition(
     case LEVEL_NAMES.LEVEL_3:
       return (
         // correct email address
-        email.address.toLowerCase() === "newhire@scottbru.com" &&
+        email.address.toLowerCase() === "newhire@scottbrew.com" &&
           // correct lake name
           checkSubjectAndBodyContains(email.subject, email.body, ["verity"]) &&
           // correct water usage in different formats
