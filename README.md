@@ -99,8 +99,10 @@ The current CombinedFont.ttf contains:
 * NotoSerifGurmukhi-Regular.ttf
 * NotoSansHebrew-Regular.ttf
 
-## Contributing
+## Contribute
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
-Please read the [code of conduct](CODE_OF_CONDUCT.md) before contributing.
+Thank you for considering contributing to this open source project!
+
+Please read the our [contributing guide](CONTRIBUTING.md) and our [code of conduct](CODE_OF_CONDUCT.md) before contributing.
