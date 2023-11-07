@@ -8,14 +8,6 @@ function MainFooter() {
   }
 
   const links: link[] = [
-    // {
-    //   text: "Description & Copyright",
-    //   url: "",
-    // },
-    // {
-    //   text: "Find Out More",
-    //   url: "",
-    // },
     {
       text: "GitHub",
       url: "https://github.com/ScottLogic/prompt-injection",
