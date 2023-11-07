@@ -84,15 +84,15 @@ function ModelSelection() {
             <b> {modelInUse} </b>
           </p>
         ) : (
-          <div>
-            {modelInUse !== null ? (
-              <p>
+          <p>
+            {modelInUse ? (
+              <>
                 You are chatting to model: <b>{modelInUse}</b>
-              </p>
+              </>
             ) : (
-              <p>You are not connected to a model.</p>
+              "You are not connected to a model."
             )}
-          </div>
+          </p>
         )}
       </div>
     </div>
