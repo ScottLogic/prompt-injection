@@ -9,7 +9,7 @@ function MainFooter() {
 
   const links: link[] = [
     {
-      text: "license",
+      text: "License",
       url: "https://opensource.org/license/mit/",
     },
     {
@@ -25,7 +25,7 @@ function MainFooter() {
       </a>
       <div className="links">
         {links.map((link) => (
-          <a key={link.text} href={link.url}>
+          <a key={link.text} href={link.url} rel="external">
             {`[${link.text}]`}
           </a>
         ))}
