@@ -33,50 +33,72 @@ npm install
 ```
 
 ## Setup
-### Environment file
+
+### Environment variables
+
 #### Backend
+
 1. Copy the example environment file [.env.example](backend/.env.example) in the backend directory and rename it to `.env`.
 1. Replace the `OPENAI_API_KEY` value in the `.env` file with your [OpenAI API key](https://platform.openai.com/account/api-keys).
 1. Replace the `SESSION_SECRET` value with a [random UUID](https://www.uuidgenerator.net/).
 
 #### Frontend
+
 1. Copy the example environment file [.env.example](frontend/.env.example) in the frontend directory and rename it to `.env`.
 1. Replace the `VITE_BACKEND_URL` value with the backend endpoint.
 
-## Development
-### Linting and formatting
-
-The project is configured to be linted and formatted on both the backend and frontend. 
-
-If you are using VS Code, we recommend doing the following:
-1. Get the prettier-eslint extension.
-2. Set the default formatter to the prettier-eslint one.
-3. Configure VS Code to format your documents on save.
-
-To manually lint and format you can do:
-```bash
-npm run lint
-npm run format
-```
-in both the backend and frontend directories.
-
-## Deployment
-
-This project includes a VS Code launch file, so the project can be deployed from there if VS Code is used. Otherwise the code can be run manually:
+## Run
 
 ### Backend
+
+Run in a command-line shell:
 
 ```bash
 cd backend/
 npm run dev
 ```
 
+Alternatively, you can run using Docker:
+
+```bash
+cd backend/
+# Start the server
+npm run api:start
+# See the logs
+npm run api:logs
+# Stop the server
+npm run api:stop
+```
+
 ### Frontend
+
+We are using [Vite](https://vitejs.dev/) to bootstrap, build and run our UI locally.
 
 ```bash
 cd frontend/
 npm run dev
 ```
+
+Note that this project includes a VS Code launch file, to allow running directly within the IDE.
+
+## Development
+
+### Linting and formatting
+
+The project is configured to be linted and formatted on both the backend and frontend.
+
+If you are using VS Code, we recommend doing the following:
+1. Get the prettier-eslint extension.
+2. Set the default formatter to the prettier-eslint one.
+3. Configure VS Code to format your documents on save.
+
+To manually lint and format, use the following:
+
+```bash
+npm run lint
+npm run format
+```
+in both the backend and frontend directories.
 
 ## Test
 
