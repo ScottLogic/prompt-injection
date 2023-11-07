@@ -8,9 +8,9 @@ import LoadingButton from "../ThemedButtons/LoadingButton";
 // return a drop down menu with the models
 function ModelSelection() {
   // model currently selected in the dropdown
-  const [selectedModel, setSelectedModel] = useState(CHAT_MODELS.GPT_3_5_TURBO);
+  const [selectedModel, setSelectedModel] = useState<CHAT_MODELS | null>(null);
   // model in use by the app
-  const [modelInUse, setModelInUse] = useState(CHAT_MODELS.GPT_3_5_TURBO);
+  const [modelInUse, setModelInUse] = useState<CHAT_MODELS | null>(null);
 
   const [errorChangingModel, setErrorChangingModel] = useState(false);
 
@@ -18,7 +18,7 @@ function ModelSelection() {
 
   // handle button click to log the selected model
   async function submitSelectedModel() {
-    if (!isSettingModel) {
+    if (!isSettingModel && selectedModel) {
       const currentSelectedModel = selectedModel;
       console.log(`selected model: ${currentSelectedModel}`);
       setIsSettingModel(true);
@@ -56,7 +56,7 @@ function ModelSelection() {
         <div className="select-wrapper">
           <select
             aria-label="model-select"
-            value={selectedModel}
+            value={selectedModel ?? 0} // default to the first model
             onChange={(e) => {
               setSelectedModel(e.target.value as CHAT_MODELS);
             }}
@@ -84,9 +84,15 @@ function ModelSelection() {
             <b> {modelInUse} </b>
           </p>
         ) : (
-          <p>
-            You are chatting to model: <b> {modelInUse}</b>
-          </p>
+          <div>
+            {modelInUse !== null ? (
+              <p>
+                You are chatting to model: <b>{modelInUse}</b>
+              </p>
+            ) : (
+              <p>You are not connected to a model.</p>
+            )}
+          </div>
         )}
       </div>
     </div>
