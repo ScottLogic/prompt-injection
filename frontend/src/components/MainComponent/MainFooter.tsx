@@ -9,6 +9,10 @@ function MainFooter() {
 
   const links: link[] = [
     {
+      text: "license",
+      url: "https://opensource.org/license/mit/",
+    },
+    {
       text: "GitHub",
       url: "https://github.com/ScottLogic/prompt-injection",
     },
