@@ -68,11 +68,6 @@ function MainComponent({
   }
 
   useEffect(() => {
-    console.log(
-      `current level changed to ${
-        currentLevel === LEVEL_NAMES.SANDBOX ? "sandbox" : currentLevel + 1
-      }`
-    );
     void setNewLevel(currentLevel);
   }, [currentLevel]);
 
@@ -88,8 +83,6 @@ function MainComponent({
 
   // for clearing level progress
   async function resetLevel() {
-    console.log(`resetting level ${currentLevel}`);
-
     await clearChat(currentLevel);
     setMessages([]);
     currentLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
