@@ -279,21 +279,32 @@ async function chatGptChatCompletion(
   const startTime = new Date().getTime();
   console.debug("Calling OpenAI chat completion...");
 
-  const chat_completion = await openai.createChatCompletion({
-    model: chatModel.id,
-    temperature: chatModel.configuration.temperature,
-    top_p: chatModel.configuration.topP,
-    frequency_penalty: chatModel.configuration.frequencyPenalty,
-    presence_penalty: chatModel.configuration.presencePenalty,
-    messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
-    functions: chatGptFunctions,
-  });
-  // log the time taken
-  const endTime = new Date().getTime();
-  console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
+  try {
+    const chat_completion = await openai.createChatCompletion({
+      model: chatModel.id,
+      temperature: chatModel.configuration.temperature,
+      top_p: chatModel.configuration.topP,
+      frequency_penalty: chatModel.configuration.frequencyPenalty,
+      presence_penalty: chatModel.configuration.presencePenalty,
+      messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
+      functions: chatGptFunctions,
+    });
 
-  // get the reply
-  return chat_completion.data.choices[0].message ?? null;
+    // log the time taken
+    const endTime = new Date().getTime();
+    console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
+
+    // get the reply
+    return chat_completion.data.choices[0].message ?? null;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error calling createChatCompletion: ", error.message);
+    }
+    return {
+      role: "assistant",
+      content: "Failed to get reply",
+    } as ChatCompletionRequestMessage;
+  }
 }
 
 // estimate the tokens on a single completion
