@@ -1,6 +1,10 @@
 function ScottLogicLogo() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2277.3285 504.8418">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 2277.3285 504.8418"
+      aria-hidden
+    >
       <polygon
         points="114.7167 12.7725 .001 0 14.0857 125.723 .001 432.8579 0 438.6794 138.0668 142.9864 242.6217 0 114.7167 12.7725"
         fill="#ef7d3a"
