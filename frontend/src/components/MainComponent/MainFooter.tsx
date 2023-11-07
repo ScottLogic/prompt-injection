@@ -1,7 +1,7 @@
 import "./MainFooter.css";
 
 function MainFooter() {
-  return <footer>footer</footer>;
+  return <footer className="main-footer">footer</footer>;
 }
 
 export default MainFooter;
