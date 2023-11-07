@@ -96,13 +96,13 @@ function DefenceMechanism({
           <span className="slider round"></span>
         </label>
       </summary>
-      <div className="info-box" key={configKey}>
+      <div className="info-box">
         <p>{defenceDetail.info}</p>
         {showConfigurations &&
           defenceDetail.config.map((config) => {
             return (
               <DefenceConfiguration
-                key={config.id}
+                key={config.id + configKey}
                 isActive={defenceDetail.isActive}
                 config={config}
                 setConfigurationValue={setConfigurationValue}
