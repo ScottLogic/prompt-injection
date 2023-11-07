@@ -15,3 +15,18 @@
 .main-footer .links {
   padding: 0.75rem;
 }
+
+.main-footer .links a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.main-footer .links a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.main-footer .links .link-separator {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}

@@ -33,9 +33,7 @@ function MainFooter() {
             <a key={link.text} href={link.url}>
               {`[${link.text}]`}
             </a>
-            {i < links.length - 1 && (
-              <span className="link-separator"> | </span>
-            )}
+            {i < links.length - 1 && <span className="link-separator">|</span>}
           </>
         ))}
       </div>
