@@ -17,7 +17,7 @@ function HandbookOverlay({
   closeOverlay: () => void;
 }) {
   const [selectedPage, setSelectedPage] = useState<HANDBOOK_PAGES>(
-    HANDBOOK_PAGES.GLOSSARY
+    HANDBOOK_PAGES.ATTACKS
   );
   const [levelSystemRole, setLevelSystemRole] = useState<string>("");
 
