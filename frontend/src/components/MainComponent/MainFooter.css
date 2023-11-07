@@ -17,7 +17,7 @@
 }
 
 .main-footer .links a {
-  color: #ffffff;
+  color: var(--main-text-colour);
   text-decoration: none;
 }
 
