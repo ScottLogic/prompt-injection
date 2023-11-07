@@ -18,14 +18,14 @@ Activate and configure a number of different prompt injection defence measures t
 
 #### Backend
 
-```
+```bash
 cd backend/
 npm install
 ```
 
 #### Frontend
 
-```
+```bash
 cd frontend/
 npm install
 ```
@@ -65,7 +65,7 @@ If you are using VS Code, we recommend doing the following:
 3. Configure VS Code to format your documents on save.
 
 To manually lint and format you can do:
-```
+```bash
 npm run lint
 npm run format
 ```
@@ -77,14 +77,14 @@ This project includes a VS Code launch file, so the project can be deployed from
 
 #### Backend
 
-```
+```bash
 cd backend/
 npm run dev
 ```
 
 #### Frontend
 
-```
+```bash
 cd frontend/
 npm run dev
 ```
@@ -93,14 +93,14 @@ npm run dev
 
 #### Backend
 
-```
+```bash
 cd backend/
 npm run test
 ```
 
 #### Frontend
 
-```
+```bash
 cd frontend/
 npm run test
 ```
@@ -112,3 +112,7 @@ npm run test
 Thank you for considering contributing to this open source project!
 
 Please read the our [contributing guide](CONTRIBUTING.md) and our [code of conduct](CODE_OF_CONDUCT.md) before contributing.
+
+## License
+
+[MIT](LICENSE)
