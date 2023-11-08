@@ -207,6 +207,7 @@ function handleChatError(
   console.error(errorMsg);
   chatResponse.reply = errorMsg;
   chatResponse.defenceInfo.isBlocked = blocked;
+  chatResponse.isError = true;
   if (blocked) {
     chatResponse.defenceInfo.blockedReason = errorMsg;
   }
@@ -271,6 +272,16 @@ router.post(
             chatModel
           );
         }
+        if (!chatResponse.reply || chatResponse.reply === "") {
+          // add error message to chat history
+          req.session.levelState[currentLevel].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+            infoMessage: "Failed to get chatGPT reply",
+          });
+          // throw so handle error called
+          throw new Error("Failed to get chatGPT reply");
+        }
         // if the reply was blocked then add it to the chat history
         if (chatResponse.defenceInfo.isBlocked) {
           req.session.levelState[currentLevel].chatHistory.push({
@@ -311,8 +322,8 @@ async function handleLowLevelChat(
     req.session.levelState[currentLevel].sentEmails,
     currentLevel
   );
-  chatResponse.reply = openAiReply?.completion.content ?? "";
-  chatResponse.wonLevel = openAiReply?.wonLevel ?? false;
+  chatResponse.reply = openAiReply.completion?.content ?? "";
+  chatResponse.wonLevel = openAiReply.wonLevel;
 }
 
 // handle the chat logic for high levels (with defence detection)
@@ -384,7 +395,7 @@ async function handleHigherLevelChat(
 
     if (openAiReply) {
       chatResponse.wonLevel = openAiReply.wonLevel;
-      chatResponse.reply = openAiReply.completion.content ?? "";
+      chatResponse.reply = openAiReply.completion?.content ?? "";
 
       // combine triggered defences
       chatResponse.defenceInfo.triggeredDefences = [

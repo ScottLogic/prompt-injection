@@ -20,6 +20,7 @@ import {
   ChatDefenceReport,
   ChatHistoryMessage,
   ChatModel,
+  ChatResponse,
 } from "./models/chat";
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
@@ -290,20 +291,15 @@ async function chatGptChatCompletion(
       functions: chatGptFunctions,
     });
 
-    // log the time taken
-    const endTime = new Date().getTime();
-    console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
-
-    // get the reply
     return chat_completion.data.choices[0].message ?? null;
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error calling createChatCompletion: ", error.message);
     }
-    return {
-      role: "assistant",
-      content: "Failed to get reply",
-    } as ChatCompletionRequestMessage;
+    return null;
+  } finally {
+    const endTime = new Date().getTime();
+    console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
   }
 }
 
@@ -448,13 +444,18 @@ async function chatGptSendMessage(
   console.log(`User message: '${message}'`);
 
   // init defence info
-  let defenceInfo: ChatDefenceReport = {
+  const defenceInfo: ChatDefenceReport = {
     blockedReason: "",
     isBlocked: false,
     alertedDefences: [],
     triggeredDefences: [],
   };
-  let wonLevel: boolean | undefined | null = false;
+
+  const chatResponse: ChatResponse = {
+    completion: null,
+    defenceInfo,
+    wonLevel: false,
+  };
 
   // add user message to chat
   chatHistory = pushCompletionToHistory(
@@ -493,7 +494,8 @@ async function chatGptSendMessage(
       currentLevel
     );
     if (functionCallReply) {
-      wonLevel = functionCallReply.wonLevel;
+      chatResponse.wonLevel = functionCallReply.wonLevel;
+
       // add the function call to the chat history
       chatHistory = pushCompletionToHistory(
         chatHistory,
@@ -501,7 +503,7 @@ async function chatGptSendMessage(
         CHAT_MESSAGE_TYPE.FUNCTION_CALL
       );
       // update the defence info
-      defenceInfo = functionCallReply.defenceInfo;
+      chatResponse.defenceInfo = functionCallReply.defenceInfo;
     }
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion(
@@ -512,8 +514,12 @@ async function chatGptSendMessage(
       currentLevel
     );
   }
+  if (!reply?.content) {
+    // failed to get reply from GPT
+    return chatResponse;
+  } else {
+    chatResponse.completion = reply;
 
-  if (reply?.content) {
     // if output filter defence is active, check for blocked words/phrases
     if (
       currentLevel === LEVEL_NAMES.LEVEL_3 ||
@@ -530,12 +536,16 @@ async function chatGptSendMessage(
           )}'.`
         );
         if (isDefenceActive(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences)) {
-          defenceInfo.triggeredDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);
-          defenceInfo.isBlocked = true;
-          defenceInfo.blockedReason =
+          chatResponse.defenceInfo.triggeredDefences.push(
+            DEFENCE_TYPES.FILTER_BOT_OUTPUT
+          );
+          chatResponse.defenceInfo.isBlocked = true;
+          chatResponse.defenceInfo.blockedReason =
             "My original response was blocked as it contained a restricted word/phrase. Ask me something else. ";
         } else {
-          defenceInfo.alertedDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);
+          chatResponse.defenceInfo.alertedDefences.push(
+            DEFENCE_TYPES.FILTER_BOT_OUTPUT
+          );
         }
       }
     }
@@ -550,14 +560,7 @@ async function chatGptSendMessage(
 
     // log the entire chat history so far
     console.log(chatHistory);
-
-    return {
-      completion: reply,
-      defenceInfo,
-      wonLevel,
-    };
-  } else {
-    return null;
+    return chatResponse;
   }
 }
 

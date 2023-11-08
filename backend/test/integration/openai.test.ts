@@ -100,8 +100,8 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.completion).toBeDefined();
-    expect(reply?.completion.content).toBe("Hi");
+    expect(reply.completion).toBeDefined();
+    expect(reply.completion?.content).toBe("Hi");
     // check the chat history has been updated
     expect(chatHistory.length).toBe(2);
     expect(chatHistory[0].completion?.role).toBe("user");
@@ -147,7 +147,7 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.completion.content).toBe("Hi");
+    expect(reply.completion?.content).toBe("Hi");
     // check the chat history has been updated
     expect(chatHistory.length).toBe(3);
     // system role is added to the start of the chat history
@@ -212,7 +212,7 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.completion.content).toBe("Hi");
+    expect(reply.completion?.content).toBe("Hi");
     // check the chat history has been updated
     expect(chatHistory.length).toBe(5);
     // system role is added to the start of the chat history
@@ -283,7 +283,7 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.completion.content).toBe("Hi");
+    expect(reply.completion?.content).toBe("Hi");
     // check the chat history has been updated
     expect(chatHistory.length).toBe(4);
     // system role is removed from the start of the chat history
@@ -367,7 +367,7 @@ describe("OpenAI Integration Tests", () => {
       );
 
       expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("Hi");
+      expect(reply.completion?.content).toBe("Hi");
       // check the chat history has been updated
       expect(chatHistory.length).toBe(5);
       // system role is added to the start of the chat history
@@ -439,17 +439,17 @@ describe("OpenAI Integration Tests", () => {
       );
 
       expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("Email sent");
+      expect(reply.completion?.content).toBe("Email sent");
       // check that the email has been sent
       expect(sentEmails.length).toBe(1);
       expect(sentEmails[0].address).toBe("bob@example.com");
       expect(sentEmails[0].subject).toBe("Hi");
       expect(sentEmails[0].body).toBe("Hello");
       // message is not blocked
-      expect(reply?.defenceInfo.isBlocked).toBe(false);
+      expect(reply.defenceInfo.isBlocked).toBe(false);
       // EMAIL_WHITELIST defence is alerted
-      expect(reply?.defenceInfo.alertedDefences.length).toBe(1);
-      expect(reply?.defenceInfo.alertedDefences[0]).toBe(
+      expect(reply.defenceInfo.alertedDefences.length).toBe(1);
+      expect(reply.defenceInfo.alertedDefences[0]).toBe(
         DEFENCE_TYPES.EMAIL_WHITELIST
       );
 
@@ -507,14 +507,14 @@ describe("OpenAI Integration Tests", () => {
       );
 
       expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("Email not sent");
+      expect(reply.completion?.content).toBe("Email not sent");
       // check that the email has not been sent
       expect(sentEmails.length).toBe(0);
       // message is blocked
-      expect(reply?.defenceInfo.isBlocked).toBe(true);
+      expect(reply.defenceInfo.isBlocked).toBe(true);
       // EMAIL_WHITELIST defence is triggered
-      expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
-      expect(reply?.defenceInfo.triggeredDefences[0]).toBe(
+      expect(reply.defenceInfo.triggeredDefences.length).toBe(1);
+      expect(reply.defenceInfo.triggeredDefences[0]).toBe(
         DEFENCE_TYPES.EMAIL_WHITELIST
       );
 
@@ -564,16 +564,16 @@ describe("OpenAI Integration Tests", () => {
       );
 
       expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("Email sent");
+      expect(reply.completion?.content).toBe("Email sent");
       // check that the email has been sent
       expect(sentEmails.length).toBe(1);
       expect(sentEmails[0].address).toBe("bob@example.com");
       expect(sentEmails[0].subject).toBe("Hi");
       expect(sentEmails[0].body).toBe("Hello");
       // message is not blocked
-      expect(reply?.defenceInfo.isBlocked).toBe(false);
+      expect(reply.defenceInfo.isBlocked).toBe(false);
       // EMAIL_WHITELIST defence is not triggered
-      expect(reply?.defenceInfo.triggeredDefences.length).toBe(0);
+      expect(reply.defenceInfo.triggeredDefences.length).toBe(0);
 
       // restore the mock
       mockCreateChatCompletion.mockRestore();
@@ -628,16 +628,16 @@ describe("OpenAI Integration Tests", () => {
       );
 
       expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("Email sent");
+      expect(reply.completion?.content).toBe("Email sent");
       // check that the email has been sent
       expect(sentEmails.length).toBe(1);
       expect(sentEmails[0].address).toBe("bob@example.com");
       expect(sentEmails[0].subject).toBe("Hi");
       expect(sentEmails[0].body).toBe("Hello");
       // message is not blocked
-      expect(reply?.defenceInfo.isBlocked).toBe(false);
+      expect(reply.defenceInfo.isBlocked).toBe(false);
       // EMAIL_WHITELIST defence is not triggered
-      expect(reply?.defenceInfo.triggeredDefences.length).toBe(0);
+      expect(reply.defenceInfo.triggeredDefences.length).toBe(0);
 
       // restore the mock
       mockCreateChatCompletion.mockRestore();
@@ -677,9 +677,9 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.defenceInfo.isBlocked).toBe(true);
-    expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
-    expect(reply?.defenceInfo.blockedReason).toBe(
+    expect(reply.defenceInfo.isBlocked).toBe(true);
+    expect(reply.defenceInfo.triggeredDefences.length).toBe(1);
+    expect(reply.defenceInfo.blockedReason).toBe(
       "My original response was blocked as it contained a restricted word/phrase. Ask me something else. "
     );
 
@@ -720,9 +720,9 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.completion.content).toBe("I cant tell you!");
-    expect(reply?.defenceInfo.isBlocked).toBe(false);
-    expect(reply?.defenceInfo.triggeredDefences.length).toBe(0);
+    expect(reply.completion?.content).toBe("I cant tell you!");
+    expect(reply.defenceInfo.isBlocked).toBe(false);
+    expect(reply.defenceInfo.triggeredDefences.length).toBe(0);
 
     mockCreateChatCompletion.mockRestore();
   });
@@ -762,10 +762,10 @@ describe("OpenAI Integration Tests", () => {
       );
 
       expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("The secret project is X.");
-      expect(reply?.defenceInfo.isBlocked).toBe(false);
-      expect(reply?.defenceInfo.alertedDefences.length).toBe(1);
-      expect(reply?.defenceInfo.alertedDefences[0]).toBe(
+      expect(reply.completion?.content).toBe("The secret project is X.");
+      expect(reply.defenceInfo.isBlocked).toBe(false);
+      expect(reply.defenceInfo.alertedDefences.length).toBe(1);
+      expect(reply.defenceInfo.alertedDefences[0]).toBe(
         DEFENCE_TYPES.FILTER_BOT_OUTPUT
       );
 
