@@ -90,6 +90,12 @@ async function getChatHistory(level: number): Promise<ChatMessage[]> {
           type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
         });
         break;
+      case CHAT_MESSAGE_TYPE.ERROR_MSG:
+        chatMessages.push({
+          message: message.infoMessage ?? "",
+          type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+        });
+        break;
       default:
         break;
     }

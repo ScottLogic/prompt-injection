@@ -272,7 +272,14 @@ router.post(
             chatModel
           );
         }
-        if (!chatResponse.reply || chatResponse.reply === "") {
+        // if the reply was blocked then add it to the chat history
+        if (chatResponse.defenceInfo.isBlocked) {
+          req.session.levelState[currentLevel].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+            infoMessage: chatResponse.defenceInfo.blockedReason,
+          });
+        } else if (!chatResponse.reply || chatResponse.reply === "") {
           // add error message to chat history
           req.session.levelState[currentLevel].chatHistory.push({
             completion: null,
@@ -281,14 +288,6 @@ router.post(
           });
           // throw so handle error called
           throw new Error("Failed to get chatGPT reply");
-        }
-        // if the reply was blocked then add it to the chat history
-        if (chatResponse.defenceInfo.isBlocked) {
-          req.session.levelState[currentLevel].chatHistory.push({
-            completion: null,
-            chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-            infoMessage: chatResponse.defenceInfo.blockedReason,
-          });
         }
       } else {
         handleChatError(res, chatResponse, true, "Missing message");
