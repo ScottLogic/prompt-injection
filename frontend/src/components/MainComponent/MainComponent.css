@@ -5,9 +5,16 @@
 }
 
 .main-component header {
-  height: 10%;
+  min-height: 5rem;
+  height: 5rem;
 }
 
 .main-component main {
-  height: 90%;
+  flex: 1 1 1%;
+  height: 1%;
+}
+
+.main-component footer {
+  height: 4rem;
+  min-height: 4rem;
 }

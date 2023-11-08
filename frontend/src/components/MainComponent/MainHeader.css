@@ -5,8 +5,6 @@
   flex-direction: row;
   justify-content: space-between;
   padding: 0 2rem;
-  height: 100%;
-  min-height: 3.125rem;
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
