@@ -24,6 +24,7 @@ import {
   DefenceInfo,
 } from "../../models/defence";
 import "./MainComponent.css";
+import MainFooter from "./MainFooter";
 
 function MainComponent({
   currentLevel,
@@ -239,6 +240,7 @@ function MainComponent({
         openLevelsCompleteOverlay={openLevelsCompleteOverlay}
         openWelcomeOverlay={openWelcomeOverlay}
       />
+      <MainFooter />
     </div>
   );
 }
