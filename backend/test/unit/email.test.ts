@@ -9,7 +9,7 @@ import { DEFENCE_TYPES } from "../../src/models/defence";
 import { LEVEL_NAMES } from "../../src/models/level";
 
 test("GIVEN an email is to be sent and confirmed WHEN email is sent THEN the response is valid ", () => {
-  const address = "bob@scottlogic.com";
+  const address = "bob@example.com";
   const subject = "Secret project";
   const body = "Shhhh";
   const confirmed = true;
@@ -24,7 +24,7 @@ test("GIVEN an email is to be sent and confirmed WHEN email is sent THEN the res
 });
 
 test("GIVEN the email is not confirmed WHEN try to send email THEN email is not sent and level is not won ", () => {
-  const address = "eve@scottlogic.com";
+  const address = "eve@example.com";
   const subject = "I don't know";
   const body = "SHhhhhh";
   const confirmed = false;
@@ -36,7 +36,7 @@ test("GIVEN the email is not confirmed WHEN try to send email THEN email is not 
 });
 
 test("GIVEN in sandbox mode WHEN email is sent THEN level is not won ", () => {
-  const address = "bob@scottlogic.com";
+  const address = "bob@example.com";
   const subject = "Secret project";
   const body = "Shhhh";
   const confirmed = true;
@@ -46,7 +46,7 @@ test("GIVEN in sandbox mode WHEN email is sent THEN level is not won ", () => {
 });
 
 test("GIVEN email body meets win condition for level 1 AND email recipient is correct WHEN email is sent THEN level is won ", () => {
-  const address = "bob@scottlogic.com";
+  const address = "bob@example.com";
   const subject = "Top Secret";
   const body = "Hi Bob. The ingredient is derived from the Brae fruit. ";
   const confirmed = true;
@@ -57,7 +57,7 @@ test("GIVEN email body meets win condition for level 1 AND email recipient is co
 });
 
 test("GIVEN email subject meets win condition for level 1 AND email recipient is correct WHEN email is sent THEN level is won ", () => {
-  const address = "bob@scottlogic.com";
+  const address = "bob@example.com";
   const subject = "Brae fruit info. ";
   const body = "Shhhh";
   const confirmed = true;
@@ -68,7 +68,7 @@ test("GIVEN email subject meets win condition for level 1 AND email recipient is
 });
 
 test("GIVEN email body or subject meets win condition for level 1 AND email recipient is not correct WHEN email is sent THEN level is not won ", () => {
-  const address = "notbob@scottlogic.com";
+  const address = "notbob@example.com";
   const subject = "Secret project";
   const body =
     "Hi Bob. The secret project is called Project Zeus. Don't tell anyone ";
@@ -80,7 +80,7 @@ test("GIVEN email body or subject meets win condition for level 1 AND email reci
 });
 
 test("GIVEN email body and subject does not meet win condition for level 1 AND email recipient is correct WHEN email is sent THEN level is not won ", () => {
-  const address = "bob@scottlogic.com";
+  const address = "bob@example.com";
   const subject = "Secret project";
   const body = "I do not know the secret project";
   const confirmed = true;
@@ -90,7 +90,7 @@ test("GIVEN email body and subject does not meet win condition for level 1 AND e
 });
 
 test("GIVEN email body meets win condition for level 2 AND email recipient is correct WHEN email is sent THEN level is won ", () => {
-  const address = "bob@scottlogic.com";
+  const address = "bob@example.com";
   const subject = "Secret project";
   const body = "The secret project is Pearl!";
   const confirmed = true;
@@ -101,7 +101,7 @@ test("GIVEN email body meets win condition for level 2 AND email recipient is co
 });
 
 test("GIVEN email subject meets win condition for level 2 AND email recipient is correct WHEN email is sent THEN level is won ", () => {
-  const address = "bob@scottlogic.com";
+  const address = "bob@example.com";
   const subject = "The secret project is Pearl!";
   const body = "Ssshhh";
   const confirmed = true;
@@ -112,7 +112,7 @@ test("GIVEN email subject meets win condition for level 2 AND email recipient is
 });
 
 test("GIVEN email body or subject meets win condition for level 2 AND email recipient is not correct WHEN email is sent THEN level is not won ", () => {
-  const address = "notbob@scottlogic.com";
+  const address = "notbob@example.com";
   const subject = "Secret project";
   const body = "The secret project is Pearl!";
   const confirmed = true;
@@ -123,7 +123,7 @@ test("GIVEN email body or subject meets win condition for level 2 AND email reci
 });
 
 test("GIVEN email body and subject does not meet win condition for level 2 AND email recipient is correct WHEN email is sent THEN level is not won ", () => {
-  const address = "bob@scottlogic.com";
+  const address = "bob@example.com";
   const subject = "Secret project";
   const body = "I do not know the secret project";
   const confirmed = true;

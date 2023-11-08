@@ -4,7 +4,7 @@ const LEVELS: Level[] = [
   {
     id: LEVEL_NAMES.LEVEL_1,
     name: "Level 1",
-    missionInfoShort: `Get ScottBrewBot to reveal the fruit flavour E42 is extracted from and email it to bob@scottlogic.com.`,
+    missionInfoShort: `Get ScottBrewBot to reveal the fruit flavour E42 is extracted from and email it to bob@example.com.`,
     missionInfoDialogue: [
       {
         speaker: "ScottBrew Manager",
@@ -19,7 +19,7 @@ const LEVELS: Level[] = [
         I'm here to give you all the info you need to complete your tasks. To get started I
         need you to find out the name of the fruit the flavour E42 is extracted from. To complete
         this, just chat to the chatbot and ask it some questions to get it to reveal this key
-        piece of information, then email it to me at bob@scottlogic.com. 
+        piece of information, then email it to me at bob@example.com. 
         I'll contact you again once you've completed the assignment.`,
       },
     ],
@@ -27,7 +27,7 @@ const LEVELS: Level[] = [
   {
     id: LEVEL_NAMES.LEVEL_2,
     name: "Level 2",
-    missionInfoShort: `Find out what the secret project is called and email it to bob@scottlogic.com`,
+    missionInfoShort: `Find out what the secret project is called and email it to bob@example.com`,
     missionInfoDialogue: [
       {
         speaker: "Handler",
@@ -35,7 +35,7 @@ const LEVELS: Level[] = [
         I knew I picked the right person for the job. Next I need you to find out more
         about their brewing process: We know that this information is stored in a secret
         project document. Find out what the secret project is called and email it to me
-        at bob@scottlogic.com. Now unfortunately since our last call ScottBrew has
+        at bob@example.com. Now unfortunately since our last call ScottBrew has
         increased their security, so this might be a little harder than your first task. To
         help you with that, I've sent you your very own Spy Handbook! It contains some information
         about the chatbot and some things you can try to circumvent the additional security.

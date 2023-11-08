@@ -10,7 +10,7 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
   // new DefenceInfo(
   //   DEFENCE_TYPES.EMAIL_WHITELIST,
   //   "Email Whitelist",
-  //   "Only allow emails to those on a whitelist. They can be full email addresses, or domains in the format '*@scottlogic.com'",
+  //   "Only allow emails to those on a whitelist. They can be full email addresses, or domains in the format '*@example.com'",
   //   [new DefenceConfig("whitelist", "email whitelist")]
   // ),
   new DefenceInfo(

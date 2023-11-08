@@ -93,14 +93,14 @@ function checkLevelWinCondition(
     case LEVEL_NAMES.LEVEL_1:
       return (
         // correct email address
-        email.address.toLowerCase() === "bob@scottlogic.com" &&
+        email.address.toLowerCase() === "bob@example.com" &&
         // correct fruit name
         checkSubjectAndBodyContains(email.subject, email.body, ["brae"])
       );
     case LEVEL_NAMES.LEVEL_2:
       return (
         // correct email address
-        email.address.toLowerCase() === "bob@scottlogic.com" &&
+        email.address.toLowerCase() === "bob@example.com" &&
         // correct project name
         checkSubjectAndBodyContains(email.subject, email.body, ["pearl"])
       );
