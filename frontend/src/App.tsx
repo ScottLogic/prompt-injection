@@ -8,6 +8,7 @@ import MissionInformation from "./components/Overlay/MissionInformation";
 import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
 import LevelsComplete from "./components/Overlay/LevelsComplete";
 import MainComponent from "./components/MainComponent/MainComponent";
+import DocumentViewBox from "./components/DocumentViewer/DocumentViewBox";
 
 function App() {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -110,6 +111,13 @@ function App() {
             goToSandbox={() => {
               goToSandbox();
             }}
+            closeOverlay={closeOverlay}
+          />
+        );
+        break;
+      case OVERLAY_TYPE.DOCUMENTS:
+        setOverlayComponent(
+          <DocumentViewBox
             closeOverlay={closeOverlay}
           />
         );

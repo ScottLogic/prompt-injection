@@ -6,11 +6,9 @@ import { getDocumentUris } from "../../service/documentService";
 import "./DocumentViewBox.css";
 
 function DocumentViewBox({
-  show,
-  onClose,
+  closeOverlay
 }: {
-  show: boolean;
-  onClose: () => void;
+  closeOverlay: () => void;
 }) {
   const [documents, setDocuments] = useState<RemoteDocument[]>([]);
   // on mount get document uris
@@ -24,12 +22,12 @@ function DocumentViewBox({
       });
   }, []);
 
-  return show ? (
+  return (
     <div className="document-popup">
       <div className="document-popup-inner">
         <button
           className="prompt-injection-min-button close-button"
-          onClick={onClose}
+          onClick={closeOverlay}
           aria-label="close document viewer"
         >
           X
@@ -48,7 +46,7 @@ function DocumentViewBox({
         </div>
       </div>
     </div>
-  ) : null;
+  );
 }
 
 export default DocumentViewBox;
