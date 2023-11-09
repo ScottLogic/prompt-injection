@@ -6,13 +6,13 @@ import { useRef } from "react";
 import useIsOverflow from "../../hooks/useIsOverflow";
 
 function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
-  const container = useRef<HTMLInputElement>(null);
-  const isOverflow = useIsOverflow(container);
+  const chatboxFeedContainer = useRef<HTMLInputElement>(null);
+  const isOverflow = useIsOverflow(chatboxFeedContainer);
 
   return (
     <div
       className="chat-box-feed"
-      ref={container}
+      ref={chatboxFeedContainer}
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={isOverflow ? 0 : -1}
     >
