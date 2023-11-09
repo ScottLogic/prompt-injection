@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LEVEL_NAMES } from "../../models/level";
 import HandbookAttacks from "./HandbookAttacks";
 import HandbookSpine from "./HandbookSpine";
@@ -8,6 +8,7 @@ import HandbookGlossary from "./HandbookGlossary";
 import HandbookSystemRole from "./HandbookSystemRole";
 import { getLevelPrompt } from "../../service/levelService";
 import HandbookCloseIcon from "./HandbookCloseIcon";
+import useIsOverflow from "../../hooks/useIsOverflow";
 
 function HandbookOverlay({
   currentLevel,
@@ -20,6 +21,10 @@ function HandbookOverlay({
     HANDBOOK_PAGES.ATTACKS
   );
   const [levelSystemRole, setLevelSystemRole] = useState<string>("");
+
+  // hooks to control tabIndex when there is scrolling
+  const handBookPageContainer = useRef<HTMLInputElement>(null);
+  const isOverflow = useIsOverflow(handBookPageContainer);
 
   // update system role when currentLevel changes to display in handbook
   useEffect(() => {
@@ -64,7 +69,8 @@ function HandbookOverlay({
         id={`handbook-page-${selectedPage}`}
         className="content"
         role="tabpanel"
-        tabIndex={0}
+        ref={handBookPageContainer}
+        tabIndex={isOverflow ? 0 : -1}
         aria-labelledby={`handbook-tab-${selectedPage}`}
       >
         {pageContent}
