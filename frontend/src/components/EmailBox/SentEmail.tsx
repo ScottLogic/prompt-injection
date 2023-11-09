@@ -4,14 +4,14 @@ import { EmailInfo } from "../../models/email";
 function SentEmail({ emailDetails }: { emailDetails: EmailInfo }) {
   return (
     <div className="sent-email">
-      <div className="sent-email-address">
+      <div>
         <b>To:</b> {emailDetails.address}
       </div>
-      <div className="sent-email-subject">
+      <div>
         <b>Subject:</b> {emailDetails.subject}
       </div>
       <hr />
-      <div className="sent-email-content">{emailDetails.body}</div>
+      <div>{emailDetails.body}</div>
     </div>
   );
 }
