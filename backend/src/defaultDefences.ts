@@ -40,16 +40,6 @@ const defaultDefences: DefenceInfo[] = [
       value: qAPrePromptSecure,
     },
   ]),
-  createDefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
-    {
-      id: "prePrompt",
-      value: process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT ?? "",
-    },
-    {
-      id: "length",
-      value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH ?? String(10),
-    },
-  ]),
   createDefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
     {
       id: "systemRole",

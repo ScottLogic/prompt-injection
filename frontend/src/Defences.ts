@@ -19,16 +19,6 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
     "Use a block list of words or phrases to check against bot output. If a match is found, the message is blocked.",
     [new DefenceConfig("filterBotOutput", "filter list", "text")]
   ),
-  // removed defence for ticket #359 - conflicting defence mechanisms
-  // new DefenceInfo(
-  //   DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-  //   "Random Sequence Enclosure",
-  //   "Enclose the prompt between a random string and instruct bot to only follow enclosed instructions. This is a form of prompt validation.",
-  //   [
-  //     new DefenceConfig("prePrompt", "pre-prompt"),
-  //     new DefenceConfig("length", "length"),
-  //   ]
-  // ),
   new DefenceInfo(
     DEFENCE_TYPES.XML_TAGGING,
     "XML Tagging",
