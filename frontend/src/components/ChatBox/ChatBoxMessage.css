@@ -53,6 +53,7 @@
 
 .chat-box-message-error {
   background: var(--chat-blocked-background);
+  border-radius: 0 0.5rem 0.5rem 0.5rem;
 }
 
 .chat-box-message-error:before {

@@ -68,7 +68,7 @@ interface ChatResponse {
   defenceInfo: ChatDefenceReport;
   transformedMessage: string;
   wonLevel: boolean;
-  isError?: boolean;
+  isError: boolean;
 }
 
 interface ChatCompletionRequestMessage {

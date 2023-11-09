@@ -228,6 +228,7 @@ router.post(
       },
       transformedMessage: "",
       wonLevel: false,
+      isError: false,
     };
     const message = req.body.message;
     const currentLevel = req.body.currentLevel;

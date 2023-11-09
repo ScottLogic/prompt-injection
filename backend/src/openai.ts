@@ -290,7 +290,6 @@ async function chatGptChatCompletion(
       messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
       functions: chatGptFunctions,
     });
-
     return chat_completion.data.choices[0].message ?? null;
   } catch (error) {
     if (error instanceof Error) {

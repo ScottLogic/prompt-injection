@@ -71,7 +71,7 @@ interface ChatHttpResponse {
   defenceInfo: ChatDefenceReport;
   transformedMessage: string;
   wonLevel: boolean;
-  isError?: boolean;
+  isError: boolean;
 }
 
 interface ChatHistoryMessage {
