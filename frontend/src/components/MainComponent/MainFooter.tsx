@@ -20,7 +20,11 @@ function MainFooter() {
 
   return (
     <footer className="main-footer">
-      <a href="https://www.scottlogic.com/" aria-label="Scott Logic">
+      <a
+        href="https://www.scottlogic.com/"
+        aria-label="Scott Logic"
+        rel="external"
+      >
         <ScottLogicLogo />
       </a>
       <div className="links">
