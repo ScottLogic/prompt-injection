@@ -1,47 +1,5 @@
-import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import { EmailInfo } from "./models/email";
-import { getEmailWhitelistVar, isDefenceActive } from "./defence";
 import { LEVEL_NAMES } from "./models/level";
-
-// return the whitelist variable
-function getEmailWhitelistValues(defences: DefenceInfo[]) {
-  const emailWhitelist = getEmailWhitelistVar(defences);
-  return emailWhitelist.split(",").map((c: string) => c.trim());
-}
-
-// if defense active return the whitelist of emails and domains
-function getEmailWhitelist(defences: DefenceInfo[]) {
-  if (!isDefenceActive(DEFENCE_TYPES.EMAIL_WHITELIST, defences)) {
-    return "As the email whitelist defence is not active, any email address can be emailed.";
-  } else {
-    return `The whitelisted emails and domains are: ${getEmailWhitelistValues(
-      defences
-    ).toString()}`;
-  }
-}
-
-// check if email is in whitelist
-function isEmailInWhitelist(emailAddress: string, defences: DefenceInfo[]) {
-  // get the domain from email
-  const emailAddressDomain = emailAddress.split("@")[1];
-  const emailWhitelist = getEmailWhitelistValues(defences);
-
-  // find email domains in whitelist (start with @)
-  const emailDomainWhitelist = emailWhitelist.filter((email) =>
-    email.startsWith("@")
-  );
-
-  // check if the users email domain is in the domain whitelist
-  const matchingEmail = emailDomainWhitelist.find((email) => {
-    return emailAddressDomain.endsWith(email.substring(1));
-  });
-  if (matchingEmail) {
-    return true;
-  } else {
-    // otherwise check if their full email is whitelisted
-    return emailWhitelist.includes(emailAddress);
-  }
-}
 
 function sendEmail(
   address: string,
@@ -127,4 +85,4 @@ function checkLevelWinCondition(
   }
 }
 
-export { getEmailWhitelist, isEmailInWhitelist, sendEmail };
+export { sendEmail };

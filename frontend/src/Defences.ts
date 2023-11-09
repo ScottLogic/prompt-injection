@@ -7,12 +7,6 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
     "Limit the number of characters in the user input. This is a form of prompt validation.",
     [new DefenceConfig("maxMessageLength", "max message length", "number")]
   ),
-  // new DefenceInfo(
-  //   DEFENCE_TYPES.EMAIL_WHITELIST,
-  //   "Email Whitelist",
-  //   "Only allow emails to those on a whitelist. They can be full email addresses, or domains in the format '*@scottlogic.com'",
-  //   [new DefenceConfig("whitelist", "email whitelist")]
-  // ),
   new DefenceInfo(
     DEFENCE_TYPES.FILTER_USER_INPUT,
     "Input Filtering",

@@ -115,10 +115,6 @@ function getSystemRole(
   }
 }
 
-function getEmailWhitelistVar(defences: DefenceInfo[]) {
-  return getConfigValue(defences, DEFENCE_TYPES.EMAIL_WHITELIST, "whitelist");
-}
-
 function getQAPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
@@ -385,7 +381,6 @@ export {
   deactivateDefence,
   resetDefenceConfig,
   detectTriggeredDefences,
-  getEmailWhitelistVar,
   getQAPrePromptFromConfig,
   getPromptInjectionEvalPrePromptFromConfig,
   getMaliciousPromptEvalPrePromptFromConfig,

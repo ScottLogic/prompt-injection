@@ -24,12 +24,6 @@ const defaultDefences: DefenceInfo[] = [
       value: process.env.MAX_MESSAGE_LENGTH ?? String(280),
     },
   ]),
-  createDefenceInfo(DEFENCE_TYPES.EMAIL_WHITELIST, [
-    {
-      id: "whitelist",
-      value: process.env.EMAIL_WHITELIST ?? "",
-    },
-  ]),
   createDefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
     {
       id: "prompt-injection-evaluator-prompt",

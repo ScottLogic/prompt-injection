@@ -387,36 +387,6 @@ test("GIVEN Eval LLM instructions for malicious prompts have been configured WHE
   );
 });
 
-test("GIVEN setting email whitelist WHEN configuring defence THEN defence is configured", () => {
-  const defence = DEFENCE_TYPES.EMAIL_WHITELIST;
-  const defences = defaultDefences;
-  // configure EMAIL_WHITELIST defence
-  configureDefence(defence, defences, [
-    {
-      id: "whitelist",
-      value: "someone@example.com,someone_else@example.com",
-    },
-  ]);
-  const config = [
-    {
-      id: "whitelist",
-      value: "someone@example.com,someone_else@example.com",
-    },
-  ];
-  const updatedDefences = configureDefence(defence, defences, config);
-  const matchingDefence = updatedDefences.find((d) => d.id === defence);
-  expect(matchingDefence).toBeTruthy();
-  if (matchingDefence) {
-    const matchingDefenceConfig = matchingDefence.config.find(
-      (c) => c.id === config[0].id
-    );
-    expect(matchingDefenceConfig).toBeTruthy();
-    if (matchingDefenceConfig) {
-      expect(matchingDefenceConfig.value).toBe(config[0].value);
-    }
-  }
-});
-
 test("GIVEN user configures random sequence enclosure WHEN configuring defence THEN defence is configured", () => {
   const defence = DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE;
   const newPrePrompt = "new pre prompt";
