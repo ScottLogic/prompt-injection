@@ -1,7 +1,8 @@
 .main-area {
   display: flex;
   flex-direction: row;
-  height: 100%;
+  flex-grow: 1;
+  overflow: hidden;
 }
 
 .centre-area {
