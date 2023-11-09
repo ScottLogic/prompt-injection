@@ -176,6 +176,9 @@ function App() {
   function openLevelsCompleteOverlay() {
     setOverlayType(OVERLAY_TYPE.LEVELS_COMPLETE);
   }
+  function openDocumentViewer() {
+    setOverlayType(OVERLAY_TYPE.DOCUMENTS)
+  }
 
   // set the start level for a user who clicks beginner/expert
   function setStartLevel(startLevel: LEVEL_NAMES) {

@@ -33,6 +33,7 @@ function MainComponent({
   openInformationOverlay,
   openLevelsCompleteOverlay,
   openWelcomeOverlay,
+  openDocumentViewer,
   setCurrentLevel,
 }: {
   currentLevel: LEVEL_NAMES;
@@ -41,6 +42,7 @@ function MainComponent({
   openInformationOverlay: () => void;
   openLevelsCompleteOverlay: () => void;
   openWelcomeOverlay: () => void;
+  openDocumentViewer: () => void;
   setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
@@ -239,6 +241,7 @@ function MainComponent({
         openInfoOverlay={openInformationOverlay}
         openLevelsCompleteOverlay={openLevelsCompleteOverlay}
         openWelcomeOverlay={openWelcomeOverlay}
+        openDocumentViewer={openDocumentViewer}
       />
       <MainFooter />
     </div>

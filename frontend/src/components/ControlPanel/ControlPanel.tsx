@@ -97,7 +97,6 @@ function ControlPanel({
       {/* only show document viewer button in sandbox mode */}
       {currentLevel === LEVEL_NAMES.SANDBOX && 
       <DocumentViewButton 
-        closeOverlay={closeDocumentViewer}
         openOverlay={openDocumentViewer}
       />}
       <SwitchModeButton
