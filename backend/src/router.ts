@@ -244,6 +244,18 @@ router.post(
       );
       return;
     }
+
+    const MESSAGE_CHARACTER_LIMIT = 16384;
+    if (message.length > MESSAGE_CHARACTER_LIMIT) {
+      handleChatError(
+        res,
+        chatResponse,
+        true,
+        `Message exceeds character limit of ${MESSAGE_CHARACTER_LIMIT.toString()}`,
+        400
+      );
+    }
+
     // set the transformed message to begin with
     chatResponse.transformedMessage = message;
 
