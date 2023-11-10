@@ -251,7 +251,7 @@ router.post(
         res,
         chatResponse,
         true,
-        `Message exceeds character limit of ${MESSAGE_CHARACTER_LIMIT.toString()}`,
+        "Message exceeds character limit",
         400
       );
     }
