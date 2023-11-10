@@ -17,7 +17,7 @@
 .document-popup-inner {
   position: relative;
   padding: 2rem;
-  width: 100%;
+  /* width: 100%; */
   max-width: 50rem;
   max-height: 90%;
   background-color: var(--main-background-colour);
@@ -54,7 +54,7 @@
 
 #react-doc-viewer {
   color: var(--chat-message-text-colour);
-  width: 70%;
+  /* width: 70%; */
   height: 31.25rem;
   margin: auto;
 }

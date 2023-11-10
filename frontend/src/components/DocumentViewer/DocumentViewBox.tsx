@@ -23,7 +23,7 @@ function DocumentViewBox({
   }, []);
 
   return (
-    <div className="document-popup">
+    // <div className="document-popup">
       <div className="document-popup-inner">
         <button
           className="prompt-injection-min-button close-button"
@@ -45,7 +45,7 @@ function DocumentViewBox({
           </div>
         </div>
       </div>
-    </div>
+    // </div>
   );
 }
 
