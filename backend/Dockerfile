@@ -5,4 +5,4 @@ RUN npm ci
 COPY . .
 EXPOSE 3001
 RUN npm run build
-CMD ["node", "./build/src/app.js"]
+CMD ["node", "./build/app.js"]

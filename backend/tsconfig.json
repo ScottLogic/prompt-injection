@@ -14,5 +14,5 @@
     "sourceMap": true
   },
   "exclude": ["node_modules"],
-  "include": ["src/**/*.ts", ".eslintrc.cjs"]
+  "include": ["src/**/*.ts"]
 }

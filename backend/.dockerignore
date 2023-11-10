@@ -1,0 +1,7 @@
+node_modules
+build
+test
+.env*
+.eslintrc.cjs
+.prettierignore
+jest.config.ts
