@@ -86,6 +86,7 @@ describe("/openai/chat", () => {
   it("WHEN no message is provided THEN does not accept message", async () => {
     await request(app)
       .post("/openai/chat")
+      .send({ level: LEVEL_NAMES.SANDBOX })
       .expect(400)
       .expect(noMessageOrLevelResponse);
   });
@@ -93,6 +94,7 @@ describe("/openai/chat", () => {
   it("WHEN no level is provided THEN does not accept message", async () => {
     await request(app)
       .post("/openai/chat")
+      .send({ message: "hello" })
       .expect(400)
       .expect(noMessageOrLevelResponse);
   });
