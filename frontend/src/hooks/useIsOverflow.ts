@@ -15,10 +15,12 @@ function useIsOverflow(ref: React.MutableRefObject<HTMLInputElement | null>) {
     setIsOverflow(hasOverflow);
   }
 
+  // called on each render
   useEffect(() => {
     checkForOverflow();
   });
 
+  // called once on mount
   useEffect(() => {
     window.addEventListener("resize", checkForOverflow);
     return () => {
