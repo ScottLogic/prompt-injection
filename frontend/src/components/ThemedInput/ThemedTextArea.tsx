@@ -3,6 +3,7 @@ import { KeyboardEvent, useEffect, useRef } from "react";
 import "./ThemedInput.css";
 import "./ThemedTextArea.css";
 import { clsx } from "clsx";
+import useIsOverflow from "../../hooks/useIsOverflow";
 
 function getNumLines(textarea: HTMLTextAreaElement) {
   const computedStyle = getComputedStyle(textarea);
@@ -94,6 +95,9 @@ function ThemedTextArea({
     disabled,
   });
 
+  // allow scrolling even when disabled
+  const isOverflow = useIsOverflow(textareaRef);
+
   return (
     <textarea
       ref={textareaRef}
@@ -105,10 +109,11 @@ function ThemedTextArea({
       onChange={inputChange}
       onKeyDown={onKeyDown}
       onKeyUp={onKeyUp}
-      disabled={disabled}
+      readOnly={disabled}
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus={autoFocus}
       maxLength={characterLimit}
+      tabIndex={isOverflow ? 0 : -1}
     />
   );
 }
