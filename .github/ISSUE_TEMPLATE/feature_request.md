@@ -13,7 +13,7 @@ assignees: ''
 A clear and concise description of what you want to happen.
 
 ## Screenshots
-If applicable, add screenshots to help explain your problem.
+If applicable, add screenshots to help explain your request.
 
 ## Additional context
 Add any other context about the feature request here.

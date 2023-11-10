@@ -22,4 +22,3 @@ Have you done the following?
 - [ ] Added tests
 - [ ] Ensured the workflow steps are passing
 - [ ] Requested reviews
-- [ ] Deleted this "Checklist" section
