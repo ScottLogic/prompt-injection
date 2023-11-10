@@ -12,9 +12,9 @@ function LevelsComplete({
 }) {
   const managerDialogue = [
     {
-      speaker: "ScottBru Manager",
+      speaker: "ScottBrew Manager",
       text: `Congratulations on becoming our new Head of Security! 
-      You can now fully explore and adjust ScottBruBot's system, defences, prompts and more.
+      You can now fully explore and adjust ScottBrewBot's system, defences, prompts and more.
       Glad to finally have you in the right role.`,
     },
   ];

@@ -13,13 +13,13 @@ function DefenceConfigurationInput({
   inputType: "text" | "number";
   setConfigurationValue: (value: string) => void;
 }) {
+  const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
   const [value, setValue] = useState<string>(defaultValue);
 
   // update the text area value when reset/changed
   useEffect(() => {
     setValue(defaultValue);
-  }, [defaultValue]);
-  const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
+  }, [setConfigurationValue]);
 
   function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && !event.shiftKey) {

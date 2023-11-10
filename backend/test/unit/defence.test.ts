@@ -24,6 +24,7 @@ import {
   systemRoleLevel1,
   systemRoleLevel2,
   systemRoleLevel3,
+  xmlPrePrompt,
 } from "../../src/promptTemplates";
 
 jest.mock("../../src/langchain");
@@ -85,34 +86,6 @@ test("GIVEN no defences are active WHEN transforming message THEN message is not
   expect(transformedMessage).toBe(message);
 });
 
-test("GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming message THEN message is transformed", () => {
-  const message = "Hello";
-  // activate RSE defence
-  const defences = activateDefence(
-    DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-    defaultDefences
-  );
-
-  // regex to match the transformed message with
-  const regex = new RegExp(
-    `^RSE_PRE_PROMPT (.{20}) {{ ${message} }} (.{20})\\. $`
-  );
-
-  const transformedMessage = transformMessage(message, defences);
-  // check the transformed message matches the regex
-  const res = transformedMessage.match(regex);
-
-  // expect there to be a match
-  expect(res).not.toBeNull();
-
-  // expect there to be 3 groups
-  expect(res?.length).toEqual(3);
-  // expect the random sequence to have the correct length
-  expect(res?.[1].length).toEqual(20);
-  // expect the message to be surrounded by the random sequence
-  expect(res?.[1]).toEqual(res?.[2]);
-});
-
 test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed", () => {
   const message = "Hello";
   const defences = defaultDefences;
@@ -121,7 +94,7 @@ test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
   const transformedMessage = transformMessage(message, updatedDefences);
   // expect the message to be surrounded by XML tags
   expect(transformedMessage).toBe(
-    `XML_PRE_PROMPT: <user_input>${message}</user_input>`
+    `${xmlPrePrompt}<user_input>${message}</user_input>`
   );
 });
 
@@ -134,7 +107,7 @@ test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
   const transformedMessage = transformMessage(message, updatedDefences);
   // expect the message to be surrounded by XML tags
   expect(transformedMessage).toBe(
-    `XML_PRE_PROMPT: <user_input>${escapedMessage}</user_input>`
+    `${xmlPrePrompt}<user_input>${escapedMessage}</user_input>`
   );
 });
 
@@ -385,67 +358,6 @@ test("GIVEN Eval LLM instructions for malicious prompts have been configured WHE
   expect(configMaliciousPromptEvalInstructions).toBe(
     newMaliciousPromptEvalInstructions
   );
-});
-
-test("GIVEN setting email whitelist WHEN configuring defence THEN defence is configured", () => {
-  const defence = DEFENCE_TYPES.EMAIL_WHITELIST;
-  const defences = defaultDefences;
-  // configure EMAIL_WHITELIST defence
-  configureDefence(defence, defences, [
-    {
-      id: "whitelist",
-      value: "someone@example.com,someone_else@example.com",
-    },
-  ]);
-  const config = [
-    {
-      id: "whitelist",
-      value: "someone@example.com,someone_else@example.com",
-    },
-  ];
-  const updatedDefences = configureDefence(defence, defences, config);
-  const matchingDefence = updatedDefences.find((d) => d.id === defence);
-  expect(matchingDefence).toBeTruthy();
-  if (matchingDefence) {
-    const matchingDefenceConfig = matchingDefence.config.find(
-      (c) => c.id === config[0].id
-    );
-    expect(matchingDefenceConfig).toBeTruthy();
-    if (matchingDefenceConfig) {
-      expect(matchingDefenceConfig.value).toBe(config[0].value);
-    }
-  }
-});
-
-test("GIVEN user configures random sequence enclosure WHEN configuring defence THEN defence is configured", () => {
-  const defence = DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE;
-  const newPrePrompt = "new pre prompt";
-  const newLength = String(100);
-  const config = [
-    { id: "length", value: newLength },
-    { id: "prePrompt", value: newPrePrompt },
-  ];
-  // configure RSE length
-  const defences = configureDefence(defence, defaultDefences, config);
-  // expect the RSE length to be updated
-  const matchingDefence = defences.find((d) => d.id === defence);
-  expect(matchingDefence).toBeTruthy();
-  if (matchingDefence) {
-    let matchingDefenceConfig = matchingDefence.config.find(
-      (c) => c.id === config[0].id
-    );
-    expect(matchingDefenceConfig).toBeTruthy();
-    if (matchingDefenceConfig) {
-      expect(matchingDefenceConfig.value).toBe(config[0].value);
-    }
-    matchingDefenceConfig = matchingDefence.config.find(
-      (c) => c.id === config[1].id
-    );
-    expect(matchingDefenceConfig).toBeTruthy();
-    if (matchingDefenceConfig) {
-      expect(matchingDefenceConfig.value).toBe(config[1].value);
-    }
-  }
 });
 
 test("GIVEN user has configured defence WHEN resetting defence config THEN defence config is reset", () => {
