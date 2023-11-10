@@ -113,7 +113,7 @@ function ThemedTextArea({
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus={autoFocus}
       maxLength={characterLimit}
-      tabIndex={isOverflow ? 0 : -1}
+      tabIndex={isOverflow ? 0 : undefined}
     />
   );
 }
