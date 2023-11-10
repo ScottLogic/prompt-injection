@@ -4,9 +4,9 @@
   left: 0; */
   /* width: 100%;
   height: 100%; */
-  /* display: flex;
+  display: flex;
   justify-content: center;
-  align-items: center; */
+  align-items: center;
   /* z-index: 1000; */
   /* overflow: auto; */
   /* background-color: rgb(0, 0, 0); */
@@ -16,7 +16,8 @@
   padding: 2rem;
   width: 100%;
   max-width: fit-content;
-  /* max-height: 90%; */
+  max-height: 90%;
+  /* background-color: yellow; */
   background-color: var(--main-background-colour);
   border: 0.1875rem solid var(--main-border-colour);
   /* border-color: var(--main-border-colour); */
@@ -63,6 +64,8 @@
 .view-documents-body {
   /* width: 100%; */
   width: 40vw;
+  border: none;
+  /* background-color: antiquewhite; */
 }
 
 #react-doc-viewer {
@@ -70,11 +73,13 @@
   width: 70%;
   height: 31.25rem;
   margin: auto;
+  border: none;
 }
 
 #react-doc-viewer #header-bar {
   background-color: var(--main-background-colour);
   color: var(--main-accent-colour);
+  /* border: 2px solid var(--main-background-colour); */
 }
 
 #react-doc-viewer #header-bar #file-name {
@@ -83,6 +88,7 @@
 
 #react-doc-viewer #doc-nav-info {
   color: var(--main-accent-colour);
+  border: none;
 }
 
 #react-doc-viewer #proxy-renderer {
@@ -92,4 +98,5 @@
 #react-doc-viewer #txt-renderer {
   padding: 0.625rem;
   white-space: pre-wrap;
+  border: none;
 }
