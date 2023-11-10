@@ -2,6 +2,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { LEVEL_NAMES } from "../../src/models/level";
 import { configureDefence } from "../../src/defence";
+import { ChatHttpResponse } from "../../src/models/chat";
 
 jest.mock("../../src/defence");
 const mocked = configureDefence as jest.MockedFunction<typeof configureDefence>;
@@ -65,5 +66,34 @@ describe("/defence/configure", () => {
       .send(body)
       .expect(400)
       .expect("Config value exceeds character limit");
+  });
+});
+
+describe("/openai/chat", () => {
+  const noMessageOrLevelResponse: ChatHttpResponse = {
+    reply: "Please send a message and current level to chat to me!",
+    defenceInfo: {
+      blockedReason: "Please send a message and current level to chat to me!",
+      isBlocked: true,
+      alertedDefences: [],
+      triggeredDefences: [],
+    },
+    transformedMessage: "",
+    wonLevel: false,
+    isError: true,
+  };
+
+  it("When no message is provided THEN returns 400", async () => {
+    await request(app)
+      .post("/openai/chat")
+      .expect(400)
+      .expect(noMessageOrLevelResponse);
+  });
+
+  it("When no level is provided THEN returns 400", async () => {
+    await request(app)
+      .post("/openai/chat")
+      .expect(400)
+      .expect(noMessageOrLevelResponse);
   });
 });
