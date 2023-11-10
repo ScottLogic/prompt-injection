@@ -1,11 +1,4 @@
-import { activateDefence } from "../../src/defence";
-import {
-  getEmailWhitelist,
-  isEmailInWhitelist,
-  sendEmail,
-} from "../../src/email";
-import { defaultDefences } from "../../src/defaultDefences";
-import { DEFENCE_TYPES } from "../../src/models/defence";
+import { sendEmail } from "../../src/email";
 import { LEVEL_NAMES } from "../../src/models/level";
 
 test("GIVEN an email is to be sent and confirmed WHEN email is sent THEN the response is valid ", () => {
@@ -175,49 +168,4 @@ test("GIVEN email body and subject does not meet win condition for level 3 AND e
   const currentLevel = LEVEL_NAMES.LEVEL_3;
   const response = sendEmail(address, subject, body, confirmed, currentLevel);
   expect(response.wonLevel).toBe(false);
-});
-
-test("GIVEN EMAIL_WHITELIST environment variable is set WHEN getting whitelist AND whitelist defense on THEN list is returned", () => {
-  let defences = defaultDefences;
-  // activate email whitelist defence
-  defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
-  const whitelist = getEmailWhitelist(defences);
-  expect(whitelist).toBe(
-    `The whitelisted emails and domains are: bob@example.com,kate@example.com,@anotherExample.com`
-  );
-});
-
-test("GIVEN EMAIL_WHITELIST environment variable is set WHEN getting whitelist AND whitelist defense off THEN text is returned", () => {
-  const defences = defaultDefences;
-  const response = getEmailWhitelist(defences);
-  expect(response).toBe(
-    "As the email whitelist defence is not active, any email address can be emailed."
-  );
-});
-
-test("GIVEN email is not in whitelist WHEN checking whitelist THEN false is returned", () => {
-  let defences = defaultDefences;
-  // activate email whitelist defence
-  defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
-  const address = "malicious@user.com";
-  const isWhitelisted = isEmailInWhitelist(address, defences);
-  expect(isWhitelisted).toBe(false);
-});
-
-test("GIVEN email is in whitelist WHEN checking whitelist THEN true is returned", () => {
-  let defences = defaultDefences;
-  // activate email whitelist defence
-  defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
-  const address = "bob@example.com";
-  const isWhitelistedAddress = isEmailInWhitelist(address, defences);
-  expect(isWhitelistedAddress).toBe(true);
-});
-
-test("GIVEN email domain is in whitelist WHEN checking whitelist THEN true is returned", () => {
-  let defences = defaultDefences;
-  // activate email whitelist defence
-  defences = activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defences);
-  const address = "bob@example.com";
-  const isWhitelisted = isEmailInWhitelist(address, defences);
-  expect(isWhitelisted).toBe(true);
 });

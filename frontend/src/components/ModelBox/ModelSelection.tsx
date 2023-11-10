@@ -8,9 +8,9 @@ import LoadingButton from "../ThemedButtons/LoadingButton";
 // return a drop down menu with the models
 function ModelSelection() {
   // model currently selected in the dropdown
-  const [selectedModel, setSelectedModel] = useState(CHAT_MODELS.GPT_4);
+  const [selectedModel, setSelectedModel] = useState<CHAT_MODELS | null>(null);
   // model in use by the app
-  const [modelInUse, setModelInUse] = useState(CHAT_MODELS.GPT_4);
+  const [modelInUse, setModelInUse] = useState<CHAT_MODELS | null>(null);
 
   const [errorChangingModel, setErrorChangingModel] = useState(false);
 
@@ -18,13 +18,13 @@ function ModelSelection() {
 
   // handle button click to log the selected model
   async function submitSelectedModel() {
-    if (!isSettingModel) {
+    if (!isSettingModel && selectedModel) {
       const currentSelectedModel = selectedModel;
       console.log(`selected model: ${currentSelectedModel}`);
       setIsSettingModel(true);
-      const res = await setGptModel(currentSelectedModel);
+      const modelUpdated = await setGptModel(currentSelectedModel);
       setIsSettingModel(false);
-      if (res) {
+      if (modelUpdated) {
         setModelInUse(currentSelectedModel);
         setErrorChangingModel(false);
       } else {
@@ -56,16 +56,13 @@ function ModelSelection() {
         <div className="select-wrapper">
           <select
             aria-label="model-select"
+            value={selectedModel ?? 0} // default to the first model
             onChange={(e) => {
               setSelectedModel(e.target.value as CHAT_MODELS);
             }}
           >
             {chatModelOptions.map((model) => (
-              <option
-                key={model}
-                value={model}
-                selected={model === selectedModel}
-              >
+              <option key={model} value={model}>
                 {model}
               </option>
             ))}
@@ -88,7 +85,13 @@ function ModelSelection() {
           </p>
         ) : (
           <p>
-            You are chatting to model: <b> {modelInUse}</b>
+            {modelInUse ? (
+              <>
+                You are chatting to model: <b>{modelInUse}</b>
+              </>
+            ) : (
+              "You are not connected to a model."
+            )}
           </p>
         )}
       </div>

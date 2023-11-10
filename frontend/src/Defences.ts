@@ -7,12 +7,6 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
     "Limit the number of characters in the user input. This is a form of prompt validation.",
     [new DefenceConfig("maxMessageLength", "max message length", "number")]
   ),
-  // new DefenceInfo(
-  //   DEFENCE_TYPES.EMAIL_WHITELIST,
-  //   "Email Whitelist",
-  //   "Only allow emails to those on a whitelist. They can be full email addresses, or domains in the format '*@scottlogic.com'",
-  //   [new DefenceConfig("whitelist", "email whitelist")]
-  // ),
   new DefenceInfo(
     DEFENCE_TYPES.FILTER_USER_INPUT,
     "Input Filtering",
@@ -25,16 +19,6 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
     "Use a block list of words or phrases to check against bot output. If a match is found, the message is blocked.",
     [new DefenceConfig("filterBotOutput", "filter list", "text")]
   ),
-  // removed defence for ticket #359 - conflicting defence mechanisms
-  // new DefenceInfo(
-  //   DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-  //   "Random Sequence Enclosure",
-  //   "Enclose the prompt between a random string and instruct bot to only follow enclosed instructions. This is a form of prompt validation.",
-  //   [
-  //     new DefenceConfig("prePrompt", "pre-prompt"),
-  //     new DefenceConfig("length", "length"),
-  //   ]
-  // ),
   new DefenceInfo(
     DEFENCE_TYPES.XML_TAGGING,
     "XML Tagging",

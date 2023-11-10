@@ -5,7 +5,7 @@ import {
   getFilterList,
   getQAPrePromptFromConfig,
 } from "./defence";
-import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
+import { sendEmail } from "./email";
 import { queryDocuments } from "./langchain";
 import { EmailInfo, EmailResponse } from "./models/email";
 import {
@@ -60,15 +60,6 @@ const chatGptFunctions = [
       required: ["address", "subject", "body", "confirmed"],
     },
   },
-  // {
-  //   name: "getEmailWhitelist",
-  //   description:
-  //     "user asks who is on the email whitelist and the system replies with the list of emails.",
-  //   parameters: {
-  //     type: "object",
-  //     properties: {},
-  //   },
-  // },
   {
     name: "askQuestion",
     description: "Ask a question about information in the documents",
@@ -148,50 +139,26 @@ async function chatGptCallFunction(
   if (isChatGptFunction(functionName)) {
     console.debug(`Function call: ${functionName}`);
     let response = "";
-
     // call the function
     if (functionName === "sendEmail") {
-      let isAllowedToSendEmail = false;
       if (functionCall.arguments) {
         const params = JSON.parse(
           functionCall.arguments
         ) as FunctionSendEmailParams;
-        if (isEmailInWhitelist(params.address, defences)) {
-          isAllowedToSendEmail = true;
-        } else {
-          if (isDefenceActive(DEFENCE_TYPES.EMAIL_WHITELIST, defences)) {
-            defenceInfo.triggeredDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
-            // do not send email if defence is on and set to blocked
-            defenceInfo.isBlocked = true;
-            defenceInfo.blockedReason =
-              "Cannot send to this email as it is not whitelisted";
-          } else {
-            defenceInfo.alertedDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
-            // send email if defence is not active
-            isAllowedToSendEmail = true;
-          }
+        console.debug("Send email params: ", JSON.stringify(params));
+        const emailResponse: EmailResponse = sendEmail(
+          params.address,
+          params.subject,
+          params.body,
+          params.confirmed,
+          currentLevel
+        );
+        response = emailResponse.response;
+        wonLevel = emailResponse.wonLevel;
+        if (emailResponse.sentEmail) {
+          sentEmails.push(emailResponse.sentEmail);
         }
-
-        if (isAllowedToSendEmail) {
-          console.debug("Send email params: ", JSON.stringify(params));
-          const emailResponse: EmailResponse = sendEmail(
-            params.address,
-            params.subject,
-            params.body,
-            params.confirmed,
-            currentLevel
-          );
-          response = emailResponse.response;
-          wonLevel = emailResponse.wonLevel;
-          if (emailResponse.sentEmail) {
-            sentEmails.push(emailResponse.sentEmail);
-          }
-        }
-      } else {
-        console.error("No arguments provided to sendEmail function");
       }
-    } else if (functionName === "getEmailWhitelist") {
-      response = getEmailWhitelist(defences);
     }
     if (functionName === "askQuestion") {
       if (functionCall.arguments) {

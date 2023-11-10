@@ -4,6 +4,7 @@ import {
   promptInjectionEvalPrePrompt,
   qAPrePromptSecure,
   systemRoleDefault,
+  xmlPrePrompt,
 } from "./promptTemplates";
 
 function createDefenceInfo(
@@ -21,13 +22,7 @@ const defaultDefences: DefenceInfo[] = [
   createDefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
     {
       id: "maxMessageLength",
-      value: process.env.MAX_MESSAGE_LENGTH ?? String(280),
-    },
-  ]),
-  createDefenceInfo(DEFENCE_TYPES.EMAIL_WHITELIST, [
-    {
-      id: "whitelist",
-      value: process.env.EMAIL_WHITELIST ?? "",
+      value: String(280),
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
@@ -46,16 +41,6 @@ const defaultDefences: DefenceInfo[] = [
       value: qAPrePromptSecure,
     },
   ]),
-  createDefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
-    {
-      id: "prePrompt",
-      value: process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT ?? "",
-    },
-    {
-      id: "length",
-      value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH ?? String(10),
-    },
-  ]),
   createDefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
     {
       id: "systemRole",
@@ -65,19 +50,19 @@ const defaultDefences: DefenceInfo[] = [
   createDefenceInfo(DEFENCE_TYPES.XML_TAGGING, [
     {
       id: "prePrompt",
-      value: process.env.XML_TAGGING_PRE_PROMPT ?? "",
+      value: xmlPrePrompt,
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
     {
       id: "filterUserInput",
-      value: process.env.FILTER_LIST_INPUT ?? "",
+      value: "secret project,confidential project,budget,password",
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.FILTER_BOT_OUTPUT, [
     {
       id: "filterBotOutput",
-      value: process.env.FILTER_LIST_OUTPUT ?? "",
+      value: "secret project",
     },
   ]),
 ];
