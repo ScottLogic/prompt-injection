@@ -115,8 +115,14 @@ function ChatBox({
           type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
         });
       }
+      if (response.isError) {
+        addChatMessage({
+          message: response.reply,
+          type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+        });
+      }
       // add it to the list of messages
-      if (response.defenceInfo.isBlocked) {
+      else if (response.defenceInfo.isBlocked) {
         addChatMessage({
           type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
           message: response.defenceInfo.blockedReason,
