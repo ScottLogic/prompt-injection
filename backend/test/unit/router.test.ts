@@ -83,14 +83,14 @@ describe("/openai/chat", () => {
     isError: true,
   };
 
-  it("When no message is provided THEN returns 400", async () => {
+  it("When no message is provided THEN does not accept message", async () => {
     await request(app)
       .post("/openai/chat")
       .expect(400)
       .expect(noMessageOrLevelResponse);
   });
 
-  it("When no level is provided THEN returns 400", async () => {
+  it("When no level is provided THEN does not accept message", async () => {
     await request(app)
       .post("/openai/chat")
       .expect(400)
