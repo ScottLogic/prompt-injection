@@ -38,10 +38,7 @@ function DefenceMechanism({
   }
 
   async function setConfigurationValue(configId: string, value: string) {
-    const configName =
-      defenceDetail.config.find((config) => config.id === configId)?.name ?? "";
-
-    const configIsValid = validateDefence(defenceDetail.id, configName, value);
+    const configIsValid = validateDefence(defenceDetail.id, value);
     if (configIsValid) {
       const newConfiguration = defenceDetail.config.map((config) => {
         if (config.id === configId) {
