@@ -98,4 +98,28 @@ describe("/openai/chat", () => {
       .expect(400)
       .expect(noMessageOrLevelResponse);
   });
+
+  it("WHEN message exceeds character limit THEN does not accept message", async () => {
+    const CHARACTER_LIMIT = 16384;
+    const longMessage = "a".repeat(CHARACTER_LIMIT + 1);
+
+    const messageTooLongResponse: ChatHttpResponse = {
+      reply: "Message exceeds character limit",
+      defenceInfo: {
+        blockedReason: "Message exceeds character limit",
+        isBlocked: true,
+        alertedDefences: [],
+        triggeredDefences: [],
+      },
+      transformedMessage: "",
+      wonLevel: false,
+      isError: true,
+    };
+
+    await request(app)
+      .post("/openai/chat")
+      .send({ message: longMessage, currentLevel: LEVEL_NAMES.SANDBOX })
+      .expect(400)
+      .expect(messageTooLongResponse);
+  });
 });
