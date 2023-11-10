@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 
-function useIsOverflow(
-  ref: React.MutableRefObject<HTMLInputElement | null>,
-  direction: "vertical" | "horizontal" = "vertical"
-) {
+function useIsOverflow(ref: React.MutableRefObject<HTMLInputElement | null>) {
   const [isOverflow, setIsOverflow] = useState(false);
 
   function checkForOverflow() {
@@ -12,9 +9,8 @@ function useIsOverflow(
     if (!current) return;
 
     const hasOverflow =
-      direction === "vertical"
-        ? current.scrollHeight > current.clientHeight
-        : current.scrollWidth > current.clientWidth;
+      current.scrollHeight > current.clientHeight ||
+      current.scrollWidth > current.clientWidth;
 
     setIsOverflow(hasOverflow);
   }
