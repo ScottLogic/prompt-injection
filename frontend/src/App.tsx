@@ -217,6 +217,7 @@ function App() {
         openInformationOverlay={openInformationOverlay}
         openLevelsCompleteOverlay={openLevelsCompleteOverlay}
         openWelcomeOverlay={openWelcomeOverlay}
+        openDocumentViewer={openDocumentViewer}
         setCurrentLevel={setCurrentLevel}
       />
     </div>

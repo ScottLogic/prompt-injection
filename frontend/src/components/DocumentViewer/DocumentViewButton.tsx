@@ -1,22 +1,18 @@
 import ThemedButton from "../ThemedButtons/ThemedButton";
-import DocumentViewBox from "./DocumentViewBox";
 
 import "./DocumentViewButton.css";
 
 function DocumentViewButton({
-  closeOverlay,
-  openOverlay
+  openDocumentViewer
 }: {
-  closeOverlay: () => void;
-  openOverlay: () => void;
+  openDocumentViewer: () => void;
 }) {
 
   return (
     <div className="document-view-button-wrapper">
-      <ThemedButton onClick={openOverlay}>
+      <ThemedButton onClick={openDocumentViewer}>
         View Documents
       </ThemedButton>
-      <DocumentViewBox closeOverlay={closeOverlay}/>
     </div>
   );
 }

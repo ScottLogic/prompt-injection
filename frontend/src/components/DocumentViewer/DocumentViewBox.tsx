@@ -23,8 +23,8 @@ function DocumentViewBox({
   }, []);
 
   return (
-    <div className="document-popup">
-      <div className="document-popup-inner">
+    // <div className="document-popup">
+      <div className="document-popup">
         <button
           className="prompt-injection-min-button close-button"
           onClick={closeOverlay}
@@ -45,7 +45,7 @@ function DocumentViewBox({
           </div>
         </div>
       </div>
-    </div>
+    // </div>
   );
 }
 
