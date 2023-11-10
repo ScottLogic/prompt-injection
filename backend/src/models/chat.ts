@@ -21,6 +21,7 @@ enum CHAT_MESSAGE_TYPE {
   DEFENCE_TRIGGERED,
   SYSTEM,
   FUNCTION_CALL,
+  ERROR_MSG,
 }
 
 enum MODEL_CONFIG {
@@ -60,7 +61,7 @@ interface ChatMalicious {
 }
 
 interface ChatResponse {
-  completion: ChatCompletionRequestMessage;
+  completion: ChatCompletionRequestMessage | null;
   defenceInfo: ChatDefenceReport;
   wonLevel: boolean;
 }
@@ -70,6 +71,7 @@ interface ChatHttpResponse {
   defenceInfo: ChatDefenceReport;
   transformedMessage: string;
   wonLevel: boolean;
+  isError: boolean;
 }
 
 interface ChatHistoryMessage {
