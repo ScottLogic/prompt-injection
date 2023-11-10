@@ -24,6 +24,7 @@ import {
   systemRoleLevel1,
   systemRoleLevel2,
   systemRoleLevel3,
+  xmlPrePrompt,
 } from "../../src/promptTemplates";
 
 jest.mock("../../src/langchain");
@@ -121,7 +122,7 @@ test("GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
   const transformedMessage = transformMessage(message, updatedDefences);
   // expect the message to be surrounded by XML tags
   expect(transformedMessage).toBe(
-    `XML_PRE_PROMPT: <user_input>${message}</user_input>`
+    `${xmlPrePrompt}<user_input>${message}</user_input>`
   );
 });
 
@@ -134,7 +135,7 @@ test("GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
   const transformedMessage = transformMessage(message, updatedDefences);
   // expect the message to be surrounded by XML tags
   expect(transformedMessage).toBe(
-    `XML_PRE_PROMPT: <user_input>${escapedMessage}</user_input>`
+    `${xmlPrePrompt}<user_input>${escapedMessage}</user_input>`
   );
 });
 

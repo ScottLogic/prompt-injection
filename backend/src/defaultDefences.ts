@@ -4,6 +4,7 @@ import {
   promptInjectionEvalPrePrompt,
   qAPrePromptSecure,
   systemRoleDefault,
+  xmlPrePrompt,
 } from "./promptTemplates";
 
 function createDefenceInfo(
@@ -21,7 +22,7 @@ const defaultDefences: DefenceInfo[] = [
   createDefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
     {
       id: "maxMessageLength",
-      value: process.env.MAX_MESSAGE_LENGTH ?? String(280),
+      value: String(280),
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.EMAIL_WHITELIST, [
@@ -65,19 +66,19 @@ const defaultDefences: DefenceInfo[] = [
   createDefenceInfo(DEFENCE_TYPES.XML_TAGGING, [
     {
       id: "prePrompt",
-      value: process.env.XML_TAGGING_PRE_PROMPT ?? "",
+      value: xmlPrePrompt,
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
     {
       id: "filterUserInput",
-      value: process.env.FILTER_LIST_INPUT ?? "",
+      value: "secret project,confidential project,budget,password",
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.FILTER_BOT_OUTPUT, [
     {
       id: "filterBotOutput",
-      value: process.env.FILTER_LIST_OUTPUT ?? "",
+      value: "secret project",
     },
   ]),
 ];
