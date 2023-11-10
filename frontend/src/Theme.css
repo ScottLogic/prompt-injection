@@ -1,5 +1,6 @@
 :root {
   --header-background-colour: #101010;
+  --footer-background-colour: #444444;
 
   --main-accent-colour: #1fd07b;
   --main-background-colour: #252525;
@@ -66,7 +67,7 @@
   --chat-edited-background: linear-gradient(var(--chat-edited-colour), #cae7f5);
   --chat-user-colour: var(--main-accent-colour);
   --chat-user-background: linear-gradient(var(--chat-user-colour), #8ad5da);
-  --chat-info-text-colour: #888;
+  --chat-info-text-colour: #b0b0b0;
   --chat-message-text-colour: #000;
   --chat-alerted-text-colour: teal;
   --chat-triggered-text-colour: var(--main-error-colour);

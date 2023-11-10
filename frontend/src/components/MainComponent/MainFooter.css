@@ -1,0 +1,37 @@
+.main-footer {
+  width: 100%;
+  height: 3.75rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--footer-background-colour);
+}
+
+.main-footer > a {
+  display: flex;
+}
+
+.main-footer > a svg {
+  height: 2.25rem;
+  padding: 0.75rem;
+}
+
+.main-footer .links {
+  padding: 0.75rem;
+}
+
+.main-footer .links a {
+  color: var(--main-text-colour);
+  text-decoration: none;
+}
+
+.main-footer .links a:hover {
+  text-decoration: underline;
+}
+
+.main-footer .links a:not(:last-child)::after {
+  content: "|";
+  padding: 0 0.75rem;
+}
