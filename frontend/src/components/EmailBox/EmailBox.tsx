@@ -5,7 +5,7 @@ import { useRef } from "react";
 import useIsOverflow from "../../hooks/useIsOverflow";
 
 function EmailBox({ emails }: { emails: EmailInfo[] }) {
-  const emailBoxContainer = useRef<HTMLInputElement>(null);
+  const emailBoxContainer = useRef<HTMLDivElement>(null);
   const isOverflow = useIsOverflow(emailBoxContainer);
 
   return (

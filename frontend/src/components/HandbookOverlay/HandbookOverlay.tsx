@@ -23,7 +23,7 @@ function HandbookOverlay({
   const [levelSystemRole, setLevelSystemRole] = useState<string>("");
 
   // hooks to control tabIndex when there is scrolling
-  const handBookPageContainer = useRef<HTMLInputElement>(null);
+  const handBookPageContainer = useRef<HTMLDivElement>(null);
   const isOverflow = useIsOverflow(handBookPageContainer);
 
   // update system role when currentLevel changes to display in handbook

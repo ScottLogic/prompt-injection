@@ -6,7 +6,7 @@ import { useRef } from "react";
 import useIsOverflow from "../../hooks/useIsOverflow";
 
 function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
-  const chatboxFeedContainer = useRef<HTMLInputElement>(null);
+  const chatboxFeedContainer = useRef<HTMLDivElement>(null);
   const isOverflow = useIsOverflow(chatboxFeedContainer);
 
   return (

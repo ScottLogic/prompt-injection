@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function useIsOverflow(ref: React.MutableRefObject<HTMLInputElement | null>) {
+function useIsOverflow(ref: React.MutableRefObject<HTMLElement | null>) {
   const [isOverflow, setIsOverflow] = useState(false);
 
   function checkForOverflow() {
