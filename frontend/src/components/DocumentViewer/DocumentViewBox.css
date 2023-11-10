@@ -52,6 +52,13 @@
   text-align: center;
 }
 
+.doc-viewer-nav-buttons-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 1rem;
+}
+
 #react-doc-viewer {
   color: var(--chat-message-text-colour);
   /* width: 70%; */

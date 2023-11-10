@@ -4,6 +4,7 @@ import { RemoteDocument } from "../../models/document";
 import { getDocumentUris } from "../../service/documentService";
 
 import "./DocumentViewBox.css";
+import ThemedButton from "../ThemedButtons/ThemedButton";
 
 function DocumentViewBox({
   closeOverlay
@@ -36,22 +37,22 @@ function DocumentViewBox({
         <div className="content">
           <div className="view-documents-header">
             <h3>view documents</h3>
-          </div><div>
-  <button onClick={() => docViewerRef.current?.prev()}>
-    Previous Document
-  </button>
-  <button onClick={() => docViewerRef.current?.next()}>
-    Next Document
-  </button>
-</div>
-
+          </div>
+          <div className="doc-viewer-nav-buttons-container">
+            <ThemedButton onClick={() => docViewerRef.current?.prev()}>
+              Previous Document
+            </ThemedButton>
+            <ThemedButton onClick={() => docViewerRef.current?.next()}>
+              Next Document
+            </ThemedButton>
+          </div>
           <div className="view-documents-body">
             <DocViewer
               className="document-viewer"
               documents={documents}
               pluginRenderers={DocViewerRenderers}
               ref={docViewerRef}
-                      config={{ header: { disableHeader: true } }}
+              config={{ header: { disableHeader: true } }}
             />
           </div>
         </div>
