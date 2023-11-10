@@ -254,6 +254,7 @@ router.post(
         "Message exceeds character limit",
         400
       );
+      return;
     }
 
     // set the transformed message to begin with
