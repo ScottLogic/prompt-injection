@@ -1,25 +1,8 @@
-.document-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Black w/ opacity */
-}
-
 .document-popup-inner {
   position: relative;
   padding: 2rem;
-  /* width: 100%; */
-  max-width: 50rem;
-  max-height: 90%;
+  max-width: 100%;
+  width: 40rem;
   background-color: var(--main-background-colour);
   border: 0.1875rem solid var(--main-border-colour);
   border-color: var(--main-border-colour);
@@ -42,11 +25,9 @@
 }
 
 .view-documents-header {
+  background-color: var(--main-background-colour);
   color: var(--main-accent-colour);
-  border-color: var(--main-border-colour);
-  border-width: 0 0 0.0625rem 0;
-  border-style: solid;
-  margin: 1rem;
+  border-bottom: solid 0.0625rem var(--main-border-colour);
   margin-bottom: 0.625rem;
   padding-bottom: 1.25rem;
   text-align: center;
@@ -56,27 +37,15 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  margin: 1rem;
+  /* margin: 1rem; */
+  /* background-color: aquamarine; */
+  gap: 0.5rem;
 }
 
 #react-doc-viewer {
   color: var(--chat-message-text-colour);
-  /* width: 70%; */
   height: 31.25rem;
   margin: auto;
-}
-
-#react-doc-viewer #header-bar {
-  background-color: var(--main-background-colour);
-  color: var(--main-accent-colour);
-}
-
-#react-doc-viewer #header-bar #file-name {
-  color: var(--main-accent-colour);
-}
-
-#react-doc-viewer #doc-nav-info {
-  color: var(--main-accent-colour);
 }
 
 #react-doc-viewer #proxy-renderer {
@@ -86,4 +55,16 @@
 #react-doc-viewer #txt-renderer {
   padding: 0.625rem;
   white-space: pre-wrap;
+}
+
+.doc-view-nav {
+  /* background-color: antiquewhite; */
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.doc-viewer-nav-buttons-container .themed-button {
+  border-radius: 50%;
+  border: none;
 }

@@ -5,6 +5,7 @@ import { getDocumentUris } from "../../service/documentService";
 
 import "./DocumentViewBox.css";
 import ThemedButton from "../ThemedButtons/ThemedButton";
+import { MyHeader } from "./DocumentViewBoxHeader";
 
 function DocumentViewBox({
   closeOverlay
@@ -35,7 +36,7 @@ function DocumentViewBox({
           X
         </button>
         <div className="content">
-          <div className="view-documents-header">
+          {/* <div className="view-documents-header">
             <h3>view documents</h3>
           </div>
           <div className="doc-viewer-nav-buttons-container">
@@ -45,14 +46,18 @@ function DocumentViewBox({
             <ThemedButton onClick={() => docViewerRef.current?.next()}>
               Next Document
             </ThemedButton>
-          </div>
+          </div> */}
           <div className="view-documents-body">
             <DocViewer
               className="document-viewer"
               documents={documents}
               pluginRenderers={DocViewerRenderers}
               ref={docViewerRef}
-              config={{ header: { disableHeader: true } }}
+              config={{
+                header: {
+                  overrideComponent: MyHeader,
+                },
+              }}
             />
           </div>
         </div>

@@ -27,7 +27,7 @@
   color: var(--main-button-active-hover-text-colour);
 }
 
-.themed-button.appearsDifferentWhenDisabled[disabled] {
+.themed-button[disabled] {
   background-color: var(--main-button-disabled-background-colour);
   color: var(--main-button-disabled-text-colour);
   cursor: default;
