@@ -116,11 +116,7 @@ function App() {
         );
         break;
       case OVERLAY_TYPE.DOCUMENTS:
-        setOverlayComponent(
-          <DocumentViewBox
-            closeOverlay={closeOverlay}
-          />
-        );
+        setOverlayComponent(<DocumentViewBox closeOverlay={closeOverlay} />);
         break;
       default:
         setOverlayComponent(null);
@@ -177,7 +173,7 @@ function App() {
     setOverlayType(OVERLAY_TYPE.LEVELS_COMPLETE);
   }
   function openDocumentViewer() {
-    setOverlayType(OVERLAY_TYPE.DOCUMENTS)
+    setOverlayType(OVERLAY_TYPE.DOCUMENTS);
   }
 
   // set the start level for a user who clicks beginner/expert

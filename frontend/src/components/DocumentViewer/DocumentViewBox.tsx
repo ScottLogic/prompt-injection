@@ -4,8 +4,7 @@ import { RemoteDocument } from "../../models/document";
 import { getDocumentUris } from "../../service/documentService";
 
 import "./DocumentViewBox.css";
-import ThemedButton from "../ThemedButtons/ThemedButton";
-import { MyHeader } from "./DocumentViewBoxHeader";
+import { DocumentViewBoxHeader } from "./DocumentViewBoxHeader";
 
 function DocumentViewBox({
   closeOverlay
@@ -26,27 +25,16 @@ function DocumentViewBox({
   }, []);
 
   return (
-    // <div className="document-popup">
       <div className="document-popup-inner">
         <button
           className="prompt-injection-min-button close-button"
           onClick={closeOverlay}
           aria-label="close document viewer"
+          title="close document viewer"
         >
           X
         </button>
         <div className="content">
-          {/* <div className="view-documents-header">
-            <h3>view documents</h3>
-          </div>
-          <div className="doc-viewer-nav-buttons-container">
-            <ThemedButton onClick={() => docViewerRef.current?.prev()}>
-              Previous Document
-            </ThemedButton>
-            <ThemedButton onClick={() => docViewerRef.current?.next()}>
-              Next Document
-            </ThemedButton>
-          </div> */}
           <div className="view-documents-body">
             <DocViewer
               className="document-viewer"
@@ -55,14 +43,13 @@ function DocumentViewBox({
               ref={docViewerRef}
               config={{
                 header: {
-                  overrideComponent: MyHeader,
+                  overrideComponent: DocumentViewBoxHeader,
                 },
               }}
             />
           </div>
         </div>
       </div>
-    // </div>
   );
 }
 

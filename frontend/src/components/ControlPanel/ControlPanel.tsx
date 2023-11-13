@@ -93,10 +93,9 @@ function ControlPanel({
       )}
 
       {/* only show document viewer button in sandbox mode */}
-      {currentLevel === LEVEL_NAMES.SANDBOX && 
-      <DocumentViewButton 
-        openDocumentViewer={openDocumentViewer}
-      />}
+      {currentLevel === LEVEL_NAMES.SANDBOX && (
+        <DocumentViewButton openDocumentViewer={openDocumentViewer} />
+      )}
       <SwitchModeButton
         currentLevel={currentLevel}
         onClick={() => {

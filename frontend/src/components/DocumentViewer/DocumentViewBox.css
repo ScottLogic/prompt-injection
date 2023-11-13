@@ -11,8 +11,8 @@
 .document-popup-inner .close-button {
   color: var(--main-accent-colour);
   position: absolute;
-  top: 2rem;
-  right: 2rem;
+  top: 1rem;
+  right: 1rem;
   padding: 0.25rem 0.75rem;
   font-size: 1.75rem;
   font-weight: bold;
@@ -24,23 +24,6 @@
   cursor: pointer;
 }
 
-.view-documents-header {
-  background-color: var(--main-background-colour);
-  color: var(--main-accent-colour);
-  border-bottom: solid 0.0625rem var(--main-border-colour);
-  margin-bottom: 0.625rem;
-  padding-bottom: 1.25rem;
-  text-align: center;
-}
-
-.doc-viewer-nav-buttons-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  /* margin: 1rem; */
-  /* background-color: aquamarine; */
-  gap: 0.5rem;
-}
 
 #react-doc-viewer {
   color: var(--chat-message-text-colour);
@@ -55,16 +38,4 @@
 #react-doc-viewer #txt-renderer {
   padding: 0.625rem;
   white-space: pre-wrap;
-}
-
-.doc-view-nav {
-  /* background-color: antiquewhite; */
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-}
-
-.doc-viewer-nav-buttons-container .themed-button {
-  border-radius: 50%;
-  border: none;
 }

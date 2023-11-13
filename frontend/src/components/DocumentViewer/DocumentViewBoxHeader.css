@@ -1,0 +1,40 @@
+.view-documents-header {
+  background-color: var(--main-background-colour);
+  color: var(--main-accent-colour);
+  padding-bottom: 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.view-documents-header h1 {
+  width: 100%;
+  padding-bottom: 1rem;
+  border-bottom: solid 0.0625rem var(--main-border-colour);
+  margin-top: 0;
+}
+
+.view-documents-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.view-documents-button-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  width: 45%;
+}
+
+.previous-document {
+  grid-column: 1;
+}
+
+.next-document {
+  grid-column: 2;
+  justify-self: end;
+}
