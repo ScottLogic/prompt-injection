@@ -8,7 +8,7 @@ async function getDocumentUris(): Promise<RemoteDocument[]> {
   documents = documents.map((document) => {
     return {
       ...document,
-      uri: `${getBackendUrl()}${path}/${document.filename}`,
+      uri: `${getBackendUrl()}${path}/${document.folder}/${document.filename}`,
     };
   });
   return documents;
