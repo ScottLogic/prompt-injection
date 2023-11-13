@@ -97,13 +97,7 @@ async function initDocumentVectors() {
     .map((value) => Number(value));
 
   for (const level of levelValues) {
-    // get the documents
-    const levelDocsFilePath: string = getFilepath(level);
-    const commonDocsFilePath: string = getFilepath("common");
-
-    const levelDocuments: Document[] = await getDocuments(levelDocsFilePath);
-    const commonDocuments: Document[] = await getDocuments(commonDocsFilePath);
-    const allDocuments = levelDocuments.concat(commonDocuments);
+    const allDocuments = await getDocumentsForLevel(level);
 
     // embed and store the splits - will use env variable for API key
     const embeddings = new OpenAIEmbeddings();
@@ -123,6 +117,17 @@ async function initDocumentVectors() {
     "Intitialised document vectors for each level. count=",
     docVectors.length
   );
+}
+
+async function getDocumentsForLevel(level: LEVEL_NAMES) {
+  // get the documents
+  const levelDocsFilePath: string = getFilepath(level);
+  const commonDocsFilePath: string = getFilepath("common");
+
+  const levelDocuments: Document[] = await getDocuments(levelDocsFilePath);
+  const commonDocuments: Document[] = await getDocuments(commonDocsFilePath);
+  const allDocuments = levelDocuments.concat(commonDocuments);
+  return allDocuments;
 }
 
 function initQAModel(level: LEVEL_NAMES, prePrompt: string) {
