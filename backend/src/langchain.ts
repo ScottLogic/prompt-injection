@@ -33,9 +33,9 @@ function setVectorisedDocuments(docs: DocumentsVector[]) {
   vectorisedDocuments = docs;
 }
 
-function getFilepath(currentLevel: LEVEL_NAMES) {
+function getFilepath(target: LEVEL_NAMES | "common") {
   let filePath = "resources/documents/";
-  switch (currentLevel) {
+  switch (target) {
     case LEVEL_NAMES.LEVEL_1:
       return (filePath += "level_1/");
     case LEVEL_NAMES.LEVEL_2:
@@ -43,6 +43,8 @@ function getFilepath(currentLevel: LEVEL_NAMES) {
     case LEVEL_NAMES.LEVEL_3:
       return (filePath += "level_3/");
     case LEVEL_NAMES.SANDBOX:
+      return (filePath += "sandbox/");
+    case "common":
       return (filePath += "common/");
     default:
       console.error(`No document filepath found: ${filePath}`);
@@ -96,14 +98,18 @@ async function initDocumentVectors() {
 
   for (const level of levelValues) {
     // get the documents
-    const filePath: string = getFilepath(level);
-    const documents: Document[] = await getDocuments(filePath);
+    const levelDocsFilePath: string = getFilepath(level);
+    const commonDocsFilePath: string = getFilepath("common");
+
+    const levelDocuments: Document[] = await getDocuments(levelDocsFilePath);
+    const commonDocuments: Document[] = await getDocuments(commonDocsFilePath);
+    const allDocuments = levelDocuments.concat(commonDocuments);
 
     // embed and store the splits - will use env variable for API key
     const embeddings = new OpenAIEmbeddings();
 
     const docVector: MemoryVectorStore = await MemoryVectorStore.fromDocuments(
-      documents,
+      allDocuments,
       embeddings
     );
     // store the document vectors for the level
