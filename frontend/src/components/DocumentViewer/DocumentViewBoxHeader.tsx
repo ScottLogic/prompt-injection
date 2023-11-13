@@ -21,24 +21,20 @@ export const MyHeader: IHeaderOverride = (state, previousDocument, nextDocument)
                 {/* </div> */}
               <div className="doc-viewer-nav-buttons-container">
                 {documentNumber}
-                  <button 
+                  <ThemedButton 
                   title="previous button"
-                  aria-label="previous document"
-                  className="themed-button"
                   onClick={previousDocument} 
                   disabled={state.currentFileNo === 0}
                   >
                   ◄
-                  </button>
-                  <button
+                  </ThemedButton>
+                  <ThemedButton
                   title="next button"
-                  aria-label="next document"
-                  className="themed-button"
                   onClick={nextDocument}
                   disabled={state.currentFileNo >= state.documents.length - 1}
                   >
                   ►
-                  </button>
+                  </ThemedButton>
               </div>
             </div>
         </div>
