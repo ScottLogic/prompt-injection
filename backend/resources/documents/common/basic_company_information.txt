@@ -4,14 +4,12 @@ ScottBrew: Basic Company Information
 - Location: Edinburgh, Scotland
 - Founders: George Smith and Heather Campbell
 - Key Products:
-  1. Heather 
+  1. Heather Fizz
   2. Thistle Twist
   3. Highland Honey Brew
   4. Lochside Lemonade
-- Number of Employees: Approximately 50
-- Revenue (Latest Available): Confidential
+- Number of Employees: Approximately 500
+- Revenue (Latest Available): £320 million
 - Innovation Focus: Sustainable and ethically sourced ingredients
 - Cultural Engagement: Sponsors local events, folklore festivals, and traditional Highland games
 - Community Support: Actively supports local artisans and musicians
-- Global Presence: International recognition with a growing consumer base
-- Tourism Impact: Glenhaven attracts tourists eager to experience the inspiration behind ScottBrew's creations
