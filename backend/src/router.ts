@@ -567,7 +567,7 @@ router.get("/level/prompt", (req, res) => {
 router.get("/documents", (_, res) => {
   try {
     const commonDocFiles = getDocFiles("common");
-    const sandboxDocFiles = getDocFiles("level_3");
+    const sandboxDocFiles = getDocFiles("sandbox");
     const allDocFiles = [...commonDocFiles, ...sandboxDocFiles];
     res.send(allDocFiles);
   } catch (err) {
