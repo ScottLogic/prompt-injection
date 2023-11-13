@@ -86,32 +86,36 @@ function makePromptTemplate(
 }
 
 // create and store the document vectors for each level
+// eslint-disable-next-line @typescript-eslint/require-await
 async function initDocumentVectors() {
   const docVectors: DocumentsVector[] = [];
 
-  for (const value of Object.values(LEVEL_NAMES)) {
-    if (!isNaN(Number(value))) {
-      const level = value as LEVEL_NAMES;
-      // get the documents
-      const filePath: string = getFilepath(level);
-      const documents: Document[] = await getDocuments(filePath);
+  const levelValues = Object.values(LEVEL_NAMES)
+    .filter((value) => !isNaN(Number(value)))
+    .map((value) => Number(value));
 
-      // embed and store the splits - will use env variable for API key
-      const embeddings = new OpenAIEmbeddings();
+  levelValues.map(async (level) => {
+    // get the documents
+    const filePath: string = getFilepath(level);
+    const documents: Document[] = await getDocuments(filePath);
 
-      const docVector: MemoryVectorStore =
-        await MemoryVectorStore.fromDocuments(documents, embeddings);
-      // store the document vectors for the level
-      docVectors.push({
-        level,
-        docVector,
-      });
-    }
-  }
+    // embed and store the splits - will use env variable for API key
+    const embeddings = new OpenAIEmbeddings();
+
+    const docVector: MemoryVectorStore = await MemoryVectorStore.fromDocuments(
+      documents,
+      embeddings
+    );
+    // store the document vectors for the level
+    docVectors.push({
+      level,
+      docVector,
+    });
+  });
   setVectorisedDocuments(docVectors);
   console.debug(
     "Intitialised document vectors for each level. count=",
-    vectorisedDocuments.length
+    docVectors.length
   );
 }
 
