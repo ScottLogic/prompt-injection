@@ -94,7 +94,7 @@ async function initDocumentVectors() {
     .filter((value) => !isNaN(Number(value)))
     .map((value) => Number(value));
 
-  levelValues.map(async (level) => {
+  for (const level of levelValues) {
     // get the documents
     const filePath: string = getFilepath(level);
     const documents: Document[] = await getDocuments(filePath);
@@ -111,7 +111,7 @@ async function initDocumentVectors() {
       level,
       docVector,
     });
-  });
+  }
   setVectorisedDocuments(docVectors);
   console.debug(
     "Intitialised document vectors for each level. count=",
