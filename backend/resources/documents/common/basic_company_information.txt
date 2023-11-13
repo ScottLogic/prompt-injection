@@ -1,7 +1,7 @@
 ScottBrew: Basic Company Information
 
 - Founding Year: 2015
-- Location: Glenhaven, Scottish Highlands
+- Location: Edinburgh, Scotland
 - Founders: George Smith and Heather Campbell
 - Key Products:
   1. Heather 
