@@ -563,23 +563,31 @@ router.get("/level/prompt", (req, res) => {
   }
 });
 
+// get names and types of documents for sandbox and common
 router.get("/documents", (_, res) => {
+  try {
+    const commonDocFiles = getDocFiles("common");
+    const sandboxDocFiles = getDocFiles("level_3");
+    const allDocFiles = [...commonDocFiles, ...sandboxDocFiles];
+    res.send(allDocFiles);
+  } catch (err) {
+    res.status(500).send("Failed to read documents");
+    return;
+  }
+});
+
+function getDocFiles(folder: string) {
+  const filepath = `resources/documents/${folder}`;
   const docFiles: Document[] = [];
 
-  fs.readdir("resources/documents/common", (err, files) => {
-    if (err) {
-      res.status(500).send("Failed to read documents");
-      return;
-    }
-    files.forEach((file) => {
-      const fileType = file.split(".").pop() ?? "";
-      docFiles.push({
-        filename: file,
-        filetype: fileType === "csv" ? "text/csv" : fileType,
-      });
+  fs.readdirSync(filepath).forEach((file) => {
+    const fileType = file.split(".").pop() ?? "";
+    docFiles.push({
+      filename: file,
+      filetype: fileType === "csv" ? "text/csv" : fileType,
     });
-    res.send(docFiles);
   });
-});
+  return docFiles;
+}
 
 export { router };
