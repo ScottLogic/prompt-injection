@@ -4,6 +4,7 @@ import { LEVEL_NAMES } from "./level";
 interface Document {
   filename: string;
   filetype: string;
+  folder: string;
 }
 
 interface DocumentsVector {

@@ -83,7 +83,7 @@ app.use("/", router);
 // serve the documents folder
 app.use(
   "/documents",
-  express.static(path.join(__dirname, "../resources/documents/common"))
+  express.static(path.join(__dirname, "../resources/documents/"))
 );
 
 export default app;

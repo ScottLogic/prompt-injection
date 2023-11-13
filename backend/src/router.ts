@@ -585,6 +585,7 @@ function getDocFiles(folder: string) {
     docFiles.push({
       filename: file,
       filetype: fileType === "csv" ? "text/csv" : fileType,
+      folder,
     });
   });
   return docFiles;
