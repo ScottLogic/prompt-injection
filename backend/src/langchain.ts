@@ -45,7 +45,7 @@ function getFilepath(currentLevel: LEVEL_NAMES) {
     case LEVEL_NAMES.SANDBOX:
       return (filePath += "common/");
     default:
-      console.error(`No document filepath found for level: ${filePath}`);
+      console.error(`No document filepath found: ${filePath}`);
       return "";
   }
 }
