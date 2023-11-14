@@ -7,7 +7,7 @@ import session from "express-session";
 import memoryStoreFactory from "memorystore";
 
 import { defaultDefences } from "./defaultDefences";
-import { ChatHistoryMessage, ChatModel , defaultChatModel } from "./models/chat";
+import { ChatHistoryMessage, ChatModel, defaultChatModel } from "./models/chat";
 import { DefenceInfo } from "./models/defence";
 import { EmailInfo } from "./models/email";
 import { LEVEL_NAMES } from "./models/level";
@@ -83,7 +83,7 @@ app.use("/", router);
 // serve the documents folder
 app.use(
   "/documents",
-  express.static(path.join(__dirname, "../resources/documents/common"))
+  express.static(path.join(__dirname, "@src/resources/documents/common"))
 );
 
 export default app;

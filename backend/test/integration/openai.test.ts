@@ -1,15 +1,15 @@
-import { defaultDefences } from "../../src/defaultDefences";
-import { activateDefence, configureDefence } from "../../src/defence";
+import { defaultDefences } from "@src/defaultDefences";
+import { activateDefence, configureDefence } from "@src/defence";
 import {
   CHAT_MESSAGE_TYPE,
   CHAT_MODELS,
   ChatHistoryMessage,
   ChatModel,
-} from "../../src/models/chat";
-import { DEFENCE_TYPES, DefenceInfo } from "../../src/models/defence";
-import { EmailInfo } from "../../src/models/email";
-import { chatGptSendMessage } from "../../src/openai";
-import { systemRoleDefault } from "../../src/promptTemplates";
+} from "@src/models/chat";
+import { DEFENCE_TYPES, DefenceInfo } from "@src/models/defence";
+import { EmailInfo } from "@src/models/email";
+import { chatGptSendMessage } from "@src/openai";
+import { systemRoleDefault } from "@src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
@@ -22,9 +22,9 @@ jest.mock("openai", () => ({
 }));
 
 // mock the queryPromptEvaluationModel function
-jest.mock("../../src/langchain", () => {
+jest.mock("@src/langchain", () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const originalModule = jest.requireActual("../../src/langchain");
+  const originalModule = jest.requireActual("@src/langchain");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,
