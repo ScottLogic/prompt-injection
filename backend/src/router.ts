@@ -1,14 +1,6 @@
 import express from "express";
 
-import {
-  activateDefence,
-  deactivateDefence,
-  configureDefence,
-  transformMessage,
-  detectTriggeredDefences,
-  resetDefenceConfig,
-} from "./defence";
-import { defaultDefences } from "./defaultDefences";
+import { transformMessage, detectTriggeredDefences } from "./defence";
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
@@ -22,10 +14,7 @@ import { Document } from "./models/document";
 import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
 import { LEVEL_NAMES } from "./models/level";
 import * as fs from "fs";
-import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
-import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
 import { EmailClearRequest } from "./models/api/EmailClearRequest";
-import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
 import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
 import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
 import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
@@ -36,146 +25,39 @@ import {
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
-import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
-import { DefenceConfig } from "./models/defence";
+import {
+  handleConfigureDefence,
+  handleDefenceActivation,
+  handleDefenceDeactivation,
+  handleGetDefenceStatus,
+  handleResetAllDefences,
+  handleResetSingleDefence,
+} from "./controller/defenceController";
 
 const router = express.Router();
 
 // Activate a defence
-router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
-  // id of the defence
-  const defenceId = req.body.defenceId;
-  const level = req.body.level;
-  if (defenceId && level !== undefined) {
-    // activate the defence
-    req.session.levelState[level].defences = activateDefence(
-      defenceId,
-      req.session.levelState[level].defences
-    );
-    res.send();
-  } else {
-    res.statusCode = 400;
-    res.send();
-  }
-});
+router.post("/defence/activate", handleDefenceActivation);
 
 // Deactivate a defence
-router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
-  // id of the defence
-  const defenceId = req.body.defenceId;
-  const level = req.body.level;
-  if (defenceId && level !== undefined) {
-    // deactivate the defence
-    req.session.levelState[level].defences = deactivateDefence(
-      defenceId,
-      req.session.levelState[level].defences
-    );
-    res.send();
-  } else {
-    res.statusCode = 400;
-    res.send();
-  }
-});
-
-function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
-  const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
-
-  const allValuesWithinLimit = config.every(
-    (c) => c.value.length <= CONFIG_VALUE_CHARACTER_LIMIT
-  );
-  return !allValuesWithinLimit;
-}
-
-function sendErrorResponse(
-  res: express.Response,
-  statusCode: number,
-  errorMessage: string
-) {
-  res.statusCode = statusCode;
-  res.send(errorMessage);
-}
+router.post("/defence/deactivate", handleDefenceDeactivation);
 
 // Configure a defence
-router.post("/defence/configure", (req: DefenceConfigureRequest, res) => {
-  // id of the defence
-  const defenceId = req.body.defenceId;
-  const config = req.body.config;
-  const level = req.body.level;
-
-  if (!defenceId || !config || level === undefined) {
-    sendErrorResponse(res, 400, "Missing defenceId, config or level");
-    return;
-  }
-
-  if (configValueExceedsCharacterLimit(config)) {
-    sendErrorResponse(res, 400, "Config value exceeds character limit");
-    return;
-  }
-
-  // configure the defence
-  req.session.levelState[level].defences = configureDefence(
-    defenceId,
-    req.session.levelState[level].defences,
-    config
-  );
-  res.send();
-});
+router.post("/defence/configure", handleConfigureDefence);
 
 // reset the active defences
-router.post("/defence/reset", (req: DefenceResetRequest, res) => {
-  const level = req.body.level;
-  if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
-    req.session.levelState[level].defences = defaultDefences;
-    console.debug("Defences reset");
-    res.send();
-  } else {
-    res.statusCode = 400;
-    res.send();
-  }
-});
+router.post("/defence/reset", handleResetAllDefences);
 
 // reset one defence config and return the new config
-router.post("/defence/resetConfig", (req: DefenceConfigResetRequest, res) => {
-  const defenceId = req.body.defenceId;
-  const configId = req.body.configId;
-  const level = LEVEL_NAMES.SANDBOX; //configuration only available in sandbox
-  if (defenceId && configId) {
-    req.session.levelState[level].defences = resetDefenceConfig(
-      defenceId,
-      configId,
-      req.session.levelState[level].defences
-    );
-    const updatedDefenceConfig: DefenceConfig | undefined =
-      req.session.levelState[level].defences
-        .find((defence) => defence.id === defenceId)
-        ?.config.find((config) => config.id === configId);
+router.post("/defence/resetConfig", handleResetSingleDefence);
 
-    if (updatedDefenceConfig) {
-      res.send(updatedDefenceConfig);
-    } else {
-      res.statusCode = 400;
-      res.send();
-    }
-  } else {
-    res.statusCode = 400;
-    res.send();
-  }
-});
-
-// Get the status of all defences /defence/status?level=1
-router.get("/defence/status", (req, res) => {
-  const level: number | undefined = req.query.level as number | undefined;
-  if (level !== undefined) {
-    res.send(req.session.levelState[level].defences);
-  } else {
-    res.statusCode = 400;
-    res.send("Missing level");
-  }
-});
+// Get the status of all defences
+router.get("/defence/status", handleGetDefenceStatus);
 
 // Get sent emails /email/get?level=1
 router.get("/email/get", (req, res) => {
-  const level: number | undefined = req.query.level as number | undefined;
+  const { query } = req;
+  const level: number | undefined = query.level as number | undefined;
   if (level !== undefined) {
     res.send(req.session.levelState[level].sentEmails);
   } else {

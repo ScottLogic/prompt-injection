@@ -1,0 +1,152 @@
+import { DefenceActivateRequest } from "../models/api/DefenceActivateRequest";
+import {
+  activateDefence,
+  configureDefence,
+  deactivateDefence,
+  resetDefenceConfig,
+} from "../defence";
+import { Response } from "express";
+import { DefenceConfigureRequest } from "../models/api/DefenceConfigureRequest";
+import { DefenceResetRequest } from "../models/api/DefenceResetRequest";
+import { LEVEL_NAMES } from "../models/level";
+import { defaultDefences } from "../defaultDefences";
+import { DefenceConfigResetRequest } from "../models/api/DefenceConfigResetRequest";
+import { DefenceConfig } from "../models/defence";
+import { DefenceStatusRequest } from "../models/api/DefenceStatusRequest";
+
+function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
+  const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
+
+  const allValuesWithinLimit = config.every(
+    (c) => c.value.length <= CONFIG_VALUE_CHARACTER_LIMIT
+  );
+  return !allValuesWithinLimit;
+}
+
+function sendErrorResponse(
+  res: Response,
+  statusCode: number,
+  errorMessage: string
+) {
+  res.statusCode = statusCode;
+  res.send(errorMessage);
+}
+
+function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
+  const defenceId = req.body.defenceId;
+  const level = req.body.level;
+
+  if (defenceId && level !== undefined) {
+    // activate the defence
+    req.session.levelState[level].defences = activateDefence(
+      defenceId,
+      req.session.levelState[level].defences
+    );
+    res.status(200).send();
+  } else {
+    res.status(400).send();
+  }
+}
+
+function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
+  // id of the defence
+  const defenceId = req.body.defenceId;
+  const level = req.body.level;
+  if (defenceId && level !== undefined) {
+    // deactivate the defence
+    req.session.levelState[level].defences = deactivateDefence(
+      defenceId,
+      req.session.levelState[level].defences
+    );
+    res.send();
+  } else {
+    res.statusCode = 400;
+    res.send();
+  }
+}
+
+function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
+  // id of the defence
+  const defenceId = req.body.defenceId;
+  const config = req.body.config;
+  const level = req.body.level;
+
+  if (!defenceId || !config || level === undefined) {
+    sendErrorResponse(res, 400, "Missing defenceId, config or level");
+    return;
+  }
+
+  if (configValueExceedsCharacterLimit(config)) {
+    sendErrorResponse(res, 400, "Config value exceeds character limit");
+    return;
+  }
+
+  // configure the defence
+  req.session.levelState[level].defences = configureDefence(
+    defenceId,
+    req.session.levelState[level].defences,
+    config
+  );
+  res.send();
+}
+
+function handleResetAllDefences(req: DefenceResetRequest, res: Response) {
+  const level = req.body.level;
+  if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
+    req.session.levelState[level].defences = defaultDefences;
+    console.debug("Defences reset");
+    res.send();
+  } else {
+    res.statusCode = 400;
+    res.send();
+  }
+}
+
+function handleResetSingleDefence(
+  req: DefenceConfigResetRequest,
+  res: Response
+) {
+  const defenceId = req.body.defenceId;
+  const configId = req.body.configId;
+  const level = LEVEL_NAMES.SANDBOX; //configuration only available in sandbox
+  if (defenceId && configId) {
+    req.session.levelState[level].defences = resetDefenceConfig(
+      defenceId,
+      configId,
+      req.session.levelState[level].defences
+    );
+    const updatedDefenceConfig: DefenceConfig | undefined =
+      req.session.levelState[level].defences
+        .find((defence) => defence.id === defenceId)
+        ?.config.find((config) => config.id === configId);
+
+    if (updatedDefenceConfig) {
+      res.send(updatedDefenceConfig);
+    } else {
+      res.statusCode = 400;
+      res.send();
+    }
+  } else {
+    res.statusCode = 400;
+    res.send();
+  }
+}
+
+function handleGetDefenceStatus(req: DefenceStatusRequest, res: Response) {
+  const level: number | undefined = req.query.level as number | undefined;
+  if (level !== undefined) {
+    res.send(req.session.levelState[level].defences);
+  } else {
+    res.statusCode = 400;
+    res.send("Missing level");
+  }
+}
+
+export {
+  handleDefenceActivation,
+  handleDefenceDeactivation,
+  handleConfigureDefence,
+  handleResetAllDefences,
+  handleResetSingleDefence,
+  handleGetDefenceStatus,
+};
