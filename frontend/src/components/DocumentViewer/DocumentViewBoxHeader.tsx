@@ -20,8 +20,8 @@ export const DocumentViewBoxHeader: IHeaderOverride = (
       <div className="view-documents-header">
         <h2>view documents</h2>
         <div className="view-documents-nav">
-          <h3 className="view-documents-info">{documentName}</h3>
-          <h3 className="view-documents-info">{documentNumber}</h3>
+          <p className="view-documents-info">{documentName}</p>
+          <p className="view-documents-info">{documentNumber}</p>
           <div className="view-documents-button-container">
             {state.currentFileNo > 0 && (
               <span className="previous-document">
