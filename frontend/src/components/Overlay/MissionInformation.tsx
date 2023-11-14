@@ -1,6 +1,6 @@
 import MissionDialogue from "./MissionDialogue";
-import Overlay from "./Overlay";
 import "./MissionInformation.css";
+import Overlay from "./Overlay";
 
 import { LEVELS } from "@src/Levels";
 import OverlayButton from "@src/components/ThemedButtons/OverlayButton";

@@ -1,6 +1,7 @@
+import "./HandbookSpine.css";
+
 import { HANDBOOK_PAGES, handbookPageNames } from "@src/models/handbook";
 import { LEVEL_NAMES } from "@src/models/level";
-import "./HandbookSpine.css";
 
 function HandbookSpine({
   currentLevel,

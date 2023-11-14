@@ -1,7 +1,6 @@
-import "./EmailBox.css";
-
 import { useRef } from "react";
 
+import "./EmailBox.css";
 import SentEmail from "./SentEmail";
 
 import useIsOverflow from "@src/hooks/useIsOverflow";

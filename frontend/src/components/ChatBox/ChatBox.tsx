@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import "./ChatBox.css";
 import ChatBoxFeed from "./ChatBoxFeed";
 import ChatBoxInput from "./ChatBoxInput";
 
@@ -14,7 +15,6 @@ import { LEVEL_NAMES } from "@src/models/level";
 import { addMessageToChatHistory, sendMessage } from "@src/service/chatService";
 import { getSentEmails } from "@src/service/emailService";
 
-import "./ChatBox.css";
 
 function ChatBox({
   completedLevels,

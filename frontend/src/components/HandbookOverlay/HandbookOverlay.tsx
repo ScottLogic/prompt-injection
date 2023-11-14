@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 
-import "./HandbookOverlay.css";
 import HandbookAttacks from "./HandbookAttacks";
 import HandbookCloseIcon from "./HandbookCloseIcon";
 import HandbookGlossary from "./HandbookGlossary";
+import "./HandbookOverlay.css";
 import HandbookSpine from "./HandbookSpine";
 import HandbookSystemRole from "./HandbookSystemRole";
 

@@ -1,4 +1,5 @@
 import "./ControlPanel.css";
+
 import DefenceBox from "@src/components/DefenceBox/DefenceBox";
 import DocumentViewButton from "@src/components/DocumentViewer/DocumentViewButton";
 import ModelBox from "@src/components/ModelBox/ModelBox";

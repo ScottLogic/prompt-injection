@@ -1,6 +1,6 @@
-import "./MainBody.css";
-
 import { useState } from "react";
+
+import "./MainBody.css";
 
 import { LEVELS } from "@src/Levels";
 import ChatBox from "@src/components/ChatBox/ChatBox";

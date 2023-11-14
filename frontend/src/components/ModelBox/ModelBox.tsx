@@ -1,6 +1,6 @@
+import "./ModelBox.css";
 import ModelConfiguration from "./ModelConfiguration";
 import ModelSelection from "./ModelSelection";
-import "./ModelBox.css";
 
 function ModelBox() {
   return (

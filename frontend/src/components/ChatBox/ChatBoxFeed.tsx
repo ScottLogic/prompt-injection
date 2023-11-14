@@ -1,7 +1,6 @@
-import "./ChatBoxFeed.css";
-
 import { useRef } from "react";
 
+import "./ChatBoxFeed.css";
 import ChatBoxInfoText from "./ChatBoxInfoText";
 import ChatBoxMessage from "./ChatBoxMessage";
 

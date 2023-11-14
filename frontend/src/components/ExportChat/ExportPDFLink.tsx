@@ -1,12 +1,11 @@
 import { PDFDownloadLink } from "@react-pdf/renderer";
 
 import ExportContent from "./ExportContent";
+import "./ExportPDFLink.css";
 
 import { ChatMessage } from "@src/models/chat";
 import { EmailInfo } from "@src/models/email";
 import { LEVEL_NAMES } from "@src/models/level";
-
-import "./ExportPDFLink.css";
 
 function ExportPDFLink({
   messages,

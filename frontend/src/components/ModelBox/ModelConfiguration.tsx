@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import "./ModelConfiguration.css";
-
 import ModelConfigurationSlider from "./ModelConfigurationSlider";
 
 import { CustomChatModelConfiguration, MODEL_CONFIG } from "@src/models/chat";
