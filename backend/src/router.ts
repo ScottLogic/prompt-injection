@@ -1,16 +1,4 @@
 import express from "express";
-import { ChatModelConfiguration, MODEL_CONFIG } from "./models/chat";
-import { Document } from "./models/document";
-import { verifyKeySupportsModel } from "./openai";
-import { LEVEL_NAMES } from "./models/level";
-import * as fs from "fs";
-import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
-import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
-import {
-  systemRoleLevel1,
-  systemRoleLevel2,
-  systemRoleLevel3,
-} from "./promptTemplates";
 import {
   handleConfigureDefence,
   handleDefenceActivation,
@@ -29,6 +17,13 @@ import {
   handleClearChatHistory,
   handleGetChatHistory,
 } from "./controller/chatController";
+import {
+  handleConfigureModel,
+  handleGetModel,
+  handleSetModel,
+} from "./controller/modelController";
+import { handleGetDocuments } from "./controller/documentController";
+import { handleGetLevelPrompt } from "./controller/levelController";
 
 const router = express.Router();
 
@@ -69,122 +64,17 @@ router.post("/openai/addHistory", handleAddToChatHistory);
 router.post("/openai/clear", handleClearChatHistory);
 
 // Set the ChatGPT model
-router.post("/openai/model", async (req: OpenAiSetModelRequest, res) => {
-  const { model } = req.body;
+router.post("/openai/model", handleSetModel);
 
-  if (model === undefined) {
-    res.status(400).send();
-  } else {
-    try {
-      // Verify model is valid for our key (it should be!)
-      await verifyKeySupportsModel(model);
-      // Keep same config if not given in request.
-      const configuration =
-        req.body.configuration ?? req.session.chatModel.configuration;
-      req.session.chatModel = { id: model, configuration };
-      console.debug("GPT model set:", JSON.stringify(req.session.chatModel));
-      res.status(200).send();
-    } catch (err) {
-      console.log("GPT model could not be set: ", err);
-      res.status(401).send();
-    }
-  }
-});
+// configure the model parameters
+router.post("/openai/model/configure", handleConfigureModel);
 
-function updateConfigProperty(
-  config: ChatModelConfiguration,
-  configId: MODEL_CONFIG,
-  value: number,
-  max: number
-): ChatModelConfiguration | null {
-  if (value >= 0 && value <= max) {
-    config[configId] = value;
-    return config;
-  }
-  return null;
-}
+// get the current model
+router.get("/openai/model", handleGetModel);
 
-router.post(
-  "/openai/model/configure",
-  (req: OpenAiConfigureModelRequest, res) => {
-    const configId = req.body.configId as MODEL_CONFIG | undefined;
-    const value = req.body.value;
+// get the prompt for the given level
+router.get("/level/prompt", handleGetLevelPrompt);
 
-    let updated = null;
-
-    if (configId && value && value >= 0) {
-      const lastConfig = req.session.chatModel.configuration;
-      switch (configId) {
-        case MODEL_CONFIG.TEMPERATURE:
-          updated = updateConfigProperty(lastConfig, configId, value, 2);
-          break;
-        case MODEL_CONFIG.TOP_P:
-          updated = updateConfigProperty(lastConfig, configId, value, 1);
-          break;
-        case MODEL_CONFIG.FREQUENCY_PENALTY:
-          updated = updateConfigProperty(lastConfig, configId, value, 2);
-          break;
-        case MODEL_CONFIG.PRESENCE_PENALTY:
-          updated = updateConfigProperty(lastConfig, configId, value, 2);
-          break;
-        default:
-          res.status(400).send();
-      }
-      if (updated) {
-        req.session.chatModel.configuration = updated;
-        res.status(200).send();
-      } else {
-        res.status(400).send();
-      }
-    }
-  }
-);
-
-router.get("/openai/model", (req, res) => {
-  res.send(req.session.chatModel);
-});
-
-// /level/prompt?level=1
-router.get("/level/prompt", (req, res) => {
-  const levelStr: string | undefined = req.query.level as string | undefined;
-  if (levelStr === undefined) {
-    res.status(400).send();
-  } else {
-    const level = parseInt(levelStr) as LEVEL_NAMES;
-    switch (level) {
-      case LEVEL_NAMES.LEVEL_1:
-        res.send(systemRoleLevel1);
-        break;
-      case LEVEL_NAMES.LEVEL_2:
-        res.send(systemRoleLevel2);
-        break;
-      case LEVEL_NAMES.LEVEL_3:
-        res.send(systemRoleLevel3);
-        break;
-      default:
-        res.status(400).send();
-        break;
-    }
-  }
-});
-
-router.get("/documents", (_, res) => {
-  const docFiles: Document[] = [];
-
-  fs.readdir("resources/documents/common", (err, files) => {
-    if (err) {
-      res.status(500).send("Failed to read documents");
-      return;
-    }
-    files.forEach((file) => {
-      const fileType = file.split(".").pop() ?? "";
-      docFiles.push({
-        filename: file,
-        filetype: fileType === "csv" ? "text/csv" : fileType,
-      });
-    });
-    res.send(docFiles);
-  });
-});
+router.get("/documents", handleGetDocuments);
 
 export { router };
