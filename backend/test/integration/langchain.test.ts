@@ -23,7 +23,6 @@ import {
 } from "../../src/langchain";
 import { DocumentsVector } from "../../src/models/document";
 import { LEVEL_NAMES } from "../../src/models/level";
-
 import {
   qAPrePrompt,
   qAMainPrompt,

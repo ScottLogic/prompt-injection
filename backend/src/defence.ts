@@ -1,3 +1,4 @@
+import { defaultDefences } from "./defaultDefences";
 import { queryPromptEvaluationModel } from "./langchain";
 import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
@@ -7,7 +8,6 @@ import {
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
-import { defaultDefences } from "./defaultDefences";
 
 function activateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   // return the updated list of defences

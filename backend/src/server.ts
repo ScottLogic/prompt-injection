@@ -1,7 +1,7 @@
 import app from "./app";
 import { initDocumentVectors } from "./langchain";
-import { verifyKeySupportsModel } from "./openai";
 import { defaultChatModel } from "./models/chat";
+import { verifyKeySupportsModel } from "./openai";
 
 // by default runs on port 3001
 const port = process.env.PORT ?? String(3001);

@@ -1,7 +1,8 @@
 import request from "supertest";
+
 import app from "../../src/app";
-import { LEVEL_NAMES } from "../../src/models/level";
 import { configureDefence } from "../../src/defence";
+import { LEVEL_NAMES } from "../../src/models/level";
 
 jest.mock("../../src/defence");
 const mocked = configureDefence as jest.MockedFunction<typeof configureDefence>;

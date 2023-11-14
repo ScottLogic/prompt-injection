@@ -1,14 +1,14 @@
+import { defaultDefences } from "../../src/defaultDefences";
+import { activateDefence, configureDefence } from "../../src/defence";
 import {
   CHAT_MESSAGE_TYPE,
   CHAT_MODELS,
   ChatHistoryMessage,
   ChatModel,
 } from "../../src/models/chat";
-import { chatGptSendMessage } from "../../src/openai";
 import { DEFENCE_TYPES, DefenceInfo } from "../../src/models/defence";
 import { EmailInfo } from "../../src/models/email";
-import { activateDefence, configureDefence } from "../../src/defence";
-import { defaultDefences } from "../../src/defaultDefences";
+import { chatGptSendMessage } from "../../src/openai";
 import { systemRoleDefault } from "../../src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method

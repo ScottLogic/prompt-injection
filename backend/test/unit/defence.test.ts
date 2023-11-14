@@ -1,3 +1,4 @@
+import { defaultDefences } from "../../src/defaultDefences";
 import {
   activateDefence,
   configureDefence,
@@ -12,7 +13,6 @@ import {
   getPromptInjectionEvalPrePromptFromConfig,
   getMaliciousPromptEvalPrePromptFromConfig,
 } from "../../src/defence";
-import { defaultDefences } from "../../src/defaultDefences";
 import * as langchain from "../../src/langchain";
 import { DEFENCE_TYPES, DefenceConfig } from "../../src/models/defence";
 import { LEVEL_NAMES } from "../../src/models/level";

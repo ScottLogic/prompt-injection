@@ -1,5 +1,5 @@
-import { activateDefence, detectTriggeredDefences } from "../../src/defence";
 import { defaultDefences } from "../../src/defaultDefences";
+import { activateDefence, detectTriggeredDefences } from "../../src/defence";
 import { initPromptEvaluationModel } from "../../src/langchain";
 import { DEFENCE_TYPES } from "../../src/models/defence";
 import {

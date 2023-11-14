@@ -1,9 +1,10 @@
 import { ChatCompletionRequestMessage } from "openai";
+
+import { CHAT_MODELS } from "../../src/models/chat";
 import {
   verifyKeySupportsModel,
   filterChatHistoryByMaxTokens,
 } from "../../src/openai";
-import { CHAT_MODELS } from "../../src/models/chat";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
