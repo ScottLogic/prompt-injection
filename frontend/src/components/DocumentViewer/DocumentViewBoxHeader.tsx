@@ -13,15 +13,15 @@ export const DocumentViewBoxHeader: IHeaderOverride = (
   }
 
   const documentName = state.currentDocument.uri.split("/").pop();
-  const documentNumber = `${state.currentFileNo + 1} out of 6`;
+  const documentNumber = `${state.currentFileNo + 1} out of ${state.documents.length}`;
 
   return (
     <>
       <div className="view-documents-header">
-        <h1>view documents</h1>
+        <h2>view documents</h2>
         <div className="view-documents-nav">
-          <div className="document-name">{documentName}</div>
-          <div className="document-number">{documentNumber}</div>
+          <h3 className="view-documents-info">{documentName}</h3>
+          <h3 className="view-documents-info">{documentNumber}</h3>
           <div className="view-documents-button-container">
             {state.currentFileNo > 0 && (
               <span className="previous-document">

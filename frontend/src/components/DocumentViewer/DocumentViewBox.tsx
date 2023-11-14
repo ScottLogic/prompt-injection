@@ -34,9 +34,7 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
         X
       </button>
       <div className="content">
-        <div className="view-documents-body">
           <DocViewer
-            className="document-viewer"
             documents={documents}
             pluginRenderers={DocViewerRenderers}
             ref={docViewerRef}
@@ -47,7 +45,6 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
             }}
           />
         </div>
-      </div>
     </div>
   );
 }
