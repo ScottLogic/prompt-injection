@@ -15,7 +15,6 @@ import { LEVEL_NAMES } from "@src/models/level";
 import { addMessageToChatHistory, sendMessage } from "@src/service/chatService";
 import { getSentEmails } from "@src/service/emailService";
 
-
 function ChatBox({
   completedLevels,
   currentLevel,

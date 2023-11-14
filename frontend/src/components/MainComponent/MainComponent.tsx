@@ -24,7 +24,6 @@ import {
 } from "@src/service/defenceService";
 import { clearEmails, getSentEmails } from "@src/service/emailService";
 
-
 function MainComponent({
   currentLevel,
   isNewUser,
