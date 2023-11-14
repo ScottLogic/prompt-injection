@@ -5,6 +5,12 @@ module.exports = {
     react: {
       version: "detect",
     },
+    "import/resolver": {
+      alias: {
+        map: [["@src", "./src"]],
+        extensions: [".ts", ".js", ".jsx", ".tsx", ".json"],
+      },
+    },
   },
   extends: [
     "eslint:recommended",
@@ -16,6 +22,8 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:jest-dom/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
@@ -31,6 +39,12 @@ module.exports = {
     "func-style": ["error", "declaration"],
     "object-shorthand": "error",
     "prefer-template": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: ["../*"],
+      },
+    ],
 
     // turn this off to allow the use of useEffect on mount
     "react-hooks/exhaustive-deps": "off",
@@ -38,7 +52,6 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
-    eqeqeq: "error",
   },
   overrides: [
     {

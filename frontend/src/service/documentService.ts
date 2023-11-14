@@ -1,4 +1,4 @@
-import { RemoteDocument } from "../models/document";
+import { RemoteDocument } from "@src/models/document";
 import { getBackendUrl, sendRequest } from "./backendService";
 
 async function getDocumentUris(): Promise<RemoteDocument[]> {

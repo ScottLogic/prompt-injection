@@ -3,7 +3,7 @@ import {
   DefenceConfig,
   DefenceInfo,
   DefenceResetResponse,
-} from "../models/defence";
+} from "@src/models/defence";
 import { sendRequest } from "./backendService";
 
 const PATH = "defence/";
