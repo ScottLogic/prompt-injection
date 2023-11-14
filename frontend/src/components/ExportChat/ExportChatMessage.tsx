@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
-import { CHAT_MESSAGE_TYPE, ChatMessage } from "../../models/chat";
+import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 
 const styles = StyleSheet.create({
   chatBoxMessageBot: {

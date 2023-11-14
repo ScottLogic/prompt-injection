@@ -1,6 +1,6 @@
-import { LEVELS } from "../../Levels";
-import { LEVEL_NAMES } from "../../models/level";
-import OverlayButton from "../ThemedButtons/OverlayButton";
+import { LEVELS } from "@src/Levels";
+import { LEVEL_NAMES } from "@src/models/level";
+import OverlayButton from "@src/components/ThemedButtons/OverlayButton";
 import Overlay from "./Overlay";
 
 import "./MissionInformation.css";

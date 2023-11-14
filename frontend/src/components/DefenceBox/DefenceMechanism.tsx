@@ -1,13 +1,9 @@
 import { useState } from "react";
-import {
-  DEFENCE_TYPES,
-  DefenceConfig,
-  DefenceInfo,
-} from "../../models/defence";
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
 import {
   resetDefenceConfig,
   validateDefence,
-} from "../../service/defenceService";
+} from "@src/service/defenceService";
 import "./DefenceMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
 import { TiTick, TiTimes } from "react-icons/ti";

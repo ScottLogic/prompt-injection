@@ -1,6 +1,6 @@
 import "./LevelsComplete.css";
 import Overlay from "./Overlay";
-import LevelsCompleteButtons from "../ThemedButtons/LevelsCompleteButtons";
+import LevelsCompleteButtons from "@src/components/ThemedButtons/LevelsCompleteButtons";
 import MissionDialogue from "./MissionDialogue";
 
 function LevelsComplete({

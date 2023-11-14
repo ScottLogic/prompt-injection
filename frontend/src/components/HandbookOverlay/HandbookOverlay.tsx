@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { LEVEL_NAMES } from "../../models/level";
+import { LEVEL_NAMES } from "@src/models/level";
 import HandbookAttacks from "./HandbookAttacks";
 import HandbookSpine from "./HandbookSpine";
-import { HANDBOOK_PAGES } from "../../models/handbook";
+import { HANDBOOK_PAGES } from "@src/models/handbook";
 import "./HandbookOverlay.css";
 import HandbookGlossary from "./HandbookGlossary";
 import HandbookSystemRole from "./HandbookSystemRole";
-import { getLevelPrompt } from "../../service/levelService";
+import { getLevelPrompt } from "@src/service/levelService";
 import HandbookCloseIcon from "./HandbookCloseIcon";
-import useIsOverflow from "../../hooks/useIsOverflow";
+import useIsOverflow from "@src/hooks/useIsOverflow";
 
 function HandbookOverlay({
   currentLevel,

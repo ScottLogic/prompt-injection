@@ -1,5 +1,5 @@
-import { LEVELS } from "../../Levels";
-import { LEVEL_NAMES } from "../../models/level";
+import { LEVELS } from "@src/Levels";
+import { LEVEL_NAMES } from "@src/models/level";
 
 import "./ShortMissionInfoButton.css";
 

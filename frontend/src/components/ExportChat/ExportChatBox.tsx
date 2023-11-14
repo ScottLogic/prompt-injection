@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { View, StyleSheet } from "@react-pdf/renderer";
-import { ChatMessage } from "../../models/chat";
+import { ChatMessage } from "@src/models/chat";
 import ExportChatMessage from "./ExportChatMessage";
 
 const styles = StyleSheet.create({

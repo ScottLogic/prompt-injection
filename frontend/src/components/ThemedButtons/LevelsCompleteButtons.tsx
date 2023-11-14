@@ -1,4 +1,4 @@
-import { LEVEL_NAMES, ModeSelectButton } from "../../models/level";
+import { LEVEL_NAMES, ModeSelectButton } from "@src/models/level";
 import ModeSelectButtons from "./ModeSelectButtons";
 
 function LevelsCompleteButtons({

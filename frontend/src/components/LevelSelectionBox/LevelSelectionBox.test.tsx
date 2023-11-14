@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, test, vi } from "vitest";
-import { LEVELS } from "../../Levels";
+import { LEVELS } from "@src/Levels";
 import LevelSelectionBox, { LevelSelectionBoxProps } from "./LevelSelectionBox";
 
 const defaultProps: LevelSelectionBoxProps = {

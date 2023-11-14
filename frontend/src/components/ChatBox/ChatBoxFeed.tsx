@@ -1,9 +1,9 @@
 import "./ChatBoxFeed.css";
-import { CHAT_MESSAGE_TYPE, ChatMessage } from "../../models/chat";
+import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 import ChatBoxMessage from "./ChatBoxMessage";
 import ChatBoxInfoText from "./ChatBoxInfoText";
 import { useRef } from "react";
-import useIsOverflow from "../../hooks/useIsOverflow";
+import useIsOverflow from "@src/hooks/useIsOverflow";
 
 function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
   const chatboxFeedContainer = useRef<HTMLDivElement>(null);

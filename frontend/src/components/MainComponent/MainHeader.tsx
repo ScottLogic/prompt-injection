@@ -1,6 +1,6 @@
-import { LEVELS } from "../../Levels";
-import { LEVEL_NAMES } from "../../models/level";
-import LevelSelectionBox from "../LevelSelectionBox/LevelSelectionBox";
+import { LEVELS } from "@src/Levels";
+import { LEVEL_NAMES } from "@src/models/level";
+import LevelSelectionBox from "@src/components/LevelSelectionBox/LevelSelectionBox";
 import HandbookIcon from "./HandbookIcon";
 import "./MainHeader.css";
 import ProjectIcon from "./ProjectIcon";

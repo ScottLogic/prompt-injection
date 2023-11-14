@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import { RemoteDocument } from "../../models/document";
-import { getDocumentUris } from "../../service/documentService";
+import { RemoteDocument } from "@src/models/document";
+import { getDocumentUris } from "@src/service/documentService";
 
 import "./DocumentViewBox.css";
 

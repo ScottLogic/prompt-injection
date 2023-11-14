@@ -6,15 +6,15 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
-import { ChatMessage } from "../../models/chat";
-import { EmailInfo } from "../../models/email";
+import { ChatMessage } from "@src/models/chat";
+import { EmailInfo } from "@src/models/email";
 import ExportChatBox from "./ExportChatBox";
 import ExportEmailBox from "./ExportEmailBox";
-import { LEVEL_NAMES } from "../../models/level";
+import { LEVEL_NAMES } from "@src/models/level";
 
-import CombinedFonts from "../../assets/fonts/CombinedFonts.ttf";
-import NotoSerifJP from "../../assets/fonts/NotoSerifJP-Regular.otf";
-import NotoSansSC from "../../assets/fonts/NotoSansSC-Regular.ttf";
+import CombinedFonts from "@src/assets/fonts/CombinedFonts.ttf";
+import NotoSerifJP from "@src/assets/fonts/NotoSerifJP-Regular.otf";
+import NotoSansSC from "@src/assets/fonts/NotoSansSC-Regular.ttf";
 
 Font.register({ family: "CombinedFonts", src: CombinedFonts });
 

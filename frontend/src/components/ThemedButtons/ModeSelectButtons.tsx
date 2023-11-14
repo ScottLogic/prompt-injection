@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import { LEVEL_NAMES, ModeSelectButton } from "../../models/level";
+import { LEVEL_NAMES, ModeSelectButton } from "@src/models/level";
 import "./ModeSelectButtons.css";
 
 function ModeSelectButtons({

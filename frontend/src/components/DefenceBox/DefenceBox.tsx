@@ -1,10 +1,6 @@
 import "./DefenceBox.css";
 import DefenceMechanism from "./DefenceMechanism";
-import {
-  DEFENCE_TYPES,
-  DefenceConfig,
-  DefenceInfo,
-} from "../../models/defence";
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
 
 function DefenceBox({
   defences,
