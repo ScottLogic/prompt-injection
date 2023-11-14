@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { LEVEL_NAMES } from "../level";
 
-type DefenceStatusRequest = Request<
+type GetRequestQueryLevel = Request<
   object,
   object,
   object,
@@ -10,4 +10,4 @@ type DefenceStatusRequest = Request<
   }
 >;
 
-export type { DefenceStatusRequest };
+export type { GetRequestQueryLevel };

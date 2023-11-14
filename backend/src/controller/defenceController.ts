@@ -12,7 +12,7 @@ import { LEVEL_NAMES } from "../models/level";
 import { defaultDefences } from "../defaultDefences";
 import { DefenceConfigResetRequest } from "../models/api/DefenceConfigResetRequest";
 import { DefenceConfig } from "../models/defence";
-import { DefenceStatusRequest } from "../models/api/DefenceStatusRequest";
+import { GetRequestQueryLevel } from "../models/api/GetRequestQueryLevel";
 
 function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
   const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
@@ -132,7 +132,7 @@ function handleResetSingleDefence(
   }
 }
 
-function handleGetDefenceStatus(req: DefenceStatusRequest, res: Response) {
+function handleGetDefenceStatus(req: GetRequestQueryLevel, res: Response) {
   const level: number | undefined = req.query.level as number | undefined;
   if (level !== undefined) {
     res.send(req.session.levelState[level].defences);
