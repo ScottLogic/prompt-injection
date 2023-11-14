@@ -42,6 +42,8 @@ function ChatBoxInput({
     }
   }
 
+  const CHARACTER_LIMIT = 16384; // 2^14, just over twice the length of a DAN attack
+
   return (
     <ThemedTextArea
       content={content}
@@ -51,6 +53,7 @@ function ChatBoxInput({
       maxLines={10}
       onKeyDown={inputKeyDown}
       onKeyUp={inputKeyUp}
+      characterLimit={CHARACTER_LIMIT}
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus={true}
     />

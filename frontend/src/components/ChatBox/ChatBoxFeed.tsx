@@ -16,7 +16,7 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
       className="chat-box-feed"
       ref={chatboxFeedContainer}
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-      tabIndex={isOverflow ? 0 : -1}
+      tabIndex={isOverflow ? 0 : undefined}
     >
       {[...messages].reverse().map((message, index) => {
         if (

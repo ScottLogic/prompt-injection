@@ -15,11 +15,11 @@ function EmailBox({ emails }: { emails: EmailInfo[] }) {
       className="email-box"
       ref={emailBoxContainer}
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-      tabIndex={isOverflow ? 0 : -1}
+      tabIndex={isOverflow ? 0 : undefined}
     >
-      {[...emails].reverse().map((email, index) => {
-        return <SentEmail emailDetails={email} key={index} />;
-      })}
+      {[...emails].reverse().map((email, index) => (
+        <SentEmail emailDetails={email} key={index} />
+      ))}
     </div>
   );
 }

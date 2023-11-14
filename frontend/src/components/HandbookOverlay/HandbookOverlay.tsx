@@ -72,7 +72,7 @@ function HandbookOverlay({
         className="content"
         role="tabpanel"
         ref={handBookPageContainer}
-        tabIndex={isOverflow ? 0 : -1}
+        tabIndex={isOverflow ? 0 : undefined}
         aria-labelledby={`handbook-tab-${selectedPage}`}
       >
         {pageContent}
