@@ -8,8 +8,8 @@
   },
   "scripts": {
     "postinstall": "concurrently \"cd backend && npm ci\" \"cd frontend && npm ci\"",
-    "start:api": "cd backend && npm run dev",
-    "start:ui": "cd frontend && npm run preview"
+    "start:api": "cd backend && npm start",
+    "start:ui": "cd frontend && npm run build && npm run preview"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

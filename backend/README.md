@@ -17,19 +17,27 @@ npm ci
 
 ## Run
 
+Start the server:
+
+```bash
+npm start
+```
+
+Or for development, to hot-reload on changes:
+
 ```bash
 npm run dev
 ```
 
-Alternatively, you can run using Docker:
+You can also run using Docker if you prefer:
 
 ```bash
 # Start the server
-npm run api:start
+npm run docker:start
 # View the logs
-npm run api:logs
+npm run docker:logs
 # Stop the server
-npm run api:stop
+npm run docker:stop
 ```
 
 ## Test

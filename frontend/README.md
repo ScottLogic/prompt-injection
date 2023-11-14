@@ -20,10 +20,12 @@ We are using [Vite](https://vitejs.dev/) to bootstrap, build and run our UI loca
 To build and run:
 
 ```bash
+npm run build
 npm run preview
+# type 'o' to open your browser at http://localhost:4173/
 ```
 
-To run the dev server and hot-reload on changes:
+Or for development, run the dev server which will hot-reload on changes:
 
 ```bash
 npm run dev
