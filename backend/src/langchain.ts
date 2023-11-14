@@ -18,7 +18,7 @@ import {
 } from "./promptTemplates";
 import { LEVEL_NAMES } from "./models/level";
 import { PromptEvaluationChainReply, QaChainReply } from "./models/langchain";
-import { getDocumentsForLevel } from "./documents";
+import { getDocumentsForLevel } from "./document";
 
 // store vectorised documents for each level as array
 let vectorisedDocuments: DocumentsVector[] = [];
