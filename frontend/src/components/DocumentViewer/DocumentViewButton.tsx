@@ -1,8 +1,10 @@
-import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
+import { useState } from "react";
+
 import DocumentViewBox from "./DocumentViewBox";
 
+import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
+
 import "./DocumentViewButton.css";
-import { useState } from "react";
 
 function DocumentViewButton() {
   const [showPopup, setShowPopup] = useState(false);

@@ -1,15 +1,19 @@
-import MainHeader from "./MainHeader";
-import MainBody from "./MainBody";
 import { useEffect, useState } from "react";
+
+import MainBody from "./MainBody";
+import MainFooter from "./MainFooter";
+import MainHeader from "./MainHeader";
+
+import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "@src/Defences";
+import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
+import { EmailInfo } from "@src/models/email";
 import { LEVEL_NAMES } from "@src/models/level";
 import {
   addMessageToChatHistory,
   clearChat,
   getChatHistory,
 } from "@src/service/chatService";
-import { EmailInfo } from "@src/models/email";
-import { clearEmails, getSentEmails } from "@src/service/emailService";
-import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 import {
   activateDefence,
   configureDefence,
@@ -17,10 +21,9 @@ import {
   getDefences,
   resetActiveDefences,
 } from "@src/service/defenceService";
-import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "@src/Defences";
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
+import { clearEmails, getSentEmails } from "@src/service/emailService";
+
 import "./MainComponent.css";
-import MainFooter from "./MainFooter";
 
 function MainComponent({
   currentLevel,

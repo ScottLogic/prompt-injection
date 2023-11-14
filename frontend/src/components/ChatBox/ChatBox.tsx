@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
+
+import ChatBoxFeed from "./ChatBoxFeed";
+import ChatBoxInput from "./ChatBoxInput";
+
 import { DEFENCE_DETAILS_ALL } from "@src/Defences";
+import ExportPDFLink from "@src/components/ExportChat/ExportPDFLink";
+import LoadingButton from "@src/components/ThemedButtons/LoadingButton";
+import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
+import useUnitStepper from "@src/hooks/useUnitStepper";
 import { CHAT_MESSAGE_TYPE, ChatMessage, ChatResponse } from "@src/models/chat";
 import { EmailInfo } from "@src/models/email";
 import { LEVEL_NAMES } from "@src/models/level";
 import { addMessageToChatHistory, sendMessage } from "@src/service/chatService";
 import { getSentEmails } from "@src/service/emailService";
-import ExportPDFLink from "@src/components/ExportChat/ExportPDFLink";
-import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
-import LoadingButton from "@src/components/ThemedButtons/LoadingButton";
-import ChatBoxFeed from "./ChatBoxFeed";
-import useUnitStepper from "@src/hooks/useUnitStepper";
 
 import "./ChatBox.css";
-import ChatBoxInput from "./ChatBoxInput";
 
 function ChatBox({
   completedLevels,

@@ -8,7 +8,7 @@ module.exports = {
     "import/resolver": {
       alias: {
         map: [["@src", "./src"]],
-        extensions: [".ts", ".js", ".jsx", ".tsx", ".json"],
+        extensions: [".ts", ".js", ".jsx", ".tsx", ".json", ".css"],
       },
     },
   },
@@ -51,6 +51,14 @@ module.exports = {
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },
+    ],
+
+    "import/order": [
+      "error",
+      {
+        alphabetize: { order: "asc" },
+        "newlines-between": "always",
+      },
     ],
   },
   overrides: [

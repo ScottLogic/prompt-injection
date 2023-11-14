@@ -1,4 +1,5 @@
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
+
 import { EmailInfo } from "@src/models/email";
 
 const styles = StyleSheet.create({

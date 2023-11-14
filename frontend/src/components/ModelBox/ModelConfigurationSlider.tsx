@@ -1,6 +1,7 @@
 import { Slider } from "@mui/material";
 import { useEffect, useState } from "react";
 import { AiOutlineInfoCircle } from "react-icons/ai";
+
 import "./ModelConfigurationSlider.css";
 import { CustomChatModelConfiguration } from "@src/models/chat";
 import { configureGptModel } from "@src/service/chatService";

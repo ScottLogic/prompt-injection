@@ -1,8 +1,11 @@
 import "./EmailBox.css";
-import SentEmail from "./SentEmail";
-import { EmailInfo } from "@src/models/email";
+
 import { useRef } from "react";
+
+import SentEmail from "./SentEmail";
+
 import useIsOverflow from "@src/hooks/useIsOverflow";
+import { EmailInfo } from "@src/models/email";
 
 function EmailBox({ emails }: { emails: EmailInfo[] }) {
   const emailBoxContainer = useRef<HTMLDivElement>(null);

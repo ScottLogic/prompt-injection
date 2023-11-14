@@ -1,8 +1,9 @@
+import { clsx } from "clsx";
 import { KeyboardEvent, useEffect, useRef } from "react";
 
 import "./ThemedInput.css";
 import "./ThemedTextArea.css";
-import { clsx } from "clsx";
+
 import useIsOverflow from "@src/hooks/useIsOverflow";
 
 function getNumLines(textarea: HTMLTextAreaElement) {

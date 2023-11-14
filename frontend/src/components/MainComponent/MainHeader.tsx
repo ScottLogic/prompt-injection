@@ -1,10 +1,11 @@
-import { LEVELS } from "@src/Levels";
-import { LEVEL_NAMES } from "@src/models/level";
-import LevelSelectionBox from "@src/components/LevelSelectionBox/LevelSelectionBox";
 import HandbookIcon from "./HandbookIcon";
 import "./MainHeader.css";
 import ProjectIcon from "./ProjectIcon";
 import ProjectIconWon from "./ProjectIconWon";
+
+import { LEVELS } from "@src/Levels";
+import LevelSelectionBox from "@src/components/LevelSelectionBox/LevelSelectionBox";
+import { LEVEL_NAMES } from "@src/models/level";
 
 function MainHeader({
   currentLevel,

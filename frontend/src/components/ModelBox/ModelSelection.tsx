@@ -1,9 +1,10 @@
 // Path: frontend\src\components\ModelSelectionBox\ModelSelectionBox.tsx
 import { useEffect, useState } from "react";
+
 import "./ModelSelection.css";
-import { setGptModel, getGptModel } from "@src/service/chatService";
-import { CHAT_MODELS } from "@src/models/chat";
 import LoadingButton from "@src/components/ThemedButtons/LoadingButton";
+import { CHAT_MODELS } from "@src/models/chat";
+import { setGptModel, getGptModel } from "@src/service/chatService";
 
 // return a drop down menu with the models
 function ModelSelection() {

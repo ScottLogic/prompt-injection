@@ -1,6 +1,7 @@
-import ThemedTextArea from "@src/components/ThemedInput/ThemedTextArea";
-import ThemedNumberInput from "@src/components/ThemedInput/ThemedNumberInput";
 import { KeyboardEvent, useEffect, useState } from "react";
+
+import ThemedNumberInput from "@src/components/ThemedInput/ThemedNumberInput";
+import ThemedTextArea from "@src/components/ThemedInput/ThemedTextArea";
 
 function DefenceConfigurationInput({
   defaultValue,

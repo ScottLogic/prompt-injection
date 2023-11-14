@@ -1,8 +1,7 @@
+import { clsx } from "clsx";
 import { KeyboardEvent } from "react";
-
 import "./ThemedInput.css";
 import "./ThemedNumberInput.css";
-import { clsx } from "clsx";
 
 function ThemedNumberInput({
   // required
