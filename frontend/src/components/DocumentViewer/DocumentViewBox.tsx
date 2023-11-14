@@ -34,17 +34,17 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
         X
       </button>
       <div className="content">
-          <DocViewer
-            documents={documents}
-            pluginRenderers={DocViewerRenderers}
-            ref={docViewerRef}
-            config={{
-              header: {
-                overrideComponent: DocumentViewBoxHeader,
-              },
-            }}
-          />
-        </div>
+        <DocViewer
+          documents={documents}
+          pluginRenderers={DocViewerRenderers}
+          ref={docViewerRef}
+          config={{
+            header: {
+              overrideComponent: DocumentViewBoxHeader,
+            },
+          }}
+        />
+      </div>
     </div>
   );
 }

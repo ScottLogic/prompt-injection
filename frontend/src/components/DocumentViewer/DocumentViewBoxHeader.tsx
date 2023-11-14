@@ -13,7 +13,9 @@ export const DocumentViewBoxHeader: IHeaderOverride = (
   }
 
   const documentName = state.currentDocument.uri.split("/").pop();
-  const documentNumber = `${state.currentFileNo + 1} out of ${state.documents.length}`;
+  const documentNumber = `${state.currentFileNo + 1} out of ${
+    state.documents.length
+  }`;
 
   return (
     <>
