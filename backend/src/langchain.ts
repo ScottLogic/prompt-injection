@@ -120,14 +120,34 @@ async function initDocumentVectors() {
 }
 
 async function getDocumentsForLevel(level: LEVEL_NAMES) {
-  // get the documents
-  const levelDocsFilePath: string = getFilepath(level);
-  const commonDocsFilePath: string = getFilepath("common");
+  const levelDocuments =
+    level === LEVEL_NAMES.SANDBOX
+      ? await getAllLevelSpecificDocuments()
+      : await getLevelSpecificDocuments(level);
 
-  const levelDocuments: Document[] = await getDocuments(levelDocsFilePath);
+  const commonDocsFilePath: string = getFilepath("common");
   const commonDocuments: Document[] = await getDocuments(commonDocsFilePath);
-  const allDocuments = levelDocuments.concat(commonDocuments);
-  return allDocuments;
+
+  const documents = commonDocuments.concat(levelDocuments);
+  return documents;
+}
+
+async function getAllLevelSpecificDocuments() {
+  const levelValues = Object.values(LEVEL_NAMES)
+    .filter((value) => !isNaN(Number(value)))
+    .map((value) => Number(value));
+
+  const documents: Document[] = [];
+  for (const level of levelValues) {
+    const levelSpecificDocuments = await getLevelSpecificDocuments(level);
+    documents.push(...levelSpecificDocuments);
+  }
+  return documents;
+}
+
+async function getLevelSpecificDocuments(level: LEVEL_NAMES) {
+  const levelDocsFilePath: string = getFilepath(level);
+  return await getDocuments(levelDocsFilePath);
 }
 
 function initQAModel(level: LEVEL_NAMES, prePrompt: string) {
