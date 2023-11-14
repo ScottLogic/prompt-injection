@@ -32,7 +32,7 @@ jest.mock("../../src/langchain");
 beforeEach(() => {
   jest
     .mocked(langchain.queryPromptEvaluationModel)
-    .mockResolvedValue({ isMalicious: false, reason: "" });
+    .mockResolvedValue({ isMalicious: false });
 });
 
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {

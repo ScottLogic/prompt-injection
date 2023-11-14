@@ -315,7 +315,7 @@ async function detectEvaluationLLM(
       );
       console.debug("LLM evalutation defence active.");
       defenceReport.isBlocked = true;
-      defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.${evalPrompt.reason}`;
+      defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.`;
     } else {
       defenceReport.alertedDefences.push(
         DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS

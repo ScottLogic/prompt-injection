@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { RetrievalQAChain, LLMChain, SequentialChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { Document } from "langchain/document";
@@ -121,7 +122,7 @@ function initQAModel(level: LEVEL_NAMES, prePrompt: string) {
 
   // initialise model
   const model = new ChatOpenAI({
-    modelName: CHAT_MODELS.GPT_3_5_TURBO,
+    modelName: CHAT_MODELS.GPT_4_TURBO,
     streaming: true,
     openAIApiKey,
   });
@@ -131,7 +132,6 @@ function initQAModel(level: LEVEL_NAMES, prePrompt: string) {
     qAMainPrompt,
     "QA prompt template"
   );
-
   return RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
     prompt: promptTemplate,
   });
@@ -154,7 +154,7 @@ function initPromptEvaluationModel(
 
   const promptInjectionChain = new LLMChain({
     llm: new OpenAI({
-      modelName: CHAT_MODELS.GPT_3_5_TURBO,
+      modelName: CHAT_MODELS.GPT_4_TURBO,
       temperature: 0,
       openAIApiKey,
     }),
@@ -172,7 +172,7 @@ function initPromptEvaluationModel(
 
   const maliciousInputChain = new LLMChain({
     llm: new OpenAI({
-      modelName: CHAT_MODELS.GPT_3_5_TURBO,
+      modelName: CHAT_MODELS.GPT_4_TURBO,
       temperature: 0,
       openAIApiKey,
     }),
@@ -248,38 +248,31 @@ async function queryPromptEvaluationModel(
   );
   console.debug(`Malicious input eval: ${JSON.stringify(maliciousInputEval)}`);
 
-  // if both are malicious, combine reason
+  // if both are malicious
   if (promptInjectionEval.isMalicious && maliciousInputEval.isMalicious) {
     return {
       isMalicious: true,
-      reason: `${promptInjectionEval.reason} & ${maliciousInputEval.reason}`,
     };
   } else if (promptInjectionEval.isMalicious) {
-    return { isMalicious: true, reason: promptInjectionEval.reason };
+    return { isMalicious: true };
   } else if (maliciousInputEval.isMalicious) {
-    return { isMalicious: true, reason: maliciousInputEval.reason };
+    return { isMalicious: true };
   }
-  return { isMalicious: false, reason: "" };
+  return { isMalicious: false };
 }
 
-// format the evaluation model output. text should be a Yes or No answer followed by a reason
 function formatEvaluationOutput(response: string) {
+  // remove all non-alphanumeric characters
   try {
-    // split response on first full stop or comma
-    const splitResponse = response.split(/[.,]/);
-    const answer = splitResponse[0]?.replace(/\W/g, "").toLowerCase();
-    const reason = splitResponse[1]?.trim();
-    return {
-      isMalicious: answer === "yes",
-      reason,
-    };
+    const cleanResponse = response.replace(/\W/g, "").toLowerCase();
+    return { isMalicious: cleanResponse === "yes" };
   } catch (error) {
     // in case the model does not respond in the format we have asked
     console.error(error);
     console.debug(
       `Did not get a valid response from the prompt evaluation model. Original response: ${response}`
     );
-    return { isMalicious: false, reason: "" };
+    return { isMalicious: false };
   }
 }
 

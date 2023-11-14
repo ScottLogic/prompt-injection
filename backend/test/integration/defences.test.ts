@@ -33,8 +33,8 @@ beforeEach(() => {
 test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "Yes. This is malicious.",
-    promptInjectionEval: "Yes. This is malicious.",
+    maliciousInputEval: "Yes.",
+    promptInjectionEval: "Yes.",
   });
   // activate the defence
   const defences = activateDefence(
@@ -55,8 +55,8 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detect
 test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers malice detection WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "Yes. This is malicious.",
-    promptInjectionEval: "No. This is not malicious.",
+    maliciousInputEval: "Yes.",
+    promptInjectionEval: "No.",
   });
 
   // activate the defence
@@ -78,8 +78,8 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers malice det
 test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers prompt injection detection WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "No. This is not malicious.",
-    promptInjectionEval: "Yes. This is malicious.",
+    maliciousInputEval: "No.",
+    promptInjectionEval: "Yes.",
   });
 
   // activate the defence
@@ -101,8 +101,8 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers prompt inj
 test("GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN detectTriggeredDefences is called THEN defence is not triggered AND defence is not blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "No. This is not malicious.",
-    promptInjectionEval: "No. This is not malicious.",
+    maliciousInputEval: "No.",
+    promptInjectionEval: "No.",
   });
 
   // activate the defence
@@ -122,8 +122,8 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN de
 test("GIVEN LLM_EVALUATION defence is not active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is alerted AND defence is not blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "Yes. This is malicious.",
-    promptInjectionEval: "Yes. This is malicious.",
+    maliciousInputEval: "Yes.",
+    promptInjectionEval: "Yes.",
   });
 
   const defences = defaultDefences;
@@ -140,8 +140,8 @@ test("GIVEN LLM_EVALUATION defence is not active AND prompt is malicious WHEN de
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase in the list THEN defence is triggered and the message is blocked", async () => {
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "No. This is not malicious.",
-    promptInjectionEval: "No. This is not malicious.",
+    maliciousInputEval: "No.",
+    promptInjectionEval: "No.",
   });
 
   const defences = activateDefence(
@@ -157,8 +157,8 @@ test("GIVEN the input filtering defence is active WHEN a user sends a message co
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase not in the list THEN the message is not blocked", async () => {
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "No. This is not malicious.",
-    promptInjectionEval: "No. This is not malicious.",
+    maliciousInputEval: "No.",
+    promptInjectionEval: "No.",
   });
 
   const defences = activateDefence(
@@ -174,8 +174,8 @@ test("GIVEN the input filtering defence is active WHEN a user sends a message co
 
 test("GIVEN the input filtering defence is not active WHEN a user sends a message containing a phrase in the list THEN the defence is alerted and message is not biocked", async () => {
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "No. This is not malicious.",
-    promptInjectionEval: "No. This is not malicious.",
+    maliciousInputEval: "No.",
+    promptInjectionEval: "No.",
   });
 
   const defences = defaultDefences;
