@@ -27,16 +27,12 @@ jest.mock("langchain/text_splitter", () => {
 });
 
 test("WHEN get documents for a level THEN returns the correct documents", async () => {
-  const mockLevelDocs = ["doc1.txt", "doc2.txt"];
   const mockLevelSplitDocs = ["split1", "split1.5", "split2"];
-  const mockCommonDocs = ["common1.txt"];
   const mockCommonSplitDocs = ["split3", "split4"];
 
   const expectedDocs = [...mockLevelSplitDocs, ...mockCommonSplitDocs];
 
-  mockLoader
-    .mockResolvedValueOnce(mockLevelDocs)
-    .mockResolvedValueOnce(mockCommonDocs);
+  mockLoader.mockResolvedValue([]);
   mockSplitDocuments
     .mockResolvedValueOnce(mockLevelSplitDocs)
     .mockResolvedValueOnce(mockCommonSplitDocs);
@@ -46,23 +42,15 @@ test("WHEN get documents for a level THEN returns the correct documents", async 
   expect(result.sort()).toEqual(expectedDocs.sort());
 });
 
-test("WHEN get documents for sandbox THEN returns the correct documents", () => {
-  // const mockLevelDocs = ["doc1.txt", "doc2.txt"];
-  // const mockLevelSplitDocs = ["split1", "split1.5", "split2"];
-  // const mockCommonDocs = ["common1.txt"];
-  // const mockCommonSplitDocs = ["split3", "split4"];
+test("WHEN get documents for sandbox THEN returns the correct documents", async () => {
+  const numLevels = 4;
+  const numCallsToGetDocs = numLevels + 1; // call for each level plus one for common
+  const expectedDocs = Array(numCallsToGetDocs).fill("doc");
 
-  // const expectedDocs = [...mockLevelSplitDocs, ...mockCommonSplitDocs];
+  mockLoader.mockResolvedValue([]);
+  mockSplitDocuments.mockResolvedValue(["doc"]);
 
-  // mockLoader
-  //   .mockResolvedValueOnce(mockLevelDocs)
-  //   .mockResolvedValueOnce(mockCommonDocs);
-  // mockSplitDocuments
-  //   .mockResolvedValueOnce(mockLevelSplitDocs)
-  //   .mockResolvedValueOnce(mockCommonSplitDocs);
+  const result = await getDocumentsForLevel(LEVEL_NAMES.SANDBOX);
 
-  // const result = await getDocumentsForLevel(LEVEL_NAMES.LEVEL_1);
-
-  // expect(result.sort()).toEqual(expectedDocs.sort());
-  expect(true).toEqual(true);
+  expect(result.sort()).toEqual(expectedDocs);
 });
