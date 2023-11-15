@@ -34,8 +34,18 @@ function DefenceMechanism({
   const [configValidated, setConfigValidated] = useState<boolean>(true);
   const [configKey, setConfigKey] = useState<number>(0);
 
+  function showDefenceConfiguredText(isValid: boolean) {
+    setIsConfigured(true);
+    setConfigValidated(isValid);
+    // hide the message after 3 seconds
+    setTimeout(() => {
+      setIsConfigured(false);
+    }, 3000);
+  }
+
   function resetConfigurationValue(configId: string) {
     resetDefenceConfiguration(defenceDetail.id, configId);
+    showDefenceConfiguredText(true);
   }
 
   async function setConfigurationValue(configId: string, value: string) {
@@ -52,17 +62,10 @@ function DefenceMechanism({
         defenceDetail.id,
         newConfiguration
       );
-      setIsConfigured(true);
-      setConfigValidated(configured);
+      showDefenceConfiguredText(configured);
     } else {
-      setConfigValidated(false);
-      setIsConfigured(true);
+      showDefenceConfiguredText(false);
     }
-
-    // hide the message after 3 seconds
-    setTimeout(() => {
-      setIsConfigured(false);
-    }, 3000);
   }
 
   function toggleDefence() {
