@@ -16,6 +16,7 @@ import {
   deactivateDefence,
   getDefences,
   resetActiveDefences,
+  resetDefenceConfig,
 } from "../../service/defenceService";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "../../Defences";
 import {
@@ -155,6 +156,25 @@ function MainComponent({
     void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentLevel);
   }
 
+  async function resetDefenceConfiguration(
+    defenceId: DEFENCE_TYPES,
+    configId: string
+  ) {
+    const resetDefence = await resetDefenceConfig(defenceId, configId);
+    // update state
+    const newDefences = defencesToShow.map((defence) => {
+      if (defence.id === defenceId) {
+        defence.config.forEach((config) => {
+          if (config.id === configId) {
+            config.value = resetDefence.value.trim();
+          }
+        });
+      }
+      return defence;
+    });
+    setDefencesToShow(newDefences);
+  }
+
   async function setDefenceActive(defence: DefenceInfo) {
     await activateDefence(defence.id, currentLevel);
     // update state
@@ -226,6 +246,10 @@ function MainComponent({
         emails={emails}
         messages={messages}
         addChatMessage={addChatMessage}
+        resetDefenceConfiguration={(
+          defenceId: DEFENCE_TYPES,
+          configId: string
+        ) => void resetDefenceConfiguration(defenceId, configId)}
         resetLevel={() => void resetLevel()}
         setDefenceActive={(defence: DefenceInfo) =>
           void setDefenceActive(defence)

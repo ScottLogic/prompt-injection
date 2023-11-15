@@ -4,10 +4,7 @@ import {
   DefenceConfig,
   DefenceInfo,
 } from "../../models/defence";
-import {
-  resetDefenceConfig,
-  validateDefence,
-} from "../../service/defenceService";
+import { validateDefence } from "../../service/defenceService";
 import "./DefenceMechanism.css";
 import DefenceConfiguration from "./DefenceConfiguration";
 import { TiTick, TiTimes } from "react-icons/ti";
@@ -15,12 +12,17 @@ import { TiTick, TiTimes } from "react-icons/ti";
 function DefenceMechanism({
   defenceDetail,
   showConfigurations,
+  resetDefenceConfiguration,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
 }: {
   defenceDetail: DefenceInfo;
   showConfigurations: boolean;
+  resetDefenceConfiguration: (
+    defenceId: DEFENCE_TYPES,
+    configId: string
+  ) => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
@@ -32,9 +34,8 @@ function DefenceMechanism({
   const [configValidated, setConfigValidated] = useState<boolean>(true);
   const [configKey, setConfigKey] = useState<number>(0);
 
-  async function resetConfigurationValue(configId: string): Promise<string> {
-    const defaultValue = await resetDefenceConfig(defenceDetail.id, configId);
-    return defaultValue.value;
+  function resetConfigurationValue(configId: string) {
+    resetDefenceConfiguration(defenceDetail.id, configId);
   }
 
   async function setConfigurationValue(configId: string, value: string) {

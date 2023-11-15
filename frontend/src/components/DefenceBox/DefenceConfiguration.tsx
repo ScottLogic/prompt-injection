@@ -12,12 +12,8 @@ function DefenceConfiguration({
   config: DefenceConfig;
   isActive: boolean;
   setConfigurationValue: (configId: string, value: string) => Promise<void>;
-  resetConfigurationValue: (configId: string) => Promise<string>;
+  resetConfigurationValue: (configId: string) => void;
 }) {
-  async function resetConfiguration() {
-    const defaultValue = await resetConfigurationValue(config.id);
-    void setConfigurationValue(config.id, defaultValue.trim());
-  }
   function setConfigurationValueIfDifferent(value: string) {
     if (value !== config.value) {
       void setConfigurationValue(config.id, value.trim());
@@ -29,7 +25,7 @@ function DefenceConfiguration({
       <div className="header">
         <span>{config.name}: </span>
         <ThemedButton
-          onClick={() => void resetConfiguration()}
+          onClick={() => { resetConfigurationValue(config.id); }}
           title="reset to default"
         >
           reset

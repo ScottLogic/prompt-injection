@@ -13,6 +13,7 @@ import SwitchModeButton from "../ThemedButtons/SwitchModeButton";
 function ControlPanel({
   currentLevel,
   defences,
+  resetDefenceConfiguration,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
@@ -20,6 +21,10 @@ function ControlPanel({
 }: {
   currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
+  resetDefenceConfiguration: (
+    defenceId: DEFENCE_TYPES,
+    configId: string
+  ) => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
@@ -65,6 +70,7 @@ function ControlPanel({
               currentLevel={currentLevel}
               defences={getDefencesConfigure()}
               showConfigurations={showConfigurations}
+              resetDefenceConfiguration={resetDefenceConfiguration}
               setDefenceActive={setDefenceActive}
               setDefenceInactive={setDefenceInactive}
               setDefenceConfiguration={setDefenceConfiguration}
@@ -79,6 +85,7 @@ function ControlPanel({
               currentLevel={currentLevel}
               defences={getDefencesModel()}
               showConfigurations={showConfigurations}
+              resetDefenceConfiguration={resetDefenceConfiguration}
               setDefenceActive={setDefenceActive}
               setDefenceInactive={setDefenceInactive}
               setDefenceConfiguration={setDefenceConfiguration}
