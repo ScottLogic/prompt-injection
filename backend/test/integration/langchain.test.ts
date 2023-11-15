@@ -181,15 +181,7 @@ test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
 });
 
 test("GIVEN application WHEN application starts THEN document vectors are loaded for all levels", async () => {
-  const numberOfLevelsNotSandbox = 3;
-
-  // load level docs and common docs for each non-sandbox level
-  const numberOfCallsForLevels = 2 * numberOfLevelsNotSandbox;
-
-  //one for each level (including sandbox) and one for common
-  const numerOfCallsForSandbox = numberOfLevelsNotSandbox + 2;
-
-  const numberOfCalls = numberOfCallsForLevels + numerOfCallsForSandbox;
+  const numberOfCalls = 8; // twice the number of levels. once for common and once for level specific
 
   mockSplitDocuments.mockResolvedValue([]);
 
