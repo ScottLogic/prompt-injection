@@ -38,6 +38,10 @@ import {
 } from "./promptTemplates";
 import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
 import { DefenceConfig } from "./models/defence";
+import { DefenceStatusRequest } from "./models/api/DefenceStatusRequest";
+import { EmailGetRequest } from "./models/api/EmailGetRequest";
+import { OpenAiGetHistoryRequest } from "./models/api/OpenAiGetHistoryRequest";
+import { LevelGetPromptRequest } from "./models/api/LevelGetPromptRequest";
 
 const router = express.Router();
 
@@ -163,9 +167,10 @@ router.post("/defence/resetConfig", (req: DefenceConfigResetRequest, res) => {
 });
 
 // Get the status of all defences /defence/status?level=1
-router.get("/defence/status", (req, res) => {
-  const level: number | undefined = req.query.level as number | undefined;
-  if (level !== undefined) {
+router.get("/defence/status", (req: DefenceStatusRequest, res) => {
+  const levelStr = req.query.level;
+  if (levelStr) {
+    const level = parseInt(levelStr);
     res.send(req.session.levelState[level].defences);
   } else {
     res.statusCode = 400;
@@ -174,9 +179,10 @@ router.get("/defence/status", (req, res) => {
 });
 
 // Get sent emails /email/get?level=1
-router.get("/email/get", (req, res) => {
-  const level: number | undefined = req.query.level as number | undefined;
-  if (level !== undefined) {
+router.get("/email/get", (req: EmailGetRequest, res) => {
+  const levelStr = req.query.level;
+  if (levelStr) {
+    const level = parseInt(levelStr);
     res.send(req.session.levelState[level].sentEmails);
   } else {
     res.statusCode = 400;
@@ -430,9 +436,10 @@ async function handleHigherLevelChat(
 }
 
 // get the chat history
-router.get("/openai/history", (req, res) => {
-  const level: number | undefined = req.query.level as number | undefined;
-  if (level !== undefined) {
+router.get("/openai/history", (req: OpenAiGetHistoryRequest, res) => {
+  const levelStr = req.query.level;
+  if (levelStr) {
+    const level = parseInt(levelStr);
     res.send(req.session.levelState[level].chatHistory);
   } else {
     res.statusCode = 400;
@@ -553,12 +560,10 @@ router.get("/openai/model", (req, res) => {
 });
 
 // /level/prompt?level=1
-router.get("/level/prompt", (req, res) => {
-  const levelStr: string | undefined = req.query.level as string | undefined;
-  if (levelStr === undefined) {
-    res.status(400).send();
-  } else {
-    const level = parseInt(levelStr) as LEVEL_NAMES;
+router.get("/level/prompt", (req: LevelGetPromptRequest, res) => {
+  const levelStr = req.query.level;
+  if (levelStr) {
+    const level = parseInt(levelStr);
     switch (level) {
       case LEVEL_NAMES.LEVEL_1:
         res.send(systemRoleLevel1);
@@ -573,6 +578,8 @@ router.get("/level/prompt", (req, res) => {
         res.status(400).send();
         break;
     }
+  } else {
+    res.status(400).send();
   }
 });
 
