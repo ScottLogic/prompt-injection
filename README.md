@@ -18,18 +18,8 @@ Activate and configure a number of different prompt injection defence measures t
 
 ## Installation
 
-### Backend
-
 ```bash
-cd backend/
-npm install
-```
-
-### Frontend
-
-```bash
-cd frontend/
-npm install
+npm ci
 ```
 
 ## Setup
@@ -51,35 +41,17 @@ npm install
 
 ### Backend
 
-Run in a command-line shell:
-
 ```bash
-cd backend/
-npm run dev
-```
-
-Alternatively, you can run using Docker:
-
-```bash
-cd backend/
-# Start the server
-npm run api:start
-# See the logs
-npm run api:logs
-# Stop the server
-npm run api:stop
+npm run start:api
 ```
 
 ### Frontend
 
-We are using [Vite](https://vitejs.dev/) to bootstrap, build and run our UI locally.
-
 ```bash
-cd frontend/
-npm run dev
+npm run start:ui
 ```
 
-Note that this project includes a VS Code launch file, to allow running directly within the IDE.
+Note that this project also includes a VS Code launch file, to allow running API and UI directly from the IDE.
 
 ## Development
 

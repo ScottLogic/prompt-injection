@@ -1,10 +1,11 @@
+import { env, exit } from "node:process";
 import app from "./app";
 import { initDocumentVectors } from "./langchain";
-import { verifyKeySupportsModel } from "./openai";
 import { defaultChatModel } from "./models/chat";
+import { verifyKeySupportsModel } from "./openai";
 
 // by default runs on port 3001
-const port = process.env.PORT ?? String(3001);
+const port = env.PORT ?? String(3001);
 
 app.listen(port, () => {
   // Set API key from environment variable
@@ -30,6 +31,6 @@ app.listen(port, () => {
     })
     .catch((err) => {
       console.error(err);
-      process.exit(1);
+      exit(1);
     });
 });
