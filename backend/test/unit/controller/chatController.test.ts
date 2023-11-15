@@ -387,6 +387,7 @@ describe("handleClearChatHistory", () => {
     handleClearChatHistory(req, res);
     expect(req.session.levelState[0].chatHistory.length).toEqual(0);
   });
+
   test("should return error on invalid level", () => {
     const req = {
       body: {

@@ -4,10 +4,6 @@ import { verifyKeySupportsModel } from "../openai";
 import { ChatModelConfiguration, MODEL_CONFIG } from "../models/chat";
 import { OpenAiConfigureModelRequest } from "../models/api/OpenAiConfigureModelRequest";
 import { GetRequestQueryLevel } from "../models/api/GetRequestQueryLevel";
-<<<<<<< HEAD
-=======
-import { stringify } from "querystring";
->>>>>>> dev
 
 function updateConfigProperty(
   config: ChatModelConfiguration,

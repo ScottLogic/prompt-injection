@@ -14,28 +14,7 @@ import { detectTriggeredDefences } from "../defence";
 import { GetRequestQueryLevel } from "../models/api/GetRequestQueryLevel";
 import { OpenAiAddHistoryRequest } from "../models/api/OpenAiAddHistoryRequest";
 import { OpenAiClearRequest } from "../models/api/OpenAiClearRequest";
-
-function handleChatError(
-  res: Response,
-  chatResponse: ChatHttpResponse,
-  blocked: boolean,
-  errorMsg: string,
-  statusCode = 500
-) {
-  console.error(errorMsg);
-  chatResponse.reply = errorMsg;
-  chatResponse.defenceInfo.isBlocked = blocked;
-  chatResponse.isError = true;
-  if (blocked) {
-    chatResponse.defenceInfo.blockedReason = errorMsg;
-  }
-<<<<<<< HEAD
-  res.status(statusCode).send(chatResponse);
-=======
-  res.status(statusCode);
-  res.send(chatResponse);
->>>>>>> dev
-}
+import { handleChatError } from "./handleError";
 
 async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
   // set reply params

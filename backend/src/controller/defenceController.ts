@@ -13,6 +13,7 @@ import { defaultDefences } from "../defaultDefences";
 import { DefenceConfigResetRequest } from "../models/api/DefenceConfigResetRequest";
 import { DefenceConfig } from "../models/defence";
 import { GetRequestQueryLevel } from "../models/api/GetRequestQueryLevel";
+import { sendErrorResponse } from "./handleError";
 
 function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
   const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
@@ -21,15 +22,6 @@ function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
     (c) => c.value.length <= CONFIG_VALUE_CHARACTER_LIMIT
   );
   return !allValuesWithinLimit;
-}
-
-function sendErrorResponse(
-  res: Response,
-  statusCode: number,
-  errorMessage: string
-) {
-  res.statusCode = statusCode;
-  res.send(errorMessage);
 }
 
 function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
