@@ -7,28 +7,12 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { LEVEL_NAMES } from "./models/level";
 
 async function getDocumentsForLevel(level: LEVEL_NAMES) {
-  const levelDocuments =
-    level === LEVEL_NAMES.SANDBOX
-      ? await getAllLevelSpecificDocuments()
-      : await getLevelSpecificDocuments(level);
+  const levelDocuments = await getLevelSpecificDocuments(level);
 
   const commonDocsFilePath: string = getFilepath("common");
   const commonDocuments: Document[] = await getDocuments(commonDocsFilePath);
 
   const documents = commonDocuments.concat(levelDocuments);
-  return documents;
-}
-
-async function getAllLevelSpecificDocuments() {
-  const levelValues = Object.values(LEVEL_NAMES)
-    .filter((value) => !isNaN(Number(value)))
-    .map((value) => Number(value));
-
-  const documents: Document[] = [];
-  for (const level of levelValues) {
-    const levelSpecificDocuments = await getLevelSpecificDocuments(level);
-    documents.push(...levelSpecificDocuments);
-  }
   return documents;
 }
 
