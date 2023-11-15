@@ -26,7 +26,7 @@ jest.mock("langchain/text_splitter", () => {
   };
 });
 
-test("WHEN ask for documents for a level THEN returns the correct documents", async () => {
+test("WHEN get documents for a level THEN returns the correct documents", async () => {
   const mockLevelDocs = ["doc1.txt", "doc2.txt"];
   const mockLevelSplitDocs = ["split1", "split1.5", "split2"];
   const mockCommonDocs = ["common1.txt"];
@@ -46,7 +46,7 @@ test("WHEN ask for documents for a level THEN returns the correct documents", as
   expect(result.sort()).toEqual(expectedDocs.sort());
 });
 
-test("WHEN ask for documents for sandbox THEN returns the correct documents", () => {
+test("WHEN get documents for sandbox THEN returns the correct documents", () => {
   // const mockLevelDocs = ["doc1.txt", "doc2.txt"];
   // const mockLevelSplitDocs = ["split1", "split1.5", "split2"];
   // const mockCommonDocs = ["common1.txt"];
