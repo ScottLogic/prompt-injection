@@ -45,6 +45,15 @@ import { LevelGetPromptRequest } from "./models/api/LevelGetPromptRequest";
 
 const router = express.Router();
 
+function sendErrorResponse(
+  res: express.Response,
+  statusCode: number,
+  errorMessage: string
+) {
+  res.statusCode = statusCode;
+  res.send(errorMessage);
+}
+
 // Activate a defence
 router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
   // id of the defence
@@ -88,15 +97,6 @@ function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
     (c) => c.value.length <= CONFIG_VALUE_CHARACTER_LIMIT
   );
   return !allValuesWithinLimit;
-}
-
-function sendErrorResponse(
-  res: express.Response,
-  statusCode: number,
-  errorMessage: string
-) {
-  res.statusCode = statusCode;
-  res.send(errorMessage);
 }
 
 // Configure a defence
@@ -219,110 +219,6 @@ function handleChatError(
   }
   res.status(statusCode).send(chatResponse);
 }
-// Chat to ChatGPT
-router.post(
-  "/openai/chat",
-  async (req: OpenAiChatRequest, res: express.Response) => {
-    // set reply params
-    const chatResponse: ChatHttpResponse = {
-      reply: "",
-      defenceInfo: {
-        blockedReason: "",
-        isBlocked: false,
-        alertedDefences: [],
-        triggeredDefences: [],
-      },
-      transformedMessage: "",
-      wonLevel: false,
-      isError: false,
-    };
-    const message = req.body.message;
-    const currentLevel = req.body.currentLevel;
-
-    // must have initialised openai
-    if (message === undefined || currentLevel === undefined) {
-      handleChatError(
-        res,
-        chatResponse,
-        true,
-        "Please send a message and current level to chat to me!",
-        400
-      );
-      return;
-    }
-
-    const MESSAGE_CHARACTER_LIMIT = 16384;
-    if (message.length > MESSAGE_CHARACTER_LIMIT) {
-      handleChatError(
-        res,
-        chatResponse,
-        true,
-        "Message exceeds character limit",
-        400
-      );
-      return;
-    }
-
-    // set the transformed message to begin with
-    chatResponse.transformedMessage = message;
-
-    // use default model for levels, allow user to select in sandbox
-    const chatModel =
-      currentLevel === LEVEL_NAMES.SANDBOX
-        ? req.session.chatModel
-        : defaultChatModel;
-
-    // record the history before chat completion called
-    const chatHistoryBefore = [
-      ...req.session.levelState[currentLevel].chatHistory,
-    ];
-    try {
-      if (message) {
-        // skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
-        if (currentLevel < LEVEL_NAMES.LEVEL_3) {
-          await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
-        } else {
-          // apply the defence detection for level 3 and sandbox - sets chatResponse obj
-          await handleHigherLevelChat(
-            req,
-            message,
-            chatHistoryBefore,
-            chatResponse,
-            currentLevel,
-            chatModel
-          );
-        }
-        // if the reply was blocked then add it to the chat history
-        if (chatResponse.defenceInfo.isBlocked) {
-          req.session.levelState[currentLevel].chatHistory.push({
-            completion: null,
-            chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-            infoMessage: chatResponse.defenceInfo.blockedReason,
-          });
-        } else if (!chatResponse.reply || chatResponse.reply === "") {
-          // add error message to chat history
-          req.session.levelState[currentLevel].chatHistory.push({
-            completion: null,
-            chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
-            infoMessage: "Failed to get chatGPT reply",
-          });
-          // throw so handle error called
-          throw new Error("Failed to get chatGPT reply");
-        }
-      } else {
-        handleChatError(res, chatResponse, true, "Missing message");
-        return;
-      }
-    } catch (error) {
-      handleChatError(res, chatResponse, false, "Failed to get chatGPT reply");
-      return;
-    }
-
-    // log and send the reply with defence info
-    console.log(chatResponse);
-    res.send(chatResponse);
-  }
-);
 
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
@@ -434,6 +330,111 @@ async function handleHigherLevelChat(
     }
   }
 }
+
+// Chat to ChatGPT
+router.post(
+  "/openai/chat",
+  async (req: OpenAiChatRequest, res: express.Response) => {
+    // set reply params
+    const chatResponse: ChatHttpResponse = {
+      reply: "",
+      defenceInfo: {
+        blockedReason: "",
+        isBlocked: false,
+        alertedDefences: [],
+        triggeredDefences: [],
+      },
+      transformedMessage: "",
+      wonLevel: false,
+      isError: false,
+    };
+    const message = req.body.message;
+    const currentLevel = req.body.currentLevel;
+
+    // must have initialised openai
+    if (message === undefined || currentLevel === undefined) {
+      handleChatError(
+        res,
+        chatResponse,
+        true,
+        "Please send a message and current level to chat to me!",
+        400
+      );
+      return;
+    }
+
+    const MESSAGE_CHARACTER_LIMIT = 16384;
+    if (message.length > MESSAGE_CHARACTER_LIMIT) {
+      handleChatError(
+        res,
+        chatResponse,
+        true,
+        "Message exceeds character limit",
+        400
+      );
+      return;
+    }
+
+    // set the transformed message to begin with
+    chatResponse.transformedMessage = message;
+
+    // use default model for levels, allow user to select in sandbox
+    const chatModel =
+      currentLevel === LEVEL_NAMES.SANDBOX
+        ? req.session.chatModel
+        : defaultChatModel;
+
+    // record the history before chat completion called
+    const chatHistoryBefore = [
+      ...req.session.levelState[currentLevel].chatHistory,
+    ];
+    try {
+      if (message) {
+        // skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
+        if (currentLevel < LEVEL_NAMES.LEVEL_3) {
+          await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
+        } else {
+          // apply the defence detection for level 3 and sandbox - sets chatResponse obj
+          await handleHigherLevelChat(
+            req,
+            message,
+            chatHistoryBefore,
+            chatResponse,
+            currentLevel,
+            chatModel
+          );
+        }
+        // if the reply was blocked then add it to the chat history
+        if (chatResponse.defenceInfo.isBlocked) {
+          req.session.levelState[currentLevel].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+            infoMessage: chatResponse.defenceInfo.blockedReason,
+          });
+        } else if (!chatResponse.reply || chatResponse.reply === "") {
+          // add error message to chat history
+          req.session.levelState[currentLevel].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+            infoMessage: "Failed to get chatGPT reply",
+          });
+          // throw so handle error called
+          throw new Error("Failed to get chatGPT reply");
+        }
+      } else {
+        handleChatError(res, chatResponse, true, "Missing message");
+        return;
+      }
+    } catch (error) {
+      handleChatError(res, chatResponse, false, "Failed to get chatGPT reply");
+      return;
+    }
+
+    // log and send the reply with defence info
+    console.log(chatResponse);
+    res.send(chatResponse);
+  }
+);
 
 // get the chat history
 router.get("/openai/history", (req: OpenAiGetHistoryRequest, res) => {
