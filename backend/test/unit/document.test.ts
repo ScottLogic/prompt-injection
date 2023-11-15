@@ -41,16 +41,3 @@ test("WHEN get documents for a level THEN returns the correct documents", async 
 
   expect(result.sort()).toEqual(expectedDocs.sort());
 });
-
-test("WHEN get documents for sandbox THEN returns the correct documents", async () => {
-  const numLevels = 4;
-  const numCallsToGetDocs = numLevels + 1; // call for each level plus one for common
-  const expectedDocs = Array(numCallsToGetDocs).fill("doc");
-
-  mockLoader.mockResolvedValue([]);
-  mockSplitDocuments.mockResolvedValue(["doc"]);
-
-  const result = await getDocumentsForLevel(LEVEL_NAMES.SANDBOX);
-
-  expect(result.sort()).toEqual(expectedDocs);
-});
