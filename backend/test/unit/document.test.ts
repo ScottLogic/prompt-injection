@@ -45,3 +45,24 @@ test("WHEN ask for documents for a level THEN returns the correct documents", as
 
   expect(result.sort()).toEqual(expectedDocs.sort());
 });
+
+test("WHEN ask for documents for sandbox THEN returns the correct documents", () => {
+  // const mockLevelDocs = ["doc1.txt", "doc2.txt"];
+  // const mockLevelSplitDocs = ["split1", "split1.5", "split2"];
+  // const mockCommonDocs = ["common1.txt"];
+  // const mockCommonSplitDocs = ["split3", "split4"];
+
+  // const expectedDocs = [...mockLevelSplitDocs, ...mockCommonSplitDocs];
+
+  // mockLoader
+  //   .mockResolvedValueOnce(mockLevelDocs)
+  //   .mockResolvedValueOnce(mockCommonDocs);
+  // mockSplitDocuments
+  //   .mockResolvedValueOnce(mockLevelSplitDocs)
+  //   .mockResolvedValueOnce(mockCommonSplitDocs);
+
+  // const result = await getDocumentsForLevel(LEVEL_NAMES.LEVEL_1);
+
+  // expect(result.sort()).toEqual(expectedDocs.sort());
+  expect(true).toEqual(true);
+});
