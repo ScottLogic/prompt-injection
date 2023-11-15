@@ -391,7 +391,7 @@ describe("handleClearChatHistory", () => {
   test("should return error on invalid level", () => {
     const req = {
       body: {
-        level: 0,
+        level: undefined,
       },
       session: {
         levelState: [
@@ -401,9 +401,12 @@ describe("handleClearChatHistory", () => {
         ],
       },
     } as unknown as OpenAiClearRequest;
+
     const res = {
       send: jest.fn(),
+      statusCode: 400,
     } as unknown as Response;
+
     handleClearChatHistory(req, res);
 
     expect(res.statusCode).toBe(400);

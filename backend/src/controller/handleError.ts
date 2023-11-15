@@ -24,7 +24,8 @@ function handleChatError(
   if (blocked) {
     chatResponse.defenceInfo.blockedReason = errorMsg;
   }
-  sendErrorResponse(res, statusCode, errorMsg);
+  res.status(statusCode);
+  res.send(chatResponse);
 }
 
 export { sendErrorResponse, handleChatError };

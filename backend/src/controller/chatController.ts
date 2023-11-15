@@ -108,7 +108,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
       return;
     }
   } catch (error) {
-    handleChatError(res, chatResponse, false, "Failed to get chatGPT reply");
+    handleChatError(res, chatResponse, true, "Failed to get chatGPT reply");
     return;
   }
   // log and send the reply with defence info
