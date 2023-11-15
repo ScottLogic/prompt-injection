@@ -18,10 +18,9 @@ import {
   MODEL_CONFIG,
   defaultChatModel,
 } from "./models/chat";
-import { DocumentMeta } from "./models/document";
+
 import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
 import { LEVEL_NAMES } from "./models/level";
-import * as fs from "fs";
 import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
 import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
 import { EmailClearRequest } from "./models/api/EmailClearRequest";
@@ -38,6 +37,7 @@ import {
 } from "./promptTemplates";
 import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
 import { DefenceConfig } from "./models/defence";
+import { getSandboxDocumentMetas } from "./document";
 
 const router = express.Router();
 
@@ -572,24 +572,5 @@ router.get("/documents", (_, res) => {
     return;
   }
 });
-
-function getSandboxDocumentMetas() {
-  return [...getDocumentMetas("common"), ...getDocumentMetas("sandbox")];
-}
-
-function getDocumentMetas(folder: string) {
-  const filepath = `resources/documents/${folder}`;
-  const documentMetas: DocumentMeta[] = [];
-
-  fs.readdirSync(filepath).forEach((file) => {
-    const fileType = file.split(".").pop() ?? "";
-    documentMetas.push({
-      filename: file,
-      filetype: fileType === "csv" ? "text/csv" : fileType,
-      folder,
-    });
-  });
-  return documentMetas;
-}
 
 export { router };

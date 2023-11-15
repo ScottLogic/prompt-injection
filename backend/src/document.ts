@@ -4,7 +4,9 @@ import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import * as fs from "fs";
 import { LEVEL_NAMES } from "./models/level";
+import { DocumentMeta } from "./models/document";
 
 async function getDocumentsForLevel(level: LEVEL_NAMES) {
   const levelDocuments = await getLevelSpecificDocuments(level);
@@ -59,5 +61,23 @@ function getFilepath(target: LEVEL_NAMES | "common") {
       return "";
   }
 }
+function getSandboxDocumentMetas() {
+  return [...getDocumentMetas("common"), ...getDocumentMetas("sandbox")];
+}
 
-export { getDocumentsForLevel };
+function getDocumentMetas(folder: string) {
+  const filepath = `resources/documents/${folder}`;
+  const documentMetas: DocumentMeta[] = [];
+
+  fs.readdirSync(filepath).forEach((file) => {
+    const fileType = file.split(".").pop() ?? "";
+    documentMetas.push({
+      filename: file,
+      filetype: fileType === "csv" ? "text/csv" : fileType,
+      folder,
+    });
+  });
+  return documentMetas;
+}
+
+export { getDocumentsForLevel, getSandboxDocumentMetas };
