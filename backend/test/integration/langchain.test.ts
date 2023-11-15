@@ -17,7 +17,6 @@ import {
   initQAModel,
   queryDocuments,
   queryPromptEvaluationModel,
-  getDocuments,
   initDocumentVectors,
   setVectorisedDocuments,
 } from "../../src/langchain";
@@ -182,9 +181,21 @@ test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
 });
 
 test("GIVEN application WHEN application starts THEN document vectors are loaded for all levels", async () => {
+  const numberOfLevelsNotSandbox = 3;
+
+  // load level docs and common docs for each non-sandbox level
+  const numberOfCallsForLevels = 2 * numberOfLevelsNotSandbox;
+
+  //one for each level (including sandbox) and one for common
+  const numerOfCallsForSandbox = numberOfLevelsNotSandbox + 2;
+
+  const numberOfCalls = numberOfCallsForLevels + numerOfCallsForSandbox;
+
+  mockSplitDocuments.mockResolvedValue([]);
+
   await initDocumentVectors();
-  expect(mockLoader).toHaveBeenCalledTimes(4);
-  expect(mockSplitDocuments).toHaveBeenCalledTimes(4);
+  expect(mockLoader).toHaveBeenCalledTimes(numberOfCalls);
+  expect(mockSplitDocuments).toHaveBeenCalledTimes(numberOfCalls);
 });
 
 test("GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it answers ", async () => {
@@ -251,21 +262,6 @@ test("GIVEN the prompt evaluation model is initialised WHEN it is asked to evalu
     isMalicious: false,
     reason: "",
   });
-});
-
-test("GIVEN a valid filePath then getDocuments returns the correct documents", async () => {
-  const mockDocs = ["doc1.txt", "doc2.txt"];
-  const mockSplitDocs = ["split1", "split1.5", "split2"];
-  mockLoader.mockResolvedValue(mockDocs);
-  mockSplitDocuments.mockResolvedValue(mockSplitDocs);
-
-  const filePath = "/path/to/documents";
-
-  const result = await getDocuments(filePath);
-
-  expect(result).toEqual(mockSplitDocs);
-  expect(mockLoader).toHaveBeenCalled();
-  expect(mockSplitDocuments).toHaveBeenCalledWith(mockDocs);
 });
 
 afterEach(() => {
