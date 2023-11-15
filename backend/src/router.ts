@@ -566,8 +566,7 @@ router.get("/level/prompt", (req, res) => {
 // get names and types of documents for sandbox and common
 router.get("/documents", (_, res) => {
   try {
-    const allDocFiles = getSandboxDocumentMetas();
-    res.send(allDocFiles);
+    res.send(getSandboxDocumentMetas());
   } catch (err) {
     res.status(500).send("Failed to read documents");
     return;
