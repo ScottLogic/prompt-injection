@@ -25,14 +25,16 @@ function DefenceConfiguration({
       <div className="header">
         <span>{config.name}: </span>
         <ThemedButton
-          onClick={() => { resetConfigurationValue(config.id); }}
+          onClick={() => {
+            resetConfigurationValue(config.id);
+          }}
           title="reset to default"
         >
           reset
         </ThemedButton>
       </div>
       <DefenceConfigurationInput
-        defaultValue={config.value}
+        currentValue={config.value}
         disabled={!isActive}
         inputType={config.inputType}
         setConfigurationValue={setConfigurationValueIfDifferent}

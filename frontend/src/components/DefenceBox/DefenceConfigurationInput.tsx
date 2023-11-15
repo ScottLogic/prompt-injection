@@ -3,23 +3,23 @@ import ThemedNumberInput from "../ThemedInput/ThemedNumberInput";
 import { KeyboardEvent, useEffect, useState } from "react";
 
 function DefenceConfigurationInput({
-  defaultValue,
+  currentValue,
   disabled,
   inputType,
   setConfigurationValue,
 }: {
-  defaultValue: string;
+  currentValue: string;
   disabled: boolean;
   inputType: "text" | "number";
   setConfigurationValue: (value: string) => void;
 }) {
   const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
-  const [value, setValue] = useState<string>(defaultValue);
+  const [value, setValue] = useState<string>(currentValue);
 
   // update the text area value when reset/changed
   useEffect(() => {
-    setValue(defaultValue);
-  }, [setConfigurationValue]);
+    setValue(currentValue);
+  }, [currentValue]);
 
   function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
