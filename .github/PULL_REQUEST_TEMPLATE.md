@@ -7,7 +7,7 @@ Where applicable, show screenshots of the visual changes.
 ## Notes
 - Bullet point list with 
 - any notable code changes
-- or explainations regarding this PR
+- or explanations regarding this PR
 
 ## Concerns
 - Bullet point list
