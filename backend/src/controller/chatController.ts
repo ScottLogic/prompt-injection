@@ -29,7 +29,12 @@ function handleChatError(
   if (blocked) {
     chatResponse.defenceInfo.blockedReason = errorMsg;
   }
+<<<<<<< HEAD
   res.status(statusCode).send(chatResponse);
+=======
+  res.status(statusCode);
+  res.send(chatResponse);
+>>>>>>> dev
 }
 
 async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
@@ -127,7 +132,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
     handleChatError(res, chatResponse, false, "Failed to get chatGPT reply");
     return;
   }
-
   // log and send the reply with defence info
   console.log(chatResponse);
   res.send(chatResponse);
