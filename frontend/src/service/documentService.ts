@@ -4,14 +4,16 @@ import { getBackendUrl, sendRequest } from "./backendService";
 async function getDocumentMetas(): Promise<DocumentMeta[]> {
   const path = "documents";
   const response = await sendRequest(path, "GET");
-  let documents = (await response.json()) as DocumentMeta[];
-  documents = documents.map((document) => {
+  let documentMetas = (await response.json()) as DocumentMeta[];
+  documentMetas = documentMetas.map((documentMeta) => {
     return {
-      ...document,
-      uri: `${getBackendUrl()}${path}/${document.folder}/${document.filename}`,
+      ...documentMeta,
+      uri: `${getBackendUrl()}${path}/${documentMeta.folder}/${
+        documentMeta.filename
+      }`,
     };
   });
-  return documents;
+  return documentMetas;
 }
 
 export { getDocumentMetas };
