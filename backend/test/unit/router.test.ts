@@ -25,7 +25,7 @@ describe("/defence/configure", () => {
     mocked.mockReturnValueOnce([]);
 
     await request(app).post("/defence/configure").send(body).expect(200);
-    expect(mocked).toBeCalledTimes(1);
+    expect(mocked).toHaveBeenCalledTimes(1);
   });
 
   it("WHEN missing defenceId THEN does not configure defences", async () => {

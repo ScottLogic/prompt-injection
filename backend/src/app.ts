@@ -1,10 +1,9 @@
-import path from "path";
-
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import session from "express-session";
 import memoryStoreFactory from "memorystore";
+import { join } from "node:path";
 
 import { defaultDefences } from "./defaultDefences";
 import { ChatHistoryMessage, ChatModel, defaultChatModel } from "./models/chat";
@@ -83,7 +82,7 @@ app.use("/", router);
 // serve the documents folder
 app.use(
   "/documents",
-  express.static(path.join(__dirname, "@src/resources/documents/common"))
+  express.static(join(__dirname, "@src/resources/documents/common"))
 );
 
 export default app;
