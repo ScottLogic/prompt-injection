@@ -1,7 +1,7 @@
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { LEVEL_NAMES } from "./level";
 
-interface Document {
+interface DocumentMeta {
   filename: string;
   filetype: string;
   folder: string;
@@ -12,4 +12,4 @@ interface DocumentsVector {
   docVector: MemoryVectorStore;
 }
 
-export type { Document, DocumentsVector };
+export type { DocumentMeta, DocumentsVector };

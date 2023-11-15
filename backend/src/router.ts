@@ -18,7 +18,7 @@ import {
   MODEL_CONFIG,
   defaultChatModel,
 } from "./models/chat";
-import { Document } from "./models/document";
+import { DocumentMeta } from "./models/document";
 import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
 import { LEVEL_NAMES } from "./models/level";
 import * as fs from "fs";
@@ -576,7 +576,7 @@ router.get("/documents", (_, res) => {
 
 function getDocFiles(folder: string) {
   const filepath = `resources/documents/${folder}`;
-  const docFiles: Document[] = [];
+  const docFiles: DocumentMeta[] = [];
 
   fs.readdirSync(filepath).forEach((file) => {
     const fileType = file.split(".").pop() ?? "";
