@@ -1,10 +1,10 @@
-import { RemoteDocument } from "../models/document";
+import { DocumentMeta } from "../models/document";
 import { getBackendUrl, sendRequest } from "./backendService";
 
-async function getDocumentUris(): Promise<RemoteDocument[]> {
+async function getDocumentMetas(): Promise<DocumentMeta[]> {
   const path = "documents";
   const response = await sendRequest(path, "GET");
-  let documents = (await response.json()) as RemoteDocument[];
+  let documents = (await response.json()) as DocumentMeta[];
   documents = documents.map((document) => {
     return {
       ...document,
@@ -14,4 +14,4 @@ async function getDocumentUris(): Promise<RemoteDocument[]> {
   return documents;
 }
 
-export { getDocumentUris };
+export { getDocumentMetas };

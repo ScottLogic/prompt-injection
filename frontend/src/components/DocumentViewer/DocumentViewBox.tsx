@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import { RemoteDocument } from "../../models/document";
-import { getDocumentUris } from "../../service/documentService";
+import { DocumentMeta } from "../../models/document";
+import { getDocumentMetas } from "../../service/documentService";
 
 import "./DocumentViewBox.css";
 
@@ -12,12 +12,12 @@ function DocumentViewBox({
   show: boolean;
   onClose: () => void;
 }) {
-  const [documents, setDocuments] = useState<RemoteDocument[]>([]);
+  const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>([]);
   // on mount get document uris
   useEffect(() => {
-    getDocumentUris()
+    getDocumentMetas()
       .then((uris) => {
-        setDocuments(uris);
+        setDocumentMetas(uris);
       })
       .catch((err) => {
         console.log(err);
@@ -41,7 +41,7 @@ function DocumentViewBox({
           <div className="view-documents-body">
             <DocViewer
               className="document-viewer"
-              documents={documents}
+              documents={documentMetas}
               pluginRenderers={DocViewerRenderers}
             />
           </div>
