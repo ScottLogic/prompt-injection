@@ -2,12 +2,12 @@ import { Request } from "express";
 import { LEVEL_NAMES } from "../level";
 
 type OpenAiClearRequest = Request<
-  object,
-  object,
+  null,
+  null,
   {
     level?: LEVEL_NAMES;
   },
-  object
+  null
 >;
 
 export type { OpenAiClearRequest };

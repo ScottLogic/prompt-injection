@@ -2,13 +2,13 @@ import { Request } from "express";
 import { DEFENCE_TYPES } from "../defence";
 
 type DefenceConfigResetRequest = Request<
-  object,
-  object,
+  null,
+  null,
   {
     defenceId?: DEFENCE_TYPES;
     configId?: string;
   },
-  object
+  null
 >;
 
 export type { DefenceConfigResetRequest };

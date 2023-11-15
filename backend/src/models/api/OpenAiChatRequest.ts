@@ -2,13 +2,13 @@ import { Request } from "express";
 import { LEVEL_NAMES } from "../level";
 
 type OpenAiChatRequest = Request<
-  object,
-  object,
+  null,
+  null,
   {
     currentLevel?: LEVEL_NAMES;
     message?: string;
   },
-  object
+  null
 >;
 
 export type { OpenAiChatRequest };

@@ -2,13 +2,13 @@ import { Request } from "express";
 import { CHAT_MODELS, ChatModelConfiguration } from "../chat";
 
 type OpenAiSetModelRequest = Request<
-  object,
-  object,
+  null,
+  null,
   {
     model?: CHAT_MODELS;
     configuration?: ChatModelConfiguration;
   },
-  object
+  null
 >;
 
 export type { OpenAiSetModelRequest };

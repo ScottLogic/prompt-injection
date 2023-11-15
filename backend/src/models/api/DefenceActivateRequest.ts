@@ -3,13 +3,13 @@ import { DEFENCE_TYPES } from "../defence";
 import { LEVEL_NAMES } from "../level";
 
 type DefenceActivateRequest = Request<
-  object,
-  object,
+  null,
+  null,
   {
     defenceId?: DEFENCE_TYPES;
     level?: LEVEL_NAMES;
   },
-  object
+  null
 >;
 
 export type { DefenceActivateRequest };
