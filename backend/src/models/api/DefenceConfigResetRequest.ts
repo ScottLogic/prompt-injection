@@ -1,9 +1,9 @@
 import { Request } from "express";
-import { DEFENCE_TYPES } from "../defence";
+import { DEFENCE_TYPES, DefenceConfig } from "../defence";
 
 type DefenceConfigResetRequest = Request<
   null,
-  null,
+  DefenceConfig,
   {
     defenceId?: DEFENCE_TYPES;
     configId?: string;
