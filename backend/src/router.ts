@@ -574,22 +574,22 @@ router.get("/documents", (_, res) => {
 });
 
 function getSandboxDocumentMetas() {
-  return [...getDocMetas("common"), ...getDocMetas("sandbox")];
+  return [...getDocumentMetas("common"), ...getDocumentMetas("sandbox")];
 }
 
-function getDocMetas(folder: string) {
+function getDocumentMetas(folder: string) {
   const filepath = `resources/documents/${folder}`;
-  const docFiles: DocumentMeta[] = [];
+  const documentMetas: DocumentMeta[] = [];
 
   fs.readdirSync(filepath).forEach((file) => {
     const fileType = file.split(".").pop() ?? "";
-    docFiles.push({
+    documentMetas.push({
       filename: file,
       filetype: fileType === "csv" ? "text/csv" : fileType,
       folder,
     });
   });
-  return docFiles;
+  return documentMetas;
 }
 
 export { router };
