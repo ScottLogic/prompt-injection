@@ -582,7 +582,6 @@ router.get("/documents", (_, res) => {
     res.send(getSandboxDocumentMetas());
   } catch (err) {
     res.status(500).send("Failed to read documents");
-    return;
   }
 });
 
