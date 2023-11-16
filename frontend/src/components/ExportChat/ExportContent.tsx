@@ -1,10 +1,10 @@
 import {
 	Document,
-	Page,
-	View,
-	Text,
-	StyleSheet,
 	Font,
+	Page,
+	StyleSheet,
+	Text,
+	View,
 } from '@react-pdf/renderer';
 
 import ExportChatBox from './ExportChatBox';

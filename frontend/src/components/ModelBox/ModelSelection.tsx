@@ -5,7 +5,7 @@ import './ModelSelection.css';
 
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
 import { CHAT_MODELS } from '@src/models/chat';
-import { setGptModel, getGptModel } from '@src/service/chatService';
+import { getGptModel, setGptModel } from '@src/service/chatService';
 
 // return a drop down menu with the models
 function ModelSelection() {

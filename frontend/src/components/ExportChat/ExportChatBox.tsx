@@ -1,4 +1,4 @@
-import { View, StyleSheet } from '@react-pdf/renderer';
+import { StyleSheet, View } from '@react-pdf/renderer';
 import { Fragment } from 'react';
 
 import ExportChatMessage from './ExportChatMessage';

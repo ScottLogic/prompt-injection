@@ -1,4 +1,4 @@
-import { Level, LEVEL_NAMES } from './models/level';
+import { LEVEL_NAMES, Level } from './models/level';
 
 const LEVELS: Level[] = [
 	{

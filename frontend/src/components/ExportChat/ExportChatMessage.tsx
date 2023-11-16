@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet } from '@react-pdf/renderer';
+import { StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 

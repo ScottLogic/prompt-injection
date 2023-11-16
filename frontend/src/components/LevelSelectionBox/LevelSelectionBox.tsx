@@ -2,7 +2,7 @@ import './LevelSelectionBox.css';
 
 import { LEVELS } from '@src/Levels';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
-import { Level, LEVEL_NAMES } from '@src/models/level';
+import { LEVEL_NAMES, Level } from '@src/models/level';
 
 export interface LevelSelectionBoxProps {
 	currentLevel: LEVEL_NAMES;
