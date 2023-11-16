@@ -1,8 +1,6 @@
 import { PromptTemplate } from "langchain/prompts";
-import {
-  formatEvaluationOutput,
-  makePromptTemplate,
-} from "../../src/langchain";
+
+import { formatEvaluationOutput, makePromptTemplate } from "@src/langchain";
 
 jest.mock("langchain/prompts", () => ({
   PromptTemplate: {

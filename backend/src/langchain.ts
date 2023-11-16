@@ -4,10 +4,13 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
+
+import { getDocumentsForLevel } from "./document";
 import { CHAT_MODELS, ChatAnswer } from "./models/chat";
 import { DocumentsVector } from "./models/document";
+import { PromptEvaluationChainReply, QaChainReply } from "./models/langchain";
+import { LEVEL_NAMES } from "./models/level";
 import { getOpenAIKey } from "./openai";
-
 import {
   maliciousPromptEvalPrePrompt,
   maliciousPromptEvalMainPrompt,
@@ -16,9 +19,6 @@ import {
   qAMainPrompt,
   qAPrePrompt,
 } from "./promptTemplates";
-import { LEVEL_NAMES } from "./models/level";
-import { PromptEvaluationChainReply, QaChainReply } from "./models/langchain";
-import { getDocumentsForLevel } from "./document";
 
 // store vectorised documents for each level as array
 let vectorisedDocuments: DocumentsVector[] = [];

@@ -1,4 +1,4 @@
-import { LEVEL_NAMES } from "../../models/level";
+import { LEVEL_NAMES } from "@src/models/level";
 
 function HandbookSystemRole({
   level,

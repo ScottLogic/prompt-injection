@@ -1,21 +1,41 @@
 /* eslint-env node */
 module.exports = {
+  root: true,
+  settings: {
+    "import/resolver": {
+      alias: {
+        map: [["@src", "./src"]],
+        extensions: [".ts", ".js", ".jsx", ".tsx", ".json", ".css"],
+      },
+    },
+  },
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:@typescript-eslint/strict-type-checked",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: ["./tsconfig.json", "./test/tsconfig.json"],
   },
   plugins: ["@typescript-eslint"],
-  root: true,
   ignorePatterns: ["build", "coverage", "node_modules"],
   rules: {
-    "@typescript-eslint/init-declarations": "error",
+    eqeqeq: "error",
+    "func-style": ["error", "declaration"],
+    "object-shorthand": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: ["../*"],
+      },
+    ],
+    "prefer-template": "error",
 
+    "@typescript-eslint/init-declarations": "error",
     "@typescript-eslint/no-misused-promises": [
       "error",
       {
@@ -24,9 +44,13 @@ module.exports = {
     ],
     "@typescript-eslint/unbound-method": ["error", { ignoreStatic: true }],
 
-    eqeqeq: "error",
-    "func-style": ["error", "declaration"],
-    "object-shorthand": "error",
-    "prefer-template": "error",
+    "import/order": [
+      "error",
+      {
+        alphabetize: { order: "asc" },
+        "newlines-between": "always",
+        warnOnUnassignedImports: true,
+      },
+    ],
   },
 };

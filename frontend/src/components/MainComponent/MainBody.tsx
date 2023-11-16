@@ -1,18 +1,16 @@
-import "./MainBody.css";
-import { ChatMessage } from "../../models/chat";
-import {
-  DEFENCE_TYPES,
-  DefenceConfig,
-  DefenceInfo,
-} from "../../models/defence";
-import { LEVEL_NAMES } from "../../models/level";
-import ChatBox from "../ChatBox/ChatBox";
-import EmailBox from "../EmailBox/EmailBox";
-import { EmailInfo } from "../../models/email";
 import { useState } from "react";
-import ControlPanel from "../ControlPanel/ControlPanel";
-import ShortMissionInfoButton from "../ShortMissionInfoButton/ShortMissionInfoButton";
-import { LEVELS } from "../../Levels";
+
+import "./MainBody.css";
+
+import { LEVELS } from "@src/Levels";
+import ChatBox from "@src/components/ChatBox/ChatBox";
+import ControlPanel from "@src/components/ControlPanel/ControlPanel";
+import EmailBox from "@src/components/EmailBox/EmailBox";
+import ShortMissionInfoButton from "@src/components/ShortMissionInfoButton/ShortMissionInfoButton";
+import { ChatMessage } from "@src/models/chat";
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
+import { EmailInfo } from "@src/models/email";
+import { LEVEL_NAMES } from "@src/models/level";
 
 function MainBody({
   currentLevel,

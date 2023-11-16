@@ -1,5 +1,6 @@
 import express from "express";
 
+import { defaultDefences } from "./defaultDefences";
 import {
   activateDefence,
   deactivateDefence,
@@ -8,7 +9,17 @@ import {
   detectTriggeredDefences,
   resetDefenceConfig,
 } from "./defence";
-import { defaultDefences } from "./defaultDefences";
+import { getSandboxDocumentMetas } from "./document";
+import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
+import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
+import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
+import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
+import { EmailClearRequest } from "./models/api/EmailClearRequest";
+import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
+import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
+import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
+import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
+import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
@@ -18,26 +29,14 @@ import {
   MODEL_CONFIG,
   defaultChatModel,
 } from "./models/chat";
-
-import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
+import { DefenceConfig } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
-import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
-import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
-import { EmailClearRequest } from "./models/api/EmailClearRequest";
-import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
-import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
-import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
-import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
-import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
-import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
+import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
 import {
   systemRoleLevel1,
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
-import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
-import { DefenceConfig } from "./models/defence";
-import { getSandboxDocumentMetas } from "./document";
 
 const router = express.Router();
 

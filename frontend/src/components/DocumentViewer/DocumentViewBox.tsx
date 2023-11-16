@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import { DocumentMeta } from "../../models/document";
-import { getDocumentMetas } from "../../service/documentService";
+import { useEffect, useState } from "react";
 
 import "./DocumentViewBox.css";
+
+import { DocumentMeta } from "@src/models/document";
+import { getDocumentMetas } from "@src/service/documentService";
 
 function DocumentViewBox({
   show,
