@@ -1,20 +1,20 @@
-import { clsx } from "clsx";
+import { clsx } from 'clsx';
 
-import "./OverlayButton.css";
-import { ThemedButtonProps } from "./ThemedButton";
+import './OverlayButton.css';
+import { ThemedButtonProps } from './ThemedButton';
 
 function OverlayButton({
-  children,
-  onClick,
-  disabled = false,
-  selected = false,
+	children,
+	onClick,
+	disabled = false,
+	selected = false,
 }: ThemedButtonProps) {
-  const buttonClass = clsx("overlay-button", { selected });
+	const buttonClass = clsx('overlay-button', { selected });
 
-  return (
-    <button className={buttonClass} onClick={onClick} disabled={disabled}>
-      {children}
-    </button>
-  );
+	return (
+		<button className={buttonClass} onClick={onClick} disabled={disabled}>
+			{children}
+		</button>
+	);
 }
 export default OverlayButton;

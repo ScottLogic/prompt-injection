@@ -1,26 +1,26 @@
-import ModeSelectButtons from "./ModeSelectButtons";
+import ModeSelectButtons from './ModeSelectButtons';
 
-import { LEVEL_NAMES, ModeSelectButton } from "@src/models/level";
+import { LEVEL_NAMES, ModeSelectButton } from '@src/models/level';
 
 function StartLevelButtons({
-  currentLevel,
-  setStartLevel,
+	currentLevel,
+	setStartLevel,
 }: {
-  currentLevel: LEVEL_NAMES;
-  setStartLevel: (newLevel: LEVEL_NAMES) => void;
+	currentLevel: LEVEL_NAMES;
+	setStartLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
-  const levels: ModeSelectButton[] = [
-    { displayName: "Beginner", targetLevel: LEVEL_NAMES.LEVEL_1 },
-    { displayName: "Expert", targetLevel: LEVEL_NAMES.SANDBOX },
-  ];
+	const levels: ModeSelectButton[] = [
+		{ displayName: 'Beginner', targetLevel: LEVEL_NAMES.LEVEL_1 },
+		{ displayName: 'Expert', targetLevel: LEVEL_NAMES.SANDBOX },
+	];
 
-  return (
-    <ModeSelectButtons
-      defaultSelection={currentLevel}
-      modeButtons={levels}
-      setLevel={setStartLevel}
-    />
-  );
+	return (
+		<ModeSelectButtons
+			defaultSelection={currentLevel}
+			modeButtons={levels}
+			setLevel={setStartLevel}
+		/>
+	);
 }
 
 export default StartLevelButtons;
