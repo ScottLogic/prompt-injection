@@ -1,4 +1,12 @@
 import {
+  ChatCompletionRequestMessage,
+  ChatCompletionRequestMessageFunctionCall,
+  Configuration,
+  OpenAIApi,
+} from "openai";
+import { promptTokensEstimate } from "openai-chat-tokens";
+
+import {
   isDefenceActive,
   getSystemRole,
   detectFilterList,
@@ -7,13 +15,6 @@ import {
 } from "./defence";
 import { sendEmail } from "./email";
 import { queryDocuments } from "./langchain";
-import { EmailInfo, EmailResponse } from "./models/email";
-import {
-  ChatCompletionRequestMessage,
-  ChatCompletionRequestMessageFunctionCall,
-  Configuration,
-  OpenAIApi,
-} from "openai";
 import {
   CHAT_MESSAGE_TYPE,
   CHAT_MODELS,
@@ -23,12 +24,12 @@ import {
   ChatResponse,
 } from "./models/chat";
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
+import { EmailInfo, EmailResponse } from "./models/email";
 import { LEVEL_NAMES } from "./models/level";
 import {
   FunctionAskQuestionParams,
   FunctionSendEmailParams,
 } from "./models/openai";
-import { promptTokensEstimate } from "openai-chat-tokens";
 
 // functions available to ChatGPT
 const chatGptFunctions = [

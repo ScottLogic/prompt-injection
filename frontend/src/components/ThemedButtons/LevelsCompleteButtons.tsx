@@ -1,5 +1,6 @@
-import { LEVEL_NAMES, ModeSelectButton } from "../../models/level";
 import ModeSelectButtons from "./ModeSelectButtons";
+
+import { LEVEL_NAMES, ModeSelectButton } from "@src/models/level";
 
 function LevelsCompleteButtons({
   closeOverlay,

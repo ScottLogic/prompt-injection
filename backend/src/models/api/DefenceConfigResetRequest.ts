@@ -1,5 +1,6 @@
 import { Request } from "express";
-import { DEFENCE_TYPES } from "../defence";
+
+import { DEFENCE_TYPES } from "@src/models/defence";
 
 type DefenceConfigResetRequest = Request<
   object,

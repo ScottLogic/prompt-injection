@@ -1,5 +1,6 @@
-import { CHAT_MESSAGE_TYPE, ChatMessage } from "../../models/chat";
 import "./ChatBoxMessage.css";
+
+import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 
 function ChatBoxMessage({ message }: { message: ChatMessage }) {
   return (

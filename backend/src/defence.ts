@@ -1,3 +1,4 @@
+import { defaultDefences } from "./defaultDefences";
 import { queryPromptEvaluationModel } from "./langchain";
 import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
@@ -7,7 +8,6 @@ import {
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
-import { defaultDefences } from "./defaultDefences";
 
 function activateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   // return the updated list of defences
@@ -107,7 +107,7 @@ function getQAPrePromptFromConfig(defences: DefenceInfo[]) {
   );
 }
 
-function getpromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
+function getPromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
@@ -292,7 +292,7 @@ async function detectEvaluationLLM(
   // only call the evaluation model if the defence is active
   if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
     const configpromptEvalPrePrompt =
-      getpromptEvalPrePromptFromConfig(defences);
+    getPromptEvalPrePromptFromConfig(defences);
 
     const evalPrompt = await queryPromptEvaluationModel(
       message,
@@ -318,7 +318,7 @@ export {
   resetDefenceConfig,
   detectTriggeredDefences,
   getQAPrePromptFromConfig,
-  getpromptEvalPrePromptFromConfig,
+  getPromptEvalPrePromptFromConfig,
   getSystemRole,
   isDefenceActive,
   transformMessage,

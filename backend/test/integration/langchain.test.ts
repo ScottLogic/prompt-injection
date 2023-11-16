@@ -20,16 +20,15 @@ import {
   getDocuments,
   initDocumentVectors,
   setVectorisedDocuments,
-} from "../../src/langchain";
-import { DocumentsVector } from "../../src/models/document";
-import { LEVEL_NAMES } from "../../src/models/level";
-
+} from "@src/langchain";
+import { DocumentsVector } from "@src/models/document";
+import { LEVEL_NAMES } from "@src/models/level";
 import {
   qAPrePrompt,
   qAMainPrompt,
   promptEvalMainPrompt,
   promptEvalPrePrompt,
-} from "../../src/promptTemplates";
+} from "@src/promptTemplates";
 
 // mock OpenAIEmbeddings
 jest.mock("langchain/embeddings/openai", () => {

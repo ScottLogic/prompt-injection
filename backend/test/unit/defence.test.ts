@@ -1,3 +1,4 @@
+import { defaultDefences } from "@src/defaultDefences";
 import {
   activateDefence,
   configureDefence,
@@ -9,12 +10,11 @@ import {
   isDefenceActive,
   transformMessage,
   detectFilterList,
-  getpromptEvalPrePromptFromConfig,
-} from "../../src/defence";
-import { defaultDefences } from "../../src/defaultDefences";
-import * as langchain from "../../src/langchain";
-import { DEFENCE_TYPES, DefenceConfig } from "../../src/models/defence";
-import { LEVEL_NAMES } from "../../src/models/level";
+  getPromptEvalPrePromptFromConfig,
+} from "@src/defence";
+import * as langchain from "@src/langchain";
+import { DEFENCE_TYPES, DefenceConfig } from "@src/models/defence";
+import { LEVEL_NAMES } from "@src/models/level";
 import {
   promptEvalPrePrompt,
   qAPrePromptSecure,
@@ -23,9 +23,9 @@ import {
   systemRoleLevel2,
   systemRoleLevel3,
   xmlPrePrompt,
-} from "../../src/promptTemplates";
+} from "@src/promptTemplates";
 
-jest.mock("../../src/langchain");
+jest.mock("@src/langchain");
 
 beforeEach(() => {
   jest
@@ -303,7 +303,7 @@ test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instruc
 test("GIVEN Eval LLM instructions for prompt have not been configured WHEN getting prompt injection eval instructions THEN return default pre-prompt", () => {
   const defences = defaultDefences;
   const configPromptInjectionEvalInstructions =
-    getpromptEvalPrePromptFromConfig(defences);
+  getPromptEvalPrePromptFromConfig(defences);
   expect(configPromptInjectionEvalInstructions).toBe(promptEvalPrePrompt);
 });
 
@@ -320,7 +320,7 @@ test("GIVEN Eval LLM instructions for prompt have been configured WHEN getting E
     ]
   );
   const configPromptEvalInstructions =
-    getpromptEvalPrePromptFromConfig(defences);
+  getPromptEvalPrePromptFromConfig(defences);
   expect(configPromptEvalInstructions).toBe(newPromptEvalInstructions);
 });
 

@@ -1,10 +1,11 @@
 import { PromptTemplate } from "langchain/prompts";
-import { LEVEL_NAMES } from "../../src/models/level";
+
 import {
   getFilepath,
   formatEvaluationOutput,
   makePromptTemplate,
-} from "../../src/langchain";
+} from "@src/langchain";
+import { LEVEL_NAMES } from "@src/models/level";
 
 jest.mock("langchain/prompts", () => ({
   PromptTemplate: {
