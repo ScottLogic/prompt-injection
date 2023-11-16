@@ -9,7 +9,7 @@ import {
   isDefenceActive,
   transformMessage,
   detectFilterList,
-  getPromptInjectionEvalPrePromptFromConfig,
+  getpromptEvalPrePromptFromConfig,
   getMaliciousPromptEvalPrePromptFromConfig,
 } from "../../src/defence";
 import { defaultDefences } from "../../src/defaultDefences";
@@ -18,7 +18,7 @@ import { DEFENCE_TYPES, DefenceConfig } from "../../src/models/defence";
 import { LEVEL_NAMES } from "../../src/models/level";
 import {
   maliciousPromptEvalPrePrompt,
-  promptInjectionEvalPrePrompt,
+  promptEvalPrePrompt,
   qAPrePromptSecure,
   systemRoleDefault,
   systemRoleLevel1,
@@ -305,10 +305,8 @@ test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instruc
 test("GIVEN Eval LLM instructions for prompt injection have not been configured WHEN getting prompt injection eval instructions THEN return default pre-prompt", () => {
   const defences = defaultDefences;
   const configPromptInjectionEvalInstructions =
-    getPromptInjectionEvalPrePromptFromConfig(defences);
-  expect(configPromptInjectionEvalInstructions).toBe(
-    promptInjectionEvalPrePrompt
-  );
+    getpromptEvalPrePromptFromConfig(defences);
+  expect(configPromptInjectionEvalInstructions).toBe(promptEvalPrePrompt);
 });
 
 test("GIVEN Eval LLM instructions for prompt injection have been configured WHEN getting Eval LLM instructions THEN return configured prompt", () => {
@@ -325,7 +323,7 @@ test("GIVEN Eval LLM instructions for prompt injection have been configured WHEN
     ]
   );
   const configPromptInjectionEvalInstructions =
-    getPromptInjectionEvalPrePromptFromConfig(defences);
+    getpromptEvalPrePromptFromConfig(defences);
   expect(configPromptInjectionEvalInstructions).toBe(
     newPromptInjectionEvalInstructions
   );

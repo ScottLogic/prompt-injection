@@ -27,10 +27,8 @@ import { LEVEL_NAMES } from "../../src/models/level";
 import {
   qAPrePrompt,
   qAMainPrompt,
-  promptInjectionEvalMainPrompt,
-  promptInjectionEvalPrePrompt,
-  maliciousPromptEvalPrePrompt,
-  maliciousPromptEvalMainPrompt,
+  promptEvalMainPrompt,
+  promptEvalPrePrompt,
 } from "../../src/promptTemplates";
 
 // mock OpenAIEmbeddings
@@ -142,13 +140,10 @@ beforeEach(() => {
 
 test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM", () => {
   mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-  initPromptEvaluationModel(
-    promptInjectionEvalPrePrompt,
-    maliciousPromptEvalPrePrompt
-  );
+  initPromptEvaluationModel(promptEvalPrePrompt, maliciousPromptEvalPrePrompt);
   expect(mockFromTemplate).toBeCalledTimes(2);
   expect(mockFromTemplate).toBeCalledWith(
-    `${promptInjectionEvalPrePrompt}\n${promptInjectionEvalMainPrompt}`
+    `${promptEvalPrePrompt}\n${promptEvalMainPrompt}`
   );
   expect(mockFromTemplate).toBeCalledWith(
     `${maliciousPromptEvalPrePrompt}\n${maliciousPromptEvalMainPrompt}`

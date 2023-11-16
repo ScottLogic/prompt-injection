@@ -295,6 +295,7 @@ router.post(
         return;
       }
     } catch (error) {
+      console.error(error);
       handleChatError(res, chatResponse, false, "Failed to get chatGPT reply");
       return;
     }

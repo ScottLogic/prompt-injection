@@ -4,7 +4,7 @@ import { initPromptEvaluationModel } from "../../src/langchain";
 import { DEFENCE_TYPES } from "../../src/models/defence";
 import {
   maliciousPromptEvalPrePrompt,
-  promptInjectionEvalPrePrompt,
+  promptEvalPrePrompt,
 } from "../../src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method
@@ -24,10 +24,7 @@ jest.mock("langchain/chains", () => {
 
 beforeEach(() => {
   // init langchain
-  initPromptEvaluationModel(
-    promptInjectionEvalPrePrompt,
-    maliciousPromptEvalPrePrompt
-  );
+  initPromptEvaluationModel(promptEvalPrePrompt, maliciousPromptEvalPrePrompt);
 });
 
 afterEach(() => {

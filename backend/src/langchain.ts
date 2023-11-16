@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { RetrievalQAChain, LLMChain, SequentialChain } from "langchain/chains";
+import { RetrievalQAChain, LLMChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { Document } from "langchain/document";
 import { CSVLoader } from "langchain/document_loaders/fs/csv";
@@ -16,10 +15,8 @@ import { DocumentsVector } from "./models/document";
 import { getOpenAIKey } from "./openai";
 
 import {
-  maliciousPromptEvalPrePrompt,
-  maliciousPromptEvalMainPrompt,
-  promptInjectionEvalPrePrompt,
-  promptInjectionEvalMainPrompt,
+  promptEvalPrePrompt,
+  promptEvalMainPrompt,
   qAMainPrompt,
   qAPrePrompt,
 } from "./promptTemplates";
@@ -76,7 +73,7 @@ function makePromptTemplate(
   defaultPrePrompt: string,
   mainPrompt: string,
   templateNameForLogging: string
-) {
+): PromptTemplate {
   if (!configPrePrompt) {
     // use the default prePrompt
     configPrePrompt = defaultPrePrompt;
@@ -136,57 +133,31 @@ function initQAModel(level: LEVEL_NAMES, prePrompt: string) {
     prompt: promptTemplate,
   });
 }
-
 // initialise the prompt evaluation model
-function initPromptEvaluationModel(
-  configPromptInjectionEvalPrePrompt: string,
-  configMaliciousPromptEvalPrePrompt: string
-) {
+function initPromptEvaluationModel(configPromptEvaluationPrePrompt: string) {
   const openAIApiKey = getOpenAIKey();
 
-  // create chain to detect prompt injection
-  const promptInjectionEvalTemplate = makePromptTemplate(
-    configPromptInjectionEvalPrePrompt,
-    promptInjectionEvalPrePrompt,
-    promptInjectionEvalMainPrompt,
+  const promptEvalTemplate = makePromptTemplate(
+    configPromptEvaluationPrePrompt,
+    promptEvalPrePrompt,
+    promptEvalMainPrompt,
     "Prompt injection eval prompt template"
   );
 
-  const promptInjectionChain = new LLMChain({
-    llm: new OpenAI({
-      modelName: CHAT_MODELS.GPT_4_TURBO,
-      temperature: 0,
-      openAIApiKey,
-    }),
-    prompt: promptInjectionEvalTemplate,
+  const llm = new OpenAI({
+    modelName: CHAT_MODELS.GPT_4_TURBO,
+    temperature: 0,
+    openAIApiKey,
+  });
+
+  const chain = new LLMChain({
+    llm,
+    prompt: promptEvalTemplate,
     outputKey: "promptInjectionEval",
   });
 
-  // create chain to detect malicious prompts
-  const maliciousPromptEvalTemplate = makePromptTemplate(
-    configMaliciousPromptEvalPrePrompt,
-    maliciousPromptEvalPrePrompt,
-    maliciousPromptEvalMainPrompt,
-    "Malicious input eval prompt template"
-  );
-
-  const maliciousInputChain = new LLMChain({
-    llm: new OpenAI({
-      modelName: CHAT_MODELS.GPT_4_TURBO,
-      temperature: 0,
-      openAIApiKey,
-    }),
-    prompt: maliciousPromptEvalTemplate,
-    outputKey: "maliciousInputEval",
-  });
-
-  const sequentialChain = new SequentialChain({
-    chains: [promptInjectionChain, maliciousInputChain],
-    inputVariables: ["prompt"],
-    outputVariables: ["promptInjectionEval", "maliciousInputEval"],
-  });
-  console.debug("Prompt evaluation chain initialised.");
-  return sequentialChain;
+  console.debug("Prompt evaluation model initialised.");
+  return chain;
 }
 
 // ask the question and return models answer
@@ -195,70 +166,62 @@ async function queryDocuments(
   prePrompt: string,
   currentLevel: LEVEL_NAMES
 ) {
-  const qaChain = initQAModel(currentLevel, prePrompt);
+  try {
+    const qaChain = initQAModel(currentLevel, prePrompt);
 
-  // get start time
-  const startTime = Date.now();
-  console.debug("Calling QA model...");
-  const response = (await qaChain.call({
-    query: question,
-  })) as QaChainReply;
-  // log the time taken
-  console.debug(`QA model call took ${Date.now() - startTime}ms`);
+    // get start time
+    const startTime = Date.now();
+    console.debug("Calling QA model...");
+    const response = (await qaChain.call({
+      query: question,
+    })) as QaChainReply;
+    // log the time taken
+    console.debug(`QA model call took ${Date.now() - startTime}ms`);
 
-  console.debug(`QA model response: ${response.text}`);
-  const result: ChatAnswer = {
-    reply: response.text,
-    questionAnswered: true,
-  };
-  return result;
+    console.debug(`QA model response: ${response.text}`);
+    const result: ChatAnswer = {
+      reply: response.text,
+      questionAnswered: true,
+    };
+    return result;
+  } catch (error) {
+    console.error("Error calling QA model: ", error);
+    return {
+      reply: "I'm sorry, I don't know the answer to that question.",
+      questionAnswered: false,
+    };
+  }
 }
 
 // ask LLM whether the prompt is malicious
 async function queryPromptEvaluationModel(
   input: string,
-  configPromptInjectionEvalPrePrompt: string,
-  configMaliciousPromptEvalPrePrompt: string
+  configpromptEvalPrePrompt: string
 ) {
-  console.debug(`Checking '${input}' for malicious prompts`);
-  const promptEvaluationChain = initPromptEvaluationModel(
-    configPromptInjectionEvalPrePrompt,
-    configMaliciousPromptEvalPrePrompt
-  );
-
-  // get start time
-  const startTime = Date.now();
-  console.debug("Calling prompt evaluation model...");
-  const response = (await promptEvaluationChain.call({
-    prompt: input,
-  })) as PromptEvaluationChainReply;
-  // log the time taken
-  console.debug(
-    `Prompt evaluation model call took ${Date.now() - startTime}ms`
-  );
-
-  const promptInjectionEval = formatEvaluationOutput(
-    response.promptInjectionEval
-  );
-  const maliciousInputEval = formatEvaluationOutput(
-    response.maliciousInputEval
-  );
-  console.debug(
-    `Prompt injection eval: ${JSON.stringify(promptInjectionEval)}`
-  );
-  console.debug(`Malicious input eval: ${JSON.stringify(maliciousInputEval)}`);
-
-  // if both are malicious
-  if (promptInjectionEval.isMalicious && maliciousInputEval.isMalicious) {
-    return {
-      isMalicious: true,
-    };
-  } else if (promptInjectionEval.isMalicious) {
-    return { isMalicious: true };
-  } else if (maliciousInputEval.isMalicious) {
-    return { isMalicious: true };
+  try {
+    console.debug(`Checking '${input}' for malicious prompts`);
+    const promptEvaluationChain = initPromptEvaluationModel(
+      configpromptEvalPrePrompt
+    );
+    // get start time
+    const startTime = Date.now();
+    console.debug("Calling prompt evaluation model...");
+    const response = (await promptEvaluationChain.call({
+      prompt: input,
+    })) as PromptEvaluationChainReply;
+    // log the time taken
+    console.debug(
+      `Prompt evaluation model call took ${Date.now() - startTime}ms`
+    );
+    const promptInjectionEval = formatEvaluationOutput(
+      response.promptInjectionEval
+    );
+    console.debug(`Prompt evaluation: ${JSON.stringify(promptInjectionEval)}`);
+    return promptInjectionEval;
+  } catch (error) {
+    console.error("Error calling prompt evaluation model: ", error);
+    return { isMalicious: false };
   }
-  return { isMalicious: false };
 }
 
 function formatEvaluationOutput(response: string) {

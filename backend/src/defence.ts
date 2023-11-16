@@ -107,11 +107,11 @@ function getQAPrePromptFromConfig(defences: DefenceInfo[]) {
   );
 }
 
-function getPromptInjectionEvalPrePromptFromConfig(defences: DefenceInfo[]) {
+function getpromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    "prompt-injection-evaluator-prompt"
+    "prompt-evaluator-prompt"
   );
 }
 
@@ -297,29 +297,22 @@ async function detectEvaluationLLM(
   message: string,
   defences: DefenceInfo[]
 ) {
+  // only call the evaluation model if the defence is active
   if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
-    // evaluate the message for prompt injection
-    const configPromptInjectionEvalPrePrompt =
-      getPromptInjectionEvalPrePromptFromConfig(defences);
-    const configMaliciousPromptEvalPrePrompt =
-      getMaliciousPromptEvalPrePromptFromConfig(defences);
+    const configpromptEvalPrePrompt =
+      getpromptEvalPrePromptFromConfig(defences);
 
     const evalPrompt = await queryPromptEvaluationModel(
       message,
-      configPromptInjectionEvalPrePrompt,
-      configMaliciousPromptEvalPrePrompt
+      configpromptEvalPrePrompt
     );
     if (evalPrompt.isMalicious) {
       defenceReport.triggeredDefences.push(
         DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
       );
-      console.debug("LLM evalutation defence active and prompt is malicious.");
+      console.debug("LLM evaluation defence active and prompt is malicious.");
       defenceReport.isBlocked = true;
       defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.`;
-    } else {
-      defenceReport.alertedDefences.push(
-        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-      );
     }
   }
   return defenceReport;
@@ -332,7 +325,7 @@ export {
   resetDefenceConfig,
   detectTriggeredDefences,
   getQAPrePromptFromConfig,
-  getPromptInjectionEvalPrePromptFromConfig,
+  getpromptEvalPrePromptFromConfig,
   getMaliciousPromptEvalPrePromptFromConfig,
   getSystemRole,
   isDefenceActive,
