@@ -40,8 +40,8 @@ describe('Langchain tests', () => {
 
 	test('GIVEN makePromptTemplate is called with no config prePrompt THEN correct prompt is returned', () => {
 		makePromptTemplate('', 'defaultPrePrompt', 'mainPrompt', 'noName');
-		expect(PromptTemplate.fromTemplate as jest.Mock).toBeCalledTimes(1);
-		expect(PromptTemplate.fromTemplate as jest.Mock).toBeCalledWith(
+		expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledTimes(1);
+		expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledWith(
 			'defaultPrePrompt\nmainPrompt'
 		);
 	});
@@ -53,8 +53,8 @@ describe('Langchain tests', () => {
 			'mainPrompt',
 			'noName'
 		);
-		expect(PromptTemplate.fromTemplate as jest.Mock).toBeCalledTimes(1);
-		expect(PromptTemplate.fromTemplate as jest.Mock).toBeCalledWith(
+		expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledTimes(1);
+		expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledWith(
 			'configPrePrompt\nmainPrompt'
 		);
 	});

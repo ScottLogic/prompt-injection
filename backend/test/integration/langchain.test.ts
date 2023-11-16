@@ -117,7 +117,7 @@ jest.mock('langchain/chat_models/openai');
 jest.mock('langchain/chains', () => {
 	return {
 		RetrievalQAChain: {
-			fromLLM: mockFromLLM,
+			fromLLM: () => mockFromLLM,
 			call: mockCall,
 		},
 		SequentialChain: jest.fn().mockImplementation(() => {
@@ -145,11 +145,11 @@ test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEv
 		promptInjectionEvalPrePrompt,
 		maliciousPromptEvalPrePrompt
 	);
-	expect(mockFromTemplate).toBeCalledTimes(2);
-	expect(mockFromTemplate).toBeCalledWith(
+	expect(mockFromTemplate).toHaveBeenCalledTimes(2);
+	expect(mockFromTemplate).toHaveBeenCalledWith(
 		`${promptInjectionEvalPrePrompt}\n${promptInjectionEvalMainPrompt}`
 	);
-	expect(mockFromTemplate).toBeCalledWith(
+	expect(mockFromTemplate).toHaveBeenCalledWith(
 		`${maliciousPromptEvalPrePrompt}\n${maliciousPromptEvalMainPrompt}`
 	);
 });
@@ -161,9 +161,11 @@ test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is in
 	setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 	initQAModel(level, prompt);
-	expect(mockFromLLM).toBeCalledTimes(1);
-	expect(mockFromTemplate).toBeCalledTimes(1);
-	expect(mockFromTemplate).toBeCalledWith(`${qAPrePrompt}\n${qAMainPrompt}`);
+	expect(mockFromLLM).toHaveBeenCalledTimes(1);
+	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
+	expect(mockFromTemplate).toHaveBeenCalledWith(
+		`${qAPrePrompt}\n${qAMainPrompt}`
+	);
 });
 
 test('GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialized and prompt is set to the correct prompt ', () => {
@@ -173,9 +175,9 @@ test('GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
 	setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 	initQAModel(level, prompt);
-	expect(mockFromLLM).toBeCalledTimes(1);
-	expect(mockFromTemplate).toBeCalledTimes(1);
-	expect(mockFromTemplate).toBeCalledWith(
+	expect(mockFromLLM).toHaveBeenCalledTimes(1);
+	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
+	expect(mockFromTemplate).toHaveBeenCalledWith(
 		`this is a test prompt. \n${qAMainPrompt}`
 	);
 });
@@ -197,8 +199,8 @@ test('GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it an
 		text: 'The CEO is Bill.',
 	});
 	const answer = await queryDocuments(question, prompt, level);
-	expect(mockFromLLM).toBeCalledTimes(1);
-	expect(mockCall).toBeCalledTimes(1);
+	expect(mockFromLLM).toHaveBeenCalledTimes(1);
+	expect(mockCall).toHaveBeenCalledTimes(1);
 	expect(answer.reply).toEqual('The CEO is Bill.');
 });
 
