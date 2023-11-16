@@ -24,6 +24,7 @@ module.exports = {
 		'plugin:jest-dom/recommended',
 		'plugin:import/recommended',
 		'plugin:import/typescript',
+		'prettier',
 	],
 	ignorePatterns: ['dist', '.eslintrc.cjs'],
 	parser: '@typescript-eslint/parser',
