@@ -1,4 +1,5 @@
 import { ChatCompletionRequestMessage } from "openai";
+
 import { DEFENCE_TYPES } from "./defence";
 
 enum CHAT_MODELS {

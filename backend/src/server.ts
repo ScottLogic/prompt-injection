@@ -1,4 +1,5 @@
 import { env, exit } from "node:process";
+
 import app from "./app";
 import { initDocumentVectors } from "./langchain";
 import { defaultChatModel } from "./models/chat";
