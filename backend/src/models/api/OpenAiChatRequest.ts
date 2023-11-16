@@ -1,15 +1,15 @@
-import { Request } from "express";
+import { Request } from 'express';
 
-import { LEVEL_NAMES } from "@src/models/level";
+import { LEVEL_NAMES } from '@src/models/level';
 
 type OpenAiChatRequest = Request<
-  object,
-  object,
-  {
-    currentLevel?: LEVEL_NAMES;
-    message?: string;
-  },
-  object
+	object,
+	object,
+	{
+		currentLevel?: LEVEL_NAMES;
+		message?: string;
+	},
+	object
 >;
 
 export type { OpenAiChatRequest };

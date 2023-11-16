@@ -1,7 +1,7 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "noEmit": true
-  },
-  "include": ["./**/*.ts", "../jest.config.ts"]
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"noEmit": true
+	},
+	"include": ["./**/*.ts", "../jest.config.ts"]
 }
