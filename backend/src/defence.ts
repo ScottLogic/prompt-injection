@@ -115,14 +115,6 @@ function getpromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
   );
 }
 
-function getMaliciousPromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    "malicious-prompt-evaluator-prompt"
-  );
-}
-
 function isDefenceActive(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   return defences.some((defence) => defence.id === id && defence.isActive);
 }
@@ -315,6 +307,7 @@ async function detectEvaluationLLM(
       defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.`;
     }
   }
+  console.debug(JSON.stringify(defenceReport));
   return defenceReport;
 }
 
@@ -326,7 +319,6 @@ export {
   detectTriggeredDefences,
   getQAPrePromptFromConfig,
   getpromptEvalPrePromptFromConfig,
-  getMaliciousPromptEvalPrePromptFromConfig,
   getSystemRole,
   isDefenceActive,
   transformMessage,

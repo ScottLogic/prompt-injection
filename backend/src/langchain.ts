@@ -153,7 +153,7 @@ function initPromptEvaluationModel(configPromptEvaluationPrePrompt: string) {
   const chain = new LLMChain({
     llm,
     prompt: promptEvalTemplate,
-    outputKey: "promptInjectionEval",
+    outputKey: "isPromptInjectOrMalicious",
   });
 
   console.debug("Prompt evaluation model initialised.");
@@ -187,7 +187,7 @@ async function queryDocuments(
   } catch (error) {
     console.error("Error calling QA model: ", error);
     return {
-      reply: "I'm sorry, I don't know the answer to that question.",
+      reply: "I cannot answer that question right now.",
       questionAnswered: false,
     };
   }
@@ -196,13 +196,11 @@ async function queryDocuments(
 // ask LLM whether the prompt is malicious
 async function queryPromptEvaluationModel(
   input: string,
-  configpromptEvalPrePrompt: string
+  evalPrePrompt: string
 ) {
   try {
     console.debug(`Checking '${input}' for malicious prompts`);
-    const promptEvaluationChain = initPromptEvaluationModel(
-      configpromptEvalPrePrompt
-    );
+    const promptEvaluationChain = initPromptEvaluationModel(evalPrePrompt);
     // get start time
     const startTime = Date.now();
     console.debug("Calling prompt evaluation model...");
@@ -213,11 +211,11 @@ async function queryPromptEvaluationModel(
     console.debug(
       `Prompt evaluation model call took ${Date.now() - startTime}ms`
     );
-    const promptInjectionEval = formatEvaluationOutput(
-      response.promptInjectionEval
+    const promptEvaluation = formatEvaluationOutput(
+      response.isPromptInjectOrMalicious
     );
-    console.debug(`Prompt evaluation: ${JSON.stringify(promptInjectionEval)}`);
-    return promptInjectionEval;
+    console.debug(`Prompt evaluation: ${JSON.stringify(promptEvaluation)}`);
+    return promptEvaluation;
   } catch (error) {
     console.error("Error calling prompt evaluation model: ", error);
     return { isMalicious: false };
