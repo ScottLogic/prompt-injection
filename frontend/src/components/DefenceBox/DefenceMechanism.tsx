@@ -65,6 +65,7 @@ function DefenceMechanism({
       showDefenceConfiguredText(configured);
     } else {
       showDefenceConfiguredText(false);
+      setConfigKey(configKey + 1);
     }
   }
 
