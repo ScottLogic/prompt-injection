@@ -58,8 +58,17 @@ function chatResponseAssistant(content: string) {
   };
 }
 
+function responseMock() {
+  return {
+    send: jest.fn(),
+    status: jest.fn(() => ({
+      send: jest.fn(),
+    })),
+  } as unknown as Response;
+}
+
 describe("handleChatToGPT", () => {
-  test("should return a response for a valid message and level", async () => {
+  test("GIVEN a valid message and level WHEN handleChatToGPT called THEN it should return a text reply", async () => {
     const req = {
       body: {
         message: "Hello chatbot",
@@ -81,12 +90,7 @@ describe("handleChatToGPT", () => {
       chatResponseAssistant("Howdy human!")
     );
 
-    const res = {
-      send: jest.fn(),
-      status: jest.fn(() => ({
-        send: jest.fn(),
-      })),
-    } as unknown as Response;
+    const res = responseMock();
 
     await handleChatToGPT(req, res);
 
@@ -104,7 +108,7 @@ describe("handleChatToGPT", () => {
     });
   });
 
-  test("should return error response on missing message", async () => {
+  test("GIVEN missing message WHEN handleChatToGPT called THEN it should return 500 and error message", async () => {
     const req = {
       body: {
         message: "",
@@ -122,12 +126,7 @@ describe("handleChatToGPT", () => {
       },
     } as unknown as OpenAiChatRequest;
 
-    const res = {
-      send: jest.fn(),
-      status: jest.fn(() => ({
-        send: jest.fn(),
-      })),
-    } as unknown as Response;
+    const res = responseMock();
     await handleChatToGPT(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
@@ -145,7 +144,7 @@ describe("handleChatToGPT", () => {
     });
   });
 
-  test("should return error response on openai error", async () => {
+  test("GIVEN an openai error is thrown WHEN handleChatToGPT called THEN it should return 500 and error message", async () => {
     const req = {
       body: {
         message: "hello",
@@ -162,12 +161,7 @@ describe("handleChatToGPT", () => {
         ],
       },
     } as unknown as OpenAiChatRequest;
-    const res = {
-      send: jest.fn(),
-      status: jest.fn(() => ({
-        send: jest.fn(),
-      })),
-    } as unknown as Response;
+    const res = responseMock();
 
     // mock the api call throwing an error
     mockCreateChatCompletion.mockRejectedValueOnce(new Error("OpenAI error"));
@@ -189,7 +183,7 @@ describe("handleChatToGPT", () => {
     });
   });
 
-  test("should return error message for exceeding character limit error", async () => {
+  test("GIVEN message exceeds character limit WHEN handleChatToGPT called THEN it should return 400 and error message", async () => {
     const req = {
       body: {
         message: "x".repeat(16399),
@@ -206,12 +200,8 @@ describe("handleChatToGPT", () => {
         ],
       },
     } as unknown as OpenAiChatRequest;
-    const res = {
-      send: jest.fn(),
-      status: jest.fn(() => ({
-        send: jest.fn(),
-      })),
-    } as unknown as Response;
+
+    const res = responseMock();
 
     await handleChatToGPT(req, res);
 
@@ -246,7 +236,7 @@ describe("handleGetChatHistory", () => {
       chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
     },
   ];
-  test("should return chat history on valid level ", () => {
+  test("GIVEN a valid level WHEN handleGetChatHistory called THEN return chat history", () => {
     const req = {
       query: {
         level: 0,
@@ -260,16 +250,13 @@ describe("handleGetChatHistory", () => {
       },
     } as unknown as GetRequestQueryLevel;
 
-    const res = {
-      send: jest.fn(),
-      statusCode: 200,
-    } as unknown as Response;
+    const res = responseMock();
 
     handleGetChatHistory(req, res);
     expect(res.send).toHaveBeenCalledWith(chatHistory);
   });
 
-  test("should return error on empty level", () => {
+  test("GIVEN undefined level WHEN handleGetChatHistory called THEN return 400", () => {
     const req = {
       query: {
         level: undefined,
@@ -283,10 +270,7 @@ describe("handleGetChatHistory", () => {
       },
     } as unknown as GetRequestQueryLevel;
 
-    const res = {
-      send: jest.fn(),
-      statusCode: 200,
-    } as unknown as Response;
+    const res = responseMock();
 
     handleGetChatHistory(req, res);
 
@@ -306,7 +290,7 @@ describe("handleAddToChatHistory", () => {
       chatMessageType: CHAT_MESSAGE_TYPE.BOT,
     },
   ];
-  test("should add message to chat history", () => {
+  test("GIVEN a valid message WHEN handleAddToChatHistory called THEN message is added to chat history", () => {
     const req = {
       body: {
         message: "tell me a story",
@@ -322,17 +306,14 @@ describe("handleAddToChatHistory", () => {
       },
     } as unknown as OpenAiAddHistoryRequest;
 
-    const res = {
-      send: jest.fn(),
-      statusCode: 200,
-    } as unknown as Response;
+    const res = responseMock();
 
     handleAddToChatHistory(req, res);
 
     expect(req.session.levelState[0].chatHistory.length).toEqual(3);
   });
 
-  test("should return error on invalid level", () => {
+  test("GIVEN invalid level WHEN handleAddToChatHistory called THEN returns 400", () => {
     const req = {
       body: {
         message: "tell me a story",
@@ -347,9 +328,7 @@ describe("handleAddToChatHistory", () => {
         ],
       },
     } as unknown as OpenAiAddHistoryRequest;
-    const res = {
-      send: jest.fn(),
-    } as unknown as Response;
+    const res = responseMock();
 
     handleAddToChatHistory(req, res);
 
@@ -368,7 +347,7 @@ describe("handleClearChatHistory", () => {
       chatMessageType: CHAT_MESSAGE_TYPE.BOT,
     },
   ];
-  test("should clear chat history", () => {
+  test("GIVEN valid level WHEN handleClearChatHistory called THEN it sets chatHistory to empty", () => {
     const req = {
       body: {
         level: 0,
@@ -381,14 +360,12 @@ describe("handleClearChatHistory", () => {
         ],
       },
     } as unknown as OpenAiClearRequest;
-    const res = {
-      send: jest.fn(),
-    } as unknown as Response;
+    const res = responseMock();
     handleClearChatHistory(req, res);
     expect(req.session.levelState[0].chatHistory.length).toEqual(0);
   });
 
-  test("should return error on invalid level", () => {
+  test("GIVEN invalid level WHEN handleClearChatHistory called THEN returns 400 ", () => {
     const req = {
       body: {
         level: undefined,
@@ -402,10 +379,7 @@ describe("handleClearChatHistory", () => {
       },
     } as unknown as OpenAiClearRequest;
 
-    const res = {
-      send: jest.fn(),
-      statusCode: 400,
-    } as unknown as Response;
+    const res = responseMock();
 
     handleClearChatHistory(req, res);
 

@@ -24,6 +24,16 @@ declare module "express-session" {
   }
 }
 
+function responseMock() {
+  return {
+    send: jest.fn(),
+    status: jest.fn(() => ({
+      send: jest.fn(),
+    })),
+    statusCode: 200,
+  } as unknown as Response;
+}
+
 const emails: EmailInfo[] = [
   {
     address: "bob@scottlogic.com",
@@ -38,7 +48,7 @@ const emails: EmailInfo[] = [
 ];
 
 describe("handleGetEmails", () => {
-  test("should return emails for a valid level", () => {
+  test("GIVEN valid level WHEN handleGetEmails called THEN returns sent emails", () => {
     const req = {
       query: {
         level: 0,
@@ -52,10 +62,7 @@ describe("handleGetEmails", () => {
       },
     } as unknown as GetRequestQueryLevel;
 
-    const res = {
-      send: jest.fn(),
-      statusCode: 200,
-    } as unknown as Response;
+    const res = responseMock();
 
     handleGetEmails(req, res);
 
@@ -63,7 +70,7 @@ describe("handleGetEmails", () => {
     expect(res.send).toHaveBeenCalledWith(emails);
   });
 
-  test("should send 400 for missing level", () => {
+  test("GIVEN missing level WHEN handleGetEmails called THEN returns 400 ", () => {
     const req = {
       query: {},
     } as GetRequestQueryLevel;
@@ -80,7 +87,7 @@ describe("handleGetEmails", () => {
 });
 
 describe("handleClearEmails", () => {
-  test("should clear emails for a valid level", () => {
+  test("GIVEN valid level WHEN handleClearEmails called THEN sets emails to empty", () => {
     const req = {
       body: {
         level: 0,
@@ -94,10 +101,7 @@ describe("handleClearEmails", () => {
       },
     } as unknown as EmailClearRequest;
 
-    const res = {
-      send: jest.fn(),
-      statusCode: 200,
-    } as unknown as Response;
+    const res = responseMock();
 
     handleClearEmails(req, res);
 
@@ -105,14 +109,12 @@ describe("handleClearEmails", () => {
     expect(req.session.levelState[0].sentEmails).toEqual([]);
   });
 
-  test("should send 400 for missing level", () => {
+  test("GIVEN level is missing WHEN handleClearEmails called THEN returns 400", () => {
     const req = {
       body: {},
     } as EmailClearRequest;
-    const res = {
-      send: jest.fn(),
-      statusCode: 200,
-    } as unknown as Response;
+
+    const res = responseMock();
 
     handleClearEmails(req, res);
 

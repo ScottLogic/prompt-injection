@@ -27,53 +27,49 @@ import { handleGetLevelPrompt } from "./controller/levelController";
 
 const router = express.Router();
 
-// Activate a defence
+// defences
+
 router.post("/defence/activate", handleDefenceActivation);
 
-// Deactivate a defence
 router.post("/defence/deactivate", handleDefenceDeactivation);
 
-// Configure a defence
 router.post("/defence/configure", handleConfigureDefence);
 
-// reset the active defences
 router.post("/defence/reset", handleResetAllDefences);
 
-// reset one defence config and return the new config
 router.post("/defence/resetConfig", handleResetSingleDefence);
 
-// Get the status of all defences
 router.get("/defence/status", handleGetDefenceStatus);
 
-// Get sent emails /email/get?level=1
+// emails
+
 router.get("/email/get", handleGetEmails);
 
-// clear emails
 router.post("/email/clear", handleClearEmails);
 
-// Chat to ChatGPT
+// chat
+
 router.post("/openai/chat", handleChatToGPT);
 
-// get the chat history
 router.get("/openai/history", handleGetChatHistory);
 
-// add an info message to chat history
 router.post("/openai/addHistory", handleAddToChatHistory);
 
-// Clear the ChatGPT messages
 router.post("/openai/clear", handleClearChatHistory);
 
-// Set the ChatGPT model
+// model configurations
+
 router.post("/openai/model", handleSetModel);
 
-// configure the model parameters
 router.post("/openai/model/configure", handleConfigureModel);
 
-// get the current model
 router.get("/openai/model", handleGetModel);
 
-// get the prompt for the given level
+// prompt
+
 router.get("/level/prompt", handleGetLevelPrompt);
+
+// getting documents
 
 router.get("/documents", handleGetDocuments);
 
