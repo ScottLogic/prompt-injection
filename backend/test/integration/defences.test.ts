@@ -1,11 +1,11 @@
-import { activateDefence, detectTriggeredDefences } from "../../src/defence";
-import { defaultDefences } from "../../src/defaultDefences";
-import { initPromptEvaluationModel } from "../../src/langchain";
-import { DEFENCE_TYPES } from "../../src/models/defence";
+import { defaultDefences } from "@src/defaultDefences";
+import { activateDefence, detectTriggeredDefences } from "@src/defence";
+import { initPromptEvaluationModel } from "@src/langchain";
+import { DEFENCE_TYPES } from "@src/models/defence";
 import {
   maliciousPromptEvalPrePrompt,
   promptInjectionEvalPrePrompt,
-} from "../../src/promptTemplates";
+} from "@src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCall = jest.fn();

@@ -1,9 +1,10 @@
 import { ChatCompletionRequestMessage } from "openai";
+
+import { CHAT_MODELS } from "@src/models/chat";
 import {
   verifyKeySupportsModel,
   filterChatHistoryByMaxTokens,
-} from "../../src/openai";
-import { CHAT_MODELS } from "../../src/models/chat";
+} from "@src/openai";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
@@ -15,9 +16,9 @@ jest.mock("openai", () => ({
   Configuration: jest.fn().mockImplementation(() => ({})),
 }));
 
-jest.mock("../../src/openai", () => {
+jest.mock("@src/openai", () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const originalModule = jest.requireActual("../../src/openai");
+  const originalModule = jest.requireActual("@src/openai");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,
@@ -25,9 +26,9 @@ jest.mock("../../src/openai", () => {
   };
 });
 
-jest.mock("../../src/langchain", () => {
+jest.mock("@src/langchain", () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const originalModule = jest.requireActual("../../src/langchain");
+  const originalModule = jest.requireActual("@src/langchain");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,

@@ -1,5 +1,6 @@
-import { GLOSSARY } from "../../Glossary";
 import "./HandbookTerms.css";
+
+import { GLOSSARY } from "@src/Glossary";
 
 function HandbookGlossary() {
   return (

@@ -1,10 +1,11 @@
 import request from "supertest";
-import app from "../../src/app";
-import { LEVEL_NAMES } from "../../src/models/level";
-import { configureDefence } from "../../src/defence";
-import { ChatHttpResponse } from "../../src/models/chat";
 
-jest.mock("../../src/defence");
+import app from "@src/app";
+import { configureDefence } from "@src/defence";
+import { ChatHttpResponse } from "@src/models/chat";
+import { LEVEL_NAMES } from "@src/models/level";
+
+jest.mock("@src/defence");
 const mocked = configureDefence as jest.MockedFunction<typeof configureDefence>;
 
 describe("/defence/configure", () => {
