@@ -303,7 +303,7 @@ test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instruc
 test("GIVEN Eval LLM instructions for prompt have not been configured WHEN getting prompt injection eval instructions THEN return default pre-prompt", () => {
   const defences = defaultDefences;
   const configPromptInjectionEvalInstructions =
-  getPromptEvalPrePromptFromConfig(defences);
+    getPromptEvalPrePromptFromConfig(defences);
   expect(configPromptInjectionEvalInstructions).toBe(promptEvalPrePrompt);
 });
 
@@ -320,7 +320,7 @@ test("GIVEN Eval LLM instructions for prompt have been configured WHEN getting E
     ]
   );
   const configPromptEvalInstructions =
-  getPromptEvalPrePromptFromConfig(defences);
+    getPromptEvalPrePromptFromConfig(defences);
   expect(configPromptEvalInstructions).toBe(newPromptEvalInstructions);
 });
 
