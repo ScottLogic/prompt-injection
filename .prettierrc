@@ -2,7 +2,7 @@
 	"singleQuote": true,
 	"trailingComma": "es5",
 	"useTabs": true,
-	"importOrder": ["^components/(.*)$", "^[./]"],
+	"importOrder": ["^@src/(.*)$", "^[./]"],
 	"importOrderSeparation": true,
 	"importOrderSortSpecifiers": true
 }
