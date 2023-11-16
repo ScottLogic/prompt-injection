@@ -30,6 +30,10 @@ beforeEach(() => {
   );
 });
 
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
 test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
@@ -119,23 +123,15 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN de
   expect(result.triggeredDefences.length).toBe(0);
 });
 
-test("GIVEN LLM_EVALUATION defence is not active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is alerted AND defence is not blocked", async () => {
-  // mock the call method
-  mockCall.mockReturnValueOnce({
-    maliciousInputEval: "Yes.",
-    promptInjectionEval: "Yes.",
-  });
-
+test("GIVEN LLM_EVALUATION defence is not active WHEN detectTriggeredDefences is called THEN detection LLM is not called and message is not blocked", async () => {
   const defences = defaultDefences;
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
   const result = await detectTriggeredDefences(message, defences);
-  // check that the defence is triggered and the message is blocked
+
+  expect(mockCall).not.toHaveBeenCalled();
   expect(result.isBlocked).toBe(false);
-  expect(result.alertedDefences).toContain(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-  );
 });
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase in the list THEN defence is triggered and the message is blocked", async () => {

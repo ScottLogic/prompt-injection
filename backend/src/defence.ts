@@ -297,23 +297,23 @@ async function detectEvaluationLLM(
   message: string,
   defences: DefenceInfo[]
 ) {
-  // evaluate the message for prompt injection
-  const configPromptInjectionEvalPrePrompt =
-    getPromptInjectionEvalPrePromptFromConfig(defences);
-  const configMaliciousPromptEvalPrePrompt =
-    getMaliciousPromptEvalPrePromptFromConfig(defences);
+  if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
+    // evaluate the message for prompt injection
+    const configPromptInjectionEvalPrePrompt =
+      getPromptInjectionEvalPrePromptFromConfig(defences);
+    const configMaliciousPromptEvalPrePrompt =
+      getMaliciousPromptEvalPrePromptFromConfig(defences);
 
-  const evalPrompt = await queryPromptEvaluationModel(
-    message,
-    configPromptInjectionEvalPrePrompt,
-    configMaliciousPromptEvalPrePrompt
-  );
-  if (evalPrompt.isMalicious) {
-    if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
+    const evalPrompt = await queryPromptEvaluationModel(
+      message,
+      configPromptInjectionEvalPrePrompt,
+      configMaliciousPromptEvalPrePrompt
+    );
+    if (evalPrompt.isMalicious) {
       defenceReport.triggeredDefences.push(
         DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
       );
-      console.debug("LLM evalutation defence active.");
+      console.debug("LLM evalutation defence active and prompt is malicious.");
       defenceReport.isBlocked = true;
       defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.`;
     } else {
