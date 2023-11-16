@@ -30,16 +30,16 @@ function DefenceMechanism({
     config: DefenceConfig[]
   ) => Promise<boolean>;
 }) {
-  const [isConfigured, setIsConfigured] = useState<boolean>(false);
+  const [showConfiguredText, setShowConfiguredText] = useState<boolean>(false);
   const [configValidated, setConfigValidated] = useState<boolean>(true);
   const [configKey, setConfigKey] = useState<number>(0);
 
   function showDefenceConfiguredText(isValid: boolean) {
-    setIsConfigured(true);
+    setShowConfiguredText(true);
     setConfigValidated(isValid);
     // hide the message after 3 seconds
     setTimeout(() => {
-      setIsConfigured(false);
+      setShowConfiguredText(false);
     }, 3000);
   }
 
@@ -113,7 +113,7 @@ function DefenceMechanism({
               />
             );
           })}
-        {isConfigured &&
+        {showConfiguredText &&
           (configValidated ? (
             <p className="validation-text">
               <TiTick /> defence successfully configured
