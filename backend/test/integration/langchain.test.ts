@@ -1,3 +1,23 @@
+import {
+	getDocuments,
+	initDocumentVectors,
+	initPromptEvaluationModel,
+	initQAModel,
+	queryDocuments,
+	queryPromptEvaluationModel,
+	setVectorisedDocuments,
+} from '@src/langchain';
+import { DocumentsVector } from '@src/models/document';
+import { LEVEL_NAMES } from '@src/models/level';
+import {
+	maliciousPromptEvalMainPrompt,
+	maliciousPromptEvalPrePrompt,
+	promptInjectionEvalMainPrompt,
+	promptInjectionEvalPrePrompt,
+	qAMainPrompt,
+	qAPrePrompt,
+} from '@src/promptTemplates';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const mockCall = jest.fn();
 const mockRetrievalQAChain = {
@@ -11,26 +31,6 @@ const mockFromTemplate = jest.fn(() => '');
 const mockLoader = jest.fn();
 const mockSplitDocuments = jest.fn();
 const mockAsRetriever = jest.fn();
-
-import {
-	initPromptEvaluationModel,
-	initQAModel,
-	queryDocuments,
-	queryPromptEvaluationModel,
-	getDocuments,
-	initDocumentVectors,
-	setVectorisedDocuments,
-} from '@src/langchain';
-import { DocumentsVector } from '@src/models/document';
-import { LEVEL_NAMES } from '@src/models/level';
-import {
-	qAPrePrompt,
-	qAMainPrompt,
-	promptInjectionEvalMainPrompt,
-	promptInjectionEvalPrePrompt,
-	maliciousPromptEvalPrePrompt,
-	maliciousPromptEvalMainPrompt,
-} from '@src/promptTemplates';
 
 // mock OpenAIEmbeddings
 jest.mock('langchain/embeddings/openai', () => {

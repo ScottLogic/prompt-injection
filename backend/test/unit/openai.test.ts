@@ -2,8 +2,8 @@ import { ChatCompletionRequestMessage } from 'openai';
 
 import { CHAT_MODELS } from '@src/models/chat';
 import {
-	verifyKeySupportsModel,
 	filterChatHistoryByMaxTokens,
+	verifyKeySupportsModel,
 } from '@src/openai';
 
 // Define a mock implementation for the createChatCompletion method

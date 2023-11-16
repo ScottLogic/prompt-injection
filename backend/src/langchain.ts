@@ -1,4 +1,4 @@
-import { RetrievalQAChain, LLMChain, SequentialChain } from 'langchain/chains';
+import { LLMChain, RetrievalQAChain, SequentialChain } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { Document } from 'langchain/document';
 import { CSVLoader } from 'langchain/document_loaders/fs/csv';
@@ -17,10 +17,10 @@ import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
 import { LEVEL_NAMES } from './models/level';
 import { getOpenAIKey } from './openai';
 import {
-	maliciousPromptEvalPrePrompt,
 	maliciousPromptEvalMainPrompt,
-	promptInjectionEvalPrePrompt,
+	maliciousPromptEvalPrePrompt,
 	promptInjectionEvalMainPrompt,
+	promptInjectionEvalPrePrompt,
 	qAMainPrompt,
 	qAPrePrompt,
 } from './promptTemplates';

@@ -1,10 +1,9 @@
-import { join } from 'node:path';
-
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
 import memoryStoreFactory from 'memorystore';
+import { join } from 'node:path';
 
 import { defaultDefences } from './defaultDefences';
 import { ChatHistoryMessage, ChatModel, defaultChatModel } from './models/chat';

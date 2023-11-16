@@ -3,15 +3,15 @@ import {
 	activateDefence,
 	configureDefence,
 	deactivateDefence,
-	resetDefenceConfig,
+	detectFilterList,
 	detectTriggeredDefences,
+	getMaliciousPromptEvalPrePromptFromConfig,
+	getPromptInjectionEvalPrePromptFromConfig,
 	getQAPrePromptFromConfig,
 	getSystemRole,
 	isDefenceActive,
+	resetDefenceConfig,
 	transformMessage,
-	detectFilterList,
-	getPromptInjectionEvalPrePromptFromConfig,
-	getMaliciousPromptEvalPrePromptFromConfig,
 } from '@src/defence';
 import * as langchain from '@src/langchain';
 import { DEFENCE_TYPES, DefenceConfig } from '@src/models/defence';

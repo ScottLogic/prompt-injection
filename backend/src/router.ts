@@ -1,15 +1,14 @@
-import * as fs from 'fs';
-
 import express from 'express';
+import * as fs from 'fs';
 
 import { defaultDefences } from './defaultDefences';
 import {
 	activateDefence,
-	deactivateDefence,
 	configureDefence,
-	transformMessage,
+	deactivateDefence,
 	detectTriggeredDefences,
 	resetDefenceConfig,
+	transformMessage,
 } from './defence';
 import { DefenceActivateRequest } from './models/api/DefenceActivateRequest';
 import { DefenceConfigResetRequest } from './models/api/DefenceConfigResetRequest';

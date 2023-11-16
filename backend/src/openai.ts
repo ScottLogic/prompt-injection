@@ -7,11 +7,11 @@ import {
 import { promptTokensEstimate } from 'openai-chat-tokens';
 
 import {
-	isDefenceActive,
-	getSystemRole,
 	detectFilterList,
 	getFilterList,
 	getQAPrePromptFromConfig,
+	getSystemRole,
+	isDefenceActive,
 } from './defence';
 import { sendEmail } from './email';
 import { queryDocuments } from './langchain';
