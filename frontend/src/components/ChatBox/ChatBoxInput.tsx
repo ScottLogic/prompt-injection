@@ -1,5 +1,6 @@
-import ThemedTextArea from "../ThemedInput/ThemedTextArea";
 import { KeyboardEvent } from "react";
+
+import ThemedTextArea from "@src/components/ThemedInput/ThemedTextArea";
 
 function ChatBoxInput({
   content,

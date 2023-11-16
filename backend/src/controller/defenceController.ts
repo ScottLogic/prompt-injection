@@ -52,7 +52,7 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
     );
     res.send();
   } else {
-    res.statusCode = 400;
+    res.status(400);
     res.send();
   }
 }
@@ -89,7 +89,7 @@ function handleResetAllDefences(req: DefenceResetRequest, res: Response) {
     console.debug("Defences reset");
     res.send();
   } else {
-    res.statusCode = 400;
+    res.status(400);
     res.send();
   }
 }
@@ -115,11 +115,11 @@ function handleResetSingleDefence(
     if (updatedDefenceConfig) {
       res.send(updatedDefenceConfig);
     } else {
-      res.statusCode = 400;
+      res.status(400);
       res.send();
     }
   } else {
-    res.statusCode = 400;
+    res.status(400);
     res.send();
   }
 }
@@ -129,7 +129,7 @@ function handleGetDefenceStatus(req: GetRequestQueryLevel, res: Response) {
   if (level !== undefined) {
     res.send(req.session.levelState[level].defences);
   } else {
-    res.statusCode = 400;
+    res.status(400);
     res.send("Missing level");
   }
 }

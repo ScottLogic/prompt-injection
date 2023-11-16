@@ -1,6 +1,7 @@
 import { Request } from "express";
-import { DEFENCE_TYPES, DefenceConfig } from "../defence";
-import { LEVEL_NAMES } from "../level";
+
+import { DEFENCE_TYPES, DefenceConfig } from "@src/models/defence";
+import { LEVEL_NAMES } from "@src/models/level";
 
 type DefenceConfigureRequest = Request<
   object,

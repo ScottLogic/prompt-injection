@@ -6,7 +6,7 @@ function sendErrorResponse(
   statusCode: number,
   errorMessage: string
 ) {
-  res.statusCode = statusCode;
+  res.status(statusCode);
   res.send(errorMessage);
 }
 

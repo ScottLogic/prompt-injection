@@ -1,17 +1,17 @@
+import { join } from "node:path";
+
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import memoryStoreFactory from "memorystore";
 import session from "express-session";
+import memoryStoreFactory from "memorystore";
 
-import { router } from "./router";
-import { ChatHistoryMessage, ChatModel } from "./models/chat";
-import { EmailInfo } from "./models/email";
-import { DefenceInfo } from "./models/defence";
-import { defaultChatModel } from "./models/chat";
-import { LEVEL_NAMES } from "./models/level";
-import path from "path";
 import { defaultDefences } from "./defaultDefences";
+import { ChatHistoryMessage, ChatModel, defaultChatModel } from "./models/chat";
+import { DefenceInfo } from "./models/defence";
+import { EmailInfo } from "./models/email";
+import { LEVEL_NAMES } from "./models/level";
+import { router } from "./router";
 
 dotenv.config();
 
@@ -83,7 +83,7 @@ app.use("/", router);
 // serve the documents folder
 app.use(
   "/documents",
-  express.static(path.join(__dirname, "../resources/documents/common"))
+  express.static(join(__dirname, "@src/resources/documents/common"))
 );
 
 export default app;

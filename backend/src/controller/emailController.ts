@@ -8,7 +8,7 @@ function handleGetEmails(req: GetRequestQueryLevel, res: Response) {
   if (level !== undefined) {
     res.send(req.session.levelState[level].sentEmails);
   } else {
-    res.statusCode = 400;
+    res.status(400);
     res.send("Missing level");
   }
 }
@@ -20,7 +20,7 @@ function handleClearEmails(req: EmailClearRequest, res: Response) {
     console.debug("Emails cleared");
     res.send();
   } else {
-    res.statusCode = 400;
+    res.status(400);
     res.send();
   }
 }

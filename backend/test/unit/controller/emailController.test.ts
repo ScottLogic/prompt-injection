@@ -27,10 +27,7 @@ declare module "express-session" {
 function responseMock() {
   return {
     send: jest.fn(),
-    status: jest.fn(() => ({
-      send: jest.fn(),
-    })),
-    statusCode: 200,
+    status: jest.fn()
   } as unknown as Response;
 }
 
@@ -66,7 +63,6 @@ describe("handleGetEmails", () => {
 
     handleGetEmails(req, res);
 
-    expect(res.statusCode).toBe(200);
     expect(res.send).toHaveBeenCalledWith(emails);
   });
 
@@ -74,14 +70,11 @@ describe("handleGetEmails", () => {
     const req = {
       query: {},
     } as GetRequestQueryLevel;
-    const res = {
-      send: jest.fn(),
-      statusCode: 200,
-    } as unknown as Response;
 
+    const res = responseMock();
     handleGetEmails(req, res);
 
-    expect(res.statusCode).toBe(400);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.send).toHaveBeenCalledWith("Missing level");
   });
 });
@@ -105,7 +98,6 @@ describe("handleClearEmails", () => {
 
     handleClearEmails(req, res);
 
-    expect(res.statusCode).toBe(200);
     expect(req.session.levelState[0].sentEmails).toEqual([]);
   });
 
@@ -118,7 +110,7 @@ describe("handleClearEmails", () => {
 
     handleClearEmails(req, res);
 
-    expect(res.statusCode).toBe(400);
-    expect(res.send).toHaveBeenCalledWith();
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.send).toHaveBeenCalled();
   });
 });

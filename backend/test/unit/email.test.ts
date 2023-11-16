@@ -1,5 +1,5 @@
-import { sendEmail } from "../../src/email";
-import { LEVEL_NAMES } from "../../src/models/level";
+import { sendEmail } from "@src/email";
+import { LEVEL_NAMES } from "@src/models/level";
 
 test("GIVEN an email is to be sent and confirmed WHEN email is sent THEN the response is valid ", () => {
   const address = "bob@example.com";

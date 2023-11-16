@@ -16,106 +16,6 @@ import { OpenAiAddHistoryRequest } from "../models/api/OpenAiAddHistoryRequest";
 import { OpenAiClearRequest } from "../models/api/OpenAiClearRequest";
 import { handleChatError } from "./handleError";
 
-async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
-  // set reply params
-  const chatResponse: ChatHttpResponse = {
-    reply: "",
-    defenceInfo: {
-      blockedReason: "",
-      isBlocked: false,
-      alertedDefences: [],
-      triggeredDefences: [],
-    },
-    transformedMessage: "",
-    wonLevel: false,
-    isError: false,
-  };
-  const message = req.body.message;
-  const currentLevel = req.body.currentLevel;
-
-  // must have initialised openai
-  if (message === undefined || currentLevel === undefined) {
-    handleChatError(
-      res,
-      chatResponse,
-      true,
-      "Please send a message and current level to chat to me!",
-      400
-    );
-    return;
-  }
-
-  const MESSAGE_CHARACTER_LIMIT = 16384;
-  if (message.length > MESSAGE_CHARACTER_LIMIT) {
-    handleChatError(
-      res,
-      chatResponse,
-      true,
-      "Message exceeds character limit",
-      400
-    );
-    return;
-  }
-
-  // set the transformed message to begin with
-  chatResponse.transformedMessage = message;
-
-  // use default model for levels, allow user to select in sandbox
-  const chatModel =
-    currentLevel === LEVEL_NAMES.SANDBOX
-      ? req.session.chatModel
-      : defaultChatModel;
-
-  // record the history before chat completion called
-  const chatHistoryBefore = [
-    ...req.session.levelState[currentLevel].chatHistory,
-  ];
-  try {
-    if (message) {
-      // skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
-      if (currentLevel < LEVEL_NAMES.LEVEL_3) {
-        await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
-      } else {
-        // apply the defence detection for level 3 and sandbox - sets chatResponse obj
-        await handleHigherLevelChat(
-          req,
-          message,
-          chatHistoryBefore,
-          chatResponse,
-          currentLevel,
-          chatModel
-        );
-      }
-      // if the reply was blocked then add it to the chat history
-      if (chatResponse.defenceInfo.isBlocked) {
-        req.session.levelState[currentLevel].chatHistory.push({
-          completion: null,
-          chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-          infoMessage: chatResponse.defenceInfo.blockedReason,
-        });
-      } else if (!chatResponse.reply || chatResponse.reply === "") {
-        // add error message to chat history
-        req.session.levelState[currentLevel].chatHistory.push({
-          completion: null,
-          chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
-          infoMessage: "Failed to get chatGPT reply",
-        });
-        // throw so handle error called
-        throw new Error("Failed to get chatGPT reply");
-      }
-    } else {
-      handleChatError(res, chatResponse, true, "Missing message");
-      return;
-    }
-  } catch (error) {
-    handleChatError(res, chatResponse, true, "Failed to get chatGPT reply");
-    return;
-  }
-  // log and send the reply with defence info
-  console.log(chatResponse);
-  res.send(chatResponse);
-}
-
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
   req: OpenAiChatRequest,
@@ -227,12 +127,113 @@ async function handleHigherLevelChat(
   }
 }
 
+async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
+  // set reply params
+  const chatResponse: ChatHttpResponse = {
+    reply: "",
+    defenceInfo: {
+      blockedReason: "",
+      isBlocked: false,
+      alertedDefences: [],
+      triggeredDefences: [],
+    },
+    transformedMessage: "",
+    wonLevel: false,
+    isError: false,
+  };
+  const message = req.body.message;
+  const currentLevel = req.body.currentLevel;
+
+  // must have initialised openai
+  if (message === undefined || currentLevel === undefined) {
+    handleChatError(
+      res,
+      chatResponse,
+      true,
+      "Please send a message and current level to chat to me!",
+      400
+    );
+    return;
+  }
+
+  const MESSAGE_CHARACTER_LIMIT = 16384;
+  if (message.length > MESSAGE_CHARACTER_LIMIT) {
+    handleChatError(
+      res,
+      chatResponse,
+      true,
+      "Message exceeds character limit",
+      400
+    );
+    return;
+  }
+
+  // set the transformed message to begin with
+  chatResponse.transformedMessage = message;
+
+  // use default model for levels, allow user to select in sandbox
+  const chatModel =
+    currentLevel === LEVEL_NAMES.SANDBOX
+      ? req.session.chatModel
+      : defaultChatModel;
+
+  // record the history before chat completion called
+  const chatHistoryBefore = [
+    ...req.session.levelState[currentLevel].chatHistory,
+  ];
+  try {
+    if (message) {
+      // skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
+      if (currentLevel < LEVEL_NAMES.LEVEL_3) {
+        await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
+      } else {
+        // apply the defence detection for level 3 and sandbox - sets chatResponse obj
+        await handleHigherLevelChat(
+          req,
+          message,
+          chatHistoryBefore,
+          chatResponse,
+          currentLevel,
+          chatModel
+        );
+      }
+      // if the reply was blocked then add it to the chat history
+      if (chatResponse.defenceInfo.isBlocked) {
+        req.session.levelState[currentLevel].chatHistory.push({
+          completion: null,
+          chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+          infoMessage: chatResponse.defenceInfo.blockedReason,
+        });
+      } else if (!chatResponse.reply || chatResponse.reply === "") {
+        // add error message to chat history
+        req.session.levelState[currentLevel].chatHistory.push({
+          completion: null,
+          chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+          infoMessage: "Failed to get chatGPT reply",
+        });
+        // throw so handle error called
+        throw new Error("Failed to get chatGPT reply");
+      }
+    } else {
+      handleChatError(res, chatResponse, true, "Missing message");
+      return;
+    }
+  } catch (error) {
+    handleChatError(res, chatResponse, true, "Failed to get chatGPT reply");
+    return;
+  }
+  // log and send the reply with defence info
+  console.log(chatResponse);
+  res.send(chatResponse);
+}
+
+
 function handleGetChatHistory(req: GetRequestQueryLevel, res: Response) {
   const level: number | undefined = req.query.level as number | undefined;
   if (level !== undefined) {
     res.send(req.session.levelState[level].chatHistory);
   } else {
-    res.statusCode = 400;
+    res.status(400);
     res.send("Missing level");
   }
 }
@@ -254,7 +255,7 @@ function handleAddToChatHistory(req: OpenAiAddHistoryRequest, res: Response) {
     });
     res.send();
   } else {
-    res.statusCode = 400;
+    res.status(400);
     res.send();
   }
 }
@@ -266,7 +267,7 @@ function handleClearChatHistory(req: OpenAiClearRequest, res: Response) {
     console.debug("ChatGPT messages cleared");
     res.send();
   } else {
-    res.statusCode = 400;
+    res.status(400);
     res.send();
   }
 }
