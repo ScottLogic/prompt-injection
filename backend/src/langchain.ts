@@ -153,7 +153,7 @@ function initPromptEvaluationModel(configPromptEvaluationPrePrompt: string) {
   const chain = new LLMChain({
     llm,
     prompt: promptEvalTemplate,
-    outputKey: "isPromptInjectOrMalicious",
+    outputKey: "promptEvalOutput",
   });
 
   console.debug("Prompt evaluation model initialised.");
@@ -212,7 +212,7 @@ async function queryPromptEvaluationModel(
       `Prompt evaluation model call took ${Date.now() - startTime}ms`
     );
     const promptEvaluation = formatEvaluationOutput(
-      response.isPromptInjectOrMalicious
+      response.promptEvalOutput
     );
     console.debug(`Prompt evaluation: ${JSON.stringify(promptEvaluation)}`);
     return promptEvaluation;

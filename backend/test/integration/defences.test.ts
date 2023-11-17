@@ -31,7 +31,7 @@ afterEach(() => {
 test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
-    isPromptInjectOrMalicious: "Yes.",
+    promptEvalOutput: "Yes.",
   });
   // activate the defence
   const defences = activateDefence(
@@ -52,7 +52,7 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detect
 test("GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN detectTriggeredDefences is called THEN defence is not triggered AND defence is not blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
-    isPromptInjectOrMalicious: "No.",
+    promptEvalOutput: "No.",
   });
 
   // activate the defence
@@ -82,7 +82,7 @@ test("GIVEN LLM_EVALUATION defence is not active WHEN detectTriggeredDefences is
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase in the list THEN defence is triggered and the message is blocked", async () => {
   mockCall.mockReturnValueOnce({
-    isPromptInjectOrMalicious: "No.",
+    promptEvalOutput: "No.",
   });
 
   const defences = activateDefence(
@@ -98,7 +98,7 @@ test("GIVEN the input filtering defence is active WHEN a user sends a message co
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase not in the list THEN the message is not blocked", async () => {
   mockCall.mockReturnValueOnce({
-    isPromptInjectOrMalicious: "No.",
+    promptEvalOutput: "No.",
   });
 
   const defences = activateDefence(
@@ -114,7 +114,7 @@ test("GIVEN the input filtering defence is active WHEN a user sends a message co
 
 test("GIVEN the input filtering defence is not active WHEN a user sends a message containing a phrase in the list THEN the defence is alerted and message is not biocked", async () => {
   mockCall.mockReturnValueOnce({
-    isPromptInjectOrMalicious: "No.",
+    promptEvalOutput: "No.",
   });
 
   const defences = defaultDefences;

@@ -1,5 +1,5 @@
 interface PromptEvaluationChainReply {
-  isPromptInjectOrMalicious: string;
+  promptEvalOutput: string;
 }
 
 interface QaChainReply {

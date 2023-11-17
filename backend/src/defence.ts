@@ -291,12 +291,12 @@ async function detectEvaluationLLM(
 ) {
   // only call the evaluation model if the defence is active
   if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
-    const configpromptEvalPrePrompt =
+    const configPromptEvalPrePrompt =
       getPromptEvalPrePromptFromConfig(defences);
 
     const evalPrompt = await queryPromptEvaluationModel(
       message,
-      configpromptEvalPrePrompt
+      configPromptEvalPrePrompt
     );
     if (evalPrompt.isMalicious) {
       defenceReport.triggeredDefences.push(
