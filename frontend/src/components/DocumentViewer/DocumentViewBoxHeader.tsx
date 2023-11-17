@@ -1,23 +1,22 @@
-import { IHeaderOverride } from "@cyntler/react-doc-viewer";
-
 import "./DocumentViewBoxHeader.css";
 
 import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
 
-// eslint-disable-next-line func-style
-export const DocumentViewBoxHeader: IHeaderOverride = (
-  state,
+function DocumentViewBoxHeader({
+  documentIndex,
+  documentName,
+  numberOfDocuments,
   previousDocument,
-  nextDocument
-) => {
-  if (!state.currentDocument || state.config?.header?.disableFileName) {
-    return null;
-  }
-
-  const documentName = state.currentDocument.uri.split("/").pop();
-  const documentNumber = `${state.currentFileNo + 1} out of ${
-    state.documents.length
-  }`;
+  nextDocument,
+}: {
+  documentIndex: number;
+  documentName: string;
+  numberOfDocuments: number;
+  previousDocument: () => void;
+  nextDocument: () => void;
+}) {
+  // const documentName = state.currentDocument.uri.split("/").pop();
+  const documentNumber = `${documentIndex + 1} out of ${numberOfDocuments}`;
 
   return (
     <div className="view-documents-header">
@@ -26,14 +25,14 @@ export const DocumentViewBoxHeader: IHeaderOverride = (
         <p className="info">{documentName}</p>
         <p className="info">{documentNumber}</p>
         <div className="button-container">
-          {state.currentFileNo > 0 && (
+          {documentIndex > 0 && (
             <span className="previous-document">
               <ThemedButton onClick={previousDocument}>
                 ◄ previous document
               </ThemedButton>
             </span>
           )}
-          {state.currentFileNo < state.documents.length - 1 && (
+          {documentIndex < numberOfDocuments - 1 && (
             <span className="next-document">
               <ThemedButton onClick={nextDocument}>
                 next document ►
@@ -44,4 +43,6 @@ export const DocumentViewBoxHeader: IHeaderOverride = (
       </div>
     </div>
   );
-};
+}
+
+export default DocumentViewBoxHeader;

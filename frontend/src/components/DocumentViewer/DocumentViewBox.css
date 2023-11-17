@@ -24,14 +24,23 @@
   cursor: pointer;
 }
 
+.document-viewer-container {
+  height: 20rem;
+  background-color: white;
+  overflow-y: auto;
+}
+
 #react-doc-viewer {
   color: var(--chat-message-text-colour);
-  height: 31.25rem;
   margin: auto;
+  /* don't scroll */
+  overflow: visible;
 }
 
 #react-doc-viewer #proxy-renderer {
   padding: 1.25rem;
+  /* don't scroll */
+  overflow: visible;
 }
 
 #react-doc-viewer #txt-renderer {
