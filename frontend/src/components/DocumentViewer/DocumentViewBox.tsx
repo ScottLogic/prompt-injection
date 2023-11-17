@@ -19,16 +19,16 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 
   const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>([]);
   const [documentIndex, setDocumentIndex] = useState<number>(0);
-  const [documentName, setDocumentName] = useState<string>("");
+  const [activeDocument, setActiveDocument] = useState<DocumentMeta | null>(
+    null
+  );
 
   // on mount get document uris
   useEffect(() => {
     getDocumentMetas()
       .then((uris) => {
         setDocumentMetas(uris);
-        if (uris.length > documentIndex) {
-          setDocumentName(uris[documentIndex].filename);
-        }
+        setActiveDocument(uris[0]);
       })
       .catch((err) => {
         console.log(err);
@@ -36,17 +36,7 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
   }, []);
 
   function onDocumentChange(document: DocumentMeta) {
-    // const index = documentMetas.findIndex((doc) => doc.uri === document.uri);
-    // console.log(
-    //   "index",
-    //   index,
-    //   "document",
-    //   document,
-    //   "documentMetas",
-    //   documentMetas
-    // );
-    setDocumentIndex(documentIndex + 1);
-    // setDocumentName(document.filename);
+    setActiveDocument(document);
   }
 
   return (
@@ -61,33 +51,34 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
       </button>
       <DocumentViewBoxHeader
         documentIndex={documentIndex}
-        documentName={documentName}
+        documentName={activeDocument?.filename ?? ""}
         numberOfDocuments={documentMetas.length}
         previousDocument={() => {
           documentViewerRef.current?.prev();
-          // setDocumentIndex(documentIndex - 1);
+          setDocumentIndex(documentIndex - 1);
         }}
         nextDocument={() => {
           documentViewerRef.current?.next();
-          // setDocumentIndex(documentIndex + 1);
+          setDocumentIndex(documentIndex + 1);
         }}
       />
       <div
-        className="document-viewer-container"
         ref={documentViewerContainerRef}
+        className="document-viewer-container"
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={isOverflow ? 0 : undefined}
       >
         <DocViewer
-          documents={documentMetas}
-          pluginRenderers={DocViewerRenderers}
           ref={documentViewerRef}
+          documents={documentMetas}
+          activeDocument={activeDocument}
+          pluginRenderers={DocViewerRenderers}
           config={{
             header: {
               disableHeader: true,
             },
           }}
-          // onDocumentChange={onDocumentChange}
+          onDocumentChange={onDocumentChange}
         />
       </div>
     </div>
