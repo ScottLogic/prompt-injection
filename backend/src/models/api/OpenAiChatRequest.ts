@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { LEVEL_NAMES } from "../level";
 
-type OpenAiChatRequest = Request<
+export type OpenAiChatRequest = Request<
   null,
   null,
   {
@@ -10,5 +10,3 @@ type OpenAiChatRequest = Request<
   },
   null
 >;
-
-export type { OpenAiChatRequest };

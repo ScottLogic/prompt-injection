@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { LEVEL_NAMES } from "../level";
 
-type OpenAiClearRequest = Request<
+export type OpenAiClearRequest = Request<
   null,
   null,
   {
@@ -9,5 +9,3 @@ type OpenAiClearRequest = Request<
   },
   null
 >;
-
-export type { OpenAiClearRequest };

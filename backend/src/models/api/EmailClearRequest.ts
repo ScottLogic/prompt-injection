@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { LEVEL_NAMES } from "../level";
 
-type EmailClearRequest = Request<
+export type EmailClearRequest = Request<
   null,
   null,
   {
@@ -9,5 +9,3 @@ type EmailClearRequest = Request<
   },
   null
 >;
-
-export type { EmailClearRequest };

@@ -1,6 +1,6 @@
 import { Request } from "express";
 
-type OpenAiConfigureModelRequest = Request<
+export type OpenAiConfigureModelRequest = Request<
   null,
   null,
   {
@@ -9,5 +9,3 @@ type OpenAiConfigureModelRequest = Request<
   },
   null
 >;
-
-export type { OpenAiConfigureModelRequest };

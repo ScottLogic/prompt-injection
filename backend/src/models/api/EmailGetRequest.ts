@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { EmailInfo } from "../email";
 
-type EmailGetRequest = Request<
+export type EmailGetRequest = Request<
   null,
   EmailInfo[] | string,
   null,
@@ -9,5 +9,3 @@ type EmailGetRequest = Request<
     level?: string;
   }
 >;
-
-export type { EmailGetRequest };

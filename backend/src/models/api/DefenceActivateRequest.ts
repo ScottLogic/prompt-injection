@@ -2,7 +2,7 @@ import { Request } from "express";
 import { DEFENCE_TYPES } from "../defence";
 import { LEVEL_NAMES } from "../level";
 
-type DefenceActivateRequest = Request<
+export type DefenceActivateRequest = Request<
   null,
   null,
   {
@@ -11,5 +11,3 @@ type DefenceActivateRequest = Request<
   },
   null
 >;
-
-export type { DefenceActivateRequest };

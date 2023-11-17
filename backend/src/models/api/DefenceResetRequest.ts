@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { LEVEL_NAMES } from "../level";
 
-type DefenceResetRequest = Request<
+export type DefenceResetRequest = Request<
   null,
   null,
   {
@@ -9,5 +9,3 @@ type DefenceResetRequest = Request<
   },
   null
 >;
-
-export type { DefenceResetRequest };

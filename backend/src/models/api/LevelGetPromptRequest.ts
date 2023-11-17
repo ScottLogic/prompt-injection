@@ -1,6 +1,6 @@
 import { Request } from "express";
 
-type LevelGetPromptRequest = Request<
+export type LevelGetPromptRequest = Request<
   null,
   string,
   null,
@@ -8,5 +8,3 @@ type LevelGetPromptRequest = Request<
     level?: string;
   }
 >;
-
-export type { LevelGetPromptRequest };

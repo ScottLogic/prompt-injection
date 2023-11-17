@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { ChatHistoryMessage } from "../chat";
 
-type OpenAiGetHistoryRequest = Request<
+export type OpenAiGetHistoryRequest = Request<
   null,
   ChatHistoryMessage[] | string,
   null,
@@ -9,5 +9,3 @@ type OpenAiGetHistoryRequest = Request<
     level?: string;
   }
 >;
-
-export type { OpenAiGetHistoryRequest };

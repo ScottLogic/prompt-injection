@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { DefenceInfo } from "../defence";
 
-type DefenceStatusRequest = Request<
+export type DefenceStatusRequest = Request<
   null,
   DefenceInfo[] | string,
   null,
@@ -9,5 +9,3 @@ type DefenceStatusRequest = Request<
     level?: string;
   }
 >;
-
-export type { DefenceStatusRequest };
