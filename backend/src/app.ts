@@ -85,7 +85,7 @@ app.use("/", router);
 app.use(
   "/documents",
   express.static(
-    fileURLToPath(new URL("../resources/documents/common", importMetaUrl()))
+    fileURLToPath(new URL("../resources/documents", importMetaUrl()))
   )
 );
 
