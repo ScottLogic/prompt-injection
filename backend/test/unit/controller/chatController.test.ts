@@ -58,75 +58,86 @@ function chatResponseAssistant(content: string) {
   };
 }
 
-function openAiChatRequestMock(message?: string, level?: number){
-  const req = {
+function openAiChatRequestMock(
+  message?: string,
+  level?: LEVEL_NAMES
+ ) {
+  return {
     body: {
-      message: message ?? "",
       currentLevel: level ?? undefined,
+      message: message ?? "",
     },
     session: {
       levelState: [
         {
-          level: level ?? 0,
+          level: level ?? undefined,
           chatHistory: [],
           defences: [],
           sentEmails: [],
         },
       ],
     },
-  };
-  return req as unknown as OpenAiChatRequest;
-  }
+  } as unknown as OpenAiChatRequest;
+}
 
-  function getAddHistoryRequestMock(message: string, level?: number, chatHistory?: ChatHistoryMessage[]){
-    return {
-      body: {
-        message,
-        chatMessageType: CHAT_MESSAGE_TYPE.USER,
-        level: level ?? undefined,
-      },
-      session: {
-        levelState: [
-          {
-            chatHistory: chatHistory ?? [],
-          },
-        ],
-      },
-    } as unknown as OpenAiAddHistoryRequest;
-  }
+function getAddHistoryRequestMock(
+  message: string,
+  level?: LEVEL_NAMES,
+  chatHistory?: ChatHistoryMessage[]
+) {
+  return {
+    body: {
+      message,
+      chatMessageType: CHAT_MESSAGE_TYPE.USER,
+      level: level ?? undefined,
+    },
+    session: {
+      levelState: [
+        {
+          chatHistory: chatHistory ?? [],
+        },
+      ],
+    },
+  } as OpenAiAddHistoryRequest;
+}
 
-  function getRequestQueryLevelMock(level?: number, chatHistory?: ChatHistoryMessage[]){
-    return {
-      query: {
-        level: level ?? undefined,
-      },
-      session: {
-        levelState: [
-          {
-            chatHistory: chatHistory ?? [],
-          },
-        ],
-      },
-    } as unknown as GetRequestQueryLevel;
-  }
+function getRequestQueryLevelMock(
+  level?: LEVEL_NAMES,
+  chatHistory?: ChatHistoryMessage[]
+) {
+  return {
+    query: {
+      level: level ?? undefined,
+    },
+    session: {
+      levelState: [
+        {
+          chatHistory: chatHistory ?? [],
+        },
+      ],
+    },
+  } as GetRequestQueryLevel;
+}
 
-  function openAiClearRequestMock(level?: number, chatHistory?: ChatHistoryMessage[]){
-    return {
-      body: {
-        level: level ?? undefined,
-      },
-      session: {
-        levelState: [
-          {
-            chatHistory: chatHistory ?? [],
-          },
-        ],
-      },
-    } as unknown as OpenAiClearRequest;
-  }
+function openAiClearRequestMock(
+  level?: LEVEL_NAMES,
+  chatHistory?: ChatHistoryMessage[]
+) {
+  return {
+    body: {
+      level: level ?? undefined,
+    },
+    session: {
+      levelState: [
+        {
+          chatHistory: chatHistory ?? [],
+        },
+      ],
+    },
+  } as OpenAiClearRequest;
+}
 
-
-function errorResponseMock(message: string, trasnformedMessage?: string){
+function errorResponseMock(message: string, trasnformedMessage?: string) {
   return {
     reply: message,
     defenceInfo: {
@@ -144,13 +155,12 @@ function errorResponseMock(message: string, trasnformedMessage?: string){
 function responseMock() {
   return {
     send: jest.fn(),
-    status: jest.fn()
+    status: jest.fn(),
   } as unknown as Response;
 }
 
 describe("handleChatToGPT", () => {
   test("GIVEN a valid message and level WHEN handleChatToGPT called THEN it should return a text reply", async () => {
-
     const req = openAiChatRequestMock("Hello chatbot", 0);
     const res = responseMock();
 
@@ -193,18 +203,21 @@ describe("handleChatToGPT", () => {
     await handleChatToGPT(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.send).toHaveBeenCalledWith(errorResponseMock("Failed to get chatGPT reply", "hello"));
+    expect(res.send).toHaveBeenCalledWith(
+      errorResponseMock("Failed to get chatGPT reply", "hello")
+    );
   });
 
   test("GIVEN message exceeds character limit WHEN handleChatToGPT called THEN it should return 400 and error message", async () => {
-
     const req = openAiChatRequestMock("x".repeat(16399), 0);
     const res = responseMock();
 
     await handleChatToGPT(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.send).toHaveBeenCalledWith(errorResponseMock("Message exceeds character limit"));
+    expect(res.send).toHaveBeenCalledWith(
+      errorResponseMock("Message exceeds character limit")
+    );
   });
 });
 
@@ -224,7 +237,6 @@ describe("handleGetChatHistory", () => {
     },
   ];
   test("GIVEN a valid level WHEN handleGetChatHistory called THEN return chat history", () => {
-
     const req = getRequestQueryLevelMock(0, chatHistory);
     const res = responseMock();
 
@@ -233,7 +245,6 @@ describe("handleGetChatHistory", () => {
   });
 
   test("GIVEN undefined level WHEN handleGetChatHistory called THEN return 400", () => {
-    
     const req = getRequestQueryLevelMock(undefined);
     const res = responseMock();
 
@@ -256,7 +267,6 @@ describe("handleAddToChatHistory", () => {
     },
   ];
   test("GIVEN a valid message WHEN handleAddToChatHistory called THEN message is added to chat history", () => {
-
     const req = getAddHistoryRequestMock("tell me a story", 0, chatHistory);
     const res = responseMock();
 
@@ -266,7 +276,11 @@ describe("handleAddToChatHistory", () => {
   });
 
   test("GIVEN invalid level WHEN handleAddToChatHistory called THEN returns 400", () => {
-    const req = getAddHistoryRequestMock("tell me a story", undefined, chatHistory);
+    const req = getAddHistoryRequestMock(
+      "tell me a story",
+      undefined,
+      chatHistory
+    );
     const res = responseMock();
 
     handleAddToChatHistory(req, res);

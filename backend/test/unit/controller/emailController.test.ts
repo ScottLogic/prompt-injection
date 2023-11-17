@@ -57,7 +57,7 @@ describe("handleGetEmails", () => {
           },
         ],
       },
-    } as unknown as GetRequestQueryLevel;
+    } as GetRequestQueryLevel;
 
     const res = responseMock();
 
@@ -92,7 +92,7 @@ describe("handleClearEmails", () => {
           },
         ],
       },
-    } as unknown as EmailClearRequest;
+    } as EmailClearRequest;
 
     const res = responseMock();
 
