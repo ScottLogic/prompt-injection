@@ -1,5 +1,4 @@
 import express from 'express';
-import * as fs from 'fs';
 
 import { defaultDefences } from './defaultDefences';
 import {
@@ -10,6 +9,7 @@ import {
 	resetDefenceConfig,
 	transformMessage,
 } from './defence';
+import { getSandboxDocumentMetas } from './document';
 import { DefenceActivateRequest } from './models/api/DefenceActivateRequest';
 import { DefenceConfigResetRequest } from './models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from './models/api/DefenceConfigureRequest';
@@ -30,7 +30,6 @@ import {
 	defaultChatModel,
 } from './models/chat';
 import { DefenceConfig } from './models/defence';
-import { Document } from './models/document';
 import { LEVEL_NAMES } from './models/level';
 import { chatGptSendMessage, verifyKeySupportsModel } from './openai';
 import {
@@ -576,23 +575,13 @@ router.get('/level/prompt', (req, res) => {
 	}
 });
 
+// get names and types of documents for sandbox and common
 router.get('/documents', (_, res) => {
-	const docFiles: Document[] = [];
-
-	fs.readdir('resources/documents/common', (err, files) => {
-		if (err) {
-			res.status(500).send('Failed to read documents');
-			return;
-		}
-		files.forEach((file) => {
-			const fileType = file.split('.').pop() ?? '';
-			docFiles.push({
-				filename: file,
-				filetype: fileType === 'csv' ? 'text/csv' : fileType,
-			});
-		});
-		res.send(docFiles);
-	});
+	try {
+		res.send(getSandboxDocumentMetas());
+	} catch (err) {
+		res.status(500).send('Failed to read documents');
+	}
 });
 
 export { router };
