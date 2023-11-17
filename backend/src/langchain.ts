@@ -200,7 +200,8 @@ async function queryPromptEvaluationModel(
 ) {
   try {
     console.debug(`Checking '${input}' for malicious prompts`);
-    const promptEvaluationChain = initPromptEvaluationModel(promptEvalPrePrompt);
+    const promptEvaluationChain =
+      initPromptEvaluationModel(promptEvalPrePrompt);
     // get start time
     const startTime = Date.now();
     console.debug("Calling prompt evaluation model...");
@@ -211,9 +212,7 @@ async function queryPromptEvaluationModel(
     console.debug(
       `Prompt evaluation model call took ${Date.now() - startTime}ms`
     );
-    const promptEvaluation = formatEvaluationOutput(
-      response.promptEvalOutput
-    );
+    const promptEvaluation = formatEvaluationOutput(response.promptEvalOutput);
     console.debug(`Prompt evaluation: ${JSON.stringify(promptEvaluation)}`);
     return promptEvaluation;
   } catch (error) {
