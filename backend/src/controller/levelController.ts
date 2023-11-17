@@ -1,11 +1,12 @@
 import { Response } from "express";
+
+import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
+import { LEVEL_NAMES } from "@src/models/level";
 import {
   systemRoleLevel1,
   systemRoleLevel2,
   systemRoleLevel3,
-} from "../promptTemplates";
-import { GetRequestQueryLevel } from "../models/api/GetRequestQueryLevel";
-import { LEVEL_NAMES } from "../models/level";
+} from "@src/promptTemplates";
 
 function handleGetLevelPrompt(req: GetRequestQueryLevel, res: Response) {
   const levelStr: string | undefined = req.query.level as string | undefined;

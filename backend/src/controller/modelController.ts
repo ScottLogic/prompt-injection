@@ -1,9 +1,10 @@
-import { OpenAiSetModelRequest } from "../models/api/OpenAiSetModelRequest";
 import { Response } from "express";
-import { verifyKeySupportsModel } from "../openai";
-import { ChatModelConfiguration, MODEL_CONFIG } from "../models/chat";
-import { OpenAiConfigureModelRequest } from "../models/api/OpenAiConfigureModelRequest";
-import { GetRequestQueryLevel } from "../models/api/GetRequestQueryLevel";
+
+import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
+import { OpenAiConfigureModelRequest } from "@src/models/api/OpenAiConfigureModelRequest";
+import { OpenAiSetModelRequest } from "@src/models/api/OpenAiSetModelRequest";
+import { ChatModelConfiguration, MODEL_CONFIG } from "@src/models/chat";
+import { verifyKeySupportsModel } from "@src/openai";
 
 function updateConfigProperty(
   config: ChatModelConfiguration,

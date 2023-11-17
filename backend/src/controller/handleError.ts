@@ -1,5 +1,6 @@
 import { Response } from "express";
-import { ChatHttpResponse } from "../models/chat";
+
+import { ChatHttpResponse } from "@src/models/chat";
 
 function sendErrorResponse(
   res: Response,

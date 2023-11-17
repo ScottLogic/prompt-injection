@@ -1,6 +1,8 @@
 import * as fs from "fs";
+
 import { Response } from "express";
-import { Document } from "../models/document";
+
+import { Document } from "@src/models/document";
 
 function handleGetDocuments(_: unknown, res: Response) {
   const docFiles: Document[] = [];

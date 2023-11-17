@@ -1,4 +1,11 @@
 import express from "express";
+
+import {
+  handleAddToChatHistory,
+  handleChatToGPT,
+  handleClearChatHistory,
+  handleGetChatHistory,
+} from "./controller/chatController";
 import {
   handleConfigureDefence,
   handleDefenceActivation,
@@ -7,23 +14,17 @@ import {
   handleResetAllDefences,
   handleResetSingleDefence,
 } from "./controller/defenceController";
+import { handleGetDocuments } from "./controller/documentController";
 import {
   handleClearEmails,
   handleGetEmails,
 } from "./controller/emailController";
-import {
-  handleAddToChatHistory,
-  handleChatToGPT,
-  handleClearChatHistory,
-  handleGetChatHistory,
-} from "./controller/chatController";
+import { handleGetLevelPrompt } from "./controller/levelController";
 import {
   handleConfigureModel,
   handleGetModel,
   handleSetModel,
 } from "./controller/modelController";
-import { handleGetDocuments } from "./controller/documentController";
-import { handleGetLevelPrompt } from "./controller/levelController";
 
 const router = express.Router();
 

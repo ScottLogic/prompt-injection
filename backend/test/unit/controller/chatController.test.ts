@@ -1,24 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/unbound-method */
+import { Response } from "express";
+
 import {
   handleAddToChatHistory,
   handleChatToGPT,
   handleClearChatHistory,
   handleGetChatHistory,
-} from "../../../src/controller/chatController";
-import { OpenAiChatRequest } from "../../../src/models/api/OpenAiChatRequest";
-import { Response } from "express";
+} from "@src/controller/chatController";
+import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
+import { OpenAiAddHistoryRequest } from "@src/models/api/OpenAiAddHistoryRequest";
+import { OpenAiChatRequest } from "@src/models/api/OpenAiChatRequest";
+import { OpenAiClearRequest } from "@src/models/api/OpenAiClearRequest";
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
   ChatModel,
-} from "../../../src/models/chat";
-import { LEVEL_NAMES } from "../../../src/models/level";
-import { EmailInfo } from "../../../src/models/email";
-import { DefenceInfo } from "../../../src/models/defence";
-import { GetRequestQueryLevel } from "../../../src/models/api/GetRequestQueryLevel";
-import { OpenAiAddHistoryRequest } from "../../../src/models/api/OpenAiAddHistoryRequest";
-import { OpenAiClearRequest } from "../../../src/models/api/OpenAiClearRequest";
+} from "@src/models/chat";
+import { DefenceInfo } from "@src/models/defence";
+import { EmailInfo } from "@src/models/email";
+import { LEVEL_NAMES } from "@src/models/level";
 
 declare module "express-session" {
   interface Session {
@@ -58,10 +59,7 @@ function chatResponseAssistant(content: string) {
   };
 }
 
-function openAiChatRequestMock(
-  message?: string,
-  level?: LEVEL_NAMES
- ) {
+function openAiChatRequestMock(message?: string, level?: LEVEL_NAMES) {
   return {
     body: {
       currentLevel: level ?? undefined,

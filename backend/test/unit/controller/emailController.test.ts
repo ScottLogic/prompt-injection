@@ -1,14 +1,17 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+
 import { Response } from "express";
+
 import {
   handleClearEmails,
   handleGetEmails,
-} from "../../../src/controller/emailController";
-import { GetRequestQueryLevel } from "../../../src/models/api/GetRequestQueryLevel";
-import { EmailInfo } from "../../../src/models/email";
-import { ChatHistoryMessage, ChatModel } from "../../../src/models/chat";
-import { LEVEL_NAMES } from "../../../src/models/level";
-import { DefenceInfo } from "../../../src/models/defence";
-import { EmailClearRequest } from "../../../src/models/api/EmailClearRequest";
+} from "@src/controller/emailController";
+import { EmailClearRequest } from "@src/models/api/EmailClearRequest";
+import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
+import { ChatHistoryMessage, ChatModel } from "@src/models/chat";
+import { DefenceInfo } from "@src/models/defence";
+import { EmailInfo } from "@src/models/email";
+import { LEVEL_NAMES } from "@src/models/level";
 
 declare module "express-session" {
   interface Session {
@@ -27,7 +30,7 @@ declare module "express-session" {
 function responseMock() {
   return {
     send: jest.fn(),
-    status: jest.fn()
+    status: jest.fn(),
   } as unknown as Response;
 }
 

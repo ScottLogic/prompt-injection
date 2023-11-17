@@ -1,20 +1,21 @@
 import { Response } from "express";
-import { OpenAiChatRequest } from "../models/api/OpenAiChatRequest";
-import { LEVEL_NAMES } from "../models/level";
-import { chatGptSendMessage } from "../openai";
-import { transformMessage } from "../defence";
+
+import { handleChatError } from "./handleError";
+
+import { transformMessage, detectTriggeredDefences } from "@src/defence";
+import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
+import { OpenAiAddHistoryRequest } from "@src/models/api/OpenAiAddHistoryRequest";
+import { OpenAiChatRequest } from "@src/models/api/OpenAiChatRequest";
+import { OpenAiClearRequest } from "@src/models/api/OpenAiClearRequest";
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
   ChatHttpResponse,
   ChatModel,
   defaultChatModel,
-} from "../models/chat";
-import { detectTriggeredDefences } from "../defence";
-import { GetRequestQueryLevel } from "../models/api/GetRequestQueryLevel";
-import { OpenAiAddHistoryRequest } from "../models/api/OpenAiAddHistoryRequest";
-import { OpenAiClearRequest } from "../models/api/OpenAiClearRequest";
-import { handleChatError } from "./handleError";
+} from "@src/models/chat";
+import { LEVEL_NAMES } from "@src/models/level";
+import { chatGptSendMessage } from "@src/openai";
 
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
@@ -226,7 +227,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
   console.log(chatResponse);
   res.send(chatResponse);
 }
-
 
 function handleGetChatHistory(req: GetRequestQueryLevel, res: Response) {
   const level: number | undefined = req.query.level as number | undefined;

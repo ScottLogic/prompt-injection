@@ -1,19 +1,21 @@
-import { DefenceActivateRequest } from "../models/api/DefenceActivateRequest";
+import { Response } from "express";
+
+import { sendErrorResponse } from "./handleError";
+
+import { defaultDefences } from "@src/defaultDefences";
 import {
   activateDefence,
   configureDefence,
   deactivateDefence,
   resetDefenceConfig,
-} from "../defence";
-import { Response } from "express";
-import { DefenceConfigureRequest } from "../models/api/DefenceConfigureRequest";
-import { DefenceResetRequest } from "../models/api/DefenceResetRequest";
-import { LEVEL_NAMES } from "../models/level";
-import { defaultDefences } from "../defaultDefences";
-import { DefenceConfigResetRequest } from "../models/api/DefenceConfigResetRequest";
-import { DefenceConfig } from "../models/defence";
-import { GetRequestQueryLevel } from "../models/api/GetRequestQueryLevel";
-import { sendErrorResponse } from "./handleError";
+} from "@src/defence";
+import { DefenceActivateRequest } from "@src/models/api/DefenceActivateRequest";
+import { DefenceConfigResetRequest } from "@src/models/api/DefenceConfigResetRequest";
+import { DefenceConfigureRequest } from "@src/models/api/DefenceConfigureRequest";
+import { DefenceResetRequest } from "@src/models/api/DefenceResetRequest";
+import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
+import { DefenceConfig } from "@src/models/defence";
+import { LEVEL_NAMES } from "@src/models/level";
 
 function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
   const CONFIG_VALUE_CHARACTER_LIMIT = 5000;

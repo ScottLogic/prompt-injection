@@ -1,7 +1,8 @@
 import { Response } from "express";
-import { GetRequestQueryLevel } from "../models/api/GetRequestQueryLevel";
-import { EmailClearRequest } from "../models/api/EmailClearRequest";
-import { LEVEL_NAMES } from "../models/level";
+
+import { EmailClearRequest } from "@src/models/api/EmailClearRequest";
+import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
+import { LEVEL_NAMES } from "@src/models/level";
 
 function handleGetEmails(req: GetRequestQueryLevel, res: Response) {
   const level: number | undefined = req.query.level as number | undefined;
