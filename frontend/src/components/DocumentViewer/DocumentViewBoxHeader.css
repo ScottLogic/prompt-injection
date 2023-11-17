@@ -15,7 +15,7 @@
   margin-top: 0;
 }
 
-.view-documents-nav {
+.view-documents-header .nav {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -24,23 +24,23 @@
   width: 100%;
 }
 
-.view-documents-info {
+.view-documents-header .info {
   margin: 0;
   padding: 0;
   font-size: 1rem;
 }
 
-.view-documents-button-container {
+.view-documents-header .button-container {
   display: grid;
   grid-template-columns: auto 1fr;
   width: 45%;
 }
 
-.previous-document {
+.view-documents-header .previous-document {
   grid-column: 1;
 }
 
-.next-document {
+.view-documents-header .next-document {
   grid-column: 2;
   justify-self: end;
 }
