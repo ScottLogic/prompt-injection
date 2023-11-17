@@ -1,6 +1,7 @@
-import ThemedTextArea from "../ThemedInput/ThemedTextArea";
-import ThemedNumberInput from "../ThemedInput/ThemedNumberInput";
 import { KeyboardEvent, useEffect, useState } from "react";
+
+import ThemedNumberInput from "@src/components/ThemedInput/ThemedNumberInput";
+import ThemedTextArea from "@src/components/ThemedInput/ThemedTextArea";
 
 function DefenceConfigurationInput({
   defaultValue,
@@ -13,13 +14,13 @@ function DefenceConfigurationInput({
   inputType: "text" | "number";
   setConfigurationValue: (value: string) => void;
 }) {
+  const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
   const [value, setValue] = useState<string>(defaultValue);
 
   // update the text area value when reset/changed
   useEffect(() => {
     setValue(defaultValue);
-  }, [defaultValue]);
-  const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
+  }, [setConfigurationValue]);
 
   function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && !event.shiftKey) {

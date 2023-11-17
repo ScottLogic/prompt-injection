@@ -1,14 +1,15 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+
 import "./App.css";
 import "./Theme.css";
-import { useCallback, useEffect, useRef, useState } from "react";
+import DocumentViewBox from "./components/DocumentViewer/DocumentViewBox";
+import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
+import MainComponent from "./components/MainComponent/MainComponent";
+import LevelsComplete from "./components/Overlay/LevelsComplete";
+import MissionInformation from "./components/Overlay/MissionInformation";
+import OverlayWelcome from "./components/Overlay/OverlayWelcome";
 import { LEVEL_NAMES } from "./models/level";
 import { OVERLAY_TYPE } from "./models/overlay";
-import OverlayWelcome from "./components/Overlay/OverlayWelcome";
-import MissionInformation from "./components/Overlay/MissionInformation";
-import HandbookOverlay from "./components/HandbookOverlay/HandbookOverlay";
-import LevelsComplete from "./components/Overlay/LevelsComplete";
-import MainComponent from "./components/MainComponent/MainComponent";
-import DocumentViewBox from "./components/DocumentViewer/DocumentViewBox";
 
 function App() {
   const dialogRef = useRef<HTMLDialogElement>(null);

@@ -1,11 +1,23 @@
+import { useRef } from "react";
+
 import "./ChatBoxFeed.css";
-import { CHAT_MESSAGE_TYPE, ChatMessage } from "../../models/chat";
-import ChatBoxMessage from "./ChatBoxMessage";
 import ChatBoxInfoText from "./ChatBoxInfoText";
+import ChatBoxMessage from "./ChatBoxMessage";
+
+import useIsOverflow from "@src/hooks/useIsOverflow";
+import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 
 function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
+  const chatboxFeedContainer = useRef<HTMLDivElement>(null);
+  const isOverflow = useIsOverflow(chatboxFeedContainer);
+
   return (
-    <div className="chat-box-feed">
+    <div
+      className="chat-box-feed"
+      ref={chatboxFeedContainer}
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+      tabIndex={isOverflow ? 0 : undefined}
+    >
       {[...messages].reverse().map((message, index) => {
         if (
           message.type === CHAT_MESSAGE_TYPE.INFO ||

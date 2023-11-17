@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
-import { ThemedButtonProps } from "./ThemedButton";
+
 import "./OverlayButton.css";
+import { ThemedButtonProps } from "./ThemedButton";
 
 function OverlayButton({
   children,

@@ -9,3 +9,7 @@
   padding: 0.625rem 1.5rem;
   white-space: pre-wrap;
 }
+
+.sent-email p {
+  margin: 0.25rem 0;
+}

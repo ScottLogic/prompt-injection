@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "CommonJS",
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "node",
     "allowJs": true,
     "outDir": "build",
     "strict": true,
@@ -11,8 +12,12 @@
     "skipLibCheck": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "sourceMap": true
+    "sourceMap": true,
+
+    "paths": {
+      "@src/*": ["./src/*"]
+    }
   },
   "exclude": ["node_modules"],
-  "include": ["src/**/*.ts", ".eslintrc.cjs"]
+  "include": ["src/**/*.ts"]
 }

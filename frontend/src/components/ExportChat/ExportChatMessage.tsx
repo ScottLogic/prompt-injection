@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
-import { CHAT_MESSAGE_TYPE, ChatMessage } from "../../models/chat";
+
+import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 
 const styles = StyleSheet.create({
   chatBoxMessageBot: {
@@ -50,6 +51,8 @@ function getFullPrefix(message: ChatMessage) {
       return `You: ${message.message}`;
     case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
       return `You (edited): ${message.message}`;
+    case CHAT_MESSAGE_TYPE.ERROR_MSG:
+      return `Error: ${message.message}`;
     case CHAT_MESSAGE_TYPE.BOT:
     case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
       return `Bot: ${message.message}`;
@@ -69,6 +72,8 @@ function getMessageStyle(type: CHAT_MESSAGE_TYPE) {
     case CHAT_MESSAGE_TYPE.BOT:
       return styles.chatBoxMessageBot;
     case CHAT_MESSAGE_TYPE.LEVEL_INFO:
+      return styles.chatBoxMessageBot;
+    case CHAT_MESSAGE_TYPE.ERROR_MSG:
       return styles.chatBoxMessageBot;
     default:
       return styles.chatBoxMessage;

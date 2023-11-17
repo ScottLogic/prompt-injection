@@ -1,30 +1,28 @@
-import MainHeader from "./MainHeader";
-import MainBody from "./MainBody";
 import { useEffect, useState } from "react";
-import { LEVEL_NAMES } from "../../models/level";
+
+import MainBody from "./MainBody";
+import "./MainComponent.css";
+import MainFooter from "./MainFooter";
+import MainHeader from "./MainHeader";
+
+import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "@src/Defences";
+import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
+import { EmailInfo } from "@src/models/email";
+import { LEVEL_NAMES } from "@src/models/level";
 import {
   addMessageToChatHistory,
   clearChat,
   getChatHistory,
-} from "../../service/chatService";
-import { EmailInfo } from "../../models/email";
-import { clearEmails, getSentEmails } from "../../service/emailService";
-import { CHAT_MESSAGE_TYPE, ChatMessage } from "../../models/chat";
+} from "@src/service/chatService";
 import {
   activateDefence,
   configureDefence,
   deactivateDefence,
   getDefences,
   resetActiveDefences,
-} from "../../service/defenceService";
-import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "../../Defences";
-import {
-  DEFENCE_TYPES,
-  DefenceConfig,
-  DefenceInfo,
-} from "../../models/defence";
-import "./MainComponent.css";
-import MainFooter from "./MainFooter";
+} from "@src/service/defenceService";
+import { clearEmails, getSentEmails } from "@src/service/emailService";
 
 function MainComponent({
   currentLevel,
@@ -207,7 +205,7 @@ function MainComponent({
 
   function addWelcomeMessage() {
     const welcomeMessage: ChatMessage = {
-      message: `Hello! I'm ScottBruBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
+      message: `Hello! I'm ScottBrewBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
       type: CHAT_MESSAGE_TYPE.BOT,
     };
     setMessages((messages: ChatMessage[]) => [welcomeMessage, ...messages]);

@@ -1,10 +1,11 @@
+import { sendRequest } from "./backendService";
+
 import {
   DEFENCE_TYPES,
   DefenceConfig,
   DefenceInfo,
   DefenceResetResponse,
-} from "../models/defence";
-import { sendRequest } from "./backendService";
+} from "@src/models/defence";
 
 const PATH = "defence/";
 
@@ -90,14 +91,10 @@ function validateFilterConfig(config: string) {
   return config === "" || !commaPattern.test(config);
 }
 
-function validateDefence(id: string, configName: string, config: string) {
+function validateDefence(id: string, config: string) {
   switch (id) {
     case DEFENCE_TYPES.CHARACTER_LIMIT:
       return validatePositiveNumberConfig(config);
-    case DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE:
-      return configName === "length"
-        ? validatePositiveNumberConfig(config)
-        : validateNonEmptyStringConfig(config);
     case DEFENCE_TYPES.FILTER_USER_INPUT:
     case DEFENCE_TYPES.FILTER_BOT_OUTPUT:
       return validateFilterConfig(config);

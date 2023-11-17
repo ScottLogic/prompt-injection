@@ -1,3 +1,4 @@
+import { defaultDefences } from "./defaultDefences";
 import { queryPromptEvaluationModel } from "./langchain";
 import { ChatDefenceReport } from "./models/chat";
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
@@ -7,7 +8,6 @@ import {
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
-import { defaultDefences } from "./defaultDefences";
 
 function activateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   // return the updated list of defences
@@ -69,22 +69,6 @@ function getMaxMessageLength(defences: DefenceInfo[]) {
   );
 }
 
-function getRandomSequenceEnclosurePrePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-    "prePrompt"
-  );
-}
-
-function getRandomSequenceEnclosureLength(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-    "length"
-  );
-}
-
 function getXMLTaggingPrePrompt(defences: DefenceInfo[]) {
   return getConfigValue(defences, DEFENCE_TYPES.XML_TAGGING, "prePrompt");
 }
@@ -115,10 +99,6 @@ function getSystemRole(
   }
 }
 
-function getEmailWhitelistVar(defences: DefenceInfo[]) {
-  return getConfigValue(defences, DEFENCE_TYPES.EMAIL_WHITELIST, "whitelist");
-}
-
 function getQAPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
@@ -147,15 +127,6 @@ function isDefenceActive(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
   return defences.some((defence) => defence.id === id && defence.isActive);
 }
 
-function generateRandomString(string_length: number) {
-  let random_string = "";
-  for (let i = 0; i < string_length; i++) {
-    const random_ascii: number = Math.floor(Math.random() * 25 + 97);
-    random_string += String.fromCharCode(random_ascii);
-  }
-  return random_string;
-}
-
 // check message for any words in the filter list
 function detectFilterList(message: string, filterList: string) {
   const detectedPhrases = [];
@@ -174,25 +145,6 @@ function detectFilterList(message: string, filterList: string) {
     }
   }
   return detectedPhrases;
-}
-
-// apply random sequence enclosure defense to input message
-function transformRandomSequenceEnclosure(
-  message: string,
-  defences: DefenceInfo[]
-) {
-  console.debug("Random Sequence Enclosure defence active.");
-  const randomString: string = generateRandomString(
-    Number(getRandomSequenceEnclosureLength(defences))
-  );
-  return getRandomSequenceEnclosurePrePrompt(defences).concat(
-    randomString,
-    " {{ ",
-    message,
-    " }} ",
-    randomString,
-    ". "
-  );
 }
 
 // function to escape XML characters in user input to prevent hacking with XML tagging on
@@ -233,12 +185,6 @@ function transformXmlTagging(message: string, defences: DefenceInfo[]) {
 //apply defence string transformations to original message
 function transformMessage(message: string, defences: DefenceInfo[]) {
   let transformedMessage: string = message;
-  if (isDefenceActive(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, defences)) {
-    transformedMessage = transformRandomSequenceEnclosure(
-      transformedMessage,
-      defences
-    );
-  }
   if (isDefenceActive(DEFENCE_TYPES.XML_TAGGING, defences)) {
     transformedMessage = transformXmlTagging(transformedMessage, defences);
   }
@@ -385,7 +331,6 @@ export {
   deactivateDefence,
   resetDefenceConfig,
   detectTriggeredDefences,
-  getEmailWhitelistVar,
   getQAPrePromptFromConfig,
   getPromptInjectionEvalPrePromptFromConfig,
   getMaliciousPromptEvalPrePromptFromConfig,

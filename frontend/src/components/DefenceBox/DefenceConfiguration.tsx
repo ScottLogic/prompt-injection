@@ -1,7 +1,8 @@
-import { DefenceConfig } from "../../models/defence";
-import ThemedButton from "../ThemedButtons/ThemedButton";
-import DefenceConfigurationInput from "./DefenceConfigurationInput";
 import "./DefenceConfiguration.css";
+import DefenceConfigurationInput from "./DefenceConfigurationInput";
+
+import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
+import { DefenceConfig } from "@src/models/defence";
 
 function DefenceConfiguration({
   config,

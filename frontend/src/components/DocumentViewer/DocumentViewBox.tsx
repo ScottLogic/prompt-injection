@@ -1,22 +1,24 @@
-import { useEffect, useRef, useState } from "react";
 import DocViewer, {
   DocViewerRef,
   DocViewerRenderers,
 } from "@cyntler/react-doc-viewer";
-import { RemoteDocument } from "../../models/document";
-import { getDocumentUris } from "../../service/documentService";
+import { useEffect, useRef, useState } from "react";
 
 import "./DocumentViewBox.css";
 import { DocumentViewBoxHeader } from "./DocumentViewBoxHeader";
 
+import { DocumentMeta } from "@src/models/document";
+import { getDocumentMetas } from "@src/service/documentService";
+
 function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
   const docViewerRef = useRef<DocViewerRef>(null);
-  const [documents, setDocuments] = useState<RemoteDocument[]>([]);
+  const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>([]);
+
   // on mount get document uris
   useEffect(() => {
-    getDocumentUris()
+    getDocumentMetas()
       .then((uris) => {
-        setDocuments(uris);
+        setDocumentMetas(uris);
       })
       .catch((err) => {
         console.log(err);
@@ -34,7 +36,7 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
         X
       </button>
       <DocViewer
-        documents={documents}
+        documents={documentMetas}
         pluginRenderers={DocViewerRenderers}
         ref={docViewerRef}
         config={{

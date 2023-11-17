@@ -1,6 +1,8 @@
 import { IHeaderOverride } from "@cyntler/react-doc-viewer";
-import ThemedButton from "../ThemedButtons/ThemedButton";
+
 import "./DocumentViewBoxHeader.css";
+
+import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
 
 // eslint-disable-next-line func-style
 export const DocumentViewBoxHeader: IHeaderOverride = (

@@ -1,4 +1,5 @@
 import { sendRequest } from "./backendService";
+
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
@@ -6,8 +7,8 @@ import {
   ChatModel,
   ChatResponse,
   MODEL_CONFIG,
-} from "../models/chat";
-import { LEVEL_NAMES } from "../models/level";
+} from "@src/models/chat";
+import { LEVEL_NAMES } from "@src/models/level";
 
 const PATH = "openai/";
 
@@ -88,6 +89,12 @@ async function getChatHistory(level: number): Promise<ChatMessage[]> {
         chatMessages.push({
           message: message.infoMessage ?? "",
           type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
+        });
+        break;
+      case CHAT_MESSAGE_TYPE.ERROR_MSG:
+        chatMessages.push({
+          message: message.infoMessage ?? "",
+          type: CHAT_MESSAGE_TYPE.ERROR_MSG,
         });
         break;
       default:

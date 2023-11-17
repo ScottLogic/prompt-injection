@@ -1,14 +1,8 @@
 .email-box {
+  display: flex;
   flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  height: 80%;
-}
-
-.email-box-feed {
-  display: flex;
   flex-direction: column-reverse;
-  flex-grow: 1;
+  height: 80%;
   overflow-y: auto;
   padding: 2rem 1.875rem;
   scrollbar-width: thin;

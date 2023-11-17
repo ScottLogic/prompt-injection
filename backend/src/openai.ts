@@ -1,33 +1,35 @@
 import {
+  ChatCompletionRequestMessage,
+  ChatCompletionRequestMessageFunctionCall,
+  Configuration,
+  OpenAIApi,
+} from "openai";
+import { promptTokensEstimate } from "openai-chat-tokens";
+
+import {
   isDefenceActive,
   getSystemRole,
   detectFilterList,
   getFilterList,
   getQAPrePromptFromConfig,
 } from "./defence";
-import { sendEmail, getEmailWhitelist, isEmailInWhitelist } from "./email";
+import { sendEmail } from "./email";
 import { queryDocuments } from "./langchain";
-import { EmailInfo, EmailResponse } from "./models/email";
-import {
-  ChatCompletionRequestMessage,
-  ChatCompletionRequestMessageFunctionCall,
-  Configuration,
-  OpenAIApi,
-} from "openai";
 import {
   CHAT_MESSAGE_TYPE,
   CHAT_MODELS,
   ChatDefenceReport,
   ChatHistoryMessage,
   ChatModel,
+  ChatResponse,
 } from "./models/chat";
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
+import { EmailInfo, EmailResponse } from "./models/email";
 import { LEVEL_NAMES } from "./models/level";
 import {
   FunctionAskQuestionParams,
   FunctionSendEmailParams,
 } from "./models/openai";
-import { promptTokensEstimate } from "openai-chat-tokens";
 
 // functions available to ChatGPT
 const chatGptFunctions = [
@@ -59,15 +61,6 @@ const chatGptFunctions = [
       required: ["address", "subject", "body", "confirmed"],
     },
   },
-  // {
-  //   name: "getEmailWhitelist",
-  //   description:
-  //     "user asks who is on the email whitelist and the system replies with the list of emails.",
-  //   parameters: {
-  //     type: "object",
-  //     properties: {},
-  //   },
-  // },
   {
     name: "askQuestion",
     description: "Ask a question about information in the documents",
@@ -147,50 +140,26 @@ async function chatGptCallFunction(
   if (isChatGptFunction(functionName)) {
     console.debug(`Function call: ${functionName}`);
     let response = "";
-
     // call the function
     if (functionName === "sendEmail") {
-      let isAllowedToSendEmail = false;
       if (functionCall.arguments) {
         const params = JSON.parse(
           functionCall.arguments
         ) as FunctionSendEmailParams;
-        if (isEmailInWhitelist(params.address, defences)) {
-          isAllowedToSendEmail = true;
-        } else {
-          if (isDefenceActive(DEFENCE_TYPES.EMAIL_WHITELIST, defences)) {
-            defenceInfo.triggeredDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
-            // do not send email if defence is on and set to blocked
-            defenceInfo.isBlocked = true;
-            defenceInfo.blockedReason =
-              "Cannot send to this email as it is not whitelisted";
-          } else {
-            defenceInfo.alertedDefences.push(DEFENCE_TYPES.EMAIL_WHITELIST);
-            // send email if defence is not active
-            isAllowedToSendEmail = true;
-          }
+        console.debug("Send email params: ", JSON.stringify(params));
+        const emailResponse: EmailResponse = sendEmail(
+          params.address,
+          params.subject,
+          params.body,
+          params.confirmed,
+          currentLevel
+        );
+        response = emailResponse.response;
+        wonLevel = emailResponse.wonLevel;
+        if (emailResponse.sentEmail) {
+          sentEmails.push(emailResponse.sentEmail);
         }
-
-        if (isAllowedToSendEmail) {
-          console.debug("Send email params: ", JSON.stringify(params));
-          const emailResponse: EmailResponse = sendEmail(
-            params.address,
-            params.subject,
-            params.body,
-            params.confirmed,
-            currentLevel
-          );
-          response = emailResponse.response;
-          wonLevel = emailResponse.wonLevel;
-          if (emailResponse.sentEmail) {
-            sentEmails.push(emailResponse.sentEmail);
-          }
-        }
-      } else {
-        console.error("No arguments provided to sendEmail function");
       }
-    } else if (functionName === "getEmailWhitelist") {
-      response = getEmailWhitelist(defences);
     }
     if (functionName === "askQuestion") {
       if (functionCall.arguments) {
@@ -279,21 +248,26 @@ async function chatGptChatCompletion(
   const startTime = new Date().getTime();
   console.debug("Calling OpenAI chat completion...");
 
-  const chat_completion = await openai.createChatCompletion({
-    model: chatModel.id,
-    temperature: chatModel.configuration.temperature,
-    top_p: chatModel.configuration.topP,
-    frequency_penalty: chatModel.configuration.frequencyPenalty,
-    presence_penalty: chatModel.configuration.presencePenalty,
-    messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
-    functions: chatGptFunctions,
-  });
-  // log the time taken
-  const endTime = new Date().getTime();
-  console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
-
-  // get the reply
-  return chat_completion.data.choices[0].message ?? null;
+  try {
+    const chat_completion = await openai.createChatCompletion({
+      model: chatModel.id,
+      temperature: chatModel.configuration.temperature,
+      top_p: chatModel.configuration.topP,
+      frequency_penalty: chatModel.configuration.frequencyPenalty,
+      presence_penalty: chatModel.configuration.presencePenalty,
+      messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
+      functions: chatGptFunctions,
+    });
+    return chat_completion.data.choices[0].message ?? null;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error calling createChatCompletion: ", error.message);
+    }
+    return null;
+  } finally {
+    const endTime = new Date().getTime();
+    console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
+  }
 }
 
 // estimate the tokens on a single completion
@@ -437,13 +411,18 @@ async function chatGptSendMessage(
   console.log(`User message: '${message}'`);
 
   // init defence info
-  let defenceInfo: ChatDefenceReport = {
+  const defenceInfo: ChatDefenceReport = {
     blockedReason: "",
     isBlocked: false,
     alertedDefences: [],
     triggeredDefences: [],
   };
-  let wonLevel: boolean | undefined | null = false;
+
+  const chatResponse: ChatResponse = {
+    completion: null,
+    defenceInfo,
+    wonLevel: false,
+  };
 
   // add user message to chat
   chatHistory = pushCompletionToHistory(
@@ -482,7 +461,8 @@ async function chatGptSendMessage(
       currentLevel
     );
     if (functionCallReply) {
-      wonLevel = functionCallReply.wonLevel;
+      chatResponse.wonLevel = functionCallReply.wonLevel;
+
       // add the function call to the chat history
       chatHistory = pushCompletionToHistory(
         chatHistory,
@@ -490,7 +470,7 @@ async function chatGptSendMessage(
         CHAT_MESSAGE_TYPE.FUNCTION_CALL
       );
       // update the defence info
-      defenceInfo = functionCallReply.defenceInfo;
+      chatResponse.defenceInfo = functionCallReply.defenceInfo;
     }
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion(
@@ -501,8 +481,12 @@ async function chatGptSendMessage(
       currentLevel
     );
   }
+  if (!reply?.content) {
+    // failed to get reply from GPT
+    return chatResponse;
+  } else {
+    chatResponse.completion = reply;
 
-  if (reply?.content) {
     // if output filter defence is active, check for blocked words/phrases
     if (
       currentLevel === LEVEL_NAMES.LEVEL_3 ||
@@ -519,12 +503,16 @@ async function chatGptSendMessage(
           )}'.`
         );
         if (isDefenceActive(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences)) {
-          defenceInfo.triggeredDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);
-          defenceInfo.isBlocked = true;
-          defenceInfo.blockedReason =
+          chatResponse.defenceInfo.triggeredDefences.push(
+            DEFENCE_TYPES.FILTER_BOT_OUTPUT
+          );
+          chatResponse.defenceInfo.isBlocked = true;
+          chatResponse.defenceInfo.blockedReason =
             "My original response was blocked as it contained a restricted word/phrase. Ask me something else. ";
         } else {
-          defenceInfo.alertedDefences.push(DEFENCE_TYPES.FILTER_BOT_OUTPUT);
+          chatResponse.defenceInfo.alertedDefences.push(
+            DEFENCE_TYPES.FILTER_BOT_OUTPUT
+          );
         }
       }
     }
@@ -539,14 +527,7 @@ async function chatGptSendMessage(
 
     // log the entire chat history so far
     console.log(chatHistory);
-
-    return {
-      completion: reply,
-      defenceInfo,
-      wonLevel,
-    };
-  } else {
-    return null;
+    return chatResponse;
   }
 }
 

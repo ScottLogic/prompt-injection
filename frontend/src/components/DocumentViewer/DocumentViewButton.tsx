@@ -1,6 +1,6 @@
-import ThemedButton from "../ThemedButtons/ThemedButton";
-
 import "./DocumentViewButton.css";
+
+import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
 
 function DocumentViewButton({
   openDocumentViewer,

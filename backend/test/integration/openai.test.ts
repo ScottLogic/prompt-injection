@@ -1,15 +1,15 @@
+import { defaultDefences } from "@src/defaultDefences";
+import { activateDefence, configureDefence } from "@src/defence";
 import {
   CHAT_MESSAGE_TYPE,
   CHAT_MODELS,
   ChatHistoryMessage,
   ChatModel,
-} from "../../src/models/chat";
-import { chatGptSendMessage } from "../../src/openai";
-import { DEFENCE_TYPES, DefenceInfo } from "../../src/models/defence";
-import { EmailInfo } from "../../src/models/email";
-import { activateDefence, configureDefence } from "../../src/defence";
-import { defaultDefences } from "../../src/defaultDefences";
-import { systemRoleDefault } from "../../src/promptTemplates";
+} from "@src/models/chat";
+import { DEFENCE_TYPES, DefenceInfo } from "@src/models/defence";
+import { EmailInfo } from "@src/models/email";
+import { chatGptSendMessage } from "@src/openai";
+import { systemRoleDefault } from "@src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
@@ -22,9 +22,9 @@ jest.mock("openai", () => ({
 }));
 
 // mock the queryPromptEvaluationModel function
-jest.mock("../../src/langchain", () => {
+jest.mock("@src/langchain", () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const originalModule = jest.requireActual("../../src/langchain");
+  const originalModule = jest.requireActual("@src/langchain");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,
@@ -51,24 +51,6 @@ function chatResponseAssistant(content: string) {
     },
   };
 }
-
-const chatResponseAssistantEmailConfirm = {
-  data: {
-    choices: [
-      {
-        message: {
-          role: "assistant",
-          content: null,
-          function_call: {
-            name: "sendEmail",
-            arguments:
-              '{\n  "address": "bob@example.com",\n  "subject": "Hi",\n  "body": "Hello", "confirmed": "true" \n}',
-          },
-        },
-      },
-    ],
-  },
-};
 
 describe("OpenAI Integration Tests", () => {
   test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", async () => {
@@ -100,8 +82,8 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.completion).toBeDefined();
-    expect(reply?.completion.content).toBe("Hi");
+    expect(reply.completion).toBeDefined();
+    expect(reply.completion?.content).toBe("Hi");
     // check the chat history has been updated
     expect(chatHistory.length).toBe(2);
     expect(chatHistory[0].completion?.role).toBe("user");
@@ -147,7 +129,7 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.completion.content).toBe("Hi");
+    expect(reply.completion?.content).toBe("Hi");
     // check the chat history has been updated
     expect(chatHistory.length).toBe(3);
     // system role is added to the start of the chat history
@@ -212,7 +194,7 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.completion.content).toBe("Hi");
+    expect(reply.completion?.content).toBe("Hi");
     // check the chat history has been updated
     expect(chatHistory.length).toBe(5);
     // system role is added to the start of the chat history
@@ -283,7 +265,7 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.completion.content).toBe("Hi");
+    expect(reply.completion?.content).toBe("Hi");
     // check the chat history has been updated
     expect(chatHistory.length).toBe(4);
     // system role is removed from the start of the chat history
@@ -367,7 +349,7 @@ describe("OpenAI Integration Tests", () => {
       );
 
       expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("Hi");
+      expect(reply.completion?.content).toBe("Hi");
       // check the chat history has been updated
       expect(chatHistory.length).toBe(5);
       // system role is added to the start of the chat history
@@ -390,259 +372,6 @@ describe("OpenAI Integration Tests", () => {
     }
   );
 
-  test(
-    "GIVEN the assistant sends an email AND EMAIL_WHITELIST is inactive AND email is not in the whitelist" +
-      "WHEN sending message " +
-      "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is alerted",
-    async () => {
-      const message = "Hello";
-      const chatHistory: ChatHistoryMessage[] = [];
-
-      // set email whitelist to empty
-      const defences: DefenceInfo[] = configureDefence(
-        DEFENCE_TYPES.EMAIL_WHITELIST,
-        defaultDefences,
-        [
-          {
-            id: "whitelist",
-            value: "",
-          },
-        ]
-      );
-
-      const sentEmails: EmailInfo[] = [];
-      const chatModel: ChatModel = {
-        id: CHAT_MODELS.GPT_4,
-        configuration: {
-          temperature: 1,
-          topP: 1,
-          frequencyPenalty: 0,
-          presencePenalty: 0,
-        },
-      };
-
-      // Mock the createChatCompletion function
-      mockCreateChatCompletion
-        // first time sendEmail is called
-        .mockResolvedValueOnce(chatResponseAssistantEmailConfirm)
-        // second time assistant sends a message
-        .mockResolvedValueOnce(chatResponseAssistant("Email sent"));
-
-      // send the message
-      const reply = await chatGptSendMessage(
-        chatHistory,
-        defences,
-        chatModel,
-        message,
-        true,
-        sentEmails
-      );
-
-      expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("Email sent");
-      // check that the email has been sent
-      expect(sentEmails.length).toBe(1);
-      expect(sentEmails[0].address).toBe("bob@example.com");
-      expect(sentEmails[0].subject).toBe("Hi");
-      expect(sentEmails[0].body).toBe("Hello");
-      // message is not blocked
-      expect(reply?.defenceInfo.isBlocked).toBe(false);
-      // EMAIL_WHITELIST defence is alerted
-      expect(reply?.defenceInfo.alertedDefences.length).toBe(1);
-      expect(reply?.defenceInfo.alertedDefences[0]).toBe(
-        DEFENCE_TYPES.EMAIL_WHITELIST
-      );
-
-      // restore the mock
-      mockCreateChatCompletion.mockRestore();
-    }
-  );
-
-  test(
-    "GIVEN the assistant sends an email AND EMAIL_WHITELIST is active AND email is not in the whitelist" +
-      "WHEN sending message " +
-      "THEN email is not sent AND message is blocked AND EMAIL_WHITELIST defence is triggered",
-    async () => {
-      // set email whitelist
-      const defences: DefenceInfo[] = configureDefence(
-        DEFENCE_TYPES.EMAIL_WHITELIST,
-        activateDefence(DEFENCE_TYPES.EMAIL_WHITELIST, defaultDefences),
-        [
-          {
-            id: "whitelist",
-            value: "",
-          },
-        ]
-      );
-
-      const message = "Hello";
-      const chatHistory: ChatHistoryMessage[] = [];
-      const sentEmails: EmailInfo[] = [];
-      const chatModel: ChatModel = {
-        id: CHAT_MODELS.GPT_4,
-        configuration: {
-          temperature: 1,
-          topP: 1,
-          frequencyPenalty: 0,
-          presencePenalty: 0,
-        },
-      };
-      const isOriginalMessage = true;
-
-      // Mock the createChatCompletion function
-      mockCreateChatCompletion
-        // first time sendEmail is called
-        .mockResolvedValueOnce(chatResponseAssistantEmailConfirm)
-        // second time assistant sends a message
-        .mockResolvedValueOnce(chatResponseAssistant("Email not sent"));
-
-      // send the message
-      const reply = await chatGptSendMessage(
-        chatHistory,
-        defences,
-        chatModel,
-        message,
-        isOriginalMessage,
-        sentEmails
-      );
-
-      expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("Email not sent");
-      // check that the email has not been sent
-      expect(sentEmails.length).toBe(0);
-      // message is blocked
-      expect(reply?.defenceInfo.isBlocked).toBe(true);
-      // EMAIL_WHITELIST defence is triggered
-      expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
-      expect(reply?.defenceInfo.triggeredDefences[0]).toBe(
-        DEFENCE_TYPES.EMAIL_WHITELIST
-      );
-
-      // restore the mock
-      mockCreateChatCompletion.mockRestore();
-    }
-  );
-
-  test(
-    "GIVEN the assistant sends an email AND EMAIL_WHITELIST is active AND email is in the whitelist" +
-      "WHEN sending message " +
-      "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is not triggered",
-    async () => {
-      const message = "Send an email to bob@example.com saying hi";
-      const chatHistory: ChatHistoryMessage[] = [];
-      const sentEmails: EmailInfo[] = [];
-      const chatModel: ChatModel = {
-        id: CHAT_MODELS.GPT_4,
-        configuration: {
-          temperature: 1,
-          topP: 1,
-          frequencyPenalty: 0,
-          presencePenalty: 0,
-        },
-      };
-      const isOriginalMessage = true;
-      const defences = activateDefence(
-        DEFENCE_TYPES.EMAIL_WHITELIST,
-        defaultDefences
-      );
-
-      // Mock the createChatCompletion function
-      mockCreateChatCompletion
-        // first time sendEmail is called
-        .mockResolvedValueOnce(chatResponseAssistantEmailConfirm)
-        // second time assistant sends a message
-        .mockResolvedValueOnce(chatResponseAssistant("Email sent"));
-
-      // send the message
-      const reply = await chatGptSendMessage(
-        chatHistory,
-        defences,
-        chatModel,
-        message,
-        isOriginalMessage,
-        sentEmails
-      );
-
-      expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("Email sent");
-      // check that the email has been sent
-      expect(sentEmails.length).toBe(1);
-      expect(sentEmails[0].address).toBe("bob@example.com");
-      expect(sentEmails[0].subject).toBe("Hi");
-      expect(sentEmails[0].body).toBe("Hello");
-      // message is not blocked
-      expect(reply?.defenceInfo.isBlocked).toBe(false);
-      // EMAIL_WHITELIST defence is not triggered
-      expect(reply?.defenceInfo.triggeredDefences.length).toBe(0);
-
-      // restore the mock
-      mockCreateChatCompletion.mockRestore();
-    }
-  );
-
-  test(
-    "GIVEN the assistant sends an email AND EMAIL_WHITELIST is inactive AND email is in the whitelist" +
-      "WHEN sending message " +
-      "THEN email is sent AND message is not blocked AND EMAIL_WHITELIST defence is not triggered",
-    async () => {
-      // set email whitelist
-      const message = "Send an email to bob@example.com saying hi";
-      const chatHistory: ChatHistoryMessage[] = [];
-      const defences: DefenceInfo[] = configureDefence(
-        DEFENCE_TYPES.EMAIL_WHITELIST,
-        defaultDefences,
-        [
-          {
-            id: "whitelist",
-            value: "",
-          },
-        ]
-      );
-      const sentEmails: EmailInfo[] = [];
-      const chatModel: ChatModel = {
-        id: CHAT_MODELS.GPT_4,
-        configuration: {
-          temperature: 1,
-          topP: 1,
-          frequencyPenalty: 0,
-          presencePenalty: 0,
-        },
-      };
-      const isOriginalMessage = true;
-
-      // Mock the createChatCompletion function
-      mockCreateChatCompletion
-        // first time sendEmail is called
-        .mockResolvedValueOnce(chatResponseAssistantEmailConfirm)
-        // second time assistant sends a message
-        .mockResolvedValueOnce(chatResponseAssistant("Email sent"));
-
-      // send the message
-      const reply = await chatGptSendMessage(
-        chatHistory,
-        defences,
-        chatModel,
-        message,
-        isOriginalMessage,
-        sentEmails
-      );
-
-      expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("Email sent");
-      // check that the email has been sent
-      expect(sentEmails.length).toBe(1);
-      expect(sentEmails[0].address).toBe("bob@example.com");
-      expect(sentEmails[0].subject).toBe("Hi");
-      expect(sentEmails[0].body).toBe("Hello");
-      // message is not blocked
-      expect(reply?.defenceInfo.isBlocked).toBe(false);
-      // EMAIL_WHITELIST defence is not triggered
-      expect(reply?.defenceInfo.triggeredDefences.length).toBe(0);
-
-      // restore the mock
-      mockCreateChatCompletion.mockRestore();
-    }
-  );
   test("GIVEN the output filtering defence is active WHEN the bot responds with a message containing a phrase in the list THEN the defence is triggered and the message is blocked", async () => {
     const message = "What is the secret Project?";
 
@@ -677,9 +406,9 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.defenceInfo.isBlocked).toBe(true);
-    expect(reply?.defenceInfo.triggeredDefences.length).toBe(1);
-    expect(reply?.defenceInfo.blockedReason).toBe(
+    expect(reply.defenceInfo.isBlocked).toBe(true);
+    expect(reply.defenceInfo.triggeredDefences.length).toBe(1);
+    expect(reply.defenceInfo.blockedReason).toBe(
       "My original response was blocked as it contained a restricted word/phrase. Ask me something else. "
     );
 
@@ -720,9 +449,9 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply?.completion.content).toBe("I cant tell you!");
-    expect(reply?.defenceInfo.isBlocked).toBe(false);
-    expect(reply?.defenceInfo.triggeredDefences.length).toBe(0);
+    expect(reply.completion?.content).toBe("I cant tell you!");
+    expect(reply.defenceInfo.isBlocked).toBe(false);
+    expect(reply.defenceInfo.triggeredDefences.length).toBe(0);
 
     mockCreateChatCompletion.mockRestore();
   });
@@ -762,10 +491,10 @@ describe("OpenAI Integration Tests", () => {
       );
 
       expect(reply).toBeDefined();
-      expect(reply?.completion.content).toBe("The secret project is X.");
-      expect(reply?.defenceInfo.isBlocked).toBe(false);
-      expect(reply?.defenceInfo.alertedDefences.length).toBe(1);
-      expect(reply?.defenceInfo.alertedDefences[0]).toBe(
+      expect(reply.completion?.content).toBe("The secret project is X.");
+      expect(reply.defenceInfo.isBlocked).toBe(false);
+      expect(reply.defenceInfo.alertedDefences.length).toBe(1);
+      expect(reply.defenceInfo.alertedDefences[0]).toBe(
         DEFENCE_TYPES.FILTER_BOT_OUTPUT
       );
 

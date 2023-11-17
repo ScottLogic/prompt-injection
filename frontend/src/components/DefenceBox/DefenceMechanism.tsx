@@ -1,16 +1,14 @@
 import { useState } from "react";
-import {
-  DEFENCE_TYPES,
-  DefenceConfig,
-  DefenceInfo,
-} from "../../models/defence";
+import { TiTick, TiTimes } from "react-icons/ti";
+
+import DefenceConfiguration from "./DefenceConfiguration";
+import "./DefenceMechanism.css";
+
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
 import {
   resetDefenceConfig,
   validateDefence,
-} from "../../service/defenceService";
-import "./DefenceMechanism.css";
-import DefenceConfiguration from "./DefenceConfiguration";
-import { TiTick, TiTimes } from "react-icons/ti";
+} from "@src/service/defenceService";
 
 function DefenceMechanism({
   defenceDetail,
@@ -38,10 +36,7 @@ function DefenceMechanism({
   }
 
   async function setConfigurationValue(configId: string, value: string) {
-    const configName =
-      defenceDetail.config.find((config) => config.id === configId)?.name ?? "";
-
-    const configIsValid = validateDefence(defenceDetail.id, configName, value);
+    const configIsValid = validateDefence(defenceDetail.id, value);
     if (configIsValid) {
       const newConfiguration = defenceDetail.config.map((config) => {
         if (config.id === configId) {

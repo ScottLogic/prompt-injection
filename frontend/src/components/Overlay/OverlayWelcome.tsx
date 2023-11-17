@@ -1,8 +1,9 @@
-import { LEVEL_NAMES } from "../../models/level";
-import ProjectIconDark from "../MainComponent/ProjectIconDark";
-import "./OverlayWelcome.css";
-import StartLevelButtons from "../ThemedButtons/StartLevelButtons";
 import Overlay from "./Overlay";
+import "./OverlayWelcome.css";
+
+import ProjectIconDark from "@src/components/MainComponent/ProjectIconDark";
+import StartLevelButtons from "@src/components/ThemedButtons/StartLevelButtons";
+import { LEVEL_NAMES } from "@src/models/level";
 
 function OverlayWelcome({
   currentLevel,
@@ -28,9 +29,9 @@ function OverlayWelcome({
         </p>
         <h2>Your mission</h2>
         <p>
-          You have joined the popular soft drink producer ScottBru as a
+          You have joined the popular soft drink producer ScottBrew as a
           developer, but have actually been hired by their largest competitor to
-          steal the ScottBru recipe.
+          steal the ScottBrew recipe.
         </p>
         <p>
           <b>But first,</b> are you a beginner spy, and wish to play through the

@@ -1,5 +1,6 @@
 import express from "express";
 
+import { defaultDefences } from "./defaultDefences";
 import {
   activateDefence,
   deactivateDefence,
@@ -8,7 +9,17 @@ import {
   detectTriggeredDefences,
   resetDefenceConfig,
 } from "./defence";
-import { defaultDefences } from "./defaultDefences";
+import { getSandboxDocumentMetas } from "./document";
+import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
+import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
+import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
+import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
+import { EmailClearRequest } from "./models/api/EmailClearRequest";
+import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
+import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
+import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
+import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
+import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
@@ -18,26 +29,14 @@ import {
   MODEL_CONFIG,
   defaultChatModel,
 } from "./models/chat";
-import { Document } from "./models/document";
-import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
+import { DefenceConfig } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
-import * as fs from "fs";
-import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
-import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
-import { EmailClearRequest } from "./models/api/EmailClearRequest";
-import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
-import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
-import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
-import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
-import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
-import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
+import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
 import {
   systemRoleLevel1,
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
-import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
-import { DefenceConfig } from "./models/defence";
 
 const router = express.Router();
 
@@ -207,6 +206,7 @@ function handleChatError(
   console.error(errorMsg);
   chatResponse.reply = errorMsg;
   chatResponse.defenceInfo.isBlocked = blocked;
+  chatResponse.isError = true;
   if (blocked) {
     chatResponse.defenceInfo.blockedReason = errorMsg;
   }
@@ -227,6 +227,7 @@ router.post(
       },
       transformedMessage: "",
       wonLevel: false,
+      isError: false,
     };
     const message = req.body.message;
     const currentLevel = req.body.currentLevel;
@@ -242,6 +243,19 @@ router.post(
       );
       return;
     }
+
+    const MESSAGE_CHARACTER_LIMIT = 16384;
+    if (message.length > MESSAGE_CHARACTER_LIMIT) {
+      handleChatError(
+        res,
+        chatResponse,
+        true,
+        "Message exceeds character limit",
+        400
+      );
+      return;
+    }
+
     // set the transformed message to begin with
     chatResponse.transformedMessage = message;
 
@@ -278,6 +292,15 @@ router.post(
             chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
             infoMessage: chatResponse.defenceInfo.blockedReason,
           });
+        } else if (!chatResponse.reply || chatResponse.reply === "") {
+          // add error message to chat history
+          req.session.levelState[currentLevel].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+            infoMessage: "Failed to get chatGPT reply",
+          });
+          // throw so handle error called
+          throw new Error("Failed to get chatGPT reply");
         }
       } else {
         handleChatError(res, chatResponse, true, "Missing message");
@@ -311,8 +334,8 @@ async function handleLowLevelChat(
     req.session.levelState[currentLevel].sentEmails,
     currentLevel
   );
-  chatResponse.reply = openAiReply?.completion.content ?? "";
-  chatResponse.wonLevel = openAiReply?.wonLevel ?? false;
+  chatResponse.reply = openAiReply.completion?.content ?? "";
+  chatResponse.wonLevel = openAiReply.wonLevel;
 }
 
 // handle the chat logic for high levels (with defence detection)
@@ -384,7 +407,7 @@ async function handleHigherLevelChat(
 
     if (openAiReply) {
       chatResponse.wonLevel = openAiReply.wonLevel;
-      chatResponse.reply = openAiReply.completion.content ?? "";
+      chatResponse.reply = openAiReply.completion?.content ?? "";
 
       // combine triggered defences
       chatResponse.defenceInfo.triggeredDefences = [
@@ -552,23 +575,13 @@ router.get("/level/prompt", (req, res) => {
   }
 });
 
+// get names and types of documents for sandbox and common
 router.get("/documents", (_, res) => {
-  const docFiles: Document[] = [];
-
-  fs.readdir("resources/documents/common", (err, files) => {
-    if (err) {
-      res.status(500).send("Failed to read documents");
-      return;
-    }
-    files.forEach((file) => {
-      const fileType = file.split(".").pop() ?? "";
-      docFiles.push({
-        filename: file,
-        filetype: fileType === "csv" ? "text/csv" : fileType,
-      });
-    });
-    res.send(docFiles);
-  });
+  try {
+    res.send(getSandboxDocumentMetas());
+  } catch (err) {
+    res.status(500).send("Failed to read documents");
+  }
 });
 
 export { router };

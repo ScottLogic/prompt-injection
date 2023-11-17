@@ -1,25 +1,19 @@
 import { useEffect, useState } from "react";
-import { DEFENCE_DETAILS_ALL } from "../../Defences";
-import {
-  CHAT_MESSAGE_TYPE,
-  ChatMessage,
-  ChatResponse,
-} from "../../models/chat";
-import { EmailInfo } from "../../models/email";
-import { LEVEL_NAMES } from "../../models/level";
-import {
-  addMessageToChatHistory,
-  sendMessage,
-} from "../../service/chatService";
-import { getSentEmails } from "../../service/emailService";
-import ExportPDFLink from "../ExportChat/ExportPDFLink";
-import ThemedButton from "../ThemedButtons/ThemedButton";
-import LoadingButton from "../ThemedButtons/LoadingButton";
-import ChatBoxFeed from "./ChatBoxFeed";
-import useUnitStepper from "../../hooks/useUnitStepper";
 
 import "./ChatBox.css";
+import ChatBoxFeed from "./ChatBoxFeed";
 import ChatBoxInput from "./ChatBoxInput";
+
+import { DEFENCE_DETAILS_ALL } from "@src/Defences";
+import ExportPDFLink from "@src/components/ExportChat/ExportPDFLink";
+import LoadingButton from "@src/components/ThemedButtons/LoadingButton";
+import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
+import useUnitStepper from "@src/hooks/useUnitStepper";
+import { CHAT_MESSAGE_TYPE, ChatMessage, ChatResponse } from "@src/models/chat";
+import { EmailInfo } from "@src/models/email";
+import { LEVEL_NAMES } from "@src/models/level";
+import { addMessageToChatHistory, sendMessage } from "@src/service/chatService";
+import { getSentEmails } from "@src/service/emailService";
 
 function ChatBox({
   completedLevels,
@@ -115,8 +109,14 @@ function ChatBox({
           type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
         });
       }
+      if (response.isError) {
+        addChatMessage({
+          message: response.reply,
+          type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+        });
+      }
       // add it to the list of messages
-      if (response.defenceInfo.isBlocked) {
+      else if (response.defenceInfo.isBlocked) {
         addChatMessage({
           type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
           message: response.defenceInfo.blockedReason,
