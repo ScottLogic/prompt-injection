@@ -203,9 +203,7 @@ function App() {
   return (
     <div className="app-content">
       <dialog ref={dialogRef} className="dialog-modal">
-        <div ref={contentRef} className="content">
-          {overlayComponent}
-        </div>
+        <div ref={contentRef}>{overlayComponent}</div>
       </dialog>
       <MainComponent
         currentLevel={currentLevel}
