@@ -119,7 +119,7 @@ function initQAModel(level: LEVEL_NAMES, prePrompt: string) {
 
   // initialise model
   const model = new ChatOpenAI({
-    modelName: CHAT_MODELS.GPT_4_TURBO,
+    modelName: CHAT_MODELS.GPT_4,
     streaming: true,
     openAIApiKey,
   });
@@ -145,7 +145,7 @@ function initPromptEvaluationModel(configPromptEvaluationPrePrompt: string) {
   );
 
   const llm = new OpenAI({
-    modelName: CHAT_MODELS.GPT_4_TURBO,
+    modelName: CHAT_MODELS.GPT_4,
     temperature: 0,
     openAIApiKey,
   });
@@ -196,11 +196,11 @@ async function queryDocuments(
 // ask LLM whether the prompt is malicious
 async function queryPromptEvaluationModel(
   input: string,
-  evalPrePrompt: string
+  promptEvalPrePrompt: string
 ) {
   try {
     console.debug(`Checking '${input}' for malicious prompts`);
-    const promptEvaluationChain = initPromptEvaluationModel(evalPrePrompt);
+    const promptEvaluationChain = initPromptEvaluationModel(promptEvalPrePrompt);
     // get start time
     const startTime = Date.now();
     console.debug("Calling prompt evaluation model...");
