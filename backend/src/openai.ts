@@ -1,8 +1,5 @@
 import {
-  ChatCompletionRequestMessage,
-  ChatCompletionRequestMessageFunctionCall,
-  Configuration,
-  OpenAIApi,
+  OpenAI,
 } from "openai";
 import { promptTokensEstimate } from "openai-chat-tokens";
 
@@ -107,16 +104,16 @@ const getOpenAIKey = (() => {
  */
 async function verifyKeySupportsModel(gptModel: string) {
   const apiKey = getOpenAIKey();
-  const testOpenAI: OpenAIApi = new OpenAIApi(new Configuration({ apiKey }));
-  await testOpenAI.createChatCompletion({
+  const testOpenAI: OpenAI = new OpenAI({ apiKey });
+  await testOpenAI.chat.completions.create({
     model: gptModel,
     messages: [{ role: "user", content: "this is a test prompt" }],
   });
 }
 
-function getOpenAIApi() {
+function getOpenAI() {
   const apiKey = getOpenAIKey();
-  return new OpenAIApi(new Configuration({ apiKey }));
+  return new OpenAI({ apiKey });
 }
 
 function isChatGptFunction(functionName: string) {
@@ -126,12 +123,12 @@ function isChatGptFunction(functionName: string) {
 async function chatGptCallFunction(
   defenceInfo: ChatDefenceReport,
   defences: DefenceInfo[],
-  functionCall: ChatCompletionRequestMessageFunctionCall,
+  functionCall: OpenAI.Chat.ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
   // default to sandbox
   currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-  let reply: ChatCompletionRequestMessage | null = null;
+  let reply: OpenAI.Chat.ChatCompletionRequestMessage | null = null;
   let wonLevel = false;
   // get the function name
   const functionName: string = functionCall.name ?? "";
@@ -204,7 +201,7 @@ async function chatGptChatCompletion(
   chatHistory: ChatHistoryMessage[],
   defences: DefenceInfo[],
   chatModel: ChatModel,
-  openai: OpenAIApi,
+  openai: OpenAI,
   // default to sandbox
   currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
@@ -214,7 +211,7 @@ async function chatGptChatCompletion(
     currentLevel !== LEVEL_NAMES.SANDBOX ||
     isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
-    const completionConfig: ChatCompletionRequestMessage = {
+    const completionConfig: OpenAI.Chat.ChatCompletionRequestMessage = {
       role: "system",
       content: getSystemRole(defences, currentLevel),
     };
@@ -249,7 +246,7 @@ async function chatGptChatCompletion(
   console.debug("Calling OpenAI chat completion...");
 
   try {
-    const chat_completion = await openai.createChatCompletion({
+    const chat_completion = await openai.chat.completions.create({
       model: chatModel.id,
       temperature: chatModel.configuration.temperature,
       top_p: chatModel.configuration.topP,
@@ -258,7 +255,7 @@ async function chatGptChatCompletion(
       messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
       functions: chatGptFunctions,
     });
-    return chat_completion.data.choices[0].message ?? null;
+    return chat_completion.choices[0].message ?? null;
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error calling createChatCompletion: ", error.message);
@@ -272,7 +269,7 @@ async function chatGptChatCompletion(
 
 // estimate the tokens on a single completion
 function estimateMessageTokens(
-  message: ChatCompletionRequestMessage | null | undefined
+  message: OpenAI.Chat.ChatCompletionRequestMessage | null | undefined
 ) {
   if (message) {
     const estTokens = promptTokensEstimate({ messages: [message] });
@@ -284,9 +281,9 @@ function estimateMessageTokens(
 
 // take only the chat history to send to GPT that is within the max tokens
 function filterChatHistoryByMaxTokens(
-  chatHistory: ChatCompletionRequestMessage[],
+  chatHistory: OpenAI.Chat.ChatCompletionRequestMessage[],
   maxNumTokens: number
-): ChatCompletionRequestMessage[] {
+): OpenAI.Chat.ChatCompletionRequestMessage[] {
   // estimate total prompt tokens including chat history and function call definitions
   const estimatedTokens =
     promptTokensEstimate({
@@ -304,7 +301,7 @@ function filterChatHistoryByMaxTokens(
     estimatedTokens
   );
   let sumTokens = 0;
-  const filteredList: ChatCompletionRequestMessage[] = [];
+  const filteredList: OpenAI.Chat.ChatCompletionRequestMessage[] = [];
 
   // reverse list to add from most recent
   const reverseList = chatHistory.slice().reverse();
@@ -342,15 +339,15 @@ function filterChatHistoryByMaxTokens(
 function getChatCompletionsFromHistory(
   chatHistory: ChatHistoryMessage[],
   gptModel: CHAT_MODELS
-): ChatCompletionRequestMessage[] {
+): OpenAI.Chat.ChatCompletionRequestMessage[] {
   // take only completions to send to model
-  const completions: ChatCompletionRequestMessage[] =
+  const completions: OpenAI.Chat.ChatCompletionRequestMessage[] =
     chatHistory.length > 0
       ? (chatHistory
           .filter((message) => message.completion !== null)
           .map(
             (message) => message.completion
-          ) as ChatCompletionRequestMessage[])
+          ) as OpenAI.Chat.ChatCompletionRequestMessage[])
       : [];
 
   // limit the number of tokens sent to GPT to fit inside context window
@@ -372,7 +369,7 @@ function getChatCompletionsFromHistory(
 
 function pushCompletionToHistory(
   chatHistory: ChatHistoryMessage[],
-  completion: ChatCompletionRequestMessage,
+  completion: OpenAI.Chat.ChatCompletionRequestMessage,
   chatMessageType: CHAT_MESSAGE_TYPE
 ) {
   // limit the length of the chat history
@@ -436,7 +433,7 @@ async function chatGptSendMessage(
       : CHAT_MESSAGE_TYPE.USER
   );
 
-  const openai = getOpenAIApi();
+  const openai = getOpenAI();
   let reply = await chatGptChatCompletion(
     chatHistory,
     defences,
