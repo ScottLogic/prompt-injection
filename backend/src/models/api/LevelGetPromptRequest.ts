@@ -1,9 +1,9 @@
 import { Request } from "express";
 
 export type LevelGetPromptRequest = Request<
-  null,
+  never,
   string,
-  null,
+  never,
   {
     level?: string;
   }

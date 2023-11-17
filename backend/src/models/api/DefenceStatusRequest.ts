@@ -2,9 +2,9 @@ import { Request } from "express";
 import { DefenceInfo } from "../defence";
 
 export type DefenceStatusRequest = Request<
-  null,
+  never,
   DefenceInfo[] | string,
-  null,
+  never,
   {
     level?: string;
   }

@@ -2,9 +2,9 @@ import { Request } from "express";
 import { EmailInfo } from "../email";
 
 export type EmailGetRequest = Request<
-  null,
+  never,
   EmailInfo[] | string,
-  null,
+  never,
   {
     level?: string;
   }

@@ -3,12 +3,12 @@ import { LEVEL_NAMES } from "../level";
 import { CHAT_MESSAGE_TYPE } from "../chat";
 
 export type OpenAiAddHistoryRequest = Request<
-  null,
-  null,
+  never,
+  never,
   {
     chatMessageType?: CHAT_MESSAGE_TYPE;
     message?: string;
     level?: LEVEL_NAMES;
   },
-  null
+  never
 >;

@@ -2,10 +2,10 @@ import { Request } from "express";
 import { LEVEL_NAMES } from "../level";
 
 export type DefenceResetRequest = Request<
-  null,
-  null,
+  never,
+  never,
   {
     level?: LEVEL_NAMES;
   },
-  null
+  never
 >;
