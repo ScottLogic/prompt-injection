@@ -18,30 +18,28 @@ export const DocumentViewBoxHeader: IHeaderOverride = (
   }`;
 
   return (
-    <>
-      <div className="view-documents-header">
-        <h2>view documents</h2>
-        <div className="view-documents-nav">
-          <p className="view-documents-info">{documentName}</p>
-          <p className="view-documents-info">{documentNumber}</p>
-          <div className="view-documents-button-container">
-            {state.currentFileNo > 0 && (
-              <span className="previous-document">
-                <ThemedButton onClick={previousDocument}>
-                  ◄ previous document
-                </ThemedButton>
-              </span>
-            )}
-            {state.currentFileNo < state.documents.length - 1 && (
-              <span className="next-document">
-                <ThemedButton onClick={nextDocument}>
-                  next document ►
-                </ThemedButton>
-              </span>
-            )}
-          </div>
+    <div className="view-documents-header">
+      <h2>view documents</h2>
+      <div className="view-documents-nav">
+        <p className="view-documents-info">{documentName}</p>
+        <p className="view-documents-info">{documentNumber}</p>
+        <div className="view-documents-button-container">
+          {state.currentFileNo > 0 && (
+            <span className="previous-document">
+              <ThemedButton onClick={previousDocument}>
+                ◄ previous document
+              </ThemedButton>
+            </span>
+          )}
+          {state.currentFileNo < state.documents.length - 1 && (
+            <span className="next-document">
+              <ThemedButton onClick={nextDocument}>
+                next document ►
+              </ThemedButton>
+            </span>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
