@@ -1,5 +1,6 @@
 import { Request } from "express";
-import { DefenceInfo } from "../defence";
+
+import { DefenceInfo } from "@src/models/defence";
 
 export type DefenceStatusRequest = Request<
   never,

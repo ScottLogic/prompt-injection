@@ -1,7 +1,7 @@
-import { LEVELS } from "../../Levels";
-import { LEVEL_NAMES } from "../../models/level";
-
 import "./ShortMissionInfoButton.css";
+
+import { LEVELS } from "@src/Levels";
+import { LEVEL_NAMES } from "@src/models/level";
 
 function ShortMissionInfoButton({
   currentLevel,

@@ -1,5 +1,6 @@
 import "./SentEmail.css";
-import { EmailInfo } from "../../models/email";
+
+import { EmailInfo } from "@src/models/email";
 
 function SentEmail({ emailDetails }: { emailDetails: EmailInfo }) {
   return (

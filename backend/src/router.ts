@@ -1,5 +1,6 @@
 import express from "express";
 
+import { defaultDefences } from "./defaultDefences";
 import {
   activateDefence,
   deactivateDefence,
@@ -8,7 +9,21 @@ import {
   detectTriggeredDefences,
   resetDefenceConfig,
 } from "./defence";
-import { defaultDefences } from "./defaultDefences";
+import { getSandboxDocumentMetas } from "./document";
+import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
+import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
+import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
+import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
+import { DefenceStatusRequest } from "./models/api/DefenceStatusRequest";
+import { EmailClearRequest } from "./models/api/EmailClearRequest";
+import { EmailGetRequest } from "./models/api/EmailGetRequest";
+import { LevelGetPromptRequest } from "./models/api/LevelGetPromptRequest";
+import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
+import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
+import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
+import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
+import { OpenAiGetHistoryRequest } from "./models/api/OpenAiGetHistoryRequest";
+import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
@@ -18,30 +33,14 @@ import {
   MODEL_CONFIG,
   defaultChatModel,
 } from "./models/chat";
-import { Document } from "./models/document";
-import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
+import { DefenceConfig } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
-import * as fs from "fs";
-import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
-import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
-import { EmailClearRequest } from "./models/api/EmailClearRequest";
-import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
-import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
-import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
-import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
-import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
-import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
+import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
 import {
   systemRoleLevel1,
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
-import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
-import { DefenceConfig } from "./models/defence";
-import { DefenceStatusRequest } from "./models/api/DefenceStatusRequest";
-import { EmailGetRequest } from "./models/api/EmailGetRequest";
-import { OpenAiGetHistoryRequest } from "./models/api/OpenAiGetHistoryRequest";
-import { LevelGetPromptRequest } from "./models/api/LevelGetPromptRequest";
 
 const router = express.Router();
 
@@ -584,23 +583,13 @@ router.get("/level/prompt", (req: LevelGetPromptRequest, res) => {
   }
 });
 
+// get names and types of documents for sandbox and common
 router.get("/documents", (_, res) => {
-  const docFiles: Document[] = [];
-
-  fs.readdir("resources/documents/common", (err, files) => {
-    if (err) {
-      res.status(500).send("Failed to read documents");
-      return;
-    }
-    files.forEach((file) => {
-      const fileType = file.split(".").pop() ?? "";
-      docFiles.push({
-        filename: file,
-        filetype: fileType === "csv" ? "text/csv" : fileType,
-      });
-    });
-    res.send(docFiles);
-  });
+  try {
+    res.send(getSandboxDocumentMetas());
+  } catch (err) {
+    res.status(500).send("Failed to read documents");
+  }
 });
 
 export { router };

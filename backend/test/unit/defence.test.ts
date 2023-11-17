@@ -1,3 +1,4 @@
+import { defaultDefences } from "@src/defaultDefences";
 import {
   activateDefence,
   configureDefence,
@@ -11,11 +12,10 @@ import {
   detectFilterList,
   getPromptInjectionEvalPrePromptFromConfig,
   getMaliciousPromptEvalPrePromptFromConfig,
-} from "../../src/defence";
-import { defaultDefences } from "../../src/defaultDefences";
-import * as langchain from "../../src/langchain";
-import { DEFENCE_TYPES, DefenceConfig } from "../../src/models/defence";
-import { LEVEL_NAMES } from "../../src/models/level";
+} from "@src/defence";
+import * as langchain from "@src/langchain";
+import { DEFENCE_TYPES, DefenceConfig } from "@src/models/defence";
+import { LEVEL_NAMES } from "@src/models/level";
 import {
   maliciousPromptEvalPrePrompt,
   promptInjectionEvalPrePrompt,
@@ -25,9 +25,9 @@ import {
   systemRoleLevel2,
   systemRoleLevel3,
   xmlPrePrompt,
-} from "../../src/promptTemplates";
+} from "@src/promptTemplates";
 
-jest.mock("../../src/langchain");
+jest.mock("@src/langchain");
 
 beforeEach(() => {
   jest

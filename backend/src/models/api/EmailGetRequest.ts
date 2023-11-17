@@ -1,5 +1,6 @@
 import { Request } from "express";
-import { EmailInfo } from "../email";
+
+import { EmailInfo } from "@src/models/email";
 
 export type EmailGetRequest = Request<
   never,

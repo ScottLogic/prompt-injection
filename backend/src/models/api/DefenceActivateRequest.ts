@@ -1,6 +1,7 @@
 import { Request } from "express";
-import { DEFENCE_TYPES } from "../defence";
-import { LEVEL_NAMES } from "../level";
+
+import { DEFENCE_TYPES } from "@src/models/defence";
+import { LEVEL_NAMES } from "@src/models/level";
 
 export type DefenceActivateRequest = Request<
   never,

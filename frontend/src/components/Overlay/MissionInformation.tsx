@@ -1,10 +1,10 @@
-import { LEVELS } from "../../Levels";
-import { LEVEL_NAMES } from "../../models/level";
-import OverlayButton from "../ThemedButtons/OverlayButton";
+import MissionDialogue from "./MissionDialogue";
+import "./MissionInformation.css";
 import Overlay from "./Overlay";
 
-import "./MissionInformation.css";
-import MissionDialogue from "./MissionDialogue";
+import { LEVELS } from "@src/Levels";
+import OverlayButton from "@src/components/ThemedButtons/OverlayButton";
+import { LEVEL_NAMES } from "@src/models/level";
 
 function MissionInformation({
   currentLevel,
