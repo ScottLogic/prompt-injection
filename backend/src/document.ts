@@ -1,12 +1,14 @@
+import * as fs from "fs";
+
 import { Document } from "langchain/document";
 import { CSVLoader } from "langchain/document_loaders/fs/csv";
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import * as fs from "fs";
-import { LEVEL_NAMES } from "./models/level";
+
 import { DocumentMeta } from "./models/document";
+import { LEVEL_NAMES } from "./models/level";
 
 async function getDocumentsForLevel(level: LEVEL_NAMES) {
   const levelDocuments = await getLevelSpecificDocuments(level);

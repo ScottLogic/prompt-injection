@@ -1,5 +1,5 @@
-import { getDocumentsForLevel } from "../../src/document";
-import { LEVEL_NAMES } from "../../src/models/level";
+import { getDocumentsForLevel } from "@src/document";
+import { LEVEL_NAMES } from "@src/models/level";
 
 const mockLoader = jest.fn();
 const mockSplitDocuments = jest.fn();
