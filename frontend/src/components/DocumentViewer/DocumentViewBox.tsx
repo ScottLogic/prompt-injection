@@ -1,8 +1,5 @@
-import DocViewer, {
-  DocViewerRef,
-  DocViewerRenderers,
-} from "@cyntler/react-doc-viewer";
-import { useEffect, useRef, useState } from "react";
+import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
+import { useEffect, useState } from "react";
 
 import "./DocumentViewBox.css";
 import DocumentViewBoxHeader from "./DocumentViewBoxHeader";
@@ -11,40 +8,19 @@ import { DocumentMeta } from "@src/models/document";
 import { getDocumentMetas } from "@src/service/documentService";
 
 function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
-  const documentViewerRef = useRef<DocViewerRef>(null);
-
   const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>([]);
-  const [activeDocument, setActiveDocument] = useState<DocumentMeta | null>(
-    null
-  );
+  const [documentIndex, setDocumentIndex] = useState<number>(0);
 
   // on mount get document uris
   useEffect(() => {
     getDocumentMetas()
       .then((uris) => {
         setDocumentMetas(uris);
-        if (uris.length > 0) {
-          setActiveDocument(uris[0]);
-        }
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-
-  function getDocumentIndex() {
-    return documentMetas.findIndex(
-      (document) => document.filename === activeDocument?.filename
-    );
-  }
-
-  function getDocumentName() {
-    return activeDocument?.filename ?? "";
-  }
-
-  function onDocumentChange(document: DocumentMeta) {
-    setActiveDocument(document);
-  }
 
   return (
     <div className="document-popup-inner">
@@ -57,14 +33,18 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
         X
       </button>
       <DocumentViewBoxHeader
-        documentIndex={getDocumentIndex()}
-        documentName={getDocumentName()}
+        documentIndex={documentIndex}
+        documentName={documentMetas[documentIndex]?.filename ?? ""}
         numberOfDocuments={documentMetas.length}
         previousDocument={() => {
-          documentViewerRef.current?.prev();
+          if (documentIndex > 0) {
+            setDocumentIndex(documentIndex - 1);
+          }
         }}
         nextDocument={() => {
-          documentViewerRef.current?.next();
+          if (documentIndex < documentMetas.length - 1) {
+            setDocumentIndex(documentIndex + 1);
+          }
         }}
       />
       <div
@@ -73,16 +53,14 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
         tabIndex={0}
       >
         <DocViewer
-          ref={documentViewerRef}
           documents={documentMetas}
-          activeDocument={activeDocument}
+          activeDocument={documentMetas[documentIndex]}
           pluginRenderers={DocViewerRenderers}
           config={{
             header: {
               disableHeader: true,
             },
           }}
-          onDocumentChange={onDocumentChange}
         />
       </div>
     </div>
