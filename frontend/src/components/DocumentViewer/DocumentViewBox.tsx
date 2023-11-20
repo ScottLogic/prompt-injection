@@ -7,15 +7,11 @@ import { useEffect, useRef, useState } from "react";
 import "./DocumentViewBox.css";
 import DocumentViewBoxHeader from "./DocumentViewBoxHeader";
 
-import useIsOverflow from "@src/hooks/useIsOverflow";
 import { DocumentMeta } from "@src/models/document";
 import { getDocumentMetas } from "@src/service/documentService";
 
 function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
   const documentViewerRef = useRef<DocViewerRef>(null);
-  const documentViewerContainerRef = useRef<HTMLDivElement>(null);
-
-  const isOverflow = useIsOverflow(documentViewerContainerRef);
 
   const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>([]);
   const [activeDocument, setActiveDocument] = useState<DocumentMeta | null>(
@@ -72,10 +68,9 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
         }}
       />
       <div
-        ref={documentViewerContainerRef}
         className="document-viewer-container"
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-        tabIndex={isOverflow ? 0 : undefined}
+        tabIndex={0}
       >
         <DocViewer
           ref={documentViewerRef}
