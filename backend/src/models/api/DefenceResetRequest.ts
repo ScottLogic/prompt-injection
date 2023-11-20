@@ -2,13 +2,11 @@ import { Request } from "express";
 
 import { LEVEL_NAMES } from "@src/models/level";
 
-type DefenceResetRequest = Request<
-  object,
-  object,
+export type DefenceResetRequest = Request<
+  never,
+  never,
   {
     level?: LEVEL_NAMES;
   },
-  object
+  never
 >;
-
-export type { DefenceResetRequest };
