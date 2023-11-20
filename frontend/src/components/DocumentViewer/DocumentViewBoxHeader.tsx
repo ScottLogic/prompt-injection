@@ -25,20 +25,22 @@ function DocumentViewBoxHeader({
         <p className="info">{documentName}</p>
         <p className="info">{documentNumber}</p>
         <div className="button-container">
-          {documentIndex > 0 && (
-            <span className="previous-document">
-              <ThemedButton onClick={previousDocument}>
-                ◄ previous document
-              </ThemedButton>
-            </span>
-          )}
-          {documentIndex < numberOfDocuments - 1 && (
-            <span className="next-document">
-              <ThemedButton onClick={nextDocument}>
-                next document ►
-              </ThemedButton>
-            </span>
-          )}
+          <span className="previous-document">
+            <ThemedButton
+              onClick={previousDocument}
+              disabled={documentIndex <= 0}
+            >
+              ◄ previous document
+            </ThemedButton>
+          </span>
+          <span className="next-document">
+            <ThemedButton
+              onClick={nextDocument}
+              disabled={documentIndex >= numberOfDocuments - 1}
+            >
+              next document ►
+            </ThemedButton>
+          </span>
         </div>
       </div>
     </div>
