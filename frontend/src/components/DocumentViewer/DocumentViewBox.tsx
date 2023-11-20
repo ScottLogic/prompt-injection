@@ -27,7 +27,9 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
     getDocumentMetas()
       .then((uris) => {
         setDocumentMetas(uris);
-        setActiveDocument(uris[0]);
+        if (uris.length > 0) {
+          setActiveDocument(uris[0]);
+        }
       })
       .catch((err) => {
         console.log(err);
