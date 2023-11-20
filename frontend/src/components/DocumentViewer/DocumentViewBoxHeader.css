@@ -31,16 +31,7 @@
 }
 
 .view-documents-header .button-container {
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
+  justify-content: space-between;
   width: 45%;
-}
-
-.view-documents-header .previous-document {
-  grid-column: 1;
-}
-
-.view-documents-header .next-document {
-  grid-column: 2;
-  justify-self: end;
 }
