@@ -1,6 +1,4 @@
-import {
-  OpenAI,
-} from "openai";
+import { OpenAI } from "openai";
 import { promptTokensEstimate } from "openai-chat-tokens";
 
 import {
@@ -28,45 +26,51 @@ import {
   FunctionSendEmailParams,
 } from "./models/openai";
 
-// functions available to ChatGPT
-const chatGptFunctions = [
+// tools available to the chatgpt
+const chatGptTools = [
   {
-    name: "sendEmail",
-    description: "Send an email to someone",
-    parameters: {
-      type: "object",
-      properties: {
-        address: {
-          type: "string",
-          description: "The email address to send the email to",
+    type: "function",
+    function: {
+      name: "sendEmail",
+      description: "Send an email to someone",
+      parameters: {
+        type: "object",
+        properties: {
+          address: {
+            type: "string",
+            description: "The email address to send the email to",
+          },
+          subject: {
+            type: "string",
+            description: "The subject of the email",
+          },
+          body: {
+            type: "string",
+            description: "The body of the email",
+          },
+          confirmed: {
+            type: "boolean",
+            default: "false",
+            description:
+              "whether the user has confirmed the email is correct before sending",
+          },
         },
-        subject: {
-          type: "string",
-          description: "The subject of the email",
-        },
-        body: {
-          type: "string",
-          description: "The body of the email",
-        },
-        confirmed: {
-          type: "boolean",
-          default: "false",
-          description:
-            "whether the user has confirmed the email is correct before sending",
-        },
+        required: ["address", "subject", "body", "confirmed"],
       },
-      required: ["address", "subject", "body", "confirmed"],
     },
   },
   {
-    name: "askQuestion",
-    description: "Ask a question about information in the documents",
-    parameters: {
-      type: "object",
-      properties: {
-        question: {
-          type: "string",
-          description: "The question asked about the documents",
+    type: "function",
+    function: {
+      name: "askQuestion",
+      description: "Ask a question about information in the documents",
+      parameters: {
+        type: "object",
+        properties: {
+          question: {
+            type: "string",
+            description: "The question asked about the documents",
+          },
         },
       },
     },
@@ -117,12 +121,15 @@ function getOpenAI() {
 }
 
 function isChatGptFunction(functionName: string) {
-  return chatGptFunctions.some((func) => func.name === functionName);
+  return chatGptTools.some(
+    (tool) => tool.function.name === functionName
+  );
 }
 
 async function chatGptCallFunction(
   defenceInfo: ChatDefenceReport,
   defences: DefenceInfo[],
+  toolCallId: string, 
   functionCall: OpenAI.Chat.ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
   // default to sandbox
@@ -178,9 +185,9 @@ async function chatGptCallFunction(
     }
 
     reply = {
-      role: "function",
+      role: "tool",
       content: response,
-      name: functionName,
+      tool_call_id: toolCallId,
     };
   } else {
     console.error(`Unknown function: ${functionName}`);
@@ -253,12 +260,17 @@ async function chatGptChatCompletion(
       frequency_penalty: chatModel.configuration.frequencyPenalty,
       presence_penalty: chatModel.configuration.presencePenalty,
       messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
-      functions: chatGptFunctions,
+      tools: chatGptTools,
+      // functions: chatGptFunctions,
     });
+
+    console.log("chat_completion: ", chat_completion.choices[0]);
+
     return chat_completion.choices[0].message ?? null;
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error calling createChatCompletion: ", error.message);
+      console.log("input", chatHistory);
     }
     return null;
   } finally {
@@ -288,7 +300,7 @@ function filterChatHistoryByMaxTokens(
   const estimatedTokens =
     promptTokensEstimate({
       messages: chatHistory,
-      functions: chatGptFunctions,
+      functions: chatGptTools.map((tool) => tool.function),
     }) + 5; // there is an offset of 5 between openai completion prompt_tokens
 
   // if the estimated tokens is less than the max tokens, no need to filter
@@ -441,35 +453,48 @@ async function chatGptSendMessage(
     openai,
     currentLevel
   );
-  // check if GPT wanted to call a function
-  while (reply?.function_call) {
+  // check if GPT wanted to call a tool
+  while (reply?.tool_calls) {
+
+    // push the assistant message to the chat
     chatHistory = pushCompletionToHistory(
       chatHistory,
       reply,
       CHAT_MESSAGE_TYPE.FUNCTION_CALL
     );
+    // get the tool call
+    for (const toolCall of reply.tool_calls) {
 
-    // call the function and get a new reply and defence info from
-    const functionCallReply = await chatGptCallFunction(
-      defenceInfo,
-      defences,
-      reply.function_call,
-      sentEmails,
-      currentLevel
-    );
-    if (functionCallReply) {
-      chatResponse.wonLevel = functionCallReply.wonLevel;
+      // only tool type supported by openai is function 
+      if (toolCall.type === "function") {
 
-      // add the function call to the chat history
-      chatHistory = pushCompletionToHistory(
-        chatHistory,
-        functionCallReply.completion,
-        CHAT_MESSAGE_TYPE.FUNCTION_CALL
-      );
-      // update the defence info
-      chatResponse.defenceInfo = functionCallReply.defenceInfo;
+        // call the function and get a new reply and defence info from
+        const functionCallReply = await chatGptCallFunction(
+          defenceInfo,
+          defences,
+          toolCall.id,
+          toolCall.function,
+          sentEmails,
+          currentLevel
+        );
+        if (functionCallReply) {
+          chatResponse.wonLevel = functionCallReply.wonLevel;
+
+          // add the function call to the chat history
+          chatHistory = pushCompletionToHistory(
+            chatHistory,
+            functionCallReply.completion,
+            CHAT_MESSAGE_TYPE.FUNCTION_CALL
+          );
+          // update the defence info
+          chatResponse.defenceInfo = functionCallReply.defenceInfo;
+        }
+      } else {
+        // openai chat tool call type not supported yet
+        console.debug("Tool call type not supported yet: ", toolCall.type);
+      }
     }
-    // get a new reply from ChatGPT now that the function has been called
+    // get a new reply from ChatGPT now that the functions have been called
     reply = await chatGptChatCompletion(
       chatHistory,
       defences,
