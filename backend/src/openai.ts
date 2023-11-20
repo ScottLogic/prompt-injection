@@ -2,6 +2,9 @@ import { OpenAI } from "openai";
 import {
   ChatCompletionMessageParam,
   ChatCompletionTool,
+  ChatCompletionMessageToolCall,
+  ChatCompletionSystemMessageParam,
+  ChatCompletionMessage,
 } from "openai/resources/chat/completions";
 import { promptTokensEstimate } from "openai-chat-tokens";
 
@@ -132,7 +135,7 @@ async function chatGptCallFunction(
   defenceInfo: ChatDefenceReport,
   defences: DefenceInfo[],
   toolCallId: string,
-  functionCall: OpenAI.Chat.ChatCompletionMessageToolCall.Function,
+  functionCall: ChatCompletionMessageToolCall.Function,
   sentEmails: EmailInfo[],
   // default to sandbox
   currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
@@ -219,7 +222,7 @@ async function chatGptChatCompletion(
     currentLevel !== LEVEL_NAMES.SANDBOX ||
     isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
-    const completionConfig: OpenAI.Chat.ChatCompletionSystemMessageParam = {
+    const completionConfig: ChatCompletionSystemMessageParam = {
       role: "system",
       content: getSystemRole(defences, currentLevel),
     };
@@ -281,8 +284,8 @@ function estimateMessageTokens(
   message: ChatCompletionMessageParam | null | undefined
 ) {
   if (message) {
-    if ((message as OpenAI.Chat.ChatCompletionMessage).tool_calls) {
-      const funcMessage = message as OpenAI.Chat.ChatCompletionMessage;
+    if ((message as ChatCompletionMessage).tool_calls) {
+      const funcMessage = message as ChatCompletionMessage;
       const toolCalls = funcMessage.tool_calls?.map(
         (toolCall) => toolCall.function
       );
