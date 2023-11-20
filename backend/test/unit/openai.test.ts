@@ -1,30 +1,22 @@
-import { OpenAI } from "openai";
-
-import { CHAT_MODELS, ChatCompletionItem } from "@src/models/chat";
+import { CHAT_MODELS } from "@src/models/chat";
 import {
   verifyKeySupportsModel,
   filterChatHistoryByMaxTokens,
 } from "@src/openai";
 
+import { ChatCompletionMessageParam } from "openai/resources";
+
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
-// // Mock the OpenAIApi class
-// jest.mock("openai", () => ({
-//   OpenAIApi: jest.fn().mockImplementation(() => ({
-//     createChatCompletion: mockCreateChatCompletion,
-//   })),
-//   Configuration: jest.fn().mockImplementation(() => ({})),
-// }));
-
-jest.mock("openai", () => {
+jest.mock("openai", () => ({
   OpenAI: jest.fn().mockImplementation(() => ({
     chat: {
       completions: {
         create: mockCreateChatCompletion,
       },
     },
-  }));
-});
+  })),
+}));
 
 jest.mock("@src/openai", () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -84,7 +76,7 @@ describe("openAI unit tests", () => {
 
   test("GIVEN chat history exceeds max token number WHEN applying filter THEN it should return the filtered chat history", () => {
     const maxTokens = 121;
-    const chatHistory: ChatCompletionItem[] = [
+    const chatHistory: ChatCompletionMessageParam[] = [
       {
         role: "user",
         content: "Hello, my name is Bob.", // 14 tokens
@@ -121,7 +113,7 @@ describe("openAI unit tests", () => {
     ];
 
     // expect that the first message is trimmed
-    const expectedFilteredChatHistory: ChatCompletionItem[] = [
+    const expectedFilteredChatHistory: ChatCompletionMessageParam[] = [
       {
         role: "assistant",
         content: "Hello, how are you?", // 12 tokens
@@ -162,7 +154,7 @@ describe("openAI unit tests", () => {
 
   test("GIVEN chat history does not exceed max token number WHEN applying filter THEN it should return the original chat history", () => {
     const maxTokens = 1000;
-    const chatHistory: ChatCompletionItem[] = [
+    const chatHistory: ChatCompletionMessageParam[] = [
       {
         role: "user",
         content: "Hello, my name is Bob.", // 14 tokens
@@ -207,7 +199,7 @@ describe("openAI unit tests", () => {
   test("GIVEN chat history exceeds max token number WHEN applying filter AND there is a system role in chat history THEN it should return the filtered chat history", () => {
     const maxTokens = 121;
 
-    const chatHistory: ChatCompletionItem[] = [
+    const chatHistory: ChatCompletionMessageParam[] = [
       {
         role: "system",
         content: "You are a helpful chatbot.", // 14 tokens
@@ -247,7 +239,7 @@ describe("openAI unit tests", () => {
     ];
 
     // expect that the first message is trimmed
-    const expectedFilteredChatHistory: ChatCompletionItem[] = [
+    const expectedFilteredChatHistory: ChatCompletionMessageParam[] = [
       {
         role: "system",
         content: "You are a helpful chatbot.", // 14 tokens
@@ -288,7 +280,7 @@ describe("openAI unit tests", () => {
 
   test("GIVEN chat history most recent message exceeds max tokens alone WHEN applying filter THEN it should return this message", () => {
     const maxTokens = 30;
-    const chatHistory: ChatCompletionItem[] = [
+    const chatHistory: ChatCompletionMessageParam[] = [
       {
         role: "user",
         content:

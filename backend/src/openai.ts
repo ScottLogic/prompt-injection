@@ -13,7 +13,6 @@ import { queryDocuments } from "./langchain";
 import {
   CHAT_MESSAGE_TYPE,
   CHAT_MODELS,
-  ChatCompletionItem,
   ChatDefenceReport,
   ChatHistoryMessage,
   ChatModel,
@@ -26,7 +25,10 @@ import {
   FunctionAskQuestionParams,
   FunctionSendEmailParams,
 } from "./models/openai";
-import { ChatCompletionTool } from "openai/resources";
+import {
+  ChatCompletionMessageParam,
+  ChatCompletionTool,
+} from "openai/resources";
 
 // tools available to chatGPT
 const chatGptTools: ChatCompletionTool[] = [
@@ -123,21 +125,19 @@ function getOpenAI() {
 }
 
 function isChatGptFunction(functionName: string) {
-  return chatGptTools.some(
-    (tool) => tool.function.name === functionName
-  );
+  return chatGptTools.some((tool) => tool.function.name === functionName);
 }
 
 async function chatGptCallFunction(
   defenceInfo: ChatDefenceReport,
   defences: DefenceInfo[],
-  toolCallId: string, 
+  toolCallId: string,
   functionCall: OpenAI.Chat.ChatCompletionMessageToolCall.Function,
   sentEmails: EmailInfo[],
   // default to sandbox
   currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-  let reply: ChatCompletionItem | null = null;
+  let reply: ChatCompletionMessageParam | null = null;
   let wonLevel = false;
   // get the function name
   const functionName: string = functionCall.name ?? "";
@@ -262,13 +262,18 @@ async function chatGptChatCompletion(
       frequency_penalty: chatModel.configuration.frequencyPenalty,
       presence_penalty: chatModel.configuration.presencePenalty,
       messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
-      tools: chatGptTools
+      tools: chatGptTools,
     });
+
+    // if tools print the tool calls
+    if (chat_completion.choices[0].finish_reason === "tool_calls") {
+      console.log("Tool calls: ", chat_completion);
+    }
+
     return chat_completion.choices[0].message ?? null;
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error calling createChatCompletion: ", error.message);
-
     }
     return null;
   } finally {
@@ -279,29 +284,52 @@ async function chatGptChatCompletion(
 
 // estimate the tokens on a single completion
 function estimateMessageTokens(
-  message: ChatCompletionItem | null | undefined
+  message: ChatCompletionMessageParam | null | undefined
 ) {
   if (message) {
-    const estTokens = promptTokensEstimate({ messages: [message] });
-    console.debug("message:", message, "tokens:", estTokens);
-    return estTokens;
+    if ((message as OpenAI.Chat.ChatCompletionMessage)?.tool_calls) {
+      const funcMessage = message as OpenAI.Chat.ChatCompletionMessage;
+      const toolCalls = funcMessage.tool_calls?.map(
+        (toolCall) => toolCall.function
+      );
+      if (toolCalls) {
+        let estLTokens = 0;
+        for (const toolCallContent of toolCalls) {
+          // tool call not yet implemented in openai-chat-tokens so pass in as a function call
+          estLTokens += promptTokensEstimate({
+            messages: [
+              {
+                role: "assistant",
+                function_call: toolCallContent,
+              } as ChatCompletionMessageParam,
+            ],
+          });
+          return estLTokens;
+        }
+      }
+    } else {
+      const estTokens = promptTokensEstimate({ messages: [message] });
+      console.debug("message:", message, "tokens:", estTokens);
+      return estTokens;
+    }
   }
   return 0;
 }
 
 // take only the chat history to send to GPT that is within the max tokens
 function filterChatHistoryByMaxTokens(
-  chatHistory: ChatCompletionItem[],
+  chatHistory: ChatCompletionMessageParam[],
   maxNumTokens: number
-): ChatCompletionItem[] {
+): ChatCompletionMessageParam[] {
   // estimate total prompt tokens including chat history and function call definitions
+
   const estimatedTokens =
     promptTokensEstimate({
       messages: chatHistory,
       functions: chatGptTools.map((tool) => tool.function),
     }) + 5; // there is an offset of 5 between openai completion prompt_tokens
-
   // if the estimated tokens is less than the max tokens, no need to filter
+
   if (estimatedTokens <= maxNumTokens) {
     return chatHistory;
   }
@@ -311,7 +339,7 @@ function filterChatHistoryByMaxTokens(
     estimatedTokens
   );
   let sumTokens = 0;
-  const filteredList: ChatCompletionItem[] = [];
+  const filteredList: ChatCompletionMessageParam[] = [];
 
   // reverse list to add from most recent
   const reverseList = chatHistory.slice().reverse();
@@ -349,15 +377,13 @@ function filterChatHistoryByMaxTokens(
 function getChatCompletionsFromHistory(
   chatHistory: ChatHistoryMessage[],
   gptModel: CHAT_MODELS
-): ChatCompletionItem[] {
+): ChatCompletionMessageParam[] {
   // take only completions to send to model
-  const completions: ChatCompletionItem [] =
+  const completions: ChatCompletionMessageParam[] =
     chatHistory.length > 0
       ? (chatHistory
           .filter((message) => message.completion !== null)
-          .map(
-            (message) => message.completion
-          ) as ChatCompletionItem[])
+          .map((message) => message.completion) as ChatCompletionMessageParam[])
       : [];
 
   // limit the number of tokens sent to GPT to fit inside context window
@@ -379,7 +405,7 @@ function getChatCompletionsFromHistory(
 
 function pushCompletionToHistory(
   chatHistory: ChatHistoryMessage[],
-  completion: ChatCompletionItem,
+  completion: ChatCompletionMessageParam,
   chatMessageType: CHAT_MESSAGE_TYPE
 ) {
   // limit the length of the chat history
@@ -453,7 +479,6 @@ async function chatGptSendMessage(
   );
   // check if GPT wanted to call a tool
   while (reply?.tool_calls) {
-
     // push the assistant message to the chat
     chatHistory = pushCompletionToHistory(
       chatHistory,
@@ -462,10 +487,8 @@ async function chatGptSendMessage(
     );
     // get the tool call
     for (const toolCall of reply.tool_calls) {
-
-      // only tool type supported by openai is function 
+      // only tool type supported by openai is function
       if (toolCall.type === "function") {
-
         // call the function and get a new reply and defence info from
         const functionCallReply = await chatGptCallFunction(
           defenceInfo,

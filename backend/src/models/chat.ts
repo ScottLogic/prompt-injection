@@ -1,6 +1,7 @@
 import { OpenAI } from "openai";
 
 import { DEFENCE_TYPES } from "./defence";
+import { ChatCompletionMessageParam } from "openai/resources";
 
 enum CHAT_MODELS {
   GPT_4 = "gpt-4",
@@ -75,11 +76,8 @@ interface ChatHttpResponse {
   isError: boolean;
 }
 
-// all possible messages for chat completions
-type ChatCompletionItem = OpenAI.Chat.ChatCompletionMessage | OpenAI.Chat.ChatCompletionUserMessageParam | OpenAI.Chat.ChatCompletionToolMessageParam | OpenAI.Chat.ChatCompletionSystemMessageParam ;
-
 interface ChatHistoryMessage {
-  completion: ChatCompletionItem | null;
+  completion: ChatCompletionMessageParam | null;
   chatMessageType: CHAT_MESSAGE_TYPE;
   numTokens?: number | null;
   infoMessage?: string | null;
@@ -103,7 +101,6 @@ export type {
   ChatResponse,
   ChatHttpResponse,
   ChatHistoryMessage,
-  ChatCompletionItem,
 };
 export {
   CHAT_MODELS,
