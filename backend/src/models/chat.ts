@@ -1,7 +1,7 @@
 import { OpenAI } from "openai";
+import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
 import { DEFENCE_TYPES } from "./defence";
-import { ChatCompletionMessageParam } from "openai/resources";
 
 enum CHAT_MODELS {
   GPT_4 = "gpt-4",

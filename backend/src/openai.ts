@@ -1,4 +1,8 @@
 import { OpenAI } from "openai";
+import {
+  ChatCompletionMessageParam,
+  ChatCompletionTool,
+} from "openai/resources/chat/completions";
 import { promptTokensEstimate } from "openai-chat-tokens";
 
 import {
@@ -25,10 +29,6 @@ import {
   FunctionAskQuestionParams,
   FunctionSendEmailParams,
 } from "./models/openai";
-import {
-  ChatCompletionMessageParam,
-  ChatCompletionTool,
-} from "openai/resources";
 
 // tools available to chatGPT
 const chatGptTools: ChatCompletionTool[] = [
@@ -140,7 +140,7 @@ async function chatGptCallFunction(
   let reply: ChatCompletionMessageParam | null = null;
   let wonLevel = false;
   // get the function name
-  const functionName: string = functionCall.name ?? "";
+  const functionName: string = functionCall.name;
 
   // check if we know the function
   if (isChatGptFunction(functionName)) {
@@ -185,7 +185,6 @@ async function chatGptCallFunction(
         console.error("No arguments provided to askQuestion function");
       }
     }
-
     reply = {
       role: "tool",
       content: response,
@@ -265,12 +264,7 @@ async function chatGptChatCompletion(
       tools: chatGptTools,
     });
 
-    // if tools print the tool calls
-    if (chat_completion.choices[0].finish_reason === "tool_calls") {
-      console.log("Tool calls: ", chat_completion);
-    }
-
-    return chat_completion.choices[0].message ?? null;
+    return chat_completion.choices[0].message;
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error calling createChatCompletion: ", error.message);
@@ -287,7 +281,7 @@ function estimateMessageTokens(
   message: ChatCompletionMessageParam | null | undefined
 ) {
   if (message) {
-    if ((message as OpenAI.Chat.ChatCompletionMessage)?.tool_calls) {
+    if ((message as OpenAI.Chat.ChatCompletionMessage).tool_calls) {
       const funcMessage = message as OpenAI.Chat.ChatCompletionMessage;
       const toolCalls = funcMessage.tool_calls?.map(
         (toolCall) => toolCall.function
@@ -488,6 +482,8 @@ async function chatGptSendMessage(
     // get the tool call
     for (const toolCall of reply.tool_calls) {
       // only tool type supported by openai is function
+
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (toolCall.type === "function") {
         // call the function and get a new reply and defence info from
         const functionCallReply = await chatGptCallFunction(

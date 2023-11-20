@@ -1,10 +1,10 @@
+import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+
 import { CHAT_MODELS } from "@src/models/chat";
 import {
   verifyKeySupportsModel,
   filterChatHistoryByMaxTokens,
 } from "@src/openai";
-
-import { ChatCompletionMessageParam } from "openai/resources";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
