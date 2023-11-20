@@ -2,13 +2,11 @@ import { Request } from "express";
 
 import { LEVEL_NAMES } from "@src/models/level";
 
-type EmailClearRequest = Request<
-  object,
-  object,
+export type EmailClearRequest = Request<
+  never,
+  never,
   {
     level?: LEVEL_NAMES;
   },
-  object
+  never
 >;
-
-export type { EmailClearRequest };
