@@ -18,7 +18,6 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
   const isOverflow = useIsOverflow(documentViewerContainerRef);
 
   const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>([]);
-  const [documentIndex, setDocumentIndex] = useState<number>(0);
   const [activeDocument, setActiveDocument] = useState<DocumentMeta | null>(
     null
   );
@@ -35,6 +34,16 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
       });
   }, []);
 
+  function getDocumentIndex() {
+    return documentMetas.findIndex(
+      (document) => document.filename === activeDocument?.filename
+    );
+  }
+
+  function getDocumentName() {
+    return activeDocument?.filename ?? "";
+  }
+
   function onDocumentChange(document: DocumentMeta) {
     setActiveDocument(document);
   }
@@ -50,16 +59,14 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
         X
       </button>
       <DocumentViewBoxHeader
-        documentIndex={documentIndex}
-        documentName={activeDocument?.filename ?? ""}
+        documentIndex={getDocumentIndex()}
+        documentName={getDocumentName()}
         numberOfDocuments={documentMetas.length}
         previousDocument={() => {
           documentViewerRef.current?.prev();
-          setDocumentIndex(documentIndex - 1);
         }}
         nextDocument={() => {
           documentViewerRef.current?.next();
-          setDocumentIndex(documentIndex + 1);
         }}
       />
       <div
