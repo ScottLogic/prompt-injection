@@ -56,6 +56,9 @@
   --handbook-scrollbar-colour: #d9d9d9;
   --handbook-scrollbar-hover-colour: #b9b9b9;
 
+  --document-viewer-background-colour: #fff;
+  --document-viewer-text-colour: #000;
+
   --chat-bot-colour: #d482fb;
   --chat-bot-background: linear-gradient(var(--chat-bot-colour), #f3dbfe);
   --chat-blocked-colour: var(--main-error-colour);

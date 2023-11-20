@@ -26,12 +26,13 @@
 
 .document-viewer-container {
   height: 20rem;
-  background-color: white;
+  background-color: var(--document-viewer-background-colour);
   overflow-y: auto;
 }
 
 #react-doc-viewer {
-  color: var(--chat-message-text-colour);
+  background-color: var(--document-viewer-background-colour);
+  color: var(--document-viewer-text-colour);
   margin: auto;
   /* don't scroll */
   overflow: visible;
