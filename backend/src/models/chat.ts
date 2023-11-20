@@ -75,8 +75,11 @@ interface ChatHttpResponse {
   isError: boolean;
 }
 
+// all possible messages for chat completions
+type ChatCompletionItem = OpenAI.Chat.ChatCompletionMessage | OpenAI.Chat.ChatCompletionUserMessageParam | OpenAI.Chat.ChatCompletionToolMessageParam | OpenAI.Chat.ChatCompletionSystemMessageParam ;
+
 interface ChatHistoryMessage {
-  completion: OpenAI.Chat.ChatCompletionUserMessage | OpenAI.Chat.ChatCompletionMessage | null;
+  completion: ChatCompletionItem | null;
   chatMessageType: CHAT_MESSAGE_TYPE;
   numTokens?: number | null;
   infoMessage?: string | null;
@@ -100,6 +103,7 @@ export type {
   ChatResponse,
   ChatHttpResponse,
   ChatHistoryMessage,
+  ChatCompletionItem,
 };
 export {
   CHAT_MODELS,

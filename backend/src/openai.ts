@@ -13,6 +13,7 @@ import { queryDocuments } from "./langchain";
 import {
   CHAT_MESSAGE_TYPE,
   CHAT_MODELS,
+  ChatCompletionItem,
   ChatDefenceReport,
   ChatHistoryMessage,
   ChatModel,
@@ -25,9 +26,10 @@ import {
   FunctionAskQuestionParams,
   FunctionSendEmailParams,
 } from "./models/openai";
+import { ChatCompletionTool } from "openai/resources";
 
-// tools available to the chatgpt
-const chatGptTools = [
+// tools available to chatGPT
+const chatGptTools: ChatCompletionTool[] = [
   {
     type: "function",
     function: {
@@ -130,12 +132,12 @@ async function chatGptCallFunction(
   defenceInfo: ChatDefenceReport,
   defences: DefenceInfo[],
   toolCallId: string, 
-  functionCall: OpenAI.Chat.ChatCompletionRequestMessageFunctionCall,
+  functionCall: OpenAI.Chat.ChatCompletionMessageToolCall.Function,
   sentEmails: EmailInfo[],
   // default to sandbox
   currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-  let reply: OpenAI.Chat.ChatCompletionRequestMessage | null = null;
+  let reply: ChatCompletionItem | null = null;
   let wonLevel = false;
   // get the function name
   const functionName: string = functionCall.name ?? "";
@@ -218,7 +220,7 @@ async function chatGptChatCompletion(
     currentLevel !== LEVEL_NAMES.SANDBOX ||
     isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
   ) {
-    const completionConfig: OpenAI.Chat.ChatCompletionRequestMessage = {
+    const completionConfig: OpenAI.Chat.ChatCompletionSystemMessageParam = {
       role: "system",
       content: getSystemRole(defences, currentLevel),
     };
@@ -260,17 +262,13 @@ async function chatGptChatCompletion(
       frequency_penalty: chatModel.configuration.frequencyPenalty,
       presence_penalty: chatModel.configuration.presencePenalty,
       messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
-      tools: chatGptTools,
-      // functions: chatGptFunctions,
+      tools: chatGptTools
     });
-
-    console.log("chat_completion: ", chat_completion.choices[0]);
-
     return chat_completion.choices[0].message ?? null;
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error calling createChatCompletion: ", error.message);
-      console.log("input", chatHistory);
+
     }
     return null;
   } finally {
@@ -281,7 +279,7 @@ async function chatGptChatCompletion(
 
 // estimate the tokens on a single completion
 function estimateMessageTokens(
-  message: OpenAI.Chat.ChatCompletionRequestMessage | null | undefined
+  message: ChatCompletionItem | null | undefined
 ) {
   if (message) {
     const estTokens = promptTokensEstimate({ messages: [message] });
@@ -293,9 +291,9 @@ function estimateMessageTokens(
 
 // take only the chat history to send to GPT that is within the max tokens
 function filterChatHistoryByMaxTokens(
-  chatHistory: OpenAI.Chat.ChatCompletionRequestMessage[],
+  chatHistory: ChatCompletionItem[],
   maxNumTokens: number
-): OpenAI.Chat.ChatCompletionRequestMessage[] {
+): ChatCompletionItem[] {
   // estimate total prompt tokens including chat history and function call definitions
   const estimatedTokens =
     promptTokensEstimate({
@@ -313,7 +311,7 @@ function filterChatHistoryByMaxTokens(
     estimatedTokens
   );
   let sumTokens = 0;
-  const filteredList: OpenAI.Chat.ChatCompletionRequestMessage[] = [];
+  const filteredList: ChatCompletionItem[] = [];
 
   // reverse list to add from most recent
   const reverseList = chatHistory.slice().reverse();
@@ -351,15 +349,15 @@ function filterChatHistoryByMaxTokens(
 function getChatCompletionsFromHistory(
   chatHistory: ChatHistoryMessage[],
   gptModel: CHAT_MODELS
-): OpenAI.Chat.ChatCompletionRequestMessage[] {
+): ChatCompletionItem[] {
   // take only completions to send to model
-  const completions: OpenAI.Chat.ChatCompletionRequestMessage[] =
+  const completions: ChatCompletionItem [] =
     chatHistory.length > 0
       ? (chatHistory
           .filter((message) => message.completion !== null)
           .map(
             (message) => message.completion
-          ) as OpenAI.Chat.ChatCompletionRequestMessage[])
+          ) as ChatCompletionItem[])
       : [];
 
   // limit the number of tokens sent to GPT to fit inside context window
@@ -381,7 +379,7 @@ function getChatCompletionsFromHistory(
 
 function pushCompletionToHistory(
   chatHistory: ChatHistoryMessage[],
-  completion: OpenAI.Chat.ChatCompletionRequestMessage,
+  completion: ChatCompletionItem,
   chatMessageType: CHAT_MESSAGE_TYPE
 ) {
   // limit the length of the chat history
