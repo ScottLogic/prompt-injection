@@ -43,14 +43,5 @@ module.exports = {
       },
     ],
     "@typescript-eslint/unbound-method": ["error", { ignoreStatic: true }],
-
-    "import/order": [
-      "error",
-      {
-        alphabetize: { order: "asc" },
-        "newlines-between": "always",
-        warnOnUnassignedImports: true,
-      },
-    ],
   },
 };
