@@ -2,6 +2,7 @@ import { DefenceConfig } from "../../models/defence";
 import ThemedButton from "../ThemedButtons/ThemedButton";
 import DefenceConfigurationInput from "./DefenceConfigurationInput";
 import "./DefenceConfiguration.css";
+import { useState } from "react";
 
 function DefenceConfiguration({
   config,
@@ -14,9 +15,13 @@ function DefenceConfiguration({
   setConfigurationValue: (configId: string, value: string) => Promise<void>;
   resetConfigurationValue: (configId: string) => void;
 }) {
-  function setConfigurationValueIfDifferent(value: string) {
+  const [inputKey, setInputKey] = useState<number>(0);
+
+  async function setConfigurationValueIfDifferent(value: string) {
     if (value !== config.value) {
-      void setConfigurationValue(config.id, value.trim());
+      await setConfigurationValue(config.id, value.trim());
+      // re-render input in the event of a validation error
+      setInputKey(inputKey + 1);
     }
   }
 
@@ -34,10 +39,13 @@ function DefenceConfiguration({
         </ThemedButton>
       </div>
       <DefenceConfigurationInput
+        key={inputKey}
         currentValue={config.value}
         disabled={!isActive}
         inputType={config.inputType}
-        setConfigurationValue={setConfigurationValueIfDifferent}
+        setConfigurationValue={(value) =>
+          void setConfigurationValueIfDifferent(value)
+        }
       />
     </div>
   );

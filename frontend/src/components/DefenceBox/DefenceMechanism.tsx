@@ -65,8 +65,6 @@ function DefenceMechanism({
       showDefenceConfiguredText(configured);
     } else {
       showDefenceConfiguredText(false);
-      // re-render to show the last valid configuration value
-      setConfigKey(configKey + 1);
     }
   }
 
