@@ -1,4 +1,7 @@
-import { ChatCompletionMessage, ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import {
+  ChatCompletionMessage,
+  ChatCompletionMessageParam,
+} from "openai/resources/chat/completions";
 
 import { DEFENCE_TYPES } from "./defence";
 
