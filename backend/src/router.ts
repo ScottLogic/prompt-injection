@@ -559,29 +559,16 @@ router.get("/openai/model", (req, res) => {
   res.send(req.session.chatModel);
 });
 
-// /level/prompt?level=1
-router.get("/level/prompt", (req: LevelGetPromptRequest, res) => {
-  const levelStr = req.query.level;
-  if (levelStr) {
-    const level = parseInt(levelStr);
-    switch (level) {
-      case LEVEL_NAMES.LEVEL_1:
-        res.send(systemRoleLevel1);
-        break;
-      case LEVEL_NAMES.LEVEL_2:
-        res.send(systemRoleLevel2);
-        break;
-      case LEVEL_NAMES.LEVEL_3:
-        res.send(systemRoleLevel3);
-        break;
-      default:
-        res.status(400).send();
-        break;
-    }
-  } else {
-    res.status(400).send();
+// return system roles for all levels
+router.get("/systemRoles", (_, res) => {
+  const systemRoles = {
+    1: systemRoleLevel1,
+    2: systemRoleLevel2,
+    3: systemRoleLevel3,
   }
+  res.send(systemRoles);
 });
+
 
 // get names and types of documents for sandbox and common
 router.get("/documents", (_, res) => {
