@@ -5,6 +5,7 @@ import "./ThemedButton.css";
 
 export interface ThemedButtonProps {
   children: ReactNode;
+  ariaDisabled?: boolean;
   disabled?: boolean;
   selected?: boolean;
   title?: string;
@@ -15,20 +16,26 @@ export interface ThemedButtonProps {
 function ThemedButton({
   children,
   onClick,
+  ariaDisabled = false,
   disabled = false,
   selected = false,
   title = "",
   appearsDifferentWhenDisabled = true,
 }: ThemedButtonProps) {
+  function onClickDisabledCheck() {
+    if (!disabled && !ariaDisabled) onClick();
+  }
+
   const buttonClass = clsx("themed-button", {
     selected,
-    appearsDifferentWhenDisabled,
+    disabled: appearsDifferentWhenDisabled && (disabled || ariaDisabled),
   });
 
   return (
     <button
       className={buttonClass}
-      onClick={onClick}
+      onClick={onClickDisabledCheck}
+      aria-disabled={ariaDisabled}
       disabled={disabled}
       title={title}
     >
