@@ -1,4 +1,4 @@
-import "./HandbookSystemRole.css";
+import "./HandbookPage.css";
 
 import { LEVEL_NAMES, LevelSystemRole } from "@src/models/level";
 
@@ -10,7 +10,7 @@ function HandbookSystemRole({
   systemRoles: LevelSystemRole[];
 }) {
   return (
-    <div className="system-role-layout">
+    <div className="handbook-page">
       <div className="header">
         <h1> System Roles </h1>
         <p>
@@ -18,6 +18,7 @@ function HandbookSystemRole({
           level. You can only review this for levels you have already completed.
         </p>
       </div>
+
       <div className="handbook-terms">
         {systemRoles.map(({ level, systemRole }) => (
           <div className="term" key={level}>

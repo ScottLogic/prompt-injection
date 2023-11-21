@@ -9,7 +9,7 @@ import MissionInformation from "./components/Overlay/MissionInformation";
 import OverlayWelcome from "./components/Overlay/OverlayWelcome";
 import { LEVEL_NAMES, LevelSystemRole } from "./models/level";
 import { OVERLAY_TYPE } from "./models/overlay";
-import { getSystemRoles } from "./service/levelService";
+import { getSystemRoles } from "./service/systemRoleService";
 
 function App() {
   const dialogRef = useRef<HTMLDialogElement>(null);

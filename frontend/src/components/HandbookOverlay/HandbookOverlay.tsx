@@ -32,7 +32,7 @@ function HandbookOverlay({
 
   const pageContent = {
     [HANDBOOK_PAGES.ATTACKS]: <HandbookAttacks currentLevel={currentLevel} />,
-    [HANDBOOK_PAGES.GLOSSARY]: <HandbookGlossary />,
+    [HANDBOOK_PAGES.GLOSSARY]: <HandbookGlossary currentLevel={currentLevel} />,
     [HANDBOOK_PAGES.SYSTEM_ROLE]: (
       <HandbookSystemRole
         numCompletedLevels={numCompletedLevels}

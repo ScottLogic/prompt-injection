@@ -2,7 +2,7 @@ import { sendRequest } from "./backendService";
 
 import { LevelSystemRole } from "@src/models/level";
 
-const PATH = "systemroles/";
+const PATH = "systemRoles/";
 
 // get the system roles for all levels - GET
 async function getSystemRoles(): Promise<LevelSystemRole[]> {
