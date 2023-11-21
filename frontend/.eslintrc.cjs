@@ -52,15 +52,6 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
-
-    "import/order": [
-      "error",
-      {
-        alphabetize: { order: "asc" },
-        "newlines-between": "always",
-        warnOnUnassignedImports: true,
-      },
-    ],
   },
   overrides: [
     {
