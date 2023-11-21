@@ -1,5 +1,6 @@
-import { DialogueLine } from "../../models/level";
 import "./MissionDialogue.css";
+
+import { DialogueLine } from "@src/models/level";
 
 function MissionDialogue({ dialogueLines }: { dialogueLines: DialogueLine[] }) {
   return (

@@ -1,10 +1,6 @@
 import { PromptTemplate } from "langchain/prompts";
-import { LEVEL_NAMES } from "../../src/models/level";
-import {
-  getFilepath,
-  formatEvaluationOutput,
-  makePromptTemplate,
-} from "../../src/langchain";
+
+import { formatEvaluationOutput, makePromptTemplate } from "@src/langchain";
 
 jest.mock("langchain/prompts", () => ({
   PromptTemplate: {
@@ -15,26 +11,6 @@ jest.mock("langchain/prompts", () => ({
 describe("Langchain tests", () => {
   afterEach(() => {
     (PromptTemplate.fromTemplate as jest.Mock).mockRestore();
-  });
-
-  test("GIVEN level is 1 THEN correct filepath is returned", () => {
-    const filePath = getFilepath(LEVEL_NAMES.LEVEL_1);
-    expect(filePath).toBe("resources/documents/level_1/");
-  });
-
-  test("GIVEN level is 2 THEN correct filepath is returned", () => {
-    const filePath = getFilepath(LEVEL_NAMES.LEVEL_2);
-    expect(filePath).toBe("resources/documents/level_2/");
-  });
-
-  test("GIVEN level is 3 THEN correct filepath is returned", () => {
-    const filePath = getFilepath(LEVEL_NAMES.LEVEL_3);
-    expect(filePath).toBe("resources/documents/level_3/");
-  });
-
-  test("GIVEN level is sandbox THEN correct filepath is returned", () => {
-    const filePath = getFilepath(LEVEL_NAMES.SANDBOX);
-    expect(filePath).toBe("resources/documents/common/");
   });
 
   test("GIVEN makePromptTemplate is called with no config prePrompt THEN correct prompt is returned", () => {

@@ -18,7 +18,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+
+    "paths": {
+      "@src/*": ["./src/*"]
+    }
   },
   "exclude": ["node_modules", "dist"],
   "include": ["*.ts", "src", ".eslintrc.cjs", "vite.config.ts"]

@@ -1,10 +1,11 @@
+import { sendRequest } from "./backendService";
+
 import {
   DEFENCE_TYPES,
   DefenceConfig,
   DefenceInfo,
   DefenceResetResponse,
-} from "../models/defence";
-import { sendRequest } from "./backendService";
+} from "@src/models/defence";
 
 const PATH = "defence/";
 
