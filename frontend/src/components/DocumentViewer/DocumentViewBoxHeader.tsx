@@ -6,14 +6,14 @@ function DocumentViewBoxHeader({
   documentIndex,
   documentName,
   numberOfDocuments,
-  previousDocument,
-  nextDocument,
+  onPrevious,
+  onNext,
 }: {
   documentIndex: number;
   documentName: string;
   numberOfDocuments: number;
-  previousDocument: () => void;
-  nextDocument: () => void;
+  onPrevious: () => void;
+  onNext: () => void;
 }) {
   // const documentName = state.currentDocument.uri.split("/").pop();
   const documentNumber = `${documentIndex + 1} out of ${numberOfDocuments}`;
@@ -25,14 +25,11 @@ function DocumentViewBoxHeader({
         <p className="info">{documentName}</p>
         <p className="info">{documentNumber}</p>
         <div className="button-container">
-          <ThemedButton
-            onClick={previousDocument}
-            disabled={documentIndex <= 0}
-          >
+          <ThemedButton onClick={onPrevious} disabled={documentIndex <= 0}>
             ◄ previous document
           </ThemedButton>
           <ThemedButton
-            onClick={nextDocument}
+            onClick={onNext}
             disabled={documentIndex >= numberOfDocuments - 1}
           >
             next document ►

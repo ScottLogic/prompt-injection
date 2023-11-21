@@ -36,12 +36,12 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
         documentIndex={documentIndex}
         documentName={documentMetas[documentIndex]?.filename ?? ""}
         numberOfDocuments={documentMetas.length}
-        previousDocument={() => {
+        onPrevious={() => {
           if (documentIndex > 0) {
             setDocumentIndex(documentIndex - 1);
           }
         }}
-        nextDocument={() => {
+        onNext={() => {
           if (documentIndex < documentMetas.length - 1) {
             setDocumentIndex(documentIndex + 1);
           }
