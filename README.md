@@ -60,9 +60,8 @@ Note that this project also includes a VS Code launch file, to allow running API
 The project is configured to be linted and formatted on both the backend and frontend.
 
 If you are using VS Code, we recommend doing the following:
-1. Get the prettier-eslint extension.
-2. Set the default formatter to the prettier-eslint one.
-3. Configure VS Code to format your documents on save.
+1. Set the default formatter to prettier.
+2. Configure VS Code to format your documents on save.
 
 To manually lint and format, use the following:
 
