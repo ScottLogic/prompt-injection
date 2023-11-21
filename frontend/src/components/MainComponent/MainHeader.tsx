@@ -49,7 +49,6 @@ function MainHeader({
           </span>
         )}
         <div className="handbook-area">
-          
             <button
               className="prompt-injection-min-button handbook-icon"
               title="open the handbook"

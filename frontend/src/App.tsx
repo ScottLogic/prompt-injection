@@ -7,7 +7,7 @@ import MainComponent from "./components/MainComponent/MainComponent";
 import LevelsComplete from "./components/Overlay/LevelsComplete";
 import MissionInformation from "./components/Overlay/MissionInformation";
 import OverlayWelcome from "./components/Overlay/OverlayWelcome";
-import { LEVEL_NAMES } from "./models/level";
+import { LEVEL_NAMES, LevelSystemRole } from "./models/level";
 import { OVERLAY_TYPE } from "./models/overlay";
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
   const [overlayComponent, setOverlayComponent] = useState<JSX.Element | null>(
     null
   );
+  const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 
   function loadIsNewUser() {
     // get isNewUser from local storage

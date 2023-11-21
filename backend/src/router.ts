@@ -561,11 +561,11 @@ router.get("/openai/model", (req, res) => {
 
 // return system roles for all levels
 router.get("/systemRoles", (_, res) => {
-  const systemRoles = {
-    1: systemRoleLevel1,
-    2: systemRoleLevel2,
-    3: systemRoleLevel3,
-  }
+  const systemRoles = [
+    {1: systemRoleLevel1},
+    {2: systemRoleLevel2},
+    {3: systemRoleLevel3},
+  ]
   res.send(systemRoles);
 });
 

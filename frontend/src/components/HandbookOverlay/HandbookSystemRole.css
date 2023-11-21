@@ -1,0 +1,13 @@
+.handbook-system-role-locked {
+  height: 7.5rem;
+  border-radius: 0.625rem;
+  border: 2px dashed #00000080;
+  background: rgba(150, 221, 225, 0.2);
+  display: flex;
+  align-items: center;
+}
+
+.handbook-system-role-locked p {
+  width: 100%;
+  text-align: center;
+}
