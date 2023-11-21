@@ -1,6 +1,4 @@
-import { RetrievalQAChain } from "langchain/chains";
-import { PromptTemplate } from "langchain/prompts";
-
+/* eslint-disable import/order */
 import {
   initPromptEvaluationModel,
   initQAModel,
@@ -19,7 +17,8 @@ import {
   maliciousPromptEvalPrePrompt,
   maliciousPromptEvalMainPrompt,
 } from "@src/promptTemplates";
-
+import { RetrievalQAChain } from "langchain/chains";
+import { PromptTemplate } from "langchain/prompts";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const mockCall = jest.fn();
