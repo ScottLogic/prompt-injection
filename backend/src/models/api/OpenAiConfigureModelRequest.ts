@@ -1,13 +1,11 @@
 import { Request } from "express";
 
-type OpenAiConfigureModelRequest = Request<
-  object,
-  object,
+export type OpenAiConfigureModelRequest = Request<
+  never,
+  never,
   {
     configId?: string;
     value?: number;
   },
-  object
+  never
 >;
-
-export type { OpenAiConfigureModelRequest };

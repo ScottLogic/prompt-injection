@@ -1,5 +1,3 @@
-import * as fs from "fs";
-
 import express from "express";
 
 import { defaultDefences } from "./defaultDefences";
@@ -11,15 +9,20 @@ import {
   detectTriggeredDefences,
   resetDefenceConfig,
 } from "./defence";
+import { getSandboxDocumentMetas } from "./document";
 import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
 import { DefenceConfigResetRequest } from "./models/api/DefenceConfigResetRequest";
 import { DefenceConfigureRequest } from "./models/api/DefenceConfigureRequest";
 import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
+import { DefenceStatusRequest } from "./models/api/DefenceStatusRequest";
 import { EmailClearRequest } from "./models/api/EmailClearRequest";
+import { EmailGetRequest } from "./models/api/EmailGetRequest";
+import { LevelGetPromptRequest } from "./models/api/LevelGetPromptRequest";
 import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
 import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
 import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
 import { OpenAiConfigureModelRequest } from "./models/api/OpenAiConfigureModelRequest";
+import { OpenAiGetHistoryRequest } from "./models/api/OpenAiGetHistoryRequest";
 import { OpenAiSetModelRequest } from "./models/api/OpenAiSetModelRequest";
 import {
   CHAT_MESSAGE_TYPE,
@@ -31,7 +34,6 @@ import {
   defaultChatModel,
 } from "./models/chat";
 import { DefenceConfig } from "./models/defence";
-import { Document } from "./models/document";
 import { LEVEL_NAMES } from "./models/level";
 import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
 import {
@@ -41,6 +43,15 @@ import {
 } from "./promptTemplates";
 
 const router = express.Router();
+
+function sendErrorResponse(
+  res: express.Response,
+  statusCode: number,
+  errorMessage: string
+) {
+  res.statusCode = statusCode;
+  res.send(errorMessage);
+}
 
 // Activate a defence
 router.post("/defence/activate", (req: DefenceActivateRequest, res) => {
@@ -85,15 +96,6 @@ function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
     (c) => c.value.length <= CONFIG_VALUE_CHARACTER_LIMIT
   );
   return !allValuesWithinLimit;
-}
-
-function sendErrorResponse(
-  res: express.Response,
-  statusCode: number,
-  errorMessage: string
-) {
-  res.statusCode = statusCode;
-  res.send(errorMessage);
 }
 
 // Configure a defence
@@ -164,9 +166,10 @@ router.post("/defence/resetConfig", (req: DefenceConfigResetRequest, res) => {
 });
 
 // Get the status of all defences /defence/status?level=1
-router.get("/defence/status", (req, res) => {
-  const level: number | undefined = req.query.level as number | undefined;
-  if (level !== undefined) {
+router.get("/defence/status", (req: DefenceStatusRequest, res) => {
+  const levelStr = req.query.level;
+  if (levelStr) {
+    const level = parseInt(levelStr);
     res.send(req.session.levelState[level].defences);
   } else {
     res.statusCode = 400;
@@ -175,9 +178,10 @@ router.get("/defence/status", (req, res) => {
 });
 
 // Get sent emails /email/get?level=1
-router.get("/email/get", (req, res) => {
-  const level: number | undefined = req.query.level as number | undefined;
-  if (level !== undefined) {
+router.get("/email/get", (req: EmailGetRequest, res) => {
+  const levelStr = req.query.level;
+  if (levelStr) {
+    const level = parseInt(levelStr);
     res.send(req.session.levelState[level].sentEmails);
   } else {
     res.statusCode = 400;
@@ -214,111 +218,6 @@ function handleChatError(
   }
   res.status(statusCode).send(chatResponse);
 }
-// Chat to ChatGPT
-router.post(
-  "/openai/chat",
-  async (req: OpenAiChatRequest, res: express.Response) => {
-    // set reply params
-    const chatResponse: ChatHttpResponse = {
-      reply: "",
-      defenceInfo: {
-        blockedReason: "",
-        isBlocked: false,
-        alertedDefences: [],
-        triggeredDefences: [],
-      },
-      transformedMessage: "",
-      wonLevel: false,
-      isError: false,
-    };
-    const message = req.body.message;
-    const currentLevel = req.body.currentLevel;
-
-    // must have initialised openai
-    if (message === undefined || currentLevel === undefined) {
-      handleChatError(
-        res,
-        chatResponse,
-        true,
-        "Please send a message and current level to chat to me!",
-        400
-      );
-      return;
-    }
-
-    const MESSAGE_CHARACTER_LIMIT = 16384;
-    if (message.length > MESSAGE_CHARACTER_LIMIT) {
-      handleChatError(
-        res,
-        chatResponse,
-        true,
-        "Message exceeds character limit",
-        400
-      );
-      return;
-    }
-
-    // set the transformed message to begin with
-    chatResponse.transformedMessage = message;
-
-    // use default model for levels, allow user to select in sandbox
-    const chatModel =
-      currentLevel === LEVEL_NAMES.SANDBOX
-        ? req.session.chatModel
-        : defaultChatModel;
-
-    // record the history before chat completion called
-    const chatHistoryBefore = [
-      ...req.session.levelState[currentLevel].chatHistory,
-    ];
-    try {
-      if (message) {
-        // skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
-        if (currentLevel < LEVEL_NAMES.LEVEL_3) {
-          await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
-        } else {
-          // apply the defence detection for level 3 and sandbox - sets chatResponse obj
-          await handleHigherLevelChat(
-            req,
-            message,
-            chatHistoryBefore,
-            chatResponse,
-            currentLevel,
-            chatModel
-          );
-        }
-        // if the reply was blocked then add it to the chat history
-        if (chatResponse.defenceInfo.isBlocked) {
-          req.session.levelState[currentLevel].chatHistory.push({
-            completion: null,
-            chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-            infoMessage: chatResponse.defenceInfo.blockedReason,
-          });
-        } else if (!chatResponse.reply || chatResponse.reply === "") {
-          // add error message to chat history
-          req.session.levelState[currentLevel].chatHistory.push({
-            completion: null,
-            chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
-            infoMessage: "Failed to get chatGPT reply",
-          });
-          // throw so handle error called
-          throw new Error("Failed to get chatGPT reply");
-        }
-      } else {
-        handleChatError(res, chatResponse, true, "Missing message");
-        return;
-      }
-    } catch (error) {
-      console.error(error);
-      handleChatError(res, chatResponse, false, "Failed to get chatGPT reply");
-      return;
-    }
-
-    // log and send the reply with defence info
-    console.log(chatResponse);
-    res.send(chatResponse);
-  }
-);
 
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
@@ -431,10 +330,117 @@ async function handleHigherLevelChat(
   }
 }
 
+// Chat to ChatGPT
+router.post(
+  "/openai/chat",
+  async (req: OpenAiChatRequest, res: express.Response) => {
+    // set reply params
+    const chatResponse: ChatHttpResponse = {
+      reply: "",
+      defenceInfo: {
+        blockedReason: "",
+        isBlocked: false,
+        alertedDefences: [],
+        triggeredDefences: [],
+      },
+      transformedMessage: "",
+      wonLevel: false,
+      isError: false,
+    };
+    const message = req.body.message;
+    const currentLevel = req.body.currentLevel;
+
+    // must have initialised openai
+    if (message === undefined || currentLevel === undefined) {
+      handleChatError(
+        res,
+        chatResponse,
+        true,
+        "Please send a message and current level to chat to me!",
+        400
+      );
+      return;
+    }
+
+    const MESSAGE_CHARACTER_LIMIT = 16384;
+    if (message.length > MESSAGE_CHARACTER_LIMIT) {
+      handleChatError(
+        res,
+        chatResponse,
+        true,
+        "Message exceeds character limit",
+        400
+      );
+      return;
+    }
+
+    // set the transformed message to begin with
+    chatResponse.transformedMessage = message;
+
+    // use default model for levels, allow user to select in sandbox
+    const chatModel =
+      currentLevel === LEVEL_NAMES.SANDBOX
+        ? req.session.chatModel
+        : defaultChatModel;
+
+    // record the history before chat completion called
+    const chatHistoryBefore = [
+      ...req.session.levelState[currentLevel].chatHistory,
+    ];
+    try {
+      if (message) {
+        // skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
+        if (currentLevel < LEVEL_NAMES.LEVEL_3) {
+          await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
+        } else {
+          // apply the defence detection for level 3 and sandbox - sets chatResponse obj
+          await handleHigherLevelChat(
+            req,
+            message,
+            chatHistoryBefore,
+            chatResponse,
+            currentLevel,
+            chatModel
+          );
+        }
+        // if the reply was blocked then add it to the chat history
+        if (chatResponse.defenceInfo.isBlocked) {
+          req.session.levelState[currentLevel].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+            infoMessage: chatResponse.defenceInfo.blockedReason,
+          });
+        } else if (!chatResponse.reply || chatResponse.reply === "") {
+          // add error message to chat history
+          req.session.levelState[currentLevel].chatHistory.push({
+            completion: null,
+            chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+            infoMessage: "Failed to get chatGPT reply",
+          });
+          // throw so handle error called
+          throw new Error("Failed to get chatGPT reply");
+        }
+      } else {
+        handleChatError(res, chatResponse, true, "Missing message");
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      handleChatError(res, chatResponse, false, "Failed to get chatGPT reply");
+      return;
+    }
+
+    // log and send the reply with defence info
+    console.log(chatResponse);
+    res.send(chatResponse);
+  }
+);
+
 // get the chat history
-router.get("/openai/history", (req, res) => {
-  const level: number | undefined = req.query.level as number | undefined;
-  if (level !== undefined) {
+router.get("/openai/history", (req: OpenAiGetHistoryRequest, res) => {
+  const levelStr = req.query.level;
+  if (levelStr) {
+    const level = parseInt(levelStr);
     res.send(req.session.levelState[level].chatHistory);
   } else {
     res.statusCode = 400;
@@ -555,12 +561,10 @@ router.get("/openai/model", (req, res) => {
 });
 
 // /level/prompt?level=1
-router.get("/level/prompt", (req, res) => {
-  const levelStr: string | undefined = req.query.level as string | undefined;
-  if (levelStr === undefined) {
-    res.status(400).send();
-  } else {
-    const level = parseInt(levelStr) as LEVEL_NAMES;
+router.get("/level/prompt", (req: LevelGetPromptRequest, res) => {
+  const levelStr = req.query.level;
+  if (levelStr) {
+    const level = parseInt(levelStr);
     switch (level) {
       case LEVEL_NAMES.LEVEL_1:
         res.send(systemRoleLevel1);
@@ -575,26 +579,18 @@ router.get("/level/prompt", (req, res) => {
         res.status(400).send();
         break;
     }
+  } else {
+    res.status(400).send();
   }
 });
 
+// get names and types of documents for sandbox and common
 router.get("/documents", (_, res) => {
-  const docFiles: Document[] = [];
-
-  fs.readdir("resources/documents/common", (err, files) => {
-    if (err) {
-      res.status(500).send("Failed to read documents");
-      return;
-    }
-    files.forEach((file) => {
-      const fileType = file.split(".").pop() ?? "";
-      docFiles.push({
-        filename: file,
-        filetype: fileType === "csv" ? "text/csv" : fileType,
-      });
-    });
-    res.send(docFiles);
-  });
+  try {
+    res.send(getSandboxDocumentMetas());
+  } catch (err) {
+    res.status(500).send("Failed to read documents");
+  }
 });
 
 export { router };
