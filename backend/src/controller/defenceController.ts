@@ -13,7 +13,7 @@ import { DefenceActivateRequest } from "@src/models/api/DefenceActivateRequest";
 import { DefenceConfigResetRequest } from "@src/models/api/DefenceConfigResetRequest";
 import { DefenceConfigureRequest } from "@src/models/api/DefenceConfigureRequest";
 import { DefenceResetRequest } from "@src/models/api/DefenceResetRequest";
-import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
+import { DefenceStatusRequest } from "@src/models/api/DefenceStatusRequest";
 import { DefenceConfig } from "@src/models/defence";
 import { LEVEL_NAMES } from "@src/models/level";
 
@@ -126,7 +126,7 @@ function handleResetSingleDefence(
   }
 }
 
-function handleGetDefenceStatus(req: GetRequestQueryLevel, res: Response) {
+function handleGetDefenceStatus(req: DefenceStatusRequest, res: Response) {
   const level: number | undefined = req.query.level as number | undefined;
   if (level !== undefined) {
     res.send(req.session.levelState[level].defences);

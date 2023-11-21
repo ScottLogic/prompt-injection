@@ -1,15 +1,13 @@
 import { Request } from "express";
 
-import { DEFENCE_TYPES } from "@src/models/defence";
+import { DEFENCE_TYPES, DefenceConfig } from "@src/models/defence";
 
-type DefenceConfigResetRequest = Request<
-  object,
-  object,
+export type DefenceConfigResetRequest = Request<
+  never,
+  DefenceConfig,
   {
     defenceId?: DEFENCE_TYPES;
     configId?: string;
   },
-  object
+  never
 >;
-
-export type { DefenceConfigResetRequest };

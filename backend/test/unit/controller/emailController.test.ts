@@ -7,7 +7,7 @@ import {
   handleGetEmails,
 } from "@src/controller/emailController";
 import { EmailClearRequest } from "@src/models/api/EmailClearRequest";
-import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
+import { EmailGetRequest } from "@src/models/api/EmailGetRequest";
 import { ChatHistoryMessage, ChatModel } from "@src/models/chat";
 import { DefenceInfo } from "@src/models/defence";
 import { EmailInfo } from "@src/models/email";
@@ -60,7 +60,7 @@ describe("handleGetEmails", () => {
           },
         ],
       },
-    } as GetRequestQueryLevel;
+    } as unknown as EmailGetRequest;
 
     const res = responseMock();
 
@@ -72,7 +72,7 @@ describe("handleGetEmails", () => {
   test("GIVEN missing level WHEN handleGetEmails called THEN returns 400 ", () => {
     const req = {
       query: {},
-    } as GetRequestQueryLevel;
+    } as EmailGetRequest;
 
     const res = responseMock();
     handleGetEmails(req, res);

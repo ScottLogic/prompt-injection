@@ -3,10 +3,10 @@ import { Response } from "express";
 import { handleChatError } from "./handleError";
 
 import { transformMessage, detectTriggeredDefences } from "@src/defence";
-import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
 import { OpenAiAddHistoryRequest } from "@src/models/api/OpenAiAddHistoryRequest";
 import { OpenAiChatRequest } from "@src/models/api/OpenAiChatRequest";
 import { OpenAiClearRequest } from "@src/models/api/OpenAiClearRequest";
+import { OpenAiGetHistoryRequest } from "@src/models/api/OpenAiGetHistoryRequest";
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
@@ -228,7 +228,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
   res.send(chatResponse);
 }
 
-function handleGetChatHistory(req: GetRequestQueryLevel, res: Response) {
+function handleGetChatHistory(req: OpenAiGetHistoryRequest, res: Response) {
   const level: number | undefined = req.query.level as number | undefined;
   if (level !== undefined) {
     res.send(req.session.levelState[level].chatHistory);

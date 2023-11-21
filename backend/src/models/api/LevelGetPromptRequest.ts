@@ -2,13 +2,11 @@ import { Request } from "express";
 
 import { LEVEL_NAMES } from "@src/models/level";
 
-type GetRequestQueryLevel = Request<
-  object,
-  object,
-  object,
+export type LevelGetPromptRequest = Request<
+  never,
+  string,
+  never,
   {
     level?: LEVEL_NAMES;
   }
 >;
-
-export type { GetRequestQueryLevel };

@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
+import { OpenAIGetModelRequest } from "@src/models/api/OpenAIGetModelRequest";
 import { OpenAiConfigureModelRequest } from "@src/models/api/OpenAiConfigureModelRequest";
 import { OpenAiSetModelRequest } from "@src/models/api/OpenAiSetModelRequest";
 import { ChatModelConfiguration, MODEL_CONFIG } from "@src/models/chat";
@@ -74,7 +74,7 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
   }
 }
 
-function handleGetModel(req: GetRequestQueryLevel, res: Response) {
+function handleGetModel(req: OpenAIGetModelRequest, res: Response) {
   res.send(req.session.chatModel);
 }
 

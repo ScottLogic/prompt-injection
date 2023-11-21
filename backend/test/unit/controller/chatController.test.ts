@@ -8,10 +8,10 @@ import {
   handleClearChatHistory,
   handleGetChatHistory,
 } from "@src/controller/chatController";
-import { GetRequestQueryLevel } from "@src/models/api/GetRequestQueryLevel";
 import { OpenAiAddHistoryRequest } from "@src/models/api/OpenAiAddHistoryRequest";
 import { OpenAiChatRequest } from "@src/models/api/OpenAiChatRequest";
 import { OpenAiClearRequest } from "@src/models/api/OpenAiClearRequest";
+import { OpenAiGetHistoryRequest } from "@src/models/api/OpenAiGetHistoryRequest";
 import {
   CHAT_MESSAGE_TYPE,
   ChatHistoryMessage,
@@ -99,7 +99,7 @@ function getAddHistoryRequestMock(
   } as OpenAiAddHistoryRequest;
 }
 
-function getRequestQueryLevelMock(
+function getRequestMock(
   level?: LEVEL_NAMES,
   chatHistory?: ChatHistoryMessage[]
 ) {
@@ -114,7 +114,7 @@ function getRequestQueryLevelMock(
         },
       ],
     },
-  } as GetRequestQueryLevel;
+  } as OpenAiGetHistoryRequest;
 }
 
 function openAiClearRequestMock(
@@ -235,7 +235,7 @@ describe("handleGetChatHistory", () => {
     },
   ];
   test("GIVEN a valid level WHEN handleGetChatHistory called THEN return chat history", () => {
-    const req = getRequestQueryLevelMock(0, chatHistory);
+    const req = getRequestMock(0, chatHistory);
     const res = responseMock();
 
     handleGetChatHistory(req, res);
@@ -243,7 +243,7 @@ describe("handleGetChatHistory", () => {
   });
 
   test("GIVEN undefined level WHEN handleGetChatHistory called THEN return 400", () => {
-    const req = getRequestQueryLevelMock(undefined);
+    const req = getRequestMock(undefined);
     const res = responseMock();
 
     handleGetChatHistory(req, res);
