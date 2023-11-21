@@ -9,6 +9,7 @@ import MissionInformation from "./components/Overlay/MissionInformation";
 import OverlayWelcome from "./components/Overlay/OverlayWelcome";
 import { LEVEL_NAMES, LevelSystemRole } from "./models/level";
 import { OVERLAY_TYPE } from "./models/overlay";
+import { getSystemRoles } from "./service/levelService";
 
 function App() {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -61,17 +62,15 @@ function App() {
       return 0;
     }
   }
-  
+
   function incrementNumCompletedLevels(completedLevel: LEVEL_NAMES) {
-    console.log("incrementing num completed levels");
     setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
   }
-  
+
   useEffect(() => {
     // save number of completed levels to local storage
     localStorage.setItem("numCompletedLevels", numCompletedLevels.toString());
   }, [numCompletedLevels]);
-
 
   // called on mount
   useEffect(() => {
@@ -96,6 +95,17 @@ function App() {
       openWelcomeOverlay();
     }
   }, [isNewUser]);
+
+  useEffect(() => {
+    // load the system roles
+    getSystemRoles()
+      .then((roles) => {
+        setSystemRoles(roles);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   useEffect(() => {
     if (overlayType === null) {
@@ -129,7 +139,7 @@ function App() {
           <HandbookOverlay
             currentLevel={currentLevel}
             numCompletedLevels={numCompletedLevels}
-            
+            systemRoles={systemRoles}
             closeOverlay={closeOverlay}
           />
         );

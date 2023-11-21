@@ -17,7 +17,6 @@ import { DefenceResetRequest } from "./models/api/DefenceResetRequest";
 import { DefenceStatusRequest } from "./models/api/DefenceStatusRequest";
 import { EmailClearRequest } from "./models/api/EmailClearRequest";
 import { EmailGetRequest } from "./models/api/EmailGetRequest";
-import { LevelGetPromptRequest } from "./models/api/LevelGetPromptRequest";
 import { OpenAiAddHistoryRequest } from "./models/api/OpenAiAddHistoryRequest";
 import { OpenAiChatRequest } from "./models/api/OpenAiChatRequest";
 import { OpenAiClearRequest } from "./models/api/OpenAiClearRequest";
@@ -562,13 +561,12 @@ router.get("/openai/model", (req, res) => {
 // return system roles for all levels
 router.get("/systemRoles", (_, res) => {
   const systemRoles = [
-    {1: systemRoleLevel1},
-    {2: systemRoleLevel2},
-    {3: systemRoleLevel3},
-  ]
+    { level: LEVEL_NAMES.LEVEL_1, systemRole: systemRoleLevel1 },
+    { level: LEVEL_NAMES.LEVEL_2, systemRole: systemRoleLevel2 },
+    { level: LEVEL_NAMES.LEVEL_3, systemRole: systemRoleLevel3 },
+  ];
   res.send(systemRoles);
 });
-
 
 // get names and types of documents for sandbox and common
 router.get("/documents", (_, res) => {

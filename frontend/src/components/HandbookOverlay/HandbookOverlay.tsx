@@ -14,10 +14,12 @@ import { LEVEL_NAMES, LevelSystemRole } from "@src/models/level";
 function HandbookOverlay({
   currentLevel,
   numCompletedLevels,
+  systemRoles,
   closeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
   numCompletedLevels: number;
+  systemRoles: LevelSystemRole[];
   closeOverlay: () => void;
 }) {
   const [selectedPage, setSelectedPage] = useState<HANDBOOK_PAGES>(
@@ -28,17 +30,14 @@ function HandbookOverlay({
   const handBookPageContainer = useRef<HTMLDivElement>(null);
   const isOverflow = useIsOverflow(handBookPageContainer);
 
-  const systemRoles: LevelSystemRole[] = [
-    {level:0, systemRole: "system role level 1"},
-    {level:1, systemRole: "system role level 2"},
-    {level:2, systemRole: "system role level 3"},
-  ];
-
   const pageContent = {
     [HANDBOOK_PAGES.ATTACKS]: <HandbookAttacks currentLevel={currentLevel} />,
     [HANDBOOK_PAGES.GLOSSARY]: <HandbookGlossary />,
     [HANDBOOK_PAGES.SYSTEM_ROLE]: (
-      <HandbookSystemRole numCompletedLevels={numCompletedLevels} systemRoles={systemRoles} />
+      <HandbookSystemRole
+        numCompletedLevels={numCompletedLevels}
+        systemRoles={systemRoles}
+      />
     ),
   }[selectedPage];
 

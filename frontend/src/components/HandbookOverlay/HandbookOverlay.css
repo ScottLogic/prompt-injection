@@ -42,6 +42,11 @@
 .handbook-overlay .content h1 {
   font-size: 1.125rem;
 }
+
+.handbook-overlay .content h2 {
+  font-size: 1rem;
+}
+
 .handbook-overlay .content p {
   font-size: 1rem;
 }

@@ -32,7 +32,7 @@ function MainComponent({
   openLevelsCompleteOverlay,
   openWelcomeOverlay,
   setCurrentLevel,
-  incrementNumCompletedLevels
+  incrementNumCompletedLevels,
 }: {
   currentLevel: LEVEL_NAMES;
   numCompletedLevels: number;
