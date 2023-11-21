@@ -1,17 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const mockCall = jest.fn();
-const mockRetrievalQAChain = {
-  call: mockCall,
-};
-const mockPromptEvalChain = {
-  call: mockCall,
-};
-const mockFromLLM = jest.fn();
-const mockFromTemplate = jest.fn(() => "");
-const mockLoader = jest.fn();
-const mockSplitDocuments = jest.fn();
-const mockAsRetriever = jest.fn();
-
 import {
   initPromptEvaluationModel,
   initQAModel,
@@ -30,6 +16,20 @@ import {
   maliciousPromptEvalPrePrompt,
   maliciousPromptEvalMainPrompt,
 } from "@src/promptTemplates";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const mockCall = jest.fn();
+const mockRetrievalQAChain = {
+  call: mockCall,
+};
+const mockPromptEvalChain = {
+  call: mockCall,
+};
+const mockFromLLM = jest.fn();
+const mockFromTemplate = jest.fn(() => "");
+const mockLoader = jest.fn();
+const mockSplitDocuments = jest.fn();
+const mockAsRetriever = jest.fn();
 
 // mock OpenAIEmbeddings
 jest.mock("langchain/embeddings/openai", () => {
