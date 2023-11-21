@@ -1,3 +1,6 @@
+import { RetrievalQAChain } from "langchain/chains";
+import { PromptTemplate } from "langchain/prompts";
+
 import {
   initPromptEvaluationModel,
   initQAModel,
@@ -26,7 +29,7 @@ const mockPromptEvalChain = {
   call: mockCall,
 };
 const mockFromLLM = jest.fn();
-const mockFromTemplate = jest.fn(() => "");
+const mockFromTemplate = jest.fn();
 const mockLoader = jest.fn();
 const mockSplitDocuments = jest.fn();
 const mockAsRetriever = jest.fn();
@@ -101,13 +104,8 @@ jest.mock("langchain/text_splitter", () => {
 });
 
 // mock PromptTemplate.fromTemplate static method
-jest.mock("langchain/prompts", () => {
-  return {
-    PromptTemplate: {
-      fromTemplate: mockFromTemplate,
-    },
-  };
-});
+jest.mock("langchain/prompts")
+PromptTemplate.fromTemplate = mockFromTemplate;
 
 // mock OpenAI for ChatOpenAI class
 jest.mock("langchain/chat_models/openai");
@@ -115,10 +113,11 @@ jest.mock("langchain/chat_models/openai");
 // mock RetrievalQAChain
 jest.mock("langchain/chains", () => {
   return {
-    RetrievalQAChain: {
-      fromLLM: mockFromLLM,
-      call: mockCall,
-    },
+    RetrievalQAChain: jest.fn().mockImplementation(() => {
+      return {
+        call: mockCall,
+      };
+    }),
     SequentialChain: jest.fn().mockImplementation(() => {
       return {
         call: mockCall,
@@ -127,6 +126,7 @@ jest.mock("langchain/chains", () => {
     LLMChain: jest.fn(),
   };
 });
+RetrievalQAChain.fromLLM = mockFromLLM;
 
 beforeEach(() => {
   // reset environment variables
