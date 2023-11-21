@@ -26,54 +26,32 @@ import { clearEmails, getSentEmails } from "@src/service/emailService";
 
 function MainComponent({
   currentLevel,
-  isNewUser,
+  numCompletedLevels,
   openHandbook,
   openInformationOverlay,
   openLevelsCompleteOverlay,
   openWelcomeOverlay,
   setCurrentLevel,
+  incrementNumCompletedLevels
 }: {
   currentLevel: LEVEL_NAMES;
-  isNewUser: boolean;
+  numCompletedLevels: number;
   openHandbook: () => void;
   openInformationOverlay: () => void;
   openLevelsCompleteOverlay: () => void;
   openWelcomeOverlay: () => void;
   setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
+  incrementNumCompletedLevels: (level: number) => void;
 }) {
   const [MainBodyKey, setMainBodyKey] = useState<number>(0);
-  const [numCompletedLevels, setNumCompletedLevels] = useState(
-    loadNumCompletedLevels
-  );
   const [defencesToShow, setDefencesToShow] =
     useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  function loadNumCompletedLevels() {
-    // get number of completed levels from local storage
-    const numCompletedLevelsStr = localStorage.getItem("numCompletedLevels");
-    if (numCompletedLevelsStr && !isNewUser) {
-      // keep users progress from where they last left off
-      return parseInt(numCompletedLevelsStr);
-    } else {
-      // 0 levels completed by default
-      return 0;
-    }
-  }
-
-  function incrementNumCompletedLevels(completedLevel: LEVEL_NAMES) {
-    setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
-  }
-
   useEffect(() => {
     void setNewLevel(currentLevel);
   }, [currentLevel]);
-
-  useEffect(() => {
-    // save number of completed levels to local storage
-    localStorage.setItem("numCompletedLevels", numCompletedLevels.toString());
-  }, [numCompletedLevels]);
 
   // methods to modify messages
   function addChatMessage(message: ChatMessage) {

@@ -52,6 +52,7 @@ function App() {
   function loadNumCompletedLevels() {
     // get number of completed levels from local storage
     const numCompletedLevelsStr = localStorage.getItem("numCompletedLevels");
+
     if (numCompletedLevelsStr && !isNewUser) {
       // keep users progress from where they last left off
       return parseInt(numCompletedLevelsStr);
@@ -62,6 +63,7 @@ function App() {
   }
   
   function incrementNumCompletedLevels(completedLevel: LEVEL_NAMES) {
+    console.log("incrementing num completed levels");
     setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
   }
   
@@ -126,6 +128,8 @@ function App() {
         setOverlayComponent(
           <HandbookOverlay
             currentLevel={currentLevel}
+            numCompletedLevels={numCompletedLevels}
+            
             closeOverlay={closeOverlay}
           />
         );

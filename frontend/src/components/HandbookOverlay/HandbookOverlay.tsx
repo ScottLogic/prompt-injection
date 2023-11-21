@@ -13,9 +13,11 @@ import { LEVEL_NAMES, LevelSystemRole } from "@src/models/level";
 
 function HandbookOverlay({
   currentLevel,
+  numCompletedLevels,
   closeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
+  numCompletedLevels: number;
   closeOverlay: () => void;
 }) {
   const [selectedPage, setSelectedPage] = useState<HANDBOOK_PAGES>(
@@ -36,7 +38,7 @@ function HandbookOverlay({
     [HANDBOOK_PAGES.ATTACKS]: <HandbookAttacks currentLevel={currentLevel} />,
     [HANDBOOK_PAGES.GLOSSARY]: <HandbookGlossary />,
     [HANDBOOK_PAGES.SYSTEM_ROLE]: (
-      <HandbookSystemRole level={currentLevel} systemRoles={systemRoles} beatCurrentLevel={false} />
+      <HandbookSystemRole numCompletedLevels={numCompletedLevels} systemRoles={systemRoles} />
     ),
   }[selectedPage];
 
