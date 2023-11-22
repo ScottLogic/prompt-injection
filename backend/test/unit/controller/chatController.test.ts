@@ -44,112 +44,6 @@ jest.mock("openai", () => ({
   Configuration: jest.fn().mockImplementation(() => ({})),
 }));
 
-function chatResponseAssistant(content: string) {
-  return {
-    data: {
-      choices: [
-        {
-          message: {
-            role: "assistant",
-            content,
-          },
-        },
-      ],
-    },
-  };
-}
-
-function openAiChatRequestMock(message?: string, level?: LEVEL_NAMES) {
-  return {
-    body: {
-      currentLevel: level ?? undefined,
-      message: message ?? "",
-    },
-    session: {
-      levelState: [
-        {
-          level: level ?? undefined,
-          chatHistory: [],
-          defences: [],
-          sentEmails: [],
-        },
-      ],
-    },
-  } as unknown as OpenAiChatRequest;
-}
-
-function getAddHistoryRequestMock(
-  message: string,
-  level?: LEVEL_NAMES,
-  chatHistory?: ChatHistoryMessage[]
-) {
-  return {
-    body: {
-      message,
-      chatMessageType: CHAT_MESSAGE_TYPE.USER,
-      level: level ?? undefined,
-    },
-    session: {
-      levelState: [
-        {
-          chatHistory: chatHistory ?? [],
-        },
-      ],
-    },
-  } as OpenAiAddHistoryRequest;
-}
-
-function getRequestMock(
-  level?: LEVEL_NAMES,
-  chatHistory?: ChatHistoryMessage[]
-) {
-  return {
-    query: {
-      level: level ?? undefined,
-    },
-    session: {
-      levelState: [
-        {
-          chatHistory: chatHistory ?? [],
-        },
-      ],
-    },
-  } as OpenAiGetHistoryRequest;
-}
-
-function openAiClearRequestMock(
-  level?: LEVEL_NAMES,
-  chatHistory?: ChatHistoryMessage[]
-) {
-  return {
-    body: {
-      level: level ?? undefined,
-    },
-    session: {
-      levelState: [
-        {
-          chatHistory: chatHistory ?? [],
-        },
-      ],
-    },
-  } as OpenAiClearRequest;
-}
-
-function errorResponseMock(message: string, trasnformedMessage?: string) {
-  return {
-    reply: message,
-    defenceInfo: {
-      blockedReason: message,
-      isBlocked: true,
-      alertedDefences: [],
-      triggeredDefences: [],
-    },
-    transformedMessage: trasnformedMessage ?? "",
-    wonLevel: false,
-    isError: true,
-  };
-}
-
 function responseMock() {
   return {
     send: jest.fn(),
@@ -157,10 +51,66 @@ function responseMock() {
   } as unknown as Response;
 }
 
-describe("handleChatToGPT", () => {
+describe("handleChatToGPT unit tests", () => {
+  function chatResponseAssistant(content: string) {
+    return {
+      data: {
+        choices: [
+          {
+            message: {
+              role: "assistant",
+              content,
+            },
+          },
+        ],
+      },
+    };
+  }
+
+  function errorResponseMock(message: string, transformedMessage?: string) {
+    return {
+      reply: message,
+      defenceInfo: {
+        blockedReason: message,
+        isBlocked: true,
+        alertedDefences: [],
+        triggeredDefences: [],
+      },
+      transformedMessage: transformedMessage ?? "",
+      wonLevel: false,
+      isError: true,
+    };
+  }
+
+  function openAiChatRequestMock(
+    message?: string,
+    level?: LEVEL_NAMES,
+    chatHistory: ChatHistoryMessage[] = [],
+    sentEmails: EmailInfo[] = [],
+    defences: DefenceInfo[] = []
+  ): OpenAiChatRequest {
+    return {
+      body: {
+        currentLevel: level ?? undefined,
+        message: message ?? "",
+      },
+      session: {
+        levelState: [
+          {
+            level: level ?? undefined,
+            chatHistory,
+            sentEmails,
+            defences,
+          },
+        ],
+      },
+    } as OpenAiChatRequest;
+  }
   test("GIVEN a valid message and level WHEN handleChatToGPT called THEN it should return a text reply", async () => {
     const req = openAiChatRequestMock("Hello chatbot", 0);
     const res = responseMock();
+
+    res;
 
     mockCreateChatCompletion.mockResolvedValueOnce(
       chatResponseAssistant("Howdy human!")
@@ -220,6 +170,24 @@ describe("handleChatToGPT", () => {
 });
 
 describe("handleGetChatHistory", () => {
+  function getRequestMock(
+    level?: LEVEL_NAMES,
+    chatHistory?: ChatHistoryMessage[]
+  ) {
+    return {
+      query: {
+        level: level ?? undefined,
+      },
+      session: {
+        levelState: [
+          {
+            chatHistory: chatHistory ?? [],
+          },
+        ],
+      },
+    } as OpenAiGetHistoryRequest;
+  }
+
   const chatHistory: ChatHistoryMessage[] = [
     {
       completion: { role: "system", content: "You are a helpful chatbot" },
@@ -243,7 +211,7 @@ describe("handleGetChatHistory", () => {
   });
 
   test("GIVEN undefined level WHEN handleGetChatHistory called THEN return 400", () => {
-    const req = getRequestMock(undefined);
+    const req = getRequestMock();
     const res = responseMock();
 
     handleGetChatHistory(req, res);
@@ -254,6 +222,27 @@ describe("handleGetChatHistory", () => {
 });
 
 describe("handleAddToChatHistory", () => {
+  function getAddHistoryRequestMock(
+    message: string,
+    level?: LEVEL_NAMES,
+    chatHistory?: ChatHistoryMessage[]
+  ) {
+    return {
+      body: {
+        message,
+        chatMessageType: CHAT_MESSAGE_TYPE.USER,
+        level: level ?? undefined,
+      },
+      session: {
+        levelState: [
+          {
+            chatHistory: chatHistory ?? [],
+          },
+        ],
+      },
+    } as OpenAiAddHistoryRequest;
+  }
+
   const chatHistory: ChatHistoryMessage[] = [
     {
       completion: { role: "system", content: "You are a helpful chatbot" },
@@ -288,6 +277,24 @@ describe("handleAddToChatHistory", () => {
 });
 
 describe("handleClearChatHistory", () => {
+  function openAiClearRequestMock(
+    level?: LEVEL_NAMES,
+    chatHistory?: ChatHistoryMessage[]
+  ) {
+    return {
+      body: {
+        level: level ?? undefined,
+      },
+      session: {
+        levelState: [
+          {
+            chatHistory: chatHistory ?? [],
+          },
+        ],
+      },
+    } as OpenAiClearRequest;
+  }
+
   const chatHistory: ChatHistoryMessage[] = [
     {
       completion: { role: "system", content: "You are a helpful chatbot" },

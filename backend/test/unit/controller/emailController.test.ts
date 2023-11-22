@@ -60,7 +60,7 @@ describe("handleGetEmails", () => {
           },
         ],
       },
-    } as unknown as EmailGetRequest;
+    } as EmailGetRequest;
 
     const res = responseMock();
 
