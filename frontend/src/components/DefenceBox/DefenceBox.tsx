@@ -6,6 +6,7 @@ import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
 function DefenceBox({
   defences,
   showConfigurations,
+  resetDefenceConfiguration,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
@@ -13,6 +14,10 @@ function DefenceBox({
   currentLevel: number;
   defences: DefenceInfo[];
   showConfigurations: boolean;
+  resetDefenceConfiguration: (
+    defenceId: DEFENCE_TYPES,
+    configId: string
+  ) => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
@@ -28,6 +33,7 @@ function DefenceBox({
             key={index}
             defenceDetail={defence}
             showConfigurations={showConfigurations}
+            resetDefenceConfiguration={resetDefenceConfiguration}
             setDefenceActive={setDefenceActive}
             setDefenceInactive={setDefenceInactive}
             setDefenceConfiguration={setDefenceConfiguration}
