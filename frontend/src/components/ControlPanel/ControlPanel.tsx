@@ -4,7 +4,11 @@ import DefenceBox from "@src/components/DefenceBox/DefenceBox";
 import DocumentViewButton from "@src/components/DocumentViewer/DocumentViewButton";
 import ModelBox from "@src/components/ModelBox/ModelBox";
 import SwitchModeButton from "@src/components/ThemedButtons/SwitchModeButton";
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
+import {
+  DEFENCE_TYPES,
+  DefenceConfigItem,
+  DefenceInfo,
+} from "@src/models/defence";
 import { LEVEL_NAMES } from "@src/models/level";
 
 function ControlPanel({
@@ -26,7 +30,7 @@ function ControlPanel({
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
     defenceId: DEFENCE_TYPES,
-    config: DefenceConfig[]
+    config: DefenceConfigItem[]
   ) => Promise<boolean>;
   openWelcomeOverlay: () => void;
 }) {

@@ -8,7 +8,11 @@ import ControlPanel from "@src/components/ControlPanel/ControlPanel";
 import EmailBox from "@src/components/EmailBox/EmailBox";
 import ShortMissionInfoButton from "@src/components/ShortMissionInfoButton/ShortMissionInfoButton";
 import { ChatMessage } from "@src/models/chat";
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
+import {
+  DEFENCE_TYPES,
+  DefenceConfigItem,
+  DefenceInfo,
+} from "@src/models/defence";
 import { EmailInfo } from "@src/models/email";
 import { LEVEL_NAMES } from "@src/models/level";
 
@@ -43,7 +47,7 @@ function MainBody({
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
     defenceId: DEFENCE_TYPES,
-    config: DefenceConfig[]
+    config: DefenceConfigItem[]
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;
   incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;

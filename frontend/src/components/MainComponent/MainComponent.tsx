@@ -7,7 +7,11 @@ import MainHeader from "./MainHeader";
 
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "@src/Defences";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
+import {
+  DEFENCE_TYPES,
+  DefenceConfigItem,
+  DefenceInfo,
+} from "@src/models/defence";
 import { EmailInfo } from "@src/models/email";
 import { LEVEL_NAMES } from "@src/models/level";
 import {
@@ -205,7 +209,7 @@ function MainComponent({
 
   async function setDefenceConfiguration(
     defenceId: DEFENCE_TYPES,
-    config: DefenceConfig[]
+    config: DefenceConfigItem[]
   ) {
     const success = await configureDefence(defenceId, config, currentLevel);
     if (success) {

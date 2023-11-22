@@ -1,7 +1,11 @@
 import "./DefenceBox.css";
 import DefenceMechanism from "./DefenceMechanism";
 
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
+import {
+  DEFENCE_TYPES,
+  DefenceConfigItem,
+  DefenceInfo,
+} from "@src/models/defence";
 
 function DefenceBox({
   defences,
@@ -22,7 +26,7 @@ function DefenceBox({
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
     defenceId: DEFENCE_TYPES,
-    config: DefenceConfig[]
+    config: DefenceConfigItem[]
   ) => Promise<boolean>;
 }) {
   return (

@@ -8,7 +8,7 @@ enum DEFENCE_TYPES {
   FILTER_BOT_OUTPUT = "FILTER_BOT_OUTPUT",
 }
 
-class DefenceConfig {
+class DefenceConfigItem {
   constructor(id: string, name: string, inputType: "text" | "number") {
     this.id = id;
     this.inputType = inputType;
@@ -27,7 +27,7 @@ class DefenceInfo {
     id: DEFENCE_TYPES,
     name: string,
     info: string,
-    config: DefenceConfig[]
+    config: DefenceConfigItem[]
   ) {
     this.id = id;
     this.name = name;
@@ -41,7 +41,7 @@ class DefenceInfo {
   id: DEFENCE_TYPES;
   name: string;
   info: string;
-  config: DefenceConfig[];
+  config: DefenceConfigItem[];
   isActive: boolean;
   isTriggered: boolean;
 }
@@ -51,5 +51,5 @@ interface DefenceResetResponse {
   value: string;
 }
 
-export { DEFENCE_TYPES, DefenceConfig, DefenceInfo };
+export { DEFENCE_TYPES, DefenceConfigItem, DefenceInfo };
 export type { DefenceResetResponse };

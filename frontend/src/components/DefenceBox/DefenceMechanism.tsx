@@ -4,7 +4,11 @@ import { TiTick, TiTimes } from "react-icons/ti";
 import DefenceConfiguration from "./DefenceConfiguration";
 import "./DefenceMechanism.css";
 
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
+import {
+  DEFENCE_TYPES,
+  DefenceConfigItem,
+  DefenceInfo,
+} from "@src/models/defence";
 import { validateDefence } from "@src/service/defenceService";
 
 function DefenceMechanism({
@@ -25,7 +29,7 @@ function DefenceMechanism({
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
     defenceId: DEFENCE_TYPES,
-    config: DefenceConfig[]
+    config: DefenceConfigItem[]
   ) => Promise<boolean>;
 }) {
   const [showConfiguredText, setShowConfiguredText] = useState<boolean>(false);

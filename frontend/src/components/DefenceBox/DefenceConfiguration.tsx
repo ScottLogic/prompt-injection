@@ -4,7 +4,7 @@ import "./DefenceConfiguration.css";
 import DefenceConfigurationInput from "./DefenceConfigurationInput";
 
 import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
-import { DefenceConfig } from "@src/models/defence";
+import { DefenceConfigItem } from "@src/models/defence";
 
 function DefenceConfiguration({
   config,
@@ -12,7 +12,7 @@ function DefenceConfiguration({
   setConfigurationValue,
   resetConfigurationValue,
 }: {
-  config: DefenceConfig;
+  config: DefenceConfigItem;
   isActive: boolean;
   setConfigurationValue: (configId: string, value: string) => Promise<void>;
   resetConfigurationValue: (configId: string) => void;
