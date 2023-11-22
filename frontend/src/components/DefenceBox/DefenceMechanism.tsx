@@ -1,9 +1,11 @@
-import DefenceConfiguration from "./DefenceConfiguration";
-import "./DefenceMechanism.css";
-import { DEFENCE_ID, DefenceConfigItem, Defence } from "@src/models/defence";
-import { validateDefence } from "@src/service/defenceService";
 import { useState } from "react";
 import { TiTick, TiTimes } from "react-icons/ti";
+
+import DefenceConfiguration from "./DefenceConfiguration";
+import "./DefenceMechanism.css";
+
+import { DEFENCE_ID, DefenceConfigItem, Defence } from "@src/models/defence";
+import { validateDefence } from "@src/service/defenceService";
 
 function DefenceMechanism({
   defenceDetail,
