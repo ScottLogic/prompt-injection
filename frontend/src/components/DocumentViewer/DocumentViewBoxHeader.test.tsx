@@ -1,9 +1,24 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 
 import DocumentViewBoxHeader from "./DocumentViewBoxHeader";
 
 describe("DocumentViewBoxHeader component tests", () => {
+  let previousClicked = false;
+  let nextClicked = false;
+
+  beforeEach(() => {
+    previousClicked = false;
+    nextClicked = false;
+  });
+
+  function onPrevious() {
+    previousClicked = true;
+  }
+  function onNext() {
+    nextClicked = true;
+  }
+
   function renderDocumentViewBoxHeader(
     numberOfDocuments: number,
     documentIndex: number,
@@ -14,8 +29,8 @@ describe("DocumentViewBoxHeader component tests", () => {
         documentIndex={documentIndex}
         documentName={documentName}
         numberOfDocuments={numberOfDocuments}
-        onPrevious={() => {}}
-        onNext={() => {}}
+        onPrevious={onPrevious}
+        onNext={onNext}
       />
     );
   }
@@ -28,15 +43,23 @@ describe("DocumentViewBoxHeader component tests", () => {
     return screen.getByRole("button", { name: "next document ►" });
   }
 
-  function checkButtonAria(
-    button: "previous" | "next",
-    disabled: "true" | "false"
-  ) {
+  function checkButtonAria(button: "previous" | "next", disabled: boolean) {
     const buttonHtml =
       button === "previous" ? getPreviousButton() : getNextButton();
-    expect(buttonHtml).toHaveAttribute("aria-disabled", disabled);
+
+    expect(buttonHtml).toHaveAttribute(
+      "aria-disabled",
+      disabled ? "true" : "false"
+    );
     // buttons should always be enabled for screen readers
     expect(buttonHtml).toBeEnabled();
+
+    buttonHtml.click();
+    if (button === "previous") {
+      expect(previousClicked).toBe(!disabled);
+    } else {
+      expect(nextClicked).toBe(!disabled);
+    }
   }
 
   test("document index, name, and number of documents are shown", () => {
@@ -64,8 +87,8 @@ describe("DocumentViewBoxHeader component tests", () => {
     const documentName = "test";
 
     renderDocumentViewBoxHeader(numberOfDocuments, documentIndex, documentName);
-    checkButtonAria("previous", "true");
-    checkButtonAria("next", "false");
+    checkButtonAria("previous", true);
+    checkButtonAria("next", false);
   });
 
   test("next button aria-disabled when showing the last document", () => {
@@ -74,8 +97,8 @@ describe("DocumentViewBoxHeader component tests", () => {
     const documentName = "test";
 
     renderDocumentViewBoxHeader(numberOfDocuments, documentIndex, documentName);
-    checkButtonAria("previous", "false");
-    checkButtonAria("next", "true");
+    checkButtonAria("previous", false);
+    checkButtonAria("next", true);
   });
 
   test("both buttons are aria-disabled when there is only one document", () => {
@@ -84,8 +107,8 @@ describe("DocumentViewBoxHeader component tests", () => {
     const documentName = "test";
 
     renderDocumentViewBoxHeader(numberOfDocuments, documentIndex, documentName);
-    checkButtonAria("previous", "true");
-    checkButtonAria("next", "true");
+    checkButtonAria("previous", true);
+    checkButtonAria("next", true);
   });
 
   test("neither button is aria-disabled when in the middle of the documents", () => {
@@ -94,7 +117,7 @@ describe("DocumentViewBoxHeader component tests", () => {
     const documentName = "test";
 
     renderDocumentViewBoxHeader(numberOfDocuments, documentIndex, documentName);
-    checkButtonAria("previous", "false");
-    checkButtonAria("next", "false");
+    checkButtonAria("previous", false);
+    checkButtonAria("next", false);
   });
 });
