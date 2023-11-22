@@ -10,7 +10,7 @@ import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 import {
   DEFENCE_ID,
   DefenceConfigItem,
-  DefenceInfo,
+  Defence,
 } from "@src/models/defence";
 import { EmailInfo } from "@src/models/email";
 import { LEVEL_NAMES } from "@src/models/level";
@@ -51,7 +51,7 @@ function MainComponent({
     loadNumCompletedLevels
   );
   const [defencesToShow, setDefencesToShow] =
-    useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
+    useState<Defence[]>(DEFENCE_DETAILS_ALL);
   const [emails, setEmails] = useState<EmailInfo[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
@@ -177,7 +177,7 @@ function MainComponent({
     setDefencesToShow(newDefences);
   }
 
-  async function setDefenceActive(defence: DefenceInfo) {
+  async function setDefenceActive(defence: Defence) {
     await activateDefence(defence.id, currentLevel);
     // update state
     const newDefenceDetails = defencesToShow.map((defenceDetail) => {
@@ -192,7 +192,7 @@ function MainComponent({
     setDefencesToShow(newDefenceDetails);
   }
 
-  async function setDefenceInactive(defence: DefenceInfo) {
+  async function setDefenceInactive(defence: Defence) {
     await deactivateDefence(defence.id, currentLevel);
     // update state
     const newDefenceDetails = defencesToShow.map((defenceDetail) => {
@@ -252,10 +252,8 @@ function MainComponent({
           void resetDefenceConfiguration(defenceId, configId)
         }
         resetLevel={() => void resetLevel()}
-        setDefenceActive={(defence: DefenceInfo) =>
-          void setDefenceActive(defence)
-        }
-        setDefenceInactive={(defence: DefenceInfo) =>
+        setDefenceActive={(defence: Defence) => void setDefenceActive(defence)}
+        setDefenceInactive={(defence: Defence) =>
           void setDefenceInactive(defence)
         }
         setDefenceConfiguration={setDefenceConfiguration}

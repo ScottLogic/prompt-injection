@@ -1,11 +1,7 @@
 import "./DefenceBox.css";
 import DefenceMechanism from "./DefenceMechanism";
 
-import {
-  DEFENCE_ID,
-  DefenceConfigItem,
-  DefenceInfo,
-} from "@src/models/defence";
+import { DEFENCE_ID, DefenceConfigItem, Defence } from "@src/models/defence";
 
 function DefenceBox({
   defences,
@@ -16,11 +12,11 @@ function DefenceBox({
   setDefenceConfiguration,
 }: {
   currentLevel: number;
-  defences: DefenceInfo[];
+  defences: Defence[];
   showConfigurations: boolean;
   resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
-  setDefenceActive: (defence: DefenceInfo) => void;
-  setDefenceInactive: (defence: DefenceInfo) => void;
+  setDefenceActive: (defence: Defence) => void;
+  setDefenceInactive: (defence: Defence) => void;
   setDefenceConfiguration: (
     defenceId: DEFENCE_ID,
     config: DefenceConfigItem[]

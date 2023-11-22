@@ -22,7 +22,7 @@ class DefenceConfigItem {
   value: string;
 }
 
-class DefenceInfo {
+class Defence {
   constructor(
     id: DEFENCE_ID,
     name: string,
@@ -51,5 +51,5 @@ interface DefenceResetResponse {
   value: string;
 }
 
-export { DEFENCE_ID, DefenceConfigItem, DefenceInfo };
+export { DEFENCE_ID, DefenceConfigItem, Defence };
 export type { DefenceResetResponse };

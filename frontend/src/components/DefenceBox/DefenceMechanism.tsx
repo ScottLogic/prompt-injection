@@ -1,15 +1,9 @@
-import { useState } from "react";
-import { TiTick, TiTimes } from "react-icons/ti";
-
 import DefenceConfiguration from "./DefenceConfiguration";
 import "./DefenceMechanism.css";
-
-import {
-  DEFENCE_ID,
-  DefenceConfigItem,
-  DefenceInfo,
-} from "@src/models/defence";
+import { DEFENCE_ID, DefenceConfigItem, Defence } from "@src/models/defence";
 import { validateDefence } from "@src/service/defenceService";
+import { useState } from "react";
+import { TiTick, TiTimes } from "react-icons/ti";
 
 function DefenceMechanism({
   defenceDetail,
@@ -19,11 +13,11 @@ function DefenceMechanism({
   setDefenceInactive,
   setDefenceConfiguration,
 }: {
-  defenceDetail: DefenceInfo;
+  defenceDetail: Defence;
   showConfigurations: boolean;
   resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
-  setDefenceActive: (defence: DefenceInfo) => void;
-  setDefenceInactive: (defence: DefenceInfo) => void;
+  setDefenceActive: (defence: Defence) => void;
+  setDefenceInactive: (defence: Defence) => void;
   setDefenceConfiguration: (
     defenceId: DEFENCE_ID,
     config: DefenceConfigItem[]
@@ -80,8 +74,7 @@ function DefenceMechanism({
         // re-render the configuration component when detail is toggled
         // this is to resize the textarea when detail is expanded
         setConfigKey(configKey + 1);
-      }}
-    >
+      }}>
       <summary>
         <span aria-hidden>{defenceDetail.name}</span>
         <label className="switch">

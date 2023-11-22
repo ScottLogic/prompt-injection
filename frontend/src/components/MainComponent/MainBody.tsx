@@ -11,7 +11,7 @@ import { ChatMessage } from "@src/models/chat";
 import {
   DEFENCE_ID,
   DefenceConfigItem,
-  DefenceInfo,
+  Defence,
 } from "@src/models/defence";
 import { EmailInfo } from "@src/models/email";
 import { LEVEL_NAMES } from "@src/models/level";
@@ -34,14 +34,14 @@ function MainBody({
   openWelcomeOverlay,
 }: {
   currentLevel: LEVEL_NAMES;
-  defences: DefenceInfo[];
+  defences: Defence[];
   emails: EmailInfo[];
   messages: ChatMessage[];
   addChatMessage: (message: ChatMessage) => void;
   resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
   resetLevel: () => void;
-  setDefenceActive: (defence: DefenceInfo) => void;
-  setDefenceInactive: (defence: DefenceInfo) => void;
+  setDefenceActive: (defence: Defence) => void;
+  setDefenceInactive: (defence: Defence) => void;
   setDefenceConfiguration: (
     defenceId: DEFENCE_ID,
     config: DefenceConfigItem[]
