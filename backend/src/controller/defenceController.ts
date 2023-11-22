@@ -7,17 +7,17 @@ import {
   activateDefence,
   configureDefence,
   deactivateDefence,
-  resetDefenceConfig,
+  resetDefenceConfigItem,
 } from "@src/defence";
 import { DefenceActivateRequest } from "@src/models/api/DefenceActivateRequest";
 import { DefenceConfigResetRequest } from "@src/models/api/DefenceConfigResetRequest";
 import { DefenceConfigureRequest } from "@src/models/api/DefenceConfigureRequest";
 import { DefenceResetRequest } from "@src/models/api/DefenceResetRequest";
 import { DefenceStatusRequest } from "@src/models/api/DefenceStatusRequest";
-import { DefenceConfig } from "@src/models/defence";
+import { DefenceConfigItem } from "@src/models/defence";
 import { LEVEL_NAMES } from "@src/models/level";
 
-function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
+function configValueExceedsCharacterLimit(config: DefenceConfigItem[]) {
   const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
 
   const allValuesWithinLimit = config.every(
@@ -104,12 +104,12 @@ function handleResetSingleDefence(
   const configId = req.body.configId;
   const level = LEVEL_NAMES.SANDBOX; //configuration only available in sandbox
   if (defenceId && configId) {
-    req.session.levelState[level].defences = resetDefenceConfig(
+    req.session.levelState[level].defences = resetDefenceConfigItem(
       defenceId,
       configId,
       req.session.levelState[level].defences
     );
-    const updatedDefenceConfig: DefenceConfig | undefined =
+    const updatedDefenceConfig: DefenceConfigItem | undefined =
       req.session.levelState[level].defences
         .find((defence) => defence.id === defenceId)
         ?.config.find((config) => config.id === configId);

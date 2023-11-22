@@ -406,9 +406,9 @@ describe("OpenAI Integration Tests", () => {
     );
 
     expect(reply).toBeDefined();
-    expect(reply.defenceInfo.isBlocked).toBe(true);
-    expect(reply.defenceInfo.triggeredDefences.length).toBe(1);
-    expect(reply.defenceInfo.blockedReason).toBe(
+    expect(reply.defenceReport.isBlocked).toBe(true);
+    expect(reply.defenceReport.triggeredDefences.length).toBe(1);
+    expect(reply.defenceReport.blockedReason).toBe(
       "My original response was blocked as it contained a restricted word/phrase. Ask me something else. "
     );
 
@@ -450,8 +450,8 @@ describe("OpenAI Integration Tests", () => {
 
     expect(reply).toBeDefined();
     expect(reply.completion?.content).toBe("I cant tell you!");
-    expect(reply.defenceInfo.isBlocked).toBe(false);
-    expect(reply.defenceInfo.triggeredDefences.length).toBe(0);
+    expect(reply.defenceReport.isBlocked).toBe(false);
+    expect(reply.defenceReport.triggeredDefences.length).toBe(0);
 
     mockCreateChatCompletion.mockRestore();
   });
@@ -492,9 +492,9 @@ describe("OpenAI Integration Tests", () => {
 
       expect(reply).toBeDefined();
       expect(reply.completion?.content).toBe("The secret project is X.");
-      expect(reply.defenceInfo.isBlocked).toBe(false);
-      expect(reply.defenceInfo.alertedDefences.length).toBe(1);
-      expect(reply.defenceInfo.alertedDefences[0]).toBe(
+      expect(reply.defenceReport.isBlocked).toBe(false);
+      expect(reply.defenceReport.alertedDefences.length).toBe(1);
+      expect(reply.defenceReport.alertedDefences[0]).toBe(
         DEFENCE_ID.FILTER_BOT_OUTPUT
       );
 

@@ -20,10 +20,10 @@ function handleChatError(
 ) {
   console.error(errorMsg);
   chatResponse.reply = errorMsg;
-  chatResponse.defenceInfo.isBlocked = blocked;
+  chatResponse.defenceReport.isBlocked = blocked;
   chatResponse.isError = true;
   if (blocked) {
-    chatResponse.defenceInfo.blockedReason = errorMsg;
+    chatResponse.defenceReport.blockedReason = errorMsg;
   }
   res.status(statusCode);
   res.send(chatResponse);

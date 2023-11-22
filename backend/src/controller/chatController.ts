@@ -67,8 +67,8 @@ async function handleHigherLevelChat(
   const triggeredDefencesPromise = detectTriggeredDefences(
     message,
     req.session.levelState[currentLevel].defences
-  ).then((defenceInfo) => {
-    chatResponse.defenceInfo = defenceInfo;
+  ).then((defenceReport) => {
+    chatResponse.defenceReport = defenceReport;
   });
 
   // get the chatGPT reply
@@ -91,7 +91,7 @@ async function handleHigherLevelChat(
     openAiReply = openAiReplyResolved;
 
     // if input message is blocked, restore the original chat history and add user message (not as completion)
-    if (chatResponse.defenceInfo.isBlocked) {
+    if (chatResponse.defenceReport.isBlocked) {
       // set to null to stop message being returned to user
       openAiReply = null;
 
@@ -110,16 +110,16 @@ async function handleHigherLevelChat(
       chatResponse.reply = openAiReply.completion?.content ?? "";
 
       // combine triggered defences
-      chatResponse.defenceInfo.triggeredDefences = [
-        ...chatResponse.defenceInfo.triggeredDefences,
-        ...openAiReply.defenceInfo.triggeredDefences,
+      chatResponse.defenceReport.triggeredDefences = [
+        ...chatResponse.defenceReport.triggeredDefences,
+        ...openAiReply.defenceReport.triggeredDefences,
       ];
       // combine blocked
-      chatResponse.defenceInfo.isBlocked = openAiReply.defenceInfo.isBlocked;
+      chatResponse.defenceReport.isBlocked = openAiReply.defenceReport.isBlocked;
 
       // combine blocked reason
-      chatResponse.defenceInfo.blockedReason =
-        openAiReply.defenceInfo.blockedReason;
+      chatResponse.defenceReport.blockedReason =
+        openAiReply.defenceReport.blockedReason;
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -132,7 +132,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
   // set reply params
   const chatResponse: ChatHttpResponse = {
     reply: "",
-    defenceInfo: {
+    defenceReport: {
       blockedReason: "",
       isBlocked: false,
       alertedDefences: [],
@@ -199,11 +199,11 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
         );
       }
       // if the reply was blocked then add it to the chat history
-      if (chatResponse.defenceInfo.isBlocked) {
+      if (chatResponse.defenceReport.isBlocked) {
         req.session.levelState[currentLevel].chatHistory.push({
           completion: null,
           chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-          infoMessage: chatResponse.defenceInfo.blockedReason,
+          infoMessage: chatResponse.defenceReport.blockedReason,
         });
       } else if (!chatResponse.reply || chatResponse.reply === "") {
         // add error message to chat history

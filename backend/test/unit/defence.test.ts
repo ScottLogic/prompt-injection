@@ -3,7 +3,7 @@ import {
   activateDefence,
   configureDefence,
   deactivateDefence,
-  resetDefenceConfig,
+  resetDefenceConfigItem,
   detectTriggeredDefences,
   getQAPrePromptFromConfig,
   getSystemRole,
@@ -337,7 +337,7 @@ test("GIVEN user has configured defence WHEN resetting defence config THEN defen
   ];
   defences = configureDefence(defence, defences, config);
   // reset defence config
-  defences = resetDefenceConfig(
+  defences = resetDefenceConfigItem(
     DEFENCE_ID.SYSTEM_ROLE,
     "systemRole",
     defences
@@ -375,7 +375,7 @@ test("GIVEN user has configured two defence WHEN resetting one defence config TH
     characterLimitConfig
   );
 
-  defences = resetDefenceConfig(
+  defences = resetDefenceConfigItem(
     DEFENCE_ID.SYSTEM_ROLE,
     "systemRole",
     defences
