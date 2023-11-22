@@ -22,7 +22,7 @@ function HandbookSystemRole({
       <div className="handbook-terms">
         {systemRoles.map(({ level, systemRole }) => (
           <div className="term" key={level}>
-            <dt> Level {level + 1} System Role </dt>
+            <dt>{`Level ${level + 1} System Role`}</dt>
             {level >= numCompletedLevels ? (
               <div className="role-locked">
                 <p>

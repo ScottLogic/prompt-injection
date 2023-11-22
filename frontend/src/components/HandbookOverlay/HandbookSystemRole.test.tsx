@@ -33,6 +33,12 @@ describe("HandbookSystemRole component tests", () => {
     expect(screen.queryAllByText(level2SystemRole)).toHaveLength(0);
     expect(screen.queryAllByText(level3SystemRole)).toHaveLength(0);
 
+    // check aria roles for term headers
+    const systemRoleScreen = screen
+      .getAllByRole("term")
+      .map((element) => element.textContent);
+    expect(systemRoleScreen).toHaveLength(systemRoles.length);
+
     // make sure all system roles are locked
     const lockedBox = container.getElementsByClassName("role-locked");
     expect(lockedBox).toHaveLength(systemRoles.length);
@@ -54,6 +60,12 @@ describe("HandbookSystemRole component tests", () => {
     expect(screen.queryAllByText(level1SystemRole)).toHaveLength(1);
     expect(screen.queryAllByText(level2SystemRole)).toHaveLength(0);
     expect(screen.queryAllByText(level3SystemRole)).toHaveLength(0);
+
+    // check aria roles
+    const systemRoleScreen = screen
+      .getAllByRole("term")
+      .map((element) => element.textContent);
+    expect(systemRoleScreen).toHaveLength(systemRoles.length);
 
     // make sure 2 system roles are locked
     const lockedBox = container.getElementsByClassName("role-locked");
@@ -98,6 +110,12 @@ describe("HandbookSystemRole component tests", () => {
     expect(screen.queryAllByText(level1SystemRole)).toHaveLength(1);
     expect(screen.queryAllByText(level2SystemRole)).toHaveLength(1);
     expect(screen.queryAllByText(level3SystemRole)).toHaveLength(1);
+
+    // check aria roles
+    const systemRoleScreen = screen
+      .getAllByRole("term")
+      .map((element) => element.textContent);
+    expect(systemRoleScreen).toHaveLength(systemRoles.length);
 
     // check no locked boxes
     const lockedBox = container.getElementsByClassName("role-locked");
