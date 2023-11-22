@@ -1,8 +1,9 @@
-import { LEVEL_NAMES, LevelSystemRole } from "@src/models/level";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 
 import HandbookSystemRole from "./HandbookSystemRole";
+
+import { LEVEL_NAMES, LevelSystemRole } from "@src/models/level";
 
 describe("HandbookSystemRole component tests", () => {
   const level1SystemRole = "System Role for level 1";
@@ -76,7 +77,7 @@ describe("HandbookSystemRole component tests", () => {
     expect(screen.queryAllByText(level2SystemRole)).toHaveLength(1);
     expect(screen.queryAllByText(level3SystemRole)).toHaveLength(0);
 
-    // make sure 1 system role  locked
+    // make sure 1 system role are locked
     const lockedBox = container.getElementsByClassName("role-locked");
     expect(lockedBox).toHaveLength(1);
   });

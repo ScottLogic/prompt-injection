@@ -1,9 +1,10 @@
-import { ATTACKS_LEVEL_2, ATTACKS_LEVEL_3, ATTACKS_ALL } from "@src/Attacks";
-import { LEVEL_NAMES } from "@src/models/level";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 
 import HandbookAttacks from "./HandbookAttacks";
+
+import { ATTACKS_LEVEL_2, ATTACKS_LEVEL_3, ATTACKS_ALL } from "@src/Attacks";
+import { LEVEL_NAMES } from "@src/models/level";
 
 describe("HandbookAttacks component tests", () => {
   test("renders a header and no attack term", () => {

@@ -1,9 +1,10 @@
-import { GLOSSARY } from "@src/Glossary";
-import { LEVEL_NAMES } from "@src/models/level";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 
 import HandbookGlossary from "./HandbookGlossary";
+
+import { GLOSSARY } from "@src/Glossary";
+import { LEVEL_NAMES } from "@src/models/level";
 
 describe("HandbookGlossary component tests", () => {
   test("renders a header and no glossary entries", () => {
