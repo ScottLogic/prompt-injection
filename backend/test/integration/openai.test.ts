@@ -6,7 +6,7 @@ import {
   ChatHistoryMessage,
   ChatModel,
 } from "@src/models/chat";
-import { DEFENCE_TYPES, Defence } from "@src/models/defence";
+import { DEFENCE_ID, Defence } from "@src/models/defence";
 import { EmailInfo } from "@src/models/email";
 import { chatGptSendMessage } from "@src/openai";
 import { systemRoleDefault } from "@src/promptTemplates";
@@ -111,7 +111,7 @@ describe("OpenAI Integration Tests", () => {
 
     // set the system role prompt
     const defences = activateDefence(
-      DEFENCE_TYPES.SYSTEM_ROLE,
+      DEFENCE_ID.SYSTEM_ROLE,
       defaultDefences
     );
 
@@ -176,7 +176,7 @@ describe("OpenAI Integration Tests", () => {
 
     // activate the SYSTEM_ROLE defence
     const defences = activateDefence(
-      DEFENCE_TYPES.SYSTEM_ROLE,
+      DEFENCE_ID.SYSTEM_ROLE,
       defaultDefences
     );
 
@@ -323,8 +323,8 @@ describe("OpenAI Integration Tests", () => {
       };
 
       const defences = configureDefence(
-        DEFENCE_TYPES.SYSTEM_ROLE,
-        activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, defaultDefences),
+        DEFENCE_ID.SYSTEM_ROLE,
+        activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences),
         [
           {
             id: "systemRole",
@@ -388,7 +388,7 @@ describe("OpenAI Integration Tests", () => {
     };
     const isOriginalMessage = true;
     const defences = activateDefence(
-      DEFENCE_TYPES.FILTER_BOT_OUTPUT,
+      DEFENCE_ID.FILTER_BOT_OUTPUT,
       defaultDefences
     );
 
@@ -431,7 +431,7 @@ describe("OpenAI Integration Tests", () => {
     };
     const isOriginalMessage = true;
     const defences = activateDefence(
-      DEFENCE_TYPES.FILTER_BOT_OUTPUT,
+      DEFENCE_ID.FILTER_BOT_OUTPUT,
       defaultDefences
     );
 
@@ -495,7 +495,7 @@ describe("OpenAI Integration Tests", () => {
       expect(reply.defenceInfo.isBlocked).toBe(false);
       expect(reply.defenceInfo.alertedDefences.length).toBe(1);
       expect(reply.defenceInfo.alertedDefences[0]).toBe(
-        DEFENCE_TYPES.FILTER_BOT_OUTPUT
+        DEFENCE_ID.FILTER_BOT_OUTPUT
       );
 
       mockCreateChatCompletion.mockRestore();
