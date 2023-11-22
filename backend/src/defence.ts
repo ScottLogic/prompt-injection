@@ -34,18 +34,18 @@ function configureDefence(
   );
 }
 
-function resetDefenceConfig(
+function resetDefenceConfigItem(
   id: DEFENCE_ID,
   configId: string,
   defences: Defence[]
 ): Defence[] {
-  const defaultValue = getConfigValue(defaultDefences, id, configId);
+  const defaultValue = getConfigItemValue(defaultDefences, id, configId);
   return configureDefence(id, defences, [
     { id: configId, value: defaultValue },
   ]);
 }
 
-function getConfigValue(
+function getConfigItemValue(
   defences: Defence[],
   defenceId: DEFENCE_ID,
   configId: string
@@ -62,7 +62,7 @@ function getConfigValue(
 }
 
 function getMaxMessageLength(defences: Defence[]) {
-  return getConfigValue(
+  return getConfigItemValue(
     defences,
     DEFENCE_ID.CHARACTER_LIMIT,
     "maxMessageLength"
@@ -70,11 +70,11 @@ function getMaxMessageLength(defences: Defence[]) {
 }
 
 function getXMLTaggingPrePrompt(defences: Defence[]) {
-  return getConfigValue(defences, DEFENCE_ID.XML_TAGGING, "prePrompt");
+  return getConfigItemValue(defences, DEFENCE_ID.XML_TAGGING, "prePrompt");
 }
 
 function getFilterList(defences: Defence[], type: DEFENCE_ID) {
-  return getConfigValue(
+  return getConfigItemValue(
     defences,
     type,
     type === DEFENCE_ID.FILTER_USER_INPUT
@@ -95,16 +95,20 @@ function getSystemRole(
     case LEVEL_NAMES.LEVEL_3:
       return systemRoleLevel3;
     default:
-      return getConfigValue(defences, DEFENCE_ID.SYSTEM_ROLE, "systemRole");
+      return getConfigItemValue(defences, DEFENCE_ID.SYSTEM_ROLE, "systemRole");
   }
 }
 
 function getQAPrePromptFromConfig(defences: Defence[]) {
-  return getConfigValue(defences, DEFENCE_ID.QA_LLM_INSTRUCTIONS, "prePrompt");
+  return getConfigItemValue(
+    defences,
+    DEFENCE_ID.QA_LLM_INSTRUCTIONS,
+    "prePrompt"
+  );
 }
 
 function getPromptEvalPrePromptFromConfig(defences: Defence[]) {
-  return getConfigValue(
+  return getConfigItemValue(
     defences,
     DEFENCE_ID.EVALUATION_LLM_INSTRUCTIONS,
     "prompt-evaluator-prompt"
@@ -308,7 +312,7 @@ export {
   activateDefence,
   configureDefence,
   deactivateDefence,
-  resetDefenceConfig,
+  resetDefenceConfigItem,
   detectTriggeredDefences,
   getQAPrePromptFromConfig,
   getPromptEvalPrePromptFromConfig,

@@ -1,5 +1,3 @@
-import express from "express";
-
 import { defaultDefences } from "./defaultDefences";
 import {
   activateDefence,
@@ -7,7 +5,7 @@ import {
   configureDefence,
   transformMessage,
   detectTriggeredDefences,
-  resetDefenceConfig,
+  resetDefenceConfigItem,
 } from "./defence";
 import { getSandboxDocumentMetas } from "./document";
 import { DefenceActivateRequest } from "./models/api/DefenceActivateRequest";
@@ -41,7 +39,7 @@ import {
   systemRoleLevel2,
   systemRoleLevel3,
 } from "./promptTemplates";
-
+import express from "express";
 
 const router = express.Router();
 
@@ -144,7 +142,7 @@ router.post("/defence/resetConfig", (req: DefenceConfigResetRequest, res) => {
   const configId = req.body.configId;
   const level = LEVEL_NAMES.SANDBOX; //configuration only available in sandbox
   if (defenceId && configId) {
-    req.session.levelState[level].defences = resetDefenceConfig(
+    req.session.levelState[level].defences = resetDefenceConfigItem(
       defenceId,
       configId,
       req.session.levelState[level].defences
