@@ -28,16 +28,11 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
   new DefenceInfo(
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
     "Evaluation LLM instructions",
-    "Use an LLM to evaluate the user input for malicious content or prompt injection.",
+    "Use an LLM to evaluate the user input for malicious content and prompt injection attacks.",
     [
       new DefenceConfig(
-        "prompt-injection-evaluator-prompt",
-        "prompt-injection evaluator prompt",
-        "text"
-      ),
-      new DefenceConfig(
-        "malicious-prompt-evaluator-prompt",
-        "malicious-prompt evaluator prompt",
+        "prompt-evaluator-prompt",
+        "prompt evaluator prompt",
         "text"
       ),
     ]

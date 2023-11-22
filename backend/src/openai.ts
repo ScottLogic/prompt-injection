@@ -78,6 +78,7 @@ const chatGptFunctions = [
 
 // max tokens each model can use
 const chatModelMaxTokens = {
+  [CHAT_MODELS.GPT_4_TURBO]: 128000,
   [CHAT_MODELS.GPT_4]: 8191,
   [CHAT_MODELS.GPT_4_0613]: 8191,
   [CHAT_MODELS.GPT_3_5_TURBO]: 4095,

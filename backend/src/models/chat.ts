@@ -3,6 +3,7 @@ import { ChatCompletionRequestMessage } from "openai";
 import { DEFENCE_TYPES } from "./defence";
 
 enum CHAT_MODELS {
+  GPT_4_TURBO = "gpt-4-1106-preview",
   GPT_4 = "gpt-4",
   GPT_4_0613 = "gpt-4-0613",
   GPT_3_5_TURBO = "gpt-3.5-turbo",

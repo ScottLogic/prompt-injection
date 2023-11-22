@@ -1,7 +1,6 @@
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import {
-  maliciousPromptEvalPrePrompt,
-  promptInjectionEvalPrePrompt,
+  promptEvalPrePrompt,
   qAPrePromptSecure,
   systemRoleDefault,
   xmlPrePrompt,
@@ -27,12 +26,8 @@ const defaultDefences: DefenceInfo[] = [
   ]),
   createDefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
     {
-      id: "prompt-injection-evaluator-prompt",
-      value: promptInjectionEvalPrePrompt,
-    },
-    {
-      id: "malicious-prompt-evaluator-prompt",
-      value: maliciousPromptEvalPrePrompt,
+      id: "prompt-evaluator-prompt",
+      value: promptEvalPrePrompt,
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
