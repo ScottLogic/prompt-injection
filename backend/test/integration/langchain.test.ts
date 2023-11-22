@@ -110,7 +110,7 @@ PromptTemplate.fromTemplate = mockFromTemplate;
 // mock OpenAI for ChatOpenAI class
 jest.mock("langchain/chat_models/openai");
 
-// mock RetrievalQAChain
+// mock chains
 jest.mock("langchain/chains", () => {
   return {
     RetrievalQAChain: jest.fn().mockImplementation(() => {
