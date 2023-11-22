@@ -114,9 +114,7 @@ jest.mock("langchain/chat_models/openai");
 jest.mock("langchain/chains", () => {
   return {
     RetrievalQAChain: jest.fn().mockImplementation(() => {
-      return {
-        call: mockCall,
-      };
+      return mockRetrievalQAChain;
     }),
     SequentialChain: jest.fn().mockImplementation(() => {
       return {
