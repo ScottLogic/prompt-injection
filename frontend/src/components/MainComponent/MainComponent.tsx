@@ -5,7 +5,7 @@ import "./MainComponent.css";
 import MainFooter from "./MainFooter";
 import MainHeader from "./MainHeader";
 
-import { ALL_DEFENCES, SHOWN_DEFENCES_LEVEL3 } from "@src/Defences";
+import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from "@src/Defences";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 import { DEFENCE_ID, DefenceConfigItem, Defence } from "@src/models/defence";
 import { EmailInfo } from "@src/models/email";
@@ -93,7 +93,7 @@ function MainComponent({
     // choose appropriate defences to display
     let defences =
       currentLevel === LEVEL_NAMES.LEVEL_3
-        ? SHOWN_DEFENCES_LEVEL3
+        ? DEFENCES_SHOWN_LEVEL3
         : ALL_DEFENCES;
     defences = defences.map((defence) => {
       defence.isActive = false;
@@ -116,7 +116,7 @@ function MainComponent({
     newLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
 
     const defences =
-      newLevel === LEVEL_NAMES.LEVEL_3 ? SHOWN_DEFENCES_LEVEL3 : ALL_DEFENCES;
+      newLevel === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
     // fetch defences from backend
     const remoteDefences = await getDefences(newLevel);
     defences.map((localDefence) => {

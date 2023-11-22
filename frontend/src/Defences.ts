@@ -1,6 +1,6 @@
 import { DEFENCE_ID, DefenceConfigItem, Defence } from "./models/defence";
 
-const SHOWN_DEFENCES_LEVEL3: Defence[] = [
+const DEFENCES_SHOWN_LEVEL3: Defence[] = [
   new Defence(
     DEFENCE_ID.CHARACTER_LIMIT,
     "Character Limit",
@@ -40,7 +40,7 @@ const SHOWN_DEFENCES_LEVEL3: Defence[] = [
 ];
 
 const ALL_DEFENCES: Defence[] = [
-  ...SHOWN_DEFENCES_LEVEL3,
+  ...DEFENCES_SHOWN_LEVEL3,
   new Defence(
     DEFENCE_ID.SYSTEM_ROLE,
     "System Role",
@@ -55,4 +55,4 @@ const ALL_DEFENCES: Defence[] = [
   ),
 ];
 
-export { SHOWN_DEFENCES_LEVEL3, ALL_DEFENCES };
+export { DEFENCES_SHOWN_LEVEL3, ALL_DEFENCES };
