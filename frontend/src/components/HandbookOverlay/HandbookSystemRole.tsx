@@ -26,8 +26,10 @@ function HandbookSystemRole({
             {level >= numCompletedLevels ? (
               <div className="role-locked">
                 <p>
-                  You must complete level {level + 1} to unlock the system role
-                  description
+                  {`You must complete level ${
+                    level + 1
+                  } to unlock the system role
+                  description`}
                 </p>
               </div>
             ) : (
