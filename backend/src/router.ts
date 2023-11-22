@@ -33,7 +33,7 @@ import {
   MODEL_CONFIG,
   defaultChatModel,
 } from "./models/chat";
-import { DefenceConfig } from "./models/defence";
+import { DefenceConfigItem } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
 import { chatGptSendMessage, verifyKeySupportsModel } from "./openai";
 import {
@@ -89,7 +89,7 @@ router.post("/defence/deactivate", (req: DefenceActivateRequest, res) => {
   }
 });
 
-function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
+function configValueExceedsCharacterLimit(config: DefenceConfigItem[]) {
   const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
 
   const allValuesWithinLimit = config.every(
@@ -148,7 +148,7 @@ router.post("/defence/resetConfig", (req: DefenceConfigResetRequest, res) => {
       configId,
       req.session.levelState[level].defences
     );
-    const updatedDefenceConfig: DefenceConfig | undefined =
+    const updatedDefenceConfig: DefenceConfigItem | undefined =
       req.session.levelState[level].defences
         .find((defence) => defence.id === defenceId)
         ?.config.find((config) => config.id === configId);

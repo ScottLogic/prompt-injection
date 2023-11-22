@@ -1,7 +1,7 @@
 import { defaultDefences } from "./defaultDefences";
 import { queryPromptEvaluationModel } from "./langchain";
 import { ChatDefenceReport } from "./models/chat";
-import { DEFENCE_ID, DefenceConfig, Defence } from "./models/defence";
+import { DEFENCE_ID, DefenceConfigItem, Defence } from "./models/defence";
 import { LEVEL_NAMES } from "./models/level";
 import {
   systemRoleLevel1,
@@ -26,7 +26,7 @@ function deactivateDefence(id: DEFENCE_ID, defences: Defence[]) {
 function configureDefence(
   id: DEFENCE_ID,
   defences: Defence[],
-  config: DefenceConfig[]
+  config: DefenceConfigItem[]
 ): Defence[] {
   // return the updated list of defences
   return defences.map((defence) =>
@@ -50,7 +50,7 @@ function getConfigValue(
   defenceId: DEFENCE_ID,
   configId: string
 ) {
-  const config: DefenceConfig | undefined = defences
+  const config: DefenceConfigItem | undefined = defences
     .find((defence) => defence.id === defenceId)
     ?.config.find((config) => config.id === configId);
   if (!config) {

@@ -8,13 +8,13 @@ enum DEFENCE_ID {
   FILTER_BOT_OUTPUT = "FILTER_BOT_OUTPUT",
 }
 
-interface DefenceConfig {
+interface DefenceConfigItem {
   id: string;
   value: string;
 }
 
 class Defence {
-  constructor(id: DEFENCE_ID, config: DefenceConfig[]) {
+  constructor(id: DEFENCE_ID, config: DefenceConfigItem[]) {
     this.id = id;
     this.config = config;
     // each defence starts off as inactive and not triggered
@@ -23,10 +23,10 @@ class Defence {
   }
 
   id: DEFENCE_ID;
-  config: DefenceConfig[];
+  config: DefenceConfigItem[];
   isActive: boolean;
   isTriggered: boolean;
 }
 
 export { DEFENCE_ID as DEFENCE_ID, Defence };
-export type { DefenceConfig };
+export type { DefenceConfigItem };
