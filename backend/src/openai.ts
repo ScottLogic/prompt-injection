@@ -31,6 +31,7 @@ import {
   FunctionSendEmailParams,
 } from "./models/openai";
 
+
 // functions available to ChatGPT
 const chatGptFunctions = [
   {
@@ -125,7 +126,7 @@ function isChatGptFunction(functionName: string) {
 }
 
 async function chatGptCallFunction(
-  defenceInfo: ChatDefenceReport,
+  defenceReport: ChatDefenceReport,
   defences: Defence[],
   functionCall: ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
@@ -193,7 +194,7 @@ async function chatGptCallFunction(
   if (reply) {
     return {
       completion: reply,
-      defenceInfo,
+      defenceReport,
       wonLevel,
     };
   } else {
@@ -412,7 +413,7 @@ async function chatGptSendMessage(
   console.log(`User message: '${message}'`);
 
   // init defence info
-  const defenceInfo: ChatDefenceReport = {
+  const defenceReport: ChatDefenceReport = {
     blockedReason: "",
     isBlocked: false,
     alertedDefences: [],
@@ -421,7 +422,7 @@ async function chatGptSendMessage(
 
   const chatResponse: ChatResponse = {
     completion: null,
-    defenceInfo,
+    defenceReport,
     wonLevel: false,
   };
 
@@ -455,7 +456,7 @@ async function chatGptSendMessage(
 
     // call the function and get a new reply and defence info from
     const functionCallReply = await chatGptCallFunction(
-      defenceInfo,
+      defenceReport,
       defences,
       reply.function_call,
       sentEmails,
@@ -471,7 +472,7 @@ async function chatGptSendMessage(
         CHAT_MESSAGE_TYPE.FUNCTION_CALL
       );
       // update the defence info
-      chatResponse.defenceInfo = functionCallReply.defenceInfo;
+      chatResponse.defenceReport = functionCallReply.defenceReport;
     }
     // get a new reply from ChatGPT now that the function has been called
     reply = await chatGptChatCompletion(
@@ -504,14 +505,14 @@ async function chatGptSendMessage(
           )}'.`
         );
         if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
-          chatResponse.defenceInfo.triggeredDefences.push(
+          chatResponse.defenceReport.triggeredDefences.push(
             DEFENCE_ID.FILTER_BOT_OUTPUT
           );
-          chatResponse.defenceInfo.isBlocked = true;
-          chatResponse.defenceInfo.blockedReason =
+          chatResponse.defenceReport.isBlocked = true;
+          chatResponse.defenceReport.blockedReason =
             "My original response was blocked as it contained a restricted word/phrase. Ask me something else. ";
         } else {
-          chatResponse.defenceInfo.alertedDefences.push(
+          chatResponse.defenceReport.alertedDefences.push(
             DEFENCE_ID.FILTER_BOT_OUTPUT
           );
         }
@@ -521,7 +522,7 @@ async function chatGptSendMessage(
     chatHistory = pushCompletionToHistory(
       chatHistory,
       reply,
-      defenceInfo.isBlocked
+      defenceReport.isBlocked
         ? CHAT_MESSAGE_TYPE.BOT_BLOCKED
         : CHAT_MESSAGE_TYPE.BOT
     );
