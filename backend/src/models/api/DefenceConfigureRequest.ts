@@ -1,6 +1,6 @@
 import { Request } from "express";
 
-import { DEFENCE_TYPES, DefenceConfig } from "@src/models/defence";
+import { DEFENCE_ID, DefenceConfig } from "@src/models/defence";
 import { LEVEL_NAMES } from "@src/models/level";
 
 export type DefenceConfigureRequest = Request<
@@ -8,7 +8,7 @@ export type DefenceConfigureRequest = Request<
   null | string,
   {
     config?: DefenceConfig[];
-    defenceId?: DEFENCE_TYPES;
+    defenceId?: DEFENCE_ID;
     level?: LEVEL_NAMES;
   },
   never

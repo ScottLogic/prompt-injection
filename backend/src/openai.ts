@@ -23,7 +23,7 @@ import {
   ChatModel,
   ChatResponse,
 } from "./models/chat";
-import { DEFENCE_TYPES, Defence } from "./models/defence";
+import { DEFENCE_ID, Defence } from "./models/defence";
 import { EmailInfo, EmailResponse } from "./models/email";
 import { LEVEL_NAMES } from "./models/level";
 import {
@@ -170,7 +170,7 @@ async function chatGptCallFunction(
         console.debug(`Asking question: ${params.question}`);
         // if asking a question, call the queryDocuments
         let configQAPrePrompt = "";
-        if (isDefenceActive(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences)) {
+        if (isDefenceActive(DEFENCE_ID.QA_LLM_INSTRUCTIONS, defences)) {
           configQAPrePrompt = getQAPrePromptFromConfig(defences);
         }
         response = (
@@ -213,7 +213,7 @@ async function chatGptChatCompletion(
   // system role is always active on levels
   if (
     currentLevel !== LEVEL_NAMES.SANDBOX ||
-    isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
+    isDefenceActive(DEFENCE_ID.SYSTEM_ROLE, defences)
   ) {
     const completionConfig: ChatCompletionRequestMessage = {
       role: "system",
@@ -495,7 +495,7 @@ async function chatGptSendMessage(
     ) {
       const detectedPhrases = detectFilterList(
         reply.content,
-        getFilterList(defences, DEFENCE_TYPES.FILTER_BOT_OUTPUT)
+        getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
       );
       if (detectedPhrases.length > 0) {
         console.debug(
@@ -503,16 +503,16 @@ async function chatGptSendMessage(
             "', '"
           )}'.`
         );
-        if (isDefenceActive(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences)) {
+        if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
           chatResponse.defenceInfo.triggeredDefences.push(
-            DEFENCE_TYPES.FILTER_BOT_OUTPUT
+            DEFENCE_ID.FILTER_BOT_OUTPUT
           );
           chatResponse.defenceInfo.isBlocked = true;
           chatResponse.defenceInfo.blockedReason =
             "My original response was blocked as it contained a restricted word/phrase. Ask me something else. ";
         } else {
           chatResponse.defenceInfo.alertedDefences.push(
-            DEFENCE_TYPES.FILTER_BOT_OUTPUT
+            DEFENCE_ID.FILTER_BOT_OUTPUT
           );
         }
       }

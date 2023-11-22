@@ -1,4 +1,4 @@
-enum DEFENCE_TYPES {
+enum DEFENCE_ID {
   CHARACTER_LIMIT = "CHARACTER_LIMIT",
   EVALUATION_LLM_INSTRUCTIONS = "EVALUATION_LLM_INSTRUCTIONS",
   QA_LLM_INSTRUCTIONS = "QA_LLM_INSTRUCTIONS",
@@ -14,7 +14,7 @@ interface DefenceConfig {
 }
 
 class Defence {
-  constructor(id: DEFENCE_TYPES, config: DefenceConfig[]) {
+  constructor(id: DEFENCE_ID, config: DefenceConfig[]) {
     this.id = id;
     this.config = config;
     // each defence starts off as inactive and not triggered
@@ -22,11 +22,11 @@ class Defence {
     this.isTriggered = false;
   }
 
-  id: DEFENCE_TYPES;
+  id: DEFENCE_ID;
   config: DefenceConfig[];
   isActive: boolean;
   isTriggered: boolean;
 }
 
-export { DEFENCE_TYPES, Defence };
+export { DEFENCE_ID as DEFENCE_ID, Defence };
 export type { DefenceConfig };
