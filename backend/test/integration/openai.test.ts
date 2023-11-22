@@ -6,7 +6,7 @@ import {
   ChatHistoryMessage,
   ChatModel,
 } from "@src/models/chat";
-import { DEFENCE_TYPES, DefenceInfo } from "@src/models/defence";
+import { DEFENCE_TYPES, Defence } from "@src/models/defence";
 import { EmailInfo } from "@src/models/email";
 import { chatGptSendMessage } from "@src/openai";
 import { systemRoleDefault } from "@src/promptTemplates";
@@ -56,7 +56,7 @@ describe("OpenAI Integration Tests", () => {
   test("GIVEN OpenAI initialised WHEN sending message THEN reply is returned", async () => {
     const message = "Hello";
     const chatHistory: ChatHistoryMessage[] = [];
-    const defences: DefenceInfo[] = defaultDefences;
+    const defences: Defence[] = defaultDefences;
     const sentEmails: EmailInfo[] = [];
     const chatModel: ChatModel = {
       id: CHAT_MODELS.GPT_4,
@@ -239,7 +239,7 @@ describe("OpenAI Integration Tests", () => {
         chatMessageType: CHAT_MESSAGE_TYPE.BOT,
       },
     ];
-    const defences: DefenceInfo[] = defaultDefences;
+    const defences: Defence[] = defaultDefences;
     const sentEmails: EmailInfo[] = [];
     const chatModel: ChatModel = {
       id: CHAT_MODELS.GPT_4,
