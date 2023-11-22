@@ -5,7 +5,7 @@ import "./MainComponent.css";
 import MainFooter from "./MainFooter";
 import MainHeader from "./MainHeader";
 
-import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "@src/Defences";
+import { DEFENCE_DETAILS_ALL, SHOWN_DEFENCES_LEVEL3 } from "@src/Defences";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 import {
   DEFENCE_ID,
@@ -98,7 +98,7 @@ function MainComponent({
     // choose appropriate defences to display
     let defences =
       currentLevel === LEVEL_NAMES.LEVEL_3
-        ? DEFENCE_DETAILS_LEVEL
+        ? SHOWN_DEFENCES_LEVEL3
         : DEFENCE_DETAILS_ALL;
     defences = defences.map((defence) => {
       defence.isActive = false;
@@ -122,7 +122,7 @@ function MainComponent({
 
     const defences =
       newLevel === LEVEL_NAMES.LEVEL_3
-        ? DEFENCE_DETAILS_LEVEL
+        ? SHOWN_DEFENCES_LEVEL3
         : DEFENCE_DETAILS_ALL;
     // fetch defences from backend
     const remoteDefences = await getDefences(newLevel);
