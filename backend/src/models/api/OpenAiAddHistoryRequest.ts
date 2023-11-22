@@ -11,5 +11,6 @@ export type OpenAiAddHistoryRequest = Request<
     message?: string;
     level?: LEVEL_NAMES;
   },
+  never,
   never
 >;
