@@ -24,13 +24,13 @@ const defaultDefences: DefenceInfo[] = [
       value: String(280),
     },
   ]),
-  createDefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
+  createDefenceInfo(DEFENCE_TYPES.PROMPT_EVALUATION_LLM, [
     {
-      id: "prompt-evaluator-prompt",
+      id: "prePrompt",
       value: promptEvalPrePrompt,
     },
   ]),
-  createDefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
+  createDefenceInfo(DEFENCE_TYPES.QA_LLM, [
     {
       id: "prePrompt",
       value: qAPrePromptSecure,

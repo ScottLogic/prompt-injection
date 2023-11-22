@@ -26,16 +26,10 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
     [new DefenceConfig("prePrompt", "pre-prompt", "text")]
   ),
   new DefenceInfo(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    "Evaluation LLM instructions",
+    DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
+    "Prompt Evaluation LLM ",
     "Use an LLM to evaluate the user input for malicious content and prompt injection attacks.",
-    [
-      new DefenceConfig(
-        "prompt-evaluator-prompt",
-        "prompt evaluator prompt",
-        "text"
-      ),
-    ]
+    [new DefenceConfig("prePrompt", "pre-prompt", "text")]
   ),
 ];
 
@@ -48,8 +42,8 @@ const DEFENCE_DETAILS_ALL: DefenceInfo[] = [
     [new DefenceConfig("systemRole", "system role", "text")]
   ),
   new DefenceInfo(
-    DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
-    "QA LLM instructions",
+    DEFENCE_TYPES.QA_LLM,
+    "Q/A LLM",
     "Currently the chatbot speaks to a separate Question/Answering LLM to retrieve information on documents. The QA LLM will reveal all information to the chatbot, who will then decide whether to reveal to the user. This defence adds an instructional pre-prompt to the QA LLM to not reveal certain sensitive information to the chatbot.",
     [new DefenceConfig("prePrompt", "pre-prompt", "text")]
   ),

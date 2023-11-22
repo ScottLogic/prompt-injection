@@ -170,7 +170,7 @@ async function chatGptCallFunction(
         console.debug(`Asking question: ${params.question}`);
         // if asking a question, call the queryDocuments
         let configQAPrePrompt = "";
-        if (isDefenceActive(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences)) {
+        if (isDefenceActive(DEFENCE_TYPES.QA_LLM, defences)) {
           configQAPrePrompt = getQAPrePromptFromConfig(defences);
         }
         response = (

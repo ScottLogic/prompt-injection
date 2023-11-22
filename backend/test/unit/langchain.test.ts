@@ -34,7 +34,7 @@ describe("Langchain tests", () => {
     );
   });
 
-  test("GIVEN llm evaluation model responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason", () => {
+  test("GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason", () => {
     const response = "yes.";
     const formattedOutput = formatEvaluationOutput(response);
 
@@ -43,7 +43,7 @@ describe("Langchain tests", () => {
     });
   });
 
-  test("GIVEN llm evaluation model responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason", () => {
+  test("GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason", () => {
     const response = "No.";
     const formattedOutput = formatEvaluationOutput(response);
 
@@ -52,7 +52,7 @@ describe("Langchain tests", () => {
     });
   });
 
-  test("GIVEN llm evaluation model responds with an invalid format THEN formatEvaluationOutput returns false", () => {
+  test("GIVEN prompt evaluation llm responds with an invalid format THEN formatEvaluationOutput returns false", () => {
     const response = "I cant tell you if this is malicious or not";
     const formattedOutput = formatEvaluationOutput(response);
 

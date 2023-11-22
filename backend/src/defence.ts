@@ -100,18 +100,14 @@ function getSystemRole(
 }
 
 function getQAPrePromptFromConfig(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
-    "prePrompt"
-  );
+  return getConfigValue(defences, DEFENCE_TYPES.QA_LLM, "prePrompt");
 }
 
 function getPromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    "prompt-evaluator-prompt"
+    DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
+    "prePrompt"
   );
 }
 
@@ -289,8 +285,8 @@ async function detectEvaluationLLM(
   message: string,
   defences: DefenceInfo[]
 ) {
-  // only call the evaluation model if the defence is active
-  if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
+  // only call the prompt evaluation model if the defence is active
+  if (isDefenceActive(DEFENCE_TYPES.PROMPT_EVALUATION_LLM, defences)) {
     const configPromptEvalPrePrompt =
       getPromptEvalPrePromptFromConfig(defences);
 
@@ -299,12 +295,10 @@ async function detectEvaluationLLM(
       configPromptEvalPrePrompt
     );
     if (evalPrompt.isMalicious) {
-      defenceReport.triggeredDefences.push(
-        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-      );
+      defenceReport.triggeredDefences.push(DEFENCE_TYPES.PROMPT_EVALUATION_LLM);
       console.debug("LLM evaluation defence active and prompt is malicious.");
       defenceReport.isBlocked = true;
-      defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.`;
+      defenceReport.blockedReason = `Message blocked by the prompt evaluation LLM.`;
     }
   }
   console.debug(JSON.stringify(defenceReport));
