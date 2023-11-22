@@ -23,7 +23,7 @@ import {
   ChatModel,
   ChatResponse,
 } from "./models/chat";
-import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
+import { DEFENCE_TYPES, Defence } from "./models/defence";
 import { EmailInfo, EmailResponse } from "./models/email";
 import { LEVEL_NAMES } from "./models/level";
 import {
@@ -126,7 +126,7 @@ function isChatGptFunction(functionName: string) {
 
 async function chatGptCallFunction(
   defenceInfo: ChatDefenceReport,
-  defences: DefenceInfo[],
+  defences: Defence[],
   functionCall: ChatCompletionRequestMessageFunctionCall,
   sentEmails: EmailInfo[],
   // default to sandbox
@@ -203,7 +203,7 @@ async function chatGptCallFunction(
 
 async function chatGptChatCompletion(
   chatHistory: ChatHistoryMessage[],
-  defences: DefenceInfo[],
+  defences: Defence[],
   chatModel: ChatModel,
   openai: OpenAIApi,
   // default to sandbox
@@ -401,7 +401,7 @@ function pushCompletionToHistory(
 
 async function chatGptSendMessage(
   chatHistory: ChatHistoryMessage[],
-  defences: DefenceInfo[],
+  defences: Defence[],
   chatModel: ChatModel,
   message: string,
   messageIsTransformed: boolean,
