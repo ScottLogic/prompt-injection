@@ -8,13 +8,10 @@ import ControlPanel from "@src/components/ControlPanel/ControlPanel";
 import EmailBox from "@src/components/EmailBox/EmailBox";
 import ShortMissionInfoButton from "@src/components/ShortMissionInfoButton/ShortMissionInfoButton";
 import { ChatMessage } from "@src/models/chat";
-import {
-  DEFENCE_ID,
-  DefenceConfigItem,
-  Defence,
-} from "@src/models/defence";
+import { DEFENCE_ID, DefenceConfigItem, Defence } from "@src/models/defence";
 import { EmailInfo } from "@src/models/email";
 import { LEVEL_NAMES } from "@src/models/level";
+
 
 function MainBody({
   currentLevel,

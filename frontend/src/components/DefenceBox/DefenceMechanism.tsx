@@ -76,7 +76,8 @@ function DefenceMechanism({
         // re-render the configuration component when detail is toggled
         // this is to resize the textarea when detail is expanded
         setConfigKey(configKey + 1);
-      }}>
+      }}
+    >
       <summary>
         <span aria-hidden>{defenceDetail.name}</span>
         <label className="switch">
