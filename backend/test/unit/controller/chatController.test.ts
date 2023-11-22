@@ -110,8 +110,6 @@ describe("handleChatToGPT unit tests", () => {
     const req = openAiChatRequestMock("Hello chatbot", 0);
     const res = responseMock();
 
-    res;
-
     mockCreateChatCompletion.mockResolvedValueOnce(
       chatResponseAssistant("Howdy human!")
     );
