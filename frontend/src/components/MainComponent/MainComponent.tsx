@@ -1,7 +1,10 @@
+import { useEffect, useState } from "react";
+
 import MainBody from "./MainBody";
 import "./MainComponent.css";
 import MainFooter from "./MainFooter";
 import MainHeader from "./MainHeader";
+
 import { ALL_DEFENCES, SHOWN_DEFENCES_LEVEL3 } from "@src/Defences";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 import { DEFENCE_ID, DefenceConfigItem, Defence } from "@src/models/defence";
@@ -21,7 +24,6 @@ import {
   resetDefenceConfig,
 } from "@src/service/defenceService";
 import { clearEmails, getSentEmails } from "@src/service/emailService";
-import { useEffect, useState } from "react";
 
 function MainComponent({
   currentLevel,
