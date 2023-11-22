@@ -30,11 +30,11 @@ describe("DocumentViewBoxHeader component tests", () => {
   }
 
   function getPreviousButton() {
-    return screen.getByRole("button", { name: "◄ previous document" });
+    return screen.getByRole("button", { name: "previous document" });
   }
 
   function getNextButton() {
-    return screen.getByRole("button", { name: "next document ►" });
+    return screen.getByRole("button", { name: "next document" });
   }
 
   function checkButtonAriaDisabled(

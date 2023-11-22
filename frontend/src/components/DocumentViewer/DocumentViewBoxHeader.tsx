@@ -25,13 +25,13 @@ function DocumentViewBoxHeader({
         <p className="info">{documentNumber}</p>
         <div className="button-container">
           <ThemedButton onClick={onPrevious} ariaDisabled={documentIndex <= 0}>
-            ◄ previous document
+            <i aria-hidden>◄</i>&nbsp;previous document
           </ThemedButton>
           <ThemedButton
             onClick={onNext}
             ariaDisabled={documentIndex >= numberOfDocuments - 1}
           >
-            next document ►
+            next document&nbsp;<i aria-hidden>►</i>
           </ThemedButton>
         </div>
       </div>
