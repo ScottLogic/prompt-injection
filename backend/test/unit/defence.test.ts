@@ -10,15 +10,13 @@ import {
   isDefenceActive,
   transformMessage,
   detectFilterList,
-  getPromptInjectionEvalPrePromptFromConfig,
-  getMaliciousPromptEvalPrePromptFromConfig,
+  getPromptEvalPrePromptFromConfig,
 } from "@src/defence";
 import * as langchain from "@src/langchain";
 import { DEFENCE_TYPES, DefenceConfig } from "@src/models/defence";
 import { LEVEL_NAMES } from "@src/models/level";
 import {
-  maliciousPromptEvalPrePrompt,
-  promptInjectionEvalPrePrompt,
+  promptEvalPrePrompt,
   qAPrePromptSecure,
   systemRoleDefault,
   systemRoleLevel1,
@@ -32,7 +30,7 @@ jest.mock("@src/langchain");
 beforeEach(() => {
   jest
     .mocked(langchain.queryPromptEvaluationModel)
-    .mockResolvedValue({ isMalicious: false, reason: "" });
+    .mockResolvedValue({ isMalicious: false });
 });
 
 test("GIVEN defence is not active WHEN activating defence THEN defence is active", () => {
@@ -302,62 +300,28 @@ test("GIVEN QA LLM instructions have been configured WHEN getting QA LLM instruc
   expect(qaLlmInstructions).toBe(newQaLlmInstructions);
 });
 
-test("GIVEN Eval LLM instructions for prompt injection have not been configured WHEN getting prompt injection eval instructions THEN return default pre-prompt", () => {
+test("GIVEN Eval LLM instructions for prompt have not been configured WHEN getting prompt injection eval instructions THEN return default pre-prompt", () => {
   const defences = defaultDefences;
   const configPromptInjectionEvalInstructions =
-    getPromptInjectionEvalPrePromptFromConfig(defences);
-  expect(configPromptInjectionEvalInstructions).toBe(
-    promptInjectionEvalPrePrompt
-  );
+    getPromptEvalPrePromptFromConfig(defences);
+  expect(configPromptInjectionEvalInstructions).toBe(promptEvalPrePrompt);
 });
 
-test("GIVEN Eval LLM instructions for prompt injection have been configured WHEN getting Eval LLM instructions THEN return configured prompt", () => {
-  const newPromptInjectionEvalInstructions =
-    "new prompt injection eval instructions";
+test("GIVEN Eval LLM instructions for prompt have been configured WHEN getting Eval LLM instructions THEN return configured prompt", () => {
+  const newPromptEvalInstructions = "new prompt eval instructions";
   const defences = configureDefence(
     DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
     defaultDefences,
     [
       {
-        id: "prompt-injection-evaluator-prompt",
-        value: newPromptInjectionEvalInstructions,
+        id: "prompt-evaluator-prompt",
+        value: newPromptEvalInstructions,
       },
     ]
   );
-  const configPromptInjectionEvalInstructions =
-    getPromptInjectionEvalPrePromptFromConfig(defences);
-  expect(configPromptInjectionEvalInstructions).toBe(
-    newPromptInjectionEvalInstructions
-  );
-});
-
-test("GIVEN Eval LLM instructions for malicious prompts have not been configured WHEN getting malicious prompt eval instructions THEN return default pre-prompt", () => {
-  const defences = defaultDefences;
-  const configMaliciousPromptEvalInstructions =
-    getMaliciousPromptEvalPrePromptFromConfig(defences);
-  expect(configMaliciousPromptEvalInstructions).toBe(
-    maliciousPromptEvalPrePrompt
-  );
-});
-
-test("GIVEN Eval LLM instructions for malicious prompts have been configured WHEN getting Eval LLM instructions THEN return configured prompt", () => {
-  const newMaliciousPromptEvalInstructions =
-    "new malicious prompt eval instructions";
-  const defences = configureDefence(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    defaultDefences,
-    [
-      {
-        id: "malicious-prompt-evaluator-prompt",
-        value: newMaliciousPromptEvalInstructions,
-      },
-    ]
-  );
-  const configMaliciousPromptEvalInstructions =
-    getMaliciousPromptEvalPrePromptFromConfig(defences);
-  expect(configMaliciousPromptEvalInstructions).toBe(
-    newMaliciousPromptEvalInstructions
-  );
+  const configPromptEvalInstructions =
+    getPromptEvalPrePromptFromConfig(defences);
+  expect(configPromptEvalInstructions).toBe(newPromptEvalInstructions);
 });
 
 test("GIVEN user has configured defence WHEN resetting defence config THEN defence config is reset", () => {
