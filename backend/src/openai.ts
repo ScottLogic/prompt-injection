@@ -31,7 +31,6 @@ import {
   FunctionSendEmailParams,
 } from "./models/openai";
 
-
 // functions available to ChatGPT
 const chatGptFunctions = [
   {

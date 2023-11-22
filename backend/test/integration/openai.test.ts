@@ -110,10 +110,7 @@ describe("OpenAI Integration Tests", () => {
     };
 
     // set the system role prompt
-    const defences = activateDefence(
-      DEFENCE_ID.SYSTEM_ROLE,
-      defaultDefences
-    );
+    const defences = activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences);
 
     // Mock the createChatCompletion function
     mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant("Hi"));
@@ -175,10 +172,7 @@ describe("OpenAI Integration Tests", () => {
     };
 
     // activate the SYSTEM_ROLE defence
-    const defences = activateDefence(
-      DEFENCE_ID.SYSTEM_ROLE,
-      defaultDefences
-    );
+    const defences = activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences);
 
     // Mock the createChatCompletion function
     mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant("Hi"));

@@ -178,9 +178,7 @@ test(
     const defenceReport = await detectTriggeredDefences(message, defences);
     expect(defenceReport.blockedReason).toBe(null);
     expect(defenceReport.isBlocked).toBe(false);
-    expect(defenceReport.alertedDefences).toContain(
-      DEFENCE_ID.CHARACTER_LIMIT
-    );
+    expect(defenceReport.alertedDefences).toContain(DEFENCE_ID.CHARACTER_LIMIT);
   }
 );
 
@@ -364,11 +362,7 @@ test("GIVEN user has configured two defence WHEN resetting one defence config TH
     },
   ];
 
-  defences = configureDefence(
-    DEFENCE_ID.SYSTEM_ROLE,
-    defences,
-    sysRoleConfig
-  );
+  defences = configureDefence(DEFENCE_ID.SYSTEM_ROLE, defences, sysRoleConfig);
   defences = configureDefence(
     DEFENCE_ID.CHARACTER_LIMIT,
     defences,

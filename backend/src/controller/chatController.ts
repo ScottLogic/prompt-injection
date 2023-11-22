@@ -115,7 +115,8 @@ async function handleHigherLevelChat(
         ...openAiReply.defenceReport.triggeredDefences,
       ];
       // combine blocked
-      chatResponse.defenceReport.isBlocked = openAiReply.defenceReport.isBlocked;
+      chatResponse.defenceReport.isBlocked =
+        openAiReply.defenceReport.isBlocked;
 
       // combine blocked reason
       chatResponse.defenceReport.blockedReason =
