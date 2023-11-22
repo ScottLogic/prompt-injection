@@ -66,9 +66,9 @@ router.post("/openai/model/configure", handleConfigureModel);
 
 router.get("/openai/model", handleGetModel);
 
-// prompt
+// system roles
 
-router.get("/level/prompt", handleGetSystemRoles);
+router.get("/systemRoles", handleGetSystemRoles);
 
 // getting documents
 
