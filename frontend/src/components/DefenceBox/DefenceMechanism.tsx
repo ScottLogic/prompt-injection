@@ -5,7 +5,7 @@ import DefenceConfiguration from "./DefenceConfiguration";
 import "./DefenceMechanism.css";
 
 import {
-  DEFENCE_TYPES,
+  DEFENCE_ID,
   DefenceConfigItem,
   DefenceInfo,
 } from "@src/models/defence";
@@ -21,14 +21,11 @@ function DefenceMechanism({
 }: {
   defenceDetail: DefenceInfo;
   showConfigurations: boolean;
-  resetDefenceConfiguration: (
-    defenceId: DEFENCE_TYPES,
-    configId: string
-  ) => void;
+  resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
-    defenceId: DEFENCE_TYPES,
+    defenceId: DEFENCE_ID,
     config: DefenceConfigItem[]
   ) => Promise<boolean>;
 }) {

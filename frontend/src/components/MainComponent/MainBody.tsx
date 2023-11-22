@@ -9,7 +9,7 @@ import EmailBox from "@src/components/EmailBox/EmailBox";
 import ShortMissionInfoButton from "@src/components/ShortMissionInfoButton/ShortMissionInfoButton";
 import { ChatMessage } from "@src/models/chat";
 import {
-  DEFENCE_TYPES,
+  DEFENCE_ID,
   DefenceConfigItem,
   DefenceInfo,
 } from "@src/models/defence";
@@ -38,15 +38,12 @@ function MainBody({
   emails: EmailInfo[];
   messages: ChatMessage[];
   addChatMessage: (message: ChatMessage) => void;
-  resetDefenceConfiguration: (
-    defenceId: DEFENCE_TYPES,
-    configId: string
-  ) => void;
+  resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
   resetLevel: () => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
-    defenceId: DEFENCE_TYPES,
+    defenceId: DEFENCE_ID,
     config: DefenceConfigItem[]
   ) => Promise<boolean>;
   setEmails: (emails: EmailInfo[]) => void;

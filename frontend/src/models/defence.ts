@@ -1,4 +1,4 @@
-enum DEFENCE_TYPES {
+enum DEFENCE_ID {
   CHARACTER_LIMIT = "CHARACTER_LIMIT",
   EVALUATION_LLM_INSTRUCTIONS = "EVALUATION_LLM_INSTRUCTIONS",
   QA_LLM_INSTRUCTIONS = "QA_LLM_INSTRUCTIONS",
@@ -24,7 +24,7 @@ class DefenceConfigItem {
 
 class DefenceInfo {
   constructor(
-    id: DEFENCE_TYPES,
+    id: DEFENCE_ID,
     name: string,
     info: string,
     config: DefenceConfigItem[]
@@ -38,7 +38,7 @@ class DefenceInfo {
     this.isTriggered = false;
   }
 
-  id: DEFENCE_TYPES;
+  id: DEFENCE_ID;
   name: string;
   info: string;
   config: DefenceConfigItem[];
@@ -51,5 +51,5 @@ interface DefenceResetResponse {
   value: string;
 }
 
-export { DEFENCE_TYPES, DefenceConfigItem, DefenceInfo };
+export { DEFENCE_ID, DefenceConfigItem, DefenceInfo };
 export type { DefenceResetResponse };

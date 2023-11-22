@@ -8,7 +8,7 @@ import MainHeader from "./MainHeader";
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from "@src/Defences";
 import { CHAT_MESSAGE_TYPE, ChatMessage } from "@src/models/chat";
 import {
-  DEFENCE_TYPES,
+  DEFENCE_ID,
   DefenceConfigItem,
   DefenceInfo,
 } from "@src/models/defence";
@@ -159,7 +159,7 @@ function MainComponent({
   }
 
   async function resetDefenceConfiguration(
-    defenceId: DEFENCE_TYPES,
+    defenceId: DEFENCE_ID,
     configId: string
   ) {
     const resetDefence = await resetDefenceConfig(defenceId, configId);
@@ -208,7 +208,7 @@ function MainComponent({
   }
 
   async function setDefenceConfiguration(
-    defenceId: DEFENCE_TYPES,
+    defenceId: DEFENCE_ID,
     config: DefenceConfigItem[]
   ) {
     const success = await configureDefence(defenceId, config, currentLevel);
@@ -248,10 +248,9 @@ function MainComponent({
         emails={emails}
         messages={messages}
         addChatMessage={addChatMessage}
-        resetDefenceConfiguration={(
-          defenceId: DEFENCE_TYPES,
-          configId: string
-        ) => void resetDefenceConfiguration(defenceId, configId)}
+        resetDefenceConfiguration={(defenceId: DEFENCE_ID, configId: string) =>
+          void resetDefenceConfiguration(defenceId, configId)
+        }
         resetLevel={() => void resetLevel()}
         setDefenceActive={(defence: DefenceInfo) =>
           void setDefenceActive(defence)

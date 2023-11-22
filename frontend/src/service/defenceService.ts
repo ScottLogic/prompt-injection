@@ -1,7 +1,7 @@
 import { sendRequest } from "./backendService";
 
 import {
-  DEFENCE_TYPES,
+  DEFENCE_ID,
   DefenceConfigItem,
   DefenceInfo,
   DefenceResetResponse,
@@ -93,10 +93,10 @@ function validateFilterConfig(config: string) {
 
 function validateDefence(id: string, config: string) {
   switch (id) {
-    case DEFENCE_TYPES.CHARACTER_LIMIT:
+    case DEFENCE_ID.CHARACTER_LIMIT:
       return validatePositiveNumberConfig(config);
-    case DEFENCE_TYPES.FILTER_USER_INPUT:
-    case DEFENCE_TYPES.FILTER_BOT_OUTPUT:
+    case DEFENCE_ID.FILTER_USER_INPUT:
+    case DEFENCE_ID.FILTER_BOT_OUTPUT:
       return validateFilterConfig(config);
     default:
       return validateNonEmptyStringConfig(config);
