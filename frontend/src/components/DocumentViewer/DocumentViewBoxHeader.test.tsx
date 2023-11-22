@@ -1,23 +1,13 @@
 import { render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import DocumentViewBoxHeader from "./DocumentViewBoxHeader";
 
 describe("DocumentViewBoxHeader component tests", () => {
-  let previousClicked = false;
-  let nextClicked = false;
-
-  beforeEach(() => {
-    previousClicked = false;
-    nextClicked = false;
-  });
-
-  function onPrevious() {
-    previousClicked = true;
-  }
-  function onNext() {
-    nextClicked = true;
-  }
+  const mocks = {
+    onPrevious: () => {},
+    onNext: () => {},
+  };
 
   function renderDocumentViewBoxHeader(
     numberOfDocuments: number,
@@ -29,8 +19,12 @@ describe("DocumentViewBoxHeader component tests", () => {
         documentIndex={documentIndex}
         documentName={documentName}
         numberOfDocuments={numberOfDocuments}
-        onPrevious={onPrevious}
-        onNext={onNext}
+        onPrevious={() => {
+          mocks.onPrevious();
+        }}
+        onNext={() => {
+          mocks.onNext();
+        }}
       />
     );
   }
@@ -43,7 +37,13 @@ describe("DocumentViewBoxHeader component tests", () => {
     return screen.getByRole("button", { name: "next document ►" });
   }
 
-  function checkButtonAria(button: "previous" | "next", disabled: boolean) {
+  function checkButtonAriaDisabled(
+    button: "previous" | "next",
+    disabled: boolean
+  ) {
+    const spyOnPrevious = vi.spyOn(mocks, "onPrevious");
+    const spyOnNext = vi.spyOn(mocks, "onNext");
+
     const buttonHtml =
       button === "previous" ? getPreviousButton() : getNextButton();
 
@@ -55,10 +55,17 @@ describe("DocumentViewBoxHeader component tests", () => {
     expect(buttonHtml).toBeEnabled();
 
     buttonHtml.click();
-    if (button === "previous") {
-      expect(previousClicked).toBe(!disabled);
+    if (disabled) {
+      expect(spyOnPrevious).not.toHaveBeenCalled();
+      expect(spyOnNext).not.toHaveBeenCalled();
     } else {
-      expect(nextClicked).toBe(!disabled);
+      if (button === "previous") {
+        expect(spyOnPrevious).toHaveBeenCalled();
+        expect(spyOnNext).not.toHaveBeenCalled();
+      } else {
+        expect(spyOnPrevious).not.toHaveBeenCalled();
+        expect(spyOnNext).toHaveBeenCalled();
+      }
     }
   }
 
@@ -87,8 +94,8 @@ describe("DocumentViewBoxHeader component tests", () => {
     const documentName = "test";
 
     renderDocumentViewBoxHeader(numberOfDocuments, documentIndex, documentName);
-    checkButtonAria("previous", true);
-    checkButtonAria("next", false);
+    checkButtonAriaDisabled("previous", true);
+    checkButtonAriaDisabled("next", false);
   });
 
   test("next button aria-disabled when showing the last document", () => {
@@ -97,8 +104,8 @@ describe("DocumentViewBoxHeader component tests", () => {
     const documentName = "test";
 
     renderDocumentViewBoxHeader(numberOfDocuments, documentIndex, documentName);
-    checkButtonAria("previous", false);
-    checkButtonAria("next", true);
+    checkButtonAriaDisabled("previous", false);
+    checkButtonAriaDisabled("next", true);
   });
 
   test("both buttons are aria-disabled when there is only one document", () => {
@@ -107,8 +114,8 @@ describe("DocumentViewBoxHeader component tests", () => {
     const documentName = "test";
 
     renderDocumentViewBoxHeader(numberOfDocuments, documentIndex, documentName);
-    checkButtonAria("previous", true);
-    checkButtonAria("next", true);
+    checkButtonAriaDisabled("previous", true);
+    checkButtonAriaDisabled("next", true);
   });
 
   test("neither button is aria-disabled when in the middle of the documents", () => {
@@ -117,7 +124,7 @@ describe("DocumentViewBoxHeader component tests", () => {
     const documentName = "test";
 
     renderDocumentViewBoxHeader(numberOfDocuments, documentIndex, documentName);
-    checkButtonAria("previous", false);
-    checkButtonAria("next", false);
+    checkButtonAriaDisabled("previous", false);
+    checkButtonAriaDisabled("next", false);
   });
 });
