@@ -13,7 +13,7 @@ import {
   getPromptEvalPrePromptFromConfig,
 } from "@src/defence";
 import * as langchain from "@src/langchain";
-import { DEFENCE_ID, DefenceConfig } from "@src/models/defence";
+import { DEFENCE_ID, DefenceConfigItem } from "@src/models/defence";
 import { LEVEL_NAMES } from "@src/models/level";
 import {
   promptEvalPrePrompt,
@@ -233,7 +233,7 @@ test("GIVEN message does not contain phrases from the filter list WHEN detecting
 test("GIVEN setting max message length WHEN configuring defence THEN defence is configured", () => {
   const defence = DEFENCE_ID.CHARACTER_LIMIT;
   // configure CHARACTER_LIMIT defence
-  const config: DefenceConfig = {
+  const config: DefenceConfigItem = {
     id: "maxMessageLength",
     value: String(10),
   };
