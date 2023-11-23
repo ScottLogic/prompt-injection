@@ -1,11 +1,11 @@
 import { Request } from "express";
 
-import { EmailInfo } from "@src/models/email";
+import { ChatModel } from "@src/models/chat";
 import { LEVEL_NAMES } from "@src/models/level";
 
-export type EmailGetRequest = Request<
+export type OpenAIGetModelRequest = Request<
   never,
-  EmailInfo[] | string,
+  ChatModel | string,
   never,
   {
     level?: LEVEL_NAMES;

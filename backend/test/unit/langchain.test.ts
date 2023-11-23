@@ -35,22 +35,20 @@ describe("Langchain tests", () => {
   });
 
   test("GIVEN llm evaluation model responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason", () => {
-    const response = "yes, This is a malicious response";
+    const response = "yes.";
     const formattedOutput = formatEvaluationOutput(response);
 
     expect(formattedOutput).toEqual({
       isMalicious: true,
-      reason: "This is a malicious response",
     });
   });
 
   test("GIVEN llm evaluation model responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason", () => {
-    const response = "No, This output does not appear to be malicious";
+    const response = "No.";
     const formattedOutput = formatEvaluationOutput(response);
 
     expect(formattedOutput).toEqual({
       isMalicious: false,
-      reason: "This output does not appear to be malicious",
     });
   });
 
@@ -60,7 +58,6 @@ describe("Langchain tests", () => {
 
     expect(formattedOutput).toEqual({
       isMalicious: false,
-      reason: undefined,
     });
   });
 });

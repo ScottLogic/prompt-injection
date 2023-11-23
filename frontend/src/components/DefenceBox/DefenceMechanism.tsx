@@ -5,20 +5,22 @@ import DefenceConfiguration from "./DefenceConfiguration";
 import "./DefenceMechanism.css";
 
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "@src/models/defence";
-import {
-  resetDefenceConfig,
-  validateDefence,
-} from "@src/service/defenceService";
+import { validateDefence } from "@src/service/defenceService";
 
 function DefenceMechanism({
   defenceDetail,
   showConfigurations,
+  resetDefenceConfiguration,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
 }: {
   defenceDetail: DefenceInfo;
   showConfigurations: boolean;
+  resetDefenceConfiguration: (
+    defenceId: DEFENCE_TYPES,
+    configId: string
+  ) => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
@@ -26,13 +28,22 @@ function DefenceMechanism({
     config: DefenceConfig[]
   ) => Promise<boolean>;
 }) {
-  const [isConfigured, setIsConfigured] = useState<boolean>(false);
+  const [showConfiguredText, setShowConfiguredText] = useState<boolean>(false);
   const [configValidated, setConfigValidated] = useState<boolean>(true);
   const [configKey, setConfigKey] = useState<number>(0);
 
-  async function resetConfigurationValue(configId: string): Promise<string> {
-    const defaultValue = await resetDefenceConfig(defenceDetail.id, configId);
-    return defaultValue.value;
+  function showDefenceConfiguredText(isValid: boolean) {
+    setShowConfiguredText(true);
+    setConfigValidated(isValid);
+    // hide the message after 3 seconds
+    setTimeout(() => {
+      setShowConfiguredText(false);
+    }, 3000);
+  }
+
+  function resetConfigurationValue(configId: string) {
+    resetDefenceConfiguration(defenceDetail.id, configId);
+    showDefenceConfiguredText(true);
   }
 
   async function setConfigurationValue(configId: string, value: string) {
@@ -49,17 +60,10 @@ function DefenceMechanism({
         defenceDetail.id,
         newConfiguration
       );
-      setIsConfigured(true);
-      setConfigValidated(configured);
+      showDefenceConfiguredText(configured);
     } else {
-      setConfigValidated(false);
-      setIsConfigured(true);
+      showDefenceConfiguredText(false);
     }
-
-    // hide the message after 3 seconds
-    setTimeout(() => {
-      setIsConfigured(false);
-    }, 3000);
   }
 
   function toggleDefence() {
@@ -105,7 +109,7 @@ function DefenceMechanism({
               />
             );
           })}
-        {isConfigured &&
+        {showConfiguredText &&
           (configValidated ? (
             <p className="validation-text">
               <TiTick /> defence successfully configured
