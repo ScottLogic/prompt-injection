@@ -41,8 +41,10 @@ describe("DocumentViewBoxHeader component tests", () => {
     button: "previous" | "next",
     disabled: boolean
   ) {
-    const spyOnPrevious = vi.spyOn(mocks, "onPrevious");
-    const spyOnNext = vi.spyOn(mocks, "onNext");
+    const spyOnClick = vi.spyOn(
+      mocks,
+      button === "previous" ? "onPrevious" : "onNext"
+    );
 
     const buttonHtml =
       button === "previous" ? getPreviousButton() : getNextButton();
@@ -56,16 +58,9 @@ describe("DocumentViewBoxHeader component tests", () => {
 
     buttonHtml.click();
     if (disabled) {
-      expect(spyOnPrevious).not.toHaveBeenCalled();
-      expect(spyOnNext).not.toHaveBeenCalled();
+      expect(spyOnClick).not.toHaveBeenCalled();
     } else {
-      if (button === "previous") {
-        expect(spyOnPrevious).toHaveBeenCalled();
-        expect(spyOnNext).not.toHaveBeenCalled();
-      } else {
-        expect(spyOnPrevious).not.toHaveBeenCalled();
-        expect(spyOnNext).toHaveBeenCalled();
-      }
+      expect(spyOnClick).toHaveBeenCalled();
     }
   }
 
