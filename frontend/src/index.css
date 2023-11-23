@@ -1,19 +1,19 @@
 body {
-  height: 100%;
-  margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	height: 100%;
+	margin: 0;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+		monospace;
 }
 
 html {
-  height: 100%;
-  background-color: var(--main-background-colour);
-  border-color: var(--main-border-colour);
-  color: var(--main-text-colour);
+	height: 100%;
+	background-color: var(--main-background-colour);
+	border-color: var(--main-border-colour);
+	color: var(--main-text-colour);
 }

@@ -1,9 +1,9 @@
 .chat-box-feed {
-  display: flex;
-  flex-direction: column-reverse;
-  flex-grow: 1;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  padding: 0 2rem;
-  height: 1px;
+	display: flex;
+	flex-direction: column-reverse;
+	flex-grow: 1;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	padding: 0 2rem;
+	height: 1px;
 }

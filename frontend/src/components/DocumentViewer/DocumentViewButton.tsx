@@ -1,30 +1,30 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import DocumentViewBox from "./DocumentViewBox";
-import "./DocumentViewButton.css";
+import DocumentViewBox from './DocumentViewBox';
+import './DocumentViewButton.css';
 
-import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 
 function DocumentViewButton() {
-  const [showPopup, setShowPopup] = useState(false);
+	const [showPopup, setShowPopup] = useState(false);
 
-  return (
-    <div className="document-view-button-wrapper">
-      <ThemedButton
-        onClick={() => {
-          setShowPopup(true);
-        }}
-      >
-        View Documents
-      </ThemedButton>
-      <DocumentViewBox
-        show={showPopup}
-        onClose={() => {
-          setShowPopup(false);
-        }}
-      />
-    </div>
-  );
+	return (
+		<div className="document-view-button-wrapper">
+			<ThemedButton
+				onClick={() => {
+					setShowPopup(true);
+				}}
+			>
+				View Documents
+			</ThemedButton>
+			<DocumentViewBox
+				show={showPopup}
+				onClose={() => {
+					setShowPopup(false);
+				}}
+			/>
+		</div>
+	);
 }
 
 export default DocumentViewButton;

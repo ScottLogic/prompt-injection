@@ -1,10 +1,10 @@
 .defence-configuration {
-  width: 100%;
+	width: 100%;
 }
 
 .defence-configuration .header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.25rem;
-  align-items: center;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 0.25rem;
+	align-items: center;
 }

@@ -1,45 +1,45 @@
 .model-selection-box {
-  padding: 0.625rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+	padding: 0.625rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
 }
 
 .model-selection-box .model-selection-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 0.5rem;
-  align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem 0.5rem;
+	align-items: center;
 }
 
 .model-selection-box .model-selection-row p {
-  flex: 1 1 auto;
-  margin: 0;
+	flex: 1 1 auto;
+	margin: 0;
 }
 
 .model-selection-box .model-selection-row .select-wrapper {
-  display: flex;
-  gap: 0.25rem 0.5rem;
-  flex-wrap: wrap;
-  flex: 1 1 auto;
+	display: flex;
+	gap: 0.25rem 0.5rem;
+	flex-wrap: wrap;
+	flex: 1 1 auto;
 }
 
 .model-selection-box .model-selection-row select {
-  flex: 1 1 auto;
-  padding: 0.5rem;
+	flex: 1 1 auto;
+	padding: 0.5rem;
 }
 
 .model-selection-box .model-selection-info {
-  align-items: center;
-  text-align: center;
+	align-items: center;
+	text-align: center;
 }
 
 .model-selection-box .model-selection-info p {
-  margin: 0;
-  padding: 0;
-  color: var(--main-accent-colour);
+	margin: 0;
+	padding: 0;
+	color: var(--main-accent-colour);
 }
 
 .model-selection-box .model-selection-info .error {
-  color: var(--main-error-colour);
+	color: var(--main-error-colour);
 }
