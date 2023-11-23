@@ -51,5 +51,6 @@ module.exports = {
 				warnOnUnassignedImports: true,
 			},
 		],
+		'no-mixed-spaces-and-tabs': 0, // disable rule
 	},
 };
