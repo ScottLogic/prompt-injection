@@ -4,7 +4,7 @@ import { describe, expect, test, vi } from "vitest";
 import DocumentViewBoxHeader from "./DocumentViewBoxHeader";
 
 describe("DocumentViewBoxHeader component tests", () => {
-  const mocks = {
+  const propMethods = {
     onPrevious: () => {},
     onNext: () => {},
   };
@@ -20,10 +20,10 @@ describe("DocumentViewBoxHeader component tests", () => {
         documentName={documentName}
         numberOfDocuments={numberOfDocuments}
         onPrevious={() => {
-          mocks.onPrevious();
+          propMethods.onPrevious();
         }}
         onNext={() => {
-          mocks.onNext();
+          propMethods.onNext();
         }}
       />
     );
@@ -42,7 +42,7 @@ describe("DocumentViewBoxHeader component tests", () => {
     disabled: boolean
   ) {
     const spyOnClick = vi.spyOn(
-      mocks,
+      propMethods,
       button === "previous" ? "onPrevious" : "onNext"
     );
 
@@ -83,7 +83,7 @@ describe("DocumentViewBoxHeader component tests", () => {
     expect(numberOfDocumentsHtml).toBeInTheDocument();
   });
 
-  test("previous button aria-disabled when showing the first document", () => {
+  test("GIVEN the first document is shown THEN previous button is disabled", () => {
     const numberOfDocuments = 3;
     const documentIndex = 0;
     const documentName = "test";
@@ -93,7 +93,7 @@ describe("DocumentViewBoxHeader component tests", () => {
     checkButtonAriaDisabled("next", false);
   });
 
-  test("next button aria-disabled when showing the last document", () => {
+  test("GIVEN the last document is shown THEN next button is disabled", () => {
     const numberOfDocuments = 3;
     const documentIndex = numberOfDocuments - 1;
     const documentName = "test";
@@ -103,7 +103,7 @@ describe("DocumentViewBoxHeader component tests", () => {
     checkButtonAriaDisabled("next", true);
   });
 
-  test("both buttons are aria-disabled when there is only one document", () => {
+  test("GIVEN there's only one document THEN both buttons are disabled", () => {
     const numberOfDocuments = 1;
     const documentIndex = 0;
     const documentName = "test";
@@ -113,7 +113,7 @@ describe("DocumentViewBoxHeader component tests", () => {
     checkButtonAriaDisabled("next", true);
   });
 
-  test("neither button is aria-disabled when in the middle of the documents", () => {
+  test("GIVEN a middle document is shown THEN both buttons are not disabled", () => {
     const numberOfDocuments = 3;
     const documentIndex = 1;
     const documentName = "test";
