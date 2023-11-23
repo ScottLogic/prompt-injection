@@ -1,10 +1,12 @@
 import { Request } from "express";
 
+import { LEVEL_NAMES } from "@src/models/level";
+
 export type LevelGetPromptRequest = Request<
   never,
   string,
   never,
   {
-    level?: string;
+    level?: LEVEL_NAMES;
   }
 >;
