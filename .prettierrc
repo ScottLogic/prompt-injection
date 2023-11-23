@@ -1,8 +1,5 @@
 {
-  "singleQuote": true,
-  "trailingComma": "es5",
-  "useTabs": true,
-  "importOrder": ["^[./]", "^@src/(.*)$"],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true
+	"singleQuote": true,
+	"trailingComma": "es5",
+	"useTabs": true
 }
