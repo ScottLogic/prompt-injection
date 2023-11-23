@@ -5,6 +5,6 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       PORT: 3001
     build: .
-    image: "scottlogic/prompt-injection-api"
+    image: 'scottlogic/prompt-injection-api'
     ports:
-      - "3001:3001"
+      - '3001:3001'

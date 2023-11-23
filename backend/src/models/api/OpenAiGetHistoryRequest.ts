@@ -1,12 +1,12 @@
-import { Request } from "express";
+import { Request } from 'express';
 
-import { ChatHistoryMessage } from "@src/models/chat";
+import { ChatHistoryMessage } from '@src/models/chat';
 
 export type OpenAiGetHistoryRequest = Request<
-  never,
-  ChatHistoryMessage[] | string,
-  never,
-  {
-    level?: string;
-  }
+	never,
+	ChatHistoryMessage[] | string,
+	never,
+	{
+		level?: string;
+	}
 >;

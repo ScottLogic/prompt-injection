@@ -1,2 +1,2 @@
 // set the environment variables
-process.env.OPENAI_API_KEY = "sk-12345";
+process.env.OPENAI_API_KEY = 'sk-12345';
