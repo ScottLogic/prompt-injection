@@ -17,7 +17,7 @@ function ThemedNumberInput({
   // required
   content: string;
   onContentChanged: (newContent: string) => void;
-  id: string,
+  id: string;
   // optional
   disabled?: boolean;
   enterPressed?: () => void;

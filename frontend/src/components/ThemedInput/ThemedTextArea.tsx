@@ -70,7 +70,7 @@ function ThemedTextArea({
   // required
   content: string;
   onContentChanged: (newContent: string) => void;
-  id: string,
+  id: string;
   // optional
   autoFocus?: boolean;
   disabled?: boolean;

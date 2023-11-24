@@ -11,7 +11,7 @@ function DefenceConfiguration({
   isActive,
   setConfigurationValue,
   resetConfigurationValue,
-  defenceId, 
+  defenceId,
 }: {
   config: DefenceConfig;
   isActive: boolean;
@@ -29,8 +29,8 @@ function DefenceConfiguration({
     }
   }
 
-  const uniqueInputId= `${defenceId}-${config.id}`;
-  const titleText= `reset ${config.name} to default`;
+  const uniqueInputId = `${defenceId}-${config.id}`;
+  const titleText = `reset ${config.name} to default`;
 
   return (
     <div className="defence-configuration">
@@ -42,7 +42,7 @@ function DefenceConfiguration({
           }}
           title={titleText}
         >
-          reset 
+          reset
         </ThemedButton>
       </div>
       <DefenceConfigurationInput
