@@ -39,7 +39,11 @@ declare module "express-session" {
 const mockCreateChatCompletion = jest.fn();
 jest.mock("openai", () => ({
   OpenAI: jest.fn().mockImplementation(() => ({
-    createChatCompletion: mockCreateChatCompletion,
+    chat: {
+      completions: {
+        create: mockCreateChatCompletion,
+      },
+    },
   })),
 }));
 
@@ -53,16 +57,14 @@ function responseMock() {
 describe("handleChatToGPT unit tests", () => {
   function chatResponseAssistant(content: string) {
     return {
-      data: {
-        choices: [
-          {
-            message: {
-              role: "assistant",
-              content,
-            },
+      choices: [
+        {
+          message: {
+            role: "assistant",
+            content,
           },
-        ],
-      },
+        },
+      ],
     };
   }
 
