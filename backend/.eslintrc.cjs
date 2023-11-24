@@ -49,6 +49,24 @@ module.exports = {
 				alphabetize: { order: 'asc' },
 				'newlines-between': 'always',
 				warnOnUnassignedImports: true,
+				pathGroups: [
+					{
+						pattern: '@src/**',
+						group: 'parent',
+						position: 'after',
+					},
+				],
+				pathGroupsExcludedImportTypes: ['react'],
+				groups: [
+					'builtin',
+					'external',
+					'internal',
+					'sibling',
+					'parent',
+					'index',
+					'object',
+					'type',
+				],
 			},
 		],
 		'no-mixed-spaces-and-tabs': 0, // disable rule
