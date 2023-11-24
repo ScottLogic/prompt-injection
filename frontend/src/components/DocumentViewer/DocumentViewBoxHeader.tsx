@@ -1,4 +1,5 @@
 import "./DocumentViewBoxHeader.css";
+import { DocumentViewBoxHeaderProps } from "./DocumentViewBoxHeaderProps";
 
 import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
 
@@ -8,13 +9,7 @@ function DocumentViewBoxHeader({
   numberOfDocuments,
   onPrevious,
   onNext,
-}: {
-  documentIndex: number;
-  documentName: string;
-  numberOfDocuments: number;
-  onPrevious: () => void;
-  onNext: () => void;
-}) {
+}: DocumentViewBoxHeaderProps) {
   const documentNumber = `${documentIndex + 1} out of ${numberOfDocuments}`;
 
   return (
