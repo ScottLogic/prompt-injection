@@ -4,18 +4,20 @@ import "./DefenceConfiguration.css";
 import DefenceConfigurationInput from "./DefenceConfigurationInput";
 
 import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
-import { DefenceConfig } from "@src/models/defence";
+import { DEFENCE_TYPES, DefenceConfig } from "@src/models/defence";
 
 function DefenceConfiguration({
   config,
   isActive,
   setConfigurationValue,
   resetConfigurationValue,
+  defenceId, 
 }: {
   config: DefenceConfig;
   isActive: boolean;
   setConfigurationValue: (configId: string, value: string) => Promise<void>;
   resetConfigurationValue: (configId: string) => void;
+  defenceId: DEFENCE_TYPES;
 }) {
   const [inputKey, setInputKey] = useState<number>(0);
 
@@ -27,20 +29,24 @@ function DefenceConfiguration({
     }
   }
 
+  const uniqueInputId= `${defenceId}-${config.id}`;
+  const titleText= `reset ${config.name} to default`;
+
   return (
     <div className="defence-configuration">
       <div className="header">
-        <span>{config.name}: </span>
+        <label htmlFor={uniqueInputId}>{config.name}: </label>
         <ThemedButton
           onClick={() => {
             resetConfigurationValue(config.id);
           }}
-          title="reset to default"
+          title={titleText}
         >
-          reset
+          reset 
         </ThemedButton>
       </div>
       <DefenceConfigurationInput
+        id={uniqueInputId}
         key={inputKey}
         currentValue={config.value}
         disabled={!isActive}

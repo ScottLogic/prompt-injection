@@ -8,6 +8,7 @@ function ThemedNumberInput({
   // required
   content,
   onContentChanged,
+  id,
   // optional
   disabled = false,
   enterPressed,
@@ -16,6 +17,7 @@ function ThemedNumberInput({
   // required
   content: string;
   onContentChanged: (newContent: string) => void;
+  id: string,
   // optional
   disabled?: boolean;
   enterPressed?: () => void;
@@ -37,6 +39,7 @@ function ThemedNumberInput({
 
   return (
     <input
+      id={id}
       className={inputClass}
       type="number"
       value={content}
