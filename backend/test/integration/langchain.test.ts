@@ -11,8 +11,8 @@ import { DocumentsVector } from "@src/models/document";
 import { LEVEL_NAMES } from "@src/models/level";
 import {
   qAPrompt,
-  qAMainPrompt,
-  promptEvalMainPrompt,
+  qaContextTemplate,
+  promptEvalContextTemplate,
   promptEvalPrompt,
 } from "@src/promptTemplates";
 import { RetrievalQAChain } from "langchain/chains";
@@ -138,7 +138,7 @@ test("GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEv
   initPromptEvaluationModel(promptEvalPrompt);
   expect(mockFromTemplate).toHaveBeenCalledTimes(1);
   expect(mockFromTemplate).toHaveBeenCalledWith(
-    `${promptEvalPrompt}\n${promptEvalMainPrompt}`
+    `${promptEvalPrompt}\n${promptEvalContextTemplate}`
   );
 });
 
@@ -151,7 +151,9 @@ test("GIVEN the QA model is not provided a prompt and currentLevel WHEN it is in
   initQAModel(level, prompt);
   expect(mockFromLLM).toHaveBeenCalledTimes(1);
   expect(mockFromTemplate).toHaveBeenCalledTimes(1);
-  expect(mockFromTemplate).toHaveBeenCalledWith(`${qAPrompt}\n${qAMainPrompt}`);
+  expect(mockFromTemplate).toHaveBeenCalledWith(
+    `${qAPrompt}\n${qaContextTemplate}`
+  );
 });
 
 test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialized and prompt is set to the correct prompt ", () => {
@@ -164,7 +166,7 @@ test("GIVEN the QA model is provided a prompt WHEN it is initialised THEN the ll
   expect(mockFromLLM).toHaveBeenCalledTimes(1);
   expect(mockFromTemplate).toHaveBeenCalledTimes(1);
   expect(mockFromTemplate).toHaveBeenCalledWith(
-    `this is a test prompt. \n${qAMainPrompt}`
+    `this is a test prompt. \n${qaContextTemplate}`
   );
 });
 

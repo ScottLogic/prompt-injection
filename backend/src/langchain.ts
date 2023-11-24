@@ -13,8 +13,8 @@ import { LEVEL_NAMES } from "./models/level";
 import { getOpenAIKey } from "./openai";
 import {
   promptEvalPrompt,
-  promptEvalMainPrompt,
-  qAMainPrompt,
+  promptEvalContextTemplate,
+  qaContextTemplate,
   qAPrompt,
 } from "./promptTemplates";
 
@@ -87,7 +87,7 @@ function initQAModel(level: LEVEL_NAMES, Prompt: string) {
   const promptTemplate = makePromptTemplate(
     Prompt,
     qAPrompt,
-    qAMainPrompt,
+    qaContextTemplate,
     "QA prompt template"
   );
   return RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
@@ -101,7 +101,7 @@ function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
   const promptEvalTemplate = makePromptTemplate(
     configPromptEvaluationPrompt,
     promptEvalPrompt,
-    promptEvalMainPrompt,
+    promptEvalContextTemplate,
     "Prompt injection eval prompt template"
   );
 
