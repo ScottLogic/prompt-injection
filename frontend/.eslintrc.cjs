@@ -70,7 +70,6 @@ module.exports = {
 						position: 'after',
 					},
 				],
-				pathGroupsExcludedImportTypes: ['react'],
 				groups: [
 					'builtin',
 					'external',
