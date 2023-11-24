@@ -13,54 +13,46 @@ describe("Langchain tests", () => {
     (PromptTemplate.fromTemplate as jest.Mock).mockRestore();
   });
 
-  test("GIVEN makePromptTemplate is called with no config prePrompt THEN correct prompt is returned", () => {
-    makePromptTemplate("", "defaultPrePrompt", "mainPrompt", "noName");
-    expect(PromptTemplate.fromTemplate as jest.Mock).toBeCalledTimes(1);
-    expect(PromptTemplate.fromTemplate as jest.Mock).toBeCalledWith(
-      "defaultPrePrompt\nmainPrompt"
+  test("GIVEN makePromptTemplate is called with no config Prompt THEN correct prompt is returned", () => {
+    makePromptTemplate("", "defaultPrompt", "mainPrompt", "noName");
+    expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledTimes(1);
+    expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledWith(
+      "defaultPrompt\nmainPrompt"
     );
   });
 
-  test("GIVEN makePromptTemplate is called with a prePrompt THEN correct prompt is returned", () => {
-    makePromptTemplate(
-      "configPrePrompt",
-      "defaultPrePrompt",
-      "mainPrompt",
-      "noName"
-    );
-    expect(PromptTemplate.fromTemplate as jest.Mock).toBeCalledTimes(1);
-    expect(PromptTemplate.fromTemplate as jest.Mock).toBeCalledWith(
-      "configPrePrompt\nmainPrompt"
+  test("GIVEN makePromptTemplate is called with a Prompt THEN correct prompt is returned", () => {
+    makePromptTemplate("configPrompt", "defaultPrompt", "mainPrompt", "noName");
+    expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledTimes(1);
+    expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledWith(
+      "configPrompt\nmainPrompt"
     );
   });
 
-  test("GIVEN llm evaluation model responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason", () => {
-    const response = "yes, This is a malicious response";
+  test("GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason", () => {
+    const response = "yes.";
     const formattedOutput = formatEvaluationOutput(response);
 
     expect(formattedOutput).toEqual({
       isMalicious: true,
-      reason: "This is a malicious response",
     });
   });
 
-  test("GIVEN llm evaluation model responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason", () => {
-    const response = "No, This output does not appear to be malicious";
+  test("GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason", () => {
+    const response = "No.";
     const formattedOutput = formatEvaluationOutput(response);
 
     expect(formattedOutput).toEqual({
       isMalicious: false,
-      reason: "This output does not appear to be malicious",
     });
   });
 
-  test("GIVEN llm evaluation model responds with an invalid format THEN formatEvaluationOutput returns false", () => {
+  test("GIVEN prompt evaluation llm responds with an invalid format THEN formatEvaluationOutput returns false", () => {
     const response = "I cant tell you if this is malicious or not";
     const formattedOutput = formatEvaluationOutput(response);
 
     expect(formattedOutput).toEqual({
       isMalicious: false,
-      reason: undefined,
     });
   });
 });

@@ -2,10 +2,7 @@ import { defaultDefences } from "@src/defaultDefences";
 import { activateDefence, detectTriggeredDefences } from "@src/defence";
 import { initPromptEvaluationModel } from "@src/langchain";
 import { DEFENCE_TYPES } from "@src/models/defence";
-import {
-  maliciousPromptEvalPrePrompt,
-  promptInjectionEvalPrePrompt,
-} from "@src/promptTemplates";
+import { promptEvalPrompt } from "@src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCall = jest.fn();
@@ -16,7 +13,7 @@ jest.mock("langchain/chains", () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     ...originalModule,
-    SequentialChain: jest.fn().mockImplementation(() => ({
+    LLMChain: jest.fn().mockImplementation(() => ({
       call: mockCall,
     })),
   };
@@ -24,21 +21,21 @@ jest.mock("langchain/chains", () => {
 
 beforeEach(() => {
   // init langchain
-  initPromptEvaluationModel(
-    promptInjectionEvalPrePrompt,
-    maliciousPromptEvalPrePrompt
-  );
+  initPromptEvaluationModel(promptEvalPrompt);
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
 });
 
 test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "Yes. This is malicious.",
-    promptInjectionEval: "Yes. This is malicious.",
+    promptEvalOutput: "Yes.",
   });
   // activate the defence
   const defences = activateDefence(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
     defaultDefences
   );
   // create a malicious prompt
@@ -48,66 +45,19 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detect
   // check that the defence is triggered and the message is blocked
   expect(result.isBlocked).toBe(true);
   expect(result.triggeredDefences).toContain(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-  );
-});
-
-test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers malice detection WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
-  // mock the call method
-  mockCall.mockReturnValueOnce({
-    maliciousInputEval: "Yes. This is malicious.",
-    promptInjectionEval: "No. This is not malicious.",
-  });
-
-  // activate the defence
-  const defences = activateDefence(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    defaultDefences
-  );
-  // create a malicious prompt
-  const message = "some kind of malicious prompt";
-  // detect triggered defences
-  const result = await detectTriggeredDefences(message, defences);
-  // check that the defence is triggered and the message is blocked
-  expect(result.isBlocked).toBe(true);
-  expect(result.triggeredDefences).toContain(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-  );
-});
-
-test("GIVEN LLM_EVALUATION defence is active AND prompt only triggers prompt injection detection WHEN detectTriggeredDefences is called THEN defence is triggered AND defence is blocked", async () => {
-  // mock the call method
-  mockCall.mockReturnValueOnce({
-    maliciousInputEval: "No. This is not malicious.",
-    promptInjectionEval: "Yes. This is malicious.",
-  });
-
-  // activate the defence
-  const defences = activateDefence(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    defaultDefences
-  );
-  // create a malicious prompt
-  const message = "some kind of malicious prompt";
-  // detect triggered defences
-  const result = await detectTriggeredDefences(message, defences);
-  // check that the defence is triggered and the message is blocked
-  expect(result.isBlocked).toBe(true);
-  expect(result.triggeredDefences).toContain(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+    DEFENCE_TYPES.PROMPT_EVALUATION_LLM
   );
 });
 
 test("GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN detectTriggeredDefences is called THEN defence is not triggered AND defence is not blocked", async () => {
   // mock the call method
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "No. This is not malicious.",
-    promptInjectionEval: "No. This is not malicious.",
+    promptEvalOutput: "No.",
   });
 
   // activate the defence
   const defences = activateDefence(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+    DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
     defaultDefences
   );
   // create a malicious prompt
@@ -119,29 +69,20 @@ test("GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN de
   expect(result.triggeredDefences.length).toBe(0);
 });
 
-test("GIVEN LLM_EVALUATION defence is not active AND prompt is malicious WHEN detectTriggeredDefences is called THEN defence is alerted AND defence is not blocked", async () => {
-  // mock the call method
-  mockCall.mockReturnValueOnce({
-    maliciousInputEval: "Yes. This is malicious.",
-    promptInjectionEval: "Yes. This is malicious.",
-  });
-
+test("GIVEN LLM_EVALUATION defence is not active WHEN detectTriggeredDefences is called THEN detection LLM is not called and message is not blocked", async () => {
   const defences = defaultDefences;
   // create a malicious prompt
   const message = "some kind of malicious prompt";
   // detect triggered defences
   const result = await detectTriggeredDefences(message, defences);
-  // check that the defence is triggered and the message is blocked
+
+  expect(mockCall).not.toHaveBeenCalled();
   expect(result.isBlocked).toBe(false);
-  expect(result.alertedDefences).toContain(
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-  );
 });
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase in the list THEN defence is triggered and the message is blocked", async () => {
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "No. This is not malicious.",
-    promptInjectionEval: "No. This is not malicious.",
+    promptEvalOutput: "No.",
   });
 
   const defences = activateDefence(
@@ -157,8 +98,7 @@ test("GIVEN the input filtering defence is active WHEN a user sends a message co
 
 test("GIVEN the input filtering defence is active WHEN a user sends a message containing a phrase not in the list THEN the message is not blocked", async () => {
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "No. This is not malicious.",
-    promptInjectionEval: "No. This is not malicious.",
+    promptEvalOutput: "No.",
   });
 
   const defences = activateDefence(
@@ -174,8 +114,7 @@ test("GIVEN the input filtering defence is active WHEN a user sends a message co
 
 test("GIVEN the input filtering defence is not active WHEN a user sends a message containing a phrase in the list THEN the defence is alerted and message is not biocked", async () => {
   mockCall.mockReturnValueOnce({
-    maliciousInputEval: "No. This is not malicious.",
-    promptInjectionEval: "No. This is not malicious.",
+    promptEvalOutput: "No.",
   });
 
   const defences = defaultDefences;

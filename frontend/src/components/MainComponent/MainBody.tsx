@@ -18,6 +18,7 @@ function MainBody({
   emails,
   messages,
   addChatMessage,
+  resetDefenceConfiguration,
   resetLevel,
   setDefenceActive,
   setDefenceInactive,
@@ -34,6 +35,10 @@ function MainBody({
   emails: EmailInfo[];
   messages: ChatMessage[];
   addChatMessage: (message: ChatMessage) => void;
+  resetDefenceConfiguration: (
+    defenceId: DEFENCE_TYPES,
+    configId: string
+  ) => void;
   resetLevel: () => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
@@ -69,6 +74,7 @@ function MainBody({
         <ControlPanel
           currentLevel={currentLevel}
           defences={defences}
+          resetDefenceConfiguration={resetDefenceConfiguration}
           setDefenceActive={setDefenceActive}
           setDefenceInactive={setDefenceInactive}
           setDefenceConfiguration={setDefenceConfiguration}

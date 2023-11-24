@@ -10,6 +10,7 @@ import { LEVEL_NAMES } from "@src/models/level";
 function ControlPanel({
   currentLevel,
   defences,
+  resetDefenceConfiguration,
   setDefenceActive,
   setDefenceInactive,
   setDefenceConfiguration,
@@ -18,6 +19,10 @@ function ControlPanel({
 }: {
   currentLevel: LEVEL_NAMES;
   defences: DefenceInfo[];
+  resetDefenceConfiguration: (
+    defenceId: DEFENCE_TYPES,
+    configId: string
+  ) => void;
   setDefenceActive: (defence: DefenceInfo) => void;
   setDefenceInactive: (defence: DefenceInfo) => void;
   setDefenceConfiguration: (
@@ -30,8 +35,8 @@ function ControlPanel({
   function getDefencesConfigure() {
     return defences.filter((defence) => {
       return ![
-        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-        DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
+        DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
+        DEFENCE_TYPES.QA_LLM,
         DEFENCE_TYPES.SYSTEM_ROLE,
       ].some((id) => id === defence.id);
     });
@@ -40,8 +45,8 @@ function ControlPanel({
   function getDefencesModel() {
     return defences.filter((defence) => {
       return [
-        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-        DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
+        DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
+        DEFENCE_TYPES.QA_LLM,
         DEFENCE_TYPES.SYSTEM_ROLE,
       ].some((id) => id === defence.id);
     });
@@ -64,6 +69,7 @@ function ControlPanel({
               currentLevel={currentLevel}
               defences={getDefencesConfigure()}
               showConfigurations={showConfigurations}
+              resetDefenceConfiguration={resetDefenceConfiguration}
               setDefenceActive={setDefenceActive}
               setDefenceInactive={setDefenceInactive}
               setDefenceConfiguration={setDefenceConfiguration}
@@ -78,6 +84,7 @@ function ControlPanel({
               currentLevel={currentLevel}
               defences={getDefencesModel()}
               showConfigurations={showConfigurations}
+              resetDefenceConfiguration={resetDefenceConfiguration}
               setDefenceActive={setDefenceActive}
               setDefenceInactive={setDefenceInactive}
               setDefenceConfiguration={setDefenceConfiguration}

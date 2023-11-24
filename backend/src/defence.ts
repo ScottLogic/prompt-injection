@@ -69,8 +69,8 @@ function getMaxMessageLength(defences: DefenceInfo[]) {
   );
 }
 
-function getXMLTaggingPrePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(defences, DEFENCE_TYPES.XML_TAGGING, "prePrompt");
+function getXMLTaggingPrompt(defences: DefenceInfo[]) {
+  return getConfigValue(defences, DEFENCE_TYPES.XML_TAGGING, "prompt");
 }
 
 function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
@@ -99,27 +99,15 @@ function getSystemRole(
   }
 }
 
-function getQAPrePromptFromConfig(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
-    "prePrompt"
-  );
+function getQAPromptFromConfig(defences: DefenceInfo[]) {
+  return getConfigValue(defences, DEFENCE_TYPES.QA_LLM, "prompt");
 }
 
-function getPromptInjectionEvalPrePromptFromConfig(defences: DefenceInfo[]) {
+function getPromptEvalPromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    "prompt-injection-evaluator-prompt"
-  );
-}
-
-function getMaliciousPromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
-    "malicious-prompt-evaluator-prompt"
+    DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
+    "prompt"
   );
 }
 
@@ -176,10 +164,10 @@ function containsXMLTags(input: string) {
 // apply XML tagging defence to input message
 function transformXmlTagging(message: string, defences: DefenceInfo[]) {
   console.debug("XML Tagging defence active.");
-  const prePrompt = getXMLTaggingPrePrompt(defences);
+  const prompt = getXMLTaggingPrompt(defences);
   const openTag = "<user_input>";
   const closeTag = "</user_input>";
-  return prePrompt.concat(openTag, escapeXml(message), closeTag);
+  return prompt.concat(openTag, escapeXml(message), closeTag);
 }
 
 //apply defence string transformations to original message
@@ -297,31 +285,22 @@ async function detectEvaluationLLM(
   message: string,
   defences: DefenceInfo[]
 ) {
-  // evaluate the message for prompt injection
-  const configPromptInjectionEvalPrePrompt =
-    getPromptInjectionEvalPrePromptFromConfig(defences);
-  const configMaliciousPromptEvalPrePrompt =
-    getMaliciousPromptEvalPrePromptFromConfig(defences);
+  // only call the prompt evaluation model if the defence is active
+  if (isDefenceActive(DEFENCE_TYPES.PROMPT_EVALUATION_LLM, defences)) {
+    const configPromptEvalPrompt = getPromptEvalPromptFromConfig(defences);
 
-  const evalPrompt = await queryPromptEvaluationModel(
-    message,
-    configPromptInjectionEvalPrePrompt,
-    configMaliciousPromptEvalPrePrompt
-  );
-  if (evalPrompt.isMalicious) {
-    if (isDefenceActive(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, defences)) {
-      defenceReport.triggeredDefences.push(
-        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-      );
-      console.debug("LLM evalutation defence active.");
+    const evalPrompt = await queryPromptEvaluationModel(
+      message,
+      configPromptEvalPrompt
+    );
+    if (evalPrompt.isMalicious) {
+      defenceReport.triggeredDefences.push(DEFENCE_TYPES.PROMPT_EVALUATION_LLM);
+      console.debug("LLM evaluation defence active and prompt is malicious.");
       defenceReport.isBlocked = true;
-      defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.${evalPrompt.reason}`;
-    } else {
-      defenceReport.alertedDefences.push(
-        DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
-      );
+      defenceReport.blockedReason = `Message blocked by the prompt evaluation LLM.`;
     }
   }
+  console.debug(JSON.stringify(defenceReport));
   return defenceReport;
 }
 
@@ -331,9 +310,8 @@ export {
   deactivateDefence,
   resetDefenceConfig,
   detectTriggeredDefences,
-  getQAPrePromptFromConfig,
-  getPromptInjectionEvalPrePromptFromConfig,
-  getMaliciousPromptEvalPrePromptFromConfig,
+  getQAPromptFromConfig,
+  getPromptEvalPromptFromConfig,
   getSystemRole,
   isDefenceActive,
   transformMessage,

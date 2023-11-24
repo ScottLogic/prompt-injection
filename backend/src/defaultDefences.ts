@@ -1,10 +1,9 @@
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import {
-  maliciousPromptEvalPrePrompt,
-  promptInjectionEvalPrePrompt,
-  qAPrePromptSecure,
+  promptEvalPrompt,
+  qAPromptSecure,
   systemRoleDefault,
-  xmlPrePrompt,
+  xmlPrompt,
 } from "./promptTemplates";
 
 function createDefenceInfo(
@@ -25,20 +24,16 @@ const defaultDefences: DefenceInfo[] = [
       value: String(280),
     },
   ]),
-  createDefenceInfo(DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS, [
+  createDefenceInfo(DEFENCE_TYPES.PROMPT_EVALUATION_LLM, [
     {
-      id: "prompt-injection-evaluator-prompt",
-      value: promptInjectionEvalPrePrompt,
-    },
-    {
-      id: "malicious-prompt-evaluator-prompt",
-      value: maliciousPromptEvalPrePrompt,
+      id: "prompt",
+      value: promptEvalPrompt,
     },
   ]),
-  createDefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
+  createDefenceInfo(DEFENCE_TYPES.QA_LLM, [
     {
-      id: "prePrompt",
-      value: qAPrePromptSecure,
+      id: "prompt",
+      value: qAPromptSecure,
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
@@ -49,8 +44,8 @@ const defaultDefences: DefenceInfo[] = [
   ]),
   createDefenceInfo(DEFENCE_TYPES.XML_TAGGING, [
     {
-      id: "prePrompt",
-      value: xmlPrePrompt,
+      id: "prompt",
+      value: xmlPrompt,
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [

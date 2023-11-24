@@ -3,15 +3,14 @@ import { Request } from "express";
 import { CHAT_MESSAGE_TYPE } from "@src/models/chat";
 import { LEVEL_NAMES } from "@src/models/level";
 
-type OpenAiAddHistoryRequest = Request<
-  object,
-  object,
+export type OpenAiAddHistoryRequest = Request<
+  never,
+  never,
   {
     chatMessageType?: CHAT_MESSAGE_TYPE;
     message?: string;
     level?: LEVEL_NAMES;
   },
-  object
+  never,
+  never
 >;
-
-export type { OpenAiAddHistoryRequest };
