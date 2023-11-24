@@ -9,7 +9,7 @@ describe("DocumentViewBox component tests", () => {
   };
 
   vi.mock("@src/service/documentService", () => ({
-    getDocumentMetas: vi.fn(() => Promise.resolve([])),
+    getDocumentMetas: vi.fn().mockResolvedValue([]),
   }));
 
   function renderDocumentViewBox() {
