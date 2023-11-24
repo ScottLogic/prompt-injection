@@ -2,7 +2,7 @@ import { defaultDefences } from "@src/defaultDefences";
 import { activateDefence, detectTriggeredDefences } from "@src/defence";
 import { initPromptEvaluationModel } from "@src/langchain";
 import { DEFENCE_TYPES } from "@src/models/defence";
-import { promptEvalPrePrompt } from "@src/promptTemplates";
+import { promptEvalPrompt } from "@src/promptTemplates";
 
 // Define a mock implementation for the createChatCompletion method
 const mockCall = jest.fn();
@@ -21,7 +21,7 @@ jest.mock("langchain/chains", () => {
 
 beforeEach(() => {
   // init langchain
-  initPromptEvaluationModel(promptEvalPrePrompt);
+  initPromptEvaluationModel(promptEvalPrompt);
 });
 
 afterEach(() => {

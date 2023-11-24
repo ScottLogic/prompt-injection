@@ -38,10 +38,9 @@ declare module "express-session" {
 // mock the api call
 const mockCreateChatCompletion = jest.fn();
 jest.mock("openai", () => ({
-  OpenAIApi: jest.fn().mockImplementation(() => ({
+  OpenAI: jest.fn().mockImplementation(() => ({
     createChatCompletion: mockCreateChatCompletion,
   })),
-  Configuration: jest.fn().mockImplementation(() => ({})),
 }));
 
 function responseMock() {

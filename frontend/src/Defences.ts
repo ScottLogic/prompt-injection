@@ -22,14 +22,14 @@ const DEFENCE_DETAILS_LEVEL: DefenceInfo[] = [
   new DefenceInfo(
     DEFENCE_TYPES.XML_TAGGING,
     "XML Tagging",
-    "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input. This is a form of prompt validation.",
-    [new DefenceConfig("prePrompt", "pre-prompt", "text")]
+    "Enclose the users prompt between <user_input> tags and escapes xml characters in raw input and provides instructional prompt to model to follow only enclosed instructions. This is a form of prompt validation.",
+    [new DefenceConfig("prompt", "prompt", "text")]
   ),
   new DefenceInfo(
     DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
     "Prompt Evaluation LLM ",
     "Use an LLM to evaluate the user input for malicious content and prompt injection attacks.",
-    [new DefenceConfig("prePrompt", "pre-prompt", "text")]
+    [new DefenceConfig("prompt", "prompt", "text")]
   ),
 ];
 
@@ -44,8 +44,8 @@ const DEFENCE_DETAILS_ALL: DefenceInfo[] = [
   new DefenceInfo(
     DEFENCE_TYPES.QA_LLM,
     "Q/A LLM",
-    "Currently the chatbot speaks to a separate Question/Answering LLM to retrieve information on documents. The QA LLM will reveal all information to the chatbot, who will then decide whether to reveal to the user. This defence adds an instructional pre-prompt to the QA LLM to not reveal certain sensitive information to the chatbot.",
-    [new DefenceConfig("prePrompt", "pre-prompt", "text")]
+    "Currently the chatbot speaks to a separate Question/Answering LLM to retrieve information on documents. The QA LLM will reveal all information to the chatbot, who will then decide whether to reveal to the user. This defence adds an instructional prompt to the QA LLM to not reveal certain sensitive information to the chatbot.",
+    [new DefenceConfig("prompt", "prompt", "text")]
   ),
 ];
 

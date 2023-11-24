@@ -69,8 +69,8 @@ function getMaxMessageLength(defences: DefenceInfo[]) {
   );
 }
 
-function getXMLTaggingPrePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(defences, DEFENCE_TYPES.XML_TAGGING, "prePrompt");
+function getXMLTaggingPrompt(defences: DefenceInfo[]) {
+  return getConfigValue(defences, DEFENCE_TYPES.XML_TAGGING, "prompt");
 }
 
 function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
@@ -99,15 +99,15 @@ function getSystemRole(
   }
 }
 
-function getQAPrePromptFromConfig(defences: DefenceInfo[]) {
-  return getConfigValue(defences, DEFENCE_TYPES.QA_LLM, "prePrompt");
+function getQAPromptFromConfig(defences: DefenceInfo[]) {
+  return getConfigValue(defences, DEFENCE_TYPES.QA_LLM, "prompt");
 }
 
-function getPromptEvalPrePromptFromConfig(defences: DefenceInfo[]) {
+function getPromptEvalPromptFromConfig(defences: DefenceInfo[]) {
   return getConfigValue(
     defences,
     DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
-    "prePrompt"
+    "prompt"
   );
 }
 
@@ -164,10 +164,10 @@ function containsXMLTags(input: string) {
 // apply XML tagging defence to input message
 function transformXmlTagging(message: string, defences: DefenceInfo[]) {
   console.debug("XML Tagging defence active.");
-  const prePrompt = getXMLTaggingPrePrompt(defences);
+  const prompt = getXMLTaggingPrompt(defences);
   const openTag = "<user_input>";
   const closeTag = "</user_input>";
-  return prePrompt.concat(openTag, escapeXml(message), closeTag);
+  return prompt.concat(openTag, escapeXml(message), closeTag);
 }
 
 //apply defence string transformations to original message
@@ -287,12 +287,11 @@ async function detectEvaluationLLM(
 ) {
   // only call the prompt evaluation model if the defence is active
   if (isDefenceActive(DEFENCE_TYPES.PROMPT_EVALUATION_LLM, defences)) {
-    const configPromptEvalPrePrompt =
-      getPromptEvalPrePromptFromConfig(defences);
+    const configPromptEvalPrompt = getPromptEvalPromptFromConfig(defences);
 
     const evalPrompt = await queryPromptEvaluationModel(
       message,
-      configPromptEvalPrePrompt
+      configPromptEvalPrompt
     );
     if (evalPrompt.isMalicious) {
       defenceReport.triggeredDefences.push(DEFENCE_TYPES.PROMPT_EVALUATION_LLM);
@@ -311,8 +310,8 @@ export {
   deactivateDefence,
   resetDefenceConfig,
   detectTriggeredDefences,
-  getQAPrePromptFromConfig,
-  getPromptEvalPrePromptFromConfig,
+  getQAPromptFromConfig,
+  getPromptEvalPromptFromConfig,
   getSystemRole,
   isDefenceActive,
   transformMessage,

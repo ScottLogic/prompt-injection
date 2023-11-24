@@ -13,24 +13,19 @@ describe("Langchain tests", () => {
     (PromptTemplate.fromTemplate as jest.Mock).mockRestore();
   });
 
-  test("GIVEN makePromptTemplate is called with no config prePrompt THEN correct prompt is returned", () => {
-    makePromptTemplate("", "defaultPrePrompt", "mainPrompt", "noName");
+  test("GIVEN makePromptTemplate is called with no config Prompt THEN correct prompt is returned", () => {
+    makePromptTemplate("", "defaultPrompt", "mainPrompt", "noName");
     expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledTimes(1);
     expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledWith(
-      "defaultPrePrompt\nmainPrompt"
+      "defaultPrompt\nmainPrompt"
     );
   });
 
-  test("GIVEN makePromptTemplate is called with a prePrompt THEN correct prompt is returned", () => {
-    makePromptTemplate(
-      "configPrePrompt",
-      "defaultPrePrompt",
-      "mainPrompt",
-      "noName"
-    );
+  test("GIVEN makePromptTemplate is called with a Prompt THEN correct prompt is returned", () => {
+    makePromptTemplate("configPrompt", "defaultPrompt", "mainPrompt", "noName");
     expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledTimes(1);
     expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledWith(
-      "configPrePrompt\nmainPrompt"
+      "configPrompt\nmainPrompt"
     );
   });
 

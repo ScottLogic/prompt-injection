@@ -1,9 +1,9 @@
 import { DEFENCE_TYPES, DefenceInfo } from "./models/defence";
 import {
-  promptEvalPrePrompt,
-  qAPrePromptSecure,
+  promptEvalPrompt,
+  qAPromptSecure,
   systemRoleDefault,
-  xmlPrePrompt,
+  xmlPrompt,
 } from "./promptTemplates";
 
 function createDefenceInfo(
@@ -26,14 +26,14 @@ const defaultDefences: DefenceInfo[] = [
   ]),
   createDefenceInfo(DEFENCE_TYPES.PROMPT_EVALUATION_LLM, [
     {
-      id: "prePrompt",
-      value: promptEvalPrePrompt,
+      id: "prompt",
+      value: promptEvalPrompt,
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.QA_LLM, [
     {
-      id: "prePrompt",
-      value: qAPrePromptSecure,
+      id: "prompt",
+      value: qAPromptSecure,
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
@@ -44,8 +44,8 @@ const defaultDefences: DefenceInfo[] = [
   ]),
   createDefenceInfo(DEFENCE_TYPES.XML_TAGGING, [
     {
-      id: "prePrompt",
-      value: xmlPrePrompt,
+      id: "prompt",
+      value: xmlPrompt,
     },
   ]),
   createDefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
