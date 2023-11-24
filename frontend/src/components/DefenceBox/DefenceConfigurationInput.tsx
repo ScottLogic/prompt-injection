@@ -8,11 +8,13 @@ function DefenceConfigurationInput({
   disabled,
   inputType,
   setConfigurationValue,
+  id,
 }: {
   currentValue: string;
   disabled: boolean;
   inputType: "text" | "number";
   setConfigurationValue: (value: string) => void;
+  id: string;
 }) {
   const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
   const [value, setValue] = useState<string>(currentValue);
@@ -39,6 +41,7 @@ function DefenceConfigurationInput({
   if (inputType === "text") {
     return (
       <ThemedTextArea
+        id={id}
         content={value}
         onContentChanged={setValue}
         disabled={disabled}
@@ -54,6 +57,7 @@ function DefenceConfigurationInput({
   } else {
     return (
       <ThemedNumberInput
+        id={id}
         content={value}
         onContentChanged={setValue}
         disabled={disabled}

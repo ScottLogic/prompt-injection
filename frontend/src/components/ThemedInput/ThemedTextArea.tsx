@@ -55,6 +55,7 @@ function ThemedTextArea({
   // required
   content,
   onContentChanged,
+  id,
   // optional
   autoFocus = false,
   disabled = false,
@@ -69,6 +70,7 @@ function ThemedTextArea({
   // required
   content: string;
   onContentChanged: (newContent: string) => void;
+  id: string,
   // optional
   autoFocus?: boolean;
   disabled?: boolean;
@@ -101,6 +103,7 @@ function ThemedTextArea({
 
   return (
     <textarea
+      id={id}
       ref={textareaRef}
       className={textAreaClass}
       placeholder={placeHolderText}

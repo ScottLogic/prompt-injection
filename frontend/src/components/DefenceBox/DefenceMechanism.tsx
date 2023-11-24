@@ -101,6 +101,7 @@ function DefenceMechanism({
           defenceDetail.config.map((config) => {
             return (
               <DefenceConfiguration
+                defenceId={defenceDetail.id}
                 key={config.id + configKey}
                 isActive={defenceDetail.isActive}
                 config={config}
