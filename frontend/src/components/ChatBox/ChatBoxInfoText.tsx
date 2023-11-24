@@ -1,6 +1,6 @@
-import './ChatBoxInfoText.css';
-
 import { CHAT_MESSAGE_TYPE } from '@src/models/chat';
+
+import './ChatBoxInfoText.css';
 
 function ChatBoxInfoText({
 	text,

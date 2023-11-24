@@ -1,10 +1,10 @@
 import { clsx } from 'clsx';
 import { KeyboardEvent, useEffect, useRef } from 'react';
 
+import useIsOverflow from '@src/hooks/useIsOverflow';
+
 import './ThemedInput.css';
 import './ThemedTextArea.css';
-
-import useIsOverflow from '@src/hooks/useIsOverflow';
 
 function getNumLines(textarea: HTMLTextAreaElement) {
 	const computedStyle = getComputedStyle(textarea);

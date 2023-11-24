@@ -1,8 +1,8 @@
 import { clsx } from 'clsx';
 
-import './ModeSelectButtons.css';
-
 import { LEVEL_NAMES, ModeSelectButton } from '@src/models/level';
+
+import './ModeSelectButtons.css';
 
 function ModeSelectButtons({
 	defaultSelection,

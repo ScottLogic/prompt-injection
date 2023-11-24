@@ -1,6 +1,6 @@
-import './SwitchModeButton.css';
-
 import { LEVEL_NAMES } from '@src/models/level';
+
+import './SwitchModeButton.css';
 
 function SwitchModeButton({
 	currentLevel,

@@ -1,11 +1,11 @@
-import './ControlPanel.css';
-
 import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
 import SwitchModeButton from '@src/components/ThemedButtons/SwitchModeButton';
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
+
+import './ControlPanel.css';
 
 function ControlPanel({
 	currentLevel,

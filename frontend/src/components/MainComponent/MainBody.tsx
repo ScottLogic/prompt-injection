@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-import './MainBody.css';
-
 import { LEVELS } from '@src/Levels';
 import ChatBox from '@src/components/ChatBox/ChatBox';
 import ControlPanel from '@src/components/ControlPanel/ControlPanel';
@@ -11,6 +9,8 @@ import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
+
+import './MainBody.css';
 
 function MainBody({
 	currentLevel,
