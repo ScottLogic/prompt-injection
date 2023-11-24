@@ -1,29 +1,29 @@
 .control-panel {
-  height: 100%;
-  overflow-y: auto;
-  padding: 1.875rem;
+	height: 100%;
+	overflow-y: auto;
+	padding: 1.875rem;
 }
 
 .control-panel .control-collapsible-section {
-  background-color: var(--control-body-background-colour);
-  margin-bottom: 0.75rem;
-  border-radius: 0.5rem;
+	background-color: var(--control-body-background-colour);
+	margin-bottom: 0.75rem;
+	border-radius: 0.5rem;
 }
 
 .control-panel .control-collapsible-section-header {
-  background-color: var(--control-header-background-colour);
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  cursor: default;
+	background-color: var(--control-header-background-colour);
+	padding: 0.75rem;
+	border-radius: 0.5rem;
+	cursor: default;
 }
 
 .control-panel
-  .control-collapsible-section[open]
-  .control-collapsible-section-header {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+	.control-collapsible-section[open]
+	.control-collapsible-section-header {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
 }
 
 .control-panel .control-collapsible-section-header:focus-visible {
-  border-radius: 0;
+	border-radius: 0;
 }
