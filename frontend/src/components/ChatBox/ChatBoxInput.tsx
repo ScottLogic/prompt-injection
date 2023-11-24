@@ -1,5 +1,7 @@
 import { KeyboardEvent } from "react";
 
+import "./ChatBoxInput.css";
+
 import ThemedTextArea from "@src/components/ThemedInput/ThemedTextArea";
 
 function ChatBoxInput({
@@ -44,19 +46,27 @@ function ChatBoxInput({
 
   const CHARACTER_LIMIT = 16384; // 2^14, just over twice the length of a DAN attack
 
+  const uniqueInputId = "chat-box-input";
+
   return (
-    <ThemedTextArea
-      content={content}
-      onContentChanged={onContentChanged}
-      placeHolderText="Type here..."
-      spacing="loose"
-      maxLines={10}
-      onKeyDown={inputKeyDown}
-      onKeyUp={inputKeyUp}
-      characterLimit={CHARACTER_LIMIT}
-      // eslint-disable-next-line jsx-a11y/no-autofocus
-      autoFocus={true}
-    />
+    <>
+      <label className="visually-hidden" htmlFor={uniqueInputId}>
+        Chat with the chatbot
+      </label>
+      <ThemedTextArea
+        id={uniqueInputId}
+        content={content}
+        onContentChanged={onContentChanged}
+        placeHolderText="Type here..."
+        spacing="loose"
+        maxLines={10}
+        onKeyDown={inputKeyDown}
+        onKeyUp={inputKeyUp}
+        characterLimit={CHARACTER_LIMIT}
+        // eslint-disable-next-line jsx-a11y/no-autofocus
+        autoFocus={true}
+      />
+    </>
   );
 }
 
