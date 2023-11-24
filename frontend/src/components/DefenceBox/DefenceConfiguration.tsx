@@ -41,6 +41,7 @@ function DefenceConfiguration({
             resetConfigurationValue(config.id);
           }}
           title={titleText}
+          ariaLabel={titleText}
         >
           reset
         </ThemedButton>
