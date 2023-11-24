@@ -21,11 +21,11 @@ function HandbookAttacks({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   const attacks = levelNameToAttacks.get(currentLevel) ?? ATTACKS_ALL;
 
   return (
-    <div className="handbook-page">
-      <div className="header">
+    <article className="handbook-page">
+      <header>
         <h1>Attacks</h1>
         <p>{getHeaderText(currentLevel)}</p>
-      </div>
+      </header>
       {currentLevel > LEVEL_NAMES.LEVEL_1 && (
         <dl className="handbook-terms">
           {attacks.map((attack) => (
@@ -36,7 +36,7 @@ function HandbookAttacks({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
           ))}
         </dl>
       )}
-    </div>
+    </article>
   );
 }
 

@@ -10,14 +10,14 @@ function HandbookSystemRole({
   systemRoles: LevelSystemRole[];
 }) {
   return (
-    <div className="handbook-page">
-      <div className="header">
+    <article className="handbook-page">
+      <header>
         <h1> System Roles </h1>
         <p>
           Here you can review the parameters the bot is working under for each
           level. You can only review this for levels you have already completed.
         </p>
-      </div>
+      </header>
 
       <div className="handbook-terms">
         {systemRoles.map(({ level, systemRole }) => (
@@ -38,7 +38,7 @@ function HandbookSystemRole({
           </div>
         ))}
       </div>
-    </div>
+    </article>
   );
 }
 

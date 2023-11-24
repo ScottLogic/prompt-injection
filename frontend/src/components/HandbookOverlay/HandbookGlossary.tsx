@@ -10,11 +10,11 @@ function HandbookGlossary({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
       : "Below are some concepts that you may find useful to know about as you learn while playing this game.";
   }
   return (
-    <div className="handbook-page">
-      <div className="header">
+    <article className="handbook-page">
+      <header>
         <h1>Glossary</h1>
         <p>{getHeaderText(currentLevel)}</p>
-      </div>
+      </header>
       {currentLevel > LEVEL_NAMES.LEVEL_1 && (
         <dl className="handbook-terms">
           {GLOSSARY.map(({ term, definition }) => (
@@ -25,7 +25,7 @@ function HandbookGlossary({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
           ))}
         </dl>
       )}
-    </div>
+    </article>
   );
 }
 
