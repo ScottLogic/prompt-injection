@@ -4,9 +4,7 @@ import { describe, expect, test, vi } from "vitest";
 import DocumentViewBox from "./DocumentViewBox";
 
 describe("DocumentViewBox component tests", () => {
-  const props = {
-    closeOverlay: () => {},
-  };
+  const mockCloseOverlay = vi.fn();
 
   vi.mock("@src/service/documentService", () => ({
     getDocumentMetas: vi.fn().mockResolvedValue([]),
@@ -15,16 +13,12 @@ describe("DocumentViewBox component tests", () => {
   function renderDocumentViewBox() {
     render(
       <DocumentViewBox
-        closeOverlay={() => {
-          props.closeOverlay();
-        }}
+        closeOverlay={mockCloseOverlay}
       />
     );
   }
 
   test("WHEN close button clicked THEN closeOverlay called", () => {
-    const spyCloseOverlay = vi.spyOn(props, "closeOverlay");
-
     renderDocumentViewBox();
 
     const closeButton = screen.getByRole("button", {
@@ -32,6 +26,6 @@ describe("DocumentViewBox component tests", () => {
     });
     closeButton.click();
 
-    expect(spyCloseOverlay).toHaveBeenCalled();
+    expect(mockCloseOverlay).toHaveBeenCalled();
   });
 });
