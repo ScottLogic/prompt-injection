@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to the Scott Logic prompt injection open source project! 
+Welcome to the Scott Logic prompt injection open source project!
 As generative AI and LLMs become more prevalent, it becomes more important to learn about the dangers of prompt injection.
 This project aims to teach people about prompt injection attacks that can be used on generative AI, and how to defend against such attacks.
 
@@ -60,8 +60,10 @@ Note that this project also includes a VS Code launch file, to allow running API
 The project is configured to be linted and formatted on both the backend and frontend.
 
 If you are using VS Code, we recommend doing the following:
-1. Set the default formatter to prettier.
-2. Configure VS Code to format your documents on save.
+
+1. Get the prettier-eslint extension.
+2. Set the default formatter to the prettier-eslint one.
+3. Configure VS Code to format your documents on save.
 
 To manually lint and format, use the following:
 
@@ -69,6 +71,7 @@ To manually lint and format, use the following:
 npm run lint
 npm run format
 ```
+
 in both the backend and frontend directories.
 
 ## Test
