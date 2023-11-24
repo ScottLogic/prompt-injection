@@ -38,10 +38,13 @@ declare module "express-session" {
 // mock the api call
 const mockCreateChatCompletion = jest.fn();
 jest.mock("openai", () => ({
-  OpenAIApi: jest.fn().mockImplementation(() => ({
-    createChatCompletion: mockCreateChatCompletion,
+  OpenAI: jest.fn().mockImplementation(() => ({
+    chat: {
+      completions: {
+        create: mockCreateChatCompletion,
+      },
+    },
   })),
-  Configuration: jest.fn().mockImplementation(() => ({})),
 }));
 
 function responseMock() {
@@ -54,16 +57,14 @@ function responseMock() {
 describe("handleChatToGPT unit tests", () => {
   function chatResponseAssistant(content: string) {
     return {
-      data: {
-        choices: [
-          {
-            message: {
-              role: "assistant",
-              content,
-            },
+      choices: [
+        {
+          message: {
+            role: "assistant",
+            content,
           },
-        ],
-      },
+        },
+      ],
     };
   }
 
@@ -107,7 +108,7 @@ describe("handleChatToGPT unit tests", () => {
     } as OpenAiChatRequest;
   }
   test("GIVEN a valid message and level WHEN handleChatToGPT called THEN it should return a text reply", async () => {
-    const req = openAiChatRequestMock("Hello chatbot", 0);
+    const req = openAiChatRequestMock("Hello chatbot", LEVEL_NAMES.LEVEL_1);
     const res = responseMock();
 
     mockCreateChatCompletion.mockResolvedValueOnce(
@@ -131,7 +132,7 @@ describe("handleChatToGPT unit tests", () => {
   });
 
   test("GIVEN missing message WHEN handleChatToGPT called THEN it should return 500 and error message", async () => {
-    const req = openAiChatRequestMock("", 0);
+    const req = openAiChatRequestMock("", LEVEL_NAMES.LEVEL_1);
     const res = responseMock();
     await handleChatToGPT(req, res);
 
@@ -140,7 +141,7 @@ describe("handleChatToGPT unit tests", () => {
   });
 
   test("GIVEN an openai error is thrown WHEN handleChatToGPT called THEN it should return 500 and error message", async () => {
-    const req = openAiChatRequestMock("hello", 0);
+    const req = openAiChatRequestMock("hello", LEVEL_NAMES.LEVEL_1);
     const res = responseMock();
 
     // mock the api call throwing an error
@@ -201,7 +202,7 @@ describe("handleGetChatHistory", () => {
     },
   ];
   test("GIVEN a valid level WHEN handleGetChatHistory called THEN return chat history", () => {
-    const req = getRequestMock(0, chatHistory);
+    const req = getRequestMock(LEVEL_NAMES.LEVEL_1, chatHistory);
     const res = responseMock();
 
     handleGetChatHistory(req, res);
@@ -252,7 +253,11 @@ describe("handleAddToChatHistory", () => {
     },
   ];
   test("GIVEN a valid message WHEN handleAddToChatHistory called THEN message is added to chat history", () => {
-    const req = getAddHistoryRequestMock("tell me a story", 0, chatHistory);
+    const req = getAddHistoryRequestMock(
+      "tell me a story",
+      LEVEL_NAMES.LEVEL_1,
+      chatHistory
+    );
     const res = responseMock();
 
     handleAddToChatHistory(req, res);
@@ -304,7 +309,7 @@ describe("handleClearChatHistory", () => {
     },
   ];
   test("GIVEN valid level WHEN handleClearChatHistory called THEN it sets chatHistory to empty", () => {
-    const req = openAiClearRequestMock(0, chatHistory);
+    const req = openAiClearRequestMock(LEVEL_NAMES.LEVEL_1, chatHistory);
     const res = responseMock();
     handleClearChatHistory(req, res);
     expect(req.session.levelState[0].chatHistory.length).toEqual(0);
