@@ -1,17 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const mockCall = jest.fn();
-const mockRetrievalQAChain = {
-  call: mockCall,
-};
-const mockPromptEvalChain = {
-  call: mockCall,
-};
-const mockFromLLM = jest.fn();
-const mockFromTemplate = jest.fn(() => "");
-const mockLoader = jest.fn();
-const mockSplitDocuments = jest.fn();
-const mockAsRetriever = jest.fn();
-
+/* eslint-disable import/order */
 import {
   initPromptEvaluationModel,
   initQAModel,
@@ -28,6 +15,22 @@ import {
   promptEvalMainPrompt,
   promptEvalPrePrompt,
 } from "@src/promptTemplates";
+import { RetrievalQAChain } from "langchain/chains";
+import { PromptTemplate } from "langchain/prompts";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const mockCall = jest.fn();
+const mockRetrievalQAChain = {
+  call: mockCall,
+};
+const mockPromptEvalChain = {
+  call: mockCall,
+};
+const mockFromLLM = jest.fn();
+const mockFromTemplate = jest.fn();
+const mockLoader = jest.fn();
+const mockSplitDocuments = jest.fn();
+const mockAsRetriever = jest.fn();
 
 // mock OpenAIEmbeddings
 jest.mock("langchain/embeddings/openai", () => {
@@ -99,24 +102,18 @@ jest.mock("langchain/text_splitter", () => {
 });
 
 // mock PromptTemplate.fromTemplate static method
-jest.mock("langchain/prompts", () => {
-  return {
-    PromptTemplate: {
-      fromTemplate: mockFromTemplate,
-    },
-  };
-});
+jest.mock("langchain/prompts");
+PromptTemplate.fromTemplate = mockFromTemplate;
 
 // mock OpenAI for ChatOpenAI class
 jest.mock("langchain/chat_models/openai");
 
-// mock RetrievalQAChain
+// mock chains
 jest.mock("langchain/chains", () => {
   return {
-    RetrievalQAChain: {
-      fromLLM: mockFromLLM,
-      call: mockCall,
-    },
+    RetrievalQAChain: jest.fn().mockImplementation(() => {
+      return mockRetrievalQAChain;
+    }),
     LLMChain: jest.fn().mockImplementation(() => {
       return {
         call: mockCall,
@@ -124,6 +121,7 @@ jest.mock("langchain/chains", () => {
     }),
   };
 });
+RetrievalQAChain.fromLLM = mockFromLLM;
 
 beforeEach(() => {
   // reset environment variables
