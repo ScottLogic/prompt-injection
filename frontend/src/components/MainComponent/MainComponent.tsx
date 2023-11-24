@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import MainBody from './MainBody';
-import './MainComponent.css';
 import MainFooter from './MainFooter';
 import MainHeader from './MainHeader';
 
@@ -24,6 +23,8 @@ import {
 	resetDefenceConfig,
 } from '@src/service/defenceService';
 import { clearEmails, getSentEmails } from '@src/service/emailService';
+
+import './MainComponent.css';
 
 function MainComponent({
 	currentLevel,

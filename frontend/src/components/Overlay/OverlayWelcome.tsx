@@ -1,9 +1,10 @@
 import Overlay from './Overlay';
-import './OverlayWelcome.css';
 
 import ProjectIconDark from '@src/components/MainComponent/ProjectIconDark';
 import StartLevelButtons from '@src/components/ThemedButtons/StartLevelButtons';
 import { LEVEL_NAMES } from '@src/models/level';
+
+import './OverlayWelcome.css';
 
 function OverlayWelcome({
 	currentLevel,

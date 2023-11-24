@@ -1,7 +1,8 @@
 import { ThreeDots } from 'react-loader-spinner';
 
-import './Loader.css';
 import ThemedButton, { ThemedButtonProps } from './ThemedButton';
+
+import './Loader.css';
 
 function LoadingButton({
 	children,

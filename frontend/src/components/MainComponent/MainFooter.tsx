@@ -1,5 +1,6 @@
-import './MainFooter.css';
 import ScottLogicLogo from './ScottLogicLogo';
+
+import './MainFooter.css';
 
 function MainFooter() {
 	interface link {

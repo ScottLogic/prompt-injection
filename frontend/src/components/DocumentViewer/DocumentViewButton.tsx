@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
 import DocumentViewBox from './DocumentViewBox';
-import './DocumentViewButton.css';
 
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
+
+import './DocumentViewButton.css';
 
 function DocumentViewButton() {
 	const [showPopup, setShowPopup] = useState(false);

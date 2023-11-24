@@ -1,10 +1,11 @@
 import MissionDialogue from './MissionDialogue';
-import './MissionInformation.css';
 import Overlay from './Overlay';
 
 import { LEVELS } from '@src/Levels';
 import OverlayButton from '@src/components/ThemedButtons/OverlayButton';
 import { LEVEL_NAMES } from '@src/models/level';
+
+import './MissionInformation.css';
 
 function MissionInformation({
 	currentLevel,

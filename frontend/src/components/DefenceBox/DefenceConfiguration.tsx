@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
-import './DefenceConfiguration.css';
 import DefenceConfigurationInput from './DefenceConfigurationInput';
 
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { DefenceConfig } from '@src/models/defence';
+
+import './DefenceConfiguration.css';
 
 function DefenceConfiguration({
 	config,
