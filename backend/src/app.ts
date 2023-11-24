@@ -1,10 +1,9 @@
-import { fileURLToPath } from 'node:url';
-
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
 import memoryStoreFactory from 'memorystore';
+import { fileURLToPath } from 'node:url';
 
 import { defaultDefences } from './defaultDefences';
 import { importMetaUrl } from './importMetaUtils';
