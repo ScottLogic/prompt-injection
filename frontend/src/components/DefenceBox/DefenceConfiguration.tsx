@@ -4,7 +4,7 @@ import "./DefenceConfiguration.css";
 import DefenceConfigurationInput from "./DefenceConfigurationInput";
 
 import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
-import { DEFENCE_TYPES, DefenceConfig } from "@src/models/defence";
+import { DEFENCE_TYPES, DEFENCE_TYPES, DefenceConfig } from "@src/models/defence";
 
 function DefenceConfiguration({
   config,
@@ -12,11 +12,13 @@ function DefenceConfiguration({
   setConfigurationValue,
   resetConfigurationValue,
   defenceId,
+  defenceId, 
 }: {
   config: DefenceConfig;
   isActive: boolean;
   setConfigurationValue: (configId: string, value: string) => Promise<void>;
   resetConfigurationValue: (configId: string) => void;
+  defenceId: DEFENCE_TYPES;
   defenceId: DEFENCE_TYPES;
 }) {
   const [inputKey, setInputKey] = useState<number>(0);
@@ -29,6 +31,9 @@ function DefenceConfiguration({
     }
   }
 
+  const uniqueInputId= `${defenceId}-${config.id}`;
+  const titleText= `reset ${config.name} to default`;
+
   const uniqueInputId = `${defenceId}-${config.id}`;
   const titleText = `reset ${config.name} to default`;
 
@@ -36,17 +41,20 @@ function DefenceConfiguration({
     <div className="defence-configuration">
       <div className="header">
         <label htmlFor={uniqueInputId}>{config.name}: </label>
+        <label htmlFor={uniqueInputId}>{config.name}: </label>
         <ThemedButton
           onClick={() => {
             resetConfigurationValue(config.id);
           }}
           title={titleText}
+          title={titleText}
           ariaLabel={titleText}
         >
-          reset
+          reset 
         </ThemedButton>
       </div>
       <DefenceConfigurationInput
+        id={uniqueInputId}
         id={uniqueInputId}
         key={inputKey}
         currentValue={config.value}
