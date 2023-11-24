@@ -15,10 +15,13 @@ import { systemRoleDefault } from '@src/promptTemplates';
 const mockCreateChatCompletion = jest.fn();
 // Mock the OpenAIApi class
 jest.mock('openai', () => ({
-	OpenAIApi: jest.fn().mockImplementation(() => ({
-		createChatCompletion: mockCreateChatCompletion,
+	OpenAI: jest.fn().mockImplementation(() => ({
+		chat: {
+			completions: {
+				create: mockCreateChatCompletion,
+			},
+		},
 	})),
-	Configuration: jest.fn().mockImplementation(() => ({})),
 }));
 
 // mock the queryPromptEvaluationModel function
@@ -39,16 +42,14 @@ jest.mock('@src/langchain', () => {
 
 function chatResponseAssistant(content: string) {
 	return {
-		data: {
-			choices: [
-				{
-					message: {
-						role: 'assistant',
-						content,
-					},
+		choices: [
+			{
+				message: {
+					role: 'assistant',
+					content,
 				},
-			],
-		},
+			},
+		],
 	};
 }
 

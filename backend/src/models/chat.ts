@@ -1,4 +1,7 @@
-import { ChatCompletionRequestMessage } from 'openai';
+import {
+	ChatCompletionMessage,
+	ChatCompletionMessageParam,
+} from 'openai/resources/chat/completions';
 
 import { DEFENCE_TYPES } from './defence';
 
@@ -63,7 +66,7 @@ interface ChatMalicious {
 }
 
 interface ChatResponse {
-	completion: ChatCompletionRequestMessage | null;
+	completion: ChatCompletionMessage | null;
 	defenceInfo: ChatDefenceReport;
 	wonLevel: boolean;
 }
@@ -77,7 +80,7 @@ interface ChatHttpResponse {
 }
 
 interface ChatHistoryMessage {
-	completion: ChatCompletionRequestMessage | null;
+	completion: ChatCompletionMessageParam | null;
 	chatMessageType: CHAT_MESSAGE_TYPE;
 	numTokens?: number | null;
 	infoMessage?: string | null;
