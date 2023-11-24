@@ -46,15 +46,13 @@ function ChatBoxInput({
 
   const CHARACTER_LIMIT = 16384; // 2^14, just over twice the length of a DAN attack
 
-  const uniqueInputId = "chat-box-input";
-
   return (
     <>
-      <label className="visually-hidden" htmlFor={uniqueInputId}>
+      <label className="visually-hidden" htmlFor="chat-box-input">
         Chat with the chatbot
       </label>
       <ThemedTextArea
-        id={uniqueInputId}
+        id="chat-box-input"
         content={content}
         onContentChanged={onContentChanged}
         placeHolderText="Type here..."
