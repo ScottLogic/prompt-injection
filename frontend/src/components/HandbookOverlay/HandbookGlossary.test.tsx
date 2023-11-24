@@ -7,7 +7,7 @@ import { GLOSSARY } from "@src/Glossary";
 import { LEVEL_NAMES } from "@src/models/level";
 
 describe("HandbookGlossary component tests", () => {
-  test("renders a header and no glossary entries", () => {
+  test("renders a header and no glossary entries for level 1", () => {
     render(<HandbookGlossary currentLevel={LEVEL_NAMES.LEVEL_1} />);
 
     expect(screen.getByText("Glossary")).toBeInTheDocument();

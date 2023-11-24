@@ -7,7 +7,7 @@ import { ATTACKS_LEVEL_2, ATTACKS_LEVEL_3, ATTACKS_ALL } from "@src/Attacks";
 import { LEVEL_NAMES } from "@src/models/level";
 
 describe("HandbookAttacks component tests", () => {
-  test("renders a header and no attack term", () => {
+  test("renders a header and no attack term for level 1", () => {
     render(<HandbookAttacks currentLevel={LEVEL_NAMES.LEVEL_1} />);
 
     expect(screen.getByText("Attacks")).toBeInTheDocument();
