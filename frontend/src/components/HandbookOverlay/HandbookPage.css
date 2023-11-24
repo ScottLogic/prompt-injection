@@ -27,7 +27,7 @@
 .role-locked {
   height: 7.5rem;
   border-radius: 0.625rem;
-  border: 2px dashed #00000080;
+  border: 2px dashed var(--handbook-locked-section-border-colour);
   background: var(--handbook-locked-section-colour);
   display: flex;
   align-items: center;
