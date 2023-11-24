@@ -13,28 +13,23 @@ describe('Langchain tests', () => {
 		(PromptTemplate.fromTemplate as jest.Mock).mockRestore();
 	});
 
-	test('GIVEN makePromptTemplate is called with no config prePrompt THEN correct prompt is returned', () => {
-		makePromptTemplate('', 'defaultPrePrompt', 'mainPrompt', 'noName');
+	test('GIVEN makePromptTemplate is called with no config Prompt THEN correct prompt is returned', () => {
+		makePromptTemplate('', 'defaultPrompt', 'mainPrompt', 'noName');
 		expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledTimes(1);
 		expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledWith(
-			'defaultPrePrompt\nmainPrompt'
+			'defaultPrompt\nmainPrompt'
 		);
 	});
 
-	test('GIVEN makePromptTemplate is called with a prePrompt THEN correct prompt is returned', () => {
-		makePromptTemplate(
-			'configPrePrompt',
-			'defaultPrePrompt',
-			'mainPrompt',
-			'noName'
-		);
+	test('GIVEN makePromptTemplate is called with a Prompt THEN correct prompt is returned', () => {
+		makePromptTemplate('configPrompt', 'defaultPrompt', 'mainPrompt', 'noName');
 		expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledTimes(1);
 		expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledWith(
-			'configPrePrompt\nmainPrompt'
+			'configPrompt\nmainPrompt'
 		);
 	});
 
-	test('GIVEN llm evaluation model responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason', () => {
+	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason', () => {
 		const response = 'yes.';
 		const formattedOutput = formatEvaluationOutput(response);
 
@@ -43,7 +38,7 @@ describe('Langchain tests', () => {
 		});
 	});
 
-	test('GIVEN llm evaluation model responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason', () => {
+	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason', () => {
 		const response = 'No.';
 		const formattedOutput = formatEvaluationOutput(response);
 
@@ -52,7 +47,7 @@ describe('Langchain tests', () => {
 		});
 	});
 
-	test('GIVEN llm evaluation model responds with an invalid format THEN formatEvaluationOutput returns false', () => {
+	test('GIVEN prompt evaluation llm responds with an invalid format THEN formatEvaluationOutput returns false', () => {
 		const response = 'I cant tell you if this is malicious or not';
 		const formattedOutput = formatEvaluationOutput(response);
 

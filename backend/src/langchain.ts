@@ -12,10 +12,10 @@ import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
 import { LEVEL_NAMES } from './models/level';
 import { getOpenAIKey } from './openai';
 import {
-	promptEvalPrePrompt,
-	promptEvalMainPrompt,
-	qAMainPrompt,
-	qAPrePrompt,
+	promptEvalPrompt,
+	promptEvalContextTemplate,
+	qaContextTemplate,
+	qAPrompt,
 } from './promptTemplates';
 
 // store vectorised documents for each level as array
@@ -28,16 +28,16 @@ function setVectorisedDocuments(docs: DocumentsVector[]) {
 
 // choose between the provided preprompt and the default preprompt and prepend it to the main prompt and return the PromptTemplate
 function makePromptTemplate(
-	configPrePrompt: string,
-	defaultPrePrompt: string,
+	configPrompt: string,
+	defaultPrompt: string,
 	mainPrompt: string,
 	templateNameForLogging: string
 ): PromptTemplate {
-	if (!configPrePrompt) {
-		// use the default prePrompt
-		configPrePrompt = defaultPrePrompt;
+	if (!configPrompt) {
+		// use the default Prompt
+		configPrompt = defaultPrompt;
 	}
-	const fullPrompt = `${configPrePrompt}\n${mainPrompt}`;
+	const fullPrompt = `${configPrompt}\n${mainPrompt}`;
 	console.debug(`${templateNameForLogging}: ${fullPrompt}`);
 	return PromptTemplate.fromTemplate(fullPrompt);
 }
@@ -74,7 +74,7 @@ async function initDocumentVectors() {
 	);
 }
 
-function initQAModel(level: LEVEL_NAMES, prePrompt: string) {
+function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 	const openAIApiKey = getOpenAIKey();
 	const documentVectors = vectorisedDocuments[level].docVector;
 
@@ -85,9 +85,9 @@ function initQAModel(level: LEVEL_NAMES, prePrompt: string) {
 		openAIApiKey,
 	});
 	const promptTemplate = makePromptTemplate(
-		prePrompt,
-		qAPrePrompt,
-		qAMainPrompt,
+		Prompt,
+		qAPrompt,
+		qaContextTemplate,
 		'QA prompt template'
 	);
 	return RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
@@ -95,13 +95,13 @@ function initQAModel(level: LEVEL_NAMES, prePrompt: string) {
 	});
 }
 // initialise the prompt evaluation model
-function initPromptEvaluationModel(configPromptEvaluationPrePrompt: string) {
+function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 	const openAIApiKey = getOpenAIKey();
 
 	const promptEvalTemplate = makePromptTemplate(
-		configPromptEvaluationPrePrompt,
-		promptEvalPrePrompt,
-		promptEvalMainPrompt,
+		configPromptEvaluationPrompt,
+		promptEvalPrompt,
+		promptEvalContextTemplate,
 		'Prompt injection eval prompt template'
 	);
 
@@ -124,11 +124,11 @@ function initPromptEvaluationModel(configPromptEvaluationPrePrompt: string) {
 // ask the question and return models answer
 async function queryDocuments(
 	question: string,
-	prePrompt: string,
+	Prompt: string,
 	currentLevel: LEVEL_NAMES
 ) {
 	try {
-		const qaChain = initQAModel(currentLevel, prePrompt);
+		const qaChain = initQAModel(currentLevel, Prompt);
 
 		// get start time
 		const startTime = Date.now();
@@ -157,12 +157,11 @@ async function queryDocuments(
 // ask LLM whether the prompt is malicious
 async function queryPromptEvaluationModel(
 	input: string,
-	promptEvalPrePrompt: string
+	promptEvalPrompt: string
 ) {
 	try {
 		console.debug(`Checking '${input}' for malicious prompts`);
-		const promptEvaluationChain =
-			initPromptEvaluationModel(promptEvalPrePrompt);
+		const promptEvaluationChain = initPromptEvaluationModel(promptEvalPrompt);
 		// get start time
 		const startTime = Date.now();
 		console.debug('Calling prompt evaluation model...');

@@ -13,7 +13,7 @@ import {
 	getSystemRole,
 	detectFilterList,
 	getFilterList,
-	getQAPrePromptFromConfig,
+	getQAPromptFromConfig,
 } from './defence';
 import { sendEmail } from './email';
 import { queryDocuments } from './langchain';
@@ -178,12 +178,12 @@ async function chatGptCallFunction(
 				) as FunctionAskQuestionParams;
 				console.debug(`Asking question: ${params.question}`);
 				// if asking a question, call the queryDocuments
-				let configQAPrePrompt = '';
-				if (isDefenceActive(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, defences)) {
-					configQAPrePrompt = getQAPrePromptFromConfig(defences);
+				let configQAPrompt = '';
+				if (isDefenceActive(DEFENCE_TYPES.QA_LLM, defences)) {
+					configQAPrompt = getQAPromptFromConfig(defences);
 				}
 				response = (
-					await queryDocuments(params.question, configQAPrePrompt, currentLevel)
+					await queryDocuments(params.question, configQAPrompt, currentLevel)
 				).reply;
 			} else {
 				console.error('No arguments provided to askQuestion function');

@@ -5,24 +5,24 @@ import {
 	deactivateDefence,
 	resetDefenceConfig,
 	detectTriggeredDefences,
-	getQAPrePromptFromConfig,
+	getQAPromptFromConfig,
 	getSystemRole,
 	isDefenceActive,
 	transformMessage,
 	detectFilterList,
-	getPromptEvalPrePromptFromConfig,
+	getPromptEvalPromptFromConfig,
 } from '@src/defence';
 import * as langchain from '@src/langchain';
 import { DEFENCE_TYPES, DefenceConfig } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
-	promptEvalPrePrompt,
-	qAPrePromptSecure,
+	promptEvalPrompt,
+	qAPromptSecure,
 	systemRoleDefault,
 	systemRoleLevel1,
 	systemRoleLevel2,
 	systemRoleLevel3,
-	xmlPrePrompt,
+	xmlPrompt,
 } from '@src/promptTemplates';
 
 jest.mock('@src/langchain');
@@ -92,7 +92,7 @@ test('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
 	const transformedMessage = transformMessage(message, updatedDefences);
 	// expect the message to be surrounded by XML tags
 	expect(transformedMessage).toBe(
-		`${xmlPrePrompt}<user_input>${message}</user_input>`
+		`${xmlPrompt}<user_input>${message}</user_input>`
 	);
 });
 
@@ -105,7 +105,7 @@ test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
 	const transformedMessage = transformMessage(message, updatedDefences);
 	// expect the message to be surrounded by XML tags
 	expect(transformedMessage).toBe(
-		`${xmlPrePrompt}<user_input>${escapedMessage}</user_input>`
+		`${xmlPrompt}<user_input>${escapedMessage}</user_input>`
 	);
 });
 
@@ -283,45 +283,42 @@ test('GIVEN system roles have been set for each level WHEN getting system roles 
 	expect(systemRole_Level3).toBe(systemRoleLevel3);
 });
 
-test('GIVEN QA LLM instructions have not been configured WHEN getting QA LLM instructions THEN return default secure prompt', () => {
+test('GIVEN the QA LLM prompt has not been configured WHEN getting QA LLM configuration THEN return default secure prompt', () => {
 	const defences = defaultDefences;
-	const qaLlmInstructions = getQAPrePromptFromConfig(defences);
-	expect(qaLlmInstructions).toBe(qAPrePromptSecure);
+	const qaLlmPrompt = getQAPromptFromConfig(defences);
+	expect(qaLlmPrompt).toBe(qAPromptSecure);
 });
 
-test('GIVEN QA LLM instructions have been configured WHEN getting QA LLM instructions THEN return configured prompt', () => {
-	const newQaLlmInstructions = 'new QA LLM instructions';
-	const defences = configureDefence(
-		DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
-		defaultDefences,
-		[{ id: 'prePrompt', value: newQaLlmInstructions }]
-	);
-	const qaLlmInstructions = getQAPrePromptFromConfig(defences);
-	expect(qaLlmInstructions).toBe(newQaLlmInstructions);
+test('GIVEN the QA LLM prompt has been configured WHEN getting QA LLM configuration THEN return configured prompt', () => {
+	const newQaLlmPrompt = 'new QA LLM prompt';
+	const defences = configureDefence(DEFENCE_TYPES.QA_LLM, defaultDefences, [
+		{ id: 'prompt', value: newQaLlmPrompt },
+	]);
+	const qaLlmPrompt = getQAPromptFromConfig(defences);
+	expect(qaLlmPrompt).toBe(newQaLlmPrompt);
 });
 
-test('GIVEN Eval LLM instructions for prompt have not been configured WHEN getting prompt injection eval instructions THEN return default pre-prompt', () => {
+test('GIVEN the prompt evaluation LLM prompt has not been configured WHEN getting the configuration THEN return default pre-prompt', () => {
 	const defences = defaultDefences;
-	const configPromptInjectionEvalInstructions =
-		getPromptEvalPrePromptFromConfig(defences);
-	expect(configPromptInjectionEvalInstructions).toBe(promptEvalPrePrompt);
+	const configPromptInjectionEvalPrompt =
+		getPromptEvalPromptFromConfig(defences);
+	expect(configPromptInjectionEvalPrompt).toBe(promptEvalPrompt);
 });
 
-test('GIVEN Eval LLM instructions for prompt have been configured WHEN getting Eval LLM instructions THEN return configured prompt', () => {
-	const newPromptEvalInstructions = 'new prompt eval instructions';
+test('GIVEN the prompt evaluation LLM prompt has been configured WHEN getting the configuration THEN return configured prompt', () => {
+	const newPromptEvalPrompt = 'new prompt eval prompt';
 	const defences = configureDefence(
-		DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+		DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
 		defaultDefences,
 		[
 			{
-				id: 'prompt-evaluator-prompt',
-				value: newPromptEvalInstructions,
+				id: 'prompt',
+				value: newPromptEvalPrompt,
 			},
 		]
 	);
-	const configPromptEvalInstructions =
-		getPromptEvalPrePromptFromConfig(defences);
-	expect(configPromptEvalInstructions).toBe(newPromptEvalInstructions);
+	const configPromptEvalPrompt = getPromptEvalPromptFromConfig(defences);
+	expect(configPromptEvalPrompt).toBe(newPromptEvalPrompt);
 });
 
 test('GIVEN user has configured defence WHEN resetting defence config THEN defence config is reset', () => {

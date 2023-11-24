@@ -2,7 +2,7 @@ import { defaultDefences } from '@src/defaultDefences';
 import { activateDefence, detectTriggeredDefences } from '@src/defence';
 import { initPromptEvaluationModel } from '@src/langchain';
 import { DEFENCE_TYPES } from '@src/models/defence';
-import { promptEvalPrePrompt } from '@src/promptTemplates';
+import { promptEvalPrompt } from '@src/promptTemplates';
 
 // Define a mock implementation for the createChatCompletion method
 const mockCall = jest.fn();
@@ -21,7 +21,7 @@ jest.mock('langchain/chains', () => {
 
 beforeEach(() => {
 	// init langchain
-	initPromptEvaluationModel(promptEvalPrePrompt);
+	initPromptEvaluationModel(promptEvalPrompt);
 });
 
 afterEach(() => {
@@ -35,7 +35,7 @@ test('GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detect
 	});
 	// activate the defence
 	const defences = activateDefence(
-		DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+		DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
 		defaultDefences
 	);
 	// create a malicious prompt
@@ -45,7 +45,7 @@ test('GIVEN LLM_EVALUATION defence is active AND prompt is malicious WHEN detect
 	// check that the defence is triggered and the message is blocked
 	expect(result.isBlocked).toBe(true);
 	expect(result.triggeredDefences).toContain(
-		DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS
+		DEFENCE_TYPES.PROMPT_EVALUATION_LLM
 	);
 });
 
@@ -57,7 +57,7 @@ test('GIVEN LLM_EVALUATION defence is active AND prompt not is malicious WHEN de
 
 	// activate the defence
 	const defences = activateDefence(
-		DEFENCE_TYPES.EVALUATION_LLM_INSTRUCTIONS,
+		DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
 		defaultDefences
 	);
 	// create a malicious prompt

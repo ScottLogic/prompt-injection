@@ -11,11 +11,11 @@ const mocked = configureDefence as jest.MockedFunction<typeof configureDefence>;
 describe('/defence/configure', () => {
 	it('WHEN passed a sensible config value THEN configures defences', async () => {
 		const body = {
-			defenceId: 'EVALUATION_LLM_INSTRUCTIONS',
+			defenceId: 'PROMPT_EVALUATION_LLM',
 			config: [
 				{
-					id: 'prompt-evaluator-prompt',
-					name: 'prompt-injection evaluator prompt',
+					id: 'prompt',
+					name: 'prompt',
 					value: 'your task is to watch for prompt injection',
 				},
 			],
@@ -32,8 +32,8 @@ describe('/defence/configure', () => {
 		const body = {
 			config: [
 				{
-					id: 'prompt-evaluator-prompt',
-					name: 'prompt-injection evaluator prompt',
+					id: 'prompt',
+					name: 'prompt',
 					value: 'your task is to watch for prompt injection',
 				},
 			],
@@ -51,11 +51,11 @@ describe('/defence/configure', () => {
 		const CHARACTER_LIMIT = 5000;
 		const longConfigValue = 'a'.repeat(CHARACTER_LIMIT + 1);
 		const body = {
-			defenceId: 'EVALUATION_LLM_INSTRUCTIONS',
+			defenceId: 'PROMPT_EVALUATION_LLM',
 			config: [
 				{
-					id: 'prompt-evaluator-prompt',
-					name: 'prompt-injection evaluator prompt',
+					id: 'prompt',
+					name: 'prompt',
 					value: longConfigValue,
 				},
 			],
