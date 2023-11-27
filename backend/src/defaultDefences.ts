@@ -1,4 +1,4 @@
-import { DEFENCE_TYPES, DefenceInfo } from './models/defence';
+import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from './models/defence';
 import {
 	promptEvalPrompt,
 	qAPromptSecure,
@@ -8,13 +8,9 @@ import {
 
 function createDefenceInfo(
 	id: DEFENCE_TYPES,
-	config: { id: string; value: string }[]
+	config: DefenceConfig[]
 ): DefenceInfo {
-	const defenceConfig = config.map((item) => ({
-		id: item.id,
-		value: item.value,
-	}));
-	return new DefenceInfo(id, defenceConfig);
+	return new DefenceInfo(id, config);
 }
 
 const defaultDefences: DefenceInfo[] = [
