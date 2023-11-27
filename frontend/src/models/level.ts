@@ -22,5 +22,10 @@ interface ModeSelectButton {
   targetLevel: LEVEL_NAMES;
 }
 
+interface LevelSystemRole {
+  level: LEVEL_NAMES;
+  systemRole: string;
+}
+
 export { LEVEL_NAMES };
-export type { DialogueLine, Level, ModeSelectButton };
+export type { DialogueLine, Level, ModeSelectButton, LevelSystemRole };
