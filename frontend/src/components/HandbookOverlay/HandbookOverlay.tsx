@@ -10,6 +10,8 @@ import HandbookGlossary from './HandbookGlossary';
 import HandbookSpine from './HandbookSpine';
 import HandbookSystemRole from './HandbookSystemRole';
 
+import './HandbookOverlay.css';
+
 function HandbookOverlay({
 	currentLevel,
 	numCompletedLevels,
