@@ -5,5 +5,5 @@
 */
 
 export function importMetaUrl() {
-  return import.meta.url;
+	return import.meta.url;
 }

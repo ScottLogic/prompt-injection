@@ -1,14 +1,14 @@
 .defence-mechanism {
-  cursor: default;
+	cursor: default;
 }
 
 .defence-mechanism > * {
-  padding: 0.75rem;
+	padding: 0.75rem;
 }
 
 .defence-mechanism > summary {
-  position: relative;
-  font-size: 1rem;
+	position: relative;
+	font-size: 1rem;
 }
 
 /*
@@ -17,76 +17,76 @@
 
 /* The switch - the box around the slider */
 .defence-mechanism label.switch {
-  position: absolute;
-  width: 2rem;
-  height: 1rem;
-  right: 0.75rem;
-  top: 0.75rem;
+	position: absolute;
+	width: 2rem;
+	height: 1rem;
+	right: 0.75rem;
+	top: 0.75rem;
 }
 
 .defence-mechanism label.switch:focus-within {
-  outline-style: auto;
-  border-radius: 0.5rem;
+	outline-style: auto;
+	border-radius: 0.5rem;
 }
 
 /* Hide default HTML checkbox */
 .defence-mechanism label.switch > input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+	opacity: 0;
+	width: 0;
+	height: 0;
 }
 
 .defence-mechanism label.switch > input:checked + .slider {
-  background-color: var(--main-toggle-on-colour);
+	background-color: var(--main-toggle-on-colour);
 }
 
 .defence-mechanism label.switch > input:focus + .slider {
-  box-shadow: 0 0 0.0625rem var(--main-toggle-on-colour);
+	box-shadow: 0 0 0.0625rem var(--main-toggle-on-colour);
 }
 
 .defence-mechanism label.switch > input:checked + .slider:before {
-  transform: translateX(1rem);
+	transform: translateX(1rem);
 }
 
 /* The slider */
 .defence-mechanism label.switch > .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--main-toggle-off-colour);
-  transition: 0.4s;
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--main-toggle-off-colour);
+	transition: 0.4s;
 }
 
 .defence-mechanism label.switch > .slider:before {
-  content: "";
-  position: absolute;
-  height: 1rem;
-  width: 1rem;
-  background-color: var(--main-toggle-ball-colour);
-  transition: 0.4s;
+	content: '';
+	position: absolute;
+	height: 1rem;
+	width: 1rem;
+	background-color: var(--main-toggle-ball-colour);
+	transition: 0.4s;
 }
 
 /* Rounded sliders */
 .defence-mechanism label.switch > .slider.round {
-  border-radius: 0.5rem;
+	border-radius: 0.5rem;
 }
 
 .defence-mechanism label.switch > .slider.round:before {
-  border-radius: 50%;
+	border-radius: 50%;
 }
 
 .defence-mechanism .info-box {
-  font-size: 0.875rem;
+	font-size: 0.875rem;
 }
 
 .defence-mechanism .info-box :first-child {
-  margin-top: 0;
+	margin-top: 0;
 }
 
 .defence-mechanism .info-box .validation-text {
-  font-size: inherit;
-  font-weight: 600;
+	font-size: inherit;
+	font-weight: 600;
 }

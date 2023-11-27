@@ -1,9 +1,9 @@
 interface PromptEvaluationChainReply {
-  promptEvalOutput: string;
+	promptEvalOutput: string;
 }
 
 interface QaChainReply {
-  text: string;
+	text: string;
 }
 
 export type { PromptEvaluationChainReply, QaChainReply };

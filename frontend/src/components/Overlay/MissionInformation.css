@@ -1,13 +1,13 @@
 .mission-information {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .mission-information .content {
-  overflow-y: auto;
+	overflow-y: auto;
 }
 
 .button-area {
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 }
