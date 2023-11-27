@@ -1,10 +1,10 @@
 import { Request } from 'express';
 
-import { DEFENCE_ID, DefenceConfig } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfigItem } from '@src/models/defence';
 
 export type DefenceConfigResetRequest = Request<
 	never,
-	DefenceConfig,
+	DefenceConfigItem,
 	{
 		defenceId?: DEFENCE_ID;
 		configId?: string;
