@@ -1,34 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 function useIsOverflow(ref: React.MutableRefObject<HTMLElement | null>) {
-  const [isOverflow, setIsOverflow] = useState(false);
+	const [isOverflow, setIsOverflow] = useState(false);
 
-  function checkForOverflow() {
-    const { current } = ref;
+	function checkForOverflow() {
+		const { current } = ref;
 
-    if (!current) return;
+		if (!current) return;
 
-    const hasOverflow =
-      current.scrollHeight > current.clientHeight ||
-      current.scrollWidth > current.clientWidth;
+		const hasOverflow =
+			current.scrollHeight > current.clientHeight ||
+			current.scrollWidth > current.clientWidth;
 
-    setIsOverflow(hasOverflow);
-  }
+		setIsOverflow(hasOverflow);
+	}
 
-  // called on each render
-  useEffect(() => {
-    checkForOverflow();
-  });
+	// called on each render
+	useEffect(() => {
+		checkForOverflow();
+	});
 
-  // called once on mount
-  useEffect(() => {
-    window.addEventListener("resize", checkForOverflow);
-    return () => {
-      window.removeEventListener("resize", checkForOverflow);
-    };
-  }, []);
+	// called once on mount
+	useEffect(() => {
+		window.addEventListener('resize', checkForOverflow);
+		return () => {
+			window.removeEventListener('resize', checkForOverflow);
+		};
+	}, []);
 
-  return isOverflow;
+	return isOverflow;
 }
 
 export default useIsOverflow;

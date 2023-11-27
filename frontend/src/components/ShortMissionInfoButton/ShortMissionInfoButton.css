@@ -1,16 +1,16 @@
 .short-mission-info-button {
-  background-color: var(--control-header-background-colour);
-  border: 0.0625rem solid var(--short-mission-button-border-colour);
-  padding: 1.5rem;
-  color: var(--main-button-inactive-text-colour);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.1rem;
-  font-weight: 300;
+	background-color: var(--control-header-background-colour);
+	border: 0.0625rem solid var(--short-mission-button-border-colour);
+	padding: 1.5rem;
+	color: var(--main-button-inactive-text-colour);
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.1rem;
+	font-weight: 300;
 }
 
 .short-mission-info-button:hover {
-  background-color: var(--short-mission-button-hover-background-colour);
+	background-color: var(--short-mission-button-hover-background-colour);
 }
