@@ -13,7 +13,7 @@ interface DefenceConfigItem {
 	value: string;
 }
 
-class DefenceInfo {
+class Defence {
 	constructor(id: DEFENCE_ID, config: DefenceConfigItem[]) {
 		this.id = id;
 		this.config = config;
@@ -28,5 +28,5 @@ class DefenceInfo {
 	isTriggered: boolean;
 }
 
-export { DEFENCE_ID, DefenceInfo };
+export { DEFENCE_ID, Defence };
 export type { DefenceConfigItem };

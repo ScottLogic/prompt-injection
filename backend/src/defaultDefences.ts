@@ -1,4 +1,4 @@
-import { DEFENCE_ID, DefenceInfo } from './models/defence';
+import { DEFENCE_ID, Defence } from './models/defence';
 import {
 	promptEvalPrompt,
 	qAPromptSecure,
@@ -9,15 +9,15 @@ import {
 function createDefenceInfo(
 	id: DEFENCE_ID,
 	config: { id: string; value: string }[]
-): DefenceInfo {
+): Defence {
 	const defenceConfig = config.map((item) => ({
 		id: item.id,
 		value: item.value,
 	}));
-	return new DefenceInfo(id, defenceConfig);
+	return new Defence(id, defenceConfig);
 }
 
-const defaultDefences: DefenceInfo[] = [
+const defaultDefences: Defence[] = [
 	createDefenceInfo(DEFENCE_ID.CHARACTER_LIMIT, [
 		{
 			id: 'maxMessageLength',
