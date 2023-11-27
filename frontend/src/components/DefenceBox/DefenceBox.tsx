@@ -1,4 +1,4 @@
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from '@src/models/defence';
+import { DEFENCE_TYPES, DefenceConfig, Defence } from '@src/models/defence';
 
 import DefenceMechanism from './DefenceMechanism';
 
@@ -13,14 +13,14 @@ function DefenceBox({
 	setDefenceConfiguration,
 }: {
 	currentLevel: number;
-	defences: DefenceInfo[];
+	defences: Defence[];
 	showConfigurations: boolean;
 	resetDefenceConfiguration: (
 		defenceId: DEFENCE_TYPES,
 		configId: string
 	) => void;
-	setDefenceActive: (defence: DefenceInfo) => void;
-	setDefenceInactive: (defence: DefenceInfo) => void;
+	setDefenceActive: (defence: Defence) => void;
+	setDefenceInactive: (defence: Defence) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_TYPES,
 		config: DefenceConfig[]

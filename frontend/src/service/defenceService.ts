@@ -1,7 +1,7 @@
 import {
 	DEFENCE_TYPES,
 	DefenceConfig,
-	DefenceInfo,
+	Defence,
 	DefenceResetResponse,
 } from '@src/models/defence';
 
@@ -11,7 +11,7 @@ const PATH = 'defence/';
 
 async function getDefences(level: number) {
 	const response = await sendRequest(`${PATH}status?level=${level}`, 'GET');
-	const data = (await response.json()) as DefenceInfo[];
+	const data = (await response.json()) as Defence[];
 	return data;
 }
 

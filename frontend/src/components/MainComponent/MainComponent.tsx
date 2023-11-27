@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from '@src/Defences';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from '@src/models/defence';
+import { DEFENCE_TYPES, DefenceConfig, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
@@ -47,7 +47,7 @@ function MainComponent({
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] =
-		useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
+		useState<Defence[]>(DEFENCE_DETAILS_ALL);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 
@@ -152,7 +152,7 @@ function MainComponent({
 		setDefencesToShow(newDefences);
 	}
 
-	async function setDefenceActive(defence: DefenceInfo) {
+	async function setDefenceActive(defence: Defence) {
 		await activateDefence(defence.id, currentLevel);
 		// update state
 		const newDefenceDetails = defencesToShow.map((defenceDetail) => {
@@ -167,7 +167,7 @@ function MainComponent({
 		setDefencesToShow(newDefenceDetails);
 	}
 
-	async function setDefenceInactive(defence: DefenceInfo) {
+	async function setDefenceInactive(defence: Defence) {
 		await deactivateDefence(defence.id, currentLevel);
 		// update state
 		const newDefenceDetails = defencesToShow.map((defenceDetail) => {
@@ -228,10 +228,8 @@ function MainComponent({
 					configId: string
 				) => void resetDefenceConfiguration(defenceId, configId)}
 				resetLevel={() => void resetLevel()}
-				setDefenceActive={(defence: DefenceInfo) =>
-					void setDefenceActive(defence)
-				}
-				setDefenceInactive={(defence: DefenceInfo) =>
+				setDefenceActive={(defence: Defence) => void setDefenceActive(defence)}
+				setDefenceInactive={(defence: Defence) =>
 					void setDefenceInactive(defence)
 				}
 				setDefenceConfiguration={setDefenceConfiguration}
