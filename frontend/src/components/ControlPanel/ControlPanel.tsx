@@ -2,7 +2,7 @@ import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
 import SwitchModeButton from '@src/components/ThemedButtons/SwitchModeButton';
-import { DEFENCE_TYPES, DefenceConfig, Defence } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfig, Defence } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './ControlPanel.css';
@@ -18,14 +18,11 @@ function ControlPanel({
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
-	resetDefenceConfiguration: (
-		defenceId: DEFENCE_TYPES,
-		configId: string
-	) => void;
+	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	setDefenceActive: (defence: Defence) => void;
 	setDefenceInactive: (defence: Defence) => void;
 	setDefenceConfiguration: (
-		defenceId: DEFENCE_TYPES,
+		defenceId: DEFENCE_ID,
 		config: DefenceConfig[]
 	) => Promise<boolean>;
 	openWelcomeOverlay: () => void;
@@ -33,9 +30,9 @@ function ControlPanel({
 	function getDefencesConfigure() {
 		return defences.filter((defence) => {
 			return ![
-				DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
-				DEFENCE_TYPES.QA_LLM,
-				DEFENCE_TYPES.SYSTEM_ROLE,
+				DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				DEFENCE_ID.QA_LLM,
+				DEFENCE_ID.SYSTEM_ROLE,
 			].some((id) => id === defence.id);
 		});
 	}
@@ -43,9 +40,9 @@ function ControlPanel({
 	function getDefencesModel() {
 		return defences.filter((defence) => {
 			return [
-				DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
-				DEFENCE_TYPES.QA_LLM,
-				DEFENCE_TYPES.SYSTEM_ROLE,
+				DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				DEFENCE_ID.QA_LLM,
+				DEFENCE_ID.SYSTEM_ROLE,
 			].some((id) => id === defence.id);
 		});
 	}

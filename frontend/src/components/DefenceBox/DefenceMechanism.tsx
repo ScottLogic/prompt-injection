@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TiTick, TiTimes } from 'react-icons/ti';
 
-import { DEFENCE_TYPES, DefenceConfig, Defence } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfig, Defence } from '@src/models/defence';
 import { validateDefence } from '@src/service/defenceService';
 
 import DefenceConfiguration from './DefenceConfiguration';
@@ -18,14 +18,11 @@ function DefenceMechanism({
 }: {
 	defenceDetail: Defence;
 	showConfigurations: boolean;
-	resetDefenceConfiguration: (
-		defenceId: DEFENCE_TYPES,
-		configId: string
-	) => void;
+	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	setDefenceActive: (defence: Defence) => void;
 	setDefenceInactive: (defence: Defence) => void;
 	setDefenceConfiguration: (
-		defenceId: DEFENCE_TYPES,
+		defenceId: DEFENCE_ID,
 		config: DefenceConfig[]
 	) => Promise<boolean>;
 }) {
