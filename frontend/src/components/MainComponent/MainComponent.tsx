@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { DEFENCE_DETAILS_ALL, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
+import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -46,8 +46,7 @@ function MainComponent({
 	incrementNumCompletedLevels: (level: number) => void;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
-	const [defencesToShow, setDefencesToShow] =
-		useState<Defence[]>(DEFENCE_DETAILS_ALL);
+	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 
@@ -74,7 +73,7 @@ function MainComponent({
 		let defences =
 			currentLevel === LEVEL_NAMES.LEVEL_3
 				? DEFENCES_SHOWN_LEVEL3
-				: DEFENCE_DETAILS_ALL;
+				: ALL_DEFENCES;
 		defences = defences.map((defence) => {
 			defence.isActive = false;
 			return defence;
@@ -96,9 +95,7 @@ function MainComponent({
 		newLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
 
 		const defences =
-			newLevel === LEVEL_NAMES.LEVEL_3
-				? DEFENCES_SHOWN_LEVEL3
-				: DEFENCE_DETAILS_ALL;
+			newLevel === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
 		// fetch defences from backend
 		const remoteDefences = await getDefences(newLevel);
 		defences.map((localDefence) => {

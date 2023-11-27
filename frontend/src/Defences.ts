@@ -33,7 +33,7 @@ const DEFENCES_SHOWN_LEVEL3: Defence[] = [
 	),
 ];
 
-const DEFENCE_DETAILS_ALL: Defence[] = [
+const ALL_DEFENCES: Defence[] = [
 	...DEFENCES_SHOWN_LEVEL3,
 	new Defence(
 		DEFENCE_ID.SYSTEM_ROLE,
@@ -49,4 +49,4 @@ const DEFENCE_DETAILS_ALL: Defence[] = [
 	),
 ];
 
-export { DEFENCES_SHOWN_LEVEL3 as DEFENCES_SHOWN_LEVEL3, DEFENCE_DETAILS_ALL };
+export { DEFENCES_SHOWN_LEVEL3, ALL_DEFENCES };
