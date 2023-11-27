@@ -117,10 +117,10 @@ function ChatBox({
 				});
 			}
 			// add it to the list of messages
-			else if (response.defenceInfo.isBlocked) {
+			else if (response.defenceReport.isBlocked) {
 				addChatMessage({
 					type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-					message: response.defenceInfo.blockedReason,
+					message: response.defenceReport.blockedReason,
 				});
 			} else {
 				addChatMessage({
@@ -129,7 +129,7 @@ function ChatBox({
 				});
 			}
 			// add altered defences to the chat
-			response.defenceInfo.alertedDefences.forEach((triggeredDefence) => {
+			response.defenceReport.alertedDefences.forEach((triggeredDefence) => {
 				// get user-friendly defence name
 				const defenceName = ALL_DEFENCES.find((defence) => {
 					return defence.id === triggeredDefence;
@@ -149,7 +149,7 @@ function ChatBox({
 				}
 			});
 			// add triggered defences to the chat
-			response.defenceInfo.triggeredDefences.forEach((triggeredDefence) => {
+			response.defenceReport.triggeredDefences.forEach((triggeredDefence) => {
 				// get user-friendly defence name
 				const defenceName = ALL_DEFENCES.find((defence) => {
 					return defence.id === triggeredDefence;
