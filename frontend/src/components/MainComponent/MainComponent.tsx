@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from '@src/Defences';
+import { DEFENCE_DETAILS_ALL, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -73,7 +73,7 @@ function MainComponent({
 		// choose appropriate defences to display
 		let defences =
 			currentLevel === LEVEL_NAMES.LEVEL_3
-				? DEFENCE_DETAILS_LEVEL
+				? DEFENCES_SHOWN_LEVEL3
 				: DEFENCE_DETAILS_ALL;
 		defences = defences.map((defence) => {
 			defence.isActive = false;
@@ -97,7 +97,7 @@ function MainComponent({
 
 		const defences =
 			newLevel === LEVEL_NAMES.LEVEL_3
-				? DEFENCE_DETAILS_LEVEL
+				? DEFENCES_SHOWN_LEVEL3
 				: DEFENCE_DETAILS_ALL;
 		// fetch defences from backend
 		const remoteDefences = await getDefences(newLevel);
