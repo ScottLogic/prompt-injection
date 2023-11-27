@@ -3,7 +3,7 @@ import {
 	ChatCompletionMessageParam,
 } from 'openai/resources/chat/completions';
 
-import { DEFENCE_TYPES } from './defence';
+import { DEFENCE_ID } from './defence';
 
 enum CHAT_MODELS {
 	GPT_4_TURBO = 'gpt-4-1106-preview',
@@ -51,8 +51,8 @@ interface ChatModelConfiguration {
 interface ChatDefenceReport {
 	blockedReason: string | null;
 	isBlocked: boolean;
-	alertedDefences: DEFENCE_TYPES[];
-	triggeredDefences: DEFENCE_TYPES[];
+	alertedDefences: DEFENCE_ID[];
+	triggeredDefences: DEFENCE_ID[];
 }
 
 interface ChatAnswer {
