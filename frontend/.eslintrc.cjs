@@ -66,8 +66,8 @@ module.exports = {
 					},
 					{
 						pattern: '@src/**',
-						group: 'external',
-						position: 'after',
+						group: 'internal',
+						position: 'before',
 					},
 				],
 				groups: [
