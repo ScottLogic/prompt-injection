@@ -1,9 +1,10 @@
 import { PDFDownloadLink } from '@react-pdf/renderer';
 
-import ExportContent from './ExportContent';
 import { ChatMessage } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
+
+import ExportContent from './ExportContent';
 
 import './ExportPDFLink.css';
 

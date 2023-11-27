@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import MainBody from './MainBody';
-import MainFooter from './MainFooter';
-import MainHeader from './MainHeader';
 import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from '@src/Defences';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from '@src/models/defence';
@@ -22,6 +19,10 @@ import {
 	resetDefenceConfig,
 } from '@src/service/defenceService';
 import { clearEmails, getSentEmails } from '@src/service/emailService';
+
+import MainBody from './MainBody';
+import MainFooter from './MainFooter';
+import MainHeader from './MainHeader';
 
 import './MainComponent.css';
 

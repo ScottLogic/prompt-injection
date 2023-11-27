@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
-import DefenceConfigurationInput from './DefenceConfigurationInput';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { DefenceConfig } from '@src/models/defence';
+
+import DefenceConfigurationInput from './DefenceConfigurationInput';
 
 import './DefenceConfiguration.css';
 

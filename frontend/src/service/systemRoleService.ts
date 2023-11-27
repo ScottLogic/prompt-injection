@@ -1,5 +1,6 @@
-import { sendRequest } from './backendService';
 import { LevelSystemRole } from '@src/models/level';
+
+import { sendRequest } from './backendService';
 
 const PATH = 'systemRoles/';
 

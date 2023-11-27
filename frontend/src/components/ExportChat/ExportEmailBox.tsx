@@ -1,8 +1,9 @@
 import { View, StyleSheet } from '@react-pdf/renderer';
 import { Fragment } from 'react';
 
-import ExportEmailMessage from './ExportEmailMessage';
 import { EmailInfo } from '@src/models/email';
+
+import ExportEmailMessage from './ExportEmailMessage';
 
 const styles = StyleSheet.create({
 	row: {

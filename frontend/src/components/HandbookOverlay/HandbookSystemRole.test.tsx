@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
-import HandbookSystemRole from './HandbookSystemRole';
 import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
+
+import HandbookSystemRole from './HandbookSystemRole';
 
 describe('HandbookSystemRole component tests', () => {
 	const level1SystemRole = 'System Role for level 1';

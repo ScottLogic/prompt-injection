@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import ModelConfigurationSlider from './ModelConfigurationSlider';
 import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
 import { getGptModel } from '@src/service/chatService';
+
+import ModelConfigurationSlider from './ModelConfigurationSlider';
 
 import './ModelConfiguration.css';
 

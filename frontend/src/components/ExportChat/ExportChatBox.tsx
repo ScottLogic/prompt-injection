@@ -1,8 +1,9 @@
 import { View, StyleSheet } from '@react-pdf/renderer';
 import { Fragment } from 'react';
 
-import ExportChatMessage from './ExportChatMessage';
 import { ChatMessage } from '@src/models/chat';
+
+import ExportChatMessage from './ExportChatMessage';
 
 const styles = StyleSheet.create({
 	row: {

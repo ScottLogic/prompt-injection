@@ -1,9 +1,10 @@
 import { useRef } from 'react';
 
-import ChatBoxInfoText from './ChatBoxInfoText';
-import ChatBoxMessage from './ChatBoxMessage';
 import useIsOverflow from '@src/hooks/useIsOverflow';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
+
+import ChatBoxInfoText from './ChatBoxInfoText';
+import ChatBoxMessage from './ChatBoxMessage';
 
 import './ChatBoxFeed.css';
 

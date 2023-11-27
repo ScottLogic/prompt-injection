@@ -1,8 +1,9 @@
 import { useRef } from 'react';
 
-import SentEmail from './SentEmail';
 import useIsOverflow from '@src/hooks/useIsOverflow';
 import { EmailInfo } from '@src/models/email';
+
+import SentEmail from './SentEmail';
 
 import './EmailBox.css';
 

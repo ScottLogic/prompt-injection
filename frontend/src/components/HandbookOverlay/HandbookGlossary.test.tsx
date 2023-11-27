@@ -1,9 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
-import HandbookGlossary from './HandbookGlossary';
 import { GLOSSARY } from '@src/Glossary';
 import { LEVEL_NAMES } from '@src/models/level';
+
+import HandbookGlossary from './HandbookGlossary';
 
 describe('HandbookGlossary component tests', () => {
 	test('renders a header and no glossary entries for level 1', () => {

@@ -64,6 +64,11 @@ module.exports = {
 						group: 'type',
 						position: 'after',
 					},
+					{
+						pattern: '@src/**',
+						group: 'external',
+						position: 'after',
+					},
 				],
 				groups: [
 					['builtin', 'external'],

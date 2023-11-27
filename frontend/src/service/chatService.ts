@@ -1,4 +1,3 @@
-import { sendRequest } from './backendService';
 import {
 	CHAT_MESSAGE_TYPE,
 	ChatHistoryMessage,
@@ -8,6 +7,8 @@ import {
 	MODEL_CONFIG,
 } from '@src/models/chat';
 import { LEVEL_NAMES } from '@src/models/level';
+
+import { sendRequest } from './backendService';
 
 const PATH = 'openai/';
 

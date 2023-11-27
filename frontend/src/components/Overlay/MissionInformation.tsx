@@ -1,8 +1,9 @@
-import MissionDialogue from './MissionDialogue';
-import Overlay from './Overlay';
 import { LEVELS } from '@src/Levels';
 import OverlayButton from '@src/components/ThemedButtons/OverlayButton';
 import { LEVEL_NAMES } from '@src/models/level';
+
+import MissionDialogue from './MissionDialogue';
+import Overlay from './Overlay';
 
 import './MissionInformation.css';
 

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
-import DocumentViewBox from './DocumentViewBox';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
+
+import DocumentViewBox from './DocumentViewBox';
 
 import './DocumentViewButton.css';
 
