@@ -49,16 +49,14 @@ function MainHeader({
           </span>
         )}
         <div className="handbook-area">
-          {currentLevel !== LEVEL_NAMES.LEVEL_1 && (
-            <button
-              className="prompt-injection-min-button handbook-icon"
-              title="open the handbook"
-              aria-label="open the handbook"
-              onClick={openHandbook}
-            >
-              <HandbookIcon />
-            </button>
-          )}
+          <button
+            className="prompt-injection-min-button handbook-icon"
+            title="open the handbook"
+            aria-label="open the handbook"
+            onClick={openHandbook}
+          >
+            <HandbookIcon />
+          </button>
         </div>
       </span>
     </header>

@@ -7,8 +7,9 @@ import MainComponent from "./components/MainComponent/MainComponent";
 import LevelsComplete from "./components/Overlay/LevelsComplete";
 import MissionInformation from "./components/Overlay/MissionInformation";
 import OverlayWelcome from "./components/Overlay/OverlayWelcome";
-import { LEVEL_NAMES } from "./models/level";
+import { LEVEL_NAMES, LevelSystemRole } from "./models/level";
 import { OVERLAY_TYPE } from "./models/overlay";
+import { getSystemRoles } from "./service/systemRoleService";
 
 function App() {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -17,11 +18,14 @@ function App() {
   const [isNewUser, setIsNewUser] = useState(loadIsNewUser);
   const [currentLevel, setCurrentLevel] =
     useState<LEVEL_NAMES>(loadCurrentLevel);
-
+  const [numCompletedLevels, setNumCompletedLevels] = useState(
+    loadNumCompletedLevels
+  );
   const [overlayType, setOverlayType] = useState<OVERLAY_TYPE | null>(null);
   const [overlayComponent, setOverlayComponent] = useState<JSX.Element | null>(
     null
   );
+  const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 
   function loadIsNewUser() {
     // get isNewUser from local storage
@@ -46,6 +50,28 @@ function App() {
     }
   }
 
+  function loadNumCompletedLevels() {
+    // get number of completed levels from local storage
+    const numCompletedLevelsStr = localStorage.getItem("numCompletedLevels");
+
+    if (numCompletedLevelsStr && !isNewUser) {
+      // keep users progress from where they last left off
+      return parseInt(numCompletedLevelsStr);
+    } else {
+      // 0 levels completed by default
+      return 0;
+    }
+  }
+
+  function incrementNumCompletedLevels(completedLevel: LEVEL_NAMES) {
+    setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
+  }
+
+  useEffect(() => {
+    // save number of completed levels to local storage
+    localStorage.setItem("numCompletedLevels", numCompletedLevels.toString());
+  }, [numCompletedLevels]);
+
   // called on mount
   useEffect(() => {
     window.addEventListener("keydown", handleEscape);
@@ -69,6 +95,17 @@ function App() {
       openWelcomeOverlay();
     }
   }, [isNewUser]);
+
+  useEffect(() => {
+    // load the system roles
+    getSystemRoles()
+      .then((roles) => {
+        setSystemRoles(roles);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   useEffect(() => {
     if (overlayType === null) {
@@ -101,6 +138,8 @@ function App() {
         setOverlayComponent(
           <HandbookOverlay
             currentLevel={currentLevel}
+            numCompletedLevels={numCompletedLevels}
+            systemRoles={systemRoles}
             closeOverlay={closeOverlay}
           />
         );
@@ -202,12 +241,13 @@ function App() {
       </dialog>
       <MainComponent
         currentLevel={currentLevel}
-        isNewUser={isNewUser}
+        numCompletedLevels={numCompletedLevels}
         openHandbook={openHandbook}
         openInformationOverlay={openInformationOverlay}
         openLevelsCompleteOverlay={openLevelsCompleteOverlay}
         openWelcomeOverlay={openWelcomeOverlay}
         setCurrentLevel={setCurrentLevel}
+        incrementNumCompletedLevels={incrementNumCompletedLevels}
       />
     </div>
   );
