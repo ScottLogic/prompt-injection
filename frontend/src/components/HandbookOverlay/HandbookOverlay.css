@@ -39,9 +39,15 @@
 .handbook-overlay .content::-webkit-scrollbar-thumb:hover {
 	background-color: var(--handbook-scrollbar-hover-colour);
 }
+
 .handbook-overlay .content h1 {
+	font-size: 1.5rem;
+}
+
+.handbook-overlay .content h2 {
 	font-size: 1.125rem;
 }
+
 .handbook-overlay .content p {
 	font-size: 1rem;
 }

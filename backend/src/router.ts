@@ -1,10 +1,10 @@
 import express from 'express';
 
 import {
-	handleAddToChatHistory,
 	handleChatToGPT,
-	handleClearChatHistory,
 	handleGetChatHistory,
+	handleAddToChatHistory,
+	handleClearChatHistory,
 } from './controller/chatController';
 import {
 	handleConfigureDefence,
@@ -19,12 +19,12 @@ import {
 	handleClearEmails,
 	handleGetEmails,
 } from './controller/emailController';
-import { handleGetLevelPrompt } from './controller/levelController';
 import {
 	handleConfigureModel,
 	handleGetModel,
 	handleSetModel,
 } from './controller/modelController';
+import { handleGetSystemRoles } from './controller/systemRoleController';
 
 const router = express.Router();
 
@@ -66,9 +66,9 @@ router.post('/openai/model/configure', handleConfigureModel);
 
 router.get('/openai/model', handleGetModel);
 
-// prompt
+// system roles
 
-router.get('/level/prompt', handleGetLevelPrompt);
+router.get('/systemRoles', handleGetSystemRoles);
 
 // getting documents
 

@@ -55,6 +55,8 @@
 	--handbook-text-selected-colour: var(--handbook-background-colour);
 	--handbook-scrollbar-colour: #d9d9d9;
 	--handbook-scrollbar-hover-colour: #b9b9b9;
+	--handbook-locked-section-colour: #96dde133;
+	--handbook-locked-section-border-colour: #00000080;
 
 	--chat-bot-colour: #d482fb;
 	--chat-bot-background: linear-gradient(var(--chat-bot-colour), #f3dbfe);
