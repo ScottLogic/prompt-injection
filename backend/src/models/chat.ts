@@ -67,13 +67,13 @@ interface ChatMalicious {
 
 interface ChatResponse {
 	completion: ChatCompletionMessage | null;
-	defenceInfo: ChatDefenceReport;
+	defenceReport: ChatDefenceReport;
 	wonLevel: boolean;
 }
 
 interface ChatHttpResponse {
 	reply: string;
-	defenceInfo: ChatDefenceReport;
+	defenceReport: ChatDefenceReport;
 	transformedMessage: string;
 	wonLevel: boolean;
 	isError: boolean;
