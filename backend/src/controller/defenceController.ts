@@ -1,6 +1,5 @@
 import { Response } from 'express';
 
-import { sendErrorResponse } from './handleError';
 import { defaultDefences } from '@src/defaultDefences';
 import {
 	activateDefence,
@@ -15,6 +14,8 @@ import { DefenceResetRequest } from '@src/models/api/DefenceResetRequest';
 import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
 import { DefenceConfig } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
+
+import { sendErrorResponse } from './handleError';
 
 function configValueExceedsCharacterLimit(config: DefenceConfig[]) {
 	const CONFIG_VALUE_CHARACTER_LIMIT = 5000;

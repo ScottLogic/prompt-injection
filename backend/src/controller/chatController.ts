@@ -1,6 +1,5 @@
 import { Response } from 'express';
 
-import { handleChatError } from './handleError';
 import { transformMessage, detectTriggeredDefences } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
@@ -15,6 +14,8 @@ import {
 } from '@src/models/chat';
 import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
+
+import { handleChatError } from './handleError';
 
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
