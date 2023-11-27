@@ -1,7 +1,6 @@
 import { Response } from 'express';
 
 import { sendErrorResponse } from './handleError';
-
 import { defaultDefences } from '@src/defaultDefences';
 import {
 	activateDefence,

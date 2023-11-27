@@ -1,5 +1,4 @@
 import { sendRequest } from './backendService';
-
 import {
 	DEFENCE_TYPES,
 	DefenceConfig,

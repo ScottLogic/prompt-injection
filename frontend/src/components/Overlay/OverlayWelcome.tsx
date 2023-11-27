@@ -1,5 +1,4 @@
 import Overlay from './Overlay';
-
 import ProjectIconDark from '@src/components/MainComponent/ProjectIconDark';
 import StartLevelButtons from '@src/components/ThemedButtons/StartLevelButtons';
 import { LEVEL_NAMES } from '@src/models/level';

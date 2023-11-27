@@ -3,7 +3,6 @@ import { userEvent } from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 
 import LevelSelectionBox, { LevelSelectionBoxProps } from './LevelSelectionBox';
-
 import { LEVELS } from '@src/Levels';
 
 const defaultProps: LevelSelectionBoxProps = {

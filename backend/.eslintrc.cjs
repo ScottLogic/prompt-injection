@@ -49,18 +49,10 @@ module.exports = {
 				alphabetize: { order: 'asc' },
 				'newlines-between': 'always',
 				warnOnUnassignedImports: true,
-				pathGroups: [
-					{
-						pattern: '@src/**',
-						group: 'parent',
-						position: 'after',
-					},
-				],
 				groups: [
-					['builtin', 'external', 'internal'],
-					'sibling',
-					'parent',
-					['index', 'object', 'type'],
+					['builtin', 'external'],
+					['internal', 'parent', 'index', 'sibling'],
+					['object', 'type'],
 				],
 			},
 		],

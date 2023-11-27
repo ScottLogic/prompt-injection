@@ -1,5 +1,4 @@
 import { getBackendUrl, sendRequest } from './backendService';
-
 import { DocumentMeta } from '@src/models/document';
 
 async function getDocumentMetas(): Promise<DocumentMeta[]> {

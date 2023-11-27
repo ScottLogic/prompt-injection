@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 
 import ShortMissionInfoButton from './ShortMissionInfoButton';
-
 import { LEVELS } from '@src/Levels';
 import { LEVEL_NAMES } from '@src/models/level';
 

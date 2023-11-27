@@ -5,7 +5,6 @@ import HandbookCloseIcon from './HandbookCloseIcon';
 import HandbookGlossary from './HandbookGlossary';
 import HandbookSpine from './HandbookSpine';
 import HandbookSystemRole from './HandbookSystemRole';
-
 import useIsOverflow from '@src/hooks/useIsOverflow';
 import { HANDBOOK_PAGES } from '@src/models/handbook';
 import { LEVEL_NAMES } from '@src/models/level';

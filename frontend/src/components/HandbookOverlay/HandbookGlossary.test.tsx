@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
 import HandbookGlossary from './HandbookGlossary';
-
 import { GLOSSARY } from '@src/Glossary';
 
 describe('HandbookGlossary component tests', () => {

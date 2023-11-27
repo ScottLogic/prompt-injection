@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 
 import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';
-
 import { DEFENCE_DETAILS_ALL } from '@src/Defences';
 import ExportPDFLink from '@src/components/ExportChat/ExportPDFLink';
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';

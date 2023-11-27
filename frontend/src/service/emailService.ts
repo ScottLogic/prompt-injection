@@ -1,5 +1,4 @@
 import { sendRequest } from './backendService';
-
 import { EmailInfo } from '@src/models/email';
 
 const PATH = 'email/';

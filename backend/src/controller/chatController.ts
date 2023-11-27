@@ -1,7 +1,6 @@
 import { Response } from 'express';
 
 import { handleChatError } from './handleError';
-
 import { transformMessage, detectTriggeredDefences } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
