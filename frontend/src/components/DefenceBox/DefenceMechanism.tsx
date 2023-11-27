@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TiTick, TiTimes } from 'react-icons/ti';
 
-import { DEFENCE_ID, DefenceConfig, Defence } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { validateDefence } from '@src/service/defenceService';
 
 import DefenceConfiguration from './DefenceConfiguration';
@@ -23,7 +23,7 @@ function DefenceMechanism({
 	setDefenceInactive: (defence: Defence) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
-		config: DefenceConfig[]
+		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 }) {
 	const [showConfiguredText, setShowConfiguredText] = useState<boolean>(false);

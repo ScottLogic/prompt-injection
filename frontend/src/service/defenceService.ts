@@ -1,6 +1,6 @@
 import {
 	DEFENCE_ID,
-	DefenceConfig,
+	DefenceConfigItem,
 	Defence,
 	DefenceResetResponse,
 } from '@src/models/defence';
@@ -45,7 +45,7 @@ async function deactivateDefence(
 
 async function configureDefence(
 	defenceId: string,
-	config: DefenceConfig[],
+	config: DefenceConfigItem[],
 	level: number
 ): Promise<boolean> {
 	const response = await sendRequest(

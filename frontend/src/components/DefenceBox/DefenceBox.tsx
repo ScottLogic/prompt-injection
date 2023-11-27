@@ -1,4 +1,4 @@
-import { DEFENCE_ID, DefenceConfig, Defence } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 
 import DefenceMechanism from './DefenceMechanism';
 
@@ -20,7 +20,7 @@ function DefenceBox({
 	setDefenceInactive: (defence: Defence) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
-		config: DefenceConfig[]
+		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 }) {
 	return (

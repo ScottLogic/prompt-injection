@@ -2,7 +2,7 @@ import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
 import SwitchModeButton from '@src/components/ThemedButtons/SwitchModeButton';
-import { DEFENCE_ID, DefenceConfig, Defence } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './ControlPanel.css';
@@ -23,7 +23,7 @@ function ControlPanel({
 	setDefenceInactive: (defence: Defence) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
-		config: DefenceConfig[]
+		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 	openWelcomeOverlay: () => void;
 }) {
