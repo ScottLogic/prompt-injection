@@ -6,7 +6,7 @@ import {
 	xmlPrompt,
 } from './promptTemplates';
 
-function createDefenceInfo(
+function createDefence(
 	id: DEFENCE_ID,
 	config: { id: string; value: string }[]
 ): Defence {
@@ -18,43 +18,43 @@ function createDefenceInfo(
 }
 
 const defaultDefences: Defence[] = [
-	createDefenceInfo(DEFENCE_ID.CHARACTER_LIMIT, [
+	createDefence(DEFENCE_ID.CHARACTER_LIMIT, [
 		{
 			id: 'maxMessageLength',
 			value: String(280),
 		},
 	]),
-	createDefenceInfo(DEFENCE_ID.PROMPT_EVALUATION_LLM, [
+	createDefence(DEFENCE_ID.PROMPT_EVALUATION_LLM, [
 		{
 			id: 'prompt',
 			value: promptEvalPrompt,
 		},
 	]),
-	createDefenceInfo(DEFENCE_ID.QA_LLM, [
+	createDefence(DEFENCE_ID.QA_LLM, [
 		{
 			id: 'prompt',
 			value: qAPromptSecure,
 		},
 	]),
-	createDefenceInfo(DEFENCE_ID.SYSTEM_ROLE, [
+	createDefence(DEFENCE_ID.SYSTEM_ROLE, [
 		{
 			id: 'systemRole',
 			value: systemRoleDefault,
 		},
 	]),
-	createDefenceInfo(DEFENCE_ID.XML_TAGGING, [
+	createDefence(DEFENCE_ID.XML_TAGGING, [
 		{
 			id: 'prompt',
 			value: xmlPrompt,
 		},
 	]),
-	createDefenceInfo(DEFENCE_ID.FILTER_USER_INPUT, [
+	createDefence(DEFENCE_ID.FILTER_USER_INPUT, [
 		{
 			id: 'filterUserInput',
 			value: 'secret project,confidential project,budget,password',
 		},
 	]),
-	createDefenceInfo(DEFENCE_ID.FILTER_BOT_OUTPUT, [
+	createDefence(DEFENCE_ID.FILTER_BOT_OUTPUT, [
 		{
 			id: 'filterBotOutput',
 			value: 'secret project',
