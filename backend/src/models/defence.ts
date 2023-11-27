@@ -8,8 +8,15 @@ enum DEFENCE_TYPES {
 	FILTER_BOT_OUTPUT = 'FILTER_BOT_OUTPUT',
 }
 
+type DEFENCE_CONFIG_ITEM_ID =
+	| 'maxMessageLength'
+	| 'prompt'
+	| 'systemRole'
+	| 'filterUserInput'
+	| 'filterBotOutput';
+
 interface DefenceConfig {
-	id: string;
+	id: DEFENCE_CONFIG_ITEM_ID;
 	value: string;
 }
 
@@ -29,4 +36,4 @@ class DefenceInfo {
 }
 
 export { DEFENCE_TYPES, DefenceInfo };
-export type { DefenceConfig };
+export type { DefenceConfig, DEFENCE_CONFIG_ITEM_ID };
