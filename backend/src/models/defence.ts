@@ -20,20 +20,12 @@ interface DefenceConfig {
 	value: string;
 }
 
-class DefenceInfo {
-	constructor(id: DEFENCE_TYPES, config: DefenceConfig[]) {
-		this.id = id;
-		this.config = config;
-		// each defence starts off as inactive and not triggered
-		this.isActive = false;
-		this.isTriggered = false;
-	}
-
+interface DefenceInfo {
 	id: DEFENCE_TYPES;
 	config: DefenceConfig[];
 	isActive: boolean;
 	isTriggered: boolean;
 }
 
-export { DEFENCE_TYPES, DefenceInfo };
-export type { DefenceConfig, DEFENCE_CONFIG_ITEM_ID };
+export { DEFENCE_TYPES };
+export type { DefenceInfo, DefenceConfig, DEFENCE_CONFIG_ITEM_ID };

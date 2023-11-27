@@ -10,7 +10,12 @@ function createDefenceInfo(
 	id: DEFENCE_TYPES,
 	config: DefenceConfig[]
 ): DefenceInfo {
-	return new DefenceInfo(id, config);
+	return {
+		id,
+		config,
+		isActive: false,
+		isTriggered: false,
+	};
 }
 
 const defaultDefences: DefenceInfo[] = [
