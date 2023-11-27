@@ -17,7 +17,7 @@ import {
 	ChatHistoryMessage,
 	ChatModel,
 } from '@src/models/chat';
-import { DefenceInfo } from '@src/models/defence';
+import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -30,7 +30,7 @@ declare module 'express-session' {
 	interface LevelState {
 		level: LEVEL_NAMES;
 		chatHistory: ChatHistoryMessage[];
-		defences: DefenceInfo[];
+		defences: Defence[];
 		sentEmails: EmailInfo[];
 	}
 }
@@ -71,7 +71,7 @@ describe('handleChatToGPT unit tests', () => {
 	function errorResponseMock(message: string, transformedMessage?: string) {
 		return {
 			reply: message,
-			defenceInfo: {
+			defenceReport: {
 				blockedReason: message,
 				isBlocked: true,
 				alertedDefences: [],
@@ -88,7 +88,7 @@ describe('handleChatToGPT unit tests', () => {
 		level?: LEVEL_NAMES,
 		chatHistory: ChatHistoryMessage[] = [],
 		sentEmails: EmailInfo[] = [],
-		defences: DefenceInfo[] = []
+		defences: Defence[] = []
 	): OpenAiChatRequest {
 		return {
 			body: {
@@ -119,7 +119,7 @@ describe('handleChatToGPT unit tests', () => {
 
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Howdy human!',
-			defenceInfo: {
+			defenceReport: {
 				blockedReason: '',
 				isBlocked: false,
 				alertedDefences: [],
