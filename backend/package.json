@@ -10,7 +10,7 @@
 		"docker:logs": "docker compose logs -f",
 		"docker:stop": "docker compose down",
 		"format": "prettier --write .",
-		"lint": "eslint . --fix",
+		"lint": "eslint . --fix && tsc --noEmit",
 		"test": "jest"
 	},
 	"dependencies": {
