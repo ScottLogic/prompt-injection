@@ -25,7 +25,7 @@ import {
 	ChatModel,
 	ChatResponse,
 } from './models/chat';
-import { DEFENCE_TYPES, DefenceInfo } from './models/defence';
+import { DEFENCE_ID, Defence } from './models/defence';
 import { EmailInfo, EmailResponse } from './models/email';
 import { LEVEL_NAMES } from './models/level';
 import {
@@ -133,8 +133,8 @@ function isChatGptFunction(functionName: string) {
 }
 
 async function chatGptCallFunction(
-	defenceInfo: ChatDefenceReport,
-	defences: DefenceInfo[],
+	defenceReport: ChatDefenceReport,
+	defences: Defence[],
 	toolCallId: string,
 	functionCall: ChatCompletionMessageToolCall.Function,
 	sentEmails: EmailInfo[],
@@ -179,7 +179,7 @@ async function chatGptCallFunction(
 				console.debug(`Asking question: ${params.question}`);
 				// if asking a question, call the queryDocuments
 				let configQAPrompt = '';
-				if (isDefenceActive(DEFENCE_TYPES.QA_LLM, defences)) {
+				if (isDefenceActive(DEFENCE_ID.QA_LLM, defences)) {
 					configQAPrompt = getQAPromptFromConfig(defences);
 				}
 				response = (
@@ -201,7 +201,7 @@ async function chatGptCallFunction(
 	if (reply) {
 		return {
 			completion: reply,
-			defenceInfo,
+			defenceReport,
 			wonLevel,
 		};
 	} else {
@@ -211,7 +211,7 @@ async function chatGptCallFunction(
 
 async function chatGptChatCompletion(
 	chatHistory: ChatHistoryMessage[],
-	defences: DefenceInfo[],
+	defences: Defence[],
 	chatModel: ChatModel,
 	openai: OpenAI,
 	// default to sandbox
@@ -221,7 +221,7 @@ async function chatGptChatCompletion(
 	// system role is always active on levels
 	if (
 		currentLevel !== LEVEL_NAMES.SANDBOX ||
-		isDefenceActive(DEFENCE_TYPES.SYSTEM_ROLE, defences)
+		isDefenceActive(DEFENCE_ID.SYSTEM_ROLE, defences)
 	) {
 		const completionConfig: ChatCompletionSystemMessageParam = {
 			role: 'system',
@@ -431,7 +431,7 @@ function pushCompletionToHistory(
 
 async function chatGptSendMessage(
 	chatHistory: ChatHistoryMessage[],
-	defences: DefenceInfo[],
+	defences: Defence[],
 	chatModel: ChatModel,
 	message: string,
 	messageIsTransformed: boolean,
@@ -442,7 +442,7 @@ async function chatGptSendMessage(
 	console.log(`User message: '${message}'`);
 
 	// init defence info
-	const defenceInfo: ChatDefenceReport = {
+	const defenceReport: ChatDefenceReport = {
 		blockedReason: '',
 		isBlocked: false,
 		alertedDefences: [],
@@ -451,7 +451,7 @@ async function chatGptSendMessage(
 
 	const chatResponse: ChatResponse = {
 		completion: null,
-		defenceInfo,
+		defenceReport,
 		wonLevel: false,
 	};
 
@@ -491,7 +491,7 @@ async function chatGptSendMessage(
 			if (toolCall.type === 'function') {
 				// call the function and get a new reply and defence info from
 				const functionCallReply = await chatGptCallFunction(
-					defenceInfo,
+					defenceReport,
 					defences,
 					toolCall.id,
 					toolCall.function,
@@ -508,7 +508,7 @@ async function chatGptSendMessage(
 						CHAT_MESSAGE_TYPE.FUNCTION_CALL
 					);
 					// update the defence info
-					chatResponse.defenceInfo = functionCallReply.defenceInfo;
+					chatResponse.defenceReport = functionCallReply.defenceReport;
 				}
 			} else {
 				// openai chat tool call type not supported yet
@@ -537,7 +537,7 @@ async function chatGptSendMessage(
 		) {
 			const detectedPhrases = detectFilterList(
 				reply.content,
-				getFilterList(defences, DEFENCE_TYPES.FILTER_BOT_OUTPUT)
+				getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
 			);
 			if (detectedPhrases.length > 0) {
 				console.debug(
@@ -545,16 +545,16 @@ async function chatGptSendMessage(
 						"', '"
 					)}'.`
 				);
-				if (isDefenceActive(DEFENCE_TYPES.FILTER_BOT_OUTPUT, defences)) {
-					chatResponse.defenceInfo.triggeredDefences.push(
-						DEFENCE_TYPES.FILTER_BOT_OUTPUT
+				if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
+					chatResponse.defenceReport.triggeredDefences.push(
+						DEFENCE_ID.FILTER_BOT_OUTPUT
 					);
-					chatResponse.defenceInfo.isBlocked = true;
-					chatResponse.defenceInfo.blockedReason =
+					chatResponse.defenceReport.isBlocked = true;
+					chatResponse.defenceReport.blockedReason =
 						'My original response was blocked as it contained a restricted word/phrase. Ask me something else. ';
 				} else {
-					chatResponse.defenceInfo.alertedDefences.push(
-						DEFENCE_TYPES.FILTER_BOT_OUTPUT
+					chatResponse.defenceReport.alertedDefences.push(
+						DEFENCE_ID.FILTER_BOT_OUTPUT
 					);
 				}
 			}
@@ -563,7 +563,7 @@ async function chatGptSendMessage(
 		chatHistory = pushCompletionToHistory(
 			chatHistory,
 			reply,
-			defenceInfo.isBlocked
+			defenceReport.isBlocked
 				? CHAT_MESSAGE_TYPE.BOT_BLOCKED
 				: CHAT_MESSAGE_TYPE.BOT
 		);

@@ -1,4 +1,4 @@
-enum DEFENCE_TYPES {
+enum DEFENCE_ID {
 	CHARACTER_LIMIT = 'CHARACTER_LIMIT',
 	PROMPT_EVALUATION_LLM = 'PROMPT_EVALUATION_LLM',
 	QA_LLM = 'QA_LLM',
@@ -8,7 +8,7 @@ enum DEFENCE_TYPES {
 	FILTER_BOT_OUTPUT = 'FILTER_BOT_OUTPUT',
 }
 
-class DefenceConfig {
+class DefenceConfigItem {
 	constructor(id: string, name: string, inputType: 'text' | 'number') {
 		this.id = id;
 		this.inputType = inputType;
@@ -22,12 +22,12 @@ class DefenceConfig {
 	value: string;
 }
 
-class DefenceInfo {
+class Defence {
 	constructor(
-		id: DEFENCE_TYPES,
+		id: DEFENCE_ID,
 		name: string,
 		info: string,
-		config: DefenceConfig[]
+		config: DefenceConfigItem[]
 	) {
 		this.id = id;
 		this.name = name;
@@ -38,10 +38,10 @@ class DefenceInfo {
 		this.isTriggered = false;
 	}
 
-	id: DEFENCE_TYPES;
+	id: DEFENCE_ID;
 	name: string;
 	info: string;
-	config: DefenceConfig[];
+	config: DefenceConfigItem[];
 	isActive: boolean;
 	isTriggered: boolean;
 }
@@ -51,5 +51,5 @@ interface DefenceResetResponse {
 	value: string;
 }
 
-export { DEFENCE_TYPES, DefenceConfig, DefenceInfo };
+export { DEFENCE_ID, DefenceConfigItem, Defence };
 export type { DefenceResetResponse };

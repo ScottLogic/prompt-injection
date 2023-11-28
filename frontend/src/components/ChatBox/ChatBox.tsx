@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { DEFENCE_DETAILS_ALL } from '@src/Defences';
+import { ALL_DEFENCES } from '@src/Defences';
 import ExportPDFLink from '@src/components/ExportChat/ExportPDFLink';
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
@@ -117,10 +117,10 @@ function ChatBox({
 				});
 			}
 			// add it to the list of messages
-			else if (response.defenceInfo.isBlocked) {
+			else if (response.defenceReport.isBlocked) {
 				addChatMessage({
 					type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-					message: response.defenceInfo.blockedReason,
+					message: response.defenceReport.blockedReason,
 				});
 			} else {
 				addChatMessage({
@@ -129,9 +129,9 @@ function ChatBox({
 				});
 			}
 			// add altered defences to the chat
-			response.defenceInfo.alertedDefences.forEach((triggeredDefence) => {
+			response.defenceReport.alertedDefences.forEach((triggeredDefence) => {
 				// get user-friendly defence name
-				const defenceName = DEFENCE_DETAILS_ALL.find((defence) => {
+				const defenceName = ALL_DEFENCES.find((defence) => {
 					return defence.id === triggeredDefence;
 				})?.name.toLowerCase();
 				if (defenceName) {
@@ -149,9 +149,9 @@ function ChatBox({
 				}
 			});
 			// add triggered defences to the chat
-			response.defenceInfo.triggeredDefences.forEach((triggeredDefence) => {
+			response.defenceReport.triggeredDefences.forEach((triggeredDefence) => {
 				// get user-friendly defence name
-				const defenceName = DEFENCE_DETAILS_ALL.find((defence) => {
+				const defenceName = ALL_DEFENCES.find((defence) => {
 					return defence.id === triggeredDefence;
 				})?.name.toLowerCase();
 				if (defenceName) {
