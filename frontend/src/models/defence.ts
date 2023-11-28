@@ -15,18 +15,7 @@ type DEFENCE_CONFIG_ITEM_ID =
 	| 'FILTER_USER_INPUT'
 	| 'FILTER_BOT_OUTPUT';
 
-class DefenceConfig {
-	constructor(
-		id: DEFENCE_CONFIG_ITEM_ID,
-		name: string,
-		inputType: 'text' | 'number'
-	) {
-		this.id = id;
-		this.inputType = inputType;
-		this.name = name;
-		this.value = '';
-	}
-
+interface DefenceConfig {
 	id: DEFENCE_CONFIG_ITEM_ID;
 	inputType: 'text' | 'number';
 	name: string;
@@ -62,5 +51,5 @@ interface DefenceResetResponse {
 	value: string;
 }
 
-export { DEFENCE_TYPES, DefenceConfig, DefenceInfo };
-export type { DefenceResetResponse, DEFENCE_CONFIG_ITEM_ID };
+export { DEFENCE_TYPES, DefenceInfo };
+export type { DefenceResetResponse, DEFENCE_CONFIG_ITEM_ID, DefenceConfig };
