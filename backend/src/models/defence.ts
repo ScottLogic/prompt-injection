@@ -1,4 +1,4 @@
-enum DEFENCE_TYPES {
+enum DEFENCE_ID {
 	CHARACTER_LIMIT = 'CHARACTER_LIMIT',
 	PROMPT_EVALUATION_LLM = 'PROMPT_EVALUATION_LLM',
 	QA_LLM = 'QA_LLM',
@@ -15,17 +15,17 @@ type DEFENCE_CONFIG_ITEM_ID =
 	| 'FILTER_USER_INPUT'
 	| 'FILTER_BOT_OUTPUT';
 
-interface DefenceConfig {
+interface DefenceConfigItem {
 	id: DEFENCE_CONFIG_ITEM_ID;
 	value: string;
 }
 
-interface DefenceInfo {
-	id: DEFENCE_TYPES;
-	config: DefenceConfig[];
+interface Defence {
+	id: DEFENCE_ID;
+	config: DefenceConfigItem[];
 	isActive: boolean;
 	isTriggered: boolean;
 }
 
-export { DEFENCE_TYPES };
-export type { DefenceInfo, DefenceConfig, DEFENCE_CONFIG_ITEM_ID };
+export { DEFENCE_ID };
+export type { Defence, DefenceConfigItem, DEFENCE_CONFIG_ITEM_ID };
