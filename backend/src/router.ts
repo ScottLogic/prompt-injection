@@ -25,6 +25,7 @@ import {
 	handleSetModel,
 } from './controller/modelController';
 import { handleGetSystemRoles } from './controller/systemRoleController';
+import { getValidOpenAIModels } from './openai';
 
 const router = express.Router();
 
@@ -65,6 +66,11 @@ router.post('/openai/model', handleSetModel);
 router.post('/openai/model/configure', handleConfigureModel);
 
 router.get('/openai/model', handleGetModel);
+
+router.get('/openai/models', async (req, res) => {
+	const models = await getValidOpenAIModels();
+	res.json(models);
+});
 
 // system roles
 
