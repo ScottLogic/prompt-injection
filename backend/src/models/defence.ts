@@ -15,17 +15,17 @@ type DEFENCE_CONFIG_ITEM_ID =
 	| 'FILTER_USER_INPUT'
 	| 'FILTER_BOT_OUTPUT';
 
-interface DefenceConfigItem {
+type DefenceConfigItem = {
 	id: DEFENCE_CONFIG_ITEM_ID;
 	value: string;
-}
+};
 
-interface Defence {
+type Defence = {
 	id: DEFENCE_ID;
 	config: DefenceConfigItem[];
 	isActive: boolean;
 	isTriggered: boolean;
-}
+};
 
 export { DEFENCE_ID };
 export type { Defence, DefenceConfigItem, DEFENCE_CONFIG_ITEM_ID };

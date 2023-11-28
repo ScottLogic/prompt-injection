@@ -15,26 +15,26 @@ type DEFENCE_CONFIG_ITEM_ID =
 	| 'FILTER_USER_INPUT'
 	| 'FILTER_BOT_OUTPUT';
 
-interface DefenceConfigItem {
+type DefenceConfigItem = {
 	id: DEFENCE_CONFIG_ITEM_ID;
 	inputType: 'text' | 'number';
 	name: string;
 	value: string;
-}
+};
 
-interface Defence {
+type Defence = {
 	id: DEFENCE_ID;
 	name: string;
 	info: string;
 	config: DefenceConfigItem[];
 	isActive: boolean;
 	isTriggered: boolean;
-}
+};
 
-interface DefenceResetResponse {
+type DefenceResetResponse = {
 	id: string;
 	value: string;
-}
+};
 
 export { DEFENCE_ID };
 export type {
