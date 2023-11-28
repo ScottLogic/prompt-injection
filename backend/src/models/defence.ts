@@ -1,4 +1,4 @@
-enum DEFENCE_TYPES {
+enum DEFENCE_ID {
 	CHARACTER_LIMIT = 'CHARACTER_LIMIT',
 	PROMPT_EVALUATION_LLM = 'PROMPT_EVALUATION_LLM',
 	QA_LLM = 'QA_LLM',
@@ -8,13 +8,13 @@ enum DEFENCE_TYPES {
 	FILTER_BOT_OUTPUT = 'FILTER_BOT_OUTPUT',
 }
 
-interface DefenceConfig {
+interface DefenceConfigItem {
 	id: string;
 	value: string;
 }
 
-class DefenceInfo {
-	constructor(id: DEFENCE_TYPES, config: DefenceConfig[]) {
+class Defence {
+	constructor(id: DEFENCE_ID, config: DefenceConfigItem[]) {
 		this.id = id;
 		this.config = config;
 		// each defence starts off as inactive and not triggered
@@ -22,11 +22,11 @@ class DefenceInfo {
 		this.isTriggered = false;
 	}
 
-	id: DEFENCE_TYPES;
-	config: DefenceConfig[];
+	id: DEFENCE_ID;
+	config: DefenceConfigItem[];
 	isActive: boolean;
 	isTriggered: boolean;
 }
 
-export { DEFENCE_TYPES, DefenceInfo };
-export type { DefenceConfig };
+export { DEFENCE_ID, Defence };
+export type { DefenceConfigItem };

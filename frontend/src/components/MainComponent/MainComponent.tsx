@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { DEFENCE_DETAILS_ALL, DEFENCE_DETAILS_LEVEL } from '@src/Defences';
+import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
@@ -48,8 +48,7 @@ function MainComponent({
 	incrementNumCompletedLevels: (level: number) => void;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
-	const [defencesToShow, setDefencesToShow] =
-		useState<DefenceInfo[]>(DEFENCE_DETAILS_ALL);
+	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 
@@ -75,8 +74,8 @@ function MainComponent({
 		// choose appropriate defences to display
 		let defences =
 			currentLevel === LEVEL_NAMES.LEVEL_3
-				? DEFENCE_DETAILS_LEVEL
-				: DEFENCE_DETAILS_ALL;
+				? DEFENCES_SHOWN_LEVEL3
+				: ALL_DEFENCES;
 		defences = defences.map((defence) => {
 			defence.isActive = false;
 			return defence;
@@ -98,9 +97,7 @@ function MainComponent({
 		newLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
 
 		const defences =
-			newLevel === LEVEL_NAMES.LEVEL_3
-				? DEFENCE_DETAILS_LEVEL
-				: DEFENCE_DETAILS_ALL;
+			newLevel === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
 		// fetch defences from backend
 		const remoteDefences = await getDefences(newLevel);
 		defences.map((localDefence) => {
@@ -136,7 +133,7 @@ function MainComponent({
 	}
 
 	async function resetDefenceConfiguration(
-		defenceId: DEFENCE_TYPES,
+		defenceId: DEFENCE_ID,
 		configId: string
 	) {
 		const resetDefence = await resetDefenceConfig(defenceId, configId);
@@ -154,7 +151,7 @@ function MainComponent({
 		setDefencesToShow(newDefences);
 	}
 
-	async function setDefenceActive(defence: DefenceInfo) {
+	async function setDefenceActive(defence: Defence) {
 		await activateDefence(defence.id, currentLevel);
 		// update state
 		const newDefenceDetails = defencesToShow.map((defenceDetail) => {
@@ -169,7 +166,7 @@ function MainComponent({
 		setDefencesToShow(newDefenceDetails);
 	}
 
-	async function setDefenceInactive(defence: DefenceInfo) {
+	async function setDefenceInactive(defence: Defence) {
 		await deactivateDefence(defence.id, currentLevel);
 		// update state
 		const newDefenceDetails = defencesToShow.map((defenceDetail) => {
@@ -185,8 +182,8 @@ function MainComponent({
 	}
 
 	async function setDefenceConfiguration(
-		defenceId: DEFENCE_TYPES,
-		config: DefenceConfig[]
+		defenceId: DEFENCE_ID,
+		config: DefenceConfigItem[]
 	) {
 		const success = await configureDefence(defenceId, config, currentLevel);
 		if (success) {
@@ -226,15 +223,12 @@ function MainComponent({
 				emails={emails}
 				messages={messages}
 				addChatMessage={addChatMessage}
-				resetDefenceConfiguration={(
-					defenceId: DEFENCE_TYPES,
-					configId: string
-				) => void resetDefenceConfiguration(defenceId, configId)}
-				resetLevel={() => void resetLevel()}
-				setDefenceActive={(defence: DefenceInfo) =>
-					void setDefenceActive(defence)
+				resetDefenceConfiguration={(defenceId: DEFENCE_ID, configId: string) =>
+					void resetDefenceConfiguration(defenceId, configId)
 				}
-				setDefenceInactive={(defence: DefenceInfo) =>
+				resetLevel={() => void resetLevel()}
+				setDefenceActive={(defence: Defence) => void setDefenceActive(defence)}
+				setDefenceInactive={(defence: Defence) =>
 					void setDefenceInactive(defence)
 				}
 				setDefenceConfiguration={setDefenceConfiguration}

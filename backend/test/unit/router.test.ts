@@ -73,7 +73,7 @@ describe('/defence/configure', () => {
 describe('/openai/chat', () => {
 	const noMessageOrLevelResponse: ChatHttpResponse = {
 		reply: 'Please send a message and current level to chat to me!',
-		defenceInfo: {
+		defenceReport: {
 			blockedReason: 'Please send a message and current level to chat to me!',
 			isBlocked: true,
 			alertedDefences: [],
@@ -106,7 +106,7 @@ describe('/openai/chat', () => {
 
 		const messageTooLongResponse: ChatHttpResponse = {
 			reply: 'Message exceeds character limit',
-			defenceInfo: {
+			defenceReport: {
 				blockedReason: 'Message exceeds character limit',
 				isBlocked: true,
 				alertedDefences: [],

@@ -1,7 +1,7 @@
 import {
-	DEFENCE_TYPES,
-	DefenceConfig,
-	DefenceInfo,
+	DEFENCE_ID,
+	DefenceConfigItem,
+	Defence,
 	DefenceResetResponse,
 } from '@src/models/defence';
 
@@ -11,7 +11,7 @@ const PATH = 'defence/';
 
 async function getDefences(level: number) {
 	const response = await sendRequest(`${PATH}status?level=${level}`, 'GET');
-	const data = (await response.json()) as DefenceInfo[];
+	const data = (await response.json()) as Defence[];
 	return data;
 }
 
@@ -45,7 +45,7 @@ async function deactivateDefence(
 
 async function configureDefence(
 	defenceId: string,
-	config: DefenceConfig[],
+	config: DefenceConfigItem[],
 	level: number
 ): Promise<boolean> {
 	const response = await sendRequest(
@@ -93,10 +93,10 @@ function validateFilterConfig(config: string) {
 
 function validateDefence(id: string, config: string) {
 	switch (id) {
-		case DEFENCE_TYPES.CHARACTER_LIMIT:
+		case DEFENCE_ID.CHARACTER_LIMIT:
 			return validatePositiveNumberConfig(config);
-		case DEFENCE_TYPES.FILTER_USER_INPUT:
-		case DEFENCE_TYPES.FILTER_BOT_OUTPUT:
+		case DEFENCE_ID.FILTER_USER_INPUT:
+		case DEFENCE_ID.FILTER_BOT_OUTPUT:
 			return validateFilterConfig(config);
 		default:
 			return validateNonEmptyStringConfig(config);

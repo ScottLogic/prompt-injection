@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { defaultDefences } from './defaultDefences';
 import { importMetaUrl } from './importMetaUtils';
 import { ChatHistoryMessage, ChatModel, defaultChatModel } from './models/chat';
-import { DefenceInfo } from './models/defence';
+import { Defence } from './models/defence';
 import { EmailInfo } from './models/email';
 import { LEVEL_NAMES } from './models/level';
 import { router } from './router';
@@ -24,7 +24,7 @@ declare module 'express-session' {
 	interface LevelState {
 		level: LEVEL_NAMES;
 		chatHistory: ChatHistoryMessage[];
-		defences: DefenceInfo[];
+		defences: Defence[];
 		sentEmails: EmailInfo[];
 	}
 }

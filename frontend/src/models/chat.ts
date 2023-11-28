@@ -1,4 +1,4 @@
-import { DEFENCE_TYPES } from './defence';
+import { DEFENCE_ID } from './defence';
 
 enum CHAT_MESSAGE_TYPE {
 	BOT,
@@ -45,8 +45,8 @@ interface CustomChatModelConfiguration {
 interface ChatDefenceReport {
 	blockedReason: string;
 	isBlocked: boolean;
-	alertedDefences: DEFENCE_TYPES[];
-	triggeredDefences: DEFENCE_TYPES[];
+	alertedDefences: DEFENCE_ID[];
+	triggeredDefences: DEFENCE_ID[];
 }
 
 interface ChatMessage {
@@ -56,7 +56,7 @@ interface ChatMessage {
 
 interface ChatResponse {
 	reply: string;
-	defenceInfo: ChatDefenceReport;
+	defenceReport: ChatDefenceReport;
 	transformedMessage: string;
 	wonLevel: boolean;
 	isError: boolean;
