@@ -1,17 +1,17 @@
-import "./DocumentViewButton.css";
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 
-import ThemedButton from "@src/components/ThemedButtons/ThemedButton";
+import './DocumentViewButton.css';
 
 function DocumentViewButton({
-  openDocumentViewer,
+	openDocumentViewer,
 }: {
-  openDocumentViewer: () => void;
+	openDocumentViewer: () => void;
 }) {
-  return (
-    <div className="document-view-button-wrapper">
-      <ThemedButton onClick={openDocumentViewer}>View Documents</ThemedButton>
-    </div>
-  );
+	return (
+		<div className="document-view-button-wrapper">
+			<ThemedButton onClick={openDocumentViewer}>View Documents</ThemedButton>
+		</div>
+	);
 }
 
 export default DocumentViewButton;

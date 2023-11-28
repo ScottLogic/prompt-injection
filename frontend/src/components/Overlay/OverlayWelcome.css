@@ -1,28 +1,28 @@
 .welcome {
-  padding: 0 1.5rem;
-  overflow-y: auto;
-  margin-top: 2rem;
+	padding: 0 1.5rem;
+	overflow-y: auto;
+	margin-top: 2rem;
 }
 
 .welcome h1 {
-  font-weight: 700;
-  font-size: 2.5rem;
-  text-align: center;
+	font-weight: 700;
+	font-size: 2.5rem;
+	text-align: center;
 }
 
 .welcome h2 {
-  text-align: center;
-  font-weight: 700;
-  font-size: 2rem;
+	text-align: center;
+	font-weight: 700;
+	font-size: 2rem;
 }
 
 .welcome p {
-  font-weight: 500;
-  font-size: 1.25rem;
+	font-weight: 500;
+	font-size: 1.25rem;
 }
 
 .welcome .project-icon {
-  display: flex;
-  justify-content: center;
-  height: 6rem;
+	display: flex;
+	justify-content: center;
+	height: 6rem;
 }

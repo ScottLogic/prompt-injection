@@ -1,50 +1,50 @@
 .document-popup-inner {
-  position: relative;
-  padding: 2rem;
-  max-width: 100%;
-  width: 40rem;
-  background-color: var(--main-background-colour);
-  border: 0.1875rem solid var(--main-border-colour);
-  border-color: var(--main-border-colour);
+	position: relative;
+	padding: 2rem;
+	max-width: 100%;
+	width: 40rem;
+	background-color: var(--main-background-colour);
+	border: 0.1875rem solid var(--main-border-colour);
+	border-color: var(--main-border-colour);
 }
 
 .document-popup-inner .close-button {
-  color: var(--main-accent-colour);
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.25rem 0.75rem;
-  font-size: 1.75rem;
-  font-weight: bold;
+	color: var(--main-accent-colour);
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	padding: 0.25rem 0.75rem;
+	font-size: 1.75rem;
+	font-weight: bold;
 }
 
 .document-popup-inner .close-button:hover {
-  color: var(--main-button-hover-text-colour);
-  text-decoration: none;
-  cursor: pointer;
+	color: var(--main-button-hover-text-colour);
+	text-decoration: none;
+	cursor: pointer;
 }
 
 .document-viewer-container {
-  height: 20rem;
-  background-color: var(--document-viewer-background-colour);
-  overflow-y: auto;
+	height: 20rem;
+	background-color: var(--document-viewer-background-colour);
+	overflow-y: auto;
 }
 
 #react-doc-viewer {
-  background-color: var(--document-viewer-background-colour);
-  color: var(--document-viewer-text-colour);
-  margin: auto;
-  /* don't scroll */
-  overflow: visible;
+	background-color: var(--document-viewer-background-colour);
+	color: var(--document-viewer-text-colour);
+	margin: auto;
+	/* don't scroll */
+	overflow: visible;
 }
 
 #react-doc-viewer #proxy-renderer {
-  padding: 1.25rem;
-  /* don't scroll */
-  overflow: visible;
+	padding: 1.25rem;
+	/* don't scroll */
+	overflow: visible;
 }
 
 #react-doc-viewer #txt-renderer {
-  padding: 0.625rem;
-  white-space: pre-wrap;
+	padding: 0.625rem;
+	white-space: pre-wrap;
 }

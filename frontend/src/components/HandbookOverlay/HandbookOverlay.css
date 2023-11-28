@@ -1,47 +1,53 @@
 .handbook-overlay {
-  display: flex;
-  flex-direction: row;
+	display: flex;
+	flex-direction: row;
 
-  height: 85vh;
-  aspect-ratio: 7/8;
+	height: 85vh;
+	aspect-ratio: 7/8;
 
-  background-color: var(--handbook-background-colour);
-  color: var(--handbook-text-colour);
+	background-color: var(--handbook-background-colour);
+	color: var(--handbook-text-colour);
 }
 
 .handbook-overlay .close-button {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
+	position: absolute;
+	top: 0.25rem;
+	right: 0.25rem;
 }
 .handbook-overlay .close-button:hover svg rect {
-  fill: black;
-  stroke: white;
+	fill: black;
+	stroke: white;
 }
 .handbook-overlay .close-button:hover svg path {
-  fill: white;
+	fill: white;
 }
 
 .handbook-overlay .content {
-  padding: 0rem 1.7rem;
-  margin-top: 3rem;
-  margin-right: 0.5rem;
-  margin-bottom: 0.5rem;
+	padding: 0rem 1.7rem;
+	margin-top: 3rem;
+	margin-right: 0.5rem;
+	margin-bottom: 0.5rem;
 
-  overflow-y: auto;
-  /* firefox scrollbar styling */
-  scrollbar-color: var(--handbook-scrollbar-colour) transparent;
+	overflow-y: auto;
+	/* firefox scrollbar styling */
+	scrollbar-color: var(--handbook-scrollbar-colour) transparent;
 }
 /* webkit scrollbar styling */
 .handbook-overlay .content::-webkit-scrollbar-thumb {
-  background-color: var(--handbook-scrollbar-colour);
+	background-color: var(--handbook-scrollbar-colour);
 }
 .handbook-overlay .content::-webkit-scrollbar-thumb:hover {
-  background-color: var(--handbook-scrollbar-hover-colour);
+	background-color: var(--handbook-scrollbar-hover-colour);
 }
+
 .handbook-overlay .content h1 {
-  font-size: 1.125rem;
+	font-size: 1.5rem;
 }
+
+.handbook-overlay .content h2 {
+	font-size: 1.125rem;
+}
+
 .handbook-overlay .content p {
-  font-size: 1rem;
+	font-size: 1rem;
 }

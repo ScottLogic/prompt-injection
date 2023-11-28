@@ -1,12 +1,12 @@
-import { Request } from "express";
+import { Request } from 'express';
 
-import { DefenceInfo } from "@src/models/defence";
+import { DefenceInfo } from '@src/models/defence';
 
 export type DefenceStatusRequest = Request<
-  never,
-  DefenceInfo[] | string,
-  never,
-  {
-    level?: string;
-  }
+	never,
+	DefenceInfo[] | string,
+	never,
+	{
+		level?: string;
+	}
 >;

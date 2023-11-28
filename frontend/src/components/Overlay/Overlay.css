@@ -1,47 +1,47 @@
 .overlay {
-  box-sizing: border-box;
-  position: relative;
-  border: none;
-  border-radius: 0.625rem;
-  padding: 0;
-  background-color: var(--overlay-background-colour);
-  color: var(--overlay-text-colour);
-  width: 50vw;
-  height: fit-content;
-  max-height: 80vh;
-  overflow: visible;
-  overflow-y: auto;
+	box-sizing: border-box;
+	position: relative;
+	border: none;
+	border-radius: 0.625rem;
+	padding: 0;
+	background-color: var(--overlay-background-colour);
+	color: var(--overlay-text-colour);
+	width: 50vw;
+	height: fit-content;
+	max-height: 80vh;
+	overflow: visible;
+	overflow-y: auto;
 }
 .overlay * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .overlay h1 {
-  text-align: center;
+	text-align: center;
 }
 .overlay p {
-  font-size: 1.25rem;
+	font-size: 1.25rem;
 }
 
 .overlay > .close-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.125rem 0.5rem;
-  color: inherit;
-  font-size: 1.5rem;
-  font-weight: bold;
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	padding: 0.125rem 0.5rem;
+	color: inherit;
+	font-size: 1.5rem;
+	font-weight: bold;
 }
 
 .overlay > .close-button:hover {
-  color: var(--main-button-hover-text-colour);
-  text-decoration: none;
-  cursor: pointer;
+	color: var(--main-button-hover-text-colour);
+	text-decoration: none;
+	cursor: pointer;
 }
 
 .overlay-content {
-  padding: 1.5rem;
-  overflow: hidden;
-  display: flex;
-  height: 100%;
+	padding: 1.5rem;
+	overflow: hidden;
+	display: flex;
+	height: 100%;
 }
