@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TiTick, TiTimes } from 'react-icons/ti';
 
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { validateDefence } from '@src/service/defenceService';
 
 import DefenceConfiguration from './DefenceConfiguration';
@@ -16,17 +16,14 @@ function DefenceMechanism({
 	setDefenceInactive,
 	setDefenceConfiguration,
 }: {
-	defenceDetail: DefenceInfo;
+	defenceDetail: Defence;
 	showConfigurations: boolean;
-	resetDefenceConfiguration: (
-		defenceId: DEFENCE_TYPES,
-		configId: string
-	) => void;
-	setDefenceActive: (defence: DefenceInfo) => void;
-	setDefenceInactive: (defence: DefenceInfo) => void;
+	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
+	setDefenceActive: (defence: Defence) => void;
+	setDefenceInactive: (defence: Defence) => void;
 	setDefenceConfiguration: (
-		defenceId: DEFENCE_TYPES,
-		config: DefenceConfig[]
+		defenceId: DEFENCE_ID,
+		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 }) {
 	const [showConfiguredText, setShowConfiguredText] = useState<boolean>(false);

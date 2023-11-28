@@ -13,7 +13,7 @@ import {
 	getPromptEvalPromptFromConfig,
 } from '@src/defence';
 import * as langchain from '@src/langchain';
-import { DEFENCE_TYPES, DefenceConfig } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfigItem } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
 	promptEvalPrompt,
@@ -34,21 +34,21 @@ beforeEach(() => {
 });
 
 test('GIVEN defence is not active WHEN activating defence THEN defence is active', () => {
-	const defence = DEFENCE_TYPES.SYSTEM_ROLE;
+	const defence = DEFENCE_ID.SYSTEM_ROLE;
 	const defences = defaultDefences;
 	const updatedActiveDefences = activateDefence(defence, defences);
 	expect(isDefenceActive(defence, updatedActiveDefences)).toBe(true);
 });
 
 test('GIVEN defence is active WHEN activating defence THEN defence is active', () => {
-	const defence = DEFENCE_TYPES.SYSTEM_ROLE;
+	const defence = DEFENCE_ID.SYSTEM_ROLE;
 	const defences = defaultDefences;
 	const updatedActiveDefences = activateDefence(defence, defences);
 	expect(isDefenceActive(defence, updatedActiveDefences)).toBe(true);
 });
 
 test('GIVEN defence is active WHEN deactivating defence THEN defence is not active', () => {
-	const defence = DEFENCE_TYPES.SYSTEM_ROLE;
+	const defence = DEFENCE_ID.SYSTEM_ROLE;
 	const defences = defaultDefences;
 	activateDefence(defence, defences);
 	const updatedActiveDefences = deactivateDefence(defence, defences);
@@ -56,14 +56,14 @@ test('GIVEN defence is active WHEN deactivating defence THEN defence is not acti
 });
 
 test('GIVEN defence is not active WHEN deactivating defence THEN defence is not active', () => {
-	const defence = DEFENCE_TYPES.SYSTEM_ROLE;
+	const defence = DEFENCE_ID.SYSTEM_ROLE;
 	const defences = defaultDefences;
 	const updatedActiveDefences = deactivateDefence(defence, defences);
 	expect(updatedActiveDefences).not.toContain(defence);
 });
 
 test('GIVEN defence is active WHEN checking if defence is active THEN return true', () => {
-	const defence = DEFENCE_TYPES.SYSTEM_ROLE;
+	const defence = DEFENCE_ID.SYSTEM_ROLE;
 	const defences = defaultDefences;
 	const updatedDefences = activateDefence(defence, defences);
 	const isActive = isDefenceActive(defence, updatedDefences);
@@ -71,7 +71,7 @@ test('GIVEN defence is active WHEN checking if defence is active THEN return tru
 });
 
 test('GIVEN defence is not active WHEN checking if defence is active THEN return false', () => {
-	const defence = DEFENCE_TYPES.SYSTEM_ROLE;
+	const defence = DEFENCE_ID.SYSTEM_ROLE;
 	const defences = defaultDefences;
 	const isActive = isDefenceActive(defence, defences);
 	expect(isActive).toBe(false);
@@ -88,7 +88,7 @@ test('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
 	const message = 'Hello';
 	const defences = defaultDefences;
 	// activate XML_TAGGING defence
-	const updatedDefences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
+	const updatedDefences = activateDefence(DEFENCE_ID.XML_TAGGING, defences);
 	const transformedMessage = transformMessage(message, updatedDefences);
 	// expect the message to be surrounded by XML tags
 	expect(transformedMessage).toBe(
@@ -101,7 +101,7 @@ test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
 	const escapedMessage = '&lt;&gt;&amp;&apos;&quot;';
 	const defences = defaultDefences;
 	// activate XML_TAGGING defence
-	const updatedDefences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defences);
+	const updatedDefences = activateDefence(DEFENCE_ID.XML_TAGGING, defences);
 	const transformedMessage = transformMessage(message, updatedDefences);
 	// expect the message to be surrounded by XML tags
 	expect(transformedMessage).toBe(
@@ -126,15 +126,15 @@ test(
 		const message = 'Hello';
 		// activate and configure CHARACTER_LIMIT defence
 		const defences = configureDefence(
-			DEFENCE_TYPES.CHARACTER_LIMIT,
-			activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defaultDefences),
+			DEFENCE_ID.CHARACTER_LIMIT,
+			activateDefence(DEFENCE_ID.CHARACTER_LIMIT, defaultDefences),
 			[{ id: 'maxMessageLength', value: String(3) }]
 		);
 		const defenceReport = await detectTriggeredDefences(message, defences);
 		expect(defenceReport.blockedReason).toBe('Message is too long');
 		expect(defenceReport.isBlocked).toBe(true);
 		expect(defenceReport.triggeredDefences).toContain(
-			DEFENCE_TYPES.CHARACTER_LIMIT
+			DEFENCE_ID.CHARACTER_LIMIT
 		);
 	}
 );
@@ -147,8 +147,8 @@ test(
 		const message = 'Hello';
 		// activate and configure CHARACTER_LIMIT defence
 		const defences = configureDefence(
-			DEFENCE_TYPES.CHARACTER_LIMIT,
-			activateDefence(DEFENCE_TYPES.CHARACTER_LIMIT, defaultDefences),
+			DEFENCE_ID.CHARACTER_LIMIT,
+			activateDefence(DEFENCE_ID.CHARACTER_LIMIT, defaultDefences),
 			[{ id: 'maxMessageLength', value: String(280) }]
 		);
 		const defenceReport = await detectTriggeredDefences(message, defences);
@@ -166,7 +166,7 @@ test(
 		const message = 'Hello';
 		// configure CHARACTER_LIMIT defence
 		const defences = configureDefence(
-			DEFENCE_TYPES.CHARACTER_LIMIT,
+			DEFENCE_ID.CHARACTER_LIMIT,
 			defaultDefences,
 			[
 				{
@@ -178,20 +178,18 @@ test(
 		const defenceReport = await detectTriggeredDefences(message, defences);
 		expect(defenceReport.blockedReason).toBe(null);
 		expect(defenceReport.isBlocked).toBe(false);
-		expect(defenceReport.alertedDefences).toContain(
-			DEFENCE_TYPES.CHARACTER_LIMIT
-		);
+		expect(defenceReport.alertedDefences).toContain(DEFENCE_ID.CHARACTER_LIMIT);
 	}
 );
 
 test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is triggered', async () => {
 	const message = '<Hello>';
 	// activate XML_TAGGING defence
-	const defences = activateDefence(DEFENCE_TYPES.XML_TAGGING, defaultDefences);
+	const defences = activateDefence(DEFENCE_ID.XML_TAGGING, defaultDefences);
 	const defenceReport = await detectTriggeredDefences(message, defences);
 	expect(defenceReport.blockedReason).toBe(null);
 	expect(defenceReport.isBlocked).toBe(false);
-	expect(defenceReport.triggeredDefences).toContain(DEFENCE_TYPES.XML_TAGGING);
+	expect(defenceReport.triggeredDefences).toContain(DEFENCE_ID.XML_TAGGING);
 });
 
 test('GIVEN XML_TAGGING defence is inactive AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is alerted', async () => {
@@ -200,7 +198,7 @@ test('GIVEN XML_TAGGING defence is inactive AND message contains XML tags WHEN d
 	const defenceReport = await detectTriggeredDefences(message, defences);
 	expect(defenceReport.blockedReason).toBe(null);
 	expect(defenceReport.isBlocked).toBe(false);
-	expect(defenceReport.alertedDefences).toContain(DEFENCE_TYPES.XML_TAGGING);
+	expect(defenceReport.alertedDefences).toContain(DEFENCE_ID.XML_TAGGING);
 });
 
 test('GIVEN message contains phrases from the filter listed WHEN detecting triggered defences THEN FILTERING defence is triggered', () => {
@@ -231,9 +229,9 @@ test('GIVEN message does not contain phrases from the filter list WHEN detecting
 });
 
 test('GIVEN setting max message length WHEN configuring defence THEN defence is configured', () => {
-	const defence = DEFENCE_TYPES.CHARACTER_LIMIT;
+	const defence = DEFENCE_ID.CHARACTER_LIMIT;
 	// configure CHARACTER_LIMIT defence
-	const config: DefenceConfig = {
+	const config: DefenceConfigItem = {
 		id: 'maxMessageLength',
 		value: String(10),
 	};
@@ -265,7 +263,7 @@ test('GIVEN a new system role has been set WHEN getting system role THEN return 
 	expect(systemRole).toBe(systemRoleDefault);
 
 	const defencesWithSystemRole = configureDefence(
-		DEFENCE_TYPES.SYSTEM_ROLE,
+		DEFENCE_ID.SYSTEM_ROLE,
 		initialDefences,
 		[{ id: 'systemRole', value: 'new system role' }]
 	);
@@ -291,7 +289,7 @@ test('GIVEN the QA LLM prompt has not been configured WHEN getting QA LLM config
 
 test('GIVEN the QA LLM prompt has been configured WHEN getting QA LLM configuration THEN return configured prompt', () => {
 	const newQaLlmPrompt = 'new QA LLM prompt';
-	const defences = configureDefence(DEFENCE_TYPES.QA_LLM, defaultDefences, [
+	const defences = configureDefence(DEFENCE_ID.QA_LLM, defaultDefences, [
 		{ id: 'prompt', value: newQaLlmPrompt },
 	]);
 	const qaLlmPrompt = getQAPromptFromConfig(defences);
@@ -308,7 +306,7 @@ test('GIVEN the prompt evaluation LLM prompt has not been configured WHEN gettin
 test('GIVEN the prompt evaluation LLM prompt has been configured WHEN getting the configuration THEN return configured prompt', () => {
 	const newPromptEvalPrompt = 'new prompt eval prompt';
 	const defences = configureDefence(
-		DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
+		DEFENCE_ID.PROMPT_EVALUATION_LLM,
 		defaultDefences,
 		[
 			{
@@ -322,7 +320,7 @@ test('GIVEN the prompt evaluation LLM prompt has been configured WHEN getting th
 });
 
 test('GIVEN user has configured defence WHEN resetting defence config THEN defence config is reset', () => {
-	const defence = DEFENCE_TYPES.SYSTEM_ROLE;
+	const defence = DEFENCE_ID.SYSTEM_ROLE;
 	let defences = defaultDefences;
 
 	// configure defence
@@ -334,11 +332,7 @@ test('GIVEN user has configured defence WHEN resetting defence config THEN defen
 	];
 	defences = configureDefence(defence, defences, config);
 	// reset defence config
-	defences = resetDefenceConfig(
-		DEFENCE_TYPES.SYSTEM_ROLE,
-		'systemRole',
-		defences
-	);
+	defences = resetDefenceConfig(DEFENCE_ID.SYSTEM_ROLE, 'systemRole', defences);
 	// expect defence config to be reset
 	const matchingDefence = defences.find((d) => d.id === defence);
 	expect(matchingDefence).toBeTruthy();
@@ -361,31 +355,23 @@ test('GIVEN user has configured two defence WHEN resetting one defence config TH
 		},
 	];
 
+	defences = configureDefence(DEFENCE_ID.SYSTEM_ROLE, defences, sysRoleConfig);
 	defences = configureDefence(
-		DEFENCE_TYPES.SYSTEM_ROLE,
-		defences,
-		sysRoleConfig
-	);
-	defences = configureDefence(
-		DEFENCE_TYPES.CHARACTER_LIMIT,
+		DEFENCE_ID.CHARACTER_LIMIT,
 		defences,
 		characterLimitConfig
 	);
 
-	defences = resetDefenceConfig(
-		DEFENCE_TYPES.SYSTEM_ROLE,
-		'systemRole',
-		defences
-	);
+	defences = resetDefenceConfig(DEFENCE_ID.SYSTEM_ROLE, 'systemRole', defences);
 	// expect defence config to be reset
 	const matchingSysRoleDefence = defences.find(
-		(d) => d.id === DEFENCE_TYPES.SYSTEM_ROLE && d.config[0].id === 'systemRole'
+		(d) => d.id === DEFENCE_ID.SYSTEM_ROLE && d.config[0].id === 'systemRole'
 	);
 	expect(matchingSysRoleDefence).toBeTruthy();
 	expect(matchingSysRoleDefence?.config[0].value).toBe(systemRoleDefault);
 
 	const matchingCharacterLimitDefence = defences.find(
-		(d) => d.id === DEFENCE_TYPES.CHARACTER_LIMIT
+		(d) => d.id === DEFENCE_ID.CHARACTER_LIMIT
 	);
 	expect(matchingCharacterLimitDefence).toBeTruthy();
 	expect(matchingCharacterLimitDefence?.config[0].value).toBe(String(10));
