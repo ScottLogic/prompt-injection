@@ -8,15 +8,26 @@ enum DEFENCE_TYPES {
 	FILTER_BOT_OUTPUT = 'FILTER_BOT_OUTPUT',
 }
 
+type DEFENCE_CONFIG_ITEM_ID =
+	| 'MAX_MESSAGE_LENGTH'
+	| 'PROMPT'
+	| 'SYSTEM_ROLE'
+	| 'FILTER_USER_INPUT'
+	| 'FILTER_BOT_OUTPUT';
+
 class DefenceConfig {
-	constructor(id: string, name: string, inputType: 'text' | 'number') {
+	constructor(
+		id: DEFENCE_CONFIG_ITEM_ID,
+		name: string,
+		inputType: 'text' | 'number'
+	) {
 		this.id = id;
 		this.inputType = inputType;
 		this.name = name;
 		this.value = '';
 	}
 
-	id: string;
+	id: DEFENCE_CONFIG_ITEM_ID;
 	inputType: 'text' | 'number';
 	name: string;
 	value: string;
@@ -52,4 +63,4 @@ interface DefenceResetResponse {
 }
 
 export { DEFENCE_TYPES, DefenceConfig, DefenceInfo };
-export type { DefenceResetResponse };
+export type { DefenceResetResponse, DEFENCE_CONFIG_ITEM_ID };
