@@ -1,7 +1,12 @@
 import { defaultDefences } from './defaultDefences';
 import { queryPromptEvaluationModel } from './langchain';
 import { ChatDefenceReport } from './models/chat';
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from './models/defence';
+import {
+	DEFENCE_CONFIG_ITEM_ID,
+	DEFENCE_TYPES,
+	DefenceConfig,
+	DefenceInfo,
+} from './models/defence';
 import { LEVEL_NAMES } from './models/level';
 import {
 	systemRoleLevel1,
@@ -36,7 +41,7 @@ function configureDefence(
 
 function resetDefenceConfig(
 	id: DEFENCE_TYPES,
-	configId: string,
+	configId: DEFENCE_CONFIG_ITEM_ID,
 	defences: DefenceInfo[]
 ): DefenceInfo[] {
 	const defaultValue = getConfigValue(defaultDefences, id, configId);
@@ -65,12 +70,12 @@ function getMaxMessageLength(defences: DefenceInfo[]) {
 	return getConfigValue(
 		defences,
 		DEFENCE_TYPES.CHARACTER_LIMIT,
-		'maxMessageLength'
+		'MAX_MESSAGE_LENGTH'
 	);
 }
 
 function getXMLTaggingPrompt(defences: DefenceInfo[]) {
-	return getConfigValue(defences, DEFENCE_TYPES.XML_TAGGING, 'prompt');
+	return getConfigValue(defences, DEFENCE_TYPES.XML_TAGGING, 'PROMPT');
 }
 
 function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
@@ -78,8 +83,8 @@ function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
 		defences,
 		type,
 		type === DEFENCE_TYPES.FILTER_USER_INPUT
-			? 'filterUserInput'
-			: 'filterBotOutput'
+			? 'FILTER_USER_INPUT'
+			: 'FILTER_BOT_OUTPUT'
 	);
 }
 function getSystemRole(
@@ -95,19 +100,19 @@ function getSystemRole(
 		case LEVEL_NAMES.LEVEL_3:
 			return systemRoleLevel3;
 		default:
-			return getConfigValue(defences, DEFENCE_TYPES.SYSTEM_ROLE, 'systemRole');
+			return getConfigValue(defences, DEFENCE_TYPES.SYSTEM_ROLE, 'SYSTEM_ROLE');
 	}
 }
 
 function getQAPromptFromConfig(defences: DefenceInfo[]) {
-	return getConfigValue(defences, DEFENCE_TYPES.QA_LLM, 'prompt');
+	return getConfigValue(defences, DEFENCE_TYPES.QA_LLM, 'PROMPT');
 }
 
 function getPromptEvalPromptFromConfig(defences: DefenceInfo[]) {
 	return getConfigValue(
 		defences,
 		DEFENCE_TYPES.PROMPT_EVALUATION_LLM,
-		'prompt'
+		'PROMPT'
 	);
 }
 

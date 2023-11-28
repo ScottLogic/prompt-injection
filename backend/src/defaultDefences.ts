@@ -21,43 +21,43 @@ function createDefenceInfo(
 const defaultDefences: DefenceInfo[] = [
 	createDefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
 		{
-			id: 'maxMessageLength',
+			id: 'MAX_MESSAGE_LENGTH',
 			value: String(280),
 		},
 	]),
 	createDefenceInfo(DEFENCE_TYPES.PROMPT_EVALUATION_LLM, [
 		{
-			id: 'prompt',
+			id: 'PROMPT',
 			value: promptEvalPrompt,
 		},
 	]),
 	createDefenceInfo(DEFENCE_TYPES.QA_LLM, [
 		{
-			id: 'prompt',
+			id: 'PROMPT',
 			value: qAPromptSecure,
 		},
 	]),
 	createDefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
 		{
-			id: 'systemRole',
+			id: 'SYSTEM_ROLE',
 			value: systemRoleDefault,
 		},
 	]),
 	createDefenceInfo(DEFENCE_TYPES.XML_TAGGING, [
 		{
-			id: 'prompt',
+			id: 'PROMPT',
 			value: xmlPrompt,
 		},
 	]),
 	createDefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
 		{
-			id: 'filterUserInput',
+			id: 'FILTER_USER_INPUT',
 			value: 'secret project,confidential project,budget,password',
 		},
 	]),
 	createDefenceInfo(DEFENCE_TYPES.FILTER_BOT_OUTPUT, [
 		{
-			id: 'filterBotOutput',
+			id: 'FILTER_BOT_OUTPUT',
 			value: 'secret project',
 		},
 	]),

@@ -9,11 +9,11 @@ enum DEFENCE_TYPES {
 }
 
 type DEFENCE_CONFIG_ITEM_ID =
-	| 'maxMessageLength'
-	| 'prompt'
-	| 'systemRole'
-	| 'filterUserInput'
-	| 'filterBotOutput';
+	| 'MAX_MESSAGE_LENGTH'
+	| 'PROMPT'
+	| 'SYSTEM_ROLE'
+	| 'FILTER_USER_INPUT'
+	| 'FILTER_BOT_OUTPUT';
 
 interface DefenceConfig {
 	id: DEFENCE_CONFIG_ITEM_ID;
