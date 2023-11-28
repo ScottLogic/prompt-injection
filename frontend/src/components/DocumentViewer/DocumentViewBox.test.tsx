@@ -3,8 +3,9 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 
 import DocumentViewBox from './DocumentViewBox';
-import DocumentViewBoxHeader from './DocumentViewBoxHeader';
-import { DocumentViewBoxHeaderProps } from './DocumentViewBoxHeaderProps';
+import DocumentViewBoxHeader, {
+	DocumentViewBoxHeaderProps,
+} from './DocumentViewBoxHeader';
 
 describe('DocumentViewBox component tests', () => {
 	const mockCloseOverlay = vi.fn();

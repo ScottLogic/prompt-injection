@@ -1,8 +1,14 @@
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 
-import { DocumentViewBoxHeaderProps } from './DocumentViewBoxHeaderProps';
-
 import './DocumentViewBoxHeader.css';
+
+interface DocumentViewBoxHeaderProps {
+	documentIndex: number;
+	documentName: string;
+	numberOfDocuments: number;
+	onPrevious: () => void;
+	onNext: () => void;
+}
 
 function DocumentViewBoxHeader({
 	documentIndex,
@@ -36,3 +42,4 @@ function DocumentViewBoxHeader({
 }
 
 export default DocumentViewBoxHeader;
+export type { DocumentViewBoxHeaderProps };
