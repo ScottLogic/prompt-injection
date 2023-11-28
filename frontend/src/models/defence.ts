@@ -22,22 +22,7 @@ interface DefenceConfig {
 	value: string;
 }
 
-class DefenceInfo {
-	constructor(
-		id: DEFENCE_TYPES,
-		name: string,
-		info: string,
-		config: DefenceConfig[]
-	) {
-		this.id = id;
-		this.name = name;
-		this.info = info;
-		this.config = config;
-		// each defence starts off as inactive and not triggered
-		this.isActive = false;
-		this.isTriggered = false;
-	}
-
+interface DefenceInfo {
 	id: DEFENCE_TYPES;
 	name: string;
 	info: string;
@@ -51,5 +36,10 @@ interface DefenceResetResponse {
 	value: string;
 }
 
-export { DEFENCE_TYPES, DefenceInfo };
-export type { DefenceResetResponse, DEFENCE_CONFIG_ITEM_ID, DefenceConfig };
+export { DEFENCE_TYPES };
+export type {
+	DefenceResetResponse,
+	DEFENCE_CONFIG_ITEM_ID,
+	DefenceConfig,
+	DefenceInfo,
+};
