@@ -44,7 +44,7 @@ const sessionOpts: session.SessionOptions = {
 	secret: process.env.SESSION_SECRET ?? 'secret',
 	name: 'prompt-injection.sid',
 	resave: false,
-	saveUninitialised: true,
+	saveUninitialized: true,
 	cookie: {
 		secure: isProd,
 		maxAge,
