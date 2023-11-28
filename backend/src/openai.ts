@@ -135,7 +135,8 @@ async function getValidOpenAIModels() {
 		.map((model) => model.id)
 		.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS));
 
-	console.log('Valid OpenAI models: ', validModels, typeof validModels);
+	validModels.sort();
+	console.log('Valid OpenAI models:', validModels);
 	return validModels;
 }
 

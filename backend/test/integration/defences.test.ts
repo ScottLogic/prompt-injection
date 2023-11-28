@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { defaultDefences } from '@src/defaultDefences';
 import { activateDefence, detectTriggeredDefences } from '@src/defence';
 import { initPromptEvaluationModel } from '@src/langchain';
@@ -16,6 +17,17 @@ jest.mock('langchain/chains', () => {
 		LLMChain: jest.fn().mockImplementation(() => ({
 			call: mockCall,
 		})),
+	};
+});
+
+jest.mock('@src/openai', () => {
+	const originalModule = jest.requireActual('@src/openai');
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	return {
+		...originalModule,
+		getValidOpenAIModels: jest.fn().mockImplementation(() => {
+			return ['gpt-3', 'gpt-3.5-turbo', 'gpt-4'];
+		}),
 	};
 });
 

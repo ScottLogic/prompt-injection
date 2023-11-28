@@ -133,7 +133,7 @@ async function getGptModel(): Promise<ChatModel> {
 }
 
 async function getValidModels(): Promise<string[]> {
-	const response = await sendRequest(`${PATH}models`, 'GET');
+	const response = await sendRequest(`${PATH}validModels`, 'GET');
 	const data = (await response.json()) as {
 		validModels: string[];
 	};

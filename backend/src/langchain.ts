@@ -69,18 +69,22 @@ async function initDocumentVectors() {
 	}
 	setVectorisedDocuments(docVectors);
 	console.debug(
-		'Intitialised document vectors for each level. count=',
+		'Initialised document vectors for each level. count=',
 		docVectors.length
 	);
+}
+
+async function getChatModel() {
+	return (await getValidOpenAIModels()).includes(CHAT_MODELS.GPT_4)
+		? CHAT_MODELS.GPT_4
+		: CHAT_MODELS.GPT_3_5_TURBO;
 }
 
 async function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 	const openAIApiKey = getOpenAIKey();
 	const documentVectors = vectorisedDocuments[level].docVector;
 	// use gpt-4 if avaliable to apiKey
-	const modelName = (await getValidOpenAIModels()).includes(CHAT_MODELS.GPT_4)
-		? CHAT_MODELS.GPT_4
-		: CHAT_MODELS.GPT_3_5_TURBO;
+	const modelName = await getChatModel();
 
 	// initialise model
 	const model = new ChatOpenAI({
@@ -88,24 +92,23 @@ async function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 		streaming: true,
 		openAIApiKey,
 	});
-	console.debug('model initialised with name: ', model.modelName);
 	const promptTemplate = makePromptTemplate(
 		Prompt,
 		qAPrompt,
 		qaContextTemplate,
 		'QA prompt template'
 	);
-	return RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
+	const chain = RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
 		prompt: promptTemplate,
 	});
+	console.debug('QA chain initialised with model: ', modelName);
+	return chain;
 }
 // initialise the prompt evaluation model
 async function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 	const openAIApiKey = getOpenAIKey();
 	// use gpt-4 if avaliable to apiKey
-	const modelName = (await getValidOpenAIModels()).includes(CHAT_MODELS.GPT_4)
-		? CHAT_MODELS.GPT_4
-		: CHAT_MODELS.GPT_3_5_TURBO;
+	const modelName = await getChatModel();
 
 	const promptEvalTemplate = makePromptTemplate(
 		configPromptEvaluationPrompt,
@@ -126,7 +129,7 @@ async function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 		outputKey: 'promptEvalOutput',
 	});
 
-	console.debug('Prompt evaluation model initialised.');
+	console.debug('Prompt evaluation model initialised with model: ', modelName);
 	return chain;
 }
 

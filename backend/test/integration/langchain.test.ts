@@ -123,6 +123,18 @@ jest.mock('langchain/chains', () => {
 });
 RetrievalQAChain.fromLLM = mockFromLLM;
 
+jest.mock('@src/openai', () => {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+	const originalModule = jest.requireActual('@src/openai');
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	return {
+		...originalModule,
+		getValidOpenAIModels: jest.fn().mockImplementation(() => {
+			return ['gpt-3', 'gpt-3.5-turbo', 'gpt-4'];
+		}),
+	};
+});
+
 beforeEach(() => {
 	// reset environment variables
 	process.env = {
@@ -133,22 +145,22 @@ beforeEach(() => {
 	setVectorisedDocuments([]);
 });
 
-test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', () => {
+test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', async () => {
 	mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-	initPromptEvaluationModel(promptEvalPrompt);
+	await initPromptEvaluationModel(promptEvalPrompt);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
 		`${promptEvalPrompt}\n${promptEvalContextTemplate}`
 	);
 });
 
-test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is initialised THEN the llm is initialized and the prompt is set to the default', () => {
+test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is initialised THEN the llm is initialised and the prompt is set to the default', async () => {
 	const level = LEVEL_NAMES.LEVEL_1;
 	const prompt = '';
 
 	setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-	initQAModel(level, prompt);
+	await initQAModel(level, prompt);
 	expect(mockFromLLM).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
@@ -156,13 +168,13 @@ test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is in
 	);
 });
 
-test('GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialized and prompt is set to the correct prompt ', () => {
+test('GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialised and prompt is set to the correct prompt ', async () => {
 	const level = LEVEL_NAMES.LEVEL_1;
 	const prompt = 'this is a test prompt. ';
 
 	setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-	initQAModel(level, prompt);
+	await initQAModel(level, prompt);
 	expect(mockFromLLM).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
@@ -220,7 +232,7 @@ test('GIVEN the prompt evaluation model is initialised WHEN it is asked to evalu
 test('GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it does not respond in the correct format THEN it returns a final decision of false', async () => {
 	mockFromLLM.mockImplementation(() => mockPromptEvalChain);
 
-	initPromptEvaluationModel('Prompt');
+	await initPromptEvaluationModel('Prompt');
 
 	mockCall.mockResolvedValue({
 		promptEvalOutput: 'idk!',

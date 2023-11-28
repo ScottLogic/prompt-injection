@@ -7,11 +7,11 @@ import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
 import { OVERLAY_TYPE } from './models/overlay';
+import { getValidModels } from './service/chatService';
 import { getSystemRoles } from './service/systemRoleService';
 
 import './App.css';
 import './Theme.css';
-import { getValidModels } from './service/chatService';
 
 function App() {
 	const dialogRef = useRef<HTMLDialogElement>(null);
@@ -71,6 +71,7 @@ function App() {
 		setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
 	}
 
+	// fetch constants from the backend on app mount
 	function loadBackendData() {
 		console.log("Initializing app's backend data");
 		getValidModels()
