@@ -26,6 +26,7 @@ import {
 } from './controller/modelController';
 import { handleGetSystemRoles } from './controller/systemRoleController';
 import { getValidOpenAIModels } from './openai';
+import { CHAT_MODELS } from './models/chat';
 
 const router = express.Router();
 
@@ -69,7 +70,10 @@ router.get('/openai/model', handleGetModel);
 
 router.get('/openai/models', async (req, res) => {
 	const models = await getValidOpenAIModels();
-	res.json(models);
+	const modelReturn = {
+		validModels: models,
+	};
+	res.json(modelReturn);
 });
 
 // system roles

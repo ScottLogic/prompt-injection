@@ -124,30 +124,19 @@ async function verifyKeySupportsModel(gptModel: string) {
 }
 
 /**
- * Gets the list of GPT models available to the OpenAI API key
+ * Gets the GPT models available to the OpenAI API key
  */
-async function getValidOpenAIModels(): Promise<CHAT_MODELS[]> {
+async function getValidOpenAIModels() {
 	const openAI = getOpenAI();
 	const models: OpenAI.ModelsPage = await openAI.models.list();
-	// get the model ids with gpt in the name
-	const modelIds = models.data
+
+	// get the model ids that are supported by our app
+	const validModels = models.data
 		.map((model) => model.id)
-		.filter((id) => id.includes('gpt'));
+		.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS));
 
-	// take the CHAT_MODELS enum and filter out the models not in the list
-	const filteredModels = Object.keys(CHAT_MODELS)
-		.filter((key) =>
-			modelIds.includes(CHAT_MODELS[key as keyof typeof CHAT_MODELS])
-		)
-		.reduce((obj, key) => {
-			return {
-				...obj,
-				[key]: CHAT_MODELS[key as keyof typeof CHAT_MODELS],
-			};
-		}, {});
-
-	console.log('Valid OpenAI models: ', filteredModels);
-	return filteredModels;
+	console.log('Valid OpenAI models: ', validModels, typeof validModels);
+	return validModels;
 }
 
 function getOpenAI() {

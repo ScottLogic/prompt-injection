@@ -10,6 +10,7 @@ import './ControlPanel.css';
 function ControlPanel({
 	currentLevel,
 	defences,
+	chatModelOptions,
 	resetDefenceConfiguration,
 	setDefenceActive,
 	setDefenceInactive,
@@ -18,6 +19,7 @@ function ControlPanel({
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: DefenceInfo[];
+	chatModelOptions: string[];
 	resetDefenceConfiguration: (
 		defenceId: DEFENCE_TYPES,
 		configId: string
@@ -89,7 +91,9 @@ function ControlPanel({
 						/>
 
 						{/* only show model box in sandbox mode */}
-						{showConfigurations && <ModelBox />}
+						{showConfigurations && (
+							<ModelBox chatModelOptions={chatModelOptions} />
+						)}
 					</details>
 				</>
 			)}

@@ -11,6 +11,7 @@ import { getSystemRoles } from './service/systemRoleService';
 
 import './App.css';
 import './Theme.css';
+import { getValidModels } from './service/chatService';
 
 function App() {
 	const dialogRef = useRef<HTMLDialogElement>(null);
@@ -26,6 +27,8 @@ function App() {
 	const [overlayComponent, setOverlayComponent] = useState<JSX.Element | null>(
 		null
 	);
+
+	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 
 	function loadIsNewUser() {
@@ -68,6 +71,25 @@ function App() {
 		setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
 	}
 
+	function loadBackendData() {
+		console.log("Initializing app's backend data");
+		getValidModels()
+			.then((models) => {
+				setChatModels(models);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+		getSystemRoles()
+			.then((roles) => {
+				setSystemRoles(roles);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
 	useEffect(() => {
 		// save number of completed levels to local storage
 		localStorage.setItem('numCompletedLevels', numCompletedLevels.toString());
@@ -97,15 +119,9 @@ function App() {
 		}
 	}, [isNewUser]);
 
+	// load the system constants from backend on app mount
 	useEffect(() => {
-		// load the system roles
-		getSystemRoles()
-			.then((roles) => {
-				setSystemRoles(roles);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		loadBackendData();
 	}, []);
 
 	useEffect(() => {
@@ -243,6 +259,7 @@ function App() {
 			<MainComponent
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
+				chatModels={chatModels}
 				openHandbook={openHandbook}
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}

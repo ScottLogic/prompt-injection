@@ -104,6 +104,7 @@ export type {
 	ChatResponse,
 	ChatHttpResponse,
 	ChatHistoryMessage,
+	ValidChatModels,
 };
 export {
 	CHAT_MODELS,
