@@ -19,9 +19,9 @@ jest.mock('langchain/chains', () => {
 	};
 });
 
-beforeEach(() => {
+beforeEach(async () => {
 	// init langchain
-	initPromptEvaluationModel(promptEvalPrompt);
+	await initPromptEvaluationModel(promptEvalPrompt);
 });
 
 afterEach(() => {

@@ -10,7 +10,7 @@ import { CHAT_MODELS, ChatAnswer } from './models/chat';
 import { DocumentsVector } from './models/document';
 import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
 import { LEVEL_NAMES } from './models/level';
-import { getOpenAIKey } from './openai';
+import { getOpenAIKey, getValidOpenAIModels } from './openai';
 import {
 	promptEvalPrompt,
 	promptEvalContextTemplate,
@@ -74,16 +74,21 @@ async function initDocumentVectors() {
 	);
 }
 
-function initQAModel(level: LEVEL_NAMES, Prompt: string) {
+async function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 	const openAIApiKey = getOpenAIKey();
 	const documentVectors = vectorisedDocuments[level].docVector;
+	// use gpt-4 if avaliable to apiKey
+	const modelName = (await getValidOpenAIModels()).includes(CHAT_MODELS.GPT_4)
+		? CHAT_MODELS.GPT_4
+		: CHAT_MODELS.GPT_3_5_TURBO;
 
 	// initialise model
 	const model = new ChatOpenAI({
-		modelName: CHAT_MODELS.GPT_4,
+		modelName,
 		streaming: true,
 		openAIApiKey,
 	});
+	console.debug('model initialised with name: ', model.modelName);
 	const promptTemplate = makePromptTemplate(
 		Prompt,
 		qAPrompt,
@@ -95,8 +100,12 @@ function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 	});
 }
 // initialise the prompt evaluation model
-function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
+async function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 	const openAIApiKey = getOpenAIKey();
+	// use gpt-4 if avaliable to apiKey
+	const modelName = (await getValidOpenAIModels()).includes(CHAT_MODELS.GPT_4)
+		? CHAT_MODELS.GPT_4
+		: CHAT_MODELS.GPT_3_5_TURBO;
 
 	const promptEvalTemplate = makePromptTemplate(
 		configPromptEvaluationPrompt,
@@ -106,7 +115,7 @@ function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 	);
 
 	const llm = new OpenAI({
-		modelName: CHAT_MODELS.GPT_4,
+		modelName,
 		temperature: 0,
 		openAIApiKey,
 	});
@@ -128,7 +137,7 @@ async function queryDocuments(
 	currentLevel: LEVEL_NAMES
 ) {
 	try {
-		const qaChain = initQAModel(currentLevel, Prompt);
+		const qaChain = await initQAModel(currentLevel, Prompt);
 
 		// get start time
 		const startTime = Date.now();
@@ -161,7 +170,9 @@ async function queryPromptEvaluationModel(
 ) {
 	try {
 		console.debug(`Checking '${input}' for malicious prompts`);
-		const promptEvaluationChain = initPromptEvaluationModel(promptEvalPrompt);
+		const promptEvaluationChain = await initPromptEvaluationModel(
+			promptEvalPrompt
+		);
 		// get start time
 		const startTime = Date.now();
 		console.debug('Calling prompt evaluation model...');
