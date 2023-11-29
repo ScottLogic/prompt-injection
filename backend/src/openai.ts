@@ -429,6 +429,23 @@ function pushCompletionToHistory(
 	return chatHistory;
 }
 
+function getInitialDefenceReport(): ChatDefenceReport {
+	return {
+		blockedReason: '',
+		isBlocked: false,
+		alertedDefences: [],
+		triggeredDefences: [],
+	};
+}
+
+function getInitialChatResponse(): ChatResponse {
+	return {
+		completion: null,
+		defenceReport: getInitialDefenceReport(),
+		wonLevel: false,
+	};
+}
+
 async function chatGptSendMessage(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
@@ -440,20 +457,6 @@ async function chatGptSendMessage(
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	console.log(`User message: '${message}'`);
-
-	// init defence info
-	const defenceReport: ChatDefenceReport = {
-		blockedReason: '',
-		isBlocked: false,
-		alertedDefences: [],
-		triggeredDefences: [],
-	};
-
-	const chatResponse: ChatResponse = {
-		completion: null,
-		defenceReport,
-		wonLevel: false,
-	};
 
 	// add user message to chat
 	chatHistory = pushCompletionToHistory(
@@ -467,7 +470,10 @@ async function chatGptSendMessage(
 			: CHAT_MESSAGE_TYPE.USER
 	);
 
+	const chatResponse: ChatResponse = getInitialChatResponse();
+
 	const openai = getOpenAI();
+
 	let reply = await chatGptChatCompletion(
 		chatHistory,
 		defences,
@@ -491,7 +497,7 @@ async function chatGptSendMessage(
 			if (toolCall.type === 'function') {
 				// call the function and get a new reply and defence info from
 				const functionCallReply = await chatGptCallFunction(
-					defenceReport,
+					chatResponse.defenceReport,
 					defences,
 					toolCall.id,
 					toolCall.function,
@@ -563,7 +569,7 @@ async function chatGptSendMessage(
 		chatHistory = pushCompletionToHistory(
 			chatHistory,
 			reply,
-			defenceReport.isBlocked
+			chatResponse.defenceReport.isBlocked
 				? CHAT_MESSAGE_TYPE.BOT_BLOCKED
 				: CHAT_MESSAGE_TYPE.BOT
 		);
