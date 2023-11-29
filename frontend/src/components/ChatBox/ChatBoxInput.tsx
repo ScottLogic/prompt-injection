@@ -50,20 +50,20 @@ function ChatBoxInput({
 		<>
 			<label className="visually-hidden" htmlFor="chat-box-input">
 				Chat with the chatbot
+				<ThemedTextArea
+					id="chat-box-input"
+					content={content}
+					onContentChanged={onContentChanged}
+					placeHolderText="Type here..."
+					spacing="loose"
+					maxLines={10}
+					onKeyDown={inputKeyDown}
+					onKeyUp={inputKeyUp}
+					characterLimit={CHARACTER_LIMIT}
+					// eslint-disable-next-line jsx-a11y/no-autofocus
+					autoFocus={true}
+				/>
 			</label>
-			<ThemedTextArea
-				id="chat-box-input"
-				content={content}
-				onContentChanged={onContentChanged}
-				placeHolderText="Type here..."
-				spacing="loose"
-				maxLines={10}
-				onKeyDown={inputKeyDown}
-				onKeyUp={inputKeyUp}
-				characterLimit={CHARACTER_LIMIT}
-				// eslint-disable-next-line jsx-a11y/no-autofocus
-				autoFocus={true}
-			/>
 		</>
 	);
 }
