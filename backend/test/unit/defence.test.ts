@@ -128,7 +128,7 @@ test(
 		const defences = configureDefence(
 			DEFENCE_ID.CHARACTER_LIMIT,
 			activateDefence(DEFENCE_ID.CHARACTER_LIMIT, defaultDefences),
-			[{ id: 'MAX_MESSAGE_LENGTH', value: String(3) }]
+			[{ id: 'MAX_MESSAGE_LENGTH', value: '3' }]
 		);
 		const defenceReport = await detectTriggeredDefences(message, defences);
 		expect(defenceReport.blockedReason).toBe('Message is too long');
@@ -149,7 +149,7 @@ test(
 		const defences = configureDefence(
 			DEFENCE_ID.CHARACTER_LIMIT,
 			activateDefence(DEFENCE_ID.CHARACTER_LIMIT, defaultDefences),
-			[{ id: 'MAX_MESSAGE_LENGTH', value: String(280) }]
+			[{ id: 'MAX_MESSAGE_LENGTH', value: '280' }]
 		);
 		const defenceReport = await detectTriggeredDefences(message, defences);
 		expect(defenceReport.blockedReason).toBe(null);
@@ -171,7 +171,7 @@ test(
 			[
 				{
 					id: 'MAX_MESSAGE_LENGTH',
-					value: String(3),
+					value: '3',
 				},
 			]
 		);
@@ -233,7 +233,7 @@ test('GIVEN setting max message length WHEN configuring defence THEN defence is 
 	// configure CHARACTER_LIMIT defence
 	const config: DefenceConfigItem = {
 		id: 'MAX_MESSAGE_LENGTH',
-		value: String(10),
+		value: '10',
 	};
 	const defences = configureDefence(defence, defaultDefences, [config]);
 	const matchingDefence = defences.find((d) => d.id === defence);
@@ -355,7 +355,7 @@ test('GIVEN user has configured two defence WHEN resetting one defence config TH
 	const characterLimitConfig: DefenceConfigItem[] = [
 		{
 			id: 'MAX_MESSAGE_LENGTH',
-			value: String(10),
+			value: '10',
 		},
 	];
 
@@ -382,5 +382,5 @@ test('GIVEN user has configured two defence WHEN resetting one defence config TH
 		(d) => d.id === DEFENCE_ID.CHARACTER_LIMIT
 	);
 	expect(matchingCharacterLimitDefence).toBeTruthy();
-	expect(matchingCharacterLimitDefence?.config[0].value).toBe(String(10));
+	expect(matchingCharacterLimitDefence?.config[0].value).toBe('10');
 });
