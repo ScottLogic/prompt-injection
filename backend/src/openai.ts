@@ -215,8 +215,16 @@ async function chatGptChatCompletion(
 	chatModel: ChatModel,
 	openai: OpenAI,
 	// default to sandbox
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
+	const mock = true;
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (mock) {
+		await (() => new Promise((resolve) => setTimeout(resolve, 0)))();
+		return null;
+	}
+
 	// check if we need to set a system role
 	// system role is always active on levels
 	if (
@@ -481,6 +489,12 @@ async function chatGptSendMessage(
 		openai,
 		currentLevel
 	);
+
+	// if the reply is null, return the chat response
+	if (!reply) {
+		return chatResponse;
+	}
+
 	// check if GPT wanted to call a tool
 	while (reply?.tool_calls) {
 		// push the assistant message to the chat
