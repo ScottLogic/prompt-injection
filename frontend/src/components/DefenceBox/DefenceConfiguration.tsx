@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
-import { DEFENCE_TYPES, DefenceConfigItem } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfigItem } from '@src/models/defence';
 
 import DefenceConfigurationInput from './DefenceConfigurationInput';
 
@@ -18,7 +18,7 @@ function DefenceConfiguration({
 	isActive: boolean;
 	setConfigurationValue: (configId: string, value: string) => Promise<void>;
 	resetConfigurationValue: (configId: string) => void;
-	defenceId: DEFENCE_TYPES;
+	defenceId: DEFENCE_ID;
 }) {
 	const [inputKey, setInputKey] = useState<number>(0);
 
