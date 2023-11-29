@@ -324,11 +324,11 @@ test('GIVEN user has configured defence WHEN resetting defence config THEN defen
 	let defences = defaultDefences;
 
 	// configure defence
-	const config = [
+	const config: DefenceConfigItem[] = [
 		{
 			id: 'SYSTEM_ROLE',
 			value: 'new system role',
-		} as DefenceConfigItem,
+		},
 	];
 	defences = configureDefence(defence, defences, config);
 	// reset defence config
