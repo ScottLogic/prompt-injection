@@ -82,4 +82,4 @@ export type {
 	ChatModelConfigurations,
 	CustomChatModelConfiguration,
 };
-export { CHAT_MODELS, CHAT_MESSAGE_TYPE, MODEL_CONFIG };
+export { CHAT_MESSAGE_TYPE, MODEL_CONFIG };
