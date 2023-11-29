@@ -322,7 +322,7 @@ describe('OpenAI Integration Tests', () => {
 				activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences),
 				[
 					{
-						id: 'systemRole',
+						id: 'SYSTEM_ROLE',
 						value: 'You are not a helpful assistant',
 					},
 				]

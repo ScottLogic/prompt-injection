@@ -1,7 +1,12 @@
 import { defaultDefences } from './defaultDefences';
 import { queryPromptEvaluationModel } from './langchain';
 import { ChatDefenceReport } from './models/chat';
-import { DEFENCE_ID, DefenceConfigItem, Defence } from './models/defence';
+import {
+	DEFENCE_ID,
+	DefenceConfigItem,
+	Defence,
+	DEFENCE_CONFIG_ITEM_ID,
+} from './models/defence';
 import { LEVEL_NAMES } from './models/level';
 import {
 	systemRoleLevel1,
@@ -36,7 +41,7 @@ function configureDefence(
 
 function resetDefenceConfig(
 	id: DEFENCE_ID,
-	configId: string,
+	configId: DEFENCE_CONFIG_ITEM_ID,
 	defences: Defence[]
 ): Defence[] {
 	const defaultValue = getConfigValue(defaultDefences, id, configId);
@@ -65,12 +70,12 @@ function getMaxMessageLength(defences: Defence[]) {
 	return getConfigValue(
 		defences,
 		DEFENCE_ID.CHARACTER_LIMIT,
-		'maxMessageLength'
+		'MAX_MESSAGE_LENGTH'
 	);
 }
 
 function getXMLTaggingPrompt(defences: Defence[]) {
-	return getConfigValue(defences, DEFENCE_ID.XML_TAGGING, 'prompt');
+	return getConfigValue(defences, DEFENCE_ID.XML_TAGGING, 'PROMPT');
 }
 
 function getFilterList(defences: Defence[], type: DEFENCE_ID) {
@@ -78,8 +83,8 @@ function getFilterList(defences: Defence[], type: DEFENCE_ID) {
 		defences,
 		type,
 		type === DEFENCE_ID.FILTER_USER_INPUT
-			? 'filterUserInput'
-			: 'filterBotOutput'
+			? 'FILTER_USER_INPUT'
+			: 'FILTER_BOT_OUTPUT'
 	);
 }
 function getSystemRole(
@@ -95,16 +100,16 @@ function getSystemRole(
 		case LEVEL_NAMES.LEVEL_3:
 			return systemRoleLevel3;
 		default:
-			return getConfigValue(defences, DEFENCE_ID.SYSTEM_ROLE, 'systemRole');
+			return getConfigValue(defences, DEFENCE_ID.SYSTEM_ROLE, 'SYSTEM_ROLE');
 	}
 }
 
 function getQAPromptFromConfig(defences: Defence[]) {
-	return getConfigValue(defences, DEFENCE_ID.QA_LLM, 'prompt');
+	return getConfigValue(defences, DEFENCE_ID.QA_LLM, 'PROMPT');
 }
 
 function getPromptEvalPromptFromConfig(defences: Defence[]) {
-	return getConfigValue(defences, DEFENCE_ID.PROMPT_EVALUATION_LLM, 'prompt');
+	return getConfigValue(defences, DEFENCE_ID.PROMPT_EVALUATION_LLM, 'PROMPT');
 }
 
 function isDefenceActive(id: DEFENCE_ID, defences: Defence[]) {
