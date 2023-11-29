@@ -65,6 +65,7 @@ function ThemedTextArea({
 	onKeyDown,
 	onKeyUp,
 	characterLimit,
+	id,
 }: {
 	// required
 	content: string;
@@ -79,6 +80,7 @@ function ThemedTextArea({
 	onKeyUp?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
 	onBlur?: () => void;
 	characterLimit?: number;
+	id?: string;
 }) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -115,6 +117,7 @@ function ThemedTextArea({
 			autoFocus={autoFocus}
 			maxLength={characterLimit}
 			tabIndex={isOverflow ? 0 : undefined}
+			id={id}
 		/>
 	);
 }
