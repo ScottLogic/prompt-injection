@@ -65,16 +65,10 @@ describe('DocumentViewBoxHeader component tests', () => {
 			documentName,
 		});
 
-		const documentNameHtml = screen.getByText(documentName);
-		expect(documentNameHtml).toBeInTheDocument();
-		const documentIndexHtml = screen.getByText(documentIndex + 1, {
-			exact: false,
-		});
-		expect(documentIndexHtml).toBeInTheDocument();
-		const numberOfDocumentsHtml = screen.getByText(numberOfDocuments, {
-			exact: false,
-		});
-		expect(numberOfDocumentsHtml).toBeInTheDocument();
+		expect(screen.getByText(documentName)).toBeInTheDocument();
+		expect(
+			screen.getByText(`${documentIndex + 1} out of ${numberOfDocuments}`)
+		).toBeInTheDocument();
 	});
 
 	test('GIVEN the first document is shown THEN previous button is disabled', async () => {
