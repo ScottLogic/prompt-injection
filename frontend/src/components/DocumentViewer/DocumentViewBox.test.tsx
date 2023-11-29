@@ -74,7 +74,7 @@ describe('DocumentViewBoxHeader component tests', () => {
 	test('GIVEN the first document is shown THEN previous button is disabled', async () => {
 		const mockOnPrevious = vi.fn();
 		const mockOnNext = vi.fn();
-		renderDocumentViewBoxHeader({
+		const { user } = renderDocumentViewBoxHeader({
 			...defaultProps,
 			numberOfDocuments: 3,
 			documentIndex: 0,
@@ -85,20 +85,20 @@ describe('DocumentViewBoxHeader component tests', () => {
 		const prevButton = getPreviousButton();
 		expect(prevButton).toHaveAttribute('aria-disabled', 'true');
 		expect(prevButton).toBeEnabled();
-		await userEvent.click(prevButton);
+		await user.click(prevButton);
 		expect(mockOnPrevious).not.toHaveBeenCalled();
 
 		const nextButton = getNextButton();
 		expect(nextButton).toHaveAttribute('aria-disabled', 'false');
 		expect(nextButton).toBeEnabled();
-		await userEvent.click(nextButton);
+		await user.click(nextButton);
 		expect(mockOnNext).toHaveBeenCalled();
 	});
 
-	test('GIVEN the last document is shown THEN next button is disabled', () => {
+	test('GIVEN the last document is shown THEN next button is disabled', async () => {
 		const mockOnPrevious = vi.fn();
 		const mockOnNext = vi.fn();
-		renderDocumentViewBoxHeader({
+		const { user } = renderDocumentViewBoxHeader({
 			...defaultProps,
 			numberOfDocuments: 3,
 			documentIndex: 2,
@@ -109,20 +109,20 @@ describe('DocumentViewBoxHeader component tests', () => {
 		const prevButton = getPreviousButton();
 		expect(prevButton).toHaveAttribute('aria-disabled', 'false');
 		expect(prevButton).toBeEnabled();
-		prevButton.click();
+		await user.click(prevButton);
 		expect(mockOnPrevious).toHaveBeenCalled();
 
 		const nextButton = getNextButton();
 		expect(nextButton).toHaveAttribute('aria-disabled', 'true');
 		expect(nextButton).toBeEnabled();
-		nextButton.click();
+		await user.click(nextButton);
 		expect(mockOnNext).not.toHaveBeenCalled();
 	});
 
-	test("GIVEN there's only one document THEN both buttons are disabled", () => {
+	test("GIVEN there's only one document THEN both buttons are disabled", async () => {
 		const mockOnPrevious = vi.fn();
 		const mockOnNext = vi.fn();
-		renderDocumentViewBoxHeader({
+		const { user } = renderDocumentViewBoxHeader({
 			...defaultProps,
 			numberOfDocuments: 1,
 			documentIndex: 0,
@@ -133,20 +133,20 @@ describe('DocumentViewBoxHeader component tests', () => {
 		const prevButton = getPreviousButton();
 		expect(prevButton).toHaveAttribute('aria-disabled', 'true');
 		expect(prevButton).toBeEnabled();
-		prevButton.click();
+		await user.click(prevButton);
 		expect(mockOnPrevious).not.toHaveBeenCalled();
 
 		const nextButton = getNextButton();
 		expect(nextButton).toHaveAttribute('aria-disabled', 'true');
 		expect(nextButton).toBeEnabled();
-		nextButton.click();
+		await user.click(nextButton);
 		expect(mockOnNext).not.toHaveBeenCalled();
 	});
 
-	test('GIVEN a middle document is shown THEN both buttons are not disabled', () => {
+	test('GIVEN a middle document is shown THEN both buttons are not disabled', async () => {
 		const mockOnPrevious = vi.fn();
 		const mockOnNext = vi.fn();
-		renderDocumentViewBoxHeader({
+		const { user } = renderDocumentViewBoxHeader({
 			...defaultProps,
 			numberOfDocuments: 3,
 			documentIndex: 1,
@@ -157,13 +157,13 @@ describe('DocumentViewBoxHeader component tests', () => {
 		const prevButton = getPreviousButton();
 		expect(prevButton).toHaveAttribute('aria-disabled', 'false');
 		expect(prevButton).toBeEnabled();
-		prevButton.click();
+		await user.click(prevButton);
 		expect(mockOnPrevious).toHaveBeenCalled();
 
 		const nextButton = getNextButton();
 		expect(nextButton).toHaveAttribute('aria-disabled', 'false');
 		expect(nextButton).toBeEnabled();
-		nextButton.click();
+		await user.click(nextButton);
 		expect(mockOnNext).toHaveBeenCalled();
 	});
 });
