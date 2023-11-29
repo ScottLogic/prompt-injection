@@ -6,7 +6,7 @@
 		"dev": "vite --open",
 		"build": "tsc && vite build",
 		"format": "prettier --write .",
-		"lint": "eslint . --fix && tsc --noemit",
+		"lint": "eslint . --fix",
 		"preview": "vite preview",
 		"pretest": "tsc --project tsconfig.test.json",
 		"test": "vitest"
