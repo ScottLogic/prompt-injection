@@ -32,6 +32,9 @@ const mockLoader = jest.fn();
 const mockSplitDocuments = jest.fn();
 const mockAsRetriever = jest.fn();
 
+// eslint-disable-next-line prefer-const
+let mockValidModels: string[] = [];
+
 // mock OpenAIEmbeddings
 jest.mock('langchain/embeddings/openai', () => {
 	return {
@@ -129,9 +132,7 @@ jest.mock('@src/openai', () => {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return {
 		...originalModule,
-		getValidModelsFromOpenAI: jest.fn().mockImplementation(() => {
-			return ['gpt-3', 'gpt-3.5-turbo', 'gpt-4'];
-		}),
+		getValidOpenAIModelsList: jest.fn(() => mockValidModels),
 	};
 });
 
@@ -145,22 +146,22 @@ beforeEach(() => {
 	setVectorisedDocuments([]);
 });
 
-test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', async () => {
+test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', () => {
 	mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-	await initPromptEvaluationModel(promptEvalPrompt);
+	initPromptEvaluationModel(promptEvalPrompt);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
 		`${promptEvalPrompt}\n${promptEvalContextTemplate}`
 	);
 });
 
-test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is initialised THEN the llm is initialised and the prompt is set to the default', async () => {
+test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is initialised THEN the llm is initialised and the prompt is set to the default', () => {
 	const level = LEVEL_NAMES.LEVEL_1;
 	const prompt = '';
 
 	setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-	await initQAModel(level, prompt);
+	initQAModel(level, prompt);
 	expect(mockFromLLM).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
@@ -168,13 +169,13 @@ test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is in
 	);
 });
 
-test('GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialised and prompt is set to the correct prompt ', async () => {
+test('GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialised and prompt is set to the correct prompt ', () => {
 	const level = LEVEL_NAMES.LEVEL_1;
 	const prompt = 'this is a test prompt. ';
 
 	setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-	await initQAModel(level, prompt);
+	initQAModel(level, prompt);
 	expect(mockFromLLM).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
@@ -232,7 +233,7 @@ test('GIVEN the prompt evaluation model is initialised WHEN it is asked to evalu
 test('GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it does not respond in the correct format THEN it returns a final decision of false', async () => {
 	mockFromLLM.mockImplementation(() => mockPromptEvalChain);
 
-	await initPromptEvaluationModel('Prompt');
+	initPromptEvaluationModel('Prompt');
 
 	mockCall.mockResolvedValue({
 		promptEvalOutput: 'idk!',
@@ -244,6 +245,36 @@ test('GIVEN the prompt evaluation model is initialised WHEN it is asked to evalu
 	expect(result).toEqual({
 		isMalicious: false,
 	});
+});
+
+test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised THEN it is initialised with GPT-4', () => {
+	mockValidModels = ['gpt-4', 'gpt-3.5-turbo', 'gpt-3'];
+
+	const level = LEVEL_NAMES.LEVEL_1;
+	const prompt = 'this is a test prompt. ';
+	const consoleSpy = jest.spyOn(console, 'debug');
+
+	setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
+	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
+	initQAModel(level, prompt);
+	expect(consoleSpy).toHaveBeenLastCalledWith(
+		'QA chain initialised with model: gpt-4'
+	);
+});
+
+test('GIVEN the users api key does not support GPT-4 WHEN the QA model is initialised THEN it is initialised with gpt-3.5-turbo', () => {
+	mockValidModels = ['gpt-2', 'gpt-3.5-turbo', 'gpt-3'];
+
+	const level = LEVEL_NAMES.LEVEL_1;
+	const prompt = 'this is a test prompt. ';
+	const consoleSpy = jest.spyOn(console, 'debug');
+
+	setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
+	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
+	initQAModel(level, prompt);
+	expect(consoleSpy).toHaveBeenLastCalledWith(
+		'QA chain initialised with model: gpt-3.5-turbo'
+	);
 });
 
 afterEach(() => {

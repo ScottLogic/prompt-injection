@@ -1,10 +1,6 @@
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
-import { CHAT_MODELS } from '@src/models/chat';
-import {
-	verifyKeySupportsModel,
-	filterChatHistoryByMaxTokens,
-} from '@src/openai';
+import { filterChatHistoryByMaxTokens } from '@src/openai';
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
@@ -48,32 +44,6 @@ afterEach(() => {
 });
 
 describe('openAI unit tests', () => {
-	test('GIVEN API key is missing from env WHEN validating AI model THEN it should throw an error', async () => {
-		// no env var
-		await expect(async () => {
-			await verifyKeySupportsModel(CHAT_MODELS.GPT_4);
-		}).rejects.toThrow();
-		expect(mockCreateChatCompletion).not.toHaveBeenCalled();
-	});
-
-	test('GIVEN an API key WHEN AI chat validation fails THEN it should throw an error', async () => {
-		process.env = { OPENAI_API_KEY: 'igotthekey!' };
-		mockCreateChatCompletion.mockRejectedValueOnce(
-			new Error('Invalid API key')
-		);
-		await expect(async () => {
-			await verifyKeySupportsModel(CHAT_MODELS.GPT_4);
-		}).rejects.toThrow();
-		expect(mockCreateChatCompletion).toHaveBeenCalledTimes(1);
-	});
-
-	test('GIVEN an API key WHEN AI chat validation succeeds THEN it should not throw an error', async () => {
-		process.env = { OPENAI_API_KEY: 'igotthesecret!' };
-		mockCreateChatCompletion.mockImplementationOnce(() => Promise.resolve());
-		await verifyKeySupportsModel(CHAT_MODELS.GPT_4);
-		expect(mockCreateChatCompletion).toHaveBeenCalledTimes(1);
-	});
-
 	test('GIVEN chat history exceeds max token number WHEN applying filter THEN it should return the filtered chat history', () => {
 		const maxTokens = 121;
 		const chatHistory: ChatCompletionMessageParam[] = [

@@ -69,8 +69,7 @@ async function initDocumentVectors() {
 	}
 	setVectorisedDocuments(docVectors);
 	console.debug(
-		'Initialised document vectors for each level. count=',
-		docVectors.length
+		`Initialised document vectors for each level. count=${docVectors.length}`
 	);
 }
 
@@ -101,7 +100,7 @@ function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 	const chain = RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
 		prompt: promptTemplate,
 	});
-	console.debug('QA chain initialised with model: ', modelName);
+	console.debug(`QA chain initialised with model: ${modelName}`);
 	return chain;
 }
 // initialise the prompt evaluation model
@@ -129,7 +128,7 @@ function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 		outputKey: 'promptEvalOutput',
 	});
 
-	console.debug('Prompt evaluation model initialised with model: ', modelName);
+	console.debug(`Prompt evaluation model initialised with model: ${modelName}`);
 	return chain;
 }
 

@@ -31,9 +31,9 @@ jest.mock('@src/openai', () => {
 	};
 });
 
-beforeEach(async () => {
+beforeEach(() => {
 	// init langchain
-	await initPromptEvaluationModel(promptEvalPrompt);
+	initPromptEvaluationModel(promptEvalPrompt);
 });
 
 afterEach(() => {
