@@ -346,17 +346,17 @@ test('GIVEN user has configured defence WHEN resetting defence config THEN defen
 test('GIVEN user has configured two defence WHEN resetting one defence config THEN that defence config is reset and the other stays same', () => {
 	let defences = defaultDefences;
 	// configure defence
-	const sysRoleConfig = [
+	const sysRoleConfig: DefenceConfigItem[] = [
 		{
 			id: 'SYSTEM_ROLE',
 			value: 'new system role',
-		} as DefenceConfigItem,
+		},
 	];
-	const characterLimitConfig = [
+	const characterLimitConfig: DefenceConfigItem[] = [
 		{
 			id: 'MAX_MESSAGE_LENGTH',
 			value: String(10),
-		} as DefenceConfigItem,
+		},
 	];
 
 	defences = configureDefence(DEFENCE_ID.SYSTEM_ROLE, defences, sysRoleConfig);
