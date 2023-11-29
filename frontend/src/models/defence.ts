@@ -8,48 +8,38 @@ enum DEFENCE_ID {
 	FILTER_BOT_OUTPUT = 'FILTER_BOT_OUTPUT',
 }
 
-class DefenceConfigItem {
-	constructor(id: string, name: string, inputType: 'text' | 'number') {
-		this.id = id;
-		this.inputType = inputType;
-		this.name = name;
-		this.value = '';
-	}
+type DEFENCE_CONFIG_ITEM_ID =
+	| 'MAX_MESSAGE_LENGTH'
+	| 'PROMPT'
+	| 'SYSTEM_ROLE'
+	| 'FILTER_USER_INPUT'
+	| 'FILTER_BOT_OUTPUT';
 
-	id: string;
+type DefenceConfigItem = {
+	id: DEFENCE_CONFIG_ITEM_ID;
 	inputType: 'text' | 'number';
 	name: string;
 	value: string;
-}
+};
 
-class Defence {
-	constructor(
-		id: DEFENCE_ID,
-		name: string,
-		info: string,
-		config: DefenceConfigItem[]
-	) {
-		this.id = id;
-		this.name = name;
-		this.info = info;
-		this.config = config;
-		// each defence starts off as inactive and not triggered
-		this.isActive = false;
-		this.isTriggered = false;
-	}
-
+type Defence = {
 	id: DEFENCE_ID;
 	name: string;
 	info: string;
 	config: DefenceConfigItem[];
 	isActive: boolean;
 	isTriggered: boolean;
-}
+};
 
-interface DefenceResetResponse {
+type DefenceResetResponse = {
 	id: string;
 	value: string;
-}
+};
 
-export { DEFENCE_ID, DefenceConfigItem, Defence };
-export type { DefenceResetResponse };
+export { DEFENCE_ID };
+export type {
+	DefenceResetResponse,
+	DEFENCE_CONFIG_ITEM_ID,
+	DefenceConfigItem,
+	Defence,
+};

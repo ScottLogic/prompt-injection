@@ -1,4 +1,4 @@
-import { DEFENCE_ID, Defence } from './models/defence';
+import { DEFENCE_ID, DefenceConfigItem, Defence } from './models/defence';
 import {
 	promptEvalPrompt,
 	qAPromptSecure,
@@ -6,57 +6,55 @@ import {
 	xmlPrompt,
 } from './promptTemplates';
 
-function createDefence(
-	id: DEFENCE_ID,
-	config: { id: string; value: string }[]
-): Defence {
-	const defenceConfig = config.map((item) => ({
-		id: item.id,
-		value: item.value,
-	}));
-	return new Defence(id, defenceConfig);
+function createDefence(id: DEFENCE_ID, config: DefenceConfigItem[]): Defence {
+	return {
+		id,
+		config,
+		isActive: false,
+		isTriggered: false,
+	};
 }
 
 const defaultDefences: Defence[] = [
 	createDefence(DEFENCE_ID.CHARACTER_LIMIT, [
 		{
-			id: 'maxMessageLength',
+			id: 'MAX_MESSAGE_LENGTH',
 			value: String(280),
 		},
 	]),
 	createDefence(DEFENCE_ID.PROMPT_EVALUATION_LLM, [
 		{
-			id: 'prompt',
+			id: 'PROMPT',
 			value: promptEvalPrompt,
 		},
 	]),
 	createDefence(DEFENCE_ID.QA_LLM, [
 		{
-			id: 'prompt',
+			id: 'PROMPT',
 			value: qAPromptSecure,
 		},
 	]),
 	createDefence(DEFENCE_ID.SYSTEM_ROLE, [
 		{
-			id: 'systemRole',
+			id: 'SYSTEM_ROLE',
 			value: systemRoleDefault,
 		},
 	]),
 	createDefence(DEFENCE_ID.XML_TAGGING, [
 		{
-			id: 'prompt',
+			id: 'PROMPT',
 			value: xmlPrompt,
 		},
 	]),
 	createDefence(DEFENCE_ID.FILTER_USER_INPUT, [
 		{
-			id: 'filterUserInput',
+			id: 'FILTER_USER_INPUT',
 			value: 'secret project,confidential project,budget,password',
 		},
 	]),
 	createDefence(DEFENCE_ID.FILTER_BOT_OUTPUT, [
 		{
-			id: 'filterBotOutput',
+			id: 'FILTER_BOT_OUTPUT',
 			value: 'secret project',
 		},
 	]),
