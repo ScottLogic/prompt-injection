@@ -135,9 +135,9 @@ async function getGptModel(): Promise<ChatModel> {
 async function getValidModels(): Promise<string[]> {
 	const response = await sendRequest(`${PATH}validModels`, 'GET');
 	const data = (await response.json()) as {
-		validModels: string[];
+		models: string[];
 	};
-	return data.validModels;
+	return data.models;
 }
 
 async function addMessageToChatHistory(

@@ -4,7 +4,7 @@ import { OpenAIGetModelRequest } from '@src/models/api/OpenAIGetModelRequest';
 import { OpenAiConfigureModelRequest } from '@src/models/api/OpenAiConfigureModelRequest';
 import { OpenAiSetModelRequest } from '@src/models/api/OpenAiSetModelRequest';
 import { ChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
-import { verifyKeySupportsModel, getValidOpenAIModels } from '@src/openai';
+import { getValidOpenAIModelsList } from '@src/openai';
 
 function updateConfigProperty(
 	config: ChatModelConfiguration,
@@ -19,15 +19,13 @@ function updateConfigProperty(
 	return null;
 }
 
-async function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
+function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 	const { model } = req.body;
 
 	if (model === undefined) {
 		res.status(400).send();
 	} else {
 		try {
-			// Verify model is valid for our key (it should be!)
-			await verifyKeySupportsModel(model);
 			// Keep same config if not given in request.
 			const configuration =
 				req.body.configuration ?? req.session.chatModel.configuration;
@@ -78,9 +76,9 @@ function handleGetModel(req: OpenAIGetModelRequest, res: Response) {
 	res.send(req.session.chatModel);
 }
 
-async function handleGetValidModels(_: unknown, res: Response) {
-	const validModels = await getValidOpenAIModels();
-	res.send({ validModels });
+function handleGetValidModels(_: unknown, res: Response) {
+	const models = getValidOpenAIModelsList();
+	res.send({ models });
 }
 
 export {

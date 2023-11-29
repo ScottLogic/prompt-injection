@@ -95,6 +95,17 @@ const chatModelMaxTokens = {
 	[CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16384,
 };
 
+// list of valid chat models for the api key
+let validOpenAIModels: string[] = [];
+
+function setValidOpenAIModels(models: string[]) {
+	validOpenAIModels = models;
+}
+
+function getValidOpenAIModelsList() {
+	return validOpenAIModels;
+}
+
 const getOpenAIKey = (() => {
 	let openAIKey: string | undefined = undefined;
 	return () => {
@@ -111,33 +122,24 @@ const getOpenAIKey = (() => {
 })();
 
 /**
- * Checks the given model is supported by the OpenAI API key
- * @throws Error if the key cannot be used with the model
- */
-async function verifyKeySupportsModel(gptModel: string) {
-	const apiKey = getOpenAIKey();
-	const testOpenAI: OpenAI = new OpenAI({ apiKey });
-	await testOpenAI.chat.completions.create({
-		model: gptModel,
-		messages: [{ role: 'user', content: 'this is a test prompt' }],
-	});
-}
-
-/**
  * Gets the GPT models available to the OpenAI API key
  */
-async function getValidOpenAIModels() {
-	const openAI = getOpenAI();
-	const models: OpenAI.ModelsPage = await openAI.models.list();
+async function getValidModelsFromOpenAI() {
+	try {
+		const openAI = getOpenAI();
+		const models: OpenAI.ModelsPage = await openAI.models.list();
 
-	// get the model ids that are supported by our app
-	const validModels = models.data
-		.map((model) => model.id)
-		.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS));
+		// get the model ids that are supported by our app
+		const validModels = models.data
+			.map((model) => model.id)
+			.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS));
 
-	validModels.sort();
-	console.log('Valid OpenAI models:', validModels);
-	return validModels;
+		validModels.sort();
+		console.log('Valid OpenAI models:', validModels);
+		setValidOpenAIModels(validModels);
+	} catch (error) {
+		console.error('Error getting valid models: ', error);
+	}
 }
 
 function getOpenAI() {
@@ -595,6 +597,6 @@ export {
 	chatGptSendMessage,
 	filterChatHistoryByMaxTokens,
 	getOpenAIKey,
-	verifyKeySupportsModel,
-	getValidOpenAIModels,
+	getValidModelsFromOpenAI,
+	getValidOpenAIModelsList,
 };

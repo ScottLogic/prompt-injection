@@ -25,7 +25,7 @@ jest.mock('@src/openai', () => {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return {
 		...originalModule,
-		getValidOpenAIModels: jest.fn().mockImplementation(() => {
+		getValidModelsFromOpenAI: jest.fn().mockImplementation(() => {
 			return ['gpt-3', 'gpt-3.5-turbo', 'gpt-4'];
 		}),
 	};
