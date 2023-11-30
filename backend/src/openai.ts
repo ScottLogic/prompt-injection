@@ -218,7 +218,7 @@ async function chatGptChatCompletion(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-	const mock = true;
+	const mock = false;
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (mock) {
 		await (() => new Promise((resolve) => setTimeout(resolve, 0)))();
@@ -454,6 +454,78 @@ function getInitialChatResponse(): ChatResponse {
 	};
 }
 
+function applyOutputFilterDefence(
+	message: string,
+	defences: Defence[],
+	chatResponse: ChatResponse
+) {
+	const detectedPhrases = detectFilterList(
+		message,
+		getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
+	);
+
+	if (detectedPhrases.length > 0) {
+		console.debug(
+			`FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: '${detectedPhrases.join(
+				"', '"
+			)}'.`
+		);
+		if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
+			chatResponse.defenceReport.triggeredDefences.push(
+				DEFENCE_ID.FILTER_BOT_OUTPUT
+			);
+			chatResponse.defenceReport.isBlocked = true;
+			chatResponse.defenceReport.blockedReason =
+				'My original response was blocked as it contained a restricted word/phrase. Ask me something else. ';
+		} else {
+			chatResponse.defenceReport.alertedDefences.push(
+				DEFENCE_ID.FILTER_BOT_OUTPUT
+			);
+		}
+	}
+}
+
+async function carryOutToolCalls(
+	chatResponse: ChatResponse,
+	toolCalls: ChatCompletionMessageToolCall[],
+	chatHistory: ChatHistoryMessage[],
+	defences: Defence[],
+	sentEmails: EmailInfo[],
+	currentLevel: LEVEL_NAMES
+) {
+	for (const toolCall of toolCalls) {
+		// only tool type supported by openai is function
+
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (toolCall.type === 'function') {
+			// call the function and get a new reply and defence info from
+			const functionCallReply = await chatGptCallFunction(
+				chatResponse.defenceReport,
+				defences,
+				toolCall.id,
+				toolCall.function,
+				sentEmails,
+				currentLevel
+			);
+			if (functionCallReply) {
+				chatResponse.wonLevel = functionCallReply.wonLevel;
+
+				// add the function call to the chat history
+				chatHistory = pushCompletionToHistory(
+					chatHistory,
+					functionCallReply.completion,
+					CHAT_MESSAGE_TYPE.FUNCTION_CALL
+				);
+				// update the defence info
+				chatResponse.defenceReport = functionCallReply.defenceReport;
+			}
+		} else {
+			// openai chat tool call type not supported yet
+			console.debug('Tool call type not supported yet: ', toolCall.type);
+		}
+	}
+}
+
 async function chatGptSendMessage(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
@@ -503,38 +575,16 @@ async function chatGptSendMessage(
 			reply,
 			CHAT_MESSAGE_TYPE.FUNCTION_CALL
 		);
-		// get the tool call
-		for (const toolCall of reply.tool_calls) {
-			// only tool type supported by openai is function
 
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			if (toolCall.type === 'function') {
-				// call the function and get a new reply and defence info from
-				const functionCallReply = await chatGptCallFunction(
-					chatResponse.defenceReport,
-					defences,
-					toolCall.id,
-					toolCall.function,
-					sentEmails,
-					currentLevel
-				);
-				if (functionCallReply) {
-					chatResponse.wonLevel = functionCallReply.wonLevel;
+		await carryOutToolCalls(
+			chatResponse,
+			reply.tool_calls,
+			chatHistory,
+			defences,
+			sentEmails,
+			currentLevel
+		);
 
-					// add the function call to the chat history
-					chatHistory = pushCompletionToHistory(
-						chatHistory,
-						functionCallReply.completion,
-						CHAT_MESSAGE_TYPE.FUNCTION_CALL
-					);
-					// update the defence info
-					chatResponse.defenceReport = functionCallReply.defenceReport;
-				}
-			} else {
-				// openai chat tool call type not supported yet
-				console.debug('Tool call type not supported yet: ', toolCall.type);
-			}
-		}
 		// get a new reply from ChatGPT now that the functions have been called
 		reply = await chatGptChatCompletion(
 			chatHistory,
@@ -550,35 +600,12 @@ async function chatGptSendMessage(
 	} else {
 		chatResponse.completion = reply;
 
-		// if output filter defence is active, check for blocked words/phrases
 		const outputFilterDefencePresent =
 			currentLevel === LEVEL_NAMES.LEVEL_3 ||
 			currentLevel === LEVEL_NAMES.SANDBOX;
 
 		if (outputFilterDefencePresent) {
-			const detectedPhrases = detectFilterList(
-				reply.content,
-				getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
-			);
-			if (detectedPhrases.length > 0) {
-				console.debug(
-					`FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: '${detectedPhrases.join(
-						"', '"
-					)}'.`
-				);
-				if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
-					chatResponse.defenceReport.triggeredDefences.push(
-						DEFENCE_ID.FILTER_BOT_OUTPUT
-					);
-					chatResponse.defenceReport.isBlocked = true;
-					chatResponse.defenceReport.blockedReason =
-						'My original response was blocked as it contained a restricted word/phrase. Ask me something else. ';
-				} else {
-					chatResponse.defenceReport.alertedDefences.push(
-						DEFENCE_ID.FILTER_BOT_OUTPUT
-					);
-				}
-			}
+			applyOutputFilterDefence(reply.content, defences, chatResponse);
 		}
 		// add the ai reply to the chat history
 		chatHistory = pushCompletionToHistory(
