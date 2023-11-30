@@ -594,7 +594,9 @@ async function chatGptSendMessage(
 	);
 
 	if (!reply.content) {
-		throw Error('Failed to get reply from GPT');
+		const message = `Final gpt completion reply content is null! There must be a problem with the getFinalReplyAfterAllToolCalls method`;
+		console.error(message);
+		throw Error(message);
 	}
 
 	chatResponse.completion = reply;
