@@ -7,7 +7,7 @@ import {
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
-let mockList: { id: string }[] = [];
+let mockModelList: { id: string }[] = [];
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
 		chat: {
@@ -17,7 +17,7 @@ jest.mock('openai', () => ({
 		},
 		models: {
 			list: jest.fn().mockImplementation(() => ({
-				data: mockList,
+				data: mockModelList,
 			})),
 		},
 	})),
@@ -277,7 +277,7 @@ describe('openAI unit tests', () => {
 
 	test('GIVEN the user has an openAI key WHEN getValidModelsFromOpenAI is called THEN it returns the models in CHAT_MODELS enum', async () => {
 		process.env.OPENAI_API_KEY = 'sk-12345';
-		mockList = [
+		mockModelList = [
 			{ id: 'gpt-3.5-turbo' },
 			{ id: 'gpt-3.5-turbo-0613' },
 			{ id: 'gpt-4' },
