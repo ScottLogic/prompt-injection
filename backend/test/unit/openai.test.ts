@@ -1,15 +1,24 @@
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
-import { filterChatHistoryByMaxTokens } from '@src/openai';
+import {
+	filterChatHistoryByMaxTokens,
+	getValidModelsFromOpenAI,
+} from '@src/openai';
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
+let mockList: { id: string }[] = [];
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
 		chat: {
 			completions: {
 				create: mockCreateChatCompletion,
 			},
+		},
+		models: {
+			list: jest.fn().mockImplementation(() => ({
+				data: mockList,
+			})),
 		},
 	})),
 }));
@@ -21,6 +30,8 @@ jest.mock('@src/openai', () => {
 	return {
 		...originalModule,
 		initOpenAi: jest.fn(),
+		setValidOpenAIModels: jest.fn(),
+		getOpenAI: jest.fn(),
 	};
 });
 
@@ -263,8 +274,32 @@ describe('openAI unit tests', () => {
 		);
 		expect(filteredChatHistory).toEqual(chatHistory);
 	});
-});
 
+	test('GIVEN the user has an openAI key WHEN getValidModelsFromOpenAI is called THEN it returns the models in CHAT_MODELS enum', async () => {
+		process.env.OPENAI_API_KEY = 'sk-12345';
+		mockList = [
+			{ id: 'gpt-3.5-turbo' },
+			{ id: 'gpt-3.5-turbo-0613' },
+			{ id: 'gpt-4' },
+			{ id: 'gpt-4-0613' },
+			{ id: 'da-vinci-1' },
+			{ id: 'da-vinci-2' },
+		];
+		const consoleSpy = jest.spyOn(console, 'debug');
+		const validModels = [
+			'gpt-3.5-turbo',
+			'gpt-3.5-turbo-0613',
+			'gpt-4',
+			'gpt-4-0613',
+		];
+		await getValidModelsFromOpenAI();
+
+		expect(consoleSpy).toHaveBeenCalledWith(
+			'Valid OpenAI models:',
+			validModels
+		);
+	});
+});
 afterEach(() => {
 	jest.clearAllMocks();
 });

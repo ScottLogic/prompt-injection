@@ -99,6 +99,7 @@ const chatModelMaxTokens = {
 let validOpenAIModels: string[] = [];
 
 function setValidOpenAIModels(models: string[]) {
+	console.log('Setting valid models to: ', models);
 	validOpenAIModels = models;
 }
 
@@ -135,8 +136,8 @@ async function getValidModelsFromOpenAI() {
 			.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS));
 
 		validModels.sort();
-		console.log('Valid OpenAI models:', validModels);
 		setValidOpenAIModels(validModels);
+		console.debug('Valid OpenAI models:', validModels);
 	} catch (error) {
 		console.error('Error getting valid models: ', error);
 	}
