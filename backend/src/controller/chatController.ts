@@ -72,60 +72,53 @@ async function handleHigherLevelChat(
 	});
 
 	// get the chatGPT reply
-	try {
-		const openAiReplyPromise = chatGptSendMessage(
-			req.session.levelState[currentLevel].chatHistory,
-			req.session.levelState[currentLevel].defences,
-			chatModel,
-			chatResponse.transformedMessage,
-			messageIsTransformed,
-			req.session.levelState[currentLevel].sentEmails,
-			currentLevel
-		);
+	const openAiReplyPromise = chatGptSendMessage(
+		req.session.levelState[currentLevel].chatHistory,
+		req.session.levelState[currentLevel].defences,
+		chatModel,
+		chatResponse.transformedMessage,
+		messageIsTransformed,
+		req.session.levelState[currentLevel].sentEmails,
+		currentLevel
+	);
 
-		// run defence detection and chatGPT concurrently
-		const [, openAiReplyResolved] = await Promise.all([
-			triggeredDefencesPromise,
-			openAiReplyPromise,
-		]);
-		openAiReply = openAiReplyResolved;
+	// run defence detection and chatGPT concurrently
+	const [, openAiReplyResolved] = await Promise.all([
+		triggeredDefencesPromise,
+		openAiReplyPromise,
+	]);
+	openAiReply = openAiReplyResolved;
 
-		// if input message is blocked, restore the original chat history and add user message (not as completion)
-		if (chatResponse.defenceReport.isBlocked) {
-			// set to null to stop message being returned to user
-			openAiReply = null;
+	// if input message is blocked, restore the original chat history and add user message (not as completion)
+	if (chatResponse.defenceReport.isBlocked) {
+		// set to null to stop message being returned to user
+		openAiReply = null;
 
-			// restore the original chat history
-			req.session.levelState[currentLevel].chatHistory = chatHistoryBefore;
+		// restore the original chat history
+		req.session.levelState[currentLevel].chatHistory = chatHistoryBefore;
 
-			req.session.levelState[currentLevel].chatHistory.push({
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
-				infoMessage: message,
-			});
-		}
+		req.session.levelState[currentLevel].chatHistory.push({
+			completion: null,
+			chatMessageType: CHAT_MESSAGE_TYPE.USER,
+			infoMessage: message,
+		});
+	}
 
-		if (openAiReply) {
-			chatResponse.wonLevel = openAiReply.wonLevel;
-			chatResponse.reply = openAiReply.completion?.content ?? '';
+	if (openAiReply) {
+		chatResponse.wonLevel = openAiReply.wonLevel;
+		chatResponse.reply = openAiReply.completion?.content ?? '';
 
-			// combine triggered defences
-			chatResponse.defenceReport.triggeredDefences = [
-				...chatResponse.defenceReport.triggeredDefences,
-				...openAiReply.defenceReport.triggeredDefences,
-			];
-			// combine blocked
-			chatResponse.defenceReport.isBlocked =
-				openAiReply.defenceReport.isBlocked;
+		// combine triggered defences
+		chatResponse.defenceReport.triggeredDefences = [
+			...chatResponse.defenceReport.triggeredDefences,
+			...openAiReply.defenceReport.triggeredDefences,
+		];
+		// combine blocked
+		chatResponse.defenceReport.isBlocked = openAiReply.defenceReport.isBlocked;
 
-			// combine blocked reason
-			chatResponse.defenceReport.blockedReason =
-				openAiReply.defenceReport.blockedReason;
-		}
-	} catch (error) {
-		if (error instanceof Error) {
-			throw error;
-		}
+		// combine blocked reason
+		chatResponse.defenceReport.blockedReason =
+			openAiReply.defenceReport.blockedReason;
 	}
 }
 
