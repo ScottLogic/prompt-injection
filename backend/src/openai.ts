@@ -258,27 +258,20 @@ async function chatGptChatCompletion(
 	const startTime = new Date().getTime();
 	console.debug('Calling OpenAI chat completion...');
 
-	try {
-		const chat_completion = await openai.chat.completions.create({
-			model: chatModel.id,
-			temperature: chatModel.configuration.temperature,
-			top_p: chatModel.configuration.topP,
-			frequency_penalty: chatModel.configuration.frequencyPenalty,
-			presence_penalty: chatModel.configuration.presencePenalty,
-			messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
-			tools: chatGptTools,
-		});
+	const chat_completion = await openai.chat.completions.create({
+		model: chatModel.id,
+		temperature: chatModel.configuration.temperature,
+		top_p: chatModel.configuration.topP,
+		frequency_penalty: chatModel.configuration.frequencyPenalty,
+		presence_penalty: chatModel.configuration.presencePenalty,
+		messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
+		tools: chatGptTools,
+	});
 
-		return chat_completion.choices[0].message;
-	} catch (error) {
-		if (error instanceof Error) {
-			console.error('Error calling createChatCompletion: ', error.message);
-			throw error;
-		}
-	} finally {
-		const endTime = new Date().getTime();
-		console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
-	}
+	const endTime = new Date().getTime();
+	console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
+
+	return chat_completion.choices[0].message;
 }
 
 // estimate the tokens on a single completion
@@ -536,13 +529,8 @@ async function getFinalReplyAfterAllToolCalls(
 		currentLevel
 	);
 
-	// if the reply is null, return empty chat response
-	if (!reply) {
-		throw Error('Failed to get reply from GPT');
-	}
-
 	// check if GPT wanted to call a tool
-	while (reply?.tool_calls) {
+	while (reply.tool_calls) {
 		// push the assistant message to the chat
 		chatHistory = pushCompletionToHistory(
 			chatHistory,
@@ -567,10 +555,6 @@ async function getFinalReplyAfterAllToolCalls(
 			openai,
 			currentLevel
 		);
-	}
-
-	if (!reply) {
-		throw Error('Failed to get reply from GPT');
 	}
 
 	// chat history gets mutated, so no need to return it
