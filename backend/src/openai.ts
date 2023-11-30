@@ -446,7 +446,7 @@ function getInitialDefenceReport(): ChatDefenceReport {
 	};
 }
 
-function getInitialChatResponse(): ChatResponse {
+function getBlankChatResponse(): ChatResponse {
 	return {
 		completion: null,
 		defenceReport: getInitialDefenceReport(),
@@ -550,7 +550,7 @@ async function chatGptSendMessage(
 			: CHAT_MESSAGE_TYPE.USER
 	);
 
-	const chatResponse: ChatResponse = getInitialChatResponse();
+	const chatResponse: ChatResponse = getBlankChatResponse();
 
 	const openai = getOpenAI();
 
