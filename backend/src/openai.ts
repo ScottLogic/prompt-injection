@@ -218,13 +218,6 @@ async function chatGptChatCompletion(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-	const mock = false;
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (mock) {
-		await (() => new Promise((resolve) => setTimeout(resolve, 0)))();
-		return null;
-	}
-
 	// check if we need to set a system role
 	// system role is always active on levels
 	if (
@@ -280,8 +273,8 @@ async function chatGptChatCompletion(
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error('Error calling createChatCompletion: ', error.message);
+			throw new Error(`Error calling createChatCompletion: ${error.message}`);
 		}
-		return null;
 	} finally {
 		const endTime = new Date().getTime();
 		console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
@@ -526,34 +519,15 @@ async function carryOutToolCalls(
 	}
 }
 
-async function chatGptSendMessage(
+async function getFinalReplyAfterAllToolCalls(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
-	message: string,
-	messageIsTransformed: boolean,
 	sentEmails: EmailInfo[],
-	// default to sandbox
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
+	currentLevel: LEVEL_NAMES
 ) {
-	console.log(`User message: '${message}'`);
-
-	// add user message to chat
-	chatHistory = pushCompletionToHistory(
-		chatHistory,
-		{
-			role: 'user',
-			content: message,
-		},
-		messageIsTransformed
-			? CHAT_MESSAGE_TYPE.USER_TRANSFORMED
-			: CHAT_MESSAGE_TYPE.USER
-	);
-
 	const chatResponse: ChatResponse = getBlankChatResponse();
-
 	const openai = getOpenAI();
-
 	let reply = await chatGptChatCompletion(
 		chatHistory,
 		defences,
@@ -564,7 +538,7 @@ async function chatGptSendMessage(
 
 	// if the reply is null, return empty chat response
 	if (!reply) {
-		return chatResponse;
+		throw Error('Failed to get reply from GPT');
 	}
 
 	// check if GPT wanted to call a tool
@@ -594,32 +568,72 @@ async function chatGptSendMessage(
 			currentLevel
 		);
 	}
-	if (!reply?.content) {
-		// failed to get reply from GPT
-		return chatResponse;
-	} else {
-		chatResponse.completion = reply;
 
-		const outputFilterDefencePresent =
-			currentLevel === LEVEL_NAMES.LEVEL_3 ||
-			currentLevel === LEVEL_NAMES.SANDBOX;
-
-		if (outputFilterDefencePresent) {
-			applyOutputFilterDefence(reply.content, defences, chatResponse);
-		}
-		// add the ai reply to the chat history
-		chatHistory = pushCompletionToHistory(
-			chatHistory,
-			reply,
-			chatResponse.defenceReport.isBlocked
-				? CHAT_MESSAGE_TYPE.BOT_BLOCKED
-				: CHAT_MESSAGE_TYPE.BOT
-		);
-
-		// log the entire chat history so far
-		console.log(chatHistory);
-		return chatResponse;
+	if (!reply) {
+		throw Error('Failed to get reply from GPT');
 	}
+
+	// chat history gets mutated, so no need to return it
+	return { reply, chatResponse };
+}
+
+async function chatGptSendMessage(
+	chatHistory: ChatHistoryMessage[],
+	defences: Defence[],
+	chatModel: ChatModel,
+	message: string,
+	messageIsTransformed: boolean,
+	sentEmails: EmailInfo[],
+	// default to sandbox
+	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
+) {
+	console.log(`User message: '${message}'`);
+
+	// add user message to chat
+	chatHistory = pushCompletionToHistory(
+		chatHistory,
+		{
+			role: 'user',
+			content: message,
+		},
+		messageIsTransformed
+			? CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+			: CHAT_MESSAGE_TYPE.USER
+	);
+
+	const { reply, chatResponse } = await getFinalReplyAfterAllToolCalls(
+		chatHistory,
+		defences,
+		chatModel,
+		sentEmails,
+		currentLevel
+	);
+
+	if (!reply.content) {
+		throw Error('Failed to get reply from GPT');
+	}
+
+	chatResponse.completion = reply;
+
+	const outputFilterDefencePresent =
+		currentLevel === LEVEL_NAMES.LEVEL_3 ||
+		currentLevel === LEVEL_NAMES.SANDBOX;
+
+	if (outputFilterDefencePresent) {
+		applyOutputFilterDefence(reply.content, defences, chatResponse);
+	}
+	// add the ai reply to the chat history
+	chatHistory = pushCompletionToHistory(
+		chatHistory,
+		reply,
+		chatResponse.defenceReport.isBlocked
+			? CHAT_MESSAGE_TYPE.BOT_BLOCKED
+			: CHAT_MESSAGE_TYPE.BOT
+	);
+
+	// log the entire chat history so far
+	console.log(chatHistory);
+	return chatResponse;
 }
 
 export {
