@@ -273,7 +273,7 @@ async function chatGptChatCompletion(
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error('Error calling createChatCompletion: ', error.message);
-			throw new Error(`Error calling createChatCompletion: ${error.message}`);
+			throw error;
 		}
 	} finally {
 		const endTime = new Date().getTime();
