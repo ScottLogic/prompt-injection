@@ -42,7 +42,7 @@ function DefenceConfiguration({
 						resetConfigurationValue(config.id);
 					}}
 					title={supportText}
-					aria-label={supportText}
+					ariaLabel={supportText}
 				>
 					reset
 				</ThemedButton>
