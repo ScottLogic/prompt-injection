@@ -10,6 +10,7 @@ export interface ThemedButtonProps {
 	title?: string;
 	onClick: () => void;
 	appearsDifferentWhenDisabled?: boolean;
+	ariaLabel?: string;
 }
 
 function ThemedButton({
@@ -17,24 +18,22 @@ function ThemedButton({
 	onClick,
 	disabled = false,
 	selected = false,
-	title = '',
+	title,
 	appearsDifferentWhenDisabled = true,
+	ariaLabel,
 }: ThemedButtonProps) {
-	const buttonClass = clsx('themed-button', {
-		selected,
-		appearsDifferentWhenDisabled,
-	});
+	const buttonProps = {
+		className: clsx('themed-button', {
+			selected,
+			appearsDifferentWhenDisabled,
+		}),
+		onClick,
+		disabled,
+		title,
+		'aria-label': ariaLabel,
+	};
 
-	return (
-		<button
-			className={buttonClass}
-			onClick={onClick}
-			disabled={disabled}
-			title={title}
-		>
-			{children}
-		</button>
-	);
+	return <button {...buttonProps}>{children}</button>;
 }
 
 export default ThemedButton;
