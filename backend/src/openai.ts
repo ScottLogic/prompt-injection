@@ -490,7 +490,7 @@ async function chatGptSendMessage(
 		currentLevel
 	);
 
-	// if the reply is null, return the chat response
+	// if the reply is null, return empty chat response
 	if (!reply) {
 		return chatResponse;
 	}
@@ -551,10 +551,11 @@ async function chatGptSendMessage(
 		chatResponse.completion = reply;
 
 		// if output filter defence is active, check for blocked words/phrases
-		if (
+		const outputFilterDefencePresent =
 			currentLevel === LEVEL_NAMES.LEVEL_3 ||
-			currentLevel === LEVEL_NAMES.SANDBOX
-		) {
+			currentLevel === LEVEL_NAMES.SANDBOX;
+
+		if (outputFilterDefencePresent) {
 			const detectedPhrases = detectFilterList(
 				reply.content,
 				getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
