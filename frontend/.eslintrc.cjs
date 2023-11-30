@@ -78,6 +78,13 @@ module.exports = {
 			},
 		],
 		'no-mixed-spaces-and-tabs': 0, // disable rule
+		'jsx-a11y/label-has-associated-control': [
+			2,
+			{
+				controlComponents: ['ThemedTextArea'],
+				depth: 2,
+			},
+		],
 	},
 	overrides: [
 		{
