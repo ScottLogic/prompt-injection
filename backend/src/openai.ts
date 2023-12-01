@@ -585,6 +585,7 @@ async function chatGptSendMessage(
 			: CHAT_MESSAGE_TYPE.USER
 	);
 
+	// mutates chatHistory
 	const { reply, chatResponse } = await getFinalReplyAfterAllToolCalls(
 		chatHistory,
 		defences,
