@@ -199,16 +199,17 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				infoMessage: chatResponse.defenceReport.blockedReason,
 			});
 		} else if (!chatResponse.reply || chatResponse.reply === '') {
-			// add error message to chat history
-			req.session.levelState[currentLevel].chatHistory.push({
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
-				infoMessage: 'Failed to get chatGPT reply',
-			});
-			// throw so handle error called
 			throw new Error('Failed to get chatGPT reply');
 		}
 	} catch (error) {
+		// add error message to chat history
+		req.session.levelState[currentLevel].chatHistory.push({
+			completion: null,
+			chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+			infoMessage: 'Failed to get chatGPT reply',
+		});
+		console.error(error);
+
 		handleChatError(res, chatResponse, true, 'Failed to get chatGPT reply');
 		return;
 	}
