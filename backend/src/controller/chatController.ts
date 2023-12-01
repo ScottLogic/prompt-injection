@@ -140,7 +140,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	const currentLevel = req.body.currentLevel;
 
 	// must have initialised openai
-	if (message === undefined || currentLevel === undefined) {
+	if (!message || currentLevel === undefined) {
 		handleChatError(
 			res,
 			chatResponse,
