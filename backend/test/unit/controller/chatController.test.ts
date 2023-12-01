@@ -107,6 +107,7 @@ describe('handleChatToGPT unit tests', () => {
 			},
 		} as OpenAiChatRequest;
 	}
+
 	test('GIVEN a valid message and level WHEN handleChatToGPT called THEN it should return a text reply', async () => {
 		const req = openAiChatRequestMock('Hello chatbot', LEVEL_NAMES.LEVEL_1);
 		const res = responseMock();
