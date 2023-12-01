@@ -423,7 +423,7 @@ function pushCompletionToHistory(
 	return chatHistory;
 }
 
-function getInitialDefenceReport(): ChatDefenceReport {
+function getBlankDefenceReport(): ChatDefenceReport {
 	return {
 		blockedReason: '',
 		isBlocked: false,
@@ -435,7 +435,7 @@ function getInitialDefenceReport(): ChatDefenceReport {
 function getBlankChatResponse(): ChatResponse {
 	return {
 		completion: null,
-		defenceReport: getInitialDefenceReport(),
+		defenceReport: getBlankDefenceReport(),
 		wonLevel: false,
 	};
 }
