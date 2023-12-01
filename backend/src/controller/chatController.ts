@@ -145,7 +145,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			res,
 			chatResponse,
 			true,
-			'Please send a message and current level to chat to me!',
+			'Missing or empty message or level',
 			400
 		);
 		return;

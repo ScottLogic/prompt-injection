@@ -136,8 +136,10 @@ describe('handleChatToGPT unit tests', () => {
 		const res = responseMock();
 		await handleChatToGPT(req, res);
 
-		expect(res.status).toHaveBeenCalledWith(500);
-		expect(res.send).toHaveBeenCalledWith(errorResponseMock('Missing message'));
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith(
+			errorResponseMock('Missing or empty message or level')
+		);
 	});
 
 	test('GIVEN an openai error is thrown WHEN handleChatToGPT called THEN it should return 500 and error message', async () => {
