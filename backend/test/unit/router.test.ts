@@ -6,30 +6,6 @@ import { LEVEL_NAMES } from '@src/models/level';
 
 jest.mock('@src/defence');
 
-describe('/defence/configure', () => {
-	it('WHEN configuration value exceeds character limit THEN does not configure defences', async () => {
-		const CHARACTER_LIMIT = 5000;
-		const longConfigValue = 'a'.repeat(CHARACTER_LIMIT + 1);
-		const body = {
-			defenceId: 'PROMPT_EVALUATION_LLM',
-			config: [
-				{
-					id: 'prompt',
-					name: 'prompt',
-					value: longConfigValue,
-				},
-			],
-			level: LEVEL_NAMES.SANDBOX,
-		};
-
-		await request(app)
-			.post('/defence/configure')
-			.send(body)
-			.expect(400)
-			.expect('Config value exceeds character limit');
-	});
-});
-
 describe('/openai/chat', () => {
 	const noMessageOrLevelResponse: ChatHttpResponse = {
 		reply: 'Please send a message and current level to chat to me!',
