@@ -132,7 +132,7 @@ describe('handleChatToGPT unit tests', () => {
 		});
 	});
 
-	test('GIVEN missing message WHEN handleChatToGPT called THEN it should return 500 and error message', async () => {
+	test('GIVEN missing message WHEN handleChatToGPT called THEN it should return 400 and error message', async () => {
 		const req = openAiChatRequestMock('', LEVEL_NAMES.LEVEL_1);
 		const res = responseMock();
 		await handleChatToGPT(req, res);
