@@ -124,7 +124,7 @@ describe('handleConfigureDefence', () => {
 	it('WHEN missing config THEN does not configure defences', () => {
 		const req: DefenceConfigureRequest = {
 			body: {
-				DEFENCE_ID: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
 				level: LEVEL_NAMES.LEVEL_1,
 			},
 		} as unknown as DefenceConfigureRequest;
@@ -141,7 +141,7 @@ describe('handleConfigureDefence', () => {
 	it('WHEN missing level THEN does not configure defences', () => {
 		const req: DefenceConfigureRequest = {
 			body: {
-				DEFENCE_ID: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
 				config: [
 					{
 						id: 'PROMPT',
@@ -158,5 +158,33 @@ describe('handleConfigureDefence', () => {
 		// the following line works in emailController but not here >:/
 		//expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId, config or level');
+	});
+
+	it('WHEN config value exceeds character limit THEN does not configure defences', () => {
+		const CHARACTER_LIMIT = 5000;
+		const longConfigValue = 'a'.repeat(CHARACTER_LIMIT + 1);
+
+		const req: DefenceConfigureRequest = {
+			body: {
+				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				level: LEVEL_NAMES.LEVEL_1,
+				config: [
+					{
+						id: 'PROMPT',
+						value: longConfigValue,
+					},
+				],
+			},
+		} as unknown as DefenceConfigureRequest;
+
+		const res = responseMock();
+
+		handleConfigureDefence(req, res);
+
+		// the following line works in emailController but not here >:/
+		//expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith(
+			'Config value exceeds character limit'
+		);
 	});
 });
