@@ -567,7 +567,6 @@ async function chatGptSendMessage(
 	message: string,
 	messageIsTransformed: boolean,
 	sentEmails: EmailInfo[],
-	// default to sandbox
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	console.log(`User message: '${message}'`);
