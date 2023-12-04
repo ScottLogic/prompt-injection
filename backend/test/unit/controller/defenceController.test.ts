@@ -4,10 +4,24 @@ import { Response } from 'express';
 import { handleConfigureDefence } from '@src/controller/defenceController';
 import { configureDefence } from '@src/defence';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
-import { ChatHistoryMessage } from '@src/models/chat';
+import { ChatHistoryMessage, ChatModel } from '@src/models/chat';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
+
+declare module 'express-session' {
+	interface Session {
+		initialised: boolean;
+		chatModel: ChatModel;
+		levelState: LevelState[];
+	}
+	interface LevelState {
+		level: LEVEL_NAMES;
+		chatHistory: ChatHistoryMessage[];
+		defences: Defence[];
+		sentEmails: EmailInfo[];
+	}
+}
 
 jest.mock('@src/defence');
 const mockConfigureDefence = configureDefence as jest.MockedFunction<
@@ -71,11 +85,9 @@ describe('handleConfigureDefence', () => {
 				},
 			]
 		);
-
-		// can't resolve the type error on the next line
-		// expect(req.session.levelState[LEVEL_NAMES.LEVEL_1].defences).toEqual(
-		// 	configuredDefences
-		// );
+		expect(req.session.levelState[LEVEL_NAMES.LEVEL_1].defences).toEqual(
+			configuredDefences
+		);
 	});
 
 	it('WHEN missing defenceId THEN does not configure defences', () => {
