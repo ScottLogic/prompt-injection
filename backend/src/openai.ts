@@ -506,7 +506,6 @@ async function carryOutToolCalls(
 				chatResponse.defenceReport = functionCallReply.defenceReport;
 			}
 		} else {
-			// openai chat tool call type not supported yet
 			console.debug('Tool call type not supported yet: ', toolCall.type);
 		}
 	}
