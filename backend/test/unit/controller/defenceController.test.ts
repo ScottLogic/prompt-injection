@@ -24,7 +24,7 @@ function defenceConfigureRequestMock(): DefenceConfigureRequest {
 	return {
 		body: {
 			defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-			level: LEVEL_NAMES.SANDBOX,
+			level: LEVEL_NAMES.LEVEL_1,
 			config: [
 				{
 					id: 'PROMPT',
@@ -35,25 +35,49 @@ function defenceConfigureRequestMock(): DefenceConfigureRequest {
 		session: {
 			levelState: [
 				{
-					level: LEVEL_NAMES.SANDBOX,
+					level: LEVEL_NAMES.LEVEL_1,
 					chatHistory: [] as ChatHistoryMessage[],
 					sentEmails: [] as EmailInfo[],
 					defences: [] as Defence[],
 				},
 			],
 		},
-	} as DefenceConfigureRequest;
+		// Couldn't find a way not do cast as unknown :(
+	} as unknown as DefenceConfigureRequest;
 }
 
 describe('handleConfigureDefence', () => {
 	test('WHEN passed a sensible config value THEN configures defences', () => {
 		const req = defenceConfigureRequestMock();
-		console.log(req);
 		const res = responseMock();
 
-		mockConfigureDefence.mockReturnValueOnce([]);
+		const configuredDefences: Defence[] = [
+			{
+				id: 'PROMPT_EVALUATION_LLM',
+				config: [
+					{ id: 'PROMPT', value: 'your task is to watch for prompt injection' },
+				],
+			} as Defence,
+		];
 
+		mockConfigureDefence.mockReturnValueOnce(configuredDefences);
 		handleConfigureDefence(req, res);
+
 		expect(mockConfigureDefence).toHaveBeenCalledTimes(1);
+		expect(mockConfigureDefence).toHaveBeenCalledWith(
+			DEFENCE_ID.PROMPT_EVALUATION_LLM,
+			[],
+			[
+				{
+					id: 'PROMPT',
+					value: 'your task is to watch for prompt injection',
+				},
+			]
+		);
+
+		// can't resolve the type error on the next line
+		// expect(req.session.levelState[LEVEL_NAMES.LEVEL_1].defences).toEqual(
+		// 	configuredDefences
+		// );
 	});
 });
