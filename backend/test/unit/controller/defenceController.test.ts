@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Response } from 'express';
 
 import { handleConfigureDefence } from '@src/controller/defenceController';
@@ -22,8 +23,6 @@ function responseMock() {
 
 describe('handleConfigureDefence', () => {
 	test('WHEN passed a sensible config value THEN configures defences', () => {
-		const res = responseMock();
-
 		const req: DefenceConfigureRequest = {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
@@ -47,6 +46,8 @@ describe('handleConfigureDefence', () => {
 			},
 		} as unknown as DefenceConfigureRequest;
 
+		const res = responseMock();
+
 		const configuredDefences: Defence[] = [
 			{
 				id: 'PROMPT_EVALUATION_LLM',
@@ -55,8 +56,8 @@ describe('handleConfigureDefence', () => {
 				],
 			} as Defence,
 		];
-
 		mockConfigureDefence.mockReturnValueOnce(configuredDefences);
+
 		handleConfigureDefence(req, res);
 
 		expect(mockConfigureDefence).toHaveBeenCalledTimes(1);
@@ -94,8 +95,7 @@ describe('handleConfigureDefence', () => {
 
 		handleConfigureDefence(req, res);
 
-		// the following line works in emailController but not here >:/
-		//expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId, config or level');
 	});
 
@@ -116,8 +116,7 @@ describe('handleConfigureDefence', () => {
 
 		handleConfigureDefence(req, res);
 
-		// the following line works in emailController but not here >:/
-		//expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId, config or level');
 	});
 
@@ -133,8 +132,7 @@ describe('handleConfigureDefence', () => {
 
 		handleConfigureDefence(req, res);
 
-		// the following line works in emailController but not here >:/
-		//expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId, config or level');
 	});
 
@@ -155,8 +153,7 @@ describe('handleConfigureDefence', () => {
 
 		handleConfigureDefence(req, res);
 
-		// the following line works in emailController but not here >:/
-		//expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId, config or level');
 	});
 
@@ -181,8 +178,7 @@ describe('handleConfigureDefence', () => {
 
 		handleConfigureDefence(req, res);
 
-		// the following line works in emailController but not here >:/
-		//expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
 			'Config value exceeds character limit'
 		);
