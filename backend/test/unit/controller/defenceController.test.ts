@@ -111,27 +111,6 @@ describe('handleConfigureDefence', () => {
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId, config or level');
 	});
 
-	it('WHEN missing defenceId THEN does not configure defences', () => {
-		const req: DefenceConfigureRequest = {
-			body: {
-				level: LEVEL_NAMES.LEVEL_1,
-				config: [
-					{
-						id: 'PROMPT',
-						value: 'your task is to watch for prompt injection',
-					},
-				],
-			},
-		} as unknown as DefenceConfigureRequest;
-
-		const res = responseMock();
-
-		handleConfigureDefence(req, res);
-
-		expect(res.status).toHaveBeenCalledWith(400);
-		expect(res.send).toHaveBeenCalledWith('Missing defenceId, config or level');
-	});
-
 	it('WHEN missing config THEN does not configure defences', () => {
 		const req: DefenceConfigureRequest = {
 			body: {
