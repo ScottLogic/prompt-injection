@@ -592,7 +592,7 @@ async function chatGptSendMessage(
 		currentLevel
 	);
 
-	if (!reply.content || reply.content === '') {
+	if (!reply.content) {
 		const errorMessage = `Bad final gpt completion reply. There might be a problem with the getFinalReplyAfterAllToolCalls method. reply: ${JSON.stringify(
 			reply
 		)}`;
