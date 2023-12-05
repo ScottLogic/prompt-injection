@@ -598,11 +598,10 @@ async function chatGptSendMessage(
 
 	chatResponse.completion = reply;
 
-	const outputFilterDefencePresent =
+	if (
 		currentLevel === LEVEL_NAMES.LEVEL_3 ||
-		currentLevel === LEVEL_NAMES.SANDBOX;
-
-	if (outputFilterDefencePresent) {
+		currentLevel === LEVEL_NAMES.SANDBOX
+	) {
 		applyOutputFilterDefence(reply.content, defences, chatResponse);
 	}
 	// add the ai reply to the chat history
