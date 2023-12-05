@@ -1,8 +1,8 @@
 import { LEVELS } from '@src/Levels';
+import HandbookIcon from '@src/assets/icons/Handbook.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
 import { LEVEL_NAMES } from '@src/models/level';
 
-import HandbookIcon from './HandbookIcon';
 import ProjectIcon from './ProjectIcon';
 import ProjectIconWon from './ProjectIconWon';
 
@@ -56,7 +56,7 @@ function MainHeader({
 						aria-label="open the handbook"
 						onClick={openHandbook}
 					>
-						<HandbookIcon />
+						<img src={HandbookIcon} alt="" />
 					</button>
 				</div>
 			</span>
