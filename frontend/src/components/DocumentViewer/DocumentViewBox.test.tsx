@@ -3,19 +3,76 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 
 import DocumentViewBox from './DocumentViewBox';
-import DocumentViewBoxHeader, {
-	DocumentViewBoxHeaderProps,
-} from './DocumentViewBoxHeader';
 
 describe('DocumentViewBox component tests', () => {
 	const mockCloseOverlay = vi.fn();
+	const mockGlobalFetch = vi.fn();
 
+	const { mockGetDocumentMetas } = vi.hoisted(() => {
+		return { mockGetDocumentMetas: vi.fn() };
+	});
 	vi.mock('@src/service/documentService', () => ({
-		getDocumentMetas: vi.fn().mockResolvedValue([]),
+		getDocumentMetas: mockGetDocumentMetas,
 	}));
 
-	function renderDocumentViewBox() {
+	// mock global fetch
+	global.fetch = mockGlobalFetch;
+
+	interface MockDocument {
+		filename: string;
+		content: string;
+	}
+
+	const defaultDocuments: MockDocument[] = [
+		{
+			filename: 'document-1.txt',
+			content: 'Now displaying document 1',
+		},
+		{
+			filename: 'document-2.txt',
+			content: 'Now displaying document 2',
+		},
+		{
+			filename: 'document-3.txt',
+			content: 'Now displaying document 3',
+		},
+	];
+
+	function renderDocumentViewBox(documents: MockDocument[] = defaultDocuments) {
+		const URI = 'localhost:1234';
+
+		// set up mocks
+		mockGetDocumentMetas.mockResolvedValue(
+			documents.map((doc) => ({
+				filename: doc.filename,
+				uri: `${URI}/${doc.filename}`,
+			}))
+		);
+		mockGlobalFetch.mockImplementation((uri: string) => {
+			if (uri.startsWith(URI)) {
+				const filename = uri.split('/')[1];
+				const document = documents.find((doc) => doc.filename === filename);
+				return Promise.resolve({
+					headers: {
+						get: () => 'text/plain',
+					},
+					blob: () => Promise.resolve(new Blob([document?.content ?? ''])),
+				});
+			}
+			return Promise.reject(new Error('Not found'));
+		});
+
+		const user = userEvent.setup();
 		render(<DocumentViewBox closeOverlay={mockCloseOverlay} />);
+		return { user };
+	}
+
+	function getPreviousButton() {
+		return screen.getByRole('button', { name: 'previous document' });
+	}
+
+	function getNextButton() {
+		return screen.getByRole('button', { name: 'next document' });
 	}
 
 	test('WHEN close button clicked THEN closeOverlay called', () => {
@@ -28,142 +85,155 @@ describe('DocumentViewBox component tests', () => {
 
 		expect(mockCloseOverlay).toHaveBeenCalled();
 	});
-});
 
-describe('DocumentViewBoxHeader component tests', () => {
-	const defaultProps: DocumentViewBoxHeaderProps = {
-		numberOfDocuments: 3,
-		documentIndex: 0,
-		documentName: 'test',
-		onPrevious: () => {},
-		onNext: () => {},
-	};
+	test('WHEN the document viewer is rendered THEN document index, name, and number of documents are shown', async () => {
+		renderDocumentViewBox();
 
-	function renderDocumentViewBoxHeader(props = defaultProps) {
-		const user = userEvent.setup();
-		render(<DocumentViewBoxHeader {...props} />);
-		return { user };
-	}
-
-	function getPreviousButton() {
-		return screen.getByRole('button', { name: 'previous document' });
-	}
-
-	function getNextButton() {
-		return screen.getByRole('button', { name: 'next document' });
-	}
-
-	test('document index, name, and number of documents are shown', () => {
-		const numberOfDocuments = 3;
-		const documentIndex = 0;
-		const documentName = 'test';
-
-		renderDocumentViewBoxHeader({
-			...defaultProps,
-			numberOfDocuments,
-			documentIndex,
-			documentName,
-		});
-
-		expect(screen.getByText(documentName)).toBeInTheDocument();
 		expect(
-			screen.getByText(`${documentIndex + 1} out of ${numberOfDocuments}`)
+			await screen.findByText(defaultDocuments[0].filename)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(`1 out of ${defaultDocuments.length}`)
+		).toBeInTheDocument();
+		expect(
+			await screen.findByText(defaultDocuments[0].content)
+		).toBeInTheDocument();
+	});
+
+	test('WHEN the next button is clicked THEN the next document is shown', async () => {
+		const { user } = renderDocumentViewBox();
+		// wait for header to load
+		await screen.findByText(defaultDocuments[0].filename);
+
+		const nextButton = getNextButton();
+		await user.click(nextButton);
+
+		expect(
+			await screen.findByText(defaultDocuments[1].filename)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(`2 out of ${defaultDocuments.length}`)
+		).toBeInTheDocument();
+		expect(
+			await screen.findByText(defaultDocuments[1].content)
+		).toBeInTheDocument();
+	});
+
+	test('WHEN the previous button is clicked THEN the previous document is shown', async () => {
+		const { user } = renderDocumentViewBox();
+		// wait for header to load
+		await screen.findByText(defaultDocuments[0].filename);
+
+		const nextButton = getNextButton();
+		await user.click(nextButton);
+
+		const prevButton = getPreviousButton();
+		await user.click(prevButton);
+
+		expect(
+			await screen.findByText(defaultDocuments[0].filename)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(`1 out of ${defaultDocuments.length}`)
+		).toBeInTheDocument();
+		expect(
+			await screen.findByText(defaultDocuments[0].content)
 		).toBeInTheDocument();
 	});
 
 	test('GIVEN the first document is shown THEN previous button is disabled', async () => {
-		const mockOnPrevious = vi.fn();
-		const mockOnNext = vi.fn();
-		const { user } = renderDocumentViewBoxHeader({
-			...defaultProps,
-			numberOfDocuments: 3,
-			documentIndex: 0,
-			onPrevious: mockOnPrevious,
-			onNext: mockOnNext,
-		});
+		renderDocumentViewBox();
+		// wait for header to load
+		await screen.findByText(defaultDocuments[0].filename);
 
 		const prevButton = getPreviousButton();
 		expect(prevButton).toHaveAttribute('aria-disabled', 'true');
 		expect(prevButton).toBeEnabled();
-		await user.click(prevButton);
-		expect(mockOnPrevious).not.toHaveBeenCalled();
 
 		const nextButton = getNextButton();
 		expect(nextButton).toHaveAttribute('aria-disabled', 'false');
 		expect(nextButton).toBeEnabled();
-		await user.click(nextButton);
-		expect(mockOnNext).toHaveBeenCalled();
-	});
-
-	test('GIVEN the last document is shown THEN next button is disabled', async () => {
-		const mockOnPrevious = vi.fn();
-		const mockOnNext = vi.fn();
-		const { user } = renderDocumentViewBoxHeader({
-			...defaultProps,
-			numberOfDocuments: 3,
-			documentIndex: 2,
-			onPrevious: mockOnPrevious,
-			onNext: mockOnNext,
-		});
-
-		const prevButton = getPreviousButton();
-		expect(prevButton).toHaveAttribute('aria-disabled', 'false');
-		expect(prevButton).toBeEnabled();
-		await user.click(prevButton);
-		expect(mockOnPrevious).toHaveBeenCalled();
-
-		const nextButton = getNextButton();
-		expect(nextButton).toHaveAttribute('aria-disabled', 'true');
-		expect(nextButton).toBeEnabled();
-		await user.click(nextButton);
-		expect(mockOnNext).not.toHaveBeenCalled();
-	});
-
-	test("GIVEN there's only one document THEN both buttons are disabled", async () => {
-		const mockOnPrevious = vi.fn();
-		const mockOnNext = vi.fn();
-		const { user } = renderDocumentViewBoxHeader({
-			...defaultProps,
-			numberOfDocuments: 1,
-			documentIndex: 0,
-			onPrevious: mockOnPrevious,
-			onNext: mockOnNext,
-		});
-
-		const prevButton = getPreviousButton();
-		expect(prevButton).toHaveAttribute('aria-disabled', 'true');
-		expect(prevButton).toBeEnabled();
-		await user.click(prevButton);
-		expect(mockOnPrevious).not.toHaveBeenCalled();
-
-		const nextButton = getNextButton();
-		expect(nextButton).toHaveAttribute('aria-disabled', 'true');
-		expect(nextButton).toBeEnabled();
-		await user.click(nextButton);
-		expect(mockOnNext).not.toHaveBeenCalled();
 	});
 
 	test('GIVEN a middle document is shown THEN both buttons are not disabled', async () => {
-		const mockOnPrevious = vi.fn();
-		const mockOnNext = vi.fn();
-		const { user } = renderDocumentViewBoxHeader({
-			...defaultProps,
-			numberOfDocuments: 3,
-			documentIndex: 1,
-			onPrevious: mockOnPrevious,
-			onNext: mockOnNext,
-		});
+		const documents: MockDocument[] = [
+			{
+				filename: 'document-1.txt',
+				content: 'Now displaying document 1',
+			},
+			{
+				filename: 'document-2.txt',
+				content: 'Now displaying document 2',
+			},
+			{
+				filename: 'document-3.txt',
+				content: 'Now displaying document 3',
+			},
+		];
+
+		const { user } = renderDocumentViewBox(documents);
+		// wait for header to load
+		await screen.findByText(defaultDocuments[0].filename);
+
+		{
+			const nextButton = getNextButton();
+			await user.click(nextButton);
+		}
 
 		const prevButton = getPreviousButton();
 		expect(prevButton).toHaveAttribute('aria-disabled', 'false');
 		expect(prevButton).toBeEnabled();
-		await user.click(prevButton);
-		expect(mockOnPrevious).toHaveBeenCalled();
 
 		const nextButton = getNextButton();
 		expect(nextButton).toHaveAttribute('aria-disabled', 'false');
 		expect(nextButton).toBeEnabled();
-		await user.click(nextButton);
-		expect(mockOnNext).toHaveBeenCalled();
+	});
+
+	test('GIVEN the last document is shown THEN next button is disabled', async () => {
+		const documents: MockDocument[] = [
+			{
+				filename: 'document-1.txt',
+				content: 'Now displaying document 1',
+			},
+			{
+				filename: 'document-2.txt',
+				content: 'Now displaying document 2',
+			},
+		];
+
+		const { user } = renderDocumentViewBox(documents);
+		// wait for header to load
+		await screen.findByText(defaultDocuments[0].filename);
+
+		{
+			const nextButton = getNextButton();
+			await user.click(nextButton);
+		}
+
+		const prevButton = getPreviousButton();
+		expect(prevButton).toHaveAttribute('aria-disabled', 'false');
+		expect(prevButton).toBeEnabled();
+
+		const nextButton = getNextButton();
+		expect(nextButton).toHaveAttribute('aria-disabled', 'true');
+		expect(nextButton).toBeEnabled();
+	});
+
+	test("GIVEN there's only one document THEN both buttons are disabled", async () => {
+		const document: MockDocument = {
+			filename: 'document-1.txt',
+			content: 'Now displaying document 1',
+		};
+		renderDocumentViewBox([document]);
+		// wait for header to load
+		await screen.findByText(document.filename);
+
+		const prevButton = getPreviousButton();
+		expect(prevButton).toHaveAttribute('aria-disabled', 'true');
+		expect(prevButton).toBeEnabled();
+
+		const nextButton = getNextButton();
+		expect(nextButton).toHaveAttribute('aria-disabled', 'true');
+		expect(nextButton).toBeEnabled();
 	});
 });
