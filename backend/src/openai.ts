@@ -137,6 +137,7 @@ async function getValidModelsFromOpenAI() {
 		validModels.sort();
 		setValidOpenAIModels(validModels);
 		console.debug('Valid OpenAI models:', validModels);
+		return validModels;
 	} catch (error) {
 		console.error('Error getting valid models: ', error);
 		throw error;

@@ -285,19 +285,14 @@ describe('openAI unit tests', () => {
 			{ id: 'da-vinci-1' },
 			{ id: 'da-vinci-2' },
 		];
-		const consoleSpy = jest.spyOn(console, 'debug');
-		const validModels = [
+		const expectedValidModels = [
 			'gpt-3.5-turbo',
 			'gpt-3.5-turbo-0613',
 			'gpt-4',
 			'gpt-4-0613',
 		];
-		await getValidModelsFromOpenAI();
-
-		expect(consoleSpy).toHaveBeenCalledWith(
-			'Valid OpenAI models:',
-			validModels
-		);
+		const validModels = await getValidModelsFromOpenAI();
+		expect(validModels).toEqual(expectedValidModels);
 	});
 });
 afterEach(() => {
