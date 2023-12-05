@@ -471,7 +471,7 @@ function applyOutputFilterDefence(
 	}
 }
 
-async function carryOutToolCalls(
+async function performToolCalls(
 	chatResponse: ChatResponse,
 	toolCalls: ChatCompletionMessageToolCall[],
 	chatHistory: ChatHistoryMessage[],
@@ -537,7 +537,7 @@ async function getFinalReplyAfterAllToolCalls(
 			CHAT_MESSAGE_TYPE.FUNCTION_CALL
 		);
 
-		await carryOutToolCalls(
+		await performToolCalls(
 			chatResponse,
 			reply.tool_calls,
 			chatHistory,
