@@ -450,9 +450,8 @@ function applyOutputFilterDefence(
 
 	if (detectedPhrases.length > 0) {
 		console.debug(
-			`FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: '${detectedPhrases.join(
-				"', '"
-			)}'.`
+			'FILTER_BOT_OUTPUT defence triggered. Detected phrases from blocklist:',
+			detectedPhrases
 		);
 		if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
 			chatResponse.defenceReport.triggeredDefences.push(
@@ -495,7 +494,7 @@ async function performToolCalls(
 				chatResponse.wonLevel = functionCallReply.wonLevel;
 
 				// add the function call to the chat history
-				chatHistory = pushCompletionToHistory(
+				pushCompletionToHistory(
 					chatHistory,
 					functionCallReply.completion,
 					CHAT_MESSAGE_TYPE.FUNCTION_CALL
@@ -529,7 +528,7 @@ async function getFinalReplyAfterAllToolCalls(
 	// check if GPT wanted to call a tool
 	while (reply.tool_calls) {
 		// push the assistant message to the chat
-		chatHistory = pushCompletionToHistory(
+		pushCompletionToHistory(
 			chatHistory,
 			reply,
 			CHAT_MESSAGE_TYPE.FUNCTION_CALL
@@ -570,7 +569,7 @@ async function chatGptSendMessage(
 	console.log(`User message: '${message}'`);
 
 	// add user message to chat
-	chatHistory = pushCompletionToHistory(
+	pushCompletionToHistory(
 		chatHistory,
 		{
 			role: 'user',
@@ -607,7 +606,7 @@ async function chatGptSendMessage(
 		applyOutputFilterDefence(reply.content, defences, chatResponse);
 	}
 	// add the ai reply to the chat history
-	chatHistory = pushCompletionToHistory(
+	pushCompletionToHistory(
 		chatHistory,
 		reply,
 		chatResponse.defenceReport.isBlocked
