@@ -1,6 +1,7 @@
 import { LEVELS } from '@src/Levels';
 import HandbookIcon from '@src/assets/images/HandbookIcon';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
+import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -22,12 +23,18 @@ function MainHeader({
 		return levelName ?? '';
 	}
 
-	// const isLevelComplete = (currentLevel as number) < numCompletedLevels;
+	const isLevelComplete = (currentLevel as number) < numCompletedLevels;
 
 	return (
 		<header className="main-header">
 			<span className="main-header-left">
-				<img className="titleLogo" src={SpyLogicTitleLogo} alt="Spy Logic" />
+				<img
+					className="titleLogo"
+					src={
+						isLevelComplete ? SpyLogicTitleLogoAffirmative : SpyLogicTitleLogo
+					}
+					alt="Spy Logic"
+				/>
 			</span>
 			<span className="main-header-middle">
 				<span className="main-header-current-level">
