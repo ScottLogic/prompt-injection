@@ -30,7 +30,6 @@ jest.mock('@src/openai', () => {
 	return {
 		...originalModule,
 		initOpenAi: jest.fn(),
-		setValidOpenAIModels: jest.fn(),
 		getOpenAI: jest.fn(),
 	};
 });

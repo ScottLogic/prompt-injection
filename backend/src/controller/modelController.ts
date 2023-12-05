@@ -25,17 +25,11 @@ function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 	if (model === undefined) {
 		res.status(400).send();
 	} else {
-		try {
-			// Keep same config if not given in request.
-			const configuration =
-				req.body.configuration ?? req.session.chatModel.configuration;
-			req.session.chatModel = { id: model, configuration };
-			console.debug('GPT model set:', JSON.stringify(req.session.chatModel));
-			res.status(200).send();
-		} catch (err) {
-			console.log('GPT model could not be set: ', err);
-			res.status(401).send();
-		}
+		const configuration =
+			req.body.configuration ?? req.session.chatModel.configuration;
+		req.session.chatModel = { id: model, configuration };
+		console.debug('GPT model set:', JSON.stringify(req.session.chatModel));
+		res.status(200).send();
 	}
 }
 
@@ -76,7 +70,7 @@ function handleGetModel(req: OpenAIGetModelRequest, res: Response) {
 	res.send(req.session.chatModel);
 }
 
-function handleGetValidModels(_: unknown, res: Response) {
+function handleGetValidModels(_: never, res: Response) {
 	const models = getValidOpenAIModelsList();
 	res.send({ models });
 }
