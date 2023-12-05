@@ -1,12 +1,10 @@
-import HandbookIcon from '@src/assets/images/HandbookIcon';
-import ResetProgressIcon from '@src/assets/images/ResetProgressIcon';
-import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
-import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
+import { LEVELS } from '@src/Levels';
+import HandbookIcon from '@src/assets/icons/Handbook.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
 import { LEVEL_NAMES } from '@src/models/level';
 
-// eslint-disable-next-line no-restricted-imports
-import HeaderButton from '../ThemedButtons/HeaderButton';
+import ProjectIcon from './ProjectIcon';
+import ProjectIconWon from './ProjectIconWon';
 
 import './MainHeader.css';
 
@@ -59,7 +57,7 @@ function MainHeader({
 						aria-label="open the handbook"
 						onClick={openHandbook}
 					>
-						<HandbookIcon />
+						<img src={HandbookIcon} alt="" />
 					</button>
 				</div>
 			</span>
