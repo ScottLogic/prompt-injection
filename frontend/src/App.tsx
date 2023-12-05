@@ -72,23 +72,18 @@ function App() {
 	}
 
 	// fetch constants from the backend on app mount
-	function loadBackendData() {
-		console.log("Initializing app's backend data");
-		getValidModels()
-			.then((models) => {
-				setChatModels(models);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-
-		getSystemRoles()
-			.then((roles) => {
-				setSystemRoles(roles);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+	async function loadBackendData() {
+		try {
+			console.log("Initializing app's backend data");
+			const [models, roles] = await Promise.all([
+				getValidModels(),
+				getSystemRoles(),
+			]);
+			setChatModels(models);
+			setSystemRoles(roles);
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	useEffect(() => {
@@ -122,7 +117,7 @@ function App() {
 
 	// load the system constants from backend on app mount
 	useEffect(() => {
-		loadBackendData();
+		void loadBackendData();
 	}, []);
 
 	useEffect(() => {
