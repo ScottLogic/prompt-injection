@@ -1,10 +1,10 @@
 import { Request } from 'express';
 
-import { DefenceInfo } from '@src/models/defence';
+import { Defence } from '@src/models/defence';
 
 export type DefenceStatusRequest = Request<
 	never,
-	DefenceInfo[] | string,
+	Defence[] | string,
 	never,
 	{
 		level?: string;

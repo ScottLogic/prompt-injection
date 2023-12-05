@@ -6,7 +6,7 @@ import {
 	ChatHistoryMessage,
 	ChatModel,
 } from '@src/models/chat';
-import { DEFENCE_TYPES, DefenceInfo } from '@src/models/defence';
+import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { chatGptSendMessage } from '@src/openai';
 import { systemRoleDefault } from '@src/promptTemplates';
@@ -57,7 +57,7 @@ describe('OpenAI Integration Tests', () => {
 	test('GIVEN OpenAI initialised WHEN sending message THEN reply is returned', async () => {
 		const message = 'Hello';
 		const chatHistory: ChatHistoryMessage[] = [];
-		const defences: DefenceInfo[] = defaultDefences;
+		const defences: Defence[] = defaultDefences;
 		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
@@ -111,10 +111,7 @@ describe('OpenAI Integration Tests', () => {
 		};
 
 		// set the system role prompt
-		const defences = activateDefence(
-			DEFENCE_TYPES.SYSTEM_ROLE,
-			defaultDefences
-		);
+		const defences = activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences);
 
 		// Mock the createChatCompletion function
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
@@ -176,10 +173,7 @@ describe('OpenAI Integration Tests', () => {
 		};
 
 		// activate the SYSTEM_ROLE defence
-		const defences = activateDefence(
-			DEFENCE_TYPES.SYSTEM_ROLE,
-			defaultDefences
-		);
+		const defences = activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences);
 
 		// Mock the createChatCompletion function
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
@@ -240,7 +234,7 @@ describe('OpenAI Integration Tests', () => {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 			},
 		];
-		const defences: DefenceInfo[] = defaultDefences;
+		const defences: Defence[] = defaultDefences;
 		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
@@ -324,11 +318,11 @@ describe('OpenAI Integration Tests', () => {
 			};
 
 			const defences = configureDefence(
-				DEFENCE_TYPES.SYSTEM_ROLE,
-				activateDefence(DEFENCE_TYPES.SYSTEM_ROLE, defaultDefences),
+				DEFENCE_ID.SYSTEM_ROLE,
+				activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences),
 				[
 					{
-						id: 'systemRole',
+						id: 'SYSTEM_ROLE',
 						value: 'You are not a helpful assistant',
 					},
 				]
@@ -389,7 +383,7 @@ describe('OpenAI Integration Tests', () => {
 		};
 		const isOriginalMessage = true;
 		const defences = activateDefence(
-			DEFENCE_TYPES.FILTER_BOT_OUTPUT,
+			DEFENCE_ID.FILTER_BOT_OUTPUT,
 			defaultDefences
 		);
 
@@ -407,9 +401,9 @@ describe('OpenAI Integration Tests', () => {
 		);
 
 		expect(reply).toBeDefined();
-		expect(reply.defenceInfo.isBlocked).toBe(true);
-		expect(reply.defenceInfo.triggeredDefences.length).toBe(1);
-		expect(reply.defenceInfo.blockedReason).toBe(
+		expect(reply.defenceReport.isBlocked).toBe(true);
+		expect(reply.defenceReport.triggeredDefences.length).toBe(1);
+		expect(reply.defenceReport.blockedReason).toBe(
 			'My original response was blocked as it contained a restricted word/phrase. Ask me something else. '
 		);
 
@@ -432,7 +426,7 @@ describe('OpenAI Integration Tests', () => {
 		};
 		const isOriginalMessage = true;
 		const defences = activateDefence(
-			DEFENCE_TYPES.FILTER_BOT_OUTPUT,
+			DEFENCE_ID.FILTER_BOT_OUTPUT,
 			defaultDefences
 		);
 
@@ -451,8 +445,8 @@ describe('OpenAI Integration Tests', () => {
 
 		expect(reply).toBeDefined();
 		expect(reply.completion?.content).toBe('I cant tell you!');
-		expect(reply.defenceInfo.isBlocked).toBe(false);
-		expect(reply.defenceInfo.triggeredDefences.length).toBe(0);
+		expect(reply.defenceReport.isBlocked).toBe(false);
+		expect(reply.defenceReport.triggeredDefences.length).toBe(0);
 
 		mockCreateChatCompletion.mockRestore();
 	});
@@ -493,10 +487,10 @@ describe('OpenAI Integration Tests', () => {
 
 			expect(reply).toBeDefined();
 			expect(reply.completion?.content).toBe('The secret project is X.');
-			expect(reply.defenceInfo.isBlocked).toBe(false);
-			expect(reply.defenceInfo.alertedDefences.length).toBe(1);
-			expect(reply.defenceInfo.alertedDefences[0]).toBe(
-				DEFENCE_TYPES.FILTER_BOT_OUTPUT
+			expect(reply.defenceReport.isBlocked).toBe(false);
+			expect(reply.defenceReport.alertedDefences.length).toBe(1);
+			expect(reply.defenceReport.alertedDefences[0]).toBe(
+				DEFENCE_ID.FILTER_BOT_OUTPUT
 			);
 
 			mockCreateChatCompletion.mockRestore();

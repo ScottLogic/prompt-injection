@@ -1,4 +1,4 @@
-enum DEFENCE_TYPES {
+enum DEFENCE_ID {
 	CHARACTER_LIMIT = 'CHARACTER_LIMIT',
 	PROMPT_EVALUATION_LLM = 'PROMPT_EVALUATION_LLM',
 	QA_LLM = 'QA_LLM',
@@ -8,48 +8,38 @@ enum DEFENCE_TYPES {
 	FILTER_BOT_OUTPUT = 'FILTER_BOT_OUTPUT',
 }
 
-class DefenceConfig {
-	constructor(id: string, name: string, inputType: 'text' | 'number') {
-		this.id = id;
-		this.inputType = inputType;
-		this.name = name;
-		this.value = '';
-	}
+type DEFENCE_CONFIG_ITEM_ID =
+	| 'MAX_MESSAGE_LENGTH'
+	| 'PROMPT'
+	| 'SYSTEM_ROLE'
+	| 'FILTER_USER_INPUT'
+	| 'FILTER_BOT_OUTPUT';
 
-	id: string;
+type DefenceConfigItem = {
+	id: DEFENCE_CONFIG_ITEM_ID;
 	inputType: 'text' | 'number';
 	name: string;
 	value: string;
-}
+};
 
-class DefenceInfo {
-	constructor(
-		id: DEFENCE_TYPES,
-		name: string,
-		info: string,
-		config: DefenceConfig[]
-	) {
-		this.id = id;
-		this.name = name;
-		this.info = info;
-		this.config = config;
-		// each defence starts off as inactive and not triggered
-		this.isActive = false;
-		this.isTriggered = false;
-	}
-
-	id: DEFENCE_TYPES;
+type Defence = {
+	id: DEFENCE_ID;
 	name: string;
 	info: string;
-	config: DefenceConfig[];
+	config: DefenceConfigItem[];
 	isActive: boolean;
 	isTriggered: boolean;
-}
+};
 
-interface DefenceResetResponse {
+type DefenceResetResponse = {
 	id: string;
 	value: string;
-}
+};
 
-export { DEFENCE_TYPES, DefenceConfig, DefenceInfo };
-export type { DefenceResetResponse };
+export { DEFENCE_ID };
+export type {
+	DefenceResetResponse,
+	DEFENCE_CONFIG_ITEM_ID,
+	DefenceConfigItem,
+	Defence,
+};
