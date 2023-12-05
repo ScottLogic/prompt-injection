@@ -58,7 +58,7 @@ describe('handleConfigureDefence', () => {
 					},
 				],
 			},
-		} as unknown as DefenceConfigureRequest;
+		} as DefenceConfigureRequest;
 
 		const res = responseMock();
 
@@ -101,7 +101,7 @@ describe('handleConfigureDefence', () => {
 					},
 				],
 			},
-		} as unknown as DefenceConfigureRequest;
+		} as DefenceConfigureRequest;
 
 		const res = responseMock();
 
@@ -117,7 +117,7 @@ describe('handleConfigureDefence', () => {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
 				level: LEVEL_NAMES.LEVEL_1,
 			},
-		} as unknown as DefenceConfigureRequest;
+		} as DefenceConfigureRequest;
 
 		const res = responseMock();
 
@@ -138,7 +138,7 @@ describe('handleConfigureDefence', () => {
 					},
 				],
 			},
-		} as unknown as DefenceConfigureRequest;
+		} as DefenceConfigureRequest;
 
 		const res = responseMock();
 
@@ -163,7 +163,7 @@ describe('handleConfigureDefence', () => {
 					},
 				],
 			},
-		} as unknown as DefenceConfigureRequest;
+		} as DefenceConfigureRequest;
 
 		const res = responseMock();
 
