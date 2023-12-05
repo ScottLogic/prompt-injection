@@ -423,19 +423,17 @@ function pushCompletionToHistory(
 	return chatHistory;
 }
 
-function getBlankDefenceReport(): ChatDefenceReport {
-	return {
+function getBlankChatResponse(): ChatResponse {
+	const blankChatDefenceReport: ChatDefenceReport = {
 		blockedReason: '',
 		isBlocked: false,
 		alertedDefences: [],
 		triggeredDefences: [],
 	};
-}
 
-function getBlankChatResponse(): ChatResponse {
 	return {
 		completion: null,
-		defenceReport: getBlankDefenceReport(),
+		defenceReport: blankChatDefenceReport,
 		wonLevel: false,
 	};
 }
