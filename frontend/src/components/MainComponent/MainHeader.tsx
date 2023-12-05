@@ -1,10 +1,9 @@
 import { LEVELS } from '@src/Levels';
+import HandbookIcon from '@src/assets/images/HandbookIcon';
 import ProjectIcon from '@src/assets/images/ProjectIcon';
 import ProjectIconWon from '@src/assets/images/ProjectIconWon';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
 import { LEVEL_NAMES } from '@src/models/level';
-
-import HandbookIcon from './HandbookIcon';
 
 import './MainHeader.css';
 
