@@ -1,6 +1,7 @@
 import { LEVELS } from '@src/Levels';
 import HandbookIcon from '@src/assets/icons/Handbook.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import ProjectIcon from './ProjectIcon';
@@ -50,14 +51,10 @@ function MainHeader({
 					</span>
 				)}
 				<div className="handbook-area">
-					<button
-						className="prompt-injection-min-button handbook-icon"
-						title="open the handbook"
-						aria-label="open the handbook"
-						onClick={openHandbook}
-					>
-						<img src={HandbookIcon} alt="" />
-					</button>
+					<ThemedButton onClick={openHandbook}>
+						<img className="handbook-icon" src={HandbookIcon} alt="" />
+						Handbook
+					</ThemedButton>
 				</div>
 			</span>
 		</header>
