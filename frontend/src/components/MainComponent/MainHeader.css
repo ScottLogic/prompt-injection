@@ -50,7 +50,6 @@
 	margin-left: 1rem;
 }
 
-.main-header-right .handbook-area .handbook-icon {
-	height: 100%;
-	width: 100%;
+.handbook-icon {
+	margin-right: 0.5rem;
 }
