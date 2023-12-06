@@ -96,15 +96,15 @@ const chatModelMaxTokens = {
 };
 
 // list of valid chat models for the api key
-let validOpenAIModels: string[] = [];
-
-function setValidOpenAIModels(models: string[]) {
-	validOpenAIModels = models;
-}
-
-function getValidOpenAIModelsList() {
-	return validOpenAIModels;
-}
+const validOpenAiModels = (() => {
+	let validModels: string[] = [];
+	return {
+		get: () => validModels,
+		set: (models: string[]) => {
+			validModels = models;
+		},
+	};
+})();
 
 const getOpenAIKey = (() => {
 	let openAIKey: string | undefined = undefined;
@@ -132,10 +132,10 @@ async function getValidModelsFromOpenAI() {
 		// get the model ids that are supported by our app
 		const validModels = models.data
 			.map((model) => model.id)
-			.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS));
+			.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS))
+			.sort();
 
-		validModels.sort();
-		setValidOpenAIModels(validModels);
+		validOpenAiModels.set(validModels);
 		console.debug('Valid OpenAI models:', validModels);
 		return validModels;
 	} catch (error) {
@@ -595,10 +595,10 @@ async function chatGptSendMessage(
 	}
 }
 
+export const getValidOpenAIModelsList = validOpenAiModels.get;
 export {
 	chatGptSendMessage,
 	filterChatHistoryByMaxTokens,
 	getOpenAIKey,
 	getValidModelsFromOpenAI,
-	getValidOpenAIModelsList,
 };
