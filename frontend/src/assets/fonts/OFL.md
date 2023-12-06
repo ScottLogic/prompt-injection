@@ -1,3 +1,17 @@
+Copyright notices for each font file:
+- NotoKufiArabic-Regular - Copyright 2012 Google Inc. All Rights Reserved.
+- NotoSans-Regular - Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic).
+- NotoSansHebrew-Regular - Copyright 2022 The Noto Project Authors (https://github.com/notofonts/hebrew).
+- NotoSansKR-Regular - Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.
+- NotoSansMonoCJKjp-Regular - Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic).
+- NotoSansSC-Regular - Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.
+- NotoSansThai-Regular - Copyright 2022 The Noto Project Authors (https://github.com/notofonts/thai).
+- NotoSerifBengali_Condensed-Regular - Copyright 2022 The Noto Project Authors (https://github.com/notofonts/bengali).
+- NotoSerifDevanagari-Regular - Copyright 2022 The Noto Project Authors (https://github.com/notofonts/devanagari).
+- NotoSerifGurmukhi-Regular - Copyright 2022 The Noto Project Authors (https://github.com/notofonts/gurmukhi).
+- NotoSerifJP-Regular - Copyright 2012 Google Inc. All Rights Reserved.
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
 <https://openfontlicense.org>
 
