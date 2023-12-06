@@ -5,3 +5,7 @@
 	align-items: stretch;
 	gap: 0.5rem;
 }
+
+.level-selection-box button:last-child {
+	font-size: 1rem;
+}

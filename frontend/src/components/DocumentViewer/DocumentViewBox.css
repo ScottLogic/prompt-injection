@@ -8,9 +8,8 @@
 	height: 85vh;
 	aspect-ratio: 7/8;
 
-	background-color: var(--main-background-colour);
+	background-color: var(--main-background);
 	border: 0.1875rem solid var(--main-border-colour);
-	border-color: var(--main-border-colour);
 }
 
 .document-popup-inner .close-button {
@@ -24,7 +23,7 @@
 }
 
 .document-popup-inner .close-button:hover {
-	color: var(--main-button-hover-text-colour);
+	color: var(--main-text-colour);
 	text-decoration: none;
 	cursor: pointer;
 }

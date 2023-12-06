@@ -3,6 +3,7 @@ import { userEvent } from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 
 import { LEVELS } from '@src/Levels';
+import { LEVEL_NAMES } from '@src/models/level';
 
 import LevelSelectionBox, { LevelSelectionBoxProps } from './LevelSelectionBox';
 
@@ -18,70 +19,93 @@ function renderComponent(props: LevelSelectionBoxProps = defaultProps) {
 	return { user };
 }
 
-function isSandbox(name: string) {
-	return /Sandbox/i.test(name);
-}
-
-const storyLevels = LEVELS.filter(({ name }) => !isSandbox(name));
+const levels = LEVELS.map(({ id, name }) => ({
+	id,
+	name: id === LEVEL_NAMES.SANDBOX ? name : `${id + 1}`,
+}));
 
 describe('LevelSelectionBox component tests', () => {
-	test('renders one button per level, when not in sandbox', () => {
+	test('renders one button per level', () => {
 		renderComponent();
 
 		const levelButtons = screen.getAllByRole('button');
-		expect(levelButtons).toHaveLength(storyLevels.length);
-		storyLevels.forEach(({ name }) => {
+		expect(levelButtons).toHaveLength(levels.length);
+		levels.forEach(({ name }) => {
 			expect(screen.getByRole('button', { name })).toBeInTheDocument();
 		});
 	});
 
 	test('renders current level selected', () => {
-		const currentLevel = LEVELS[1];
+		const currentLevel = levels[1];
 
 		renderComponent({ ...defaultProps, currentLevel: currentLevel.id });
 
 		const selectedButtons = screen
 			.getAllByRole('button')
 			.filter((button) => button.classList.contains('selected'));
+
 		expect(selectedButtons).toHaveLength(1);
 		expect(selectedButtons[0]).toHaveAccessibleName(currentLevel.name);
 	});
 
-	test('renders buttons ahead of current level disabled', () => {
+	test('renders buttons disabled ahead of highest level completed, except for sandbox', () => {
 		const numCompletedLevels = 1;
 		const currentLevel = LEVELS[numCompletedLevels];
+		const setCurrentLevel = vi.fn();
 
-		renderComponent({ ...defaultProps, numCompletedLevels });
-
-		storyLevels.forEach(({ id, name }) => {
-			const button = screen.getByRole('button', { name });
-			if (id <= currentLevel.id) {
-				expect(button).toBeEnabled();
-			} else {
-				expect(button).toBeDisabled();
-			}
+		renderComponent({
+			...defaultProps,
+			currentLevel: currentLevel.id,
+			numCompletedLevels,
+			setCurrentLevel,
 		});
+
+		for (const { id, name } of levels) {
+			const button = screen.getByRole('button', { name });
+			const expectDisabled = id > currentLevel.id && id !== LEVEL_NAMES.SANDBOX;
+			expect(button).toHaveAttribute('aria-disabled', `${expectDisabled}`);
+			expect(button).toBeEnabled();
+		}
 	});
 
-	test.each(storyLevels)(
-		`fires callback on click, unless current level [$name] clicked`,
+	test('clicking aria-disabled button does not trigger level change', async () => {
+		const numCompletedLevels = 0;
+		const currentLevel = LEVELS[numCompletedLevels];
+		const setCurrentLevel = vi.fn();
+
+		const { user } = renderComponent({
+			...defaultProps,
+			currentLevel: currentLevel.id,
+			numCompletedLevels,
+			setCurrentLevel,
+		});
+
+		const disabledLevels = levels.filter(
+			({ id }) => id > currentLevel.id && id !== LEVEL_NAMES.SANDBOX
+		);
+		for (const { name } of disabledLevels) {
+			const button = screen.getByRole('button', { name });
+			expect(button).toHaveAttribute('aria-disabled', 'true');
+			await user.click(button);
+			expect(setCurrentLevel).not.toHaveBeenCalled();
+		}
+	});
+
+	test.each(levels)(
+		'clicking current level button does not trigger level change',
 		async (level) => {
-			const currentLevel = LEVELS[0];
 			const setCurrentLevel = vi.fn();
+
 			const { user } = renderComponent({
-				currentLevel: LEVELS[0].id,
-				numCompletedLevels: 3,
+				...defaultProps,
+				currentLevel: level.id,
+				numCompletedLevels: level.id as number,
 				setCurrentLevel,
 			});
 
-			await user.click(screen.getByRole('button', { name: level.name }));
-
-			if (level === currentLevel) {
-				expect(setCurrentLevel).not.toHaveBeenCalled();
-			} else {
-				expect(setCurrentLevel).toHaveBeenCalledOnce();
-				expect(setCurrentLevel).toHaveBeenCalledWith(level.id);
-			}
+			const button = screen.getByRole('button', { name: level.name });
+			await user.click(button);
+			expect(setCurrentLevel).not.toHaveBeenCalled();
 		}
 	);
 });

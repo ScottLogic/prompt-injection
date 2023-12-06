@@ -34,7 +34,7 @@
 }
 
 .overlay > .close-button:hover {
-	color: var(--main-button-hover-text-colour);
+	color: var(--main-text-colour);
 	text-decoration: none;
 	cursor: pointer;
 }
