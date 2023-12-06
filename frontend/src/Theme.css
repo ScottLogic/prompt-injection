@@ -1,44 +1,35 @@
 :root {
-	--header-background-colour: #101010;
+	--header-background-colour: #252525;
 	--footer-background-colour: #444444;
+	--main-background: linear-gradient(
+		180deg,
+		var(--header-background-colour) 0%,
+		#000 100%
+	);
 
-	--main-accent-colour: #1fd07b;
-	--main-background-colour: #252525;
-	--main-border-colour: var(--main-accent-colour);
-	--main-error-colour: #cc3c3c;
+	--border-colour-teal: #2bb3bb;
+	--background-colour-teal: #208187;
 	--main-text-colour: #fff;
+	--main-accent-colour: #1fd07b; /* #623 TO BE REMOVED */
+	--main-border-colour: var(--main-accent-colour); /* #623 TO BE REMOVED */
+	--main-error-colour: #c41565;
 
 	--main-scrollbar-colour: #444444;
 	--main-scrollbar-hover-colour: #555555;
 	--main-scrollbar-border-colour: #666666;
 
-	--main-button-active-background-colour: teal;
-	--main-button-active-text-colour: var(--main-text-colour);
-	--main-button-inactive-background-colour: #313131;
-	--main-button-inactive-text-colour: var(--main-text-colour);
 	--main-button-disabled-background-colour: #888888;
 	--main-button-disabled-text-colour: #111111;
-	--main-button-active-hover-background-colour: #00aaaa;
-	--main-button-active-hover-text-colour: var(--main-text-colour);
-	--main-button-inactive-hover-background-colour: #555555;
-	--main-button-inactive-hover-text-colour: var(--main-text-colour);
-	--main-button-hover-text-colour: var(--main-text-colour);
-	--main-button-hover-border-colour: white;
 
-	--main-input-active-background-colour: var(
-		--main-button-inactive-background-colour
-	);
-	--main-input-active-text-colour: var(--main-button-inactive-text-colour);
+	--main-input-active-text-colour: var(--main-text-colour);
 	--main-input-inactive-background-colour: #b3b3b3;
 	--main-input-inactive-text-colour: #464646;
 
 	--main-toggle-ball-colour: #ececec;
 	--main-toggle-off-colour: #b3b3b3;
-	--main-toggle-on-colour: var(--main-accent-colour);
+	--main-toggle-on-colour: var(--main-accent-colour); /* #623 CHANGE TO TEAL? */
 
-	--control-header-background-colour: var(
-		--main-button-inactive-background-colour
-	);
+	--control-header-background-colour: #313131;
 	--control-body-background-colour: #3a3a3a;
 
 	--overlay-background-colour: #8ad5da;
@@ -61,19 +52,14 @@
 	--document-viewer-background-colour: #fff;
 	--document-viewer-text-colour: #000;
 
-	--chat-bot-colour: #d482fb;
-	--chat-bot-background: linear-gradient(var(--chat-bot-colour), #f3dbfe);
-	--chat-blocked-colour: var(--main-error-colour);
-	--chat-blocked-background: linear-gradient(
-		var(--chat-blocked-colour),
-		#ffacb6
-	);
-	--chat-edited-colour: #6a9b9b;
-	--chat-edited-background: linear-gradient(var(--chat-edited-colour), #cae7f5);
-	--chat-user-colour: var(--main-accent-colour);
-	--chat-user-background: linear-gradient(var(--chat-user-colour), #8ad5da);
+	--chat-bot-background-colour: #e9feff;
+	--chat-bot-border-colour: #b6ecef;
+	--chat-user-background-color: #009ca5;
+	--chat-user-border-color: #198b92;
+	--chat-blocked-background-color: #faebf2;
+	--chat-blocked-border-color: #c41565;
+	--chat-edited-background-colour: #6a9b9b;
 	--chat-info-text-colour: #b0b0b0;
-	--chat-message-text-colour: #000;
 	--chat-alerted-text-colour: teal;
 	--chat-triggered-text-colour: var(--main-error-colour);
 
@@ -84,8 +70,8 @@
 	--short-mission-button-background-colour: var(
 		--control-header-background-colour
 	);
-	--short-mission-button-text-colour: var(--main-button-inactive-text-colour);
-	--short-mission-button-border-colour: var(--main-button-hover-border-colour);
+	--short-mission-button-text-colour: var(--main-text-colour);
+	--short-mission-button-border-colour: var(--main-text-colour);
 	--short-mission-button-hover-background-colour: var(
 		--control-body-background-colour
 	);

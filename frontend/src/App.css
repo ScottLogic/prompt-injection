@@ -28,7 +28,7 @@
 	/* remove default button styling */
 	background-color: transparent;
 	border: 0.0625rem solid transparent;
-	color: var(--main-button-inactive-text-colour);
+	color: var(--main-text-colour);
 	padding: 0;
 	display: flex;
 	align-items: center;
@@ -36,7 +36,7 @@
 }
 
 .prompt-injection-min-button:hover {
-	border-color: var(--main-button-hover-border-colour);
+	border-color: var(--main-text-colour);
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -58,7 +58,7 @@
 }
 
 hr {
-	border-top: 0.0625rem solid var(--chat-message-text-colour);
+	border-top: 0.0625rem solid black;
 	border-bottom: transparent;
 	margin: 0.5rem 0;
 }

@@ -1,6 +1,6 @@
 import { LEVELS } from '@src/Levels';
-import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
-import { Level, LEVEL_NAMES } from '@src/models/level';
+import LevelButton from '@src/components/ThemedButtons/LevelButton';
+import { LEVEL_NAMES } from '@src/models/level';
 
 import './LevelSelectionBox.css';
 
@@ -15,10 +15,10 @@ function LevelSelectionBox({
 	numCompletedLevels,
 	setCurrentLevel,
 }: LevelSelectionBoxProps) {
-	// display levels 1-3
-	const displayLevels = LEVELS.filter(
-		(level) => level.id !== LEVEL_NAMES.SANDBOX
-	);
+	const displayLevels = LEVELS.map(({ id, name }) => ({
+		id,
+		displayName: id === LEVEL_NAMES.SANDBOX ? name : `${id + 1}`,
+	}));
 
 	function handleLevelChange(newLevel: LEVEL_NAMES) {
 		if (newLevel !== currentLevel) {
@@ -27,18 +27,18 @@ function LevelSelectionBox({
 	}
 	return (
 		<div className="level-selection-box">
-			{displayLevels.map((level: Level, index: number) => {
+			{displayLevels.map(({ id, displayName }, index) => {
 				return (
-					<ThemedButton
-						key={level.name}
+					<LevelButton
+						key={id}
 						onClick={() => {
-							handleLevelChange(level.id);
+							handleLevelChange(id);
 						}}
-						disabled={index > numCompletedLevels}
-						selected={level.id === currentLevel}
+						disabled={index > numCompletedLevels && id !== LEVEL_NAMES.SANDBOX}
+						selected={id === currentLevel}
 					>
-						{level.name}
-					</ThemedButton>
+						{displayName}
+					</LevelButton>
 				);
 			})}
 		</div>

@@ -1,19 +1,22 @@
 body {
 	height: 100%;
 	margin: 0;
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-family: 'Noto Sans', Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
 
+body * {
+	font-family: 'Noto Sans', Arial, sans-serif;
+}
+
 code {
-	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-		monospace;
+	font-family: 'Noto Sans Mono', source-code-pro, Menlo, Monaco, Consolas,
+		'Courier New', monospace;
 }
 
 html {
 	height: 100%;
-	background-color: var(--main-background-colour);
-	border-color: var(--main-border-colour);
+	background: var(--main-background);
 	color: var(--main-text-colour);
 }

@@ -5,7 +5,7 @@
 	border-width: 0.0625rem;
 	padding: 0.1rem;
 
-	background-color: var(--main-background-colour);
+	background: var(--main-background);
 	color: var(--main-input-active-text-colour);
 
 	/* must inherit to override default styling */
