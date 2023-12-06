@@ -42,20 +42,16 @@ function MainHeader({
 			</span>
 			<span className="main-header-right">
 				{currentLevel !== LEVEL_NAMES.SANDBOX && (
-					<span className="main-header-level-selection">
-						<LevelSelectionBox
-							currentLevel={currentLevel}
-							numCompletedLevels={numCompletedLevels}
-							setCurrentLevel={setCurrentLevel}
-						/>
-					</span>
+					<LevelSelectionBox
+						currentLevel={currentLevel}
+						numCompletedLevels={numCompletedLevels}
+						setCurrentLevel={setCurrentLevel}
+					/>
 				)}
-				<div className="handbook-area">
-					<HeaderButton onClick={openHandbook}>
-						<img className="handbook-icon" src={HandbookIcon} alt="" />
-						Handbook
-					</HeaderButton>
-				</div>
+				<HeaderButton onClick={openHandbook}>
+					<img className="handbook-icon" src={HandbookIcon} alt="" />
+					Handbook
+				</HeaderButton>
 			</span>
 		</header>
 	);
