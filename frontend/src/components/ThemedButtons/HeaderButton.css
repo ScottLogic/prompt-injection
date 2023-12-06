@@ -1,7 +1,7 @@
 .header-button {
-	background-color: var(--main-button-inactive-background-colour);
-	border: 0.0625rem solid var(--main-border-colour);
-	border-radius: 0.3125rem;
+	background-color: var(--main-button-active-background-colour);
+	border: none;
+	border-radius: 0.5rem;
 	padding: 0.5rem;
 	color: var(--main-button-inactive-text-colour);
 	cursor: pointer;
