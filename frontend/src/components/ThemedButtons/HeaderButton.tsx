@@ -10,7 +10,7 @@ function HeaderButton({
 	onClick: () => void;
 }) {
 	return (
-		<button onClick={onClick} className="main-header-button">
+		<button onClick={onClick} className="header-button">
 			{children}
 		</button>
 	);
