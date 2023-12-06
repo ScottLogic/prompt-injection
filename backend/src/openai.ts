@@ -553,9 +553,6 @@ async function getFinalReplyAfterAllToolCalls(
 			openai,
 			currentLevel
 		);
-		if (chatHistory.length >= 8) {
-			throw new Error('Chat history too long');
-		}
 	}
 
 	// chat history gets mutated, so no need to return it
