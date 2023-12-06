@@ -44,6 +44,10 @@
 	justify-content: flex-end;
 }
 
+.handbook-button {
+	margin-left: 0.5rem;
+}
+
 .handbook-icon {
 	margin-right: 0.5rem;
 }
