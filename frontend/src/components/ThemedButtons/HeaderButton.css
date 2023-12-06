@@ -1,9 +1,9 @@
 .header-button {
-	background-color: var(--main-button-active-background-colour);
+	background-color: var(--header-button-background-colour);
 	border: none;
 	border-radius: 0.5rem;
 	padding: 0.5rem;
-	color: var(--main-button-active-text-colour);
+	color: var(--header-button-text-colour);
 	cursor: pointer;
 	min-height: fit-content;
 	display: flex;
@@ -13,5 +13,5 @@
 }
 
 .header-button:hover {
-	background-color: var(--main-button-active-hover-background-colour);
+	background-color: var(--header-button-hover-background-colour);
 }
