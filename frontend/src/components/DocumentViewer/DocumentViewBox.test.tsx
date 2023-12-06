@@ -1,6 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, test, vi } from 'vitest';
+import {
+	afterAll,
+	afterEach,
+	beforeAll,
+	describe,
+	expect,
+	test,
+	vi,
+} from 'vitest';
 
 import DocumentViewBox from './DocumentViewBox';
 
@@ -15,8 +23,19 @@ describe('DocumentViewBox component tests', () => {
 		getDocumentMetas: mockGetDocumentMetas,
 	}));
 
-	// mock global fetch
-	global.fetch = mockGlobalFetch;
+	const realFetch = global.fetch;
+
+	beforeAll(() => {
+		global.fetch = mockGlobalFetch;
+	});
+
+	afterEach(() => {
+		vi.resetAllMocks();
+	});
+
+	afterAll(() => {
+		global.fetch = realFetch;
+	});
 
 	interface MockDocument {
 		filename: string;
