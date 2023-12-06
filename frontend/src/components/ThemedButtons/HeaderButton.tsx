@@ -2,15 +2,15 @@ import { ReactNode } from 'react';
 
 import './HeaderButton.css';
 
-type HeaderButtonProps = {
+function HeaderButton({
+	children,
+	onClick,
+}: {
 	children: ReactNode;
 	onClick: () => void;
-	className?: string;
-};
-
-function HeaderButton({ children, onClick, className }: HeaderButtonProps) {
+}) {
 	return (
-		<button onClick={onClick} className={`header-button ${className}`}>
+		<button onClick={onClick} className="main-header-button">
 			{children}
 		</button>
 	);

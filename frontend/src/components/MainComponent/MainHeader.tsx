@@ -1,7 +1,7 @@
 import { LEVELS } from '@src/Levels';
 import HandbookIcon from '@src/assets/icons/Handbook.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
-import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
+import HeaderButton from '@src/components/ThemedButtons/HeaderButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import ProjectIcon from './ProjectIcon';
@@ -52,10 +52,10 @@ function MainHeader({
 			</span>
 			<span className="main-header-right">
 				<div className="handbook-area">
-					<ThemedButton onClick={openHandbook}>
+					<HeaderButton onClick={openHandbook}>
 						<img className="handbook-icon" src={HandbookIcon} alt="" />
 						Handbook
-					</ThemedButton>
+					</HeaderButton>
 				</div>
 			</span>
 		</header>
