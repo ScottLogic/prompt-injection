@@ -1,4 +1,5 @@
 Copyright notices for each font file:
+
 - NotoKufiArabic-Regular - Copyright 2012 Google Inc. All Rights Reserved.
 - NotoSans-Regular - Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic).
 - NotoSansHebrew-Regular - Copyright 2022 The Noto Project Authors (https://github.com/notofonts/hebrew).
@@ -19,13 +20,9 @@ This license is copied below, and is also available with a FAQ at:
 
 # SIL OPEN FONT LICENSE
 
+##### _Version 1.1 - 26 February 2007_
 
-
-##### *Version 1.1 - 26 February 2007*
-
-
-PREAMBLE
-----------
+## PREAMBLE
 
 The goals of the Open Font License (OFL) are to stimulate worldwide
 development of collaborative font projects, to support the font creation
@@ -42,71 +39,66 @@ however, cannot be released under any other type of license. The
 requirement for fonts to remain under this license does not apply
 to any document created using the fonts or their derivatives.
 
-DEFINITIONS
--------------
+## DEFINITIONS
 
-***Font Software*** refers to the set of files released by the Copyright
+**_Font Software_** refers to the set of files released by the Copyright
 Holder(s) under this license and clearly marked as such. This may
 include source files, build scripts and documentation.
 
-***Reserved Font Name*** refers to any names specified as such after the
+**_Reserved Font Name_** refers to any names specified as such after the
 copyright statement(s).
 
-***Original Version*** refers to the collection of Font Software components as
+**_Original Version_** refers to the collection of Font Software components as
 distributed by the Copyright Holder(s).
 
-***Modified Version*** refers to any derivative made by adding to, deleting,
+**_Modified Version_** refers to any derivative made by adding to, deleting,
 or substituting -- in part or in whole -- any of the components of the
 Original Version, by changing formats or by porting the Font Software to a
 new environment.
 
-***Author*** refers to any designer, engineer, programmer, technical
+**_Author_** refers to any designer, engineer, programmer, technical
 writer or other person who contributed to the Font Software.
 
-PERMISSION & CONDITIONS
-------------------------
+## PERMISSION & CONDITIONS
 
 Permission is hereby granted, free of charge, to any person obtaining
-a copy of the ***Font Software***, to use, study, copy, merge, embed, modify,
-redistribute, and sell modified and unmodified copies of the ***Font
-Software***, subject to the following conditions:
+a copy of the **_Font Software_**, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the **_Font
+Software_**, subject to the following conditions:
 
-1) Neither the ***Font Software*** nor any of its individual components,
-in ***Original*** or ***Modified Versions***, may be sold by itself.
+1. Neither the **_Font Software_** nor any of its individual components,
+   in **_Original_** or **_Modified Versions_**, may be sold by itself.
 
-2) ***Original*** or ***Modified Versions*** of the ***Font Software*** may be bundled,
-redistributed and/or sold with any software, provided that each copy
-contains the above copyright notice and this license. These can be
-included either as stand-alone text files, human-readable headers or
-in the appropriate machine-readable metadata fields within text or
-binary files as long as those fields can be easily viewed by the user.
+2. **_Original_** or **_Modified Versions_** of the **_Font Software_** may be bundled,
+   redistributed and/or sold with any software, provided that each copy
+   contains the above copyright notice and this license. These can be
+   included either as stand-alone text files, human-readable headers or
+   in the appropriate machine-readable metadata fields within text or
+   binary files as long as those fields can be easily viewed by the user.
 
-3) No ***Modified Version*** of the ***Font Software*** may use the ***Reserved Font
-Name(s)*** unless explicit written permission is granted by the corresponding
-Copyright Holder. This restriction only applies to the primary font name as
-presented to the users.
+3. No **_Modified Version_** of the **_Font Software_** may use the **_Reserved Font
+   Name(s)_** unless explicit written permission is granted by the corresponding
+   Copyright Holder. This restriction only applies to the primary font name as
+   presented to the users.
 
-4) The name(s) of the Copyright Holder(s) or the ***Author(s)*** of the ***Font
-Software*** shall not be used to promote, endorse or advertise any
-***Modified Version***, except to acknowledge the contribution(s) of the
-Copyright Holder(s) and the ***Author(s)*** or with their explicit written
-permission.
+4. The name(s) of the Copyright Holder(s) or the **_Author(s)_** of the **_Font
+   Software_** shall not be used to promote, endorse or advertise any
+   **_Modified Version_**, except to acknowledge the contribution(s) of the
+   Copyright Holder(s) and the **_Author(s)_** or with their explicit written
+   permission.
 
-5) The ***Font Software***, modified or unmodified, in part or in whole,
-must be distributed entirely under this license, and must not be
-distributed under any other license. The requirement for fonts to
-remain under this license does not apply to any document created
-using the ***Font Software***.
+5. The **_Font Software_**, modified or unmodified, in part or in whole,
+   must be distributed entirely under this license, and must not be
+   distributed under any other license. The requirement for fonts to
+   remain under this license does not apply to any document created
+   using the **_Font Software_**.
 
-TERMINATION
------------
+## TERMINATION
 
 This license becomes null and void if any of the above conditions are
 not met.
 
-
-DISCLAIMER
------------
+## DISCLAIMER
 
 THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
