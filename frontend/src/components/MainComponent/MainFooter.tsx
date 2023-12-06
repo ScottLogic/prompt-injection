@@ -1,4 +1,4 @@
-import ScottLogicLogo from './ScottLogicLogo';
+import ScottLogicLogo from '@src/assets/images/ScottLogicLogo';
 
 import './MainFooter.css';
 

@@ -1,4 +1,4 @@
-import ProjectIconDark from '@src/components/MainComponent/ProjectIconDark';
+import ProjectIconDark from '@src/assets/images/ProjectIconDark';
 import StartLevelButtons from '@src/components/ThemedButtons/StartLevelButtons';
 import { LEVEL_NAMES } from '@src/models/level';
 
