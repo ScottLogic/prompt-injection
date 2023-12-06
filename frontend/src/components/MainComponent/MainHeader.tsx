@@ -1,5 +1,4 @@
-import HandbookIcon from '@src/assets/icons/Handbook.svg';
-import ResetProgressIcon from '@src/assets/icons/ResetProgressIcon.svg';
+import HandbookIcon from '@src/assets/images/HandbookIcon';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
@@ -44,25 +43,19 @@ function MainHeader({
 					numCompletedLevels={numCompletedLevels}
 					setCurrentLevel={setCurrentLevel}
 				/>
-				<HeaderButton
-					onClick={openResetProgress}
-					title="reset your progress"
-					className="reset-progress-button"
-				>
-					<img className="reset-progress-icon" src={ResetProgressIcon} alt="" />
-					Reset Progress
-				</HeaderButton>
 			</span>
 
 			<span className="main-header-right">
-				<HeaderButton
-					onClick={openHandbook}
-					title="open the handbook"
-					className="handbook-button"
-				>
-					<img className="handbook-icon" src={HandbookIcon} alt="" />
-					Handbook
-				</HeaderButton>
+				<div className="handbook-area">
+					<button
+						className="prompt-injection-min-button handbook-icon"
+						title="open the handbook"
+						aria-label="open the handbook"
+						onClick={openHandbook}
+					>
+						<HandbookIcon />
+					</button>
+				</div>
 			</span>
 		</header>
 	);
