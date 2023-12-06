@@ -3,11 +3,15 @@
 	border: none;
 	border-radius: 0.5rem;
 	padding: 0.5rem;
-	color: var(--main-button-inactive-text-colour);
+	color: var(--main-button-active-text-colour);
 	cursor: pointer;
 	min-height: fit-content;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	position: relative;
+}
+
+.header-button:hover {
+	background-color: var(--main-button-active-hover-background-colour);
 }
