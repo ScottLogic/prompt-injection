@@ -29,21 +29,23 @@ import './MainComponent.css';
 function MainComponent({
 	currentLevel,
 	numCompletedLevels,
+	incrementNumCompletedLevels,
 	openHandbook,
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
 	openWelcomeOverlay,
+	openDocumentViewer,
 	setCurrentLevel,
-	incrementNumCompletedLevels,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
+	incrementNumCompletedLevels: (level: number) => void;
 	openHandbook: () => void;
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openWelcomeOverlay: () => void;
+	openDocumentViewer: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
-	incrementNumCompletedLevels: (level: number) => void;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
@@ -234,6 +236,7 @@ function MainComponent({
 				openInfoOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
+				openDocumentViewer={openDocumentViewer}
 			/>
 			<MainFooter />
 		</div>

@@ -28,6 +28,7 @@ function MainBody({
 	openInfoOverlay,
 	openLevelsCompleteOverlay,
 	openWelcomeOverlay,
+	openDocumentViewer,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
@@ -47,6 +48,7 @@ function MainBody({
 	openInfoOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openWelcomeOverlay: () => void;
+	openDocumentViewer: () => void;
 }) {
 	const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
 		new Set()
@@ -74,6 +76,7 @@ function MainBody({
 					setDefenceInactive={setDefenceInactive}
 					setDefenceConfiguration={setDefenceConfiguration}
 					openWelcomeOverlay={openWelcomeOverlay}
+					openDocumentViewer={openDocumentViewer}
 				/>
 			</div>
 			<div className="centre-area">

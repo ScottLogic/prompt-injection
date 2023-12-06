@@ -1,11 +1,10 @@
 import { LEVELS } from '@src/Levels';
 import HandbookIcon from '@src/assets/icons/Handbook.svg';
+import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
+import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
 import HeaderButton from '@src/components/ThemedButtons/HeaderButton';
 import { LEVEL_NAMES } from '@src/models/level';
-
-import ProjectIcon from './ProjectIcon';
-import ProjectIconWon from './ProjectIconWon';
 
 import './MainHeader.css';
 
@@ -30,10 +29,13 @@ function MainHeader({
 	return (
 		<header className="main-header">
 			<span className="main-header-left">
-				<span className="main-header-title">Spy Logic</span>
-				<span className="main-header-icon">
-					{isLevelComplete ? <ProjectIconWon /> : <ProjectIcon />}
-				</span>
+				<img
+					className="titleLogo"
+					src={
+						isLevelComplete ? SpyLogicTitleLogoAffirmative : SpyLogicTitleLogo
+					}
+					alt="Spy Logic"
+				/>
 			</span>
 			<span className="main-header-middle">
 				<span className="main-header-current-level">
