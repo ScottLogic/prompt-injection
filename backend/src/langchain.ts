@@ -19,12 +19,15 @@ import {
 } from './promptTemplates';
 
 // store vectorised documents for each level as array
-let vectorisedDocuments: DocumentsVector[] = [];
-
-// set the global varibale
-function setVectorisedDocuments(docs: DocumentsVector[]) {
-	vectorisedDocuments = docs;
-}
+const vectorisedDocuments = (() => {
+	let docs: DocumentsVector[] = [];
+	return {
+		get: () => docs,
+		set: (newDocs: DocumentsVector[]) => {
+			docs = newDocs;
+		},
+	};
+})();
 
 // choose between the provided preprompt and the default preprompt and prepend it to the main prompt and return the PromptTemplate
 function makePromptTemplate(
@@ -67,7 +70,7 @@ async function initDocumentVectors() {
 			docVector,
 		});
 	}
-	setVectorisedDocuments(docVectors);
+	vectorisedDocuments.set(docVectors);
 	console.debug(
 		`Initialised document vectors for each level. count=${docVectors.length}`
 	);
@@ -81,7 +84,7 @@ function getChatModel() {
 
 function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 	const openAIApiKey = getOpenAIKey();
-	const documentVectors = vectorisedDocuments[level].docVector;
+	const documentVectors = vectorisedDocuments.get()[level].docVector;
 	// use gpt-4 if avaliable to apiKey
 	const modelName = getChatModel();
 
@@ -206,13 +209,13 @@ function formatEvaluationOutput(response: string) {
 	}
 }
 
+export const setVectorisedDocuments = vectorisedDocuments.set;
 export {
 	initQAModel,
 	initPromptEvaluationModel,
 	queryDocuments,
 	queryPromptEvaluationModel,
 	formatEvaluationOutput,
-	setVectorisedDocuments,
 	initDocumentVectors,
 	makePromptTemplate,
 };
