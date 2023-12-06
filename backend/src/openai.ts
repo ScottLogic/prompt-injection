@@ -139,10 +139,10 @@ async function chatGptCallFunction(
 	functionCall: ChatCompletionMessageToolCall.Function,
 	sentEmails: EmailInfo[],
 	// default to sandbox
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
+	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX,
+	winLevel: () => void
 ) {
 	let reply: ChatCompletionMessageParam | null = null;
-	let wonLevel = false;
 	// get the function name
 	const functionName: string = functionCall.name;
 
@@ -165,7 +165,9 @@ async function chatGptCallFunction(
 					currentLevel
 				);
 				response = emailResponse.response;
-				wonLevel = emailResponse.wonLevel;
+				if (emailResponse.wonLevel) {
+					winLevel();
+				}
 				if (emailResponse.sentEmail) {
 					sentEmails.push(emailResponse.sentEmail);
 				}
@@ -202,7 +204,6 @@ async function chatGptCallFunction(
 		return {
 			completion: reply,
 			defenceReport,
-			wonLevel,
 		};
 	} else {
 		return null;
@@ -434,7 +435,6 @@ function getBlankChatResponse(): ChatResponse {
 	return {
 		completion: null,
 		defenceReport: blankChatDefenceReport,
-		wonLevel: false,
 	};
 }
 
@@ -474,7 +474,8 @@ async function performToolCalls(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	sentEmails: EmailInfo[],
-	currentLevel: LEVEL_NAMES
+	currentLevel: LEVEL_NAMES,
+	winLevel: () => void
 ) {
 	for (const toolCall of toolCalls) {
 		// only tool type supported by openai is function
@@ -488,11 +489,10 @@ async function performToolCalls(
 				toolCall.id,
 				toolCall.function,
 				sentEmails,
-				currentLevel
+				currentLevel,
+				winLevel
 			);
 			if (functionCallReply) {
-				chatResponse.wonLevel = functionCallReply.wonLevel;
-
 				// add the function call to the chat history
 				pushCompletionToHistory(
 					chatHistory,
@@ -513,7 +513,8 @@ async function getFinalReplyAfterAllToolCalls(
 	defences: Defence[],
 	chatModel: ChatModel,
 	sentEmails: EmailInfo[],
-	currentLevel: LEVEL_NAMES
+	currentLevel: LEVEL_NAMES,
+	winLevel: () => void
 ) {
 	const chatResponse: ChatResponse = getBlankChatResponse();
 	const openai = getOpenAI();
@@ -540,7 +541,8 @@ async function getFinalReplyAfterAllToolCalls(
 			chatHistory,
 			defences,
 			sentEmails,
-			currentLevel
+			currentLevel,
+			winLevel
 		);
 
 		// get a new reply from ChatGPT now that the functions have been called
@@ -551,6 +553,9 @@ async function getFinalReplyAfterAllToolCalls(
 			openai,
 			currentLevel
 		);
+		if (chatHistory.length >= 8) {
+			throw new Error('Chat history too long');
+		}
 	}
 
 	// chat history gets mutated, so no need to return it
@@ -564,7 +569,8 @@ async function chatGptSendMessage(
 	message: string,
 	messageIsTransformed: boolean,
 	sentEmails: EmailInfo[],
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
+	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX,
+	winLevel: () => void
 ) {
 	console.log(`User message: '${message}'`);
 
@@ -586,7 +592,8 @@ async function chatGptSendMessage(
 		defences,
 		chatModel,
 		sentEmails,
-		currentLevel
+		currentLevel,
+		winLevel
 	);
 
 	if (!reply.content) {

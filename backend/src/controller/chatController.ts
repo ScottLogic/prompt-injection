@@ -22,7 +22,8 @@ async function handleLowLevelChat(
 	req: OpenAiChatRequest,
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
-	chatModel: ChatModel
+	chatModel: ChatModel,
+	winLevel: () => void
 ) {
 	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
@@ -32,10 +33,10 @@ async function handleLowLevelChat(
 		chatResponse.transformedMessage,
 		false,
 		req.session.levelState[currentLevel].sentEmails,
-		currentLevel
+		currentLevel,
+		winLevel
 	);
 	chatResponse.reply = openAiReply.completion?.content ?? '';
-	chatResponse.wonLevel = openAiReply.wonLevel;
 }
 
 // handle the chat logic for high levels (with defence detection)
@@ -45,7 +46,8 @@ async function handleHigherLevelChat(
 	chatHistoryBefore: ChatHistoryMessage[],
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
-	chatModel: ChatModel
+	chatModel: ChatModel,
+	winLevel: () => void
 ) {
 	let openAiReply = null;
 
@@ -79,7 +81,8 @@ async function handleHigherLevelChat(
 		chatResponse.transformedMessage,
 		messageIsTransformed,
 		req.session.levelState[currentLevel].sentEmails,
-		currentLevel
+		currentLevel,
+		winLevel
 	);
 
 	// run defence detection and chatGPT concurrently
@@ -105,7 +108,6 @@ async function handleHigherLevelChat(
 	}
 
 	if (openAiReply) {
-		chatResponse.wonLevel = openAiReply.wonLevel;
 		chatResponse.reply = openAiReply.completion?.content ?? '';
 
 		// combine triggered defences
@@ -136,8 +138,13 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		wonLevel: false,
 		isError: false,
 	};
+
 	const message = req.body.message;
 	const currentLevel = req.body.currentLevel;
+
+	function winLevel() {
+		chatResponse.wonLevel = true;
+	}
 
 	// must have initialised openai
 	if (!message || currentLevel === undefined) {
@@ -179,7 +186,13 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	try {
 		// skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
-			await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
+			await handleLowLevelChat(
+				req,
+				chatResponse,
+				currentLevel,
+				chatModel,
+				winLevel
+			);
 		} else {
 			// apply the defence detection for level 3 and sandbox - sets chatResponse obj
 			await handleHigherLevelChat(
@@ -188,7 +201,8 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				chatHistoryBefore,
 				chatResponse,
 				currentLevel,
-				chatModel
+				chatModel,
+				winLevel
 			);
 		}
 		// if the reply was blocked then add it to the chat history
