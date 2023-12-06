@@ -3,19 +3,21 @@
 	justify-content: center;
 	align-items: center;
 	position: relative;
-	border: 0.125rem solid var(--level-button-border-colour);
+	border: 0.125rem solid var(--border-colour-teal);
 	padding: 1rem;
 	height: 3.125rem;
 	background-color: transparent;
-	color: var(--level-button-colour);
+	color: var(--main-text-colour);
 	font-size: 1.875rem;
+	cursor: pointer;
 }
 
 .level-button.selected {
-	background-color: var(--level-button-background-colour-selected);
+	background-color: var(--background-colour-teal);
 }
 
 .level-button[aria-disabled='true'] {
-	border-color: var(--level-button-border-colour-disabled);
-	color: var(--level-button-colour-disabled);
+	border-color: rgba(170, 170, 170, 0.5);
+	color: #777;
+	cursor: default;
 }

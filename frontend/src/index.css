@@ -10,14 +10,6 @@ body * {
 	font-family: 'Noto Sans', Arial, sans-serif;
 }
 
-button {
-	cursor: pointer;
-}
-button[disabled],
-button[aria-disabled='true'] {
-	cursor: default;
-}
-
 code {
 	font-family: 'Noto Sans Mono', source-code-pro, Menlo, Monaco, Consolas,
 		'Courier New', monospace;

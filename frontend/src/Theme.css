@@ -7,43 +7,27 @@
 		#000 100%
 	);
 
-	--accent-background-colour: #208187;
-	--accent-border-colour: #2bb3bb;
-	--accent-colour: var(--accent-border-colour);
-	--main-border-colour: #666666;
+	--border-colour-teal: #2bb3bb;
+	--background-colour-teal: #208187;
 	--main-text-colour: #fff;
-	--main-text-colour-inverted: #000;
-	--error-colour: #c41565;
+	--main-accent-colour: #1fd07b; /* #623 TO BE REMOVED */
+	--main-border-colour: var(--main-accent-colour); /* #623 TO BE REMOVED */
+	--main-error-colour: #c41565;
 
 	--main-scrollbar-colour: #444444;
 	--main-scrollbar-hover-colour: #555555;
 	--main-scrollbar-border-colour: #666666;
 
-	--action-button-background-colour: var(--accent-background-colour);
-	--action-button-text-colour: var(--main-text-colour);
-	--action-button-disabled-background-colour: #888888;
-	--action-button-disabled-text-colour: #111111;
+	--main-button-disabled-background-colour: #888888;
+	--main-button-disabled-text-colour: #111111;
 
-	--level-button-colour: var(--main-text-colour);
-	--level-button-colour-disabled: #777;
-	--level-button-border-colour: var(--accent-border-colour);
-	--level-button-border-colour-disabled: #aaaaaa80;
-	--level-button-background-colour-selected: var(--accent-background-colour);
-
-	--level-banner-border-colour: #bbb;
-	--level-banner-background-colour: #ddd;
-	--level-banner-text-colour: #444;
-
-	--main-input-active-background-colour: var(--header-background-colour);
 	--main-input-active-text-colour: var(--main-text-colour);
 	--main-input-inactive-background-colour: #b3b3b3;
 	--main-input-inactive-text-colour: #464646;
 
 	--main-toggle-ball-colour: #ececec;
-	--main-toggle-off-border-colour: var(--level-button-border-colour-disabled);
-	--main-toggle-off-colour: transparent;
-	--main-toggle-on-border-colour: var(--accent-colour);
-	--main-toggle-on-colour: var(--accent-colour);
+	--main-toggle-off-colour: #b3b3b3;
+	--main-toggle-on-colour: var(--main-accent-colour); /* #623 CHANGE TO TEAL? */
 
 	--control-header-background-colour: #313131;
 	--control-body-background-colour: #3a3a3a;
@@ -70,14 +54,12 @@
 
 	--chat-bot-background-colour: #e9feff;
 	--chat-bot-border-colour: #b6ecef;
-	--chat-bot-text-colour: var(--main-text-colour-inverted);
-	--chat-user-background-colour: #008484;
-	--chat-user-border-colour: #198b92;
-	--chat-blocked-background-colour: #faebf2;
-	--chat-blocked-border-colour: #c41565;
-	--chat-transformed-background-colour: #6a9b9b;
-	--chat-info-text-colour: #707070;
-	--chat-level-info-text-colour: var(--main-text-colour-inverted);
+	--chat-user-background-color: #009ca5;
+	--chat-user-border-color: #198b92;
+	--chat-blocked-background-color: #faebf2;
+	--chat-blocked-border-color: #c41565;
+	--chat-edited-background-colour: #6a9b9b;
+	--chat-info-text-colour: #b0b0b0;
 	--chat-alerted-text-colour: teal;
 	--chat-triggered-text-colour: var(--error-colour);
 

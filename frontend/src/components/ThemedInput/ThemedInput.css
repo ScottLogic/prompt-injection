@@ -6,7 +6,7 @@
 	padding: 0.125rem;
 	width: 100%;
 
-	background-color: var(--main-input-active-background-colour);
+	background: var(--main-background);
 	color: var(--main-input-active-text-colour);
 
 	/* must inherit to override default styling */

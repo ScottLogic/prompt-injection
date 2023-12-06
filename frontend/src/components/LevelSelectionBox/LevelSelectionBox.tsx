@@ -36,9 +36,6 @@ function LevelSelectionBox({
 						}}
 						disabled={index > numCompletedLevels && id !== LEVEL_NAMES.SANDBOX}
 						selected={id === currentLevel}
-						ariaLabel={
-							id === LEVEL_NAMES.SANDBOX ? undefined : `Level ${displayName}`
-						}
 					>
 						{displayName}
 					</LevelButton>
