@@ -156,22 +156,7 @@ describe('DocumentViewBox component tests', () => {
 	});
 
 	test('GIVEN a middle document is shown THEN both buttons are not disabled', async () => {
-		const documents: MockDocument[] = [
-			{
-				filename: 'document-1.txt',
-				content: 'Now displaying document 1',
-			},
-			{
-				filename: 'document-2.txt',
-				content: 'Now displaying document 2',
-			},
-			{
-				filename: 'document-3.txt',
-				content: 'Now displaying document 3',
-			},
-		];
-
-		const { user } = renderDocumentViewBox(documents);
+		const { user } = renderDocumentViewBox(defaultDocuments);
 		// wait for header to load
 		await screen.findByText(defaultDocuments[0].filename);
 
