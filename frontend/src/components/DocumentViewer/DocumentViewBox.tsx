@@ -4,16 +4,14 @@ import { useEffect, useState } from 'react';
 import { DocumentMeta } from '@src/models/document';
 import { getDocumentMetas } from '@src/service/documentService';
 
+import DocumentViewBoxHeader from './DocumentViewBoxHeader';
+
 import './DocumentViewBox.css';
 
-function DocumentViewBox({
-	show,
-	onClose,
-}: {
-	show: boolean;
-	onClose: () => void;
-}) {
+function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 	const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>([]);
+	const [documentIndex, setDocumentIndex] = useState<number>(0);
+
 	// on mount get document uris
 	useEffect(() => {
 		getDocumentMetas()
@@ -25,31 +23,49 @@ function DocumentViewBox({
 			});
 	}, []);
 
-	return show ? (
-		<div className="document-popup">
-			<div className="document-popup-inner">
-				<button
-					className="prompt-injection-min-button close-button"
-					onClick={onClose}
-					aria-label="close document viewer"
-				>
-					X
-				</button>
-				<div className="content">
-					<div className="view-documents-header">
-						<h3>view documents</h3>
-					</div>
-					<div className="view-documents-body">
-						<DocViewer
-							className="document-viewer"
-							documents={documentMetas}
-							pluginRenderers={DocViewerRenderers}
-						/>
-					</div>
-				</div>
+	return (
+		<div className="document-popup-inner">
+			<button
+				className="prompt-injection-min-button close-button"
+				onClick={closeOverlay}
+				aria-label="close document viewer"
+				title="close document viewer"
+			>
+				X
+			</button>
+			<DocumentViewBoxHeader
+				documentIndex={documentIndex}
+				documentName={documentMetas[documentIndex]?.filename ?? ''}
+				numberOfDocuments={documentMetas.length}
+				onPrevious={() => {
+					if (documentIndex > 0) {
+						setDocumentIndex(documentIndex - 1);
+					}
+				}}
+				onNext={() => {
+					if (documentIndex < documentMetas.length - 1) {
+						setDocumentIndex(documentIndex + 1);
+					}
+				}}
+			/>
+			<div
+				className="document-viewer-container"
+				// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+				tabIndex={0}
+			>
+				<DocViewer
+					documents={documentMetas}
+					activeDocument={documentMetas[documentIndex]}
+					pluginRenderers={DocViewerRenderers}
+					config={{
+						header: {
+							disableHeader: true,
+						},
+					}}
+				/>
 			</div>
 		</div>
-	) : null;
+	);
 }
 
 export default DocumentViewBox;
