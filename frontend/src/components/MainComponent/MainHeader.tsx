@@ -2,6 +2,9 @@ import HandbookIcon from '@src/assets/images/HandbookIcon';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
+
+import ThemedButton from '../ThemedButtons/ThemedButton';
+
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './MainHeader.css';
@@ -11,11 +14,13 @@ function MainHeader({
 	numCompletedLevels,
 	openHandbook,
 	setCurrentLevel,
+	resetProgress,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	openHandbook: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
+	resetProgress: () => Promise<void>;
 }) {
 	const isLevelComplete = (currentLevel as number) < numCompletedLevels;
 
@@ -37,6 +42,10 @@ function MainHeader({
 					numCompletedLevels={numCompletedLevels}
 					setCurrentLevel={setCurrentLevel}
 				/>
+
+				<ThemedButton onClick={() => void resetProgress()}>
+					Reset Progress
+				</ThemedButton>
 			</span>
 			<span className="main-header-right">
 				<div className="handbook-area">
