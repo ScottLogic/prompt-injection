@@ -27,6 +27,7 @@ import {
 	handleSetModel,
 } from './controller/modelController';
 import { handleGetSystemRoles } from './controller/systemRoleController';
+import { handleResetProgress } from './controller/resetController';
 
 const router = express.Router();
 
@@ -63,5 +64,9 @@ router.get('/systemRoles', handleGetSystemRoles);
 
 // getting documents
 router.get('/documents', handleGetDocuments);
+
+// reset progress for all levels
+
+router.post('/reset', handleResetProgress);
 
 export { router };
