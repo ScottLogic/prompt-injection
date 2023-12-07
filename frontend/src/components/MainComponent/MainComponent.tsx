@@ -36,9 +36,9 @@ function MainComponent({
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
 	openWelcomeOverlay,
+	openResetProgressOverlay,
 	openDocumentViewer,
 	setCurrentLevel,
-	resetAllLevelProgress,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
@@ -48,9 +48,9 @@ function MainComponent({
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openWelcomeOverlay: () => void;
+	openResetProgressOverlay: () => void;
 	openDocumentViewer: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
-	resetAllLevelProgress: () => Promise<void>;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
@@ -110,15 +110,6 @@ function MainComponent({
 		]);
 
 		// reset on state
-		resetFrontendState();
-	}
-
-	// for clearing all level progress
-	async function resetAllLevels() {
-		// reset all on Backend
-		await resetAllLevelProgress();
-
-		// reset frontend state
 		resetFrontendState();
 	}
 
@@ -252,8 +243,8 @@ function MainComponent({
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				openHandbook={openHandbook}
+				openResetProgress={openResetProgressOverlay}
 				setCurrentLevel={setCurrentLevel}
-				resetProgress={resetAllLevels}
 			/>
 			<MainBody
 				key={MainBodyKey}

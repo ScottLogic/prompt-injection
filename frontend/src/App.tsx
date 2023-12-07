@@ -6,6 +6,7 @@ import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
+import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
 import { OVERLAY_TYPE } from './models/overlay';
 import { resetAllLevelProgress } from './service/levelService';
@@ -168,6 +169,14 @@ function App() {
 					/>
 				);
 				break;
+			case OVERLAY_TYPE.RESET_PROGRESS:
+				setOverlayComponent(
+					<ResetProgressOverlay
+						resetProgress={resetProgress}
+						closeOverlay={closeOverlay}
+					/>
+				);
+				break;
 			case OVERLAY_TYPE.DOCUMENTS:
 				setOverlayComponent(<DocumentViewBox closeOverlay={closeOverlay} />);
 				break;
@@ -228,6 +237,9 @@ function App() {
 	function openDocumentViewer() {
 		setOverlayType(OVERLAY_TYPE.DOCUMENTS);
 	}
+	function openResetProgressOverlay() {
+		setOverlayType(OVERLAY_TYPE.RESET_PROGRESS);
+	}
 
 	// set the start level for a user who clicks beginner/expert
 	function setStartLevel(startLevel: LEVEL_NAMES) {
@@ -287,9 +299,9 @@ function App() {
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
+				openResetProgressOverlay={openResetProgressOverlay}
 				openDocumentViewer={openDocumentViewer}
 				setCurrentLevel={setCurrentLevel}
-				resetAllLevelProgress={resetProgress}
 			/>
 		</div>
 	);
