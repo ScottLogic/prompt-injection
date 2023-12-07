@@ -22,8 +22,7 @@ async function handleLowLevelChat(
 	req: OpenAiChatRequest,
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
-	chatModel: ChatModel,
-	winLevel: () => void
+	chatModel: ChatModel
 ) {
 	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
@@ -33,8 +32,7 @@ async function handleLowLevelChat(
 		chatResponse.transformedMessage,
 		false,
 		req.session.levelState[currentLevel].sentEmails,
-		currentLevel,
-		winLevel
+		currentLevel
 	);
 	chatResponse.reply = openAiReply.completion?.content ?? '';
 }
@@ -46,8 +44,7 @@ async function handleHigherLevelChat(
 	chatHistoryBefore: ChatHistoryMessage[],
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
-	chatModel: ChatModel,
-	winLevel: () => void
+	chatModel: ChatModel
 ) {
 	let openAiReply = null;
 
@@ -81,8 +78,7 @@ async function handleHigherLevelChat(
 		chatResponse.transformedMessage,
 		messageIsTransformed,
 		req.session.levelState[currentLevel].sentEmails,
-		currentLevel,
-		winLevel
+		currentLevel
 	);
 
 	// run defence detection and chatGPT concurrently
@@ -142,10 +138,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	const message = req.body.message;
 	const currentLevel = req.body.currentLevel;
 
-	function winLevel() {
-		chatResponse.wonLevel = true;
-	}
-
 	// must have initialised openai
 	if (!message || currentLevel === undefined) {
 		handleChatError(
@@ -186,13 +178,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	try {
 		// skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
-			await handleLowLevelChat(
-				req,
-				chatResponse,
-				currentLevel,
-				chatModel,
-				winLevel
-			);
+			await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
 		} else {
 			// apply the defence detection for level 3 and sandbox - sets chatResponse obj
 			await handleHigherLevelChat(
@@ -201,8 +187,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				chatHistoryBefore,
 				chatResponse,
 				currentLevel,
-				chatModel,
-				winLevel
+				chatModel
 			);
 		}
 		// if the reply was blocked then add it to the chat history

@@ -139,10 +139,10 @@ async function chatGptCallFunction(
 	functionCall: ChatCompletionMessageToolCall.Function,
 	sentEmails: EmailInfo[],
 	// default to sandbox
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX,
-	winLevel: () => void
+	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	let reply: ChatCompletionMessageParam | null = null;
+	let wonLevel = false;
 	// get the function name
 	const functionName: string = functionCall.name;
 
@@ -165,9 +165,7 @@ async function chatGptCallFunction(
 					currentLevel
 				);
 				response = emailResponse.response;
-				if (emailResponse.wonLevel) {
-					winLevel();
-				}
+				wonLevel = emailResponse.wonLevel;
 				if (emailResponse.sentEmail) {
 					sentEmails.push(emailResponse.sentEmail);
 				}
@@ -204,6 +202,7 @@ async function chatGptCallFunction(
 		return {
 			completion: reply,
 			defenceReport,
+			wonLevel,
 		};
 	} else {
 		return null;
@@ -474,8 +473,7 @@ async function performToolCalls(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	sentEmails: EmailInfo[],
-	currentLevel: LEVEL_NAMES,
-	winLevel: () => void
+	currentLevel: LEVEL_NAMES
 ) {
 	for (const toolCall of toolCalls) {
 		// only tool type supported by openai is function
@@ -489,8 +487,7 @@ async function performToolCalls(
 				toolCall.id,
 				toolCall.function,
 				sentEmails,
-				currentLevel,
-				winLevel
+				currentLevel
 			);
 			if (functionCallReply) {
 				// add the function call to the chat history
@@ -514,8 +511,7 @@ async function getFinalReplyAfterAllToolCalls(
 	defences: Defence[],
 	chatModel: ChatModel,
 	sentEmails: EmailInfo[],
-	currentLevel: LEVEL_NAMES,
-	winLevel: () => void
+	currentLevel: LEVEL_NAMES
 ) {
 	const openai = getOpenAI();
 	let reply = await chatGptChatCompletion(
@@ -541,8 +537,7 @@ async function getFinalReplyAfterAllToolCalls(
 			chatHistory,
 			defences,
 			sentEmails,
-			currentLevel,
-			winLevel
+			currentLevel
 		);
 
 		// get a new reply from ChatGPT now that the functions have been called
@@ -566,8 +561,7 @@ async function chatGptSendMessage(
 	message: string,
 	messageIsTransformed: boolean,
 	sentEmails: EmailInfo[],
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX,
-	winLevel: () => void
+	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	console.log(`User message: '${message}'`);
 
@@ -595,8 +589,7 @@ async function chatGptSendMessage(
 			defences,
 			chatModel,
 			sentEmails,
-			currentLevel,
-			winLevel
+			currentLevel
 		);
 	} catch (error) {
 		console.error(error);
