@@ -105,6 +105,7 @@ async function handleHigherLevelChat(
 	}
 
 	if (openAiReply) {
+		chatResponse.wonLevel = openAiReply.wonLevel;
 		chatResponse.reply = openAiReply.completion?.content ?? '';
 
 		// combine triggered defences
