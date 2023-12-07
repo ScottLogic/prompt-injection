@@ -14,14 +14,14 @@ function MainHeader({
 	currentLevel,
 	numCompletedLevels,
 	openHandbook,
+	openResetProgress,
 	setCurrentLevel,
-	resetProgress,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	openHandbook: () => void;
+	openResetProgress: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
-	resetProgress: () => Promise<void>;
 }) {
 	const isLevelComplete = (currentLevel as number) < numCompletedLevels;
 
@@ -44,7 +44,7 @@ function MainHeader({
 					setCurrentLevel={setCurrentLevel}
 				/>
 				<HeaderButton
-					onClick={() => resetProgress}
+					onClick={openResetProgress}
 					className="reset-progress-button"
 				>
 					<ResetProgressIcon />
