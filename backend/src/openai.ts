@@ -218,9 +218,6 @@ async function chatGptChatCompletion(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-	if (chatHistory.length >= 8) {
-		throw new Error('Chat history too long');
-	}
 	// check if we need to set a system role
 	// system role is always active on levels
 	if (
@@ -261,20 +258,27 @@ async function chatGptChatCompletion(
 	const startTime = new Date().getTime();
 	console.debug('Calling OpenAI chat completion...');
 
-	const chat_completion = await openai.chat.completions.create({
-		model: chatModel.id,
-		temperature: chatModel.configuration.temperature,
-		top_p: chatModel.configuration.topP,
-		frequency_penalty: chatModel.configuration.frequencyPenalty,
-		presence_penalty: chatModel.configuration.presencePenalty,
-		messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
-		tools: chatGptTools,
-	});
+	try {
+		const chat_completion = await openai.chat.completions.create({
+			model: chatModel.id,
+			temperature: chatModel.configuration.temperature,
+			top_p: chatModel.configuration.topP,
+			frequency_penalty: chatModel.configuration.frequencyPenalty,
+			presence_penalty: chatModel.configuration.presencePenalty,
+			messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
+			tools: chatGptTools,
+		});
 
-	const endTime = new Date().getTime();
-	console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
-
-	return chat_completion.choices[0].message;
+		return chat_completion.choices[0].message;
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error('Error calling createChatCompletion: ', error.message);
+		}
+		return null;
+	} finally {
+		const endTime = new Date().getTime();
+		console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
+	}
 }
 
 // estimate the tokens on a single completion
@@ -529,7 +533,7 @@ async function getFinalReplyAfterAllToolCalls(
 	);
 
 	// check if GPT wanted to call a tool
-	while (reply.tool_calls) {
+	while (reply?.tool_calls) {
 		// push the assistant message to the chat
 		pushCompletionToHistory(
 			chatHistory,
@@ -592,11 +596,8 @@ async function chatGptSendMessage(
 		currentLevel
 	);
 
-	if (!reply.content) {
-		const errorMessage = `Bad final gpt completion reply. There might be a problem with the getFinalReplyAfterAllToolCalls method. reply: ${JSON.stringify(
-			reply
-		)}`;
-		throw Error(errorMessage);
+	if (!reply?.content) {
+		return chatResponse;
 	}
 
 	chatResponse.completion = reply;
