@@ -218,6 +218,9 @@ async function chatGptChatCompletion(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
+	if (chatHistory.length >= 8) {
+		throw new Error('Chat history too long');
+	}
 	// check if we need to set a system role
 	// system role is always active on levels
 	if (
