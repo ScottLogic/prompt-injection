@@ -1,11 +1,12 @@
 import HandbookIcon from '@src/assets/images/HandbookIcon';
+import ResetProgressIcon from '@src/assets/images/ResetProgressIcon';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
-
-import ThemedButton from '../ThemedButtons/ThemedButton';
-
 import { LEVEL_NAMES } from '@src/models/level';
+
+// eslint-disable-next-line no-restricted-imports
+import HeaderButton from '../ThemedButtons/HeaderButton';
 
 import './MainHeader.css';
 
@@ -42,10 +43,13 @@ function MainHeader({
 					numCompletedLevels={numCompletedLevels}
 					setCurrentLevel={setCurrentLevel}
 				/>
-
-				<ThemedButton onClick={() => void resetProgress()}>
+				<HeaderButton
+					onClick={() => resetProgress}
+					className="reset-progress-button"
+				>
+					<ResetProgressIcon />
 					Reset Progress
-				</ThemedButton>
+				</HeaderButton>
 			</span>
 			<span className="main-header-right">
 				<div className="handbook-area">
