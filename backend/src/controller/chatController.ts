@@ -35,6 +35,7 @@ async function handleLowLevelChat(
 		currentLevel
 	);
 	chatResponse.reply = openAiReply.completion?.content ?? '';
+	chatResponse.wonLevel = openAiReply.wonLevel;
 }
 
 // handle the chat logic for high levels (with defence detection)

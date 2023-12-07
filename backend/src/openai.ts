@@ -434,6 +434,7 @@ function getBlankChatResponse(): ChatResponse {
 	return {
 		completion: null,
 		defenceReport: blankChatDefenceReport,
+		wonLevel: false,
 	};
 }
 

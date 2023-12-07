@@ -68,6 +68,7 @@ interface ChatMalicious {
 interface ChatResponse {
 	completion: ChatCompletionMessage | null;
 	defenceReport: ChatDefenceReport;
+	wonLevel: boolean;
 }
 
 interface ChatHttpResponse {
