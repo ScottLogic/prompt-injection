@@ -5,12 +5,9 @@ import session from 'express-session';
 import memoryStoreFactory from 'memorystore';
 import { fileURLToPath } from 'node:url';
 
-import { defaultDefences } from './defaultDefences';
 import { importMetaUrl } from './importMetaUtils';
-import { ChatHistoryMessage, ChatModel, defaultChatModel } from './models/chat';
-import { Defence } from './models/defence';
-import { EmailInfo } from './models/email';
-import { LEVEL_NAMES } from './models/level';
+import { ChatModel, defaultChatModel } from './models/chat';
+import { LevelState, levelsInitialState } from './models/level';
 import { router } from './router';
 
 dotenv.config();
@@ -20,12 +17,6 @@ declare module 'express-session' {
 		initialised: boolean;
 		chatModel: ChatModel;
 		levelState: LevelState[];
-	}
-	interface LevelState {
-		level: LEVEL_NAMES;
-		chatHistory: ChatHistoryMessage[];
-		defences: Defence[];
-		sentEmails: EmailInfo[];
 	}
 }
 
@@ -64,15 +55,7 @@ app.use((req, _res, next) => {
 	// initialise session variables first time
 	if (!req.session.initialised) {
 		req.session.chatModel = defaultChatModel;
-		// add empty states for levels 0-3
-		req.session.levelState = Object.values(LEVEL_NAMES)
-			.filter((value) => Number.isNaN(Number(value)))
-			.map((value) => ({
-				level: value as LEVEL_NAMES,
-				chatHistory: [],
-				defences: defaultDefences,
-				sentEmails: [],
-			}));
+		req.session.levelState = levelsInitialState;
 		req.session.initialised = true;
 	}
 	next();
