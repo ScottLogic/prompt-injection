@@ -1,0 +1,20 @@
+.header-button {
+	background-color: var(--header-button-background-colour);
+	border: none;
+	border-radius: 0.5rem;
+	padding: 1rem;
+	color: var(--header-button-text-colour);
+	cursor: pointer;
+	min-height: fit-content;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	gap: 0.5rem;
+	white-space: nowrap;
+	height: 3.125rem;
+}
+
+.header-button:hover {
+	background-color: var(--header-button-hover-background-colour);
+}

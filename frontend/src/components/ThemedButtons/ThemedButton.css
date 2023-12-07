@@ -10,6 +10,7 @@
 	color: var(--main-text-colour);
 	font-size: 1rem;
 	font-weight: 600;
+	gap: 0.5rem; /*For icons preceeding text*/
 	cursor: pointer;
 }
 

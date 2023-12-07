@@ -244,7 +244,7 @@ function App() {
 		closeOverlay();
 	}
 
-	// resets whole game progress
+	// resets whole game progress and start from level 1 or Sandbox
 	async function resetProgress() {
 		console.log('resetting progress for all levels');
 

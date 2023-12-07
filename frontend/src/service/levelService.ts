@@ -1,6 +1,6 @@
 import { sendRequest } from './backendService';
 
-async function resetAllLevelProgress(): Promise<void> {
+async function resetAllLevelProgress(): Promise<boolean> {
 	const response = await sendRequest(
 		`/reset`,
 		'POST',
@@ -9,7 +9,7 @@ async function resetAllLevelProgress(): Promise<void> {
 		},
 		JSON.stringify({})
 	);
-	console.log(response);
+	return response.status === 200;
 }
 
 export { resetAllLevelProgress };

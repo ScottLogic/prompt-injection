@@ -21,9 +21,13 @@
 	--main-button-disabled-background-colour: #888888;
 	--main-button-disabled-text-colour: #111111;
 
+	--header-button-background-colour: teal;
+	--header-button-text-colour: var(--main-text-colour);
+	--header-button-hover-background-colour: #00aaaa;
+
 	--main-input-active-text-colour: var(--main-text-colour);
 	--main-input-inactive-background-colour: #b3b3b3;
-	--main-input-inactive-text-colour: #464646;
+	--main-input-inactive-text-colour: #512828;
 
 	--main-toggle-ball-colour: #ececec;
 	--main-toggle-off-colour: #b3b3b3;
