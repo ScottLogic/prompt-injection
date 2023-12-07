@@ -8,7 +8,7 @@ import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
 import { OVERLAY_TYPE } from './models/overlay';
-import { getValidModels } from './service/chatService';
+import { resetAllLevelProgress } from './service/levelService';
 import { getSystemRoles } from './service/systemRoleService';
 
 import './App.css';
@@ -244,6 +244,27 @@ function App() {
 		closeOverlay();
 	}
 
+	// resets whole game progress
+	async function resetProgress() {
+		console.log('resetting progress for all levels');
+
+		// reset on the backend
+		await resetAllLevelProgress();
+
+		localStorage.setItem('numCompletedLevels', '0');
+		setNumCompletedLevels(0);
+
+		// set as new user so welcome modal shows
+		setIsNewUser(true);
+
+		// take the user to level 1 if on levels, or sandbox if on sandbox
+		if (currentLevel !== LEVEL_NAMES.SANDBOX) {
+			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
+		} else {
+			setCurrentLevel(LEVEL_NAMES.SANDBOX);
+		}
+	}
+
 	function goToSandbox() {
 		setStartLevel(LEVEL_NAMES.SANDBOX);
 		// close the current overlay
@@ -268,6 +289,7 @@ function App() {
 				openWelcomeOverlay={openWelcomeOverlay}
 				openDocumentViewer={openDocumentViewer}
 				setCurrentLevel={setCurrentLevel}
+				resetAllLevelProgress={resetProgress}
 			/>
 		</div>
 	);

@@ -38,6 +38,7 @@ function MainComponent({
 	openWelcomeOverlay,
 	openDocumentViewer,
 	setCurrentLevel,
+	resetAllLevelProgress,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
@@ -49,6 +50,7 @@ function MainComponent({
 	openWelcomeOverlay: () => void;
 	openDocumentViewer: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
+	resetAllLevelProgress: () => Promise<void>;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
@@ -78,18 +80,9 @@ function MainComponent({
 		setMessages((messages: ChatMessage[]) => [...messages, message]);
 	}
 
-	// for clearing level progress
-	async function resetLevel() {
-		await clearChat(currentLevel);
-		setMessages([]);
-		currentLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
-
-		await clearEmails(currentLevel);
-		setEmails([]);
-
-		await resetActiveDefences(currentLevel);
+	function getResetDefences(currentLevel: LEVEL_NAMES): Defence[] {
 		// choose appropriate defences to display
-		let defences =
+		let defences: Defence[] =
 			currentLevel === LEVEL_NAMES.LEVEL_3
 				? DEFENCES_SHOWN_LEVEL3
 				: ALL_DEFENCES;
@@ -97,7 +90,36 @@ function MainComponent({
 			defence.isActive = false;
 			return defence;
 		});
-		setDefencesToShow(defences);
+		return defences;
+	}
+
+	function resetFrontendState() {
+		setMessages([]);
+		setEmails([]);
+		setDefencesToShow(getResetDefences(currentLevel));
+		currentLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
+	}
+
+	// for clearing single level progress
+	async function resetLevel() {
+		// reset on the backend
+		await Promise.all([
+			clearChat(currentLevel),
+			clearEmails(currentLevel),
+			resetActiveDefences(currentLevel),
+		]);
+
+		// reset on state
+		resetFrontendState();
+	}
+
+	// for clearing all level progress
+	async function resetAllLevels() {
+		// reset all on Backend
+		await resetAllLevelProgress();
+
+		// reset frontend state
+		resetFrontendState();
 	}
 
 	// for going switching level without clearing progress
@@ -231,6 +253,7 @@ function MainComponent({
 				numCompletedLevels={numCompletedLevels}
 				openHandbook={openHandbook}
 				setCurrentLevel={setCurrentLevel}
+				resetProgress={resetAllLevels}
 			/>
 			<MainBody
 				key={MainBodyKey}
