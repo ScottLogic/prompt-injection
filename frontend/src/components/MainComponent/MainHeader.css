@@ -20,17 +20,6 @@
 	height: 80%;
 }
 
-.main-header-left .main-header-title {
-	font-size: 2.25rem;
-	font-weight: 700;
-	white-space: nowrap;
-}
-
-.main-header-left .main-header-icon {
-	height: 70%;
-	padding: 0 2%;
-}
-
 .main-header-middle {
 	display: flex;
 	align-items: center;
