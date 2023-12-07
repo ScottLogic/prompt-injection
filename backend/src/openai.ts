@@ -491,6 +491,8 @@ async function performToolCalls(
 				currentLevel
 			);
 			if (functionCallReply) {
+				chatResponse.wonLevel = functionCallReply.wonLevel;
+
 				// add the function call to the chat history
 				pushCompletionToHistory(
 					chatHistory,
@@ -507,13 +509,13 @@ async function performToolCalls(
 }
 
 async function getFinalReplyAfterAllToolCalls(
-	chatResponse: ChatResponse,
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
 	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES
 ) {
+	const chatResponse: ChatResponse = getBlankChatResponse();
 	const openai = getOpenAI();
 	let reply = await chatGptChatCompletion(
 		chatHistory,
@@ -552,7 +554,7 @@ async function getFinalReplyAfterAllToolCalls(
 	}
 
 	// chat history gets mutated, so no need to return it
-	return reply;
+	return { reply, chatResponse };
 }
 
 async function chatGptSendMessage(
@@ -578,25 +580,14 @@ async function chatGptSendMessage(
 			: CHAT_MESSAGE_TYPE.USER
 	);
 
-	const chatResponse: ChatResponse = getBlankChatResponse();
-
-	let reply: ChatCompletionMessage | undefined = undefined;
-
-	try {
-		// mutates chatHistory and chatResponse
-		reply = await getFinalReplyAfterAllToolCalls(
-			chatResponse,
-			chatHistory,
-			defences,
-			chatModel,
-			sentEmails,
-			currentLevel
-		);
-	} catch (error) {
-		console.error(error);
-		// blank chatReponse will be caught in the controller
-		return getBlankChatResponse();
-	}
+	// mutates chatHistory
+	const { reply, chatResponse } = await getFinalReplyAfterAllToolCalls(
+		chatHistory,
+		defences,
+		chatModel,
+		sentEmails,
+		currentLevel
+	);
 
 	if (!reply.content) {
 		const errorMessage = `Bad final gpt completion reply. There might be a problem with the getFinalReplyAfterAllToolCalls method. reply: ${JSON.stringify(

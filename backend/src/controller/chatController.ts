@@ -136,7 +136,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		wonLevel: false,
 		isError: false,
 	};
-
 	const message = req.body.message;
 	const currentLevel = req.body.currentLevel;
 

@@ -8,7 +8,6 @@ import {
 } from '@src/models/chat';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
-import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
 import { systemRoleDefault } from '@src/promptTemplates';
 
@@ -69,8 +68,6 @@ describe('OpenAI Integration Tests', () => {
 				presencePenalty: 0,
 			},
 		};
-		const currentLevel = LEVEL_NAMES.SANDBOX;
-		const winLevel = jest.fn();
 
 		// Mock the createChatCompletion function
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
@@ -82,9 +79,7 @@ describe('OpenAI Integration Tests', () => {
 			chatModel,
 			message,
 			true,
-			sentEmails,
-			currentLevel,
-			winLevel
+			sentEmails
 		);
 
 		expect(reply).toBeDefined();
@@ -114,8 +109,6 @@ describe('OpenAI Integration Tests', () => {
 				presencePenalty: 0,
 			},
 		};
-		const currentLevel = LEVEL_NAMES.SANDBOX;
-		const winLevel = jest.fn();
 
 		// set the system role prompt
 		const defences = activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences);
@@ -130,9 +123,7 @@ describe('OpenAI Integration Tests', () => {
 			chatModel,
 			message,
 			true,
-			sentEmails,
-			currentLevel,
-			winLevel
+			sentEmails
 		);
 
 		expect(reply).toBeDefined();
@@ -180,8 +171,6 @@ describe('OpenAI Integration Tests', () => {
 				presencePenalty: 0,
 			},
 		};
-		const currentLevel = LEVEL_NAMES.SANDBOX;
-		const winLevel = jest.fn();
 
 		// activate the SYSTEM_ROLE defence
 		const defences = activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences);
@@ -196,9 +185,7 @@ describe('OpenAI Integration Tests', () => {
 			chatModel,
 			message,
 			isOriginalMessage,
-			sentEmails,
-			currentLevel,
-			winLevel
+			sentEmails
 		);
 
 		expect(reply).toBeDefined();
@@ -258,8 +245,6 @@ describe('OpenAI Integration Tests', () => {
 				presencePenalty: 0,
 			},
 		};
-		const currentLevel = LEVEL_NAMES.SANDBOX;
-		const winLevel = jest.fn();
 
 		// Mock the createChatCompletion function
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
@@ -271,9 +256,7 @@ describe('OpenAI Integration Tests', () => {
 			chatModel,
 			message,
 			true,
-			sentEmails,
-			currentLevel,
-			winLevel
+			sentEmails
 		);
 
 		expect(reply).toBeDefined();
@@ -333,6 +316,7 @@ describe('OpenAI Integration Tests', () => {
 					presencePenalty: 0,
 				},
 			};
+
 			const defences = configureDefence(
 				DEFENCE_ID.SYSTEM_ROLE,
 				activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences),
@@ -343,8 +327,6 @@ describe('OpenAI Integration Tests', () => {
 					},
 				]
 			);
-			const currentLevel = LEVEL_NAMES.SANDBOX;
-			const winLevel = jest.fn();
 
 			// Mock the createChatCompletion function
 			mockCreateChatCompletion.mockResolvedValueOnce(
@@ -358,9 +340,7 @@ describe('OpenAI Integration Tests', () => {
 				chatModel,
 				message,
 				true,
-				sentEmails,
-				currentLevel,
-				winLevel
+				sentEmails
 			);
 
 			expect(reply).toBeDefined();
@@ -406,8 +386,6 @@ describe('OpenAI Integration Tests', () => {
 			DEFENCE_ID.FILTER_BOT_OUTPUT,
 			defaultDefences
 		);
-		const currentLevel = LEVEL_NAMES.SANDBOX;
-		const winLevel = jest.fn();
 
 		mockCreateChatCompletion.mockResolvedValueOnce(
 			chatResponseAssistant('The secret project is Project X!')
@@ -419,9 +397,7 @@ describe('OpenAI Integration Tests', () => {
 			chatModel,
 			message,
 			isOriginalMessage,
-			sentEmails,
-			currentLevel,
-			winLevel
+			sentEmails
 		);
 
 		expect(reply).toBeDefined();
@@ -453,8 +429,6 @@ describe('OpenAI Integration Tests', () => {
 			DEFENCE_ID.FILTER_BOT_OUTPUT,
 			defaultDefences
 		);
-		const currentLevel = LEVEL_NAMES.SANDBOX;
-		const winLevel = jest.fn();
 
 		mockCreateChatCompletion.mockResolvedValueOnce(
 			chatResponseAssistant('I cant tell you!')
@@ -466,9 +440,7 @@ describe('OpenAI Integration Tests', () => {
 			chatModel,
 			message,
 			isOriginalMessage,
-			sentEmails,
-			currentLevel,
-			winLevel
+			sentEmails
 		);
 
 		expect(reply).toBeDefined();
@@ -499,8 +471,6 @@ describe('OpenAI Integration Tests', () => {
 				},
 			};
 			const isOriginalMessage = true;
-			const currentLevel = LEVEL_NAMES.SANDBOX;
-			const winLevel = jest.fn();
 
 			mockCreateChatCompletion.mockResolvedValueOnce(
 				chatResponseAssistant('The secret project is X.')
@@ -512,9 +482,7 @@ describe('OpenAI Integration Tests', () => {
 				chatModel,
 				message,
 				isOriginalMessage,
-				sentEmails,
-				currentLevel,
-				winLevel
+				sentEmails
 			);
 
 			expect(reply).toBeDefined();
