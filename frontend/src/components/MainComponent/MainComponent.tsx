@@ -29,6 +29,7 @@ import './MainComponent.css';
 function MainComponent({
 	currentLevel,
 	numCompletedLevels,
+	hasReset,
 	incrementNumCompletedLevels,
 	openHandbook,
 	openInformationOverlay,
@@ -40,6 +41,7 @@ function MainComponent({
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
+	hasReset: boolean;
 	incrementNumCompletedLevels: (level: number) => void;
 	openHandbook: () => void;
 	openInformationOverlay: () => void;
@@ -57,6 +59,13 @@ function MainComponent({
 	useEffect(() => {
 		void setNewLevel(currentLevel);
 	}, [currentLevel]);
+
+	// when hasReset is true, reset the frontend state
+	useEffect(() => {
+		if (hasReset) {
+			resetFrontendState();
+		}
+	}, [hasReset]);
 
 	// methods to modify messages
 	function addChatMessage(message: ChatMessage) {
