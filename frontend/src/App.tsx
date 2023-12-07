@@ -32,6 +32,7 @@ function App() {
 
 	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
+	const [hasReset, setHasReset] = useState(false);
 
 	function loadIsNewUser() {
 		// get isNewUser from local storage
@@ -275,6 +276,12 @@ function App() {
 		} else {
 			setCurrentLevel(LEVEL_NAMES.SANDBOX);
 		}
+
+		// set has reset to true for 4 seconds
+		setHasReset(true);
+		setTimeout(() => {
+			setHasReset(false);
+		}, 4000);
 	}
 
 	function goToSandbox() {
@@ -293,7 +300,7 @@ function App() {
 			<MainComponent
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
-				chatModels={chatModels}
+				hasReset={hasReset}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openHandbook={openHandbook}
 				openInformationOverlay={openInformationOverlay}
