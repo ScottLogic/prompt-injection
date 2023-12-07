@@ -509,6 +509,7 @@ async function performToolCalls(
 }
 
 async function getFinalReplyAfterAllToolCalls(
+	chatResponse: ChatResponse,
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
@@ -516,7 +517,6 @@ async function getFinalReplyAfterAllToolCalls(
 	currentLevel: LEVEL_NAMES,
 	winLevel: () => void
 ) {
-	const chatResponse: ChatResponse = getBlankChatResponse();
 	const openai = getOpenAI();
 	let reply = await chatGptChatCompletion(
 		chatHistory,
@@ -556,7 +556,7 @@ async function getFinalReplyAfterAllToolCalls(
 	}
 
 	// chat history gets mutated, so no need to return it
-	return { reply, chatResponse };
+	return reply;
 }
 
 async function chatGptSendMessage(
@@ -583,15 +583,26 @@ async function chatGptSendMessage(
 			: CHAT_MESSAGE_TYPE.USER
 	);
 
-	// mutates chatHistory
-	const { reply, chatResponse } = await getFinalReplyAfterAllToolCalls(
-		chatHistory,
-		defences,
-		chatModel,
-		sentEmails,
-		currentLevel,
-		winLevel
-	);
+	const chatResponse: ChatResponse = getBlankChatResponse();
+
+	let reply: ChatCompletionMessage | undefined = undefined;
+
+	try {
+		// mutates chatHistory and chatResponse
+		reply = await getFinalReplyAfterAllToolCalls(
+			chatResponse,
+			chatHistory,
+			defences,
+			chatModel,
+			sentEmails,
+			currentLevel,
+			winLevel
+		);
+	} catch (error) {
+		console.error(error);
+		// blank chatReponse will be caught in the controller
+		return getBlankChatResponse();
+	}
 
 	if (!reply.content) {
 		const errorMessage = `Bad final gpt completion reply. There might be a problem with the getFinalReplyAfterAllToolCalls method. reply: ${JSON.stringify(
