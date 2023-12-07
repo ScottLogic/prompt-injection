@@ -19,6 +19,7 @@ import {
 	resetDefenceConfig,
 } from '@src/service/defenceService';
 import { clearEmails, getSentEmails } from '@src/service/emailService';
+import { healthCheck } from '@src/service/healthService';
 
 import MainBody from './MainBody';
 import MainFooter from './MainFooter';
@@ -51,6 +52,14 @@ function MainComponent({
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
+
+	// called on mount
+	useEffect(() => {
+		// perform backend health check
+		healthCheck().catch(() => {
+			addErrorMessage('Failed to reach the server. Please try again later.');
+		});
+	}, []);
 
 	useEffect(() => {
 		void setNewLevel(currentLevel);
@@ -197,6 +206,14 @@ function MainComponent({
 			setDefencesToShow(newDefences);
 		}
 		return success;
+	}
+
+	function addErrorMessage(message: string) {
+		const errorMessage: ChatMessage = {
+			message,
+			type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+		};
+		addChatMessage(errorMessage);
 	}
 
 	function addWelcomeMessage() {
