@@ -47,8 +47,6 @@ async function handleHigherLevelChat(
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel
 ) {
-	let openAiReply = null;
-
 	// transform the message according to active defences
 	chatResponse.transformedMessage = transformMessage(
 		message,
@@ -83,17 +81,13 @@ async function handleHigherLevelChat(
 	);
 
 	// run defence detection and chatGPT concurrently
-	const [, openAiReplyResolved] = await Promise.all([
+	const [, openAiReply] = await Promise.all([
 		triggeredDefencesPromise,
 		openAiReplyPromise,
 	]);
-	openAiReply = openAiReplyResolved;
 
 	// if input message is blocked, restore the original chat history and add user message (not as completion)
 	if (chatResponse.defenceReport.isBlocked) {
-		// set to null to stop message being returned to user
-		openAiReply = null;
-
 		// restore the original chat history
 		req.session.levelState[currentLevel].chatHistory = chatHistoryBefore;
 
@@ -102,9 +96,7 @@ async function handleHigherLevelChat(
 			chatMessageType: CHAT_MESSAGE_TYPE.USER,
 			infoMessage: message,
 		});
-	}
-
-	if (openAiReply) {
+	} else {
 		chatResponse.wonLevel = openAiReply.wonLevel;
 		chatResponse.reply = openAiReply.completion?.content ?? '';
 
