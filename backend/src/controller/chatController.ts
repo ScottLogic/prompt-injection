@@ -205,7 +205,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		handleChatError(res, chatResponse, true, 'Failed to get chatGPT reply');
 		return;
 	}
-	// log and send the reply with defence info
+	// log and send the reply with defence report
 	console.log(chatResponse);
 	res.send(chatResponse);
 }
