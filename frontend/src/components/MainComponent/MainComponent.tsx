@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
@@ -48,8 +48,6 @@ function MainComponent({
 	openDocumentViewer: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
-	const isInitialMount = useRef(true);
-
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
@@ -59,11 +57,13 @@ function MainComponent({
 	useEffect(() => {
 		// perform backend health check
 		healthCheck().catch(() => {
-			if (isInitialMount.current) {
-				// only show error message on initial mount
-				isInitialMount.current = false;
-				addErrorMessage('Failed to reach the server. Please try again later.');
-			}
+			// addErrorMessage('Failed to reach the server. Please try again later.');
+			setMessages([
+				{
+					message: 'Failed to reach the server. Please try again later.',
+					type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+				},
+			]);
 		});
 	}, []);
 
@@ -212,14 +212,6 @@ function MainComponent({
 			setDefencesToShow(newDefences);
 		}
 		return success;
-	}
-
-	function addErrorMessage(message: string) {
-		const errorMessage: ChatMessage = {
-			message,
-			type: CHAT_MESSAGE_TYPE.ERROR_MSG,
-		};
-		addChatMessage(errorMessage);
 	}
 
 	function addWelcomeMessage() {
