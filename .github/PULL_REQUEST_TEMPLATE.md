@@ -22,6 +22,6 @@ Where applicable, show screenshots of the visual changes.
 
 Have you done the following?
 
-- [ ] Linked the relevant Issue
+- [ ] [Linked](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) the relevant Issue
 - [ ] Added tests
 - [ ] Ensured the workflow steps are passing
