@@ -30,7 +30,7 @@ function App() {
 		null
 	);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
-	const [hasReset, setHasReset] = useState(false);
+	const [resetTriggered, setResetTriggered] = useState(false);
 
 	function loadIsNewUser() {
 		// get isNewUser from local storage
@@ -266,11 +266,11 @@ function App() {
 			setCurrentLevel(LEVEL_NAMES.SANDBOX);
 		}
 
-		// set has reset to true for 4 seconds
-		setHasReset(true);
+		// trigger temporarily to update the main component
+		setResetTriggered(true);
 		setTimeout(() => {
-			setHasReset(false);
-		}, 4000);
+			setResetTriggered(false);
+		}, 100);
 	}
 
 	function goToSandbox() {
@@ -289,7 +289,7 @@ function App() {
 			<MainComponent
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
-				hasReset={hasReset}
+				resetTriggered={resetTriggered}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openHandbook={openHandbook}
 				openInformationOverlay={openInformationOverlay}

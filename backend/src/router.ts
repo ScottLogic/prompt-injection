@@ -24,8 +24,8 @@ import {
 	handleGetModel,
 	handleSetModel,
 } from './controller/modelController';
-import { handleGetSystemRoles } from './controller/systemRoleController';
 import { handleResetProgress } from './controller/resetController';
+import { handleGetSystemRoles } from './controller/systemRoleController';
 
 const router = express.Router();
 
