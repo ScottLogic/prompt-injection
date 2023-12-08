@@ -3,10 +3,8 @@ import ResetProgressIcon from '@src/assets/images/ResetProgressIcon';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
+import HeaderButton from '@src/components/ThemedButtons/HeaderButton';
 import { LEVEL_NAMES } from '@src/models/level';
-
-// eslint-disable-next-line no-restricted-imports
-import HeaderButton from '../ThemedButtons/HeaderButton';
 
 import './MainHeader.css';
 
@@ -62,6 +60,15 @@ function MainHeader({
 						<HandbookIcon />
 					</button>
 				</div>
+
+				<HeaderButton
+					onClick={openHandbook}
+					title="open the handbook"
+					className="handbook-button"
+				>
+					<img className="handbook-icon" src={HandbookIcon} alt="" />
+					Handbook
+				</HeaderButton>
 			</span>
 		</header>
 	);

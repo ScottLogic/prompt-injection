@@ -2,7 +2,7 @@
 	background-color: var(--header-button-background-colour);
 	border: none;
 	border-radius: 0.5rem;
-	padding: 1rem;
+	padding: 0.5rem;
 	color: var(--header-button-text-colour);
 	cursor: pointer;
 	min-height: fit-content;
@@ -10,9 +10,6 @@
 	justify-content: center;
 	align-items: center;
 	position: relative;
-	gap: 0.5rem;
-	white-space: nowrap;
-	height: 3.125rem;
 }
 
 .header-button:hover {
