@@ -1,5 +1,7 @@
-import { LEVELS } from '@src/Levels';
 import HandbookIcon from '@src/assets/icons/Handbook.svg';
+import ResetProgressIcon from '@src/assets/images/ResetProgressIcon.svg';
+import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
+import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
 import HeaderButton from '@src/components/ThemedButtons/HeaderButton';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -44,20 +46,15 @@ function MainHeader({
 				/>
 				<HeaderButton
 					onClick={openResetProgress}
+					title="reset your progress"
 					className="reset-progress-button"
 				>
-					<ResetProgressIcon />
+					<img className="reset-progress-icon" src={ResetProgressIcon} alt="" />
 					Reset Progress
 				</HeaderButton>
 			</span>
+
 			<span className="main-header-right">
-				{currentLevel !== LEVEL_NAMES.SANDBOX && (
-					<LevelSelectionBox
-						currentLevel={currentLevel}
-						numCompletedLevels={numCompletedLevels}
-						setCurrentLevel={setCurrentLevel}
-					/>
-				)}
 				<HeaderButton
 					onClick={openHandbook}
 					title="open the handbook"
