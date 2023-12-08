@@ -47,8 +47,17 @@ Please do read through our [code of conduct](CODE_OF_CONDUCT.md) before contribu
 
 ## When you submit a PR
 
-- Provide a link to the issue that PR addresses.
+- [Link the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) that PR addresses.
 - Link any related PRs.
 - Have you added tests?
 - Are all workflow steps passing?
 - Is it ready for review? _If not, create a draft._
+- include the ticket number in the PR name.
+
+### Adding tests
+
+Our project has unit tests and integration tests. We expect tests to be written / altered when a PR adds a new feature or modifes existing behaviour. It is generally up to you to judge what depth of testing to go into.
+
+### Checking the workflow steps
+
+When a PR is submitted or updated, GitHub automatically runs a [workflow](https://docs.github.com/en/actions/using-workflows) for each of the frontend and backend. To see if those are passing, you must scroll to the bottom of the PR, just above where you can post a new comment.
