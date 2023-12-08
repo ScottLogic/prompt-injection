@@ -1,15 +1,38 @@
 .sent-email {
-	background-color: var(--email-background-colour);
+	--border-radius: 0.625rem;
+	--horizontal-padding: 1rem;
+	--vertical-padding: 0.5rem;
 	color: var(--email-text-colour);
-	border-radius: 0.3125rem;
-	border-style: solid;
-	border-width: 0.0625rem;
-	font-size: 0.875rem;
-	margin-top: 0.625rem;
-	padding: 0.625rem 1.5rem;
-	white-space: pre-wrap;
+	padding-bottom: 1rem;
 }
 
-.sent-email p {
+.sent-email:first-child {
+	padding-bottom: 0;
+}
+
+.sent-email .sent-email-title {
+	background-color: var(--email-title-background-colour);
+	border-top-left-radius: var(--border-radius);
+	border-top-right-radius: var(--border-radius);
+	padding: var(--vertical-padding) var(--horizontal-padding);
+	font-weight: 700;
+}
+
+.sent-email .sent-email-main {
+	background-color: var(--email-background-colour);
+	border-bottom-left-radius: var(--border-radius);
+	border-bottom-right-radius: var(--border-radius);
+	padding: var(--vertical-padding) var(--horizontal-padding);
+
+	font-family: courier;
+	font-weight: 400;
+}
+
+.sent-email .sent-email-main p {
 	margin: 0.25rem 0;
+}
+
+.sent-email .sent-email-main hr {
+	border-top: 2px dashed;
+	width: 70%;
 }

@@ -77,9 +77,10 @@
 	--chat-alerted-text-colour: teal;
 	--chat-triggered-text-colour: var(--main-error-colour);
 
-	--email-background-colour: #93ffcb;
+	--email-title-background-colour: #feb589;
+	--email-background-colour: #fff4ee;
 	--email-divider-colour: var(--email-text-colour);
-	--email-text-colour: #000;
+	--email-text-colour: black;
 
 	--short-mission-button-background-colour: var(
 		--control-header-background-colour
