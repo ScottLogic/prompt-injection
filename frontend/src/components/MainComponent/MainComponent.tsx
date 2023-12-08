@@ -88,8 +88,12 @@ function MainComponent({
 	function resetFrontendState() {
 		setMessages([]);
 		setEmails([]);
-		setDefencesToShow(getResetDefences(currentLevel));
-		currentLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
+
+		if (currentLevel !== LEVEL_NAMES.SANDBOX) {
+			addWelcomeMessage();
+			// don't reset defences for sandbox
+			setDefencesToShow(getResetDefences(currentLevel));
+		}
 	}
 
 	// for clearing single level progress
