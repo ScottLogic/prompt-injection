@@ -1,4 +1,5 @@
 import { defaultDefences } from '@src/defaultDefences';
+
 import { ChatHistoryMessage } from './chat';
 import { Defence } from './defence';
 import { EmailInfo } from './email';
