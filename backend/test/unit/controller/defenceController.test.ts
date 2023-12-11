@@ -60,8 +60,6 @@ describe('handleConfigureDefence', () => {
 			},
 		} as DefenceConfigureRequest;
 
-		const res = responseMock();
-
 		const configuredDefences: Defence[] = [
 			{
 				id: 'PROMPT_EVALUATION_LLM',
@@ -72,7 +70,7 @@ describe('handleConfigureDefence', () => {
 		];
 		mockConfigureDefence.mockReturnValueOnce(configuredDefences);
 
-		handleConfigureDefence(req, res);
+		handleConfigureDefence(req, responseMock());
 
 		expect(mockConfigureDefence).toHaveBeenCalledTimes(1);
 		expect(mockConfigureDefence).toHaveBeenCalledWith(
