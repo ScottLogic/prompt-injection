@@ -15,14 +15,12 @@ function ResetProgressOverlay({
 		<Overlay closeOverlay={closeOverlay}>
 			<div className="reset-progress">
 				<h1> Reset all progress </h1>
-				<div className="content">
-					<p>
-						{`Warning! This will reset all your progress in the levels and sandbox mode. 
+				<p>
+					{`Warning! This will reset all your progress in the levels and sandbox mode. 
 							This includes all your conversation history and sent emails. 
 							However any configurations you have made to defences in sandbox mode will not be lost.
 							Are you sure you want to do this?`}
-					</p>
-				</div>
+				</p>
 				<ResetProgressButtons
 					resetProgress={resetProgress}
 					closeOverlay={closeOverlay}
