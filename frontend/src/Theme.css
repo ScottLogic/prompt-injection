@@ -10,6 +10,7 @@
 	--border-colour-teal: #2bb3bb;
 	--background-colour-teal: #208187;
 	--main-text-colour: #fff;
+	--main-text-colour-inverted: #000;
 	--main-accent-colour: #1fd07b; /* #623 TO BE REMOVED */
 	--main-border-colour: var(--main-accent-colour); /* #623 TO BE REMOVED */
 	--main-error-colour: #c41565;
@@ -74,6 +75,7 @@
 	--chat-blocked-border-colour: #c41565;
 	--chat-edited-background-colour: #6a9b9b;
 	--chat-info-text-colour: #707070;
+	--chat-level-info-text-colour: var(--main-text-colour-inverted);
 	--chat-alerted-text-colour: teal;
 	--chat-triggered-text-colour: var(--main-error-colour);
 

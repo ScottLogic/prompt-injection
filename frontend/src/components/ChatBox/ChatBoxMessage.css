@@ -50,5 +50,6 @@
 
 .chat-box-message-level-info {
 	background-color: var(--email-background-colour);
+	color: var(--chat-level-info-text-colour);
 	max-width: 100%;
 }
