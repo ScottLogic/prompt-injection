@@ -68,7 +68,7 @@
 
 	--chat-bot-background-colour: #e9feff;
 	--chat-bot-border-colour: #b6ecef;
-	--chat-bot-text-colour: #000;
+	--chat-bot-text-colour: var(--main-text-colour-inverted);
 	--chat-user-background-colour: #009ca5;
 	--chat-user-border-colour: #198b92;
 	--chat-blocked-background-colour: #faebf2;
