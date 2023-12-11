@@ -1,5 +1,5 @@
 import HandbookIcon from '@src/assets/icons/Handbook.svg';
-import ResetProgressIcon from '@src/assets/images/ResetProgressIcon.svg';
+import ResetProgressIcon from '@src/assets/icons/ResetProgressIcon.svg';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
