@@ -236,6 +236,7 @@ async function chatGptChatCompletion(
 	chatModel: ChatModel,
 	openai: OpenAI,
 	// default to sandbox
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	// check if we need to set a system role
@@ -450,6 +451,138 @@ function pushCompletionToHistory(
 	return chatHistory;
 }
 
+function getBlankChatResponse(): ChatResponse {
+	return {
+		completion: null,
+		defenceReport: {
+			blockedReason: '',
+			isBlocked: false,
+			alertedDefences: [],
+			triggeredDefences: [],
+		},
+		wonLevel: false,
+	};
+}
+
+function applyOutputFilterDefence(
+	message: string,
+	defences: Defence[],
+	chatResponse: ChatResponse
+) {
+	const detectedPhrases = detectFilterList(
+		message,
+		getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
+	);
+
+	if (detectedPhrases.length > 0) {
+		console.debug(
+			'FILTER_BOT_OUTPUT defence triggered. Detected phrases from blocklist:',
+			detectedPhrases
+		);
+		if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
+			chatResponse.defenceReport.triggeredDefences.push(
+				DEFENCE_ID.FILTER_BOT_OUTPUT
+			);
+			chatResponse.defenceReport.isBlocked = true;
+			chatResponse.defenceReport.blockedReason =
+				'My original response was blocked as it contained a restricted word/phrase. Ask me something else. ';
+		} else {
+			chatResponse.defenceReport.alertedDefences.push(
+				DEFENCE_ID.FILTER_BOT_OUTPUT
+			);
+		}
+	}
+}
+
+async function performToolCalls(
+	chatResponse: ChatResponse,
+	toolCalls: ChatCompletionMessageToolCall[],
+	chatHistory: ChatHistoryMessage[],
+	defences: Defence[],
+	sentEmails: EmailInfo[],
+	currentLevel: LEVEL_NAMES
+) {
+	for (const toolCall of toolCalls) {
+		// only tool type supported by openai is function
+
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (toolCall.type === 'function') {
+			// call the function and get a new reply and defence info from
+			const functionCallReply = await chatGptCallFunction(
+				chatResponse.defenceReport,
+				defences,
+				toolCall.id,
+				toolCall.function,
+				sentEmails,
+				currentLevel
+			);
+			if (functionCallReply) {
+				chatResponse.wonLevel = functionCallReply.wonLevel;
+
+				// add the function call to the chat history
+				pushCompletionToHistory(
+					chatHistory,
+					functionCallReply.completion,
+					CHAT_MESSAGE_TYPE.FUNCTION_CALL
+				);
+				// update the defence info
+				chatResponse.defenceReport = functionCallReply.defenceReport;
+			}
+		} else {
+			console.debug('Tool call type not supported yet: ', toolCall.type);
+		}
+	}
+}
+
+async function getFinalReplyAfterAllToolCalls(
+	chatHistory: ChatHistoryMessage[],
+	defences: Defence[],
+	chatModel: ChatModel,
+	sentEmails: EmailInfo[],
+	currentLevel: LEVEL_NAMES
+) {
+	const chatResponse: ChatResponse = getBlankChatResponse();
+	const openai = getOpenAI();
+	let reply = await chatGptChatCompletion(
+		chatHistory,
+		defences,
+		chatModel,
+		openai,
+		currentLevel
+	);
+
+	// check if GPT wanted to call a tool
+	while (reply?.tool_calls) {
+		// push the assistant message to the chat
+		pushCompletionToHistory(
+			chatHistory,
+			reply,
+			CHAT_MESSAGE_TYPE.FUNCTION_CALL
+		);
+
+		await performToolCalls(
+			chatResponse,
+			reply.tool_calls,
+			chatHistory,
+			defences,
+			sentEmails,
+			currentLevel
+		);
+
+		// get a new reply from ChatGPT now that the functions have been called
+		reply = await chatGptChatCompletion(
+			chatHistory,
+			defences,
+			chatModel,
+			openai,
+			currentLevel
+		);
+	}
+
+	// chat history gets mutated, so no need to return it
+	return { reply, chatResponse };
+}
+
 async function chatGptSendMessage(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
@@ -457,27 +590,12 @@ async function chatGptSendMessage(
 	message: string,
 	messageIsTransformed: boolean,
 	sentEmails: EmailInfo[],
-	// default to sandbox
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	console.log(`User message: '${message}'`);
 
-	// init defence info
-	const defenceReport: ChatDefenceReport = {
-		blockedReason: '',
-		isBlocked: false,
-		alertedDefences: [],
-		triggeredDefences: [],
-	};
-
-	const chatResponse: ChatResponse = {
-		completion: null,
-		defenceReport,
-		wonLevel: false,
-	};
-
 	// add user message to chat
-	chatHistory = pushCompletionToHistory(
+	pushCompletionToHistory(
 		chatHistory,
 		{
 			role: 'user',
@@ -488,111 +606,39 @@ async function chatGptSendMessage(
 			: CHAT_MESSAGE_TYPE.USER
 	);
 
-	const openai = getOpenAI();
-	let reply = await chatGptChatCompletion(
+	// mutates chatHistory
+	const { reply, chatResponse } = await getFinalReplyAfterAllToolCalls(
 		chatHistory,
 		defences,
 		chatModel,
-		openai,
+		sentEmails,
 		currentLevel
 	);
-	// check if GPT wanted to call a tool
-	while (reply?.tool_calls) {
-		// push the assistant message to the chat
-		chatHistory = pushCompletionToHistory(
-			chatHistory,
-			reply,
-			CHAT_MESSAGE_TYPE.FUNCTION_CALL
-		);
-		// get the tool call
-		for (const toolCall of reply.tool_calls) {
-			// only tool type supported by openai is function
 
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			if (toolCall.type === 'function') {
-				// call the function and get a new reply and defence info from
-				const functionCallReply = await chatGptCallFunction(
-					defenceReport,
-					defences,
-					toolCall.id,
-					toolCall.function,
-					sentEmails,
-					currentLevel
-				);
-				if (functionCallReply) {
-					chatResponse.wonLevel = functionCallReply.wonLevel;
-
-					// add the function call to the chat history
-					chatHistory = pushCompletionToHistory(
-						chatHistory,
-						functionCallReply.completion,
-						CHAT_MESSAGE_TYPE.FUNCTION_CALL
-					);
-					// update the defence info
-					chatResponse.defenceReport = functionCallReply.defenceReport;
-				}
-			} else {
-				// openai chat tool call type not supported yet
-				console.debug('Tool call type not supported yet: ', toolCall.type);
-			}
-		}
-		// get a new reply from ChatGPT now that the functions have been called
-		reply = await chatGptChatCompletion(
-			chatHistory,
-			defences,
-			chatModel,
-			openai,
-			currentLevel
-		);
-	}
 	if (!reply?.content) {
-		// failed to get reply from GPT
-		return chatResponse;
-	} else {
-		chatResponse.completion = reply;
-
-		// if output filter defence is active, check for blocked words/phrases
-		if (
-			currentLevel === LEVEL_NAMES.LEVEL_3 ||
-			currentLevel === LEVEL_NAMES.SANDBOX
-		) {
-			const detectedPhrases = detectFilterList(
-				reply.content,
-				getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
-			);
-			if (detectedPhrases.length > 0) {
-				console.debug(
-					`FILTER_USER_OUTPUT defence triggered. Detected phrases from blocklist: '${detectedPhrases.join(
-						"', '"
-					)}'.`
-				);
-				if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
-					chatResponse.defenceReport.triggeredDefences.push(
-						DEFENCE_ID.FILTER_BOT_OUTPUT
-					);
-					chatResponse.defenceReport.isBlocked = true;
-					chatResponse.defenceReport.blockedReason =
-						'My original response was blocked as it contained a restricted word/phrase. Ask me something else. ';
-				} else {
-					chatResponse.defenceReport.alertedDefences.push(
-						DEFENCE_ID.FILTER_BOT_OUTPUT
-					);
-				}
-			}
-		}
-		// add the ai reply to the chat history
-		chatHistory = pushCompletionToHistory(
-			chatHistory,
-			reply,
-			defenceReport.isBlocked
-				? CHAT_MESSAGE_TYPE.BOT_BLOCKED
-				: CHAT_MESSAGE_TYPE.BOT
-		);
-
-		// log the entire chat history so far
-		console.log(chatHistory);
 		return chatResponse;
 	}
+
+	chatResponse.completion = reply;
+
+	if (
+		currentLevel === LEVEL_NAMES.LEVEL_3 ||
+		currentLevel === LEVEL_NAMES.SANDBOX
+	) {
+		applyOutputFilterDefence(reply.content, defences, chatResponse);
+	}
+	// add the ai reply to the chat history
+	pushCompletionToHistory(
+		chatHistory,
+		reply,
+		chatResponse.defenceReport.isBlocked
+			? CHAT_MESSAGE_TYPE.BOT_BLOCKED
+			: CHAT_MESSAGE_TYPE.BOT
+	);
+
+	// log the entire chat history so far
+	console.log(chatHistory);
+	return chatResponse;
 }
 
 export const getValidOpenAIModelsList = validOpenAiModels.get;
