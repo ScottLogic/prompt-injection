@@ -84,7 +84,7 @@ function MainComponent({
 
 	function getResetDefences(currentLevel: LEVEL_NAMES): Defence[] {
 		// choose appropriate defences to display
-		let defences: Defence[] =
+		let defences =
 			currentLevel === LEVEL_NAMES.LEVEL_3
 				? DEFENCES_SHOWN_LEVEL3
 				: ALL_DEFENCES;

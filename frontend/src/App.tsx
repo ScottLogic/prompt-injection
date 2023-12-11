@@ -271,9 +271,8 @@ function App() {
 		setIsNewUser(true);
 
 		// take the user to level 1 if on levels, or stay in sandbox
-		if (currentLevel !== LEVEL_NAMES.SANDBOX) {
+		currentLevel !== LEVEL_NAMES.SANDBOX &&
 			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
-		}
 
 		// re-render main component to update frontend chat & emails
 		setMainComponentKey(mainComponentKey + 1);
