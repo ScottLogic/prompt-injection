@@ -7,7 +7,6 @@
 	-moz-hyphens: auto;
 	-ms-hyphens: auto;
 	hyphens: auto;
-	white-space: pre-wrap;
 	word-wrap: break-word;
 	border: 0.0625rem solid transparent;
 	color: var(--chat-bot-text-colour);
