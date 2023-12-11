@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import DocumentViewBox from './components/DocumentViewer/DocumentViewBox';
 import HandbookOverlay from './components/HandbookOverlay/HandbookOverlay';
 import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
@@ -167,6 +168,9 @@ function App() {
 					/>
 				);
 				break;
+			case OVERLAY_TYPE.DOCUMENTS:
+				setOverlayComponent(<DocumentViewBox closeOverlay={closeOverlay} />);
+				break;
 			default:
 				setOverlayComponent(null);
 		}
@@ -221,6 +225,9 @@ function App() {
 	function openLevelsCompleteOverlay() {
 		setOverlayType(OVERLAY_TYPE.LEVELS_COMPLETE);
 	}
+	function openDocumentViewer() {
+		setOverlayType(OVERLAY_TYPE.DOCUMENTS);
+	}
 
 	// set the start level for a user who clicks beginner/expert
 	function setStartLevel(startLevel: LEVEL_NAMES) {
@@ -248,20 +255,19 @@ function App() {
 	return (
 		<div className="app-content">
 			<dialog ref={dialogRef} className="dialog-modal">
-				<div ref={contentRef} className="content">
-					{overlayComponent}
-				</div>
+				<div ref={contentRef}>{overlayComponent}</div>
 			</dialog>
 			<MainComponent
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				chatModels={chatModels}
+				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openHandbook={openHandbook}
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
+				openDocumentViewer={openDocumentViewer}
 				setCurrentLevel={setCurrentLevel}
-				incrementNumCompletedLevels={incrementNumCompletedLevels}
 			/>
 		</div>
 	);

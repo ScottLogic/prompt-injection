@@ -128,7 +128,7 @@ test(
 		const defences = configureDefence(
 			DEFENCE_ID.CHARACTER_LIMIT,
 			activateDefence(DEFENCE_ID.CHARACTER_LIMIT, defaultDefences),
-			[{ id: 'maxMessageLength', value: String(3) }]
+			[{ id: 'MAX_MESSAGE_LENGTH', value: '3' }]
 		);
 		const defenceReport = await detectTriggeredDefences(message, defences);
 		expect(defenceReport.blockedReason).toBe('Message is too long');
@@ -149,7 +149,7 @@ test(
 		const defences = configureDefence(
 			DEFENCE_ID.CHARACTER_LIMIT,
 			activateDefence(DEFENCE_ID.CHARACTER_LIMIT, defaultDefences),
-			[{ id: 'maxMessageLength', value: String(280) }]
+			[{ id: 'MAX_MESSAGE_LENGTH', value: '280' }]
 		);
 		const defenceReport = await detectTriggeredDefences(message, defences);
 		expect(defenceReport.blockedReason).toBe(null);
@@ -170,8 +170,8 @@ test(
 			defaultDefences,
 			[
 				{
-					id: 'maxMessageLength',
-					value: String(3),
+					id: 'MAX_MESSAGE_LENGTH',
+					value: '3',
 				},
 			]
 		);
@@ -232,8 +232,8 @@ test('GIVEN setting max message length WHEN configuring defence THEN defence is 
 	const defence = DEFENCE_ID.CHARACTER_LIMIT;
 	// configure CHARACTER_LIMIT defence
 	const config: DefenceConfigItem = {
-		id: 'maxMessageLength',
-		value: String(10),
+		id: 'MAX_MESSAGE_LENGTH',
+		value: '10',
 	};
 	const defences = configureDefence(defence, defaultDefences, [config]);
 	const matchingDefence = defences.find((d) => d.id === defence);
@@ -265,7 +265,7 @@ test('GIVEN a new system role has been set WHEN getting system role THEN return 
 	const defencesWithSystemRole = configureDefence(
 		DEFENCE_ID.SYSTEM_ROLE,
 		initialDefences,
-		[{ id: 'systemRole', value: 'new system role' }]
+		[{ id: 'SYSTEM_ROLE', value: 'new system role' }]
 	);
 	systemRole = getSystemRole(defencesWithSystemRole);
 	expect(systemRole).toBe('new system role');
@@ -290,7 +290,7 @@ test('GIVEN the QA LLM prompt has not been configured WHEN getting QA LLM config
 test('GIVEN the QA LLM prompt has been configured WHEN getting QA LLM configuration THEN return configured prompt', () => {
 	const newQaLlmPrompt = 'new QA LLM prompt';
 	const defences = configureDefence(DEFENCE_ID.QA_LLM, defaultDefences, [
-		{ id: 'prompt', value: newQaLlmPrompt },
+		{ id: 'PROMPT', value: newQaLlmPrompt },
 	]);
 	const qaLlmPrompt = getQAPromptFromConfig(defences);
 	expect(qaLlmPrompt).toBe(newQaLlmPrompt);
@@ -310,7 +310,7 @@ test('GIVEN the prompt evaluation LLM prompt has been configured WHEN getting th
 		defaultDefences,
 		[
 			{
-				id: 'prompt',
+				id: 'PROMPT',
 				value: newPromptEvalPrompt,
 			},
 		]
@@ -324,15 +324,19 @@ test('GIVEN user has configured defence WHEN resetting defence config THEN defen
 	let defences = defaultDefences;
 
 	// configure defence
-	const config = [
+	const config: DefenceConfigItem[] = [
 		{
-			id: 'systemRole',
+			id: 'SYSTEM_ROLE',
 			value: 'new system role',
 		},
 	];
 	defences = configureDefence(defence, defences, config);
 	// reset defence config
-	defences = resetDefenceConfig(DEFENCE_ID.SYSTEM_ROLE, 'systemRole', defences);
+	defences = resetDefenceConfig(
+		DEFENCE_ID.SYSTEM_ROLE,
+		'SYSTEM_ROLE',
+		defences
+	);
 	// expect defence config to be reset
 	const matchingDefence = defences.find((d) => d.id === defence);
 	expect(matchingDefence).toBeTruthy();
@@ -342,16 +346,16 @@ test('GIVEN user has configured defence WHEN resetting defence config THEN defen
 test('GIVEN user has configured two defence WHEN resetting one defence config THEN that defence config is reset and the other stays same', () => {
 	let defences = defaultDefences;
 	// configure defence
-	const sysRoleConfig = [
+	const sysRoleConfig: DefenceConfigItem[] = [
 		{
-			id: 'systemRole',
+			id: 'SYSTEM_ROLE',
 			value: 'new system role',
 		},
 	];
-	const characterLimitConfig = [
+	const characterLimitConfig: DefenceConfigItem[] = [
 		{
-			id: 'maxMessageLength',
-			value: String(10),
+			id: 'MAX_MESSAGE_LENGTH',
+			value: '10',
 		},
 	];
 
@@ -362,10 +366,14 @@ test('GIVEN user has configured two defence WHEN resetting one defence config TH
 		characterLimitConfig
 	);
 
-	defences = resetDefenceConfig(DEFENCE_ID.SYSTEM_ROLE, 'systemRole', defences);
+	defences = resetDefenceConfig(
+		DEFENCE_ID.SYSTEM_ROLE,
+		'SYSTEM_ROLE',
+		defences
+	);
 	// expect defence config to be reset
 	const matchingSysRoleDefence = defences.find(
-		(d) => d.id === DEFENCE_ID.SYSTEM_ROLE && d.config[0].id === 'systemRole'
+		(d) => d.id === DEFENCE_ID.SYSTEM_ROLE && d.config[0].id === 'SYSTEM_ROLE'
 	);
 	expect(matchingSysRoleDefence).toBeTruthy();
 	expect(matchingSysRoleDefence?.config[0].value).toBe(systemRoleDefault);
@@ -374,5 +382,5 @@ test('GIVEN user has configured two defence WHEN resetting one defence config TH
 		(d) => d.id === DEFENCE_ID.CHARACTER_LIMIT
 	);
 	expect(matchingCharacterLimitDefence).toBeTruthy();
-	expect(matchingCharacterLimitDefence?.config[0].value).toBe(String(10));
+	expect(matchingCharacterLimitDefence?.config[0].value).toBe('10');
 });

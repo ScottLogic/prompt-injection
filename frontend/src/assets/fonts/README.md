@@ -14,3 +14,7 @@ The current CombinedFont.ttf contains:
 - NotoSerifBengali_Condensed-Regular.ttf
 - NotoSerifGurmukhi-Regular.ttf
 - NotoSansHebrew-Regular.ttf
+
+## License
+
+All fonts are licensed under the [Open Font License](./OFL.md).

@@ -16,6 +16,7 @@ function ControlPanel({
 	setDefenceInactive,
 	setDefenceConfiguration,
 	openWelcomeOverlay,
+	openDocumentViewer,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
@@ -28,6 +29,7 @@ function ControlPanel({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 	openWelcomeOverlay: () => void;
+	openDocumentViewer: () => void;
 }) {
 	function getDefencesConfigure() {
 		return defences.filter((defence) => {
@@ -96,7 +98,9 @@ function ControlPanel({
 			)}
 
 			{/* only show document viewer button in sandbox mode */}
-			{currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
+			{currentLevel === LEVEL_NAMES.SANDBOX && (
+				<DocumentViewButton openDocumentViewer={openDocumentViewer} />
+			)}
 			<SwitchModeButton
 				currentLevel={currentLevel}
 				onClick={() => {
