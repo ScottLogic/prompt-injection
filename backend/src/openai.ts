@@ -89,7 +89,7 @@ const chatModelMaxTokens = {
 	[CHAT_MODELS.GPT_4_TURBO]: 128000,
 	[CHAT_MODELS.GPT_4]: 8191,
 	[CHAT_MODELS.GPT_4_0613]: 8191,
-	[CHAT_MODELS.GPT_3_5_TURBO]: 4095,
+	[CHAT_MODELS.GPT_3_5_TURBO]: 600,
 	[CHAT_MODELS.GPT_3_5_TURBO_0613]: 4095,
 	[CHAT_MODELS.GPT_3_5_TURBO_16K]: 16384,
 	[CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16384,
@@ -288,6 +288,22 @@ async function chatGptChatCompletion(
 			messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
 			tools: chatGptTools,
 		});
+		const tokens = chat_completion.usage;
+		console.debug('tokenInfo= message = ', chat_completion.choices[0].message);
+		console.debug('tokenInfo= chat_completion tokens = ', tokens);
+
+		if (chat_completion.choices[0].message.tool_calls) {
+			toolCallFunctionCount(
+				chat_completion.choices[0].message.tool_calls.map(
+					(toolCall) => toolCall.function
+				)
+			);
+		} else {
+			console.debug(
+				'tokenInfo= promptTokensEstimate= ',
+				promptTokensEstimate({ messages: [chat_completion.choices[0].message] })
+			);
+		}
 
 		return chat_completion.choices[0].message;
 	} catch (error) {
@@ -301,6 +317,25 @@ async function chatGptChatCompletion(
 	}
 }
 
+function toolCallFunctionCount(
+	toolCalls: OpenAI.Chat.Completions.ChatCompletionMessageToolCall.Function[]
+) {
+	let estLTokens = 0;
+	for (const toolCallContent of toolCalls) {
+		// tool call not yet implemented in openai-chat-tokens so pass in as a function call
+		estLTokens += promptTokensEstimate({
+			messages: [
+				{
+					role: 'assistant',
+					function_call: toolCallContent,
+				} as ChatCompletionMessageParam,
+			],
+		});
+	}
+	console.debug('tokenInfo= tool call count = ', estLTokens);
+	return estLTokens;
+}
+
 // estimate the tokens on a single completion
 function estimateMessageTokens(
 	message: ChatCompletionMessageParam | null | undefined
@@ -312,19 +347,7 @@ function estimateMessageTokens(
 				(toolCall) => toolCall.function
 			);
 			if (toolCalls) {
-				let estLTokens = 0;
-				for (const toolCallContent of toolCalls) {
-					// tool call not yet implemented in openai-chat-tokens so pass in as a function call
-					estLTokens += promptTokensEstimate({
-						messages: [
-							{
-								role: 'assistant',
-								function_call: toolCallContent,
-							} as ChatCompletionMessageParam,
-						],
-					});
-					return estLTokens;
-				}
+				return toolCallFunctionCount(toolCalls);
 			}
 		} else {
 			const estTokens = promptTokensEstimate({ messages: [message] });
@@ -348,6 +371,8 @@ function filterChatHistoryByMaxTokens(
 			functions: chatGptTools.map((tool) => tool.function),
 		}) + 5; // there is an offset of 5 between openai completion prompt_tokens
 	// if the estimated tokens is less than the max tokens, no need to filter
+
+	console.debug('tokenInfo= estimatedTotalTokens= ', estimatedTokens);
 
 	if (estimatedTokens <= maxNumTokens) {
 		return chatHistory;
@@ -377,6 +402,8 @@ function filterChatHistoryByMaxTokens(
 	for (let i = 1; i < reverseList.length; i++) {
 		const element = reverseList[i];
 		const numTokens = estimateMessageTokens(element);
+
+		console.log('tokenInfo= message: ', element, 'numTokens=', numTokens);
 		// if we reach end and system role is there skip as it's already been added
 		if (element.role === 'system') {
 			continue;
