@@ -1,8 +1,8 @@
 .chat-box-message {
 	border-radius: 1.25rem;
 	margin-top: 1rem;
-	padding: 0.5rem;
-	width: 65%;
+	padding: 1.25rem;
+	max-width: 65%;
 	-webkit-hyphens: auto;
 	-moz-hyphens: auto;
 	-ms-hyphens: auto;
@@ -15,24 +15,25 @@
 	border: 0.0625rem solid var(--chat-bot-border-colour);
 	border-top-left-radius: 0;
 	background-color: var(--chat-bot-background-colour);
-	color: #000;
+	color: var(--chat-bot-text-colour);
+	align-self: flex-start;
 }
 
 .chat-box-message-ai-blocked {
-	background-color: var(--chat-blocked-background-color);
-	border-color: var(--chat-blocked-border-color);
+	background-color: var(--chat-blocked-background-colour);
+	border-color: var(--chat-blocked-border-colour);
 }
 
 .chat-box-message-error {
-	background-color: var(--chat-blocked-background-color);
-	border-color: var(--chat-blocked-border-color);
+	background-color: var(--chat-blocked-background-colour);
+	border-color: var(--chat-blocked-border-colour);
 	border-top-left-radius: 0;
 }
 
 .chat-box-message-user {
-	border: 0.0625rem solid var(--chat-user-border-color);
+	border: 0.0625rem solid var(--chat-user-border-colour);
 	border-top-right-radius: 0;
-	background-color: var(--chat-user-background-color);
+	background-color: var(--chat-user-background-colour);
 	color: var(--main-text-colour);
 	align-self: flex-end;
 }

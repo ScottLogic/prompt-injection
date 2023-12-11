@@ -4,7 +4,7 @@
 	flex-grow: 1;
 	overflow: hidden;
 	background: var(--main-background);
-	border-top: 0.125rem solid #bbb;
+	border-top: 0.125rem solid var(--level-banner-border-colour);
 }
 
 .centre-area {
