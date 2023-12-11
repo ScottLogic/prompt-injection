@@ -57,8 +57,6 @@ router.post('/openai/model', handleSetModel);
 router.post('/openai/model/configure', handleConfigureModel);
 router.get('/openai/model', handleGetModel);
 
-router.get('/openai/validModels', handleGetValidModels);
-
 // system roles
 router.get('/systemRoles', handleGetSystemRoles);
 
@@ -66,7 +64,6 @@ router.get('/systemRoles', handleGetSystemRoles);
 router.get('/documents', handleGetDocuments);
 
 // reset progress for all levels
-
 router.post('/reset', handleResetProgress);
 
 export { router };

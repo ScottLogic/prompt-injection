@@ -32,7 +32,7 @@ function App() {
 
 	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
-	const [resetTriggered, setResetTriggered] = useState(false);
+	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
 
 	function loadIsNewUser() {
 		// get isNewUser from local storage
@@ -270,18 +270,13 @@ function App() {
 		// set as new user so welcome modal shows
 		setIsNewUser(true);
 
-		// take the user to level 1 if on levels, or sandbox if on sandbox
+		// take the user to level 1 if on levels, or stay in sandbox
 		if (currentLevel !== LEVEL_NAMES.SANDBOX) {
 			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
-		} else {
-			setCurrentLevel(LEVEL_NAMES.SANDBOX);
 		}
 
-		// trigger temporarily to update the main component
-		setResetTriggered(true);
-		setTimeout(() => {
-			setResetTriggered(false);
-		}, 100);
+		// re-render main component to update frontend chat & emails
+		setMainComponentKey(mainComponentKey + 1);
 	}
 
 	function goToSandbox() {
@@ -298,9 +293,9 @@ function App() {
 				<div ref={contentRef}>{overlayComponent}</div>
 			</dialog>
 			<MainComponent
+				key={mainComponentKey}
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
-				resetTriggered={resetTriggered}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openHandbook={openHandbook}
 				openInformationOverlay={openInformationOverlay}
