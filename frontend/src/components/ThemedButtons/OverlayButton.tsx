@@ -5,10 +5,9 @@ import './OverlayButton.css';
 function OverlayButton({
 	children,
 	onClick,
-	disabled = false,
-}: ThemedButtonProps) {
+}: Pick<ThemedButtonProps, 'children' | 'onClick'>) {
 	return (
-		<button className="overlay-button" onClick={onClick} disabled={disabled}>
+		<button className="overlay-button" onClick={onClick}>
 			{children}
 		</button>
 	);

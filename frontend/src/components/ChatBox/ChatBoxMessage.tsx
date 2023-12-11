@@ -20,9 +20,7 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 			}
 			lang="en"
 		>
-			{message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED && (
-				<b>Transformed: </b>
-			)}
+			{message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED && <b>Edited: </b>}
 			{message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
 				<p className="level-info-header">Information</p>
 			)}
