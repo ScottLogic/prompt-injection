@@ -91,7 +91,7 @@ describe('handleResetAllDefences unit tests', () => {
 		expect(res.send).toHaveBeenCalledWith(expectedLevelState);
 	});
 
-	test('GIVEN defences THEN should reset defences for all levels', () => {
+	test('GIVEN defences THEN should reset defences for levels but not sandbox', () => {
 		function configureAndActivateDefence(
 			id: DEFENCE_ID,
 			defences: Defence[],
