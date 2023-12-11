@@ -22,7 +22,9 @@
 
 		"paths": {
 			"@src/*": ["./src/*"]
-		}
+		},
+
+		"types": ["vitest/globals"]
 	},
 	"exclude": ["node_modules", "dist"],
 	"include": ["*.ts", "src", ".eslintrc.cjs", "vite.config.ts"]
