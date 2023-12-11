@@ -431,16 +431,14 @@ function pushCompletionToHistory(
 }
 
 function getBlankChatResponse(): ChatResponse {
-	const blankChatDefenceReport: ChatDefenceReport = {
-		blockedReason: '',
-		isBlocked: false,
-		alertedDefences: [],
-		triggeredDefences: [],
-	};
-
 	return {
 		completion: null,
-		defenceReport: blankChatDefenceReport,
+		defenceReport: {
+			blockedReason: '',
+			isBlocked: false,
+			alertedDefences: [],
+			triggeredDefences: [],
+		},
 		wonLevel: false,
 	};
 }
