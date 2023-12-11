@@ -9,30 +9,32 @@
 	hyphens: auto;
 	white-space: pre-wrap;
 	word-wrap: break-word;
+	border: 0.0625rem solid transparent;
+	color: var(--chat-bot-text-colour);
 }
 
 .chat-box-message-ai {
-	border: 0.0625rem solid var(--chat-bot-border-colour);
 	border-top-left-radius: 0;
+	border-color: var(--chat-bot-border-colour);
 	background-color: var(--chat-bot-background-colour);
-	color: var(--chat-bot-text-colour);
 	align-self: flex-start;
 }
 
 .chat-box-message-ai-blocked {
-	background-color: var(--chat-blocked-background-colour);
 	border-color: var(--chat-blocked-border-colour);
+	background-color: var(--chat-blocked-background-colour);
 }
 
 .chat-box-message-error {
-	background-color: var(--chat-blocked-background-colour);
-	border-color: var(--chat-blocked-border-colour);
 	border-top-left-radius: 0;
+	border-color: var(--chat-blocked-border-colour);
+	background-color: var(--chat-blocked-background-colour);
+	align-self: flex-start;
 }
 
 .chat-box-message-user {
-	border: 0.0625rem solid var(--chat-user-border-colour);
 	border-top-right-radius: 0;
+	border-color: var(--chat-user-border-colour);
 	background-color: var(--chat-user-background-colour);
 	color: var(--main-text-colour);
 	align-self: flex-end;
