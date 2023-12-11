@@ -1,10 +1,10 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { OpenAIGetModelRequest } from '@src/models/api/OpenAIGetModelRequest';
 import { OpenAiConfigureModelRequest } from '@src/models/api/OpenAiConfigureModelRequest';
 import { OpenAiSetModelRequest } from '@src/models/api/OpenAiSetModelRequest';
 import { ChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
-import { verifyKeySupportsModel } from '@src/openai';
+import { getValidOpenAIModelsList } from '@src/openai';
 
 function updateConfigProperty(
 	config: ChatModelConfiguration,
@@ -19,25 +19,17 @@ function updateConfigProperty(
 	return null;
 }
 
-async function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
+function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 	const { model } = req.body;
 
 	if (model === undefined) {
 		res.status(400).send();
 	} else {
-		try {
-			// Verify model is valid for our key (it should be!)
-			await verifyKeySupportsModel(model);
-			// Keep same config if not given in request.
-			const configuration =
-				req.body.configuration ?? req.session.chatModel.configuration;
-			req.session.chatModel = { id: model, configuration };
-			console.debug('GPT model set:', JSON.stringify(req.session.chatModel));
-			res.status(200).send();
-		} catch (err) {
-			console.log('GPT model could not be set: ', err);
-			res.status(401).send();
-		}
+		const configuration =
+			req.body.configuration ?? req.session.chatModel.configuration;
+		req.session.chatModel = { id: model, configuration };
+		console.debug('GPT model set:', JSON.stringify(req.session.chatModel));
+		res.status(200).send();
 	}
 }
 
@@ -78,4 +70,14 @@ function handleGetModel(req: OpenAIGetModelRequest, res: Response) {
 	res.send(req.session.chatModel);
 }
 
-export { handleSetModel, handleConfigureModel, handleGetModel };
+function handleGetValidModels(_: Request, res: Response) {
+	const models = getValidOpenAIModelsList();
+	res.send({ models });
+}
+
+export {
+	handleSetModel,
+	handleConfigureModel,
+	handleGetModel,
+	handleGetValidModels,
+};

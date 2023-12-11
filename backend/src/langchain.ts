@@ -10,7 +10,7 @@ import { CHAT_MODELS, ChatAnswer } from './models/chat';
 import { DocumentsVector } from './models/document';
 import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
 import { LEVEL_NAMES } from './models/level';
-import { getOpenAIKey } from './openai';
+import { getOpenAIKey, getValidOpenAIModelsList } from './openai';
 import {
 	promptEvalPrompt,
 	promptEvalContextTemplate,
@@ -19,12 +19,15 @@ import {
 } from './promptTemplates';
 
 // store vectorised documents for each level as array
-let vectorisedDocuments: DocumentsVector[] = [];
-
-// set the global varibale
-function setVectorisedDocuments(docs: DocumentsVector[]) {
-	vectorisedDocuments = docs;
-}
+const vectorisedDocuments = (() => {
+	let docs: DocumentsVector[] = [];
+	return {
+		get: () => docs,
+		set: (newDocs: DocumentsVector[]) => {
+			docs = newDocs;
+		},
+	};
+})();
 
 // choose between the provided preprompt and the default preprompt and prepend it to the main prompt and return the PromptTemplate
 function makePromptTemplate(
@@ -67,20 +70,27 @@ async function initDocumentVectors() {
 			docVector,
 		});
 	}
-	setVectorisedDocuments(docVectors);
+	vectorisedDocuments.set(docVectors);
 	console.debug(
-		'Intitialised document vectors for each level. count=',
-		docVectors.length
+		`Initialised document vectors for each level. count=${docVectors.length}`
 	);
+}
+
+function getChatModel() {
+	return getValidOpenAIModelsList().includes(CHAT_MODELS.GPT_4)
+		? CHAT_MODELS.GPT_4
+		: CHAT_MODELS.GPT_3_5_TURBO;
 }
 
 function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 	const openAIApiKey = getOpenAIKey();
-	const documentVectors = vectorisedDocuments[level].docVector;
+	const documentVectors = vectorisedDocuments.get()[level].docVector;
+	// use gpt-4 if avaliable to apiKey
+	const modelName = getChatModel();
 
 	// initialise model
 	const model = new ChatOpenAI({
-		modelName: CHAT_MODELS.GPT_4,
+		modelName,
 		streaming: true,
 		openAIApiKey,
 	});
@@ -90,6 +100,7 @@ function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 		qaContextTemplate,
 		'QA prompt template'
 	);
+	console.debug(`QA chain initialised with model: ${modelName}`);
 	return RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
 		prompt: promptTemplate,
 	});
@@ -97,6 +108,8 @@ function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 // initialise the prompt evaluation model
 function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 	const openAIApiKey = getOpenAIKey();
+	// use gpt-4 if avaliable to apiKey
+	const modelName = getChatModel();
 
 	const promptEvalTemplate = makePromptTemplate(
 		configPromptEvaluationPrompt,
@@ -106,7 +119,7 @@ function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 	);
 
 	const llm = new OpenAI({
-		modelName: CHAT_MODELS.GPT_4,
+		modelName,
 		temperature: 0,
 		openAIApiKey,
 	});
@@ -117,7 +130,7 @@ function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 		outputKey: 'promptEvalOutput',
 	});
 
-	console.debug('Prompt evaluation model initialised.');
+	console.debug(`Prompt evaluation model initialised with model: ${modelName}`);
 	return chain;
 }
 
@@ -196,13 +209,13 @@ function formatEvaluationOutput(response: string) {
 	}
 }
 
+export const setVectorisedDocuments = vectorisedDocuments.set;
 export {
 	initQAModel,
 	initPromptEvaluationModel,
 	queryDocuments,
 	queryPromptEvaluationModel,
 	formatEvaluationOutput,
-	setVectorisedDocuments,
 	initDocumentVectors,
 	makePromptTemplate,
 };
