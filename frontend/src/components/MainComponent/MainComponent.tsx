@@ -73,10 +73,6 @@ function MainComponent({
 		void setNewLevel(currentLevel);
 	}, [currentLevel]);
 
-	useEffect(() => {
-		console.log('mainComponent rendered');
-	}, []);
-
 	// methods to modify messages
 	function addChatMessage(message: ChatMessage) {
 		setMessages((messages: ChatMessage[]) => [...messages, message]);
