@@ -10,14 +10,17 @@ import './ControlPanel.css';
 function ControlPanel({
 	currentLevel,
 	defences,
+	chatModelOptions,
 	resetDefenceConfiguration,
 	setDefenceActive,
 	setDefenceInactive,
 	setDefenceConfiguration,
 	openWelcomeOverlay,
+	openDocumentViewer,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
+	chatModelOptions: string[];
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	setDefenceActive: (defence: Defence) => void;
 	setDefenceInactive: (defence: Defence) => void;
@@ -26,6 +29,7 @@ function ControlPanel({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 	openWelcomeOverlay: () => void;
+	openDocumentViewer: () => void;
 }) {
 	function getDefencesConfigure() {
 		return defences.filter((defence) => {
@@ -86,13 +90,17 @@ function ControlPanel({
 						/>
 
 						{/* only show model box in sandbox mode */}
-						{showConfigurations && <ModelBox />}
+						{showConfigurations && (
+							<ModelBox chatModelOptions={chatModelOptions} />
+						)}
 					</details>
 				</>
 			)}
 
 			{/* only show document viewer button in sandbox mode */}
-			{currentLevel === LEVEL_NAMES.SANDBOX && <DocumentViewButton />}
+			{currentLevel === LEVEL_NAMES.SANDBOX && (
+				<DocumentViewButton openDocumentViewer={openDocumentViewer} />
+			)}
 			<SwitchModeButton
 				currentLevel={currentLevel}
 				onClick={() => {

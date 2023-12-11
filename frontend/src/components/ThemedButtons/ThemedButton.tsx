@@ -5,30 +5,40 @@ import './ThemedButton.css';
 
 export interface ThemedButtonProps {
 	children: ReactNode;
+	appearsDifferentWhenDisabled?: boolean;
+	ariaDisabled?: boolean;
+	ariaLabel?: string;
 	disabled?: boolean;
 	selected?: boolean;
 	title?: string;
 	onClick: () => void;
-	appearsDifferentWhenDisabled?: boolean;
 }
 
 function ThemedButton({
 	children,
-	onClick,
+	appearsDifferentWhenDisabled = true,
+	ariaDisabled = false,
+	ariaLabel,
 	disabled = false,
 	selected = false,
-	title = '',
-	appearsDifferentWhenDisabled = true,
+	title,
+	onClick,
 }: ThemedButtonProps) {
+	function onClickDisabledCheck() {
+		if (!disabled && !ariaDisabled) onClick();
+	}
+
 	const buttonClass = clsx('themed-button', {
 		selected,
-		appearsDifferentWhenDisabled,
+		disabled: appearsDifferentWhenDisabled && (disabled || ariaDisabled),
 	});
 
 	return (
 		<button
 			className={buttonClass}
-			onClick={onClick}
+			onClick={onClickDisabledCheck}
+			aria-disabled={ariaDisabled}
+			aria-label={ariaLabel}
 			disabled={disabled}
 			title={title}
 		>

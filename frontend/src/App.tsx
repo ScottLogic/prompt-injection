@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import DocumentViewBox from './components/DocumentViewer/DocumentViewBox';
 import HandbookOverlay from './components/HandbookOverlay/HandbookOverlay';
 import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
@@ -7,6 +8,7 @@ import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
 import { OVERLAY_TYPE } from './models/overlay';
+import { getValidModels } from './service/chatService';
 import { getSystemRoles } from './service/systemRoleService';
 
 import './App.css';
@@ -26,6 +28,8 @@ function App() {
 	const [overlayComponent, setOverlayComponent] = useState<JSX.Element | null>(
 		null
 	);
+
+	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 
 	function loadIsNewUser() {
@@ -68,6 +72,21 @@ function App() {
 		setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
 	}
 
+	// fetch constants from the backend on app mount
+	async function loadBackendData() {
+		try {
+			console.log("Initializing app's backend data");
+			const [models, roles] = await Promise.all([
+				getValidModels(),
+				getSystemRoles(),
+			]);
+			setChatModels(models);
+			setSystemRoles(roles);
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
 	useEffect(() => {
 		// save number of completed levels to local storage
 		localStorage.setItem('numCompletedLevels', numCompletedLevels.toString());
@@ -97,15 +116,9 @@ function App() {
 		}
 	}, [isNewUser]);
 
+	// load the system constants from backend on app mount
 	useEffect(() => {
-		// load the system roles
-		getSystemRoles()
-			.then((roles) => {
-				setSystemRoles(roles);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		void loadBackendData();
 	}, []);
 
 	useEffect(() => {
@@ -154,6 +167,9 @@ function App() {
 						closeOverlay={closeOverlay}
 					/>
 				);
+				break;
+			case OVERLAY_TYPE.DOCUMENTS:
+				setOverlayComponent(<DocumentViewBox closeOverlay={closeOverlay} />);
 				break;
 			default:
 				setOverlayComponent(null);
@@ -209,6 +225,9 @@ function App() {
 	function openLevelsCompleteOverlay() {
 		setOverlayType(OVERLAY_TYPE.LEVELS_COMPLETE);
 	}
+	function openDocumentViewer() {
+		setOverlayType(OVERLAY_TYPE.DOCUMENTS);
+	}
 
 	// set the start level for a user who clicks beginner/expert
 	function setStartLevel(startLevel: LEVEL_NAMES) {
@@ -236,19 +255,19 @@ function App() {
 	return (
 		<div className="app-content">
 			<dialog ref={dialogRef} className="dialog-modal">
-				<div ref={contentRef} className="content">
-					{overlayComponent}
-				</div>
+				<div ref={contentRef}>{overlayComponent}</div>
 			</dialog>
 			<MainComponent
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
+				chatModels={chatModels}
+				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openHandbook={openHandbook}
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
+				openDocumentViewer={openDocumentViewer}
 				setCurrentLevel={setCurrentLevel}
-				incrementNumCompletedLevels={incrementNumCompletedLevels}
 			/>
 		</div>
 	);

@@ -58,6 +58,9 @@
 	--handbook-locked-section-colour: #96dde133;
 	--handbook-locked-section-border-colour: #00000080;
 
+	--document-viewer-background-colour: #fff;
+	--document-viewer-text-colour: #000;
+
 	--chat-bot-colour: #d482fb;
 	--chat-bot-background: linear-gradient(var(--chat-bot-colour), #f3dbfe);
 	--chat-blocked-colour: var(--main-error-colour);

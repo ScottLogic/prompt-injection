@@ -95,6 +95,17 @@ const chatModelMaxTokens = {
 	[CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16384,
 };
 
+// list of valid chat models for the api key
+const validOpenAiModels = (() => {
+	let validModels: string[] = [];
+	return {
+		get: () => validModels,
+		set: (models: string[]) => {
+			validModels = models;
+		},
+	};
+})();
+
 const getOpenAIKey = (() => {
 	let openAIKey: string | undefined = undefined;
 	return () => {
@@ -111,16 +122,26 @@ const getOpenAIKey = (() => {
 })();
 
 /**
- * Checks the given model is supported by the OpenAI API key
- * @throws Error if the key cannot be used with the model
+ * Gets the GPT models available to the OpenAI API key
  */
-async function verifyKeySupportsModel(gptModel: string) {
-	const apiKey = getOpenAIKey();
-	const testOpenAI: OpenAI = new OpenAI({ apiKey });
-	await testOpenAI.chat.completions.create({
-		model: gptModel,
-		messages: [{ role: 'user', content: 'this is a test prompt' }],
-	});
+async function getValidModelsFromOpenAI() {
+	try {
+		const openAI = getOpenAI();
+		const models: OpenAI.ModelsPage = await openAI.models.list();
+
+		// get the model ids that are supported by our app
+		const validModels = models.data
+			.map((model) => model.id)
+			.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS))
+			.sort();
+
+		validOpenAiModels.set(validModels);
+		console.debug('Valid OpenAI models:', validModels);
+		return validModels;
+	} catch (error) {
+		console.error('Error getting valid models: ', error);
+		throw error;
+	}
 }
 
 function getOpenAI() {
@@ -620,9 +641,10 @@ async function chatGptSendMessage(
 	return chatResponse;
 }
 
+export const getValidOpenAIModelsList = validOpenAiModels.get;
 export {
 	chatGptSendMessage,
 	filterChatHistoryByMaxTokens,
 	getOpenAIKey,
-	verifyKeySupportsModel,
+	getValidModelsFromOpenAI,
 };

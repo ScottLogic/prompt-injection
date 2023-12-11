@@ -17,6 +17,7 @@ function MainBody({
 	defences,
 	emails,
 	messages,
+	chatModels,
 	addChatMessage,
 	resetDefenceConfiguration,
 	resetLevel,
@@ -28,11 +29,13 @@ function MainBody({
 	openInfoOverlay,
 	openLevelsCompleteOverlay,
 	openWelcomeOverlay,
+	openDocumentViewer,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
 	emails: EmailInfo[];
 	messages: ChatMessage[];
+	chatModels: string[];
 	addChatMessage: (message: ChatMessage) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	resetLevel: () => void;
@@ -47,6 +50,7 @@ function MainBody({
 	openInfoOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openWelcomeOverlay: () => void;
+	openDocumentViewer: () => void;
 }) {
 	const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
 		new Set()
@@ -69,11 +73,13 @@ function MainBody({
 				<ControlPanel
 					currentLevel={currentLevel}
 					defences={defences}
+					chatModelOptions={chatModels}
 					resetDefenceConfiguration={resetDefenceConfiguration}
 					setDefenceActive={setDefenceActive}
 					setDefenceInactive={setDefenceInactive}
 					setDefenceConfiguration={setDefenceConfiguration}
 					openWelcomeOverlay={openWelcomeOverlay}
+					openDocumentViewer={openDocumentViewer}
 				/>
 			</div>
 			<div className="centre-area">

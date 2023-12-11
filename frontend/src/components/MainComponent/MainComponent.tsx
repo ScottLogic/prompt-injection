@@ -29,21 +29,25 @@ import './MainComponent.css';
 function MainComponent({
 	currentLevel,
 	numCompletedLevels,
+	chatModels,
+	incrementNumCompletedLevels,
 	openHandbook,
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
 	openWelcomeOverlay,
+	openDocumentViewer,
 	setCurrentLevel,
-	incrementNumCompletedLevels,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
+	chatModels: string[];
+	incrementNumCompletedLevels: (level: number) => void;
 	openHandbook: () => void;
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openWelcomeOverlay: () => void;
+	openDocumentViewer: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
-	incrementNumCompletedLevels: (level: number) => void;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
@@ -217,6 +221,7 @@ function MainComponent({
 				key={MainBodyKey}
 				currentLevel={currentLevel}
 				defences={defencesToShow}
+				chatModels={chatModels}
 				emails={emails}
 				messages={messages}
 				addChatMessage={addChatMessage}
@@ -234,6 +239,7 @@ function MainComponent({
 				openInfoOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
+				openDocumentViewer={openDocumentViewer}
 			/>
 			<MainFooter />
 		</div>
