@@ -10,7 +10,6 @@ import {
 	isDefenceActive,
 	transformMessage,
 	detectFilterList,
-	getPromptEvalPromptFromConfig,
 } from '@src/defence';
 import * as langchain from '@src/langchain';
 import { DEFENCE_ID, DefenceConfigItem } from '@src/models/defence';
@@ -296,18 +295,27 @@ test('GIVEN the QA LLM prompt has been configured WHEN getting QA LLM configurat
 	expect(qaLlmPrompt).toBe(newQaLlmPrompt);
 });
 
-test('GIVEN the prompt evaluation LLM prompt has not been configured WHEN getting the configuration THEN return default pre-prompt', () => {
-	const defences = defaultDefences;
-	const configPromptInjectionEvalPrompt =
-		getPromptEvalPromptFromConfig(defences);
-	expect(configPromptInjectionEvalPrompt).toBe(promptEvalPrompt);
+test('GIVEN the prompt evaluation LLM prompt has not been configured WHEN detecting triggered defences THEN the default evaluator prompt is used', async () => {
+	const message = 'Hello';
+	const defences = activateDefence(
+		DEFENCE_ID.PROMPT_EVALUATION_LLM,
+		defaultDefences
+	);
+	await detectTriggeredDefences(message, defences);
+
+	// expect queryPromptEvaluationModel to be called with the default prompt
+	expect(langchain.queryPromptEvaluationModel).toHaveBeenCalledWith(
+		message,
+		promptEvalPrompt
+	);
 });
 
-test('GIVEN the prompt evaluation LLM prompt has been configured WHEN getting the configuration THEN return configured prompt', () => {
+test('GIVEN the prompt evaluation LLM prompt has been configured WHEN detecting triggered defences THEN the configured evaluator prompt is used', async () => {
+	const message = 'Hello';
 	const newPromptEvalPrompt = 'new prompt eval prompt';
 	const defences = configureDefence(
 		DEFENCE_ID.PROMPT_EVALUATION_LLM,
-		defaultDefences,
+		activateDefence(DEFENCE_ID.PROMPT_EVALUATION_LLM, defaultDefences),
 		[
 			{
 				id: 'PROMPT',
@@ -315,8 +323,13 @@ test('GIVEN the prompt evaluation LLM prompt has been configured WHEN getting th
 			},
 		]
 	);
-	const configPromptEvalPrompt = getPromptEvalPromptFromConfig(defences);
-	expect(configPromptEvalPrompt).toBe(newPromptEvalPrompt);
+	await detectTriggeredDefences(message, defences);
+
+	// expect queryPromptEvaluationModel to be called with the default prompt
+	expect(langchain.queryPromptEvaluationModel).toHaveBeenCalledWith(
+		message,
+		promptEvalPrompt
+	);
 });
 
 test('GIVEN user has configured defence WHEN resetting defence config THEN defence config is reset', () => {
