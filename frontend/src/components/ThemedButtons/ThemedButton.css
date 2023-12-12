@@ -6,13 +6,13 @@
 	border: none;
 	border-radius: 0.625rem;
 	padding: 0.5rem;
-	background-color: var(--main-button-background-colour);
-	color: var(--main-button-text-colour);
+	background-color: var(--action-button-background-colour);
+	color: var(--action-button-text-colour);
 	font-size: 1rem;
 	font-weight: 600;
 }
 
 .themed-button.disabled {
-	background-color: var(--main-button-disabled-background-colour);
-	color: var(--main-button-disabled-text-colour);
+	background-color: var(--action-button-disabled-background-colour);
+	color: var(--action-button-disabled-text-colour);
 }

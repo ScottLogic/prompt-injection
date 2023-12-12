@@ -1,18 +1,18 @@
 .view-documents-header {
-	background: var(--main-background);
-	color: var(--main-accent-colour);
-	padding-bottom: 1.25rem;
-	text-align: center;
+	color: var(--main-text-colour);
+	padding-bottom: 0.25rem;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	align-items: stretch;
+	gap: 1.25rem;
 }
 
 .view-documents-header h2 {
 	width: 100%;
+	text-align: center;
 	padding-bottom: 1rem;
 	border-bottom: solid 0.0625rem var(--main-border-colour);
-	margin-top: 0;
+	margin: 0;
 }
 
 .view-documents-header .nav {
@@ -27,17 +27,18 @@
 .view-documents-header .info {
 	margin: 0;
 	padding: 0;
-	font-size: 1rem;
+	font-size: 1.25rem;
 }
 
 .view-documents-header .button-container {
 	display: flex;
 	gap: 1rem;
-	width: 50%;
+	align-self: stretch;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .view-documents-header .button-container button {
 	white-space: nowrap;
-	/* make the buttons the same width */
-	width: 100%;
+	flex: 0 0 30%;
 }
