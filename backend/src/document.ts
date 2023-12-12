@@ -13,7 +13,7 @@ async function getCommonDocuments() {
 	return await getDocuments(commonDocsFilePath);
 }
 
-async function getDocumentsForLevel(level: LEVEL_NAMES) {
+async function getLevelDocuments(level: LEVEL_NAMES) {
 	const levelDocsFilePath = getFilepath(level);
 	return await getDocuments(levelDocsFilePath);
 }
@@ -75,4 +75,4 @@ function getDocumentMetas(folder: string) {
 	return documentMetas;
 }
 
-export { getCommonDocuments, getDocumentsForLevel, getSandboxDocumentMetas };
+export { getCommonDocuments, getLevelDocuments, getSandboxDocumentMetas };

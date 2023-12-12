@@ -5,7 +5,7 @@ import { OpenAI } from 'langchain/llms/openai';
 import { PromptTemplate } from 'langchain/prompts';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
-import { getCommonDocuments, getDocumentsForLevel } from './document';
+import { getCommonDocuments, getLevelDocuments } from './document';
 import { CHAT_MODELS, ChatAnswer } from './models/chat';
 import { DocumentsVector } from './models/document';
 import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
@@ -55,9 +55,7 @@ async function initDocumentVectors() {
 		.map((value) => Number(value));
 
 	for (const level of levelValues) {
-		const allDocuments = commonDocuments.concat(
-			await getDocumentsForLevel(level)
-		);
+		const allDocuments = commonDocuments.concat(await getLevelDocuments(level));
 
 		// embed and store the splits - will use env variable for API key
 		const embeddings = new OpenAIEmbeddings();

@@ -1,6 +1,6 @@
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 
-import { getCommonDocuments, getDocumentsForLevel } from '@src/document';
+import { getCommonDocuments, getLevelDocuments } from '@src/document';
 import { LEVEL_NAMES } from '@src/models/level';
 
 const mockLoader = jest.fn();
@@ -34,7 +34,7 @@ test('WHEN get documents for a level THEN returns the correct documents', async 
 	mockLoader.mockResolvedValue([]);
 	mockSplitDocuments.mockResolvedValueOnce(mockLevelSplitDocs);
 
-	const result = await getDocumentsForLevel(LEVEL_NAMES.LEVEL_1);
+	const result = await getLevelDocuments(LEVEL_NAMES.LEVEL_1);
 
 	expect(DirectoryLoader).toHaveBeenCalledWith(
 		'resources/documents/level_1/',
