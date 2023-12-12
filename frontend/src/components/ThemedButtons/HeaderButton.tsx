@@ -8,12 +8,7 @@ type HeaderButtonProps = {
 	className?: string;
 };
 
-function HeaderButton({
-	children,
-	onClick,
-	className,
-	title,
-}: HeaderButtonProps) {
+function HeaderButton({ children, onClick, className }: HeaderButtonProps) {
 	return (
 		<button onClick={onClick} className={`header-button ${className}`}>
 			{children}
