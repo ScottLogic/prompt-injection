@@ -53,7 +53,7 @@ function ChatBoxInput({
 				<ThemedTextArea
 					content={content}
 					onContentChanged={onContentChanged}
-					placeHolderText="Type here..."
+					placeHolderText="Type your prompt here. Press return to send."
 					spacing="loose"
 					maxLines={10}
 					onKeyDown={inputKeyDown}

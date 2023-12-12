@@ -210,7 +210,7 @@ function ChatBox({
 						currentLevel={currentLevel}
 					/>
 					<button className="chat-button" onClick={resetLevel}>
-						Reset
+						Reset Level
 					</button>
 				</div>
 
@@ -226,7 +226,7 @@ function ChatBox({
 							onClick={() => void sendChatMessage()}
 							isLoading={isSendingMessage}
 						>
-							Send
+							send
 						</LoadingButton>
 					</span>
 				</div>

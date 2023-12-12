@@ -38,7 +38,7 @@ function ExportPDFLink({
 			className="chat-button export-chat-link"
 			fileName={getFileName()}
 		>
-			Export
+			Export Chat
 		</PDFDownloadLink>
 	);
 }
