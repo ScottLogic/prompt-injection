@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import { Document } from 'langchain/document';
 import { CSVLoader } from 'langchain/document_loaders/fs/csv';
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
@@ -9,18 +8,13 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { DocumentMeta } from './models/document';
 import { LEVEL_NAMES } from './models/level';
 
-async function getDocumentsForLevel(level: LEVEL_NAMES) {
-	const levelDocuments = await getLevelSpecificDocuments(level);
-
-	const commonDocsFilePath: string = getFilepath('common');
-	const commonDocuments: Document[] = await getDocuments(commonDocsFilePath);
-
-	const documents = commonDocuments.concat(levelDocuments);
-	return documents;
+async function getCommonDocuments() {
+	const commonDocsFilePath = getFilepath('common');
+	return await getDocuments(commonDocsFilePath);
 }
 
-async function getLevelSpecificDocuments(level: LEVEL_NAMES) {
-	const levelDocsFilePath: string = getFilepath(level);
+async function getDocumentsForLevel(level: LEVEL_NAMES) {
+	const levelDocsFilePath = getFilepath(level);
 	return await getDocuments(levelDocsFilePath);
 }
 
@@ -45,20 +39,20 @@ async function getDocuments(filePath: string) {
 }
 
 function getFilepath(target: LEVEL_NAMES | 'common') {
-	let filePath = 'resources/documents/';
+	const documentDir = 'resources/documents/';
 	switch (target) {
 		case LEVEL_NAMES.LEVEL_1:
-			return (filePath += 'level_1/');
+			return `${documentDir}level_1/`;
 		case LEVEL_NAMES.LEVEL_2:
-			return (filePath += 'level_2/');
+			return `${documentDir}level_2/`;
 		case LEVEL_NAMES.LEVEL_3:
-			return (filePath += 'level_3/');
+			return `${documentDir}level_3/`;
 		case LEVEL_NAMES.SANDBOX:
-			return (filePath += 'sandbox/');
+			return `${documentDir}sandbox/`;
 		case 'common':
-			return (filePath += 'common/');
+			return `${documentDir}common/`;
 		default:
-			console.error(`No document filepath found: ${filePath}`);
+			console.error('Failed to get document file path: Unknown target');
 			return '';
 	}
 }
@@ -81,4 +75,4 @@ function getDocumentMetas(folder: string) {
 	return documentMetas;
 }
 
-export { getDocumentsForLevel, getSandboxDocumentMetas };
+export { getCommonDocuments, getDocumentsForLevel, getSandboxDocumentMetas };

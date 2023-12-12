@@ -5,7 +5,7 @@ import { OpenAI } from 'langchain/llms/openai';
 import { PromptTemplate } from 'langchain/prompts';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
-import { getDocumentsForLevel } from './document';
+import { getCommonDocuments, getDocumentsForLevel } from './document';
 import { CHAT_MODELS, ChatAnswer } from './models/chat';
 import { DocumentsVector } from './models/document';
 import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
@@ -46,21 +46,22 @@ function makePromptTemplate(
 }
 
 // create and store the document vectors for each level
-// eslint-disable-next-line @typescript-eslint/require-await
 async function initDocumentVectors() {
 	const docVectors: DocumentsVector[] = [];
+	const commonDocuments = await getCommonDocuments();
 
 	const levelValues = Object.values(LEVEL_NAMES)
 		.filter((value) => !isNaN(Number(value)))
 		.map((value) => Number(value));
 
 	for (const level of levelValues) {
-		const allDocuments = await getDocumentsForLevel(level);
+		const allDocuments = commonDocuments.concat(
+			await getDocumentsForLevel(level)
+		);
 
 		// embed and store the splits - will use env variable for API key
 		const embeddings = new OpenAIEmbeddings();
-
-		const docVector: MemoryVectorStore = await MemoryVectorStore.fromDocuments(
+		const docVector = await MemoryVectorStore.fromDocuments(
 			allDocuments,
 			embeddings
 		);
