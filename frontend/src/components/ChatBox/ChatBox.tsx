@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { ALL_DEFENCES } from '@src/Defences';
 import ExportPDFLink from '@src/components/ExportChat/ExportPDFLink';
+import '@src/components/ThemedButtons/ChatButton.css';
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
-import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import useUnitStepper from '@src/hooks/useUnitStepper';
 import { CHAT_MESSAGE_TYPE, ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
@@ -209,7 +209,9 @@ function ChatBox({
 						emails={emails}
 						currentLevel={currentLevel}
 					/>
-					<ThemedButton onClick={resetLevel}>Reset</ThemedButton>
+					<button className="chat-button" onClick={resetLevel}>
+						Reset
+					</button>
 				</div>
 
 				<div className="messages">

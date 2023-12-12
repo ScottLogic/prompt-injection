@@ -1,5 +1,6 @@
 import { PDFDownloadLink } from '@react-pdf/renderer';
 
+import '@src/components/ThemedButtons/ChatButton.css';
 import { ChatMessage } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -34,7 +35,7 @@ function ExportPDFLink({
 					currentLevel={currentLevel}
 				/>
 			}
-			className="themed-button export-chat-link"
+			className="chat-button export-chat-link"
 			fileName={getFileName()}
 		>
 			Export
