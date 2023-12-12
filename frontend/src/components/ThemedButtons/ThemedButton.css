@@ -6,16 +6,13 @@
 	border: none;
 	border-radius: 0.625rem;
 	padding: 0.5rem;
-	background-color: var(--background-colour-teal);
-	color: var(--main-text-colour);
+	background-color: var(--main-button-background-colour);
+	color: var(--main-button-text-colour);
 	font-size: 1rem;
 	font-weight: 600;
-	cursor: pointer;
 }
 
 .themed-button.disabled {
 	background-color: var(--main-button-disabled-background-colour);
 	color: var(--main-button-disabled-text-colour);
-	cursor: default;
-	border-color: transparent;
 }

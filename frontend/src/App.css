@@ -38,7 +38,6 @@
 .prompt-injection-min-button:hover {
 	border-color: var(--main-text-colour);
 	text-decoration: none;
-	cursor: pointer;
 }
 
 .dialog-modal {
@@ -47,7 +46,6 @@
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-
 	background-color: transparent;
 	border: none;
 	padding: 0;

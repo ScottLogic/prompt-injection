@@ -29,6 +29,7 @@ import './MainComponent.css';
 function MainComponent({
 	currentLevel,
 	numCompletedLevels,
+	chatModels,
 	incrementNumCompletedLevels,
 	openHandbook,
 	openInformationOverlay,
@@ -40,6 +41,7 @@ function MainComponent({
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
+	chatModels: string[];
 	incrementNumCompletedLevels: (level: number) => void;
 	openHandbook: () => void;
 	openInformationOverlay: () => void;
@@ -237,6 +239,7 @@ function MainComponent({
 				key={MainBodyKey}
 				currentLevel={currentLevel}
 				defences={defencesToShow}
+				chatModels={chatModels}
 				emails={emails}
 				messages={messages}
 				addChatMessage={addChatMessage}

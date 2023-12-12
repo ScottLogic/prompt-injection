@@ -2,17 +2,16 @@
 import { useEffect, useState } from 'react';
 
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
-import { CHAT_MODELS } from '@src/models/chat';
 import { setGptModel, getGptModel } from '@src/service/chatService';
 
 import './ModelSelection.css';
 
 // return a drop down menu with the models
-function ModelSelection() {
+function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
 	// model currently selected in the dropdown
-	const [selectedModel, setSelectedModel] = useState<CHAT_MODELS | null>(null);
+	const [selectedModel, setSelectedModel] = useState<string | null>(null);
 	// model in use by the app
-	const [modelInUse, setModelInUse] = useState<CHAT_MODELS | null>(null);
+	const [modelInUse, setModelInUse] = useState<string | null>(null);
 
 	const [errorChangingModel, setErrorChangingModel] = useState(false);
 
@@ -48,8 +47,6 @@ function ModelSelection() {
 			});
 	}, []);
 
-	const chatModelOptions = Object.values(CHAT_MODELS);
-
 	// return a drop down menu with the models
 	return (
 		<div className="model-selection-box">
@@ -60,7 +57,7 @@ function ModelSelection() {
 						aria-label="model-select"
 						value={selectedModel ?? 0} // default to the first model
 						onChange={(e) => {
-							setSelectedModel(e.target.value as CHAT_MODELS);
+							setSelectedModel(e.target.value);
 						}}
 					>
 						{chatModelOptions.map((model) => (

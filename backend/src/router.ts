@@ -22,6 +22,7 @@ import {
 import {
 	handleConfigureModel,
 	handleGetModel,
+	handleGetValidModels,
 	handleSetModel,
 } from './controller/modelController';
 import { handleResetProgress } from './controller/resetController';
@@ -62,6 +63,8 @@ router.post('/openai/model', handleSetModel);
 router.post('/openai/model/configure', handleConfigureModel);
 
 router.get('/openai/model', handleGetModel);
+
+router.get('/openai/validModels', handleGetValidModels);
 
 // system roles
 router.get('/systemRoles', handleGetSystemRoles);
