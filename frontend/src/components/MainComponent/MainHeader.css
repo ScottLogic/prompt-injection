@@ -52,13 +52,7 @@
 	justify-content: flex-end;
 }
 
-.handbook-area {
-	width: 10%;
-	height: 50%;
-	margin-left: 1rem;
-}
-
-.handbook-icon {
-	height: 100%;
-	width: 100%;
+.handbook-button {
+	display: flex;
+	gap: 0.5rem;
 }
