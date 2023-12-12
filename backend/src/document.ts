@@ -52,7 +52,10 @@ function getFilepath(target: LEVEL_NAMES | 'common') {
 		case 'common':
 			return `${documentDir}common/`;
 		default:
-			console.error('Failed to get document file path: Unknown target');
+			console.error(
+				'Failed to get document file path: Unknown target: ',
+				target
+			);
 			return '';
 	}
 }
