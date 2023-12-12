@@ -16,6 +16,9 @@
 	border-top-right-radius: var(--border-radius);
 	padding: var(--vertical-padding) var(--horizontal-padding);
 	font-weight: 700;
+	display: flex;
+	gap: 1rem;
+	align-items: center;
 }
 
 .sent-email .sent-email-main {
