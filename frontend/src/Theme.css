@@ -12,7 +12,6 @@
 	--main-scrollbar-hover-colour: #555555;
 	--main-scrollbar-border-colour: #666666;
 
-	/* buttons */
 	--main-button-active-background-colour: teal;
 	--main-button-active-text-colour: var(--main-text-colour);
 	--main-button-inactive-background-colour: #313131;
@@ -25,10 +24,6 @@
 	--main-button-inactive-hover-text-colour: var(--main-text-colour);
 	--main-button-hover-text-colour: var(--main-text-colour);
 	--main-button-hover-border-colour: white;
-
-	--header-button-background-colour: teal;
-	--header-button-text-colour: var(--main-text-colour);
-	--header-button-hover-background-colour: #00aaaa;
 
 	--main-input-active-background-colour: var(
 		--main-button-inactive-background-colour
