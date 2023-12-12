@@ -50,12 +50,8 @@ function MainHeader({
 						setCurrentLevel={setCurrentLevel}
 					/>
 				)}
-				<HeaderButton
-					onClick={openHandbook}
-					title="open the handbook"
-					className="handbook-button"
-				>
-					<img className="handbook-icon" src={HandbookIcon} alt="" />
+				<HeaderButton onClick={openHandbook} className="handbook-button">
+					<img src={HandbookIcon} alt="" />
 					Handbook
 				</HeaderButton>
 			</span>

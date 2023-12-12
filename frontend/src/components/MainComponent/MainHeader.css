@@ -53,9 +53,6 @@
 }
 
 .handbook-button {
-	margin-left: 0.5rem;
-}
-
-.handbook-icon {
-	margin-right: 0.5rem;
+	display: flex;
+	gap: 0.5rem;
 }
