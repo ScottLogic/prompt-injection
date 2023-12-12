@@ -203,6 +203,15 @@ function ChatBox({
 		<div className="chat-box">
 			<ChatBoxFeed messages={messages} />
 			<div className="footer">
+				<div className="control-buttons">
+					<ExportPDFLink
+						messages={messages}
+						emails={emails}
+						currentLevel={currentLevel}
+					/>
+					<ThemedButton onClick={resetLevel}>Reset</ThemedButton>
+				</div>
+
 				<div className="messages">
 					<ChatBoxInput
 						content={chatInput}
@@ -218,15 +227,6 @@ function ChatBox({
 							Send
 						</LoadingButton>
 					</span>
-				</div>
-
-				<div className="control-buttons">
-					<ExportPDFLink
-						messages={messages}
-						emails={emails}
-						currentLevel={currentLevel}
-					/>
-					<ThemedButton onClick={resetLevel}>Reset</ThemedButton>
 				</div>
 			</div>
 		</div>

@@ -13,6 +13,7 @@
 	font-size: 0.75rem;
 	padding: 2rem;
 	box-sizing: border-box;
+	gap: 1.25rem;
 }
 
 .chat-box .footer label {
@@ -40,7 +41,6 @@
 .chat-box .footer .control-buttons {
 	display: flex;
 	height: 2rem;
-	margin-top: 1.25rem;
 	column-gap: 1rem;
 }
 
