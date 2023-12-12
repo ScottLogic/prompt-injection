@@ -1,4 +1,6 @@
-import { getDocumentsForLevel } from '@src/document';
+import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
+
+import { getCommonDocuments, getDocumentsForLevel } from '@src/document';
 import { LEVEL_NAMES } from '@src/models/level';
 
 const mockLoader = jest.fn();
@@ -28,16 +30,30 @@ jest.mock('langchain/text_splitter', () => {
 
 test('WHEN get documents for a level THEN returns the correct documents', async () => {
 	const mockLevelSplitDocs = ['split1', 'split1.5', 'split2'];
-	const mockCommonSplitDocs = ['split3', 'split4'];
-
-	const expectedDocs = [...mockLevelSplitDocs, ...mockCommonSplitDocs];
 
 	mockLoader.mockResolvedValue([]);
-	mockSplitDocuments
-		.mockResolvedValueOnce(mockLevelSplitDocs)
-		.mockResolvedValueOnce(mockCommonSplitDocs);
+	mockSplitDocuments.mockResolvedValueOnce(mockLevelSplitDocs);
 
 	const result = await getDocumentsForLevel(LEVEL_NAMES.LEVEL_1);
 
-	expect(result.sort()).toEqual(expectedDocs.sort());
+	expect(DirectoryLoader).toHaveBeenCalledWith(
+		'resources/documents/level_1/',
+		expect.any(Object)
+	);
+	expect(result.sort()).toEqual(mockLevelSplitDocs.sort());
+});
+
+test('WHEN get common documents THEN returns the correct documents', async () => {
+	const mockLevelSplitDocs = ['commonDoc1', 'commonDoc2', 'commonDoc3'];
+
+	mockLoader.mockResolvedValue([]);
+	mockSplitDocuments.mockResolvedValueOnce(mockLevelSplitDocs);
+
+	const result = await getCommonDocuments();
+
+	expect(DirectoryLoader).toHaveBeenCalledWith(
+		'resources/documents/common/',
+		expect.any(Object)
+	);
+	expect(result.sort()).toEqual(mockLevelSplitDocs.sort());
 });
