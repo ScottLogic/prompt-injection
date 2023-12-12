@@ -303,7 +303,6 @@ test('GIVEN the prompt evaluation LLM prompt has not been configured WHEN detect
 	);
 	await detectTriggeredDefences(message, defences);
 
-	// expect queryPromptEvaluationModel to be called with the default prompt
 	expect(langchain.queryPromptEvaluationModel).toHaveBeenCalledWith(
 		message,
 		promptEvalPrompt
@@ -325,10 +324,9 @@ test('GIVEN the prompt evaluation LLM prompt has been configured WHEN detecting 
 	);
 	await detectTriggeredDefences(message, defences);
 
-	// expect queryPromptEvaluationModel to be called with the default prompt
 	expect(langchain.queryPromptEvaluationModel).toHaveBeenCalledWith(
 		message,
-		promptEvalPrompt
+		newPromptEvalPrompt
 	);
 });
 
