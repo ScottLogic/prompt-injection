@@ -6,7 +6,6 @@ type HeaderButtonProps = {
 	children: ReactNode;
 	onClick: () => void;
 	className?: string;
-	title?: string;
 };
 
 function HeaderButton({
@@ -16,11 +15,7 @@ function HeaderButton({
 	title,
 }: HeaderButtonProps) {
 	return (
-		<button
-			onClick={onClick}
-			title={title}
-			className={`header-button ${className}`}
-		>
+		<button onClick={onClick} className={`header-button ${className}`}>
 			{children}
 		</button>
 	);
