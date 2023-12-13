@@ -2,7 +2,12 @@ import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 
 import './MessageBubble.css';
 
-function MessageBubble({ message }: { message: ChatMessage }) {
+function MessageBubble({
+	message,
+}: {
+	message: ChatMessage;
+	direction: 'left' | 'right' | 'none';
+}) {
 	return (
 		<div
 			className={

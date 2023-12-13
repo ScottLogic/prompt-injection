@@ -5,14 +5,14 @@ import userAvatar from '@src/assets/images/UserAvatar.svg';
 
 import './Avatar.css';
 
-function Avatar({ type }: { type: 'user' | 'bot' }) {
+function Avatar({ owner }: { owner: 'user' | 'bot' }) {
 	const avatarClass = clsx(
 		'avatar-circle',
-		type === 'user' ? 'avatar-circle-user' : 'avatar-circle-bot'
+		owner === 'user' ? 'avatar-circle-user' : 'avatar-circle-bot'
 	);
 	return (
 		<div className={avatarClass}>
-			<img src={type === 'user' ? userAvatar : botAvatarDefault} alt="" />
+			<img src={owner === 'user' ? userAvatar : botAvatarDefault} alt="" />
 		</div>
 	);
 }

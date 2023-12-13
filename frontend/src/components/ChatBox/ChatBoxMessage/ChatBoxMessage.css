@@ -1,0 +1,8 @@
+.chat-box-message {
+	display: flex;
+	flex-direction: row;
+}
+
+.chat-box-message-right {
+	flex-direction: row-reverse;
+}
