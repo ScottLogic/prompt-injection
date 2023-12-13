@@ -1,0 +1,21 @@
+.level-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	border: 0.125rem solid var(--level-button-border-colour);
+	padding: 1rem;
+	height: 3.125rem;
+	background-color: transparent;
+	color: var(--level-button-colour);
+	font-size: 1.875rem;
+}
+
+.level-button.selected {
+	background-color: var(--level-button-background-colour-selected);
+}
+
+.level-button[aria-disabled='true'] {
+	border-color: var(--level-button-border-colour-disabled);
+	color: var(--level-button-colour-disabled);
+}

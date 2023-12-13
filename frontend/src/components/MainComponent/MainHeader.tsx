@@ -1,4 +1,3 @@
-import { LEVELS } from '@src/Levels';
 import HandbookIcon from '@src/assets/images/HandbookIcon';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
@@ -18,11 +17,6 @@ function MainHeader({
 	openHandbook: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
-	function getLevelName(level: LEVEL_NAMES) {
-		const levelName = LEVELS.find((p) => p.id === level)?.name;
-		return levelName ?? '';
-	}
-
 	const isLevelComplete = (currentLevel as number) < numCompletedLevels;
 
 	return (
@@ -37,20 +31,14 @@ function MainHeader({
 				/>
 			</span>
 			<span className="main-header-middle">
-				<span className="main-header-current-level">
-					{getLevelName(currentLevel)}
-				</span>
+				<span className="main-header-level">Level</span>
+				<LevelSelectionBox
+					currentLevel={currentLevel}
+					numCompletedLevels={numCompletedLevels}
+					setCurrentLevel={setCurrentLevel}
+				/>
 			</span>
 			<span className="main-header-right">
-				{currentLevel !== LEVEL_NAMES.SANDBOX && (
-					<span className="main-header-level-selection">
-						<LevelSelectionBox
-							currentLevel={currentLevel}
-							numCompletedLevels={numCompletedLevels}
-							setCurrentLevel={setCurrentLevel}
-						/>
-					</span>
-				)}
 				<div className="handbook-area">
 					<button
 						className="prompt-injection-min-button handbook-icon"

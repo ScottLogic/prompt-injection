@@ -1,5 +1,3 @@
-import { clsx } from 'clsx';
-
 import { ThemedButtonProps } from './ThemedButton';
 
 import './OverlayButton.css';
@@ -7,13 +5,9 @@ import './OverlayButton.css';
 function OverlayButton({
 	children,
 	onClick,
-	disabled = false,
-	selected = false,
-}: ThemedButtonProps) {
-	const buttonClass = clsx('overlay-button', { selected });
-
+}: Pick<ThemedButtonProps, 'children' | 'onClick'>) {
 	return (
-		<button className={buttonClass} onClick={onClick} disabled={disabled}>
+		<button className="overlay-button" onClick={onClick}>
 			{children}
 		</button>
 	);

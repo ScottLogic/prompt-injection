@@ -94,13 +94,13 @@ describe('DocumentViewBox component tests', () => {
 		return screen.getByRole('button', { name: 'next document' });
 	}
 
-	test('WHEN close button clicked THEN closeOverlay called', () => {
-		renderDocumentViewBox();
+	test('WHEN close button clicked THEN closeOverlay called', async () => {
+		const { user } = renderDocumentViewBox();
 
 		const closeButton = screen.getByRole('button', {
 			name: 'close document viewer',
 		});
-		closeButton.click();
+		await user.click(closeButton);
 
 		expect(mockCloseOverlay).toHaveBeenCalled();
 	});
@@ -179,16 +179,12 @@ describe('DocumentViewBox component tests', () => {
 		// wait for header to load
 		await screen.findByText(defaultDocuments[0].filename);
 
-		{
-			const nextButton = getNextButton();
-			await user.click(nextButton);
-		}
-
 		const prevButton = getPreviousButton();
+		const nextButton = getNextButton();
+		await user.click(nextButton);
+
 		expect(prevButton).toHaveAttribute('aria-disabled', 'false');
 		expect(prevButton).toBeEnabled();
-
-		const nextButton = getNextButton();
 		expect(nextButton).toHaveAttribute('aria-disabled', 'false');
 		expect(nextButton).toBeEnabled();
 	});
@@ -209,16 +205,12 @@ describe('DocumentViewBox component tests', () => {
 		// wait for header to load
 		await screen.findByText(defaultDocuments[0].filename);
 
-		{
-			const nextButton = getNextButton();
-			await user.click(nextButton);
-		}
-
 		const prevButton = getPreviousButton();
+		const nextButton = getNextButton();
+		await user.click(nextButton);
+
 		expect(prevButton).toHaveAttribute('aria-disabled', 'false');
 		expect(prevButton).toBeEnabled();
-
-		const nextButton = getNextButton();
 		expect(nextButton).toHaveAttribute('aria-disabled', 'true');
 		expect(nextButton).toBeEnabled();
 	});
