@@ -11,7 +11,7 @@ export interface ThemedButtonProps {
 	disabled?: boolean;
 	title?: string;
 	onClick: () => void;
-	className?: string;
+	extraClassName?: string;
 }
 
 function ThemedButton({
@@ -22,13 +22,13 @@ function ThemedButton({
 	disabled = false,
 	title,
 	onClick,
-	className,
+	extraClassName,
 }: ThemedButtonProps) {
 	function onClickDisabledCheck() {
 		if (!disabled && !ariaDisabled) onClick();
 	}
 
-	const buttonClass = clsx('themed-button', className, {
+	const buttonClass = clsx('themed-button', extraClassName, {
 		disabled: appearsDifferentWhenDisabled && (disabled || ariaDisabled),
 	});
 
