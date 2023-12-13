@@ -1,9 +1,11 @@
 .sent-email {
-	--border-radius: 0.625rem;
 	--horizontal-padding: 1rem;
 	--vertical-padding: 0.5rem;
 	color: var(--email-text-colour);
 	padding-bottom: 1rem;
+	border-radius: 0.625rem;
+	overflow: hidden;
+	white-space: pre-wrap;
 }
 
 .sent-email:first-child {
@@ -12,8 +14,6 @@
 
 .sent-email .sent-email-title {
 	background-color: var(--email-title-background-colour);
-	border-top-left-radius: var(--border-radius);
-	border-top-right-radius: var(--border-radius);
 	padding: var(--vertical-padding) var(--horizontal-padding);
 	font-weight: 700;
 	display: flex;
@@ -23,8 +23,6 @@
 
 .sent-email .sent-email-main {
 	background-color: var(--email-background-colour);
-	border-bottom-left-radius: var(--border-radius);
-	border-bottom-right-radius: var(--border-radius);
 	padding: var(--vertical-padding) var(--horizontal-padding);
 
 	font-family: courier;
