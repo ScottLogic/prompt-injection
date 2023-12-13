@@ -1,12 +1,19 @@
 .avatar-circle {
 	border-radius: 50%;
-	background-color: #dff4f5;
 	width: 3.75rem;
 	height: 3.75rem;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+}
+
+.avatar-circle-user {
+	background-color: #dff4f5;
+}
+
+.avatar-circle-bot {
+	background-color: #eeeeee;
 }
 
 .avatar-circle img {
