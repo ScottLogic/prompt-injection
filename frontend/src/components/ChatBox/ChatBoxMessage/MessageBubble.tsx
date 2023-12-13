@@ -7,16 +7,16 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 		<div
 			className={
 				message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
-					? 'chat-box-message chat-box-message-level-info'
+					? 'message-bubble message-bubble-level-info'
 					: message.type === CHAT_MESSAGE_TYPE.USER
-					? 'chat-box-message chat-box-message-user'
+					? 'message-bubble message-bubble-user'
 					: message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
-					? 'chat-box-message chat-box-message-user chat-box-message-user-transformed'
+					? 'message-bubble message-bubble-user message-bubble-user-transformed'
 					: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
-					? 'chat-box-message chat-box-message-error'
+					? 'message-bubble message-bubble-error'
 					: message.type === CHAT_MESSAGE_TYPE.BOT
-					? 'chat-box-message chat-box-message-ai'
-					: 'chat-box-message chat-box-message-ai chat-box-message-ai-blocked'
+					? 'message-bubble message-bubble-ai'
+					: 'message-bubble message-bubble-ai message-bubble-ai-blocked'
 			}
 			lang="en"
 		>
