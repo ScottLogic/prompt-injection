@@ -309,7 +309,6 @@ export {
 	resetDefenceConfig,
 	detectTriggeredDefences,
 	getQAPromptFromConfig,
-	getPromptEvalPromptFromConfig,
 	getSystemRole,
 	isDefenceActive,
 	transformMessage,
