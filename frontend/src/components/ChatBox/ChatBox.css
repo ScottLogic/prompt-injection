@@ -43,6 +43,18 @@
 	clip-path: circle();
 }
 
+.chat-box .footer .messages .themed-text-area {
+	background-color: var(--chat-button-background-colour);
+	border: 1px solid var(--chat-button-border-colour);
+	border-radius: 1.875rem;
+
+	color: var(--chat-button-text-colour);
+	font-size: 1rem;
+	font-weight: 400;
+
+	min-height: 3.75rem;
+}
+
 .chat-box .footer .control-buttons {
 	display: flex;
 	height: 2.5rem;
