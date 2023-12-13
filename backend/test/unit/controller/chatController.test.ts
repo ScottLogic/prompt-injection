@@ -80,6 +80,7 @@ describe('handleChatToGPT unit tests', () => {
 			transformedMessage: transformedMessage ?? '',
 			wonLevel: false,
 			isError: true,
+			sentEmails: [],
 		};
 	}
 
@@ -129,6 +130,7 @@ describe('handleChatToGPT unit tests', () => {
 			transformedMessage: 'Hello chatbot',
 			wonLevel: false,
 			isError: false,
+			sentEmails: [],
 		});
 	});
 
