@@ -9,8 +9,8 @@ import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
 import { OVERLAY_TYPE } from './models/overlay';
-import { resetAllLevelProgress } from './service/levelService';
 import { getValidModels } from './service/chatService';
+import { resetAllLevelProgress } from './service/levelService';
 import { getSystemRoles } from './service/systemRoleService';
 
 import './App.css';
