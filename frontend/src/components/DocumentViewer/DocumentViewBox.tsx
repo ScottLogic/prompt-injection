@@ -8,19 +8,25 @@ import DocumentViewBoxHeader from './DocumentViewBoxHeader';
 
 import './DocumentViewBox.css';
 
+const emptyList: DocumentMeta[] = [];
+
 function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
-	const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>([]);
+	const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>(emptyList);
 	const [documentIndex, setDocumentIndex] = useState<number>(0);
 
 	// on mount get document uris
 	useEffect(() => {
-		getDocumentMetas()
+		const abortController = new AbortController();
+		void getDocumentMetas(abortController.signal)
 			.then((uris) => {
 				setDocumentMetas(uris);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
+		return () => {
+			abortController.abort('component unmounted');
+		};
 	}, []);
 
 	return (
@@ -44,7 +50,6 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 				}}
 				onNext={() => {
 					if (documentIndex < documentMetas.length - 1) {
-						console.log(`documentIndex=${documentIndex}`);
 						setDocumentIndex(documentIndex + 1);
 					}
 				}}

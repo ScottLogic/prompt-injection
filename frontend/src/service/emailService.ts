@@ -1,25 +1,25 @@
 import { EmailInfo } from '@src/models/email';
 
-import { sendRequestOld } from './backendService';
+import { sendRequest } from './backendService';
 
 const PATH = 'email/';
 
 async function clearEmails(level: number): Promise<boolean> {
-	const response = await sendRequestOld(
-		`${PATH}clear`,
-		'POST',
-		{
+	const response = await sendRequest(`${PATH}clear`, {
+		method: 'POST',
+		headers: {
 			'Content-Type': 'application/json',
 		},
-		JSON.stringify({ level })
-	);
+		body: JSON.stringify({ level }),
+	});
 	return response.status === 200;
 }
 
 async function getSentEmails(level: number) {
-	const response = await sendRequestOld(`${PATH}get?level=${level}`, 'GET');
-	const data = (await response.json()) as EmailInfo[];
-	return data;
+	const response = await sendRequest(`${PATH}get?level=${level}`, {
+		method: 'GET',
+	});
+	return (await response.json()) as EmailInfo[];
 }
 
 export { clearEmails, getSentEmails };
