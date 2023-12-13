@@ -6,8 +6,10 @@ import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
+import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
 import { OVERLAY_TYPE } from './models/overlay';
+import { resetAllLevelProgress } from './service/levelService';
 import { getValidModels } from './service/chatService';
 import { getSystemRoles } from './service/systemRoleService';
 
@@ -31,6 +33,7 @@ function App() {
 
 	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
+	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
 
 	function loadIsNewUser() {
 		// get isNewUser from local storage
@@ -168,6 +171,14 @@ function App() {
 					/>
 				);
 				break;
+			case OVERLAY_TYPE.RESET_PROGRESS:
+				setOverlayComponent(
+					<ResetProgressOverlay
+						resetProgress={resetProgress}
+						closeOverlay={closeOverlay}
+					/>
+				);
+				break;
 			case OVERLAY_TYPE.DOCUMENTS:
 				setOverlayComponent(<DocumentViewBox closeOverlay={closeOverlay} />);
 				break;
@@ -228,6 +239,9 @@ function App() {
 	function openDocumentViewer() {
 		setOverlayType(OVERLAY_TYPE.DOCUMENTS);
 	}
+	function openResetProgressOverlay() {
+		setOverlayType(OVERLAY_TYPE.RESET_PROGRESS);
+	}
 
 	// set the start level for a user who clicks beginner/expert
 	function setStartLevel(startLevel: LEVEL_NAMES) {
@@ -244,6 +258,27 @@ function App() {
 		closeOverlay();
 	}
 
+	// resets whole game progress and start from level 1 or Sandbox
+	async function resetProgress() {
+		console.log('resetting progress for all levels');
+
+		// reset on the backend
+		await resetAllLevelProgress();
+
+		localStorage.setItem('numCompletedLevels', '0');
+		setNumCompletedLevels(0);
+
+		// set as new user so welcome modal shows
+		setIsNewUser(true);
+
+		// take the user to level 1 if on levels, or stay in sandbox
+		currentLevel !== LEVEL_NAMES.SANDBOX &&
+			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
+
+		// re-render main component to update frontend chat & emails
+		setMainComponentKey(mainComponentKey + 1);
+	}
+
 	function goToSandbox() {
 		setStartLevel(LEVEL_NAMES.SANDBOX);
 		// close the current overlay
@@ -258,6 +293,7 @@ function App() {
 				<div ref={contentRef}>{overlayComponent}</div>
 			</dialog>
 			<MainComponent
+				key={mainComponentKey}
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				chatModels={chatModels}
@@ -266,6 +302,7 @@ function App() {
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
+				openResetProgressOverlay={openResetProgressOverlay}
 				openDocumentViewer={openDocumentViewer}
 				setCurrentLevel={setCurrentLevel}
 			/>

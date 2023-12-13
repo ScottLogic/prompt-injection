@@ -9,6 +9,14 @@
 	flex-shrink: 0;
 }
 
+.main-header .themed-button {
+	display: flex;
+	gap: 0.5rem;
+	height: 3.125rem;
+	padding: 1rem;
+	white-space: nowrap;
+}
+
 .main-header-left {
 	display: flex;
 	align-items: center;
@@ -37,11 +45,4 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-}
-
-.main-header-right > .themed-button {
-	display: flex;
-	gap: 0.5rem;
-	height: 3.125rem;
-	padding: 1rem;
 }
