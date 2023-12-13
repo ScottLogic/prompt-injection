@@ -5,7 +5,6 @@ import {
 	ChatCompletionMessageToolCall,
 	ChatCompletionSystemMessageParam,
 } from 'openai/resources/chat/completions';
-import { promptTokensEstimate } from 'openai-chat-tokens';
 
 import {
 	isDefenceActive,
@@ -33,8 +32,8 @@ import {
 } from './models/openai';
 import {
 	chatModelMaxTokens,
+	countTotalPromptTokens,
 	filterChatHistoryByMaxTokens,
-	toolCallFunctionCount,
 } from './utils/token';
 
 // tools available to chatGPT
@@ -283,23 +282,12 @@ async function chatGptChatCompletion(
 			max_tokens: chatModelMaxTokens[chatModel.id],
 			tools: chatGptTools,
 		});
-		const tokens = chat_completion.usage;
-		console.debug('tokenInfo= message = ', chat_completion.choices[0].message);
-		console.debug('tokenInfo= chat_completion tokens = ', tokens);
-
-		if (chat_completion.choices[0].message.tool_calls) {
-			toolCallFunctionCount(
-				chat_completion.choices[0].message.tool_calls.map(
-					(toolCall) => toolCall.function
-				)
-			);
-		} else {
-			console.debug(
-				'tokenInfo= promptTokensEstimate= ',
-				promptTokensEstimate({ messages: [chat_completion.choices[0].message] })
-			);
-		}
-
+		console.debug(
+			'tokenInfo= message=',
+			chat_completion.choices[0].message,
+			' tokens=',
+			chat_completion.usage
+		);
 		return chat_completion.choices[0].message;
 	} catch (error) {
 		if (error instanceof Error) {
@@ -325,21 +313,27 @@ function getChatCompletionsFromHistory(
 					.map((message) => message.completion) as ChatCompletionMessageParam[])
 			: [];
 
+	console.debug(
+		'Num tokens in input to GPT: ',
+		countTotalPromptTokens(completions)
+	);
 	// limit the number of tokens sent to GPT to fit inside context window
 	const maxTokens = chatModelMaxTokens[gptModel];
 	const reducedCompletions = filterChatHistoryByMaxTokens(
 		completions,
 		maxTokens
 	);
-
 	const diff = completions.length - reducedCompletions.length;
+
 	if (diff > 0) {
 		console.log(
 			'Trimmed completions to fit inside context window. messages trimmed=',
 			diff
 		);
+		console.log('new history=', reducedCompletions);
 	}
-	return completions;
+
+	return reducedCompletions;
 }
 
 function pushCompletionToHistory(
