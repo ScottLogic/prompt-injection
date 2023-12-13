@@ -48,18 +48,6 @@ function ChatBox({
 		reset: resetRecallToLatest,
 	} = useUnitStepper();
 
-	// called on mount
-	useEffect(() => {
-		// get sent emails
-		getSentEmails(currentLevel)
-			.then((sentEmails) => {
-				setEmails(sentEmails);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, [setEmails]);
-
 	function recallSentMessageFromHistory(direction: 'backward' | 'forward') {
 		const sentMessages = messages.filter(
 			(message) => message.type === CHAT_MESSAGE_TYPE.USER

@@ -108,10 +108,12 @@ function MainComponent({
 
 		// get chat history for new level from the backend
 		const levelChatHistory = await getChatHistory(newLevel);
-
 		setMessages(levelChatHistory);
 		// add welcome message for levels only
 		newLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
+
+		// get emails for new level from the backend
+		setEmails(await getSentEmails(newLevel));
 
 		const defences =
 			newLevel === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
