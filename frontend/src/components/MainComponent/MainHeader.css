@@ -42,4 +42,6 @@
 .handbook-button {
 	display: flex;
 	gap: 0.5rem;
+	height: 3.125rem;
+	padding: 1rem;
 }
