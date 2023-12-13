@@ -9,6 +9,14 @@
 	flex-shrink: 0;
 }
 
+.main-header > .themed-button {
+	display: flex;
+	gap: 0.5rem;
+	height: 3.125rem;
+	padding: 1rem;
+	white-space: nowrap;
+}
+
 .main-header-left {
 	display: flex;
 	align-items: center;
@@ -37,15 +45,4 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-}
-
-.main-header-right .handbook-area {
-	width: 10%;
-	height: 50%;
-	margin-left: 1rem;
-}
-
-.main-header-right .handbook-area .handbook-icon {
-	height: 100%;
-	width: 100%;
 }

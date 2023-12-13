@@ -2,7 +2,7 @@ import HandbookIcon from '@src/assets/images/HandbookIcon';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
-import HeaderButton from '@src/components/ThemedButtons/HeaderButton';
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import ProjectIcon from './ProjectIcon';
