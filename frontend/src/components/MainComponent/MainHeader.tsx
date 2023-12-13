@@ -2,7 +2,7 @@ import HandbookIcon from '@src/assets/icons/Handbook.svg';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
-import HeaderButton from '@src/components/ThemedButtons/HeaderButton';
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './MainHeader.css';
@@ -47,10 +47,10 @@ function MainHeader({
 						setCurrentLevel={setCurrentLevel}
 					/>
 				)}
-				<HeaderButton onClick={openHandbook} className="handbook-button">
+				<ThemedButton onClick={openHandbook} extraClassName="handbook-button">
 					<img src={HandbookIcon} alt="" />
 					Handbook
-				</HeaderButton>
+				</ThemedButton>
 			</span>
 		</header>
 	);
