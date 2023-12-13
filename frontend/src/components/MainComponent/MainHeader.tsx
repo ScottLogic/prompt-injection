@@ -47,7 +47,7 @@ function MainHeader({
 						setCurrentLevel={setCurrentLevel}
 					/>
 				)}
-				<ThemedButton onClick={openHandbook} extraClassName="handbook-button">
+				<ThemedButton onClick={openHandbook}>
 					<img src={HandbookIcon} alt="" />
 					Handbook
 				</ThemedButton>
