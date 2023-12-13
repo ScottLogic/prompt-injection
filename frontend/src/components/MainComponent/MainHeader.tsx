@@ -1,4 +1,5 @@
 import GettingStarted from '@src/assets/icons/GettingStarted.svg';
+import HandbookIcon from '@src/assets/icons/Handbook.svg';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
@@ -46,8 +47,9 @@ function MainHeader({
 					<img src={GettingStarted} alt="" />
 					Getting Started
 				</ThemedButton>
+
 				<ThemedButton onClick={openHandbook}>
-					{/* <img src={HandbookIcon} alt="" /> */}
+					<img src={HandbookIcon} alt="" />
 					Handbook
 				</ThemedButton>
 			</span>
