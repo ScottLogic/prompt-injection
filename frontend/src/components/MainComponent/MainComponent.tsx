@@ -107,17 +107,12 @@ function MainComponent({
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
 		// get emails for new level from the backend
-		const levelEmails = await getSentEmails(newLevel);
-		setEmails(levelEmails);
+		setEmails(await getSentEmails(newLevel));
 
 		// get chat history for new level from the backend
-		const levelChatHistory = await getChatHistory(newLevel);
-		setMessages(levelChatHistory);
+		setMessages(await getChatHistory(newLevel));
 		// add welcome message for levels only
 		newLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
-
-		// get emails for new level from the backend
-		setEmails(await getSentEmails(newLevel));
 
 		const defences =
 			newLevel === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
