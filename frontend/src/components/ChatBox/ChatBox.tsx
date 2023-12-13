@@ -9,7 +9,6 @@ import { CHAT_MESSAGE_TYPE, ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import { addMessageToChatHistory, sendMessage } from '@src/service/chatService';
-import { getSentEmails } from '@src/service/emailService';
 
 import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';
@@ -23,8 +22,8 @@ function ChatBox({
 	messages,
 	addChatMessage,
 	addCompletedLevel,
+	addSentEmails,
 	resetLevel,
-	setEmails,
 	openLevelsCompleteOverlay,
 	incrementNumCompletedLevels,
 }: {
@@ -34,8 +33,8 @@ function ChatBox({
 	messages: ChatMessage[];
 	addChatMessage: (message: ChatMessage) => void;
 	addCompletedLevel: (level: LEVEL_NAMES) => void;
+	addSentEmails: (emails: EmailInfo[]) => void;
 	resetLevel: () => void;
-	setEmails: (emails: EmailInfo[]) => void;
 	openLevelsCompleteOverlay: () => void;
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
 }) {
@@ -160,10 +159,8 @@ function ChatBox({
 			// we have the message reply
 			setIsSendingMessage(false);
 
-			// get sent emails
-			const sentEmails: EmailInfo[] = await getSentEmails(currentLevel);
 			// update emails
-			setEmails(sentEmails);
+			addSentEmails(response.sentEmails);
 
 			if (response.wonLevel && !completedLevels.has(currentLevel)) {
 				addCompletedLevel(currentLevel);

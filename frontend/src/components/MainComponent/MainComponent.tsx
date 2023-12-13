@@ -78,6 +78,10 @@ function MainComponent({
 		setMessages((messages: ChatMessage[]) => [...messages, message]);
 	}
 
+	function addSentEmails(newEmails: EmailInfo[]) {
+		setEmails(emails.concat(newEmails));
+	}
+
 	// for clearing level progress
 	async function resetLevel() {
 		await clearChat(currentLevel);
@@ -242,6 +246,7 @@ function MainComponent({
 				emails={emails}
 				messages={messages}
 				addChatMessage={addChatMessage}
+				addSentEmails={addSentEmails}
 				resetDefenceConfiguration={(defenceId: DEFENCE_ID, configId: string) =>
 					void resetDefenceConfiguration(defenceId, configId)
 				}
@@ -251,7 +256,6 @@ function MainComponent({
 					void setDefenceInactive(defence)
 				}
 				setDefenceConfiguration={setDefenceConfiguration}
-				setEmails={setEmails}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openInfoOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
