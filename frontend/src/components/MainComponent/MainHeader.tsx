@@ -1,7 +1,8 @@
-import HandbookIcon from '@src/assets/images/HandbookIcon';
+import HandbookIcon from '@src/assets/icons/Handbook.svg';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './MainHeader.css';
@@ -39,16 +40,10 @@ function MainHeader({
 				/>
 			</span>
 			<span className="main-header-right">
-				<div className="handbook-area">
-					<button
-						className="prompt-injection-min-button handbook-icon"
-						title="open the handbook"
-						aria-label="open the handbook"
-						onClick={openHandbook}
-					>
-						<HandbookIcon />
-					</button>
-				</div>
+				<ThemedButton onClick={openHandbook}>
+					<img src={HandbookIcon} alt="" />
+					Handbook
+				</ThemedButton>
 			</span>
 		</header>
 	);
