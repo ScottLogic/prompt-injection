@@ -4,7 +4,7 @@ import useIsOverflow from '@src/hooks/useIsOverflow';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 
 import ChatBoxInfoText from './ChatBoxInfoText';
-import ChatBoxMessage from './ChatBoxMessage';
+import ChatBoxMessage from './ChatBoxMessage/ChatBoxMessage';
 
 import './ChatBoxFeed.css';
 
