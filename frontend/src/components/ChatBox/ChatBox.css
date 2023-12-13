@@ -27,6 +27,8 @@
 	flex-direction: row;
 	align-items: flex-end;
 	gap: 0.5rem;
+
+	height: 3.75rem;
 	width: 100%;
 }
 
@@ -35,12 +37,15 @@
 	justify-content: stretch;
 	align-items: stretch;
 	height: 100%;
-	max-height: 3rem;
+}
+
+.chat-box .footer .messages .send-button-wrapper .themed-button {
+	clip-path: circle();
 }
 
 .chat-box .footer .control-buttons {
 	display: flex;
-	height: 2rem;
+	height: 2.5rem;
 	column-gap: 1rem;
 }
 
