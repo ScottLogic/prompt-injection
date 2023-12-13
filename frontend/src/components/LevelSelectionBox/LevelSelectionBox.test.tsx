@@ -21,7 +21,7 @@ function renderComponent(props: LevelSelectionBoxProps = defaultProps) {
 
 const levels = LEVELS.map(({ id, name }) => ({
 	id,
-	name: id === LEVEL_NAMES.SANDBOX ? name : `${id + 1}`,
+	name: id === LEVEL_NAMES.SANDBOX ? name : `Level ${id + 1}`,
 }));
 
 describe('LevelSelectionBox component tests', () => {

@@ -40,5 +40,5 @@
 }
 
 .model-selection-box .model-selection-info .error {
-	color: var(--main-error-colour);
+	color: var(--error-colour);
 }

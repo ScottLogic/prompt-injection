@@ -13,18 +13,19 @@
 }
 
 .document-popup-inner .close-button {
-	color: var(--main-accent-colour);
+	color: var(--main-text-colour);
 	position: absolute;
 	top: 1rem;
 	right: 1rem;
 	padding: 0.25rem 0.75rem;
 	font-size: 1.75rem;
 	font-weight: bold;
+	text-decoration: none;
 }
 
 .document-popup-inner .close-button:hover {
-	color: var(--main-text-colour);
-	text-decoration: none;
+	border-color: var(--accent-border-colour);
+	color: var(--accent-border-colour);
 }
 
 .document-viewer-container {

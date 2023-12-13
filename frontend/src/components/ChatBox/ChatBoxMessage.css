@@ -10,6 +10,7 @@
 	word-wrap: break-word;
 	border: 0.0625rem solid transparent;
 	color: var(--chat-bot-text-colour);
+	white-space: pre-wrap;
 }
 
 .chat-box-message-ai {
