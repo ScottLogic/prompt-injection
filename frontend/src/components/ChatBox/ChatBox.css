@@ -28,7 +28,6 @@
 	align-items: flex-end;
 	gap: 0.5rem;
 
-	height: 3.75rem;
 	width: 100%;
 }
 
@@ -36,7 +35,7 @@
 	display: flex;
 	justify-content: stretch;
 	align-items: stretch;
-	height: 100%;
+	height: 3.75rem;
 }
 
 .chat-box .footer .messages .send-button-wrapper .themed-button {
