@@ -40,13 +40,6 @@ function MainHeader({
 				/>
 			</span>
 			<span className="main-header-right">
-				{currentLevel !== LEVEL_NAMES.SANDBOX && (
-					<LevelSelectionBox
-						currentLevel={currentLevel}
-						numCompletedLevels={numCompletedLevels}
-						setCurrentLevel={setCurrentLevel}
-					/>
-				)}
 				<ThemedButton onClick={openHandbook}>
 					<img src={HandbookIcon} alt="" />
 					Handbook
