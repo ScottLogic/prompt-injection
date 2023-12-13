@@ -2,7 +2,7 @@ import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 
 import './MessageBubble.css';
 
-function ChatBoxMessageWithoutAvatar({ message }: { message: ChatMessage }) {
+function MessageBubble({ message }: { message: ChatMessage }) {
 	return (
 		<div
 			className={
@@ -31,4 +31,4 @@ function ChatBoxMessageWithoutAvatar({ message }: { message: ChatMessage }) {
 	);
 }
 
-export default ChatBoxMessageWithoutAvatar;
+export default MessageBubble;
