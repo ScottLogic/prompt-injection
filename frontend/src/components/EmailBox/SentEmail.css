@@ -5,6 +5,7 @@
 	padding-bottom: 1rem;
 	border-radius: 0.625rem;
 	overflow: hidden;
+	white-space: pre-wrap;
 }
 
 .sent-email:first-child {
