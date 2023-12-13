@@ -71,6 +71,7 @@ describe('DocumentViewBox component tests', () => {
 			if (uri.startsWith(URI)) {
 				const filename = uri.split('/')[1];
 				const document = documents.find((doc) => doc.filename === filename);
+				console.log(`content=${document?.content}`);
 				return Promise.resolve({
 					headers: {
 						get: () => 'text/plain',
@@ -119,7 +120,7 @@ describe('DocumentViewBox component tests', () => {
 		).toBeInTheDocument();
 	});
 
-	test('WHEN the next button is clicked THEN the next document is shown', async () => {
+	test.only('WHEN the next button is clicked THEN the next document is shown', async () => {
 		const { user } = renderDocumentViewBox();
 		// wait for header to load
 		await screen.findByText(defaultDocuments[0].filename);
@@ -138,7 +139,7 @@ describe('DocumentViewBox component tests', () => {
 		).toBeInTheDocument();
 	});
 
-	test('WHEN the previous button is clicked THEN the previous document is shown', async () => {
+	test.only('WHEN the previous button is clicked THEN the previous document is shown', async () => {
 		const { user } = renderDocumentViewBox();
 		// wait for header to load
 		await screen.findByText(defaultDocuments[0].filename);

@@ -44,6 +44,7 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 				}}
 				onNext={() => {
 					if (documentIndex < documentMetas.length - 1) {
+						console.log(`documentIndex=${documentIndex}`);
 						setDocumentIndex(documentIndex + 1);
 					}
 				}}

@@ -10,9 +10,8 @@ import { sendRequest } from './backendService';
 const PATH = 'defence/';
 
 async function getDefences(level: number) {
-	const response = await sendRequest(`${PATH}status?level=${level}`, 'GET');
-	const data = (await response.json()) as Defence[];
-	return data;
+	const response = await sendRequest(`${PATH}status?level=${level}`, { method: 'GET' });
+	return (await response.json()) as Defence[];
 }
 
 async function activateDefence(
@@ -21,9 +20,11 @@ async function activateDefence(
 ): Promise<boolean> {
 	const response = await sendRequest(
 		`${PATH}activate`,
-		'POST',
-		{ 'Content-Type': 'application/json' },
-		JSON.stringify({ defenceId, level })
+		{
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({ defenceId, level }),
+		}
 	);
 	return response.status === 200;
 }
@@ -34,11 +35,13 @@ async function deactivateDefence(
 ): Promise<boolean> {
 	const response = await sendRequest(
 		`${PATH}deactivate`,
-		'POST',
 		{
-			'Content-Type': 'application/json',
-		},
-		JSON.stringify({ defenceId, level })
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ defenceId, level }),
+		}
 	);
 	return response.status === 200;
 }
@@ -50,11 +53,13 @@ async function configureDefence(
 ): Promise<boolean> {
 	const response = await sendRequest(
 		`${PATH}configure`,
-		'POST',
 		{
-			'Content-Type': 'application/json',
-		},
-		JSON.stringify({ defenceId, config, level })
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ defenceId, config, level }),
+		}
 	);
 	return response.status === 200;
 }
@@ -65,14 +70,15 @@ async function resetDefenceConfig(
 ): Promise<DefenceResetResponse> {
 	const response = await sendRequest(
 		`${PATH}resetConfig`,
-		'POST',
 		{
-			'Content-Type': 'application/json',
-		},
-		JSON.stringify({ defenceId, configId })
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ defenceId, configId }),
+		}
 	);
-	const data = (await response.json()) as DefenceResetResponse;
-	return data;
+	return (await response.json()) as DefenceResetResponse;
 }
 
 function validatePositiveNumberConfig(config: string) {
@@ -106,11 +112,13 @@ function validateDefence(id: string, config: string) {
 async function resetActiveDefences(level: number) {
 	const response = await sendRequest(
 		`${PATH}reset`,
-		'POST',
 		{
-			'Content-Type': 'application/json',
-		},
-		JSON.stringify({ level })
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ level }),
+		}
 	);
 	return response.status === 200;
 }

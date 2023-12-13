@@ -8,15 +8,17 @@ function makeUrl(path: string): URL {
 	return new URL(path, getBackendUrl());
 }
 
-async function sendRequest(
+async function sendRequestOld(
 	path: string,
 	method: string,
 	headers?: HeadersInit,
-	body?: BodyInit
+	body?: BodyInit,
+	signal?: AbortSignal,
 ): Promise<Response> {
 	const init: RequestInit = {
 		credentials: 'include',
 		method,
+		signal,
 	};
 	if (headers) {
 		init.headers = headers;
@@ -24,8 +26,11 @@ async function sendRequest(
 	if (body) {
 		init.body = body;
 	}
-	const response: Response = await fetch(makeUrl(path), init);
-	return response;
+	return fetch(makeUrl(path), init);
 }
 
-export { getBackendUrl, sendRequest };
+async function sendRequest(path: string, options: RequestInit) {
+	return fetch(makeUrl(path), { ...options, credentials: 'include' });
+}
+
+export { getBackendUrl, sendRequestOld, sendRequest };

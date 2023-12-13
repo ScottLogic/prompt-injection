@@ -15,11 +15,13 @@ const PATH = 'openai/';
 async function clearChat(level: number) {
 	const response = await sendRequest(
 		`${PATH}clear`,
-		'POST',
 		{
-			'Content-Type': 'application/json',
-		},
-		JSON.stringify({ level })
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({level}),
+		}
 	);
 	return response.status === 200;
 }
@@ -27,9 +29,11 @@ async function clearChat(level: number) {
 async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 	const response = await sendRequest(
 		`${PATH}chat`,
-		'POST',
-		{ 'Content-Type': 'application/json' },
-		JSON.stringify({ message, currentLevel })
+		{
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({message, currentLevel}),
+		}
 	);
 	const data = (await response.json()) as ChatResponse;
 	console.log(data);
@@ -37,7 +41,7 @@ async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 }
 
 async function getChatHistory(level: number): Promise<ChatMessage[]> {
-	const response = await sendRequest(`${PATH}history?level=${level}`, 'GET');
+	const response = await sendRequest(`${PATH}history?level=${level}`, { method: 'GET' });
 	const chatHistory = (await response.json()) as ChatHistoryMessage[];
 	// convert to ChatMessage object
 	const chatMessages: ChatMessage[] = [];
@@ -107,9 +111,11 @@ async function getChatHistory(level: number): Promise<ChatMessage[]> {
 async function setGptModel(model: string): Promise<boolean> {
 	const response = await sendRequest(
 		`${PATH}model`,
-		'POST',
-		{ 'Content-Type': 'application/json' },
-		JSON.stringify({ model })
+		{
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ model }),
+		}
 	);
 	return response.status === 200;
 }
@@ -120,20 +126,22 @@ async function configureGptModel(
 ): Promise<boolean> {
 	const response = await sendRequest(
 		`${PATH}model/configure`,
-		'POST',
-		{ 'Content-Type': 'application/json' },
-		JSON.stringify({ configId, value })
+		{
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({configId, value}),
+		}
 	);
 	return response.status === 200;
 }
 
 async function getGptModel(): Promise<ChatModel> {
-	const response = await sendRequest(`${PATH}model`, 'GET');
+	const response = await sendRequest(`${PATH}model`, { method: 'GET' });
 	return (await response.json()) as ChatModel;
 }
 
 async function getValidModels(): Promise<string[]> {
-	const response = await sendRequest(`${PATH}validModels`, 'GET');
+	const response = await sendRequest(`${PATH}validModels`, { method: 'GET' });
 	const data = (await response.json()) as {
 		models: string[];
 	};
@@ -147,13 +155,15 @@ async function addMessageToChatHistory(
 ) {
 	const response = await sendRequest(
 		`${PATH}addHistory`,
-		'POST',
-		{ 'Content-Type': 'application/json' },
-		JSON.stringify({
-			message,
-			chatMessageType,
-			level,
-		})
+		{
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({
+				message,
+				chatMessageType,
+				level,
+			}),
+		}
 	);
 	return response.status === 200;
 }
