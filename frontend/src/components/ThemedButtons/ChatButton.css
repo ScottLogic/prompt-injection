@@ -5,7 +5,7 @@
 
 	background-color: var(--chat-button-background-colour);
 	border: 1px solid var(--chat-button-border-colour);
-	border-radius: 1.25rem;
+	border-radius: 0.625rem;
 	padding: 0.75rem;
 
 	color: var(--chat-button-text-colour);

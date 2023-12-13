@@ -39,13 +39,14 @@
 }
 
 .chat-box .footer .messages .send-button-wrapper .themed-button {
-	clip-path: circle();
+	border-radius: 0.625rem;
+	width: 3.75rem;
 }
 
 .chat-box .footer .messages .themed-text-area {
 	background-color: var(--chat-button-background-colour);
 	border: 1px solid var(--chat-button-border-colour);
-	border-radius: 1.875rem;
+	border-radius: 0.625rem;
 
 	color: var(--chat-button-text-colour);
 	font-size: 1rem;
