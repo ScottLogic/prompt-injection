@@ -1,35 +1,18 @@
 .themed-button {
-	background-color: var(--main-button-inactive-background-colour);
-	border: 0.0625rem solid var(--main-border-colour);
-	border-radius: 0.3125rem;
-	padding: 0.5rem;
-	color: var(--main-button-inactive-text-colour);
-	cursor: pointer;
-	min-height: fit-content;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	position: relative;
-}
-
-.themed-button:hover:not(.disabled) {
-	background-color: var(--main-button-inactive-hover-background-colour);
-	color: var(--main-button-inactive-hover-text-colour);
-}
-
-.themed-button.selected {
-	background-color: var(--main-button-active-background-colour);
-	color: var(--main-button-active-text-colour);
-}
-
-.themed-button.selected:hover:not(.disabled) {
-	background-color: var(--main-button-active-hover-background-colour);
-	color: var(--main-button-active-hover-text-colour);
+	border: none;
+	border-radius: 0.625rem;
+	padding: 0.5rem;
+	background-color: var(--action-button-background-colour);
+	color: var(--action-button-text-colour);
+	font-size: 1rem;
+	font-weight: 600;
 }
 
 .themed-button.disabled {
-	background-color: var(--main-button-disabled-background-colour);
-	color: var(--main-button-disabled-text-colour);
-	cursor: default;
-	border-color: transparent;
+	background-color: var(--action-button-disabled-background-colour);
+	color: var(--action-button-disabled-text-colour);
 }

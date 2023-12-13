@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { handleGetSystemRoles } from '@src/controller/systemRoleController';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -24,7 +24,7 @@ describe('systemRoleController unit tests', () => {
 		];
 
 		const res = responseMock();
-		handleGetSystemRoles(null, res);
+		handleGetSystemRoles({} as Request, res);
 
 		expect(res.send).toHaveBeenCalledWith(expectedSystemRoles);
 	});

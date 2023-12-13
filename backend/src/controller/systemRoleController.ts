@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { LEVEL_NAMES } from '@src/models/level';
 import {
@@ -7,7 +7,7 @@ import {
 	systemRoleLevel3,
 } from '@src/promptTemplates';
 
-function handleGetSystemRoles(_: unknown, res: Response) {
+function handleGetSystemRoles(_: Request, res: Response) {
 	const systemRoles = [
 		{ level: LEVEL_NAMES.LEVEL_1, systemRole: systemRoleLevel1 },
 		{ level: LEVEL_NAMES.LEVEL_2, systemRole: systemRoleLevel2 },

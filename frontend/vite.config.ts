@@ -17,5 +17,6 @@ export default defineConfig({
 		setupFiles: ['./vitest-setup.ts'],
 		reporters: process.env.CI ? ['default', 'junit'] : undefined,
 		outputFile: process.env.CI ? 'reports/test-output.xml' : undefined,
+		globals: true,
 	},
 });

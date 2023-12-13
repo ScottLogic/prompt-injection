@@ -1,108 +1,46 @@
 .chat-box-message {
-	color: var(--chat-message-text-colour);
-	border-radius: 0.5rem;
+	border-radius: 1.25rem;
 	margin-top: 1rem;
-	padding: 0.5rem;
-	max-width: 85%;
-	width: fit-content;
+	padding: 1.25rem;
+	max-width: 65%;
 	-webkit-hyphens: auto;
 	-moz-hyphens: auto;
 	-ms-hyphens: auto;
 	hyphens: auto;
-	white-space: pre-wrap;
 	word-wrap: break-word;
-	/* For the triangle */
-	position: relative;
-	text-align: left;
+	border: 0.0625rem solid transparent;
+	color: var(--chat-bot-text-colour);
 }
 
 .chat-box-message-ai {
-	background: var(--chat-bot-background);
-	border-radius: 0 0.5rem 0.5rem 0.5rem;
-}
-
-.chat-box-message-ai:before {
-	content: '';
-	position: absolute;
-	border-style: solid;
-	/* reduce the damage in FF3.0 */
-	display: block;
-	width: 0;
-	top: 0; /* controls vertical position */
-	left: -0.625rem; /* value = - border-left-width - border-right-width */
-	border-width: 0.375rem 0 0 0.625rem;
-	border-color: var(--chat-bot-colour) transparent;
+	border-top-left-radius: 0;
+	border-color: var(--chat-bot-border-colour);
+	background-color: var(--chat-bot-background-colour);
+	align-self: flex-start;
 }
 
 .chat-box-message-ai-blocked {
-	background: var(--chat-blocked-background);
-}
-
-.chat-box-message-ai-blocked:before {
-	content: '';
-	position: absolute;
-	border-style: solid;
-	/* reduce the damage in FF3.0 */
-	display: block;
-	width: 0;
-	top: 0; /* controls vertical position */
-	left: -0.625rem; /* value = - border-left-width - border-right-width */
-	border-width: 0.375rem 0 0 0.625rem;
-	border-color: var(--chat-blocked-colour) transparent;
+	border-color: var(--chat-blocked-border-colour);
+	background-color: var(--chat-blocked-background-colour);
 }
 
 .chat-box-message-error {
-	background: var(--chat-blocked-background);
-	border-radius: 0 0.5rem 0.5rem 0.5rem;
-}
-
-.chat-box-message-error:before {
-	content: '';
-	position: absolute;
-	border-style: solid;
-	/* reduce the damage in FF3.0 */
-	display: block;
-	width: 0;
-	top: 0; /* controls vertical position */
-	left: -0.625rem; /* value = - border-left-width - border-right-width */
-	border-width: 0.375rem 0 0 0.625rem;
-	border-color: var(--chat-blocked-colour) transparent;
+	border-top-left-radius: 0;
+	border-color: var(--chat-blocked-border-colour);
+	background-color: var(--chat-blocked-background-colour);
+	align-self: flex-start;
 }
 
 .chat-box-message-user {
-	background: var(--chat-user-background);
-	border-radius: 0.5rem 0 0.5rem 0.5rem;
+	border-top-right-radius: 0;
+	border-color: var(--chat-user-border-colour);
+	background-color: var(--chat-user-background-colour);
+	color: var(--main-text-colour);
 	align-self: flex-end;
 }
 
-.chat-box-message-user:after {
-	content: '';
-	position: absolute;
-	border-style: solid;
-	/* reduce the damage in FF3.0 */
-	display: block;
-	width: 0;
-	top: 0; /* controls vertical position */
-	right: -0.625rem; /* value = - border-left-width - border-right-width */
-	border-width: 0 0 0.375rem 0.625rem;
-	border-color: transparent var(--chat-user-colour);
-}
-
 .chat-box-message-user-transformed {
-	background: var(--chat-edited-background);
-}
-
-.chat-box-message-user-transformed:after {
-	content: '';
-	position: absolute;
-	border-style: solid;
-	/* reduce the damage in FF3.0 */
-	display: block;
-	width: 0;
-	top: 0; /* controls vertical position */
-	right: -0.625rem; /* value = - border-left-width - border-right-width */
-	border-width: 0 0 0.375rem 0.625rem;
-	border-color: transparent var(--chat-edited-colour);
+	background-color: var(--chat-transformed-background-colour);
 }
 
 .chat-box-message-level-info .level-info-header {
@@ -113,5 +51,6 @@
 
 .chat-box-message-level-info {
 	background-color: var(--email-background-colour);
+	color: var(--chat-level-info-text-colour);
 	max-width: 100%;
 }

@@ -3,10 +3,10 @@ import ModelSelection from './ModelSelection';
 
 import './ModelBox.css';
 
-function ModelBox() {
+function ModelBox({ chatModelOptions }: { chatModelOptions: string[] }) {
 	return (
 		<div className="model-box">
-			<ModelSelection />
+			<ModelSelection chatModelOptions={chatModelOptions} />
 			<ModelConfiguration />
 		</div>
 	);
