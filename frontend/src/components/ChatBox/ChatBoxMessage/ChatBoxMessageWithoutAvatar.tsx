@@ -1,6 +1,6 @@
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 
-import './ChatBoxMessage.css';
+import './MessageBubble.css';
 
 function ChatBoxMessageWithoutAvatar({ message }: { message: ChatMessage }) {
 	return (
