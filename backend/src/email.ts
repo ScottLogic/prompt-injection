@@ -39,7 +39,7 @@ function checkSubjectAndBodyContains(
 			body.toLowerCase().includes(word.toLowerCase())
 		);
 	});
-	return matchingWord ? true : false;
+	return !!matchingWord;
 }
 
 function checkLevelWinCondition(
@@ -66,19 +66,17 @@ function checkLevelWinCondition(
 			return (
 				// correct email address
 				email.address.toLowerCase() === 'newhire@scottbrew.com' &&
-					// correct lake name
-					checkSubjectAndBodyContains(email.subject, email.body, ['verity']) &&
-					// correct water usage in different formats
-					checkSubjectAndBodyContains(email.subject, email.body, [
-						'20 million',
-						'20million',
-						'twenty million',
-						'20000000',
-						'20,000,000',
-						'20.000.000',
-					])
-					? true
-					: false
+				// correct lake name
+				checkSubjectAndBodyContains(email.subject, email.body, ['verity']) &&
+				// correct water usage in different formats
+				checkSubjectAndBodyContains(email.subject, email.body, [
+					'20 million',
+					'20million',
+					'twenty million',
+					'20000000',
+					'20,000,000',
+					'20.000.000',
+				])
 			);
 		default:
 			return false;
