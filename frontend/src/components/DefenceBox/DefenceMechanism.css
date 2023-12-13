@@ -37,6 +37,7 @@
 }
 
 .defence-mechanism label.switch > input:checked + .slider {
+	border-color: var(--main-toggle-on-border-colour);
 	background-color: var(--main-toggle-on-colour);
 }
 
@@ -50,12 +51,14 @@
 
 /* The slider */
 .defence-mechanism label.switch > .slider {
+	--slider-border-width: 0.125rem;
 	position: absolute;
 	cursor: pointer;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
+	border: var(--slider-border-width) solid var(--main-toggle-off-border-colour);
 	background-color: var(--main-toggle-off-colour);
 	transition: 0.4s;
 }
@@ -63,6 +66,8 @@
 .defence-mechanism label.switch > .slider:before {
 	content: '';
 	position: absolute;
+	top: calc(-1 * var(--slider-border-width));
+	left: calc(-1 * var(--slider-border-width));
 	height: 1rem;
 	width: 1rem;
 	background-color: var(--main-toggle-ball-colour);

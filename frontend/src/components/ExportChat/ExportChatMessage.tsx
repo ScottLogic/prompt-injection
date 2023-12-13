@@ -50,7 +50,7 @@ function getFullPrefix(message: ChatMessage) {
 		case CHAT_MESSAGE_TYPE.USER:
 			return `You: ${message.message}`;
 		case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
-			return `You (edited): ${message.message}`;
+			return `You (transformed): ${message.message}`;
 		case CHAT_MESSAGE_TYPE.ERROR_MSG:
 			return `Error: ${message.message}`;
 		case CHAT_MESSAGE_TYPE.BOT:

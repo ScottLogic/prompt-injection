@@ -2,8 +2,7 @@
 	background-color: var(--control-header-background-colour);
 	border: 0.0625rem solid var(--short-mission-button-border-colour);
 	padding: 1.5rem;
-	color: var(--main-button-inactive-text-colour);
-	cursor: pointer;
+	color: var(--main-text-colour);
 	display: flex;
 	justify-content: center;
 	align-items: center;

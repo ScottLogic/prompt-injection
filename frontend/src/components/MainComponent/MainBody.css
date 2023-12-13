@@ -3,19 +3,17 @@
 	flex-direction: row;
 	flex-grow: 1;
 	overflow: hidden;
+	background: var(--main-background);
+	border-top: 0.125rem solid var(--level-banner-border-colour);
 }
 
 .centre-area {
 	display: flex;
 	flex-direction: column;
-	border-color: var(--main-border-colour);
-	border-width: 0 0.0625rem;
-	border-style: solid;
 	position: relative;
 	height: 100%;
-	width: 40%;
-	margin: 0 auto;
-	text-align: center;
+	width: 55%;
+	background-color: var(--main-text-colour);
 }
 
 .side-bar {

@@ -1,3 +1,5 @@
+import { clsx } from 'clsx';
+
 import { CHAT_MESSAGE_TYPE } from '@src/models/chat';
 
 import './ChatBoxInfoText.css';
@@ -11,13 +13,14 @@ function ChatBoxInfoText({
 }) {
 	return (
 		<div
-			className={
+			className={clsx(
+				'chat-box-info',
 				type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
 					? 'chat-box-info-defence-triggered-text'
 					: type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED
 					? 'chat-box-info-defence-alerted-text'
 					: 'chat-box-info-text'
-			}
+			)}
 		>
 			{text}
 		</div>

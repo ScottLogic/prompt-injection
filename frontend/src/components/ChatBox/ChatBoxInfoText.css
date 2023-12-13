@@ -1,17 +1,16 @@
-.chat-box-info-text {
-	color: var(--chat-info-text-colour);
+.chat-box-info {
 	font-size: 0.875rem;
 	padding-top: 1rem;
+	text-align: center;
+}
+.chat-box-info-text {
+	color: var(--chat-info-text-colour);
 }
 
 .chat-box-info-defence-alerted-text {
 	color: var(--chat-alerted-text-colour);
-	font-size: 0.875rem;
-	padding-top: 1rem;
 }
 
 .chat-box-info-defence-triggered-text {
 	color: var(--chat-triggered-text-colour);
-	font-size: 0.875rem;
-	padding-top: 1rem;
 }

@@ -5,9 +5,8 @@
 	flex-direction: row;
 	justify-content: space-between;
 	padding: 0 2rem;
-	height: 4rem;
+	height: 6.25rem;
 	flex-shrink: 0;
-	font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
 .main-header-left {
@@ -21,27 +20,15 @@
 	height: 80%;
 }
 
-.main-header-title {
-	font-size: 2.25rem;
-	font-style: italic;
-	font-weight: 700;
-	white-space: nowrap;
-}
-
-.main-header-icon {
-	height: 70%;
-	padding: 0 2%;
-}
-
 .main-header-middle {
-	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
 }
 
-.main-header-current-level {
-	color: var(--main-accent-colour);
-	font-size: 2.25rem;
-	font-style: italic;
-	font-weight: 700;
+.main-header-middle .main-header-level {
+	color: var(--main-text-colour);
+	font-size: 1.875rem;
 }
 
 .main-header-right {
@@ -52,13 +39,13 @@
 	justify-content: flex-end;
 }
 
-.handbook-area {
+.main-header-right .handbook-area {
 	width: 10%;
 	height: 50%;
 	margin-left: 1rem;
 }
 
-.handbook-icon {
+.main-header-right .handbook-area .handbook-icon {
 	height: 100%;
 	width: 100%;
 }
