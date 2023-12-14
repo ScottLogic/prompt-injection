@@ -1,4 +1,4 @@
-import GettingStarted from '@src/assets/icons/GettingStarted.svg';
+import GettingStartedIcon from '@src/assets/icons/GettingStarted.svg';
 import HandbookIcon from '@src/assets/icons/Handbook.svg';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
