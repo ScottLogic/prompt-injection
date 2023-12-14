@@ -30,8 +30,7 @@ import {
 	FunctionAskQuestionParams,
 	FunctionSendEmailParams,
 } from './models/openai';
-import {
-	chatModelMaxTokens,
+import chatModelMaxTokens, {
 	countTotalPromptTokens,
 	filterChatHistoryByMaxTokens,
 } from './utils/token';
@@ -283,7 +282,7 @@ async function chatGptChatCompletion(
 			tools: chatGptTools,
 		});
 		console.debug(
-			'tokenInfo= message=',
+			'chat_completion=',
 			chat_completion.choices[0].message,
 			' tokens=',
 			chat_completion.usage
@@ -314,7 +313,7 @@ function getChatCompletionsFromHistory(
 			: [];
 
 	console.debug(
-		'Num tokens in input to GPT: ',
+		'Input to GPT. prompt_tokens=',
 		countTotalPromptTokens(completions)
 	);
 	// limit the number of tokens sent to GPT to fit inside context window
@@ -330,7 +329,11 @@ function getChatCompletionsFromHistory(
 			'Trimmed completions to fit inside context window. messages trimmed=',
 			diff
 		);
-		console.log('new history=', reducedCompletions);
+		console.log('new completions=', reducedCompletions);
+		console.log(
+			'tokens in new completions= ',
+			countTotalPromptTokens(completions)
+		);
 	}
 
 	return reducedCompletions;
