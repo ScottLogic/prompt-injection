@@ -50,5 +50,5 @@
 
 #react-doc-viewer #txt-renderer {
 	padding: 0.625rem;
-	white-space: pre-wrap;
+	white-space: pre-line;
 }

@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		marginTop: 10,
 		padding: 5,
-		whiteSpace: 'pre-wrap',
+		whiteSpace: 'pre-line',
 	},
 	sentEmailDivider: {
 		borderBottom: '1px solid #ccc',
