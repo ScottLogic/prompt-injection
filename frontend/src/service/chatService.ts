@@ -32,7 +32,6 @@ async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 		JSON.stringify({ message, currentLevel })
 	);
 	const data = (await response.json()) as ChatResponse;
-	console.log(data);
 	return data;
 }
 
