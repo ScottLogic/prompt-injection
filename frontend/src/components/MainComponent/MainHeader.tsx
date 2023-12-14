@@ -1,5 +1,6 @@
-import GettingStartedIcon from '@src/assets/icons/GettingStarted.svg';
+import GettingStarted from '@src/assets/icons/GettingStarted.svg';
 import HandbookIcon from '@src/assets/icons/Handbook.svg';
+import ResetProgress from '@src/assets/icons/ResetProgressIcon.svg';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
@@ -12,12 +13,14 @@ function MainHeader({
 	currentLevel,
 	numCompletedLevels,
 	openHandbook,
+	openResetProgress,
 	openWelcome,
 	setCurrentLevel,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	openHandbook: () => void;
+	openResetProgress: () => void;
 	openWelcome: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
@@ -41,6 +44,10 @@ function MainHeader({
 					numCompletedLevels={numCompletedLevels}
 					setCurrentLevel={setCurrentLevel}
 				/>
+				<ThemedButton onClick={openResetProgress}>
+					<img className="reset-progress-icon" src={ResetProgress} alt="" />
+					Reset Progress
+				</ThemedButton>
 			</span>
 			<span className="main-header-right">
 				<ThemedButton onClick={openWelcome}>
