@@ -19,7 +19,7 @@ const chatModelMaxTokens = {
 	[CHAT_MODELS.GPT_4_TURBO]: 128000,
 	[CHAT_MODELS.GPT_4]: 8191,
 	[CHAT_MODELS.GPT_4_0613]: 8191,
-	[CHAT_MODELS.GPT_3_5_TURBO]: 300, // todo - change to 4095
+	[CHAT_MODELS.GPT_3_5_TURBO]: 600, // todo - change to 4095
 	[CHAT_MODELS.GPT_3_5_TURBO_0613]: 4095,
 	[CHAT_MODELS.GPT_3_5_TURBO_16K]: 16384,
 	[CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16384,
@@ -109,18 +109,45 @@ function filterChatHistoryByMaxTokens(
 
 	// always add the most recent message to start of list
 	filteredList.push(reverseHistory[0]);
-	sumTokens += countMessageTokens(reverseHistory[0]);
+	const t1 = countMessageTokens(reverseHistory[0]);
+	sumTokens += t1;
+
+	console.debug(
+		'msg= ',
+		reverseHistory[0],
+		'tokens= ',
+		t1,
+		'sumTokens= ',
+		sumTokens
+	);
 
 	// if the first message is a system role add it to list
 	if (chatHistory[0].role === 'system') {
-		sumTokens += countMessageTokens(chatHistory[0]);
+		const t2 = countMessageTokens(chatHistory[0]);
+		sumTokens += t2;
 		filteredList.push(chatHistory[0]);
+		console.debug(
+			'msg= ',
+			chatHistory[0],
+			'tokens= ',
+			t2,
+			'sumTokens= ',
+			sumTokens
+		);
 	}
 
 	// add elements after first message until max tokens reached
 	for (let i = 1; i < reverseHistory.length; i++) {
 		const message = reverseHistory[i];
 		const numTokens = countMessageTokens(message);
+		console.debug(
+			'msg= ',
+			message,
+			'tokens= ',
+			numTokens,
+			'sumTokens= ',
+			sumTokens
+		);
 		// if we reach end and system role is there skip as it's already been added
 		if (message.role === 'system') {
 			continue;
