@@ -187,7 +187,7 @@ describe('langchain integration tests ', () => {
 	});
 
 	test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {
-		const numberOfCalls = 8; // twice the number of levels. once for common and once for level specific
+		const numberOfCalls = 4 + 1; // number of levels + common
 
 		mockSplitDocuments.mockResolvedValue([]);
 

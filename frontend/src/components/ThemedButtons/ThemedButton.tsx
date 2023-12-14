@@ -9,7 +9,6 @@ export interface ThemedButtonProps {
 	ariaDisabled?: boolean;
 	ariaLabel?: string;
 	disabled?: boolean;
-	selected?: boolean;
 	title?: string;
 	onClick: () => void;
 }
@@ -20,7 +19,6 @@ function ThemedButton({
 	ariaDisabled = false,
 	ariaLabel,
 	disabled = false,
-	selected = false,
 	title,
 	onClick,
 }: ThemedButtonProps) {
@@ -29,7 +27,6 @@ function ThemedButton({
 	}
 
 	const buttonClass = clsx('themed-button', {
-		selected,
 		disabled: appearsDifferentWhenDisabled && (disabled || ariaDisabled),
 	});
 

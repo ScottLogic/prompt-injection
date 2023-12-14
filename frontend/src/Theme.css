@@ -1,44 +1,51 @@
 :root {
-	--header-background-colour: #101010;
+	--header-background-colour: #252525;
 	--footer-background-colour: #444444;
+	--main-background: linear-gradient(
+		180deg,
+		var(--header-background-colour) 0%,
+		#000 100%
+	);
 
-	--main-accent-colour: #1fd07b;
-	--main-background-colour: #252525;
-	--main-border-colour: var(--main-accent-colour);
-	--main-error-colour: #cc3c3c;
+	--accent-background-colour: #208187;
+	--accent-border-colour: #2bb3bb;
+	--accent-colour: var(--accent-border-colour);
+	--main-border-colour: #666666;
 	--main-text-colour: #fff;
+	--main-text-colour-inverted: #000;
+	--error-colour: #c41565;
 
 	--main-scrollbar-colour: #444444;
 	--main-scrollbar-hover-colour: #555555;
 	--main-scrollbar-border-colour: #666666;
 
-	--main-button-active-background-colour: teal;
-	--main-button-active-text-colour: var(--main-text-colour);
-	--main-button-inactive-background-colour: #313131;
-	--main-button-inactive-text-colour: var(--main-text-colour);
-	--main-button-disabled-background-colour: #888888;
-	--main-button-disabled-text-colour: #111111;
-	--main-button-active-hover-background-colour: #00aaaa;
-	--main-button-active-hover-text-colour: var(--main-text-colour);
-	--main-button-inactive-hover-background-colour: #555555;
-	--main-button-inactive-hover-text-colour: var(--main-text-colour);
-	--main-button-hover-text-colour: var(--main-text-colour);
-	--main-button-hover-border-colour: white;
+	--action-button-background-colour: var(--accent-background-colour);
+	--action-button-text-colour: var(--main-text-colour);
+	--action-button-disabled-background-colour: #888888;
+	--action-button-disabled-text-colour: #111111;
 
-	--main-input-active-background-colour: var(
-		--main-button-inactive-background-colour
-	);
-	--main-input-active-text-colour: var(--main-button-inactive-text-colour);
+	--level-button-colour: var(--main-text-colour);
+	--level-button-colour-disabled: #777;
+	--level-button-border-colour: var(--accent-border-colour);
+	--level-button-border-colour-disabled: #aaaaaa80;
+	--level-button-background-colour-selected: var(--accent-background-colour);
+
+	--level-banner-border-colour: #bbb;
+	--level-banner-background-colour: #ddd;
+	--level-banner-text-colour: #444;
+
+	--main-input-active-background-colour: var(--header-background-colour);
+	--main-input-active-text-colour: var(--main-text-colour);
 	--main-input-inactive-background-colour: #b3b3b3;
 	--main-input-inactive-text-colour: #464646;
 
 	--main-toggle-ball-colour: #ececec;
-	--main-toggle-off-colour: #b3b3b3;
-	--main-toggle-on-colour: var(--main-accent-colour);
+	--main-toggle-off-border-colour: var(--level-button-border-colour-disabled);
+	--main-toggle-off-colour: transparent;
+	--main-toggle-on-border-colour: var(--accent-colour);
+	--main-toggle-on-colour: var(--accent-colour);
 
-	--control-header-background-colour: var(
-		--main-button-inactive-background-colour
-	);
+	--control-header-background-colour: #313131;
 	--control-body-background-colour: #3a3a3a;
 
 	--overlay-background-colour: #8ad5da;
@@ -48,7 +55,7 @@
 
 	--handbook-background-colour: #fff;
 	--handbook-spine-background-colour: #d3d3d3;
-	--handbook-spine-separator-colour: #000;
+	--handbook-spine-separator-colour: var(--main-text-colour-inverted);
 	--handbook-tab-selected-colour: #313131;
 	--handbook-tab-hover-colour: #31313133;
 	--handbook-text-colour: var(--handbook-tab-selected-colour);
@@ -59,38 +66,39 @@
 	--handbook-locked-section-border-colour: #00000080;
 
 	--document-viewer-background-colour: #fff;
-	--document-viewer-text-colour: #000;
+	--document-viewer-text-colour: var(--main-text-colour-inverted);
 
-	--chat-bot-colour: #d482fb;
-	--chat-bot-background: linear-gradient(var(--chat-bot-colour), #f3dbfe);
-	--chat-blocked-colour: var(--main-error-colour);
-	--chat-blocked-background: linear-gradient(
-		var(--chat-blocked-colour),
-		#ffacb6
-	);
-	--chat-edited-colour: #6a9b9b;
-	--chat-edited-background: linear-gradient(var(--chat-edited-colour), #cae7f5);
-	--chat-user-colour: var(--main-accent-colour);
-	--chat-user-background: linear-gradient(var(--chat-user-colour), #8ad5da);
-	--chat-info-text-colour: #b0b0b0;
-	--chat-message-text-colour: #000;
+	--chat-bot-background-colour: #e9feff;
+	--chat-bot-border-colour: #b6ecef;
+	--chat-bot-text-colour: var(--main-text-colour-inverted);
+	--chat-user-background-colour: #008484;
+	--chat-user-border-colour: #198b92;
+	--chat-blocked-background-colour: #faebf2;
+	--chat-blocked-border-colour: #c41565;
+	--chat-transformed-background-colour: #6a9b9b;
+	--chat-info-text-colour: #707070;
+	--chat-level-info-text-colour: var(--main-text-colour-inverted);
 	--chat-alerted-text-colour: teal;
-	--chat-triggered-text-colour: var(--main-error-colour);
+	--chat-triggered-text-colour: var(--error-colour);
+	--chat-button-background-colour: #eee;
+	--chat-button-border-colour: #ccc;
+	--chat-button-text-colour: #444;
 
-	--email-background-colour: #93ffcb;
+	--email-title-background-colour: #feb589;
+	--email-background-colour: #fff4ee;
 	--email-divider-colour: var(--email-text-colour);
-	--email-text-colour: #000;
+	--email-text-colour: var(--main-text-colour-inverted);
 
 	--short-mission-button-background-colour: var(
 		--control-header-background-colour
 	);
-	--short-mission-button-text-colour: var(--main-button-inactive-text-colour);
-	--short-mission-button-border-colour: var(--main-button-hover-border-colour);
+	--short-mission-button-text-colour: var(--main-text-colour);
+	--short-mission-button-border-colour: var(--main-text-colour);
 	--short-mission-button-hover-background-colour: var(
 		--control-body-background-colour
 	);
 }
 
 ::backdrop {
-	--overlay-hidden-colour: #0008;
+	--overlay-hidden-colour: #000c;
 }

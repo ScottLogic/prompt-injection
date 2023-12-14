@@ -13,7 +13,6 @@
 	border: 0.0625rem solid var(--overlay-tab-colour);
 	border-radius: 0.5rem;
 	padding: 1rem 3rem;
-	cursor: pointer;
 	background-color: var(--overlay-background-colour);
 	font-size: 1.25rem;
 	font-weight: 700;

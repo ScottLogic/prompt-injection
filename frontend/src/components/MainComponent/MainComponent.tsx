@@ -19,6 +19,7 @@ import {
 	resetDefenceConfig,
 } from '@src/service/defenceService';
 import { clearEmails, getSentEmails } from '@src/service/emailService';
+import { healthCheck } from '@src/service/healthService';
 
 import MainBody from './MainBody';
 import MainFooter from './MainFooter';
@@ -35,6 +36,7 @@ function MainComponent({
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
 	openWelcomeOverlay,
+	openResetProgressOverlay,
 	openDocumentViewer,
 	setCurrentLevel,
 }: {
@@ -46,6 +48,7 @@ function MainComponent({
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openWelcomeOverlay: () => void;
+	openResetProgressOverlay: () => void;
 	openDocumentViewer: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
@@ -53,6 +56,20 @@ function MainComponent({
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
+
+	// called on mount
+	useEffect(() => {
+		// perform backend health check
+		healthCheck().catch(() => {
+			// addErrorMessage('Failed to reach the server. Please try again later.');
+			setMessages([
+				{
+					message: 'Failed to reach the server. Please try again later.',
+					type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+				},
+			]);
+		});
+	}, []);
 
 	useEffect(() => {
 		void setNewLevel(currentLevel);
@@ -63,16 +80,7 @@ function MainComponent({
 		setMessages((messages: ChatMessage[]) => [...messages, message]);
 	}
 
-	// for clearing level progress
-	async function resetLevel() {
-		await clearChat(currentLevel);
-		setMessages([]);
-		currentLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
-
-		await clearEmails(currentLevel);
-		setEmails([]);
-
-		await resetActiveDefences(currentLevel);
+	function getResetDefences(currentLevel: LEVEL_NAMES): Defence[] {
 		// choose appropriate defences to display
 		let defences =
 			currentLevel === LEVEL_NAMES.LEVEL_3
@@ -82,7 +90,31 @@ function MainComponent({
 			defence.isActive = false;
 			return defence;
 		});
-		setDefencesToShow(defences);
+		return defences;
+	}
+
+	function resetFrontendState() {
+		setMessages([]);
+		setEmails([]);
+
+		if (currentLevel !== LEVEL_NAMES.SANDBOX) {
+			addWelcomeMessage();
+			// don't reset defences for sandbox
+			setDefencesToShow(getResetDefences(currentLevel));
+		}
+	}
+
+	// for clearing single level progress
+	async function resetLevel() {
+		// reset on the backend
+		await Promise.all([
+			clearChat(currentLevel),
+			clearEmails(currentLevel),
+			resetActiveDefences(currentLevel),
+		]);
+
+		// reset on state
+		resetFrontendState();
 	}
 
 	// for going switching level without clearing progress
@@ -215,6 +247,8 @@ function MainComponent({
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				openHandbook={openHandbook}
+				openResetProgress={openResetProgressOverlay}
+				openWelcome={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
 			/>
 			<MainBody
@@ -238,7 +272,6 @@ function MainComponent({
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openInfoOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
-				openWelcomeOverlay={openWelcomeOverlay}
 				openDocumentViewer={openDocumentViewer}
 			/>
 			<MainFooter />

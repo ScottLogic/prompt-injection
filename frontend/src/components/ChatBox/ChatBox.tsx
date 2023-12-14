@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { ALL_DEFENCES } from '@src/Defences';
 import ExportPDFLink from '@src/components/ExportChat/ExportPDFLink';
+import '@src/components/ThemedButtons/ChatButton.css';
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
-import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import useUnitStepper from '@src/hooks/useUnitStepper';
 import { CHAT_MESSAGE_TYPE, ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
@@ -93,7 +93,7 @@ function ChatBox({
 			setIsSendingMessage(true);
 			// clear the input box
 			setChatInput('');
-			// if input has been edited, add both messages to the list of messages. otherwise add original message only
+			// if input has been transformed, add both messages to the list of messages. otherwise add original message only
 			addChatMessage({
 				message: chatInput,
 				type: CHAT_MESSAGE_TYPE.USER,
@@ -203,6 +203,17 @@ function ChatBox({
 		<div className="chat-box">
 			<ChatBoxFeed messages={messages} />
 			<div className="footer">
+				<div className="control-buttons">
+					<ExportPDFLink
+						messages={messages}
+						emails={emails}
+						currentLevel={currentLevel}
+					/>
+					<button className="chat-button" onClick={resetLevel}>
+						Reset Level
+					</button>
+				</div>
+
 				<div className="messages">
 					<ChatBoxInput
 						content={chatInput}
@@ -215,18 +226,9 @@ function ChatBox({
 							onClick={() => void sendChatMessage()}
 							isLoading={isSendingMessage}
 						>
-							Send
+							send
 						</LoadingButton>
 					</span>
-				</div>
-
-				<div className="control-buttons">
-					<ExportPDFLink
-						messages={messages}
-						emails={emails}
-						currentLevel={currentLevel}
-					/>
-					<ThemedButton onClick={resetLevel}>Reset</ThemedButton>
 				</div>
 			</div>
 		</div>
