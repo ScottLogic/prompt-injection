@@ -28,7 +28,6 @@ function MainBody({
 	incrementNumCompletedLevels,
 	openInfoOverlay,
 	openLevelsCompleteOverlay,
-	openWelcomeOverlay,
 	openDocumentViewer,
 }: {
 	currentLevel: LEVEL_NAMES;
@@ -49,7 +48,6 @@ function MainBody({
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openInfoOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
-	openWelcomeOverlay: () => void;
 	openDocumentViewer: () => void;
 }) {
 	const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
@@ -78,7 +76,6 @@ function MainBody({
 					setDefenceActive={setDefenceActive}
 					setDefenceInactive={setDefenceInactive}
 					setDefenceConfiguration={setDefenceConfiguration}
-					openWelcomeOverlay={openWelcomeOverlay}
 					openDocumentViewer={openDocumentViewer}
 				/>
 			</div>

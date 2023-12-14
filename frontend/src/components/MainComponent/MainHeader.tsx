@@ -1,3 +1,4 @@
+import GettingStartedIcon from '@src/assets/icons/GettingStarted.svg';
 import HandbookIcon from '@src/assets/icons/Handbook.svg';
 import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
 import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
@@ -11,11 +12,13 @@ function MainHeader({
 	currentLevel,
 	numCompletedLevels,
 	openHandbook,
+	openWelcome,
 	setCurrentLevel,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	openHandbook: () => void;
+	openWelcome: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
 	const isLevelComplete = (currentLevel as number) < numCompletedLevels;
@@ -40,6 +43,11 @@ function MainHeader({
 				/>
 			</span>
 			<span className="main-header-right">
+				<ThemedButton onClick={openWelcome}>
+					<img src={GettingStarted} alt="" />
+					Getting Started
+				</ThemedButton>
+
 				<ThemedButton onClick={openHandbook}>
 					<img src={HandbookIcon} alt="" />
 					Handbook

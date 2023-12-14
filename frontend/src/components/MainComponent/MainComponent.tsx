@@ -230,6 +230,7 @@ function MainComponent({
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				openHandbook={openHandbook}
+				openWelcome={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
 			/>
 			<MainBody
@@ -253,7 +254,6 @@ function MainComponent({
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openInfoOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
-				openWelcomeOverlay={openWelcomeOverlay}
 				openDocumentViewer={openDocumentViewer}
 			/>
 			<MainFooter />
