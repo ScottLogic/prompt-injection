@@ -1,15 +1,8 @@
 import {
-	ChatCompletionAssistantMessageParam,
 	ChatCompletionMessageParam,
 	ChatCompletionMessageToolCall,
 } from 'openai/resources/chat/completions';
-import {
-	functionsTokensEstimate,
-	promptTokensEstimate,
-	messageTokensEstimate,
-	stringTokens,
-} from 'openai-chat-tokens';
-import { FunctionDef } from 'openai-chat-tokens/dist/functions';
+import { promptTokensEstimate, stringTokens } from 'openai-chat-tokens';
 
 import { CHAT_MODELS } from '@src/models/chat';
 import { chatGptTools } from '@src/openai';
@@ -17,29 +10,13 @@ import { chatGptTools } from '@src/openai';
 // max tokens each model can use
 const chatModelMaxTokens = {
 	[CHAT_MODELS.GPT_4_TURBO]: 128000,
-	[CHAT_MODELS.GPT_4]: 8191,
-	[CHAT_MODELS.GPT_4_0613]: 8191,
-	[CHAT_MODELS.GPT_3_5_TURBO]: 600, // todo - change to 4095
-	[CHAT_MODELS.GPT_3_5_TURBO_0613]: 4095,
-	[CHAT_MODELS.GPT_3_5_TURBO_16K]: 16384,
-	[CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16384,
+	[CHAT_MODELS.GPT_4]: 8192,
+	[CHAT_MODELS.GPT_4_0613]: 8192,
+	[CHAT_MODELS.GPT_3_5_TURBO]: 4097,
+	[CHAT_MODELS.GPT_3_5_TURBO_0613]: 4097,
+	[CHAT_MODELS.GPT_3_5_TURBO_16K]: 16385,
+	[CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16385,
 };
-
-// estimate the tokens on a single completion
-function countMessageTokens(
-	message: ChatCompletionMessageParam | null | undefined
-) {
-	if (message) {
-		if ((message as ChatCompletionAssistantMessageParam).tool_calls) {
-			const toolCalls = (message as ChatCompletionAssistantMessageParam)
-				.tool_calls;
-			return toolCalls ? countSingleToolCallTokens(toolCalls) : 0;
-		} else {
-			return messageTokensEstimate(message);
-		}
-	}
-	return 0;
-}
 
 function countSingleToolCallTokens(toolCall: ChatCompletionMessageToolCall[]) {
 	return toolCall.reduce((acc, toolCall) => {
@@ -55,7 +32,6 @@ function countToolCallTokens(chatHistory: ChatCompletionMessageParam[]) {
 	let numToolCalls = 0;
 	let tokens = 0;
 	for (const message of chatHistory) {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (message.role === 'assistant' && message.tool_calls) {
 			numToolCalls += message.tool_calls.length;
 			tokens += countSingleToolCallTokens(message.tool_calls);
@@ -76,15 +52,13 @@ function countTotalPromptTokens(chatHistory: ChatCompletionMessageParam[]) {
 	); // there is an offset of 5 between openai completion prompt_tokens
 }
 
-// take only the chat history to send to GPT that is within the max tokens
+// filter older messages out of chat history to fit inside max tokens a model can use
 function filterChatHistoryByMaxTokens(
 	chatHistory: ChatCompletionMessageParam[],
 	maxNumTokens: number
 ): ChatCompletionMessageParam[] {
-	// estimate total prompt tokens including chat history and function call definitions#
-
 	const estimatedTokens = countTotalPromptTokens(chatHistory);
-	// if the estimated tokens is less than the max tokens, no need to filter
+
 	if (estimatedTokens <= maxNumTokens) {
 		return chatHistory;
 	}
@@ -94,79 +68,44 @@ function filterChatHistoryByMaxTokens(
 		'maxNumTokens=',
 		maxNumTokens
 	);
+	const newList: ChatCompletionMessageParam[] = [];
 
-	let sumTokens = 0;
-	const filteredList: ChatCompletionMessageParam[] = [];
-
-	const functionDefs = chatGptTools.map(
-		(tool) => tool.function
-	) as unknown as FunctionDef[];
-
-	// add function definitions to sum of tokens
-	sumTokens += functionsTokensEstimate(functionDefs);
 	// reverse list to add from most recent
 	const reverseHistory = chatHistory.slice().reverse();
+	// always add first message
+	newList.push(reverseHistory[0]);
 
-	// always add the most recent message to start of list
-	filteredList.push(reverseHistory[0]);
-	const t1 = countMessageTokens(reverseHistory[0]);
-	sumTokens += t1;
-
-	console.debug(
-		'msg= ',
-		reverseHistory[0],
-		'tokens= ',
-		t1,
-		'sumTokens= ',
-		sumTokens
-	);
-
-	// if the first message is a system role add it to list
+	// add the system role if it's there
 	if (chatHistory[0].role === 'system') {
-		const t2 = countMessageTokens(chatHistory[0]);
-		sumTokens += t2;
-		filteredList.push(chatHistory[0]);
-		console.debug(
-			'msg= ',
-			chatHistory[0],
-			'tokens= ',
-			t2,
-			'sumTokens= ',
-			sumTokens
-		);
+		newList.push(chatHistory[0]);
 	}
 
 	// add elements after first message until max tokens reached
 	for (let i = 1; i < reverseHistory.length; i++) {
 		const message = reverseHistory[i];
-		const numTokens = countMessageTokens(message);
-		console.debug(
-			'msg= ',
-			message,
-			'tokens= ',
-			numTokens,
-			'sumTokens= ',
-			sumTokens
-		);
 		// if we reach end and system role is there skip as it's already been added
 		if (message.role === 'system') {
 			continue;
 		}
-		if (sumTokens + numTokens <= maxNumTokens) {
-			filteredList.splice(i, 0, message);
-			sumTokens += numTokens;
+		// create a temp list to test if message fits inside max tokens
+		const tempList = newList.slice();
+		tempList.splice(i, 0, message);
+
+		const currentTokens = countTotalPromptTokens(tempList);
+		// if it fits add it to the list
+		if (currentTokens <= maxNumTokens) {
+			newList.splice(i, 0, message);
 		} else {
-			console.debug('Max tokens reached on completion= ', message);
+			console.debug('Max tokens reached on completion=', message);
+			// if message is a tool_call, remove the previous assistant reply to the tool call
+			// as will throw an error when there is a lone tool_call_id
+			if (message.role === 'assistant' && message.tool_calls) {
+				newList.splice(i - 1, 1);
+			}
 			break;
 		}
 	}
-	console.debug(
-		'Filtered chat history. sumTokens=',
-		sumTokens,
-		'filteredList=',
-		filteredList
-	);
-	return filteredList.reverse();
+	return newList.reverse();
 }
 
 export {
