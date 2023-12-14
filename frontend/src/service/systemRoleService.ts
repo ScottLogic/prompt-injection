@@ -6,9 +6,8 @@ const PATH = 'systemRoles/';
 
 // get the system roles for all levels
 async function getSystemRoles(): Promise<LevelSystemRole[]> {
-	const response = await sendRequest(`${PATH}`, 'GET');
-	const data = (await response.json()) as LevelSystemRole[];
-	return data;
+	const response = await sendRequest(PATH, { method: 'GET' });
+	return (await response.json()) as LevelSystemRole[];
 }
 
 export { getSystemRoles };

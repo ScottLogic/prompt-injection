@@ -8,24 +8,8 @@ function makeUrl(path: string): URL {
 	return new URL(path, getBackendUrl());
 }
 
-async function sendRequest(
-	path: string,
-	method: string,
-	headers?: HeadersInit,
-	body?: BodyInit
-): Promise<Response> {
-	const init: RequestInit = {
-		credentials: 'include',
-		method,
-	};
-	if (headers) {
-		init.headers = headers;
-	}
-	if (body) {
-		init.body = body;
-	}
-	const response: Response = await fetch(makeUrl(path), init);
-	return response;
+async function sendRequest(path: string, options: RequestInit) {
+	return fetch(makeUrl(path), { ...options, credentials: 'include' });
 }
 
 export { getBackendUrl, sendRequest };
