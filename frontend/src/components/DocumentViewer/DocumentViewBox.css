@@ -8,25 +8,24 @@
 	height: 85vh;
 	aspect-ratio: 7/8;
 
-	background-color: var(--main-background-colour);
+	background: var(--main-background);
 	border: 0.1875rem solid var(--main-border-colour);
-	border-color: var(--main-border-colour);
 }
 
 .document-popup-inner .close-button {
-	color: var(--main-accent-colour);
+	color: var(--main-text-colour);
 	position: absolute;
 	top: 1rem;
 	right: 1rem;
 	padding: 0.25rem 0.75rem;
 	font-size: 1.75rem;
 	font-weight: bold;
+	text-decoration: none;
 }
 
 .document-popup-inner .close-button:hover {
-	color: var(--main-button-hover-text-colour);
-	text-decoration: none;
-	cursor: pointer;
+	border-color: var(--accent-border-colour);
+	color: var(--accent-border-colour);
 }
 
 .document-viewer-container {
@@ -51,5 +50,5 @@
 
 #react-doc-viewer #txt-renderer {
 	padding: 0.625rem;
-	white-space: pre-wrap;
+	white-space: pre-line;
 }

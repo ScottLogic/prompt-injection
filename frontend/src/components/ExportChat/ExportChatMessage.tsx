@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
 		padding: 8,
 		maxWidth: '85%',
 		hyphens: 'auto',
-		whiteSpace: 'pre-wrap',
+		whiteSpace: 'pre-line',
 		wordWrap: 'break-word',
 		float: 'left',
 		textAlign: 'left',
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
 		padding: 8,
 		maxWidth: '85%',
 		hyphens: 'auto',
-		whiteSpace: 'pre-wrap',
+		whiteSpace: 'pre-line',
 		wordWrap: 'break-word',
 		float: 'right',
 		marginLeft: 'auto',
@@ -50,7 +50,7 @@ function getFullPrefix(message: ChatMessage) {
 		case CHAT_MESSAGE_TYPE.USER:
 			return `You: ${message.message}`;
 		case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
-			return `You (edited): ${message.message}`;
+			return `You (transformed): ${message.message}`;
 		case CHAT_MESSAGE_TYPE.ERROR_MSG:
 			return `Error: ${message.message}`;
 		case CHAT_MESSAGE_TYPE.BOT:
