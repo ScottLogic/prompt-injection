@@ -1,6 +1,7 @@
 import {
-	ChatCompletionMessage,
+	ChatCompletionAssistantMessageParam,
 	ChatCompletionMessageParam,
+	ChatCompletionMessageToolCall,
 } from 'openai/resources/chat/completions';
 import {
 	functionsTokensEstimate,
@@ -8,6 +9,7 @@ import {
 	messageTokensEstimate,
 	stringTokens,
 } from 'openai-chat-tokens';
+import { FunctionDef } from 'openai-chat-tokens/dist/functions';
 
 import { CHAT_MODELS } from '@src/models/chat';
 import { chatGptTools } from '@src/openai';
@@ -28,8 +30,10 @@ function countMessageTokens(
 	message: ChatCompletionMessageParam | null | undefined
 ) {
 	if (message) {
-		if ((message as ChatCompletionMessage).tool_calls) {
-			return countToolCallTokens(message.tool_calls);
+		if ((message as ChatCompletionAssistantMessageParam).tool_calls) {
+			const toolCalls = (message as ChatCompletionAssistantMessageParam)
+				.tool_calls;
+			return toolCalls ? countSingleToolCallTokens(toolCalls) : 0;
 		} else {
 			return messageTokensEstimate(message);
 		}
@@ -37,26 +41,24 @@ function countMessageTokens(
 	return 0;
 }
 
-function countSingleToolCallTokens(
-	message: ChatCompletionMessageParam
-): number {
-	return message.tool_calls.reduce((acc, toolCall) => {
+function countSingleToolCallTokens(toolCall: ChatCompletionMessageToolCall[]) {
+	return toolCall.reduce((acc, toolCall) => {
 		const {
 			function: { name, arguments: args },
 		} = toolCall;
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return acc + stringTokens(name) + stringTokens(args);
 	}, 0);
 }
 
-// count tokens in a tool call - not supported by openai-chat-tokens yet. To be removed when supported
+// count total tool call in chat histroy tokens - not supported by openai-chat-tokens yet. To be removed when supported
 function countToolCallTokens(chatHistory: ChatCompletionMessageParam[]) {
 	let numToolCalls = 0;
 	let tokens = 0;
 	for (const message of chatHistory) {
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (message.role === 'assistant' && message.tool_calls) {
 			numToolCalls += message.tool_calls.length;
-			tokens += countSingleToolCallTokens(message);
+			tokens += countSingleToolCallTokens(message.tool_calls);
 		}
 	}
 	return tokens + numToolCalls * 4; // 4 tokens per tool call
@@ -96,18 +98,18 @@ function filterChatHistoryByMaxTokens(
 	let sumTokens = 0;
 	const filteredList: ChatCompletionMessageParam[] = [];
 
-	// add function definitions to sum of tokens
-	sumTokens += functionsTokensEstimate(
-		chatGptTools.map((tool) => tool.function)
-	);
-	console.debug('added functions to sumTokens. sumTokens=', sumTokens);
+	const functionDefs = chatGptTools.map(
+		(tool) => tool.function
+	) as unknown as FunctionDef[];
 
+	// add function definitions to sum of tokens
+	sumTokens += functionsTokensEstimate(functionDefs);
 	// reverse list to add from most recent
-	const reverseList = chatHistory.slice().reverse();
+	const reverseHistory = chatHistory.slice().reverse();
 
 	// always add the most recent message to start of list
-	filteredList.push(reverseList[0]);
-	sumTokens += countMessageTokens(reverseList[0]);
+	filteredList.push(reverseHistory[0]);
+	sumTokens += countMessageTokens(reverseHistory[0]);
 
 	// if the first message is a system role add it to list
 	if (chatHistory[0].role === 'system') {
@@ -116,33 +118,32 @@ function filterChatHistoryByMaxTokens(
 	}
 
 	// add elements after first message until max tokens reached
-	for (let i = 1; i < reverseList.length; i++) {
-		const element = reverseList[i];
-		const numTokens = countMessageTokens(element);
+	for (let i = 1; i < reverseHistory.length; i++) {
+		const message = reverseHistory[i];
+		const numTokens = countMessageTokens(message);
 		// if we reach end and system role is there skip as it's already been added
-		if (element.role === 'system') {
+		if (message.role === 'system') {
 			continue;
 		}
 		if (sumTokens + numTokens <= maxNumTokens) {
-			filteredList.splice(i, 0, element);
+			filteredList.splice(i, 0, message);
 			sumTokens += numTokens;
 		} else {
-			console.debug(
-				'Max tokens reached on completion= ',
-				element,
-				'sumTokens=',
-				sumTokens,
-				'maxNumTokens=',
-				maxNumTokens
-			);
+			console.debug('Max tokens reached on completion= ', message);
 			break;
 		}
 	}
+	console.debug(
+		'Filtered chat history. sumTokens=',
+		sumTokens,
+		'filteredList=',
+		filteredList
+	);
 	return filteredList.reverse();
 }
 
 export {
-	chatModelMaxTokens,
+	chatModelMaxTokens as default,
 	filterChatHistoryByMaxTokens,
 	countTotalPromptTokens,
 };

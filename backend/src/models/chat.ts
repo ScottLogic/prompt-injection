@@ -1,7 +1,4 @@
-import {
-	ChatCompletionMessage,
-	ChatCompletionMessageParam,
-} from 'openai/resources/chat/completions';
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 import { DEFENCE_ID } from './defence';
 
@@ -66,7 +63,7 @@ interface ChatMalicious {
 }
 
 interface ChatResponse {
-	completion: ChatCompletionMessage | null;
+	completion: ChatCompletionMessageParam | null;
 	defenceReport: ChatDefenceReport;
 	wonLevel: boolean;
 }
