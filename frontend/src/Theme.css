@@ -80,6 +80,9 @@
 	--chat-level-info-text-colour: var(--main-text-colour-inverted);
 	--chat-alerted-text-colour: teal;
 	--chat-triggered-text-colour: var(--error-colour);
+	--chat-button-background-colour: #eee;
+	--chat-button-border-colour: #ccc;
+	--chat-button-text-colour: #444;
 
 	--email-title-background-colour: #feb589;
 	--email-background-colour: #fff4ee;
