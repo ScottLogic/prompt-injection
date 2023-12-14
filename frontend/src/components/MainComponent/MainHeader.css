@@ -9,7 +9,7 @@
 	flex-shrink: 0;
 }
 
-.main-header-right .themed-button {
+.main-header .themed-button {
 	display: flex;
 	gap: 0.5rem;
 	height: 3.125rem;
