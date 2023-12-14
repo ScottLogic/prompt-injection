@@ -278,7 +278,6 @@ async function chatGptChatCompletion(
 			frequency_penalty: chatModel.configuration.frequencyPenalty,
 			presence_penalty: chatModel.configuration.presencePenalty,
 			messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
-			max_tokens: chatModelMaxTokens[chatModel.id],
 			tools: chatGptTools,
 		});
 		console.debug(
@@ -313,29 +312,22 @@ function getChatCompletionsFromHistory(
 			: [];
 
 	console.debug(
-		'Input to GPT. prompt_tokens=',
+		'Number of tokens in total chat history. prompt_tokens=',
 		countTotalPromptTokens(completions)
 	);
 	// limit the number of tokens sent to GPT to fit inside context window
-	const maxTokens = chatModelMaxTokens[gptModel];
+	const maxTokens = chatModelMaxTokens[gptModel] * 0.95; // 95% of max tokens to allow for response tokens
 	const reducedCompletions = filterChatHistoryByMaxTokens(
 		completions,
 		maxTokens
 	);
-	const diff = completions.length - reducedCompletions.length;
-
-	if (diff > 0) {
+	if (completions.length - reducedCompletions.length) {
 		console.log(
-			'Trimmed completions to fit inside context window. messages trimmed=',
-			diff
+			'Trimmed completions to fit inside context window. New total prompt_tokens=',
+			countTotalPromptTokens(reducedCompletions)
 		);
-		console.log('new completions=', reducedCompletions);
-		console.log(
-			'tokens in new completions= ',
-			countTotalPromptTokens(completions)
-		);
+		console.log('New chat completions=', reducedCompletions);
 	}
-
 	return reducedCompletions;
 }
 
