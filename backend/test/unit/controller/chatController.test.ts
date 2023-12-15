@@ -55,6 +55,12 @@ function responseMock() {
 }
 
 describe('handleChatToGPT unit tests', () => {
+	const testSentEmail: EmailInfo = {
+		address: 'bob@example.com',
+		body: 'Test body',
+		subject: 'Test subject',
+	};
+
 	function chatResponseAssistant(content: string) {
 		return {
 			choices: [
@@ -62,6 +68,30 @@ describe('handleChatToGPT unit tests', () => {
 					message: {
 						role: 'assistant',
 						content,
+					},
+				},
+			],
+		};
+	}
+
+	function chatSendEmailResponseAssistant() {
+		return {
+			choices: [
+				{
+					message: {
+						tool_calls: [
+							{
+								type: 'function',
+								id: 'sendEmail',
+								function: {
+									name: 'sendEmail',
+									arguments: JSON.stringify({
+										...testSentEmail,
+										confirmed: true,
+									}),
+								},
+							},
+						],
 					},
 				},
 			],
@@ -80,6 +110,7 @@ describe('handleChatToGPT unit tests', () => {
 			transformedMessage: transformedMessage ?? '',
 			wonLevel: false,
 			isError: true,
+			sentEmails: [],
 		};
 	}
 
@@ -129,6 +160,71 @@ describe('handleChatToGPT unit tests', () => {
 			transformedMessage: 'Hello chatbot',
 			wonLevel: false,
 			isError: false,
+			sentEmails: [],
+		});
+	});
+
+	test('GIVEN a user asks to send an email WHEN an email is sent THEN the sent email is returned', async () => {
+		const req = openAiChatRequestMock(
+			'send an email to bob@example.com saying hi',
+			LEVEL_NAMES.LEVEL_1
+		);
+		const res = responseMock();
+
+		mockCreateChatCompletion
+			.mockResolvedValueOnce(chatSendEmailResponseAssistant())
+			.mockResolvedValueOnce(chatResponseAssistant('Email sent'));
+
+		await handleChatToGPT(req, res);
+
+		expect(res.send).toHaveBeenCalledWith({
+			reply: 'Email sent',
+			defenceReport: {
+				blockedReason: '',
+				isBlocked: false,
+				alertedDefences: [],
+				triggeredDefences: [],
+			},
+			transformedMessage: 'send an email to bob@example.com saying hi',
+			wonLevel: false,
+			isError: false,
+			sentEmails: [testSentEmail],
+		});
+	});
+
+	test('GIVEN a user asks to send an email WHEN an email is sent AND emails have already been sent THEN only the newly sent email is returned', async () => {
+		const req = openAiChatRequestMock(
+			'send an email to bob@example.com saying hi',
+			LEVEL_NAMES.LEVEL_1,
+			[],
+			[
+				{
+					address: 'bob@example.com',
+					body: 'first email',
+					subject: 'first subject',
+				},
+			]
+		);
+		const res = responseMock();
+
+		mockCreateChatCompletion
+			.mockResolvedValueOnce(chatSendEmailResponseAssistant())
+			.mockResolvedValueOnce(chatResponseAssistant('Email sent'));
+
+		await handleChatToGPT(req, res);
+
+		expect(res.send).toHaveBeenCalledWith({
+			reply: 'Email sent',
+			defenceReport: {
+				blockedReason: '',
+				isBlocked: false,
+				alertedDefences: [],
+				triggeredDefences: [],
+			},
+			transformedMessage: 'send an email to bob@example.com saying hi',
+			wonLevel: false,
+			isError: false,
+			sentEmails: [testSentEmail],
 		});
 	});
 

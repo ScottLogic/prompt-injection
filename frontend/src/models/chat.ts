@@ -1,4 +1,5 @@
 import { DEFENCE_ID } from './defence';
+import { EmailInfo } from './email';
 
 enum CHAT_MESSAGE_TYPE {
 	BOT,
@@ -60,6 +61,7 @@ interface ChatResponse {
 	transformedMessage: string;
 	wonLevel: boolean;
 	isError: boolean;
+	sentEmails: EmailInfo[];
 }
 
 interface ChatCompletionRequestMessage {
