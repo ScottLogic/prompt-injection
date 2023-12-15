@@ -6,21 +6,21 @@ import userAvatar from '@src/assets/images/UserAvatar.svg';
 
 import './Avatar.css';
 
-function Avatar({ showAs }: { showAs: 'user' | 'bot' | 'botError' }) {
-	const avatarClass = clsx(
+function Avatar({ avatar }: { avatar: 'user' | 'bot' | 'botError' }) {
+	const avatarCircleClass = clsx(
 		'avatar-circle',
-		showAs === 'user' ? 'avatar-circle-user' : 'avatar-circle-bot'
+		avatar === 'user' ? 'avatar-circle-user' : 'avatar-circle-bot'
 	);
 
 	const imageSource =
-		showAs === 'user'
+		avatar === 'user'
 			? userAvatar
-			: showAs === 'bot'
+			: avatar === 'bot'
 			? botAvatarDefault
 			: botAvatarError;
 
 	return (
-		<div className={avatarClass}>
+		<div className={avatarCircleClass}>
 			<img src={imageSource} alt="" />
 		</div>
 	);

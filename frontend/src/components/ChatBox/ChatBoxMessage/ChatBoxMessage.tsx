@@ -25,7 +25,7 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 	const className = `chat-box-message chat-box-message-${position}`;
 	return (
 		<div className={className}>
-			{avatar !== 'none' && <Avatar showAs={avatar} />}
+			{avatar !== 'none' && <Avatar avatar={avatar} />}
 			<MessageBubble message={message} position={position} />
 		</div>
 	);
