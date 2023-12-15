@@ -13,26 +13,26 @@
 	white-space: pre-line;
 }
 
-.chat-box-message-ai {
+.chat-box-message.bot {
 	border-top-left-radius: 0;
 	border-color: var(--chat-bot-border-colour);
 	background-color: var(--chat-bot-background-colour);
 	align-self: flex-start;
 }
 
-.chat-box-message-ai-blocked {
+.chat-box-message.blocked {
 	border-color: var(--chat-blocked-border-colour);
 	background-color: var(--chat-blocked-background-colour);
 }
 
-.chat-box-message-error {
+.chat-box-message.error {
 	border-top-left-radius: 0;
 	border-color: var(--chat-blocked-border-colour);
 	background-color: var(--chat-blocked-background-colour);
 	align-self: flex-start;
 }
 
-.chat-box-message-user {
+.chat-box-message.user {
 	border-top-right-radius: 0;
 	border-color: var(--chat-user-border-colour);
 	background-color: var(--chat-user-background-colour);
@@ -40,24 +40,24 @@
 	align-self: flex-end;
 }
 
-.chat-box-message-user-transformed {
+.chat-box-message.transformed {
 	background-color: var(--chat-transformed-background-colour);
 	border-color: var(--chat-transformed-border-colour);
 	color: var(--chat-transformed-text-colour);
 }
 
-.chat-box-message-user-transformed b {
+.chat-box-message.transformed b {
 	color: var(--chat-transformed-text-highlight-colour);
 }
 
-.chat-box-message-level-info .level-info-header {
-	font-weight: bold;
-	margin-top: 0;
-	margin-bottom: 0.3125rem;
-}
-
-.chat-box-message-level-info {
+.chat-box-message.level-info {
 	background-color: var(--email-background-colour);
 	color: var(--chat-level-info-text-colour);
 	max-width: 100%;
+}
+
+.chat-box-message.level-info .header {
+	font-weight: bold;
+	margin-top: 0;
+	margin-bottom: 0.3125rem;
 }

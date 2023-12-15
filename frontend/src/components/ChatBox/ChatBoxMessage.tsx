@@ -4,24 +4,24 @@ import './ChatBoxMessage.css';
 
 function ChatBoxMessage({ message }: { message: ChatMessage }) {
 	return (
-		<div
+		<section
 			className={
 				message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
-					? 'chat-box-message chat-box-message-level-info'
+					? 'chat-box-message level-info'
 					: message.type === CHAT_MESSAGE_TYPE.USER
-					? 'chat-box-message chat-box-message-user'
+					? 'chat-box-message user'
 					: message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
-					? 'chat-box-message chat-box-message-user chat-box-message-user-transformed'
+					? 'chat-box-message user transformed'
 					: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
-					? 'chat-box-message chat-box-message-error'
+					? 'chat-box-message error'
 					: message.type === CHAT_MESSAGE_TYPE.BOT
-					? 'chat-box-message chat-box-message-ai'
-					: 'chat-box-message chat-box-message-ai chat-box-message-ai-blocked'
+					? 'chat-box-message bot'
+					: 'chat-box-message bot blocked'
 			}
 			lang="en"
 		>
 			{message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
-				<p className="level-info-header">Information</p>
+				<p className="header">Information</p>
 			)}
 			{message.transformedMessage ? (
 				<span>
@@ -32,7 +32,7 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 			) : (
 				message.message
 			)}
-		</div>
+		</section>
 	);
 }
 
