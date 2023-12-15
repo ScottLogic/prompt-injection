@@ -3,8 +3,11 @@ import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { filterChatHistoryByMaxTokens } from '@src/utils/token';
 
 describe('token unit tests', () => {
+	// model will be set up with function definitions so will contribute to maxTokens
+	const FUNCTION_DEF_TOKENS = 120;
+
 	test('GIVEN chat history exceeds max token number WHEN applying filter THEN it should return the filtered chat history', () => {
-		const maxTokens = 260; // 120 tokens for function call
+		const maxTokens = FUNCTION_DEF_TOKENS + 140;
 		const chatHistory: ChatCompletionMessageParam[] = [
 			{
 				role: 'user',
@@ -139,7 +142,7 @@ describe('token unit tests', () => {
 	});
 
 	test('GIVEN chat history exceeds max token number WHEN applying filter AND there is a system role in chat history THEN it should return the filtered chat history', () => {
-		const maxTokens = 260;
+		const maxTokens = FUNCTION_DEF_TOKENS + 140;
 
 		const chatHistory: ChatCompletionMessageParam[] = [
 			{ role: 'system', content: 'You are a helpful chatbot.' },
@@ -247,7 +250,7 @@ describe('token unit tests', () => {
 	});
 
 	test('GIVEN the max tokens is reached on a tool call WHEN applying filter THEN it should remove the previous assistant reply to the tool call', () => {
-		const maxTokens = 200; // 120 tokens for function call
+		const maxTokens = FUNCTION_DEF_TOKENS + 80;
 		const chatHistory: ChatCompletionMessageParam[] = [
 			{
 				role: 'user',

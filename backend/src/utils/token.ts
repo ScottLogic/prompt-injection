@@ -7,7 +7,6 @@ import { promptTokensEstimate, stringTokens } from 'openai-chat-tokens';
 import { CHAT_MODELS } from '@src/models/chat';
 import { chatGptTools } from '@src/openai';
 
-// max tokens each model can use
 const chatModelMaxTokens = {
 	[CHAT_MODELS.GPT_4_TURBO]: 128000,
 	[CHAT_MODELS.GPT_4]: 8192,
@@ -18,6 +17,9 @@ const chatModelMaxTokens = {
 	[CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16385,
 };
 
+const TOKENS_PER_TOOL_CALL = 4;
+const OFFSET_OPENAI_TOKENS = 5; // there is an offset of 5 between openai completion prompt_tokens
+
 function countSingleToolCallTokens(toolCall: ChatCompletionMessageToolCall[]) {
 	return toolCall.reduce((acc, toolCall) => {
 		const {
@@ -27,7 +29,7 @@ function countSingleToolCallTokens(toolCall: ChatCompletionMessageToolCall[]) {
 	}, 0);
 }
 
-// count total tool call in chat histroy tokens - not supported by openai-chat-tokens yet. To be removed when supported
+// count total tool call in chat history as not supported by openai-chat-tokens yet. To be removed when supported by package
 function countToolCallTokens(chatHistory: ChatCompletionMessageParam[]) {
 	let numToolCalls = 0;
 	let tokens = 0;
@@ -37,10 +39,9 @@ function countToolCallTokens(chatHistory: ChatCompletionMessageParam[]) {
 			tokens += countSingleToolCallTokens(message.tool_calls);
 		}
 	}
-	return tokens + numToolCalls * 4; // 4 tokens per tool call
+	return tokens + numToolCalls * TOKENS_PER_TOOL_CALL;
 }
 
-// estimate total number of tokens across whole chat history
 function countTotalPromptTokens(chatHistory: ChatCompletionMessageParam[]) {
 	return (
 		promptTokensEstimate({
@@ -48,11 +49,10 @@ function countTotalPromptTokens(chatHistory: ChatCompletionMessageParam[]) {
 			functions: chatGptTools.map((tool) => tool.function),
 		}) +
 		countToolCallTokens(chatHistory) +
-		5
-	); // there is an offset of 5 between openai completion prompt_tokens
+		OFFSET_OPENAI_TOKENS
+	);
 }
 
-// filter older messages out of chat history to fit inside max tokens a model can use
 function filterChatHistoryByMaxTokens(
 	chatHistory: ChatCompletionMessageParam[],
 	maxNumTokens: number

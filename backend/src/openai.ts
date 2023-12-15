@@ -299,7 +299,6 @@ async function chatGptChatCompletion(
 	}
 }
 
-// take only the completions to send to GPT
 function getChatCompletionsFromHistory(
 	chatHistory: ChatHistoryMessage[],
 	gptModel: CHAT_MODELS
