@@ -22,7 +22,16 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 	const className = `chat-box-message chat-box-message-${owner}`;
 	return (
 		<div className={className}>
-			{owner !== 'none' && <Avatar owner={owner} />}
+			{owner !== 'none' && (
+				<Avatar
+					showAs={
+						message.type === CHAT_MESSAGE_TYPE.BOT_BLOCKED ||
+						message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
+							? 'botError'
+							: owner
+					}
+				/>
+			)}
 			<MessageBubble message={message} direction={direction} />
 		</div>
 	);

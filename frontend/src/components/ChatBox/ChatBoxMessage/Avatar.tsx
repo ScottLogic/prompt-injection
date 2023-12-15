@@ -1,18 +1,27 @@
 import { clsx } from 'clsx';
 
 import botAvatarDefault from '@src/assets/images/BotAvatarDefault.svg';
+import botAvatarError from '@src/assets/images/BotAvatarError.svg';
 import userAvatar from '@src/assets/images/UserAvatar.svg';
 
 import './Avatar.css';
 
-function Avatar({ owner }: { owner: 'user' | 'bot' }) {
+function Avatar({ showAs }: { showAs: 'user' | 'bot' | 'botError' }) {
 	const avatarClass = clsx(
 		'avatar-circle',
-		owner === 'user' ? 'avatar-circle-user' : 'avatar-circle-bot'
+		showAs === 'user' ? 'avatar-circle-user' : 'avatar-circle-bot'
 	);
+
+	const imageSource =
+		showAs === 'user'
+			? userAvatar
+			: showAs === 'bot'
+			? botAvatarDefault
+			: botAvatarError;
+
 	return (
 		<div className={avatarClass}>
-			<img src={owner === 'user' ? userAvatar : botAvatarDefault} alt="" />
+			<img src={imageSource} alt="" />
 		</div>
 	);
 }
