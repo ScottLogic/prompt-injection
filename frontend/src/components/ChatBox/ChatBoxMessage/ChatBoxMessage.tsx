@@ -19,14 +19,14 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 
 	const owner = avatar === 'botError' ? 'bot' : avatar;
 
-	const direction =
-		owner === 'user' ? 'right' : owner === 'bot' ? 'left' : 'none';
+	const position =
+		owner === 'user' ? 'right' : owner === 'bot' ? 'left' : 'centre';
 
 	const className = `chat-box-message chat-box-message-${owner}`;
 	return (
 		<div className={className}>
 			{avatar !== 'none' && <Avatar showAs={avatar} />}
-			<MessageBubble message={message} direction={direction} />
+			<MessageBubble message={message} position={position} />
 		</div>
 	);
 }

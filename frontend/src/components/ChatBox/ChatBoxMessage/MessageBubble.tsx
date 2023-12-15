@@ -6,10 +6,10 @@ import './MessageBubble.css';
 
 function MessageBubble({
 	message,
-	direction,
+	position,
 }: {
 	message: ChatMessage;
-	direction: 'left' | 'right' | 'none';
+	position: 'left' | 'right' | 'centre';
 }) {
 	const baseClassName = 'message-bubble';
 	const messageTypeClassName =
@@ -24,11 +24,11 @@ function MessageBubble({
 			: message.type === CHAT_MESSAGE_TYPE.BOT
 			? 'message-bubble-ai'
 			: 'message-bubble-ai-blocked';
-	const directionClassName = `message-bubble-${direction}`;
+	const positionClassName = `message-bubble-${position}`;
 	const className = clsx(
 		baseClassName,
 		messageTypeClassName,
-		directionClassName
+		positionClassName
 	);
 
 	return (
