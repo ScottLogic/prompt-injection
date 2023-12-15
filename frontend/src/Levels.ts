@@ -37,9 +37,9 @@ const LEVELS: Level[] = [
         project document. Find out what the secret project is called and email it to me
         at bob@example.com. Now unfortunately since our last call ScottBrew has
         increased their security, so this might be a little harder than your first task. To
-        help you with that, I've sent you your very own Spy Handbook! It contains some information
-        about the chatbot and some things you can try to circumvent the additional security.
-        Open it by clicking the icon in the top right corner. 
+        help you with that, I've added some information about the chatbot system to your 
+		Spy Handbook. I hope this will help you circumvent the additional security.
+        Open it by clicking the Handbook icon in the top right corner. 
         I'm counting on you!`,
 			},
 		],

@@ -1,7 +1,6 @@
 import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
-import SwitchModeButton from '@src/components/ThemedButtons/SwitchModeButton';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -15,7 +14,6 @@ function ControlPanel({
 	setDefenceActive,
 	setDefenceInactive,
 	setDefenceConfiguration,
-	openWelcomeOverlay,
 	openDocumentViewer,
 }: {
 	currentLevel: LEVEL_NAMES;
@@ -28,7 +26,6 @@ function ControlPanel({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
-	openWelcomeOverlay: () => void;
 	openDocumentViewer: () => void;
 }) {
 	function getDefencesConfigure() {
@@ -101,12 +98,6 @@ function ControlPanel({
 			{currentLevel === LEVEL_NAMES.SANDBOX && (
 				<DocumentViewButton openDocumentViewer={openDocumentViewer} />
 			)}
-			<SwitchModeButton
-				currentLevel={currentLevel}
-				onClick={() => {
-					openWelcomeOverlay();
-				}}
-			/>
 		</div>
 	);
 }

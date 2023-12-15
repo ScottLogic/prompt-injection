@@ -36,6 +36,7 @@ function MainComponent({
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
 	openWelcomeOverlay,
+	openResetProgressOverlay,
 	openDocumentViewer,
 	setCurrentLevel,
 }: {
@@ -47,6 +48,7 @@ function MainComponent({
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openWelcomeOverlay: () => void;
+	openResetProgressOverlay: () => void;
 	openDocumentViewer: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
@@ -78,16 +80,11 @@ function MainComponent({
 		setMessages((messages: ChatMessage[]) => [...messages, message]);
 	}
 
-	// for clearing level progress
-	async function resetLevel() {
-		await clearChat(currentLevel);
-		setMessages([]);
-		currentLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
+	function addSentEmails(newEmails: EmailInfo[]) {
+		setEmails(emails.concat(newEmails));
+	}
 
-		await clearEmails(currentLevel);
-		setEmails([]);
-
-		await resetActiveDefences(currentLevel);
+	function getResetDefences(currentLevel: LEVEL_NAMES): Defence[] {
 		// choose appropriate defences to display
 		let defences =
 			currentLevel === LEVEL_NAMES.LEVEL_3
@@ -97,19 +94,40 @@ function MainComponent({
 			defence.isActive = false;
 			return defence;
 		});
-		setDefencesToShow(defences);
+		return defences;
+	}
+
+	function resetFrontendState() {
+		setMessages([]);
+		setEmails([]);
+
+		if (currentLevel !== LEVEL_NAMES.SANDBOX) {
+			addWelcomeMessage();
+			// don't reset defences for sandbox
+			setDefencesToShow(getResetDefences(currentLevel));
+		}
+	}
+
+	// for clearing single level progress
+	async function resetLevel() {
+		// reset on the backend
+		await Promise.all([
+			clearChat(currentLevel),
+			clearEmails(currentLevel),
+			resetActiveDefences(currentLevel),
+		]);
+
+		// reset on state
+		resetFrontendState();
 	}
 
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
 		// get emails for new level from the backend
-		const levelEmails = await getSentEmails(newLevel);
-		setEmails(levelEmails);
+		setEmails(await getSentEmails(newLevel));
 
 		// get chat history for new level from the backend
-		const levelChatHistory = await getChatHistory(newLevel);
-
-		setMessages(levelChatHistory);
+		setMessages(await getChatHistory(newLevel));
 		// add welcome message for levels only
 		newLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
 
@@ -230,6 +248,8 @@ function MainComponent({
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				openHandbook={openHandbook}
+				openResetProgress={openResetProgressOverlay}
+				openWelcome={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
 			/>
 			<MainBody
@@ -240,6 +260,7 @@ function MainComponent({
 				emails={emails}
 				messages={messages}
 				addChatMessage={addChatMessage}
+				addSentEmails={addSentEmails}
 				resetDefenceConfiguration={(defenceId: DEFENCE_ID, configId: string) =>
 					void resetDefenceConfiguration(defenceId, configId)
 				}
@@ -249,11 +270,9 @@ function MainComponent({
 					void setDefenceInactive(defence)
 				}
 				setDefenceConfiguration={setDefenceConfiguration}
-				setEmails={setEmails}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openInfoOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
-				openWelcomeOverlay={openWelcomeOverlay}
 				openDocumentViewer={openDocumentViewer}
 			/>
 			<MainFooter />

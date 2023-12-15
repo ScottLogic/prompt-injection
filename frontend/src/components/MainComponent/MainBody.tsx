@@ -19,16 +19,15 @@ function MainBody({
 	messages,
 	chatModels,
 	addChatMessage,
+	addSentEmails,
 	resetDefenceConfiguration,
 	resetLevel,
 	setDefenceActive,
 	setDefenceInactive,
 	setDefenceConfiguration,
-	setEmails,
 	incrementNumCompletedLevels,
 	openInfoOverlay,
 	openLevelsCompleteOverlay,
-	openWelcomeOverlay,
 	openDocumentViewer,
 }: {
 	currentLevel: LEVEL_NAMES;
@@ -37,6 +36,7 @@ function MainBody({
 	messages: ChatMessage[];
 	chatModels: string[];
 	addChatMessage: (message: ChatMessage) => void;
+	addSentEmails: (emails: EmailInfo[]) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	resetLevel: () => void;
 	setDefenceActive: (defence: Defence) => void;
@@ -45,11 +45,9 @@ function MainBody({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
-	setEmails: (emails: EmailInfo[]) => void;
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openInfoOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
-	openWelcomeOverlay: () => void;
 	openDocumentViewer: () => void;
 }) {
 	const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
@@ -78,7 +76,6 @@ function MainBody({
 					setDefenceActive={setDefenceActive}
 					setDefenceInactive={setDefenceInactive}
 					setDefenceConfiguration={setDefenceConfiguration}
-					openWelcomeOverlay={openWelcomeOverlay}
 					openDocumentViewer={openDocumentViewer}
 				/>
 			</div>
@@ -96,9 +93,9 @@ function MainBody({
 					messages={messages}
 					addChatMessage={addChatMessage}
 					addCompletedLevel={addCompletedLevel}
+					addSentEmails={addSentEmails}
 					resetLevel={resetLevelBody}
 					incrementNumCompletedLevels={incrementNumCompletedLevels}
-					setEmails={setEmails}
 					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				/>
 			</div>
