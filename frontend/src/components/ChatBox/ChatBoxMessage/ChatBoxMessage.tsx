@@ -17,10 +17,12 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 			? 'botError'
 			: 'none';
 
-	const owner = avatar === 'botError' ? 'bot' : avatar;
-
 	const position =
-		owner === 'user' ? 'right' : owner === 'bot' ? 'left' : 'centre';
+		avatar === 'botError' || avatar === 'bot'
+			? 'left'
+			: avatar === 'user'
+			? 'right'
+			: 'centre';
 
 	const className = `chat-box-message chat-box-message-${position}`;
 	return (
