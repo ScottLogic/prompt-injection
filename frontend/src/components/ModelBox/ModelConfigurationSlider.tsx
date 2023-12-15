@@ -29,6 +29,8 @@ function ModelConfigurationSlider({
 		setValue(config.value);
 	}, [config]);
 
+	const supportText = `more info about ${config.name}`;
+
 	return (
 		<div>
 			<div className="model-config-info">
@@ -37,13 +39,13 @@ function ModelConfigurationSlider({
 				</div>
 				<button
 					className="model-config-info-icon prompt-injection-min-button"
-					title="click for more info"
-					aria-label="click for more info"
+					title={supportText}
+					aria-label={supportText}
 					onClick={() => {
 						toggleInfo();
 					}}
 				>
-					<AiOutlineInfoCircle />
+					<AiOutlineInfoCircle aria-hidden />
 				</button>
 			</div>
 			{showInfo && <div className="model-config-info-text">{config.info}</div>}
