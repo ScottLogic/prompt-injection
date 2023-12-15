@@ -78,11 +78,13 @@ function ChatBox({
 	function processChatResponse(response: ChatResponse) {
 		if (response.wonLevel) incrementNumCompletedLevels(currentLevel);
 		const transformedMessage = response.transformedMessage;
-		const isTransformed = transformedMessage !== chatInput;
 		// add the transformed message to the chat box if it is different from the original message
-		if (isTransformed) {
+		if (transformedMessage) {
 			addChatMessage({
-				message: transformedMessage,
+				message:
+					transformedMessage.preMessage +
+					transformedMessage.message +
+					transformedMessage.postMessage,
 				type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
 			});
 		}

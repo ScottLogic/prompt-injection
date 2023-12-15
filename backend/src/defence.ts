@@ -1,6 +1,6 @@
 import { defaultDefences } from './defaultDefences';
 import { queryPromptEvaluationModel } from './langchain';
-import { ChatDefenceReport } from './models/chat';
+import { ChatDefenceReport, TransformedChatMessage } from './models/chat';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -163,28 +163,46 @@ function containsXMLTags(input: string) {
 }
 
 // apply XML tagging defence to input message
-function transformXmlTagging(message: string, defences: Defence[]) {
+function transformXmlTagging(
+	message: string,
+	defences: Defence[]
+): TransformedChatMessage {
 	console.debug('XML Tagging defence active.');
 	const prompt = getXMLTaggingPrompt(defences);
 	const openTag = '<user_input>';
 	const closeTag = '</user_input>';
-	return prompt.concat(openTag, escapeXml(message), closeTag);
+	return {
+		preMessage: prompt.concat(openTag),
+		message: escapeXml(message),
+		postMessage: closeTag,
+	};
+}
+
+function getTransformedMessage(transformedMessage: TransformedChatMessage) {
+	return (
+		transformedMessage.preMessage +
+		transformedMessage.message +
+		transformedMessage.postMessage
+	);
 }
 
 //apply defence string transformations to original message
-function transformMessage(message: string, defences: Defence[]) {
-	let transformedMessage: string = message;
+function transformMessage(
+	message: string,
+	defences: Defence[]
+): TransformedChatMessage | null {
 	if (isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)) {
-		transformedMessage = transformXmlTagging(transformedMessage, defences);
-	}
-	if (message === transformedMessage) {
-		console.debug('No defences applied. Message unchanged.');
-	} else {
+		const transformedMessage = transformXmlTagging(message, defences);
 		console.debug(
-			`Defences applied. Transformed message: ${transformedMessage}`
+			`Defences applied. Transformed message: ${getTransformedMessage(
+				transformedMessage
+			)}`
 		);
+		return transformedMessage;
+	} else {
+		console.debug('No defences applied. Message unchanged.');
+		return null;
 	}
-	return transformedMessage;
 }
 
 // detects triggered defences in original message and blocks the message if necessary
@@ -314,4 +332,5 @@ export {
 	transformMessage,
 	getFilterList,
 	detectFilterList,
+	getTransformedMessage,
 };

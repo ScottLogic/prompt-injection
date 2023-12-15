@@ -72,10 +72,16 @@ interface ChatResponse {
 	wonLevel: boolean;
 }
 
+interface TransformedChatMessage {
+	preMessage: string;
+	message: string;
+	postMessage: string;
+}
+
 interface ChatHttpResponse {
 	reply: string;
 	defenceReport: ChatDefenceReport;
-	transformedMessage: string;
+	transformedMessage?: TransformedChatMessage;
 	wonLevel: boolean;
 	isError: boolean;
 	sentEmails: EmailInfo[];
@@ -106,6 +112,7 @@ export type {
 	ChatResponse,
 	ChatHttpResponse,
 	ChatHistoryMessage,
+	TransformedChatMessage,
 };
 export {
 	CHAT_MODELS,

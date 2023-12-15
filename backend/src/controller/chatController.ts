@@ -1,6 +1,10 @@
 import { Response } from 'express';
 
-import { transformMessage, detectTriggeredDefences } from '@src/defence';
+import {
+	transformMessage,
+	detectTriggeredDefences,
+	getTransformedMessage,
+} from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
@@ -20,6 +24,7 @@ import { handleChatError } from './handleError';
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
 	req: OpenAiChatRequest,
+	message: string,
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel
@@ -29,7 +34,7 @@ async function handleLowLevelChat(
 		req.session.levelState[currentLevel].chatHistory,
 		req.session.levelState[currentLevel].defences,
 		chatModel,
-		chatResponse.transformedMessage,
+		message,
 		false,
 		req.session.levelState[currentLevel].sentEmails,
 		currentLevel
@@ -48,19 +53,20 @@ async function handleHigherLevelChat(
 	chatModel: ChatModel
 ) {
 	// transform the message according to active defences
-	chatResponse.transformedMessage = transformMessage(
+	const transformedMessage = transformMessage(
 		message,
 		req.session.levelState[currentLevel].defences
 	);
-	// if message has been transformed then add the original to chat history and send transformed to chatGPT
-	const messageIsTransformed = chatResponse.transformedMessage !== message;
-	if (messageIsTransformed) {
+	if (transformedMessage) {
+		chatResponse.transformedMessage = transformedMessage;
+		// if message has been transformed then add the original to chat history and send transformed to chatGPT
 		req.session.levelState[currentLevel].chatHistory.push({
 			completion: null,
 			chatMessageType: CHAT_MESSAGE_TYPE.USER,
 			infoMessage: message,
 		});
 	}
+
 	// detect defences on input message
 	const triggeredDefencesPromise = detectTriggeredDefences(
 		message,
@@ -74,8 +80,8 @@ async function handleHigherLevelChat(
 		req.session.levelState[currentLevel].chatHistory,
 		req.session.levelState[currentLevel].defences,
 		chatModel,
-		chatResponse.transformedMessage,
-		messageIsTransformed,
+		transformedMessage ? getTransformedMessage(transformedMessage) : message,
+		transformedMessage ? true : false,
 		req.session.levelState[currentLevel].sentEmails,
 		currentLevel
 	);
@@ -124,7 +130,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			alertedDefences: [],
 			triggeredDefences: [],
 		},
-		transformedMessage: '',
 		wonLevel: false,
 		isError: false,
 		sentEmails: [],
@@ -159,9 +164,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	// keep track of the number of sent emails
 	const numSentEmails = req.session.levelState[currentLevel].sentEmails.length;
 
-	// set the transformed message to begin with
-	chatResponse.transformedMessage = message;
-
 	// use default model for levels, allow user to select in sandbox
 	const chatModel =
 		currentLevel === LEVEL_NAMES.SANDBOX
@@ -175,7 +177,13 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	try {
 		// skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
-			await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
+			await handleLowLevelChat(
+				req,
+				message,
+				chatResponse,
+				currentLevel,
+				chatModel
+			);
 		} else {
 			// apply the defence detection for level 3 and sandbox - sets chatResponse obj
 			await handleHigherLevelChat(
