@@ -84,6 +84,9 @@
 	--chat-button-border-colour: #ccc;
 	--chat-button-text-colour: #444;
 
+	--avatar-circle-user-colour: #dff4f5;
+	--avatar-circle-bot-colour: #eeeeee;
+
 	--email-title-background-colour: #feb589;
 	--email-background-colour: #fff4ee;
 	--email-divider-colour: var(--email-text-colour);
