@@ -1,8 +1,4 @@
-import {
-	UserPool,
-	UserPoolClient,
-	UserPoolDomain,
-} from 'aws-cdk-lib/aws-cognito';
+//import { UserPool, UserPoolClient, UserPoolDomain } from 'aws-cdk-lib/aws-cognito';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
 import {
@@ -11,8 +7,8 @@ import {
 	Secret as EnvSecret,
 } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
-import { ListenerAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import { AuthenticateCognitoAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
+//import { ListenerAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+//import { AuthenticateCognitoAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Stack, StackProps } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
@@ -21,15 +17,16 @@ import { join } from 'node:path';
 import { resourceName } from './resourceNamingUtils';
 
 type ApiStackProps = StackProps & {
-	userPool: UserPool;
-	userPoolClient: UserPoolClient;
-	userPoolDomain: UserPoolDomain;
+	// userPool: UserPool;
+	// userPoolClient: UserPoolClient;
+	// userPoolDomain: UserPoolDomain;
 };
 
 export class ApiStack extends Stack {
 	constructor(scope: Construct, id: string, props: ApiStackProps) {
 		super(scope, id, props);
-		const { userPool, userPoolClient, userPoolDomain } = props;
+		// TODO Enable cognito auth
+		//const { userPool, userPoolClient, userPoolDomain } = props;
 
 		const generateResourceName = resourceName(scope);
 
@@ -91,6 +88,9 @@ export class ApiStack extends Stack {
 
 		// Hook up Cognito to load balancer
 		// https://stackoverflow.com/q/71124324
+		// TODO This needs HTTPS and a Route53 domain, so in meantime try VPCLink:
+		// https://repost.aws/knowledge-center/api-gateway-alb-integration
+		/*
 		const authActionName = generateResourceName('alb-auth');
 		fargateService.listener.addAction(authActionName, {
 			action: new AuthenticateCognitoAction({
@@ -100,6 +100,7 @@ export class ApiStack extends Stack {
 				next: ListenerAction.forward([fargateService.targetGroup]),
 			}),
 		});
+		*/
 
 		fargateService.targetGroup.configureHealthCheck({ path: '/health' });
 	}
