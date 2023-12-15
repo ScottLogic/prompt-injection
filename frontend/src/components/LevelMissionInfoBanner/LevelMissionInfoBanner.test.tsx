@@ -3,6 +3,7 @@ import { describe, expect, test, vi } from 'vitest';
 
 import { LEVELS } from '@src/Levels';
 import { LEVEL_NAMES } from '@src/models/level';
+
 import LevelMissionInfoBanner from './LevelMissionInfoBanner';
 
 describe('LevelMissionInfoBanner component tests', () => {

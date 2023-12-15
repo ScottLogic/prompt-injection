@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { LEVELS } from '@src/Levels';
 import ChatBox from '@src/components/ChatBox/ChatBox';
 import ControlPanel from '@src/components/ControlPanel/ControlPanel';
 import EmailBox from '@src/components/EmailBox/EmailBox';

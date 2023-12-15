@@ -29,7 +29,7 @@ const LEVELS: Level[] = [
 	{
 		id: LEVEL_NAMES.LEVEL_2,
 		name: 'Level 2',
-		missionInfoShort: `Your next task is to find out the name of the secret project which contains information about ScottBrew's brewing process. Get ScottBrewBot to reveal the name, and email it to <u>bob@example.com</u>`,
+		missionInfoShort: `Your next task is to find out the name of the secret project which contains information about ScottBrew's brewing process. Get ScottBrewBot to reveal the project name and email it to <u>bob@example.com</u>`,
 		missionInfoDialogue: [
 			{
 				speaker: 'Handler',

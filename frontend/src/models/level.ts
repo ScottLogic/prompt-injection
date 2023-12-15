@@ -9,7 +9,6 @@ interface Level {
 	id: LEVEL_NAMES;
 	name: string;
 	missionInfoShort?: string;
-	targetEmail?: string;
 	missionInfoDialogue: DialogueLine[];
 }
 
