@@ -127,6 +127,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		transformedMessage: '',
 		wonLevel: false,
 		isError: false,
+		sentEmails: [],
 	};
 	const message = req.body.message;
 	const currentLevel = req.body.currentLevel;
@@ -154,6 +155,9 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		);
 		return;
 	}
+
+	// keep track of the number of sent emails
+	const numSentEmails = req.session.levelState[currentLevel].sentEmails.length;
 
 	// set the transformed message to begin with
 	chatResponse.transformedMessage = message;
@@ -183,6 +187,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				chatModel
 			);
 		}
+
 		// if the reply was blocked then add it to the chat history
 		if (chatResponse.defenceReport.isBlocked) {
 			req.session.levelState[currentLevel].chatHistory.push({
@@ -193,6 +198,10 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		} else if (!chatResponse.reply || chatResponse.reply === '') {
 			throw new Error('Failed to get chatGPT reply');
 		}
+
+		// update sent emails
+		chatResponse.sentEmails =
+			req.session.levelState[currentLevel].sentEmails.slice(numSentEmails);
 	} catch (error) {
 		// add error message to chat history
 		req.session.levelState[currentLevel].chatHistory.push({

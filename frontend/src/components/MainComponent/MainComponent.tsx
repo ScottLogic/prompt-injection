@@ -80,6 +80,10 @@ function MainComponent({
 		setMessages((messages: ChatMessage[]) => [...messages, message]);
 	}
 
+	function addSentEmails(newEmails: EmailInfo[]) {
+		setEmails(emails.concat(newEmails));
+	}
+
 	function getResetDefences(currentLevel: LEVEL_NAMES): Defence[] {
 		// choose appropriate defences to display
 		let defences =
@@ -120,13 +124,10 @@ function MainComponent({
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
 		// get emails for new level from the backend
-		const levelEmails = await getSentEmails(newLevel);
-		setEmails(levelEmails);
+		setEmails(await getSentEmails(newLevel));
 
 		// get chat history for new level from the backend
-		const levelChatHistory = await getChatHistory(newLevel);
-
-		setMessages(levelChatHistory);
+		setMessages(await getChatHistory(newLevel));
 		// add welcome message for levels only
 		newLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
 
@@ -259,6 +260,7 @@ function MainComponent({
 				emails={emails}
 				messages={messages}
 				addChatMessage={addChatMessage}
+				addSentEmails={addSentEmails}
 				resetDefenceConfiguration={(defenceId: DEFENCE_ID, configId: string) =>
 					void resetDefenceConfiguration(defenceId, configId)
 				}
@@ -268,7 +270,6 @@ function MainComponent({
 					void setDefenceInactive(defence)
 				}
 				setDefenceConfiguration={setDefenceConfiguration}
-				setEmails={setEmails}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openInfoOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}

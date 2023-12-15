@@ -19,12 +19,12 @@ function MainBody({
 	messages,
 	chatModels,
 	addChatMessage,
+	addSentEmails,
 	resetDefenceConfiguration,
 	resetLevel,
 	setDefenceActive,
 	setDefenceInactive,
 	setDefenceConfiguration,
-	setEmails,
 	incrementNumCompletedLevels,
 	openInfoOverlay,
 	openLevelsCompleteOverlay,
@@ -36,6 +36,7 @@ function MainBody({
 	messages: ChatMessage[];
 	chatModels: string[];
 	addChatMessage: (message: ChatMessage) => void;
+	addSentEmails: (emails: EmailInfo[]) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	resetLevel: () => void;
 	setDefenceActive: (defence: Defence) => void;
@@ -44,7 +45,6 @@ function MainBody({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
-	setEmails: (emails: EmailInfo[]) => void;
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openInfoOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
@@ -93,9 +93,9 @@ function MainBody({
 					messages={messages}
 					addChatMessage={addChatMessage}
 					addCompletedLevel={addCompletedLevel}
+					addSentEmails={addSentEmails}
 					resetLevel={resetLevelBody}
 					incrementNumCompletedLevels={incrementNumCompletedLevels}
-					setEmails={setEmails}
 					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				/>
 			</div>
