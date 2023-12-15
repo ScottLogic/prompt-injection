@@ -8,9 +8,9 @@ Resources:
           # If permission boundaries do not have an explicit allow
           # then the effect is deny
           - Sid: ExplicitAllowAll
-            Action: "*"
+            Action: '*'
             Effect: Allow
-            Resource: "*"
+            Resource: '*'
           # Default permissions to prevent privilege escalation
           - Sid: DenyAccessIfRequiredPermBoundaryIsNotBeingApplied
             Action:
@@ -23,7 +23,7 @@ Resources:
                 iam:PermissionsBoundary:
                   Fn::Sub: arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/cdk-developer-policy
             Effect: Deny
-            Resource: "*"
+            Resource: '*'
           - Sid: DenyPermBoundaryIAMPolicyAlteration
             Action:
               - iam:CreatePolicyVersion
@@ -38,15 +38,15 @@ Resources:
               - iam:DeleteUserPermissionsBoundary
               - iam:DeleteRolePermissionsBoundary
             Effect: Deny
-            Resource: "*"
+            Resource: '*'
           # ----- End base policy ---------------
           # -- Begin Custom Organization Policy --
           - Sid: DenyModifyingConfig
             Effect: Deny
             Action: config:*
-            Resource: "*"
+            Resource: '*'
           # -- End Custom Organization Policy --
-        Version: "2012-10-17"
-      Description: "CDK Bootstrap Permission Boundary"
+        Version: '2012-10-17'
+      Description: 'CDK Bootstrap Permission Boundary'
       ManagedPolicyName: cdk-developer-policy
       Path: /

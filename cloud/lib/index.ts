@@ -1,2 +1,2 @@
-export * from "./resourceNamingUtils";
-export { ApiStack } from "./api-stack";
+export * from './resourceNamingUtils';
+export { ApiStack } from './api-stack';
