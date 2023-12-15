@@ -57,8 +57,10 @@ function filterChatHistoryByMaxTokens(
 	chatHistory: ChatCompletionMessageParam[],
 	maxNumTokens: number
 ): ChatCompletionMessageParam[] {
+	if (chatHistory.length === 0) {
+		return chatHistory;
+	}
 	const estimatedTokens = countTotalPromptTokens(chatHistory);
-
 	if (estimatedTokens <= maxNumTokens) {
 		return chatHistory;
 	}
@@ -109,7 +111,7 @@ function filterChatHistoryByMaxTokens(
 }
 
 export {
-	chatModelMaxTokens as default,
+	chatModelMaxTokens,
 	filterChatHistoryByMaxTokens,
 	countTotalPromptTokens,
 };

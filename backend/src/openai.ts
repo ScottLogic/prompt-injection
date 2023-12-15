@@ -30,13 +30,14 @@ import {
 	FunctionAskQuestionParams,
 	FunctionSendEmailParams,
 } from './models/openai';
-import chatModelMaxTokens, {
+import {
+	chatModelMaxTokens,
 	countTotalPromptTokens,
 	filterChatHistoryByMaxTokens,
 } from './utils/token';
 
 // tools available to chatGPT
-export const chatGptTools: ChatCompletionTool[] = [
+const chatGptTools: ChatCompletionTool[] = [
 	{
 		type: 'function',
 		function: {
@@ -551,6 +552,7 @@ async function chatGptSendMessage(
 
 export const getValidOpenAIModelsList = validOpenAiModels.get;
 export {
+	chatGptTools,
 	chatGptSendMessage,
 	filterChatHistoryByMaxTokens,
 	getOpenAIKey,
