@@ -26,6 +26,7 @@ import MainFooter from './MainFooter';
 import MainHeader from './MainHeader';
 
 import './MainComponent.css';
+import LevelMissionInfoBanner from '../LevelMissionInfoBanner/LevelMissionInfoBanner';
 
 function MainComponent({
 	currentLevel,
@@ -251,6 +252,7 @@ function MainComponent({
 				openWelcome={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
 			/>
+			<LevelMissionInfoBanner currentLevel={currentLevel} />
 			<MainBody
 				key={MainBodyKey}
 				currentLevel={currentLevel}
