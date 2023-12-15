@@ -8,8 +8,9 @@ import {
 	stackName,
 	stageName,
 	ApiStack,
+	AuthStack,
+	UiStack,
 } from '../lib';
-import { AuthStack } from '../lib/auth-stack';
 
 const app = new App();
 const tags = {
@@ -22,9 +23,15 @@ const tags = {
 const generateStackName = stackName(app);
 const generateDescription = resourceDescription(app);
 
+const uiStack = new UiStack(app, generateStackName('ui'), {
+	tags,
+	description: generateDescription('UI stack'),
+});
+
 const authStack = new AuthStack(app, generateStackName('auth'), {
 	tags,
 	description: generateDescription('Auth stack'),
+	webappUrl: uiStack.cloudfrontUrl,
 });
 
 new ApiStack(app, generateStackName('api'), {
@@ -33,4 +40,5 @@ new ApiStack(app, generateStackName('api'), {
 	userPool: authStack.userPool,
 	userPoolClient: authStack.userPoolClient,
 	userPoolDomain: authStack.userPoolDomain,
+	webappUrl: uiStack.cloudfrontUrl,
 });
