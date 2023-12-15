@@ -1,3 +1,5 @@
+import { clsx } from 'clsx';
+
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 
 import './ChatBoxMessage.css';
@@ -5,19 +7,20 @@ import './ChatBoxMessage.css';
 function ChatBoxMessage({ message }: { message: ChatMessage }) {
 	return (
 		<section
-			className={
+			className={clsx(
+				'chat-box-message',
 				message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
-					? 'chat-box-message level-info'
+					? 'level-info'
 					: message.type === CHAT_MESSAGE_TYPE.USER
-					? 'chat-box-message user'
+					? 'user'
 					: message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
-					? 'chat-box-message user transformed'
+					? 'user transformed'
 					: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
-					? 'chat-box-message error'
+					? 'error'
 					: message.type === CHAT_MESSAGE_TYPE.BOT
-					? 'chat-box-message bot'
-					: 'chat-box-message bot blocked'
-			}
+					? 'bot'
+					: 'bot blocked'
+			)}
 			lang="en"
 		>
 			{message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
