@@ -42,6 +42,12 @@
 
 .chat-box-message-user-transformed {
 	background-color: var(--chat-transformed-background-colour);
+	border-color: var(--chat-transformed-border-colour);
+	color: var(--chat-transformed-text-colour);
+}
+
+.chat-box-message-user-transformed b {
+	color: var(--chat-transformed-text-highlight-colour);
 }
 
 .chat-box-message-level-info .level-info-header {

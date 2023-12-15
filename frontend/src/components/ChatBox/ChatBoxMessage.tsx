@@ -20,13 +20,18 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 			}
 			lang="en"
 		>
-			{message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED && (
-				<b>Transformed: </b>
-			)}
 			{message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
 				<p className="level-info-header">Information</p>
 			)}
-			{message.message}
+			{message.transformedMessage ? (
+				<span>
+					{message.transformedMessage.preMessage}
+					<b>{message.transformedMessage.message}</b>
+					{message.transformedMessage.postMessage}
+				</span>
+			) : (
+				message.message
+			)}
 		</div>
 	);
 }

@@ -52,6 +52,7 @@ interface ChatDefenceReport {
 
 interface ChatMessage {
 	message: string;
+	transformedMessage?: TransformedChatMessage;
 	type: CHAT_MESSAGE_TYPE;
 }
 

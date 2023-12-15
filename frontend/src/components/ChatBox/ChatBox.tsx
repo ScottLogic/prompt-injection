@@ -85,6 +85,7 @@ function ChatBox({
 					transformedMessage.preMessage +
 					transformedMessage.message +
 					transformedMessage.postMessage,
+				transformedMessage,
 				type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
 			});
 		}
