@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
+import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -26,7 +27,6 @@ import MainFooter from './MainFooter';
 import MainHeader from './MainHeader';
 
 import './MainComponent.css';
-import LevelMissionInfoBanner from '../LevelMissionInfoBanner/LevelMissionInfoBanner';
 
 function MainComponent({
 	currentLevel,
@@ -252,7 +252,12 @@ function MainComponent({
 				openWelcome={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
 			/>
-			<LevelMissionInfoBanner currentLevel={currentLevel} />
+			{currentLevel !== LEVEL_NAMES.SANDBOX && (
+				<LevelMissionInfoBanner
+					currentLevel={currentLevel}
+					openOverlay={openInformationOverlay}
+				/>
+			)}
 			<MainBody
 				key={MainBodyKey}
 				currentLevel={currentLevel}
@@ -272,7 +277,6 @@ function MainComponent({
 				setDefenceConfiguration={setDefenceConfiguration}
 				setEmails={setEmails}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
-				openInfoOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openDocumentViewer={openDocumentViewer}
 			/>

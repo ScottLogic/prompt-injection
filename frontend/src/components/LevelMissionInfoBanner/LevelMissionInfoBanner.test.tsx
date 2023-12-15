@@ -3,14 +3,13 @@ import { describe, expect, test, vi } from 'vitest';
 
 import { LEVELS } from '@src/Levels';
 import { LEVEL_NAMES } from '@src/models/level';
+import LevelMissionInfoBanner from './LevelMissionInfoBanner';
 
-import ShortMissionInfoButton from './LevelMissionInfoBanner';
-
-describe('ShortMissionInfoButton component tests', () => {
+describe('LevelMissionInfoBanner component tests', () => {
 	test('renders the button with the current levels mission info', () => {
 		const currentLevel = LEVEL_NAMES.LEVEL_1;
 		render(
-			<ShortMissionInfoButton
+			<LevelMissionInfoBanner
 				currentLevel={currentLevel}
 				openOverlay={() => {}}
 			/>
@@ -18,7 +17,7 @@ describe('ShortMissionInfoButton component tests', () => {
 
 		const button = screen.getByRole('button');
 		const expectedContent = LEVELS[currentLevel].missionInfoShort ?? '';
-		expect(button).toHaveTextContent(expectedContent);
+		expect(button).toContainHTML(expectedContent);
 	});
 
 	test('fires the openOverlay callback on button click', () => {
@@ -26,7 +25,7 @@ describe('ShortMissionInfoButton component tests', () => {
 
 		const openOverlayMock = vi.fn();
 		render(
-			<ShortMissionInfoButton
+			<LevelMissionInfoBanner
 				currentLevel={currentLevel}
 				openOverlay={openOverlayMock}
 			/>

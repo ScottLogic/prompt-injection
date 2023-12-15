@@ -4,7 +4,6 @@ import { LEVELS } from '@src/Levels';
 import ChatBox from '@src/components/ChatBox/ChatBox';
 import ControlPanel from '@src/components/ControlPanel/ControlPanel';
 import EmailBox from '@src/components/EmailBox/EmailBox';
-import ShortMissionInfoButton from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -26,7 +25,6 @@ function MainBody({
 	setDefenceConfiguration,
 	setEmails,
 	incrementNumCompletedLevels,
-	openInfoOverlay,
 	openLevelsCompleteOverlay,
 	openDocumentViewer,
 }: {
@@ -46,7 +44,6 @@ function MainBody({
 	) => Promise<boolean>;
 	setEmails: (emails: EmailInfo[]) => void;
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
-	openInfoOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openDocumentViewer: () => void;
 }) {

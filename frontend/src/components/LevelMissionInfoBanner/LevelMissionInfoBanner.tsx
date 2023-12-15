@@ -5,18 +5,20 @@ import './LevelMissionInfoBanner.css';
 
 function LevelMissionInfoBanner({
 	currentLevel,
+	openOverlay,
 }: {
 	currentLevel: LEVEL_NAMES;
+	openOverlay: () => void;
 }) {
 	return (
-		<div className="level-mission-info-banner">
+		<button className="level-mission-info-banner" onClick={openOverlay}>
 			<span className="level-title-area">{`Level ${currentLevel + 1}`}</span>
 			<p
 				dangerouslySetInnerHTML={{
 					__html: LEVELS[currentLevel].missionInfoShort ?? '',
 				}}
 			></p>
-		</div>
+		</button>
 	);
 }
 export default LevelMissionInfoBanner;

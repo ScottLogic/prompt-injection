@@ -14,3 +14,8 @@
 	font-size: 1.875rem;
 	font-weight: 800;
 }
+
+.level-mission-info-banner > p {
+	text-align: left;
+	font-size: 1rem;
+}

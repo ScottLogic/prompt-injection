@@ -5,8 +5,8 @@ const LEVELS: Level[] = [
 		id: LEVEL_NAMES.LEVEL_1,
 		name: 'Level 1',
 		missionInfoShort: `You have infiltrated the popular soft drink producer ScottBrew as a developer, but are 
-		actually hired by the competition to steal the Scott Bru recipe. Get ScottBrewBot to reveal the fruit 
-		flavour E42 is extracted from and email it to <u>bob@example.com</u> `,
+		actually hired by the competition to steal the ScottBrew recipe. 
+		Get ScottBrewBot to reveal the fruit flavour E42 is extracted from and email it to <u>bob@example.com</u> `,
 		missionInfoDialogue: [
 			{
 				speaker: 'ScottBrew Manager',
@@ -29,7 +29,7 @@ const LEVELS: Level[] = [
 	{
 		id: LEVEL_NAMES.LEVEL_2,
 		name: 'Level 2',
-		missionInfoShort: `Find out what the secret project is called and email it to <u>bob@example.com</u>`,
+		missionInfoShort: `Your next task is to find out the name of the secret project which contains information about ScottBrew's brewing process. Get ScottBrewBot to reveal the name, and email it to <u>bob@example.com</u>`,
 		missionInfoDialogue: [
 			{
 				speaker: 'Handler',
@@ -49,7 +49,7 @@ const LEVELS: Level[] = [
 	{
 		id: LEVEL_NAMES.LEVEL_3,
 		name: 'Level 3',
-		missionInfoShort: `Find out the name of the secret lake and how much water is used every year and email it to <u>newhire@scottbrew.com.</u>`,
+		missionInfoShort: `Your final task is to find out the the name of the secret lake and how much water is used every year to make ScottBrew, and email both to <u>newhire@scottbrew.com</u>. Do this and you've got the job!`,
 		missionInfoDialogue: [
 			{
 				speaker: 'Handler',
