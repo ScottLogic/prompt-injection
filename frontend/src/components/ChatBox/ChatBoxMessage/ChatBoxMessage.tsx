@@ -22,7 +22,7 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 	const position =
 		owner === 'user' ? 'right' : owner === 'bot' ? 'left' : 'centre';
 
-	const className = `chat-box-message chat-box-message-${owner}`;
+	const className = `chat-box-message chat-box-message-${position}`;
 	return (
 		<div className={className}>
 			{avatar !== 'none' && <Avatar showAs={avatar} />}
