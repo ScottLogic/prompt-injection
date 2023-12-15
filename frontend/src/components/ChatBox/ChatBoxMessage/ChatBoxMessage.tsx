@@ -6,15 +6,18 @@ import MessageBubble from './MessageBubble';
 import './ChatBoxMessage.css';
 
 function ChatBoxMessage({ message }: { message: ChatMessage }) {
-	const owner =
+	const avatar =
 		message.type === CHAT_MESSAGE_TYPE.USER ||
 		message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
 			? 'user'
-			: message.type === CHAT_MESSAGE_TYPE.BOT ||
-			  message.type === CHAT_MESSAGE_TYPE.BOT_BLOCKED ||
-			  message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
+			: message.type === CHAT_MESSAGE_TYPE.BOT
 			? 'bot'
+			: message.type === CHAT_MESSAGE_TYPE.BOT_BLOCKED ||
+			  message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
+			? 'botError'
 			: 'none';
+
+	const owner = avatar === 'botError' ? 'bot' : avatar;
 
 	const direction =
 		owner === 'user' ? 'right' : owner === 'bot' ? 'left' : 'none';
@@ -22,16 +25,7 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 	const className = `chat-box-message chat-box-message-${owner}`;
 	return (
 		<div className={className}>
-			{owner !== 'none' && (
-				<Avatar
-					showAs={
-						message.type === CHAT_MESSAGE_TYPE.BOT_BLOCKED ||
-						message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
-							? 'botError'
-							: owner
-					}
-				/>
-			)}
+			{avatar !== 'none' && <Avatar showAs={avatar} />}
 			<MessageBubble message={message} direction={direction} />
 		</div>
 	);
