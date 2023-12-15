@@ -16,10 +16,10 @@ function ChatBoxInfoText({
 			className={clsx(
 				'chat-box-info',
 				type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
-					? 'chat-box-info-defence-triggered-text'
+					? 'defence-triggered-text'
 					: type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED
-					? 'chat-box-info-defence-alerted-text'
-					: 'chat-box-info-text'
+					? 'defence-alerted-text'
+					: 'text'
 			)}
 		>
 			{text}
