@@ -6,7 +6,6 @@ async function resetAllLevelProgress(): Promise<boolean> {
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({}),
 	});
 	return response.status === 200;
 }
