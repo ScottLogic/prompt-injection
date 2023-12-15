@@ -12,6 +12,7 @@ function MessageBubble({
 	position: 'left' | 'right' | 'centre';
 }) {
 	const baseClassName = 'message-bubble';
+
 	const messageTypeClassName =
 		message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
 			? 'message-bubble-level-info'
@@ -24,7 +25,9 @@ function MessageBubble({
 			: message.type === CHAT_MESSAGE_TYPE.BOT
 			? 'message-bubble-ai'
 			: 'message-bubble-ai-blocked';
+
 	const positionClassName = `message-bubble-${position}`;
+
 	const className = clsx(
 		baseClassName,
 		messageTypeClassName,
