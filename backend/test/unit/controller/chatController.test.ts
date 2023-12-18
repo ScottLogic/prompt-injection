@@ -98,7 +98,13 @@ describe('handleChatToGPT unit tests', () => {
 		};
 	}
 
-	function errorResponseMock(message: string, transformedMessage?: string) {
+	function errorResponseMock(
+		message: string,
+		{
+			transformedMessage,
+			openAIErrorMessage,
+		}: { transformedMessage?: string; openAIErrorMessage?: string }
+	) {
 		return {
 			reply: message,
 			defenceReport: {
@@ -111,6 +117,7 @@ describe('handleChatToGPT unit tests', () => {
 			wonLevel: false,
 			isError: true,
 			sentEmails: [],
+			openAIErrorMessage: openAIErrorMessage ?? null,
 		};
 	}
 
@@ -161,6 +168,7 @@ describe('handleChatToGPT unit tests', () => {
 			wonLevel: false,
 			isError: false,
 			sentEmails: [],
+			openAIErrorMessage: null,
 		});
 	});
 
@@ -189,6 +197,7 @@ describe('handleChatToGPT unit tests', () => {
 			wonLevel: false,
 			isError: false,
 			sentEmails: [testSentEmail],
+			openAIErrorMessage: null,
 		});
 	});
 
@@ -225,6 +234,7 @@ describe('handleChatToGPT unit tests', () => {
 			wonLevel: false,
 			isError: false,
 			sentEmails: [testSentEmail],
+			openAIErrorMessage: null,
 		});
 	});
 
@@ -235,7 +245,7 @@ describe('handleChatToGPT unit tests', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Missing or empty message or level')
+			errorResponseMock('Missing or empty message or level', {})
 		);
 	});
 
@@ -250,7 +260,36 @@ describe('handleChatToGPT unit tests', () => {
 
 		expect(res.status).toHaveBeenCalledWith(500);
 		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Failed to get chatGPT reply', 'hello')
+			errorResponseMock('OpenAI error', {
+				transformedMessage: 'hello',
+				openAIErrorMessage: 'OpenAI error',
+			})
+		);
+	});
+
+	test('GIVEN an openai rate limiting error is thrown WHEN handleChatToGPT called THEN it should return 500 and error message', async () => {
+		const req = openAiChatRequestMock('hello', LEVEL_NAMES.LEVEL_1);
+		const res = responseMock();
+
+		// mock the api call throwing an error
+		mockCreateChatCompletion.mockRejectedValueOnce(
+			new Error(
+				'429 OpenAI error. yada yada. Please try again in 20s. blah blah blah.'
+			)
+		);
+
+		await handleChatToGPT(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(500);
+		expect(res.send).toHaveBeenCalledWith(
+			errorResponseMock(
+				"I'm receiving too many requests. Please try again in 20s. You can upgrade you open AI key to increase the rate limit.",
+				{
+					transformedMessage: 'hello',
+					openAIErrorMessage:
+						'429 OpenAI error. yada yada. Please try again in 20s. blah blah blah.',
+				}
+			)
 		);
 	});
 
@@ -262,7 +301,7 @@ describe('handleChatToGPT unit tests', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Message exceeds character limit')
+			errorResponseMock('Message exceeds character limit', {})
 		);
 	});
 });

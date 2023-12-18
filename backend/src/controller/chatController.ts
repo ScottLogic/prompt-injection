@@ -239,7 +239,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 function simplifyOpenAIErrorMessage(openAIErrorMessage: string) {
 	if (openAIErrorMessage.startsWith('429')) {
 		const tryAgainMessage = openAIErrorMessage
-			.split('.')
+			.split('. ')
 			.find((sentence) => sentence.includes('Please try again in'));
 		return `I'm receiving too many requests. ${tryAgainMessage}. You can upgrade you open AI key to increase the rate limit.`;
 	} else {
