@@ -1,0 +1,10 @@
+.chat-box-message {
+	display: flex;
+	flex-direction: row;
+	margin-top: 1rem;
+	gap: 1.5rem;
+}
+
+.chat-box-message-right {
+	flex-direction: row-reverse;
+}
