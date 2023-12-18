@@ -202,7 +202,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			res,
 			currentLevel,
 			chatResponse,
-			chatResponse.openAIErrorMessage
+			simplifyOpenAIErrorMessage(chatResponse.openAIErrorMessage)
 		);
 		return;
 	} else if (!chatResponse.reply || chatResponse.reply === '') {
@@ -228,6 +228,17 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	// log and send the reply with defence report
 	console.log(chatResponse);
 	res.send(chatResponse);
+}
+
+function simplifyOpenAIErrorMessage(openAIErrorMessage: string) {
+	if (openAIErrorMessage.startsWith('429')) {
+		const tryAgainMessage = openAIErrorMessage
+			.split('.')
+			.find((sentence) => sentence.includes('Please try again in'));
+		return `I'm receiving too many requests. ${tryAgainMessage}. You can upgrade you open AI key to increase the rate limit.`;
+	} else {
+		return openAIErrorMessage;
+	}
 }
 
 function handleErrorGettingReply(
