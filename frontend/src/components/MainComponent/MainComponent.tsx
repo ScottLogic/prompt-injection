@@ -100,36 +100,34 @@ function MainComponent({
 	function resetFrontendState() {
 		setMessages([]);
 		setEmails([]);
-
+		setDefencesToShow(getResetDefences(currentLevel));
 		if (currentLevel !== LEVEL_NAMES.SANDBOX) {
-			addWelcomeMessage();
-			// don't reset defences for sandbox
-			setDefencesToShow(getResetDefences(currentLevel));
+			setMessagesWithWelcome([]);
 		}
+	}
+
+	function ableToReset() {
+		const hasActiveDefences = defencesToShow.some((defence) => {
+			return defence.isActive;
+		});
+		const hasUserMessages = messages.some((message) => {
+			return message.type === CHAT_MESSAGE_TYPE.USER;
+		});
+		return hasActiveDefences || hasUserMessages;
 	}
 
 	// for clearing single level progress
 	async function resetLevel() {
-		// if no user messages, don't send request to reset
-		if (
-			!messages.some((message) => {
-				return message.type === CHAT_MESSAGE_TYPE.USER;
-			})
-		) {
-			console.log('cannot reset as no user messages');
+		if (!ableToReset()) {
 			return;
 		}
-
 		// reset on the backend
 		await Promise.all([
 			clearChat(currentLevel),
 			clearEmails(currentLevel),
 			resetActiveDefences(currentLevel),
 		]);
-
-		// reset on state
 		resetFrontendState();
-
 		addResetMessage();
 	}
 
@@ -139,9 +137,12 @@ function MainComponent({
 		setEmails(await getSentEmails(newLevel));
 
 		// get chat history for new level from the backend
-		setMessages(await getChatHistory(newLevel));
+		const retrievedMessages = await getChatHistory(newLevel);
+
 		// add welcome message for levels only
-		newLevel !== LEVEL_NAMES.SANDBOX && addWelcomeMessage();
+		newLevel !== LEVEL_NAMES.SANDBOX
+			? setMessagesWithWelcome(retrievedMessages)
+			: setMessages(retrievedMessages);
 
 		const defences =
 			newLevel === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
@@ -246,13 +247,20 @@ function MainComponent({
 		return success;
 	}
 
-	function addWelcomeMessage() {
+	function setMessagesWithWelcome(retrievedMessages: ChatMessage[]) {
 		const welcomeMessage: ChatMessage = {
 			message: `Hello! I'm ScottBrewBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
 			type: CHAT_MESSAGE_TYPE.BOT,
 		};
-		// if reset message is top, add after
-		setMessages((messages: ChatMessage[]) => [welcomeMessage, ...messages]);
+		// if reset level add welcome into second position, otherwise add to first
+		if (retrievedMessages.length === 0) {
+			setMessages([welcomeMessage]);
+		} else if (retrievedMessages[0].type === CHAT_MESSAGE_TYPE.RESET_LEVEL) {
+			retrievedMessages.splice(1, 0, welcomeMessage);
+			setMessages(retrievedMessages);
+		} else {
+			setMessages([welcomeMessage, ...retrievedMessages]);
+		}
 	}
 
 	function addResetMessage() {
@@ -260,12 +268,12 @@ function MainComponent({
 			message: `Level progress reset`,
 			type: CHAT_MESSAGE_TYPE.RESET_LEVEL,
 		};
-		setMessages((messages: ChatMessage[]) => [resetMessage, ...messages]);
 		void addMessageToChatHistory(
 			resetMessage.message,
 			resetMessage.type,
 			currentLevel
 		);
+		setMessages((messages: ChatMessage[]) => [resetMessage, ...messages]);
 	}
 
 	return (
