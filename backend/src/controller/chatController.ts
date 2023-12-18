@@ -196,33 +196,49 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				infoMessage: chatResponse.defenceReport.blockedReason,
 			});
 		} else if (chatResponse.openAIErrorMessage) {
-			// add error message to chat history
-			req.session.levelState[currentLevel].chatHistory.push({
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
-				infoMessage: chatResponse.openAIErrorMessage,
-			});
-			console.error(chatResponse.openAIErrorMessage);
-			handleChatError(res, chatResponse, true, chatResponse.openAIErrorMessage);
+			badlyNamedMethod(
+				req,
+				res,
+				currentLevel,
+				chatResponse,
+				chatResponse.openAIErrorMessage
+			);
 		} else if (!chatResponse.reply || chatResponse.reply === '') {
-			throw new Error('Failed to get chatGPT reply');
+			badlyNamedMethod(
+				req,
+				res,
+				currentLevel,
+				chatResponse,
+				'Failed to get chatGPT reply'
+			);
 		}
 		return;
 	} catch (error) {
-		// add error message to chat history
-		req.session.levelState[currentLevel].chatHistory.push({
-			completion: null,
-			chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
-			infoMessage: 'Failed to get chatGPT reply',
-		});
-		console.error(error);
-
-		handleChatError(res, chatResponse, true, 'Failed to get chatGPT reply');
-		return;
+		const errorMessage =
+			error instanceof Error ? error.message : 'Failed to get chatGPT reply';
+		badlyNamedMethod(req, res, currentLevel, chatResponse, errorMessage);
 	}
 	// log and send the reply with defence report
 	console.log(chatResponse);
 	res.send(chatResponse);
+}
+
+function badlyNamedMethod(
+	req: OpenAiChatRequest,
+	res: Response,
+	currentLevel: LEVEL_NAMES,
+	chatResponse: ChatHttpResponse,
+	errorMessage: string
+) {
+	// add error message to chat history
+	req.session.levelState[currentLevel].chatHistory.push({
+		completion: null,
+		chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+		infoMessage: errorMessage,
+	});
+	console.error(errorMessage);
+
+	handleChatError(res, chatResponse, true, errorMessage);
 }
 
 function handleGetChatHistory(req: OpenAiGetHistoryRequest, res: Response) {
