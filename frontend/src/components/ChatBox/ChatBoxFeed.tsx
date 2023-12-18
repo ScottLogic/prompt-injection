@@ -23,7 +23,8 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
 				if (
 					message.type === CHAT_MESSAGE_TYPE.INFO ||
 					message.type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED ||
-					message.type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
+					message.type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED || 
+					message.type === CHAT_MESSAGE_TYPE.RESET_LEVEL
 				) {
 					return (
 						<ChatBoxInfoText

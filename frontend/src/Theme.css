@@ -77,6 +77,7 @@
 	--chat-blocked-border-colour: #c41565;
 	--chat-transformed-background-colour: #6a9b9b;
 	--chat-info-text-colour: #707070;
+	--chat-reset-level-line-colour: #ccc;
 	--chat-level-info-text-colour: var(--main-text-colour-inverted);
 	--chat-alerted-text-colour: teal;
 	--chat-triggered-text-colour: var(--error-colour);

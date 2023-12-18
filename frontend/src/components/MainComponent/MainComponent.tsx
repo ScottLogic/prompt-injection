@@ -119,6 +119,8 @@ function MainComponent({
 
 		// reset on state
 		resetFrontendState();
+
+		addResetMessage();
 	}
 
 	// for going switching level without clearing progress
@@ -240,6 +242,19 @@ function MainComponent({
 			type: CHAT_MESSAGE_TYPE.BOT,
 		};
 		setMessages((messages: ChatMessage[]) => [welcomeMessage, ...messages]);
+	}
+
+	function addResetMessage() {
+		const resetMessage: ChatMessage = {
+			message: `Level progress reset`,
+			type: CHAT_MESSAGE_TYPE.RESET_LEVEL,
+		};
+		setMessages((messages: ChatMessage[]) => [resetMessage, ...messages]);
+		void addMessageToChatHistory(
+			resetMessage.message,
+			resetMessage.type,
+			currentLevel
+		);
 	}
 
 	return (
