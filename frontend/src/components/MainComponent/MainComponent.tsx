@@ -110,6 +110,16 @@ function MainComponent({
 
 	// for clearing single level progress
 	async function resetLevel() {
+		// if no user messages, don't send request to reset
+		if (
+			!messages.some((message) => {
+				return message.type === CHAT_MESSAGE_TYPE.USER;
+			})
+		) {
+			console.log('cannot reset as no user messages');
+			return;
+		}
+
 		// reset on the backend
 		await Promise.all([
 			clearChat(currentLevel),
@@ -241,7 +251,7 @@ function MainComponent({
 			message: `Hello! I'm ScottBrewBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
 			type: CHAT_MESSAGE_TYPE.BOT,
 		};
-
+		// if reset message is top, add after
 		setMessages((messages: ChatMessage[]) => [welcomeMessage, ...messages]);
 	}
 
