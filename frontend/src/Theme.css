@@ -91,15 +91,6 @@
 	--email-background-colour: #fff4ee;
 	--email-divider-colour: var(--email-text-colour);
 	--email-text-colour: var(--main-text-colour-inverted);
-
-	--short-mission-button-background-colour: var(
-		--control-header-background-colour
-	);
-	--short-mission-button-text-colour: var(--main-text-colour);
-	--short-mission-button-border-colour: var(--main-text-colour);
-	--short-mission-button-hover-background-colour: var(
-		--control-body-background-colour
-	);
 }
 
 ::backdrop {

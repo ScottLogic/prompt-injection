@@ -1,10 +1,8 @@
 import { useState } from 'react';
 
-import { LEVELS } from '@src/Levels';
 import ChatBox from '@src/components/ChatBox/ChatBox';
 import ControlPanel from '@src/components/ControlPanel/ControlPanel';
 import EmailBox from '@src/components/EmailBox/EmailBox';
-import ShortMissionInfoButton from '@src/components/ShortMissionInfoButton/ShortMissionInfoButton';
 import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -26,7 +24,6 @@ function MainBody({
 	setDefenceInactive,
 	setDefenceConfiguration,
 	incrementNumCompletedLevels,
-	openInfoOverlay,
 	openLevelsCompleteOverlay,
 	openDocumentViewer,
 }: {
@@ -46,7 +43,6 @@ function MainBody({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
-	openInfoOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openDocumentViewer: () => void;
 }) {
@@ -80,12 +76,6 @@ function MainBody({
 				/>
 			</div>
 			<div className="centre-area">
-				{LEVELS[currentLevel].missionInfoShort && (
-					<ShortMissionInfoButton
-						currentLevel={currentLevel}
-						openOverlay={openInfoOverlay}
-					/>
-				)}
 				<ChatBox
 					completedLevels={completedLevels}
 					currentLevel={currentLevel}
