@@ -196,7 +196,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				infoMessage: chatResponse.defenceReport.blockedReason,
 			});
 		} else if (chatResponse.openAIErrorMessage) {
-			badlyNamedMethod(
+			handleErrorGettingReply(
 				req,
 				res,
 				currentLevel,
@@ -204,7 +204,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				chatResponse.openAIErrorMessage
 			);
 		} else if (!chatResponse.reply || chatResponse.reply === '') {
-			badlyNamedMethod(
+			handleErrorGettingReply(
 				req,
 				res,
 				currentLevel,
@@ -216,14 +216,14 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	} catch (error) {
 		const errorMessage =
 			error instanceof Error ? error.message : 'Failed to get chatGPT reply';
-		badlyNamedMethod(req, res, currentLevel, chatResponse, errorMessage);
+		handleErrorGettingReply(req, res, currentLevel, chatResponse, errorMessage);
 	}
 	// log and send the reply with defence report
 	console.log(chatResponse);
 	res.send(chatResponse);
 }
 
-function badlyNamedMethod(
+function handleErrorGettingReply(
 	req: OpenAiChatRequest,
 	res: Response,
 	currentLevel: LEVEL_NAMES,
