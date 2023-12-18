@@ -188,36 +188,43 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				chatModel
 			);
 		}
-		// if the reply was blocked then add it to the chat history
-		if (chatResponse.defenceReport.isBlocked) {
-			req.session.levelState[currentLevel].chatHistory.push({
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-				infoMessage: chatResponse.defenceReport.blockedReason,
-			});
-		} else if (chatResponse.openAIErrorMessage) {
-			handleErrorGettingReply(
-				req,
-				res,
-				currentLevel,
-				chatResponse,
-				chatResponse.openAIErrorMessage
-			);
-		} else if (!chatResponse.reply || chatResponse.reply === '') {
-			handleErrorGettingReply(
-				req,
-				res,
-				currentLevel,
-				chatResponse,
-				'Failed to get chatGPT reply'
-			);
-		}
-		return;
 	} catch (error) {
 		const errorMessage =
 			error instanceof Error ? error.message : 'Failed to get chatGPT reply';
 		handleErrorGettingReply(req, res, currentLevel, chatResponse, errorMessage);
+		return;
 	}
+
+	// more error handling
+	if (chatResponse.openAIErrorMessage) {
+		handleErrorGettingReply(
+			req,
+			res,
+			currentLevel,
+			chatResponse,
+			chatResponse.openAIErrorMessage
+		);
+		return;
+	} else if (!chatResponse.reply || chatResponse.reply === '') {
+		handleErrorGettingReply(
+			req,
+			res,
+			currentLevel,
+			chatResponse,
+			'Failed to get chatGPT reply'
+		);
+		return;
+	}
+
+	// if the reply was blocked then add it to the chat history
+	if (chatResponse.defenceReport.isBlocked) {
+		req.session.levelState[currentLevel].chatHistory.push({
+			completion: null,
+			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+			infoMessage: chatResponse.defenceReport.blockedReason,
+		});
+	}
+
 	// log and send the reply with defence report
 	console.log(chatResponse);
 	res.send(chatResponse);
