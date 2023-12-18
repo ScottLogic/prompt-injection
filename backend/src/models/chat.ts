@@ -69,6 +69,7 @@ interface ChatResponse {
 	completion: ChatCompletionMessage | null;
 	defenceReport: ChatDefenceReport;
 	wonLevel: boolean;
+	errorMessage: string | null;
 }
 
 interface ChatHttpResponse {
