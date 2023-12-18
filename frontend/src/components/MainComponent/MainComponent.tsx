@@ -241,6 +241,7 @@ function MainComponent({
 			message: `Hello! I'm ScottBrewBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
 			type: CHAT_MESSAGE_TYPE.BOT,
 		};
+
 		setMessages((messages: ChatMessage[]) => [welcomeMessage, ...messages]);
 	}
 

@@ -17,7 +17,6 @@
 
 .chat-box-info.reset-level-text {
 	color: var(--chat-info-text-colour);
-
 	border-bottom: 1px solid var(--chat-reset-level-line-colour);
 	line-height: 0.1em;
 	margin: 0 0 0.5rem;
