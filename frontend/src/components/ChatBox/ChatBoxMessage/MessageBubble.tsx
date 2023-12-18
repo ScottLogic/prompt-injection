@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import { clsx } from 'clsx';
 
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
@@ -33,16 +34,28 @@ function MessageBubble({
 		messageTypeClassName,
 		positionClassName
 	);
+	
+	const supportText = 
+		message.type === CHAT_MESSAGE_TYPE.USER
+		? `You said: `
+		: message.type === CHAT_MESSAGE_TYPE.BOT
+		? `Chatbot said: `
+		: message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO 
+		? `Information message: `
+		: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
+		? `Error message`
+		: 'unknown message type: ';
 
 	return (
-		<div className={className} lang="en">
+		<div className={className}>
 			{message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED && (
 				<b>Transformed: </b>
 			)}
 			{message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
 				<p className="level-info-header">Information</p>
 			)}
-			{message.message}
+			<p tabIndex={0} aria-label={supportText+message.message} className="visually-hidden">{''}</p>
+			<p aria-hidden>{message.message}</p>
 		</div>
 	);
 }

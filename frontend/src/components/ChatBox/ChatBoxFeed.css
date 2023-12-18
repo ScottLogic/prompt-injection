@@ -1,6 +1,6 @@
 .chat-box-feed {
 	display: flex;
-	flex-direction: column-reverse;
+	flex-direction: column;
 	flex-grow: 1;
 	overflow-y: auto;
 	scrollbar-width: thin;

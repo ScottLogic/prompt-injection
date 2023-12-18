@@ -201,7 +201,7 @@ function ChatBox({
 	return (
 		<div className="chat-box">
 			<ChatBoxFeed messages={messages} />
-			<div className="footer">
+			<div className="footer" id="footer">
 				<div className="messages">
 					<ChatBoxInput
 						content={chatInput}

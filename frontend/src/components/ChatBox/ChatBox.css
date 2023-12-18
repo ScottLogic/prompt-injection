@@ -4,6 +4,7 @@
 	justify-content: flex-end;
 	width: 100%;
 	height: 100%;
+	overflow-anchor: none;
 }
 
 .chat-box .footer {
@@ -14,6 +15,7 @@
 	padding: 2rem;
 	box-sizing: border-box;
 	gap: 1.25rem;
+	overflow-anchor:auto
 }
 
 .chat-box .footer label {

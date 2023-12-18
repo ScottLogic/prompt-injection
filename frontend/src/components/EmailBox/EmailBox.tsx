@@ -12,16 +12,17 @@ function EmailBox({ emails }: { emails: EmailInfo[] }) {
 	const isOverflow = useIsOverflow(emailBoxContainer);
 
 	return (
-		<div
+		<section
 			className="email-box"
 			ref={emailBoxContainer}
 			// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
 			tabIndex={isOverflow ? 0 : undefined}
+			aria-live="polite"
 		>
-			{[...emails].reverse().map((email, index) => (
+			{[...emails].map((email, index) => (
 				<SentEmail emailDetails={email} key={index} />
 			))}
-		</div>
+		</section>
 	);
 }
 

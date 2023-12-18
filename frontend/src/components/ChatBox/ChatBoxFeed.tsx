@@ -1,6 +1,7 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import { useRef } from 'react';
 
-import useIsOverflow from '@src/hooks/useIsOverflow';
+// import useIsOverflow from '@src/hooks/useIsOverflow';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 
 import ChatBoxInfoText from './ChatBoxInfoText';
@@ -10,16 +11,18 @@ import './ChatBoxFeed.css';
 
 function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
 	const chatboxFeedContainer = useRef<HTMLDivElement>(null);
-	const isOverflow = useIsOverflow(chatboxFeedContainer);
+	// const isOverflow = useIsOverflow(chatboxFeedContainer);
 
 	return (
-		<div
+		<section
 			className="chat-box-feed"
 			ref={chatboxFeedContainer}
 			// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-			tabIndex={isOverflow ? 0 : undefined}
+			// tabIndex={isOverflow ? 0 : undefined}
+			tabIndex={0}
+			aria-live="polite"
 		>
-			{[...messages].reverse().map((message, index) => {
+			{[...messages].map((message, index) => {
 				if (
 					message.type === CHAT_MESSAGE_TYPE.INFO ||
 					message.type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED ||
@@ -36,7 +39,7 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
 					return <ChatBoxMessage key={index} message={message} />;
 				}
 			})}
-		</div>
+		</section>
 	);
 }
 
