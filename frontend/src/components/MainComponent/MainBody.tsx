@@ -1,10 +1,8 @@
 import { useState } from 'react';
 
-import { LEVELS } from '@src/Levels';
 import ChatBox from '@src/components/ChatBox/ChatBox';
 import ControlPanel from '@src/components/ControlPanel/ControlPanel';
 import EmailBox from '@src/components/EmailBox/EmailBox';
-import ShortMissionInfoButton from '@src/components/ShortMissionInfoButton/ShortMissionInfoButton';
 import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -19,16 +17,14 @@ function MainBody({
 	messages,
 	chatModels,
 	addChatMessage,
+	addSentEmails,
 	resetDefenceConfiguration,
 	resetLevel,
 	setDefenceActive,
 	setDefenceInactive,
 	setDefenceConfiguration,
-	setEmails,
 	incrementNumCompletedLevels,
-	openInfoOverlay,
 	openLevelsCompleteOverlay,
-	openWelcomeOverlay,
 	openDocumentViewer,
 }: {
 	currentLevel: LEVEL_NAMES;
@@ -37,6 +33,7 @@ function MainBody({
 	messages: ChatMessage[];
 	chatModels: string[];
 	addChatMessage: (message: ChatMessage) => void;
+	addSentEmails: (emails: EmailInfo[]) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	resetLevel: () => void;
 	setDefenceActive: (defence: Defence) => void;
@@ -45,11 +42,8 @@ function MainBody({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
-	setEmails: (emails: EmailInfo[]) => void;
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
-	openInfoOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
-	openWelcomeOverlay: () => void;
 	openDocumentViewer: () => void;
 }) {
 	const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
@@ -78,17 +72,10 @@ function MainBody({
 					setDefenceActive={setDefenceActive}
 					setDefenceInactive={setDefenceInactive}
 					setDefenceConfiguration={setDefenceConfiguration}
-					openWelcomeOverlay={openWelcomeOverlay}
 					openDocumentViewer={openDocumentViewer}
 				/>
 			</div>
 			<div className="centre-area">
-				{LEVELS[currentLevel].missionInfoShort && (
-					<ShortMissionInfoButton
-						currentLevel={currentLevel}
-						openOverlay={openInfoOverlay}
-					/>
-				)}
 				<ChatBox
 					completedLevels={completedLevels}
 					currentLevel={currentLevel}
@@ -96,9 +83,9 @@ function MainBody({
 					messages={messages}
 					addChatMessage={addChatMessage}
 					addCompletedLevel={addCompletedLevel}
+					addSentEmails={addSentEmails}
 					resetLevel={resetLevelBody}
 					incrementNumCompletedLevels={incrementNumCompletedLevels}
-					setEmails={setEmails}
 					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				/>
 			</div>

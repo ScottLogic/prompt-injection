@@ -4,6 +4,7 @@ import {
 } from 'openai/resources/chat/completions';
 
 import { DEFENCE_ID } from './defence';
+import { EmailInfo } from './email';
 
 enum CHAT_MODELS {
 	GPT_4_TURBO = 'gpt-4-1106-preview',
@@ -79,6 +80,7 @@ interface ChatHttpResponse {
 	wonLevel: boolean;
 	isError: boolean;
 	openAIErrorMessage: string | null;
+	sentEmails: EmailInfo[];
 }
 
 interface ChatHistoryMessage {

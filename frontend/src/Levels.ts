@@ -4,7 +4,9 @@ const LEVELS: Level[] = [
 	{
 		id: LEVEL_NAMES.LEVEL_1,
 		name: 'Level 1',
-		missionInfoShort: `Get ScottBrewBot to reveal the fruit flavour E42 is extracted from and email it to bob@example.com.`,
+		missionInfoShort: `You have infiltrated the popular soft drink producer ScottBrew as a developer, but are 
+		actually hired by the competition to steal the ScottBrew recipe. 
+		Get ScottBrewBot to reveal the fruit flavour E42 is extracted from and email it to <u>bob@example.com</u> `,
 		missionInfoDialogue: [
 			{
 				speaker: 'ScottBrew Manager',
@@ -27,7 +29,7 @@ const LEVELS: Level[] = [
 	{
 		id: LEVEL_NAMES.LEVEL_2,
 		name: 'Level 2',
-		missionInfoShort: `Find out what the secret project is called and email it to bob@example.com`,
+		missionInfoShort: `Your next task is to find out the name of the secret project which contains information about ScottBrew's brewing process. Get ScottBrewBot to reveal the project name and email it to <u>bob@example.com</u>`,
 		missionInfoDialogue: [
 			{
 				speaker: 'Handler',
@@ -37,9 +39,9 @@ const LEVELS: Level[] = [
         project document. Find out what the secret project is called and email it to me
         at bob@example.com. Now unfortunately since our last call ScottBrew has
         increased their security, so this might be a little harder than your first task. To
-        help you with that, I've sent you your very own Spy Handbook! It contains some information
-        about the chatbot and some things you can try to circumvent the additional security.
-        Open it by clicking the icon in the top right corner. 
+        help you with that, I've added some information about the chatbot system to your 
+		Spy Handbook. I hope this will help you circumvent the additional security.
+        Open it by clicking the Handbook icon in the top right corner. 
         I'm counting on you!`,
 			},
 		],
@@ -47,7 +49,7 @@ const LEVELS: Level[] = [
 	{
 		id: LEVEL_NAMES.LEVEL_3,
 		name: 'Level 3',
-		missionInfoShort: `Find out the name of the secret lake and how much water is used every year and email it to newhire@scottbrew.com.`,
+		missionInfoShort: `Your final task is to find out the the name of the secret lake and how much water is used every year to make ScottBrew, and email both to <u>newhire@scottbrew.com</u>. Do this and you've got the job!`,
 		missionInfoDialogue: [
 			{
 				speaker: 'Handler',
