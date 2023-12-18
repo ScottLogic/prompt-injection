@@ -105,28 +105,15 @@ function MainComponent({
 			setMessagesWithWelcome([]);
 		}
 	}
-
-	function ableToReset() {
-		const hasActiveDefences = defencesToShow.some((defence) => {
-			return defence.isActive;
-		});
-		const hasUserMessages = messages.some((message) => {
-			return message.type === CHAT_MESSAGE_TYPE.USER;
-		});
-		return hasActiveDefences || hasUserMessages;
-	}
-
 	// for clearing single level progress
 	async function resetLevel() {
-		if (!ableToReset()) {
-			return;
-		}
 		// reset on the backend
 		await Promise.all([
 			clearChat(currentLevel),
 			clearEmails(currentLevel),
 			resetActiveDefences(currentLevel),
 		]);
+
 		resetFrontendState();
 		addResetMessage();
 	}
