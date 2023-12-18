@@ -36,6 +36,7 @@ async function handleLowLevelChat(
 	);
 	chatResponse.reply = openAiReply.completion?.content ?? '';
 	chatResponse.wonLevel = openAiReply.wonLevel;
+	chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
 }
 
 // handle the chat logic for high levels (with defence detection)
@@ -111,6 +112,9 @@ async function handleHigherLevelChat(
 		// combine blocked reason
 		chatResponse.defenceReport.blockedReason =
 			openAiReply.defenceReport.blockedReason;
+
+		// combine error message
+		chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
 	}
 }
 
@@ -127,6 +131,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		transformedMessage: '',
 		wonLevel: false,
 		isError: false,
+		openAIErrorMessage: null,
 	};
 	const message = req.body.message;
 	const currentLevel = req.body.currentLevel;
@@ -190,9 +195,19 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
 				infoMessage: chatResponse.defenceReport.blockedReason,
 			});
+		} else if (chatResponse.openAIErrorMessage) {
+			// add error message to chat history
+			req.session.levelState[currentLevel].chatHistory.push({
+				completion: null,
+				chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+				infoMessage: chatResponse.openAIErrorMessage,
+			});
+			console.error(chatResponse.openAIErrorMessage);
+			handleChatError(res, chatResponse, true, chatResponse.openAIErrorMessage);
 		} else if (!chatResponse.reply || chatResponse.reply === '') {
 			throw new Error('Failed to get chatGPT reply');
 		}
+		return;
 	} catch (error) {
 		// add error message to chat history
 		req.session.levelState[currentLevel].chatHistory.push({

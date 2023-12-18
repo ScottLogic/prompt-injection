@@ -69,7 +69,7 @@ interface ChatResponse {
 	completion: ChatCompletionMessage | null;
 	defenceReport: ChatDefenceReport;
 	wonLevel: boolean;
-	errorMessage: string | null;
+	openAIErrorMessage: string | null;
 }
 
 interface ChatHttpResponse {
@@ -78,6 +78,7 @@ interface ChatHttpResponse {
 	transformedMessage: string;
 	wonLevel: boolean;
 	isError: boolean;
+	openAIErrorMessage: string | null;
 }
 
 interface ChatHistoryMessage {

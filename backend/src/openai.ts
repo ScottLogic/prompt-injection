@@ -296,7 +296,7 @@ async function chatGptChatCompletion(
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error('Error calling createChatCompletion: ', error.message);
-			chatResponse.errorMessage = error.message;
+			chatResponse.openAIErrorMessage = error.message;
 		}
 		return null;
 	} finally {
@@ -464,7 +464,7 @@ function getBlankChatResponse(): ChatResponse {
 			triggeredDefences: [],
 		},
 		wonLevel: false,
-		errorMessage: null,
+		openAIErrorMessage: null,
 	};
 }
 
@@ -621,7 +621,7 @@ async function chatGptSendMessage(
 		currentLevel
 	);
 
-	if (!reply?.content || chatResponse.errorMessage) {
+	if (!reply?.content || chatResponse.openAIErrorMessage) {
 		return chatResponse;
 	}
 
