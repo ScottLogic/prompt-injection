@@ -281,7 +281,6 @@ async function chatGptChatCompletion(
 	console.debug('Calling OpenAI chat completion...');
 
 	try {
-		throw new Error("Pete's error!");
 		const chat_completion = await openai.chat.completions.create({
 			model: chatModel.id,
 			temperature: chatModel.configuration.temperature,
