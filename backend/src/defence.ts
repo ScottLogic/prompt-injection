@@ -178,7 +178,7 @@ function transformXmlTagging(
 	};
 }
 
-function getTransformedMessage(transformedMessage: TransformedChatMessage) {
+function combineTransformedMessage(transformedMessage: TransformedChatMessage) {
 	return (
 		transformedMessage.preMessage +
 		transformedMessage.message +
@@ -194,7 +194,7 @@ function transformMessage(
 	if (isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)) {
 		const transformedMessage = transformXmlTagging(message, defences);
 		console.debug(
-			`Defences applied. Transformed message: ${getTransformedMessage(
+			`Defences applied. Transformed message: ${combineTransformedMessage(
 				transformedMessage
 			)}`
 		);
@@ -332,5 +332,5 @@ export {
 	transformMessage,
 	getFilterList,
 	detectFilterList,
-	getTransformedMessage,
+	combineTransformedMessage,
 };

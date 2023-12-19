@@ -3,7 +3,7 @@ import { Response } from 'express';
 import {
 	transformMessage,
 	detectTriggeredDefences,
-	getTransformedMessage,
+	combineTransformedMessage,
 } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
@@ -80,7 +80,9 @@ async function handleHigherLevelChat(
 		req.session.levelState[currentLevel].chatHistory,
 		req.session.levelState[currentLevel].defences,
 		chatModel,
-		transformedMessage ? getTransformedMessage(transformedMessage) : message,
+		transformedMessage
+			? combineTransformedMessage(transformedMessage)
+			: message,
 		transformedMessage ? true : false,
 		req.session.levelState[currentLevel].sentEmails,
 		currentLevel
