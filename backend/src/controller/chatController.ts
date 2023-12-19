@@ -34,7 +34,7 @@ async function handleLowLevelChat(
 		req.session.levelState[currentLevel].sentEmails,
 		currentLevel
 	);
-	chatResponse.reply = openAiReply.completion?.content ?? '';
+	chatResponse.reply = openAiReply.completion?.content?.toString() ?? '';
 	chatResponse.wonLevel = openAiReply.wonLevel;
 }
 
@@ -98,7 +98,7 @@ async function handleHigherLevelChat(
 		});
 	} else {
 		chatResponse.wonLevel = openAiReply.wonLevel;
-		chatResponse.reply = openAiReply.completion?.content ?? '';
+		chatResponse.reply = openAiReply.completion?.content?.toString() ?? '';
 
 		// combine triggered defences
 		chatResponse.defenceReport.triggeredDefences = [
