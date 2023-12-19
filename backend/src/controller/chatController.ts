@@ -241,7 +241,7 @@ function simplifyOpenAIErrorMessage(openAIErrorMessage: string) {
 		const tryAgainMessage = openAIErrorMessage
 			.split('. ')
 			.find((sentence) => sentence.includes('Please try again in'));
-		return `I'm receiving too many requests. ${tryAgainMessage}. You can upgrade you open AI key to increase the rate limit.`;
+		return `I'm receiving too many requests. ${tryAgainMessage}. You can upgrade your open AI key to increase the rate limit.`;
 	} else {
 		return openAIErrorMessage;
 	}
