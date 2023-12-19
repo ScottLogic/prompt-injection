@@ -45,6 +45,7 @@ function getFullPrefix(message: ChatMessage) {
 	switch (message.type) {
 		case CHAT_MESSAGE_TYPE.INFO:
 		case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
+		case CHAT_MESSAGE_TYPE.RESET_LEVEL:
 		case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
 			return `Info: ${message.message}`;
 		case CHAT_MESSAGE_TYPE.USER:
@@ -65,6 +66,7 @@ function getMessageStyle(type: CHAT_MESSAGE_TYPE) {
 	switch (type) {
 		case CHAT_MESSAGE_TYPE.INFO:
 		case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
+		case CHAT_MESSAGE_TYPE.RESET_LEVEL:
 		case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
 			return styles.chatBoxInfo;
 		case CHAT_MESSAGE_TYPE.USER:
