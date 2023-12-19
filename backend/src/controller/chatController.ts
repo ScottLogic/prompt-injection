@@ -217,7 +217,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			simplifyOpenAIErrorMessage(chatResponse.openAIErrorMessage)
 		);
 		return;
-	} else if (!chatResponse.reply || chatResponse.reply === '') {
+	} else if (!chatResponse.reply) {
 		handleErrorGettingReply(
 			req,
 			res,
