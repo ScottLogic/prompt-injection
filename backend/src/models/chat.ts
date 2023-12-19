@@ -1,7 +1,4 @@
-import {
-	ChatCompletionMessage,
-	ChatCompletionMessageParam,
-} from 'openai/resources/chat/completions';
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
@@ -28,6 +25,7 @@ enum CHAT_MESSAGE_TYPE {
 	SYSTEM,
 	FUNCTION_CALL,
 	ERROR_MSG,
+	RESET_LEVEL,
 }
 
 enum MODEL_CONFIG {
@@ -67,7 +65,7 @@ interface ChatMalicious {
 }
 
 interface ChatResponse {
-	completion: ChatCompletionMessage | null;
+	completion: ChatCompletionMessageParam | null;
 	defenceReport: ChatDefenceReport;
 	wonLevel: boolean;
 }
