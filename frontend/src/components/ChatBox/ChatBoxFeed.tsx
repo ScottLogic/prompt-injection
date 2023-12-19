@@ -14,7 +14,6 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
 	const isOverflow = useIsOverflow(chatboxFeedContainer);
 
 	useEffect(() => {
-		// Scroll to the bottom of the chat box when messages change
 		if (chatboxFeedContainer.current) {
 			chatboxFeedContainer.current.scrollTop =
 				chatboxFeedContainer.current.scrollHeight;
@@ -25,9 +24,7 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
 		<section
 			className="chat-box-feed"
 			ref={chatboxFeedContainer}
-			// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
 			tabIndex={isOverflow ? 0 : undefined}
-			// tabIndex={0}
 			aria-live="polite"
 		>
 			{[...messages].map((message, index) => {

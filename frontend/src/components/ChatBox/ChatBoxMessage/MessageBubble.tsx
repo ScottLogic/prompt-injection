@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import { clsx } from 'clsx';
 
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
@@ -47,6 +46,7 @@ function MessageBubble({
 			: 'unknown message type ';
 
 	return (
+		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
 		<section className={className} tabIndex={0}>
 			{message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED && (
 				<b>Transformed: </b>
