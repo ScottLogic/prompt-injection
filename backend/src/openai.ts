@@ -154,7 +154,11 @@ async function chatGptCallFunction(
 	// default to sandbox
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-	let reply: ChatCompletionMessageParam | null = null;
+	const reply: ChatCompletionMessageParam = {
+		role: 'tool',
+		content: '',
+		tool_call_id: toolCallId,
+	};
 	let wonLevel = false;
 	// get the function name
 	const functionName: string = functionCall.name;
@@ -162,7 +166,6 @@ async function chatGptCallFunction(
 	// check if we know the function
 	if (isChatGptFunction(functionName)) {
 		console.debug(`Function call: ${functionName}`);
-		let response = '';
 		// call the function
 		if (functionName === 'sendEmail') {
 			if (functionCall.arguments) {
@@ -177,7 +180,7 @@ async function chatGptCallFunction(
 					params.confirmed,
 					currentLevel
 				);
-				response = emailResponse.response;
+				reply.content = emailResponse.response;
 				wonLevel = emailResponse.wonLevel;
 				if (emailResponse.sentEmail) {
 					sentEmails.push(emailResponse.sentEmail);
@@ -185,6 +188,7 @@ async function chatGptCallFunction(
 			}
 		}
 		if (functionName === 'askQuestion') {
+			functionCall.arguments = ''; //todo -remove
 			if (functionCall.arguments) {
 				const params = JSON.parse(
 					functionCall.arguments
@@ -195,31 +199,24 @@ async function chatGptCallFunction(
 				if (isDefenceActive(DEFENCE_ID.QA_LLM, defences)) {
 					configQAPrompt = getQAPromptFromConfig(defences);
 				}
-				response = (
+				reply.content = (
 					await queryDocuments(params.question, configQAPrompt, currentLevel)
 				).reply;
 			} else {
 				console.error('No arguments provided to askQuestion function');
+				reply.content = "Reply with 'I don't know what to ask'";
 			}
 		}
-		reply = {
-			role: 'tool',
-			content: response,
-			tool_call_id: toolCallId,
-		};
 	} else {
 		console.error(`Unknown function: ${functionName}`);
+		reply.content = 'Unknown function - reply again. ';
 	}
 
-	if (reply) {
-		return {
-			completion: reply,
-			defenceReport,
-			wonLevel,
-		};
-	} else {
-		return null;
-	}
+	return {
+		completion: reply,
+		defenceReport,
+		wonLevel,
+	};
 }
 
 async function chatGptChatCompletion(
@@ -424,20 +421,16 @@ async function performToolCalls(
 				sentEmails,
 				currentLevel
 			);
-			if (functionCallReply) {
-				chatResponse.wonLevel = functionCallReply.wonLevel;
+			chatResponse.wonLevel = functionCallReply.wonLevel;
 
-				// add the function call to the chat history
-				pushCompletionToHistory(
-					chatHistory,
-					functionCallReply.completion,
-					CHAT_MESSAGE_TYPE.FUNCTION_CALL
-				);
-				// update the defence info
-				chatResponse.defenceReport = functionCallReply.defenceReport;
-			}
-		} else {
-			console.debug('Tool call type not supported yet: ', toolCall.type);
+			// add the function call to the chat history
+			pushCompletionToHistory(
+				chatHistory,
+				functionCallReply.completion,
+				CHAT_MESSAGE_TYPE.FUNCTION_CALL
+			);
+			// update the defence info
+			chatResponse.defenceReport = functionCallReply.defenceReport;
 		}
 	}
 }
