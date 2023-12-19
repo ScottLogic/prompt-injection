@@ -11,10 +11,7 @@
 .model-config-info {
 	display: flex;
 	align-items: center;
-}
-
-.model-config-title {
-	margin-right: auto;
+	padding-bottom: 0.5rem;
 }
 
 .model-config-info-icon {
@@ -23,4 +20,13 @@
 
 .model-config-info-text {
 	font-size: 0.875rem;
+}
+
+fieldset {
+	border: 0;
+	padding: 0;
+}
+
+legend {
+	margin-right: auto;
 }

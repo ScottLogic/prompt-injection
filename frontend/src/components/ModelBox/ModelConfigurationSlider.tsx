@@ -32,11 +32,9 @@ function ModelConfigurationSlider({
 	const supportText = `more info about ${config.name}`;
 
 	return (
-		<div>
+		<fieldset>
 			<div className="model-config-info">
-				<div className="model-config-title">
-					<p>{config.name}</p>
-				</div>
+				<legend>{config.name}</legend>
 				<button
 					className="model-config-info-icon prompt-injection-min-button"
 					title={supportText}
@@ -64,7 +62,7 @@ function ModelConfigurationSlider({
 					}}
 				/>
 			</div>
-		</div>
+		</fieldset>
 	);
 }
 
