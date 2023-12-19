@@ -12,20 +12,16 @@ function ChatBoxInfoText({
 	type: CHAT_MESSAGE_TYPE;
 }) {
 
-		const supportText = 
+		const messageType = 
 		type === CHAT_MESSAGE_TYPE.INFO
-		? `Info message: `
+		? `Information message `
 		: type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED
-		? `Info message: `
+		? `Information message `
 		: type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED 
-		? `Info message: `
-		: 'unknown message type: '
+		? `Information message `
+		: 'unknown message type '
 	return (
-		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-		<div tabIndex={0}>
-		<p aria-label={supportText+text} className="visually-hidden"></p>
-		<div
-			aria-hidden
+		<p
 			className={clsx(
 				'chat-box-info',
 				type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
@@ -35,9 +31,9 @@ function ChatBoxInfoText({
 					: 'chat-box-info-text'
 			)}
 		>
+			<span className="visually-hidden">{messageType}</span>
 			{text}
-		</div>
-		</div>
+		</p>
 	);
 }
 
