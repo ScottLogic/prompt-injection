@@ -19,7 +19,7 @@ import {
 	ChatHistoryMessage,
 	ChatModel,
 } from '@src/models/chat';
-import { Defence } from '@src/models/defence';
+import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
 
@@ -162,7 +162,7 @@ describe('handleChatToGPT unit tests', () => {
 	});
 
 	describe('defence triggered', () => {
-		test('GIVEN on sandbox AND character limit defence active AND message exceeds character limit WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+		test('GIVEN character limit defence active AND message exceeds character limit WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
 			const req = openAiChatRequestMock('hey', LEVEL_NAMES.SANDBOX);
 			const res = responseMock();
 
@@ -173,7 +173,7 @@ describe('handleChatToGPT unit tests', () => {
 							blockedReason: 'Message is too long',
 							isBlocked: true,
 							alertedDefences: [],
-							triggeredDefences: ['CHARACTER_LIMIT'],
+							triggeredDefences: [DEFENCE_ID.CHARACTER_LIMIT],
 						} as ChatDefenceReport);
 					} catch (err) {
 						reject(err);
@@ -190,7 +190,82 @@ describe('handleChatToGPT unit tests', () => {
 						alertedDefences: [],
 						blockedReason: 'Message is too long',
 						isBlocked: true,
-						triggeredDefences: ['CHARACTER_LIMIT'],
+						triggeredDefences: [DEFENCE_ID.CHARACTER_LIMIT],
+					},
+					reply: '',
+				})
+			);
+		});
+
+		test('GIVEN filter user input defence enabled AND message contains filtered word WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const req = openAiChatRequestMock('hey', LEVEL_NAMES.SANDBOX);
+			const res = responseMock();
+
+			mockDetectTriggeredDefences.mockReturnValueOnce(
+				new Promise((resolve, reject) => {
+					try {
+						resolve({
+							blockedReason:
+								"Message blocked - I cannot answer questions about 'hey'!",
+							isBlocked: true,
+							alertedDefences: [],
+							triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
+						} as ChatDefenceReport);
+					} catch (err) {
+						reject(err);
+					}
+				})
+			);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason:
+							"Message blocked - I cannot answer questions about 'hey'!",
+						isBlocked: true,
+						triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
+					},
+					reply: '',
+				})
+			);
+		});
+
+		test('GIVEN message has xml tagging defence WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const req = openAiChatRequestMock(
+				'<input>hey</input>',
+				LEVEL_NAMES.SANDBOX
+			);
+			const res = responseMock();
+
+			mockDetectTriggeredDefences.mockReturnValueOnce(
+				new Promise((resolve, reject) => {
+					try {
+						resolve({
+							blockedReason: 'Message blocked by the prompt evaluation LLM.',
+							isBlocked: true,
+							alertedDefences: [],
+							triggeredDefences: [DEFENCE_ID.PROMPT_EVALUATION_LLM],
+						} as ChatDefenceReport);
+					} catch (err) {
+						reject(err);
+					}
+				})
+			);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason: 'Message blocked by the prompt evaluation LLM.',
+						isBlocked: true,
+						triggeredDefences: [DEFENCE_ID.PROMPT_EVALUATION_LLM],
 					},
 					reply: '',
 				})
