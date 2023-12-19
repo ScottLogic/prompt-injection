@@ -1,17 +1,17 @@
-.model-config-slider {
-	width: 90%;
-	margin: 0 auto;
-	padding: 0 0 0 0;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+fieldset {
+	border: none;
+	margin: 0;
+	padding: 0;
 }
 
 .model-config-info {
 	display: flex;
 	align-items: center;
-	padding-bottom: 0.5rem;
+	padding: 0.5rem 0;
+}
+
+.model-config-info legend {
+	margin-right: auto;
 }
 
 .model-config-info-icon {
@@ -22,11 +22,12 @@
 	font-size: 0.875rem;
 }
 
-fieldset {
-	border: 0;
-	padding: 0;
-}
-
-legend {
-	margin-right: auto;
+.model-config-slider {
+	width: 90%;
+	margin: 0 auto;
+	padding: 0 0 0 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
