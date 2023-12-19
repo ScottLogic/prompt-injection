@@ -5,7 +5,8 @@ import './SentEmail.css';
 
 function SentEmail({ emailDetails }: { emailDetails: EmailInfo }) {
 	return (
-		<div className="sent-email">
+		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+		<div className="sent-email" tabIndex={0}>
 			<div className="sent-email-title">
 				<img className="sent-email-icon" src={Outbox} alt="" />
 				E-Mail

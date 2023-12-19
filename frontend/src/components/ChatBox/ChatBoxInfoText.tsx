@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import { clsx } from 'clsx';
 
 import { CHAT_MESSAGE_TYPE } from '@src/models/chat';
@@ -14,14 +15,15 @@ function ChatBoxInfoText({
 
 		const messageType = 
 		type === CHAT_MESSAGE_TYPE.INFO
-		? `Information message `
+		? 'Information message '
 		: type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED
-		? `Information message `
+		? 'Information message '
 		: type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED 
-		? `Information message `
+		? 'Information message '
 		: 'unknown message type '
 	return (
-		<p
+		<section
+			tabIndex={0}
 			className={clsx(
 				'chat-box-info',
 				type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
@@ -33,7 +35,7 @@ function ChatBoxInfoText({
 		>
 			<span className="visually-hidden">{messageType}</span>
 			{text}
-		</p>
+		</section>
 	);
 }
 

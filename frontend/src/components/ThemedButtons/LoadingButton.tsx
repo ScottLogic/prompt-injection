@@ -19,7 +19,7 @@ function LoadingButton({
 		>
 			{children}
 			{isLoading && (
-				<ThreeDots width="1.5rem" color="white" wrapperClass="loader" />
+				<ThreeDots width="1.5rem" color="white" wrapperClass="loader" aria-hidden />
 			)}
 		</ThemedButton>
 	);
