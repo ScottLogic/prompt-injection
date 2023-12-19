@@ -283,7 +283,7 @@ describe('handleChatToGPT unit tests', () => {
 		expect(res.status).toHaveBeenCalledWith(500);
 		expect(res.send).toHaveBeenCalledWith(
 			errorResponseMock(
-				"I'm receiving too many requests. Please try again in 20s. You can upgrade you open AI key to increase the rate limit.",
+				"I'm receiving too many requests. Please try again in 20s. You can upgrade your open AI key to increase the rate limit.",
 				{
 					transformedMessage: 'hello',
 					openAIErrorMessage:
@@ -293,7 +293,7 @@ describe('handleChatToGPT unit tests', () => {
 		);
 	});
 
-	test('GIVEN message exceeds character limit WHEN handleChatToGPT called THEN it should return 400 and error message', async () => {
+	test('GIVEN message exceeds input character limit (not a defence) WHEN handleChatToGPT called THEN it should return 400 and error message', async () => {
 		const req = openAiChatRequestMock('x'.repeat(16399), 0);
 		const res = responseMock();
 
