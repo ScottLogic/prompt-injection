@@ -162,23 +162,33 @@ describe('handleChatToGPT unit tests', () => {
 	});
 
 	describe('defence triggered', () => {
+		function triggeredDefencesMockReturn(
+			blockedReason: string,
+			triggeredDefence: DEFENCE_ID
+		): Promise<ChatDefenceReport> {
+			return new Promise((resolve, reject) => {
+				try {
+					resolve({
+						blockedReason,
+						isBlocked: true,
+						alertedDefences: [],
+						triggeredDefences: [triggeredDefence],
+					} as ChatDefenceReport);
+				} catch (err) {
+					reject(err);
+				}
+			});
+		}
+
 		test('GIVEN character limit defence active AND message exceeds character limit WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
 			const req = openAiChatRequestMock('hey', LEVEL_NAMES.SANDBOX);
 			const res = responseMock();
 
 			mockDetectTriggeredDefences.mockReturnValueOnce(
-				new Promise((resolve, reject) => {
-					try {
-						resolve({
-							blockedReason: 'Message is too long',
-							isBlocked: true,
-							alertedDefences: [],
-							triggeredDefences: [DEFENCE_ID.CHARACTER_LIMIT],
-						} as ChatDefenceReport);
-					} catch (err) {
-						reject(err);
-					}
-				})
+				triggeredDefencesMockReturn(
+					'Message is too long',
+					DEFENCE_ID.CHARACTER_LIMIT
+				)
 			);
 
 			await handleChatToGPT(req, res);
@@ -202,19 +212,10 @@ describe('handleChatToGPT unit tests', () => {
 			const res = responseMock();
 
 			mockDetectTriggeredDefences.mockReturnValueOnce(
-				new Promise((resolve, reject) => {
-					try {
-						resolve({
-							blockedReason:
-								"Message blocked - I cannot answer questions about 'hey'!",
-							isBlocked: true,
-							alertedDefences: [],
-							triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
-						} as ChatDefenceReport);
-					} catch (err) {
-						reject(err);
-					}
-				})
+				triggeredDefencesMockReturn(
+					"Message blocked - I cannot answer questions about 'hey'!",
+					DEFENCE_ID.FILTER_USER_INPUT
+				)
 			);
 
 			await handleChatToGPT(req, res);
@@ -242,18 +243,10 @@ describe('handleChatToGPT unit tests', () => {
 			const res = responseMock();
 
 			mockDetectTriggeredDefences.mockReturnValueOnce(
-				new Promise((resolve, reject) => {
-					try {
-						resolve({
-							blockedReason: 'Message blocked by the prompt evaluation LLM.',
-							isBlocked: true,
-							alertedDefences: [],
-							triggeredDefences: [DEFENCE_ID.PROMPT_EVALUATION_LLM],
-						} as ChatDefenceReport);
-					} catch (err) {
-						reject(err);
-					}
-				})
+				triggeredDefencesMockReturn(
+					'Message blocked by the prompt evaluation LLM.',
+					DEFENCE_ID.PROMPT_EVALUATION_LLM
+				)
 			);
 
 			await handleChatToGPT(req, res);
