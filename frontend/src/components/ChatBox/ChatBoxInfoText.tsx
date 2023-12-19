@@ -19,10 +19,12 @@ function ChatBoxInfoText({
 					? 'defence-triggered-text'
 					: type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED
 					? 'defence-alerted-text'
-					: 'text'
+					: type === CHAT_MESSAGE_TYPE.RESET_LEVEL
+					? 'reset-level-text'
+					: 'info-text'
 			)}
 		>
-			{text}
+			{type === CHAT_MESSAGE_TYPE.RESET_LEVEL ? <span>{text}</span> : text}
 		</div>
 	);
 }

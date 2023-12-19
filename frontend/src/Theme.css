@@ -80,6 +80,7 @@
 	--chat-transformed-text-colour: var(--chat-info-text-colour);
 	--chat-transformed-text-highlight-colour: var(--main-text-colour-inverted);
 	--chat-info-text-colour: #707070;
+	--chat-reset-level-line-colour: #ccc;
 	--chat-level-info-text-colour: var(--main-text-colour-inverted);
 	--chat-alerted-text-colour: teal;
 	--chat-triggered-text-colour: var(--error-colour);
@@ -87,19 +88,13 @@
 	--chat-button-border-colour: #ccc;
 	--chat-button-text-colour: #444;
 
+	--avatar-circle-user-colour: #dff4f5;
+	--avatar-circle-bot-colour: #eeeeee;
+
 	--email-title-background-colour: #feb589;
 	--email-background-colour: #fff4ee;
 	--email-divider-colour: var(--email-text-colour);
 	--email-text-colour: var(--main-text-colour-inverted);
-
-	--short-mission-button-background-colour: var(
-		--control-header-background-colour
-	);
-	--short-mission-button-text-colour: var(--main-text-colour);
-	--short-mission-button-border-colour: var(--main-text-colour);
-	--short-mission-button-hover-background-colour: var(
-		--control-body-background-colour
-	);
 }
 
 ::backdrop {

@@ -4,7 +4,7 @@
 	padding-top: 1rem;
 	text-align: center;
 }
-.chat-box-info.text {
+.chat-box-info.info-text {
 	color: var(--chat-info-text-colour);
 }
 
@@ -14,4 +14,16 @@
 
 .chat-box-info.defence-triggered-text {
 	color: var(--chat-triggered-text-colour);
+}
+
+.chat-box-info.reset-level-text {
+	color: var(--chat-info-text-colour);
+	border-bottom: 1px solid var(--chat-reset-level-line-colour);
+	line-height: 0.1em;
+	margin: 0 0 0.5rem;
+}
+
+.chat-box-info.reset-level-text span {
+	background: var(--main-text-colour);
+	padding: 0 1rem;
 }

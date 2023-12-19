@@ -4,7 +4,7 @@ import useIsOverflow from '@src/hooks/useIsOverflow';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 
 import ChatBoxInfoText from './ChatBoxInfoText';
-import ChatBoxMessage from './ChatBoxMessage';
+import ChatBoxMessage from './ChatBoxMessage/ChatBoxMessage';
 
 import './ChatBoxFeed.css';
 
@@ -23,7 +23,8 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
 				if (
 					message.type === CHAT_MESSAGE_TYPE.INFO ||
 					message.type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED ||
-					message.type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
+					message.type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED ||
+					message.type === CHAT_MESSAGE_TYPE.RESET_LEVEL
 				) {
 					return (
 						<ChatBoxInfoText
