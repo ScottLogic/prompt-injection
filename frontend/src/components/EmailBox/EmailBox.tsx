@@ -19,6 +19,7 @@ function EmailBox({ emails }: { emails: EmailInfo[] }) {
 			tabIndex={isOverflow ? 0 : undefined}
 			aria-live="polite"
 		>
+			<h2 className="visually-hidden">Email outbox</h2>
 			{[...emails].map((email, index) => (
 				<SentEmail emailDetails={email} key={index} />
 			))}
