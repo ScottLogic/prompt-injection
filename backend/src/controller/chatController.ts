@@ -178,7 +178,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		...req.session.levelState[currentLevel].chatHistory,
 	];
 	try {
-		// skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
+		// skip defence detection / blocking for levels 1 and 2 - sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
 			await handleLowLevelChat(req, chatResponse, currentLevel, chatModel);
 		} else {
