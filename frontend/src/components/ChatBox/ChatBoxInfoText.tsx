@@ -12,15 +12,14 @@ function ChatBoxInfoText({
 	text: string;
 	type: CHAT_MESSAGE_TYPE;
 }) {
-
-		const messageType = 
+	const messageType =
 		type === CHAT_MESSAGE_TYPE.INFO
-		? 'Information message '
-		: type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED
-		? 'Information message '
-		: type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED 
-		? 'Information message '
-		: 'unknown message type '
+			? 'Information message '
+			: type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED
+			? 'Information message '
+			: type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
+			? 'Information message '
+			: 'unknown message type ';
 	return (
 		<section
 			tabIndex={0}

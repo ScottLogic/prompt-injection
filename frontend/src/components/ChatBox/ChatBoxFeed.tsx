@@ -14,11 +14,12 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
 	const isOverflow = useIsOverflow(chatboxFeedContainer);
 
 	useEffect(() => {
-    // Scroll to the bottom of the chat box when messages change
-    if (chatboxFeedContainer.current) {
-      chatboxFeedContainer.current.scrollTop = chatboxFeedContainer.current.scrollHeight;
-    }
-  }, [messages]);
+		// Scroll to the bottom of the chat box when messages change
+		if (chatboxFeedContainer.current) {
+			chatboxFeedContainer.current.scrollTop =
+				chatboxFeedContainer.current.scrollHeight;
+		}
+	}, [messages]);
 
 	return (
 		<section

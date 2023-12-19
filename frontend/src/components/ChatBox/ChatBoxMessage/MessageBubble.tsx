@@ -34,17 +34,17 @@ function MessageBubble({
 		messageTypeClassName,
 		positionClassName
 	);
-	
-	const messageAuthor = 
+
+	const messageAuthor =
 		message.type === CHAT_MESSAGE_TYPE.USER
-		? 'You said: '
-		: message.type === CHAT_MESSAGE_TYPE.BOT
-		? 'ScottBrewBot said:  '
-		: message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO 
-		? 'Information message: '
-		: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
-		? 'Error message: '
-		: 'unknown message type ';
+			? 'You said: '
+			: message.type === CHAT_MESSAGE_TYPE.BOT
+			? 'ScottBrewBot said:  '
+			: message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
+			? 'Information message: '
+			: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
+			? 'Error message: '
+			: 'unknown message type ';
 
 	return (
 		<section className={className} tabIndex={0}>
@@ -54,7 +54,10 @@ function MessageBubble({
 			{message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
 				<p className="level-info-header">Information</p>
 			)}
-			<p><span className="visually-hidden">{messageAuthor}</span>{message.message}</p>
+			<p>
+				<span className="visually-hidden">{messageAuthor}</span>
+				{message.message}
+			</p>
 		</section>
 	);
 }
