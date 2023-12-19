@@ -16,13 +16,15 @@ function ChatBoxInfoText({
 			className={clsx(
 				'chat-box-info',
 				type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
-					? 'chat-box-info-defence-triggered-text'
+					? 'defence-triggered-text'
 					: type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED
-					? 'chat-box-info-defence-alerted-text'
-					: 'chat-box-info-text'
+					? 'defence-alerted-text'
+					: type === CHAT_MESSAGE_TYPE.RESET_LEVEL
+					? 'reset-level-text'
+					: 'info-text'
 			)}
 		>
-			{text}
+			{type === CHAT_MESSAGE_TYPE.RESET_LEVEL ? <span>{text}</span> : text}
 		</div>
 	);
 }
