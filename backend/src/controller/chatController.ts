@@ -199,8 +199,16 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		return;
 	}
 
+	if (chatResponse.defenceReport.isBlocked) {
+		// chatReponse.reply is empty if blocked
+		req.session.levelState[currentLevel].chatHistory.push({
+			completion: null,
+			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+			infoMessage: chatResponse.defenceReport.blockedReason,
+		});
+	}
 	// more error handling
-	if (chatResponse.openAIErrorMessage) {
+	else if (chatResponse.openAIErrorMessage) {
 		handleErrorGettingReply(
 			req,
 			res,
@@ -218,14 +226,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			'Failed to get chatGPT reply'
 		);
 		return;
-	}
-
-	if (chatResponse.defenceReport.isBlocked) {
-		req.session.levelState[currentLevel].chatHistory.push({
-			completion: null,
-			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-			infoMessage: chatResponse.defenceReport.blockedReason,
-		});
 	}
 
 	// update sent emails
