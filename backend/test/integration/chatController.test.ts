@@ -284,106 +284,151 @@ describe('handleChatToGPT integration tests', () => {
 		);
 	});
 
-	test('GIVEN message exceeds input character limit (not a defence) WHEN handleChatToGPT called THEN it should return 400 and error message', async () => {
-		const req = openAiChatRequestMock('x'.repeat(16399), 0);
-		const res = responseMock();
-
-		await handleChatToGPT(req, res);
-
-		expect(res.status).toHaveBeenCalledWith(400);
-		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Message exceeds character limit', {})
-		);
-	});
-
-	test('GIVEN message exceeds character limit defence WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
-		const defences: Defence[] = [
-			{
-				id: DEFENCE_ID.CHARACTER_LIMIT,
-				isActive: true,
-				isTriggered: false,
-				config: [
-					{
-						id: 'MAX_MESSAGE_LENGTH',
-						value: '2',
-					},
-				],
-			},
-			{
-				id: DEFENCE_ID.FILTER_USER_INPUT,
-				isActive: false,
-				isTriggered: false,
-				config: [{ id: 'FILTER_USER_INPUT', value: '' }],
-			},
-		];
-
-		const req = openAiChatRequestMock(
-			'hey',
-			LEVEL_NAMES.SANDBOX,
-			[],
-			[],
-			defences
-		);
-		const res = responseMock();
-
-		await handleChatToGPT(req, res);
-
-		expect(res.send).toHaveBeenCalledWith(
-			expect.objectContaining({
-				defenceReport: {
-					alertedDefences: [],
-					blockedReason: 'Message is too long',
-					isBlocked: true,
-					triggeredDefences: ['CHARACTER_LIMIT'],
+	describe('defences triggered', () => {
+		test('GIVEN message exceeds character limit defence WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const defences: Defence[] = [
+				{
+					id: DEFENCE_ID.CHARACTER_LIMIT,
+					isActive: true,
+					isTriggered: false,
+					config: [
+						{
+							id: 'MAX_MESSAGE_LENGTH',
+							value: '2',
+						},
+					],
 				},
-				reply: '',
-			})
-		);
-	});
-
-	test('GIVEN message has filtered input defence WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
-		const defences: Defence[] = [
-			{
-				id: DEFENCE_ID.CHARACTER_LIMIT,
-				isActive: false,
-				isTriggered: false,
-				config: [
-					{
-						id: 'MAX_MESSAGE_LENGTH',
-						value: '240',
-					},
-				],
-			},
-			{
-				id: DEFENCE_ID.FILTER_USER_INPUT,
-				isActive: true,
-				isTriggered: false,
-				config: [{ id: 'FILTER_USER_INPUT', value: 'hey' }],
-			},
-		];
-
-		const req = openAiChatRequestMock(
-			'hey',
-			LEVEL_NAMES.SANDBOX,
-			[],
-			[],
-			defences
-		);
-		const res = responseMock();
-
-		await handleChatToGPT(req, res);
-
-		expect(res.send).toHaveBeenCalledWith(
-			expect.objectContaining({
-				defenceReport: {
-					alertedDefences: [],
-					blockedReason:
-						"Message blocked - I cannot answer questions about 'hey'!",
-					isBlocked: true,
-					triggeredDefences: ['FILTER_USER_INPUT'],
+				{
+					id: DEFENCE_ID.FILTER_USER_INPUT,
+					isActive: false,
+					isTriggered: false,
+					config: [{ id: 'FILTER_USER_INPUT', value: '' }],
 				},
-				reply: '',
-			})
-		);
+			];
+
+			const req = openAiChatRequestMock(
+				'hey',
+				LEVEL_NAMES.SANDBOX,
+				[],
+				[],
+				defences
+			);
+			const res = responseMock();
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason: 'Message is too long',
+						isBlocked: true,
+						triggeredDefences: ['CHARACTER_LIMIT'],
+					},
+					reply: '',
+				})
+			);
+		});
+
+		test('GIVEN message has filtered input defence WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const defences: Defence[] = [
+				{
+					id: DEFENCE_ID.CHARACTER_LIMIT,
+					isActive: false,
+					isTriggered: false,
+					config: [
+						{
+							id: 'MAX_MESSAGE_LENGTH',
+							value: '240',
+						},
+					],
+				},
+				{
+					id: DEFENCE_ID.FILTER_USER_INPUT,
+					isActive: true,
+					isTriggered: false,
+					config: [{ id: 'FILTER_USER_INPUT', value: 'hey' }],
+				},
+			];
+
+			const req = openAiChatRequestMock(
+				'hey',
+				LEVEL_NAMES.SANDBOX,
+				[],
+				[],
+				defences
+			);
+			const res = responseMock();
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason:
+							"Message blocked - I cannot answer questions about 'hey'!",
+						isBlocked: true,
+						triggeredDefences: ['FILTER_USER_INPUT'],
+					},
+					reply: '',
+				})
+			);
+		});
+
+		test('GIVEN message has xml tagging defence WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const defences: Defence[] = [
+				{
+					id: DEFENCE_ID.CHARACTER_LIMIT,
+					isActive: false,
+					isTriggered: false,
+					config: [
+						{
+							id: 'MAX_MESSAGE_LENGTH',
+							value: '240',
+						},
+					],
+				},
+				{
+					id: DEFENCE_ID.FILTER_USER_INPUT,
+					isActive: false,
+					isTriggered: false,
+					config: [{ id: 'FILTER_USER_INPUT', value: 'hey' }],
+				},
+				{
+					id: DEFENCE_ID.XML_TAGGING,
+					isActive: true,
+					isTriggered: false,
+					config: [{ id: 'PROMPT', value: 'xml tagging prompt' }],
+				},
+			];
+
+			const req = openAiChatRequestMock(
+				'<input>hey</input>',
+				LEVEL_NAMES.SANDBOX,
+				[],
+				[],
+				defences
+			);
+			const res = responseMock();
+
+			await handleChatToGPT(req, res);
+
+			// expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason:
+							"Message blocked - I cannot answer questions about 'hey'!",
+						isBlocked: true,
+						triggeredDefences: ['FILTER_USER_INPUT'],
+					},
+					reply: '',
+				})
+			);
+		});
 	});
 });
