@@ -17,9 +17,9 @@ import {
 	ChatHistoryMessage,
 	ChatModel,
 } from '@src/models/chat';
-import { Defence } from '@src/models/defence';
+import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
-import { LEVEL_NAMES } from '@src/models/level';
+import { LEVEL_NAMES, LevelState } from '@src/models/level';
 
 declare module 'express-session' {
 	interface Session {
@@ -128,6 +128,19 @@ describe('handleChatToGPT unit tests', () => {
 		sentEmails: EmailInfo[] = [],
 		defences: Defence[] = []
 	): OpenAiChatRequest {
+		const emptyLevelStatesUpToChosenLevel = level
+			? [0, 1, 2, 3]
+					.filter((levelNum) => levelNum < level.valueOf())
+					.map(
+						(levelNum) =>
+							({
+								level: levelNum,
+								chatHistory: [],
+								sentEmails: [],
+								defences: [],
+							} as LevelState)
+					)
+			: [];
 		return {
 			body: {
 				currentLevel: level ?? undefined,
@@ -135,6 +148,7 @@ describe('handleChatToGPT unit tests', () => {
 			},
 			session: {
 				levelState: [
+					...emptyLevelStatesUpToChosenLevel,
 					{
 						level: level ?? undefined,
 						chatHistory,
@@ -302,6 +316,97 @@ describe('handleChatToGPT unit tests', () => {
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
 			errorResponseMock('Message exceeds character limit', {})
+		);
+	});
+
+	test('GIVEN message exceeds character limit defence WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+		const defences: Defence[] = [
+			{
+				id: DEFENCE_ID.CHARACTER_LIMIT,
+				isActive: true,
+				isTriggered: false,
+				config: [
+					{
+						id: 'MAX_MESSAGE_LENGTH',
+						value: '2',
+					},
+				],
+			},
+			{
+				id: DEFENCE_ID.FILTER_USER_INPUT,
+				isActive: false,
+				isTriggered: false,
+				config: [{ id: 'FILTER_USER_INPUT', value: '' }],
+			},
+		];
+
+		const req = openAiChatRequestMock(
+			'hey',
+			LEVEL_NAMES.SANDBOX,
+			[],
+			[],
+			defences
+		);
+		const res = responseMock();
+
+		await handleChatToGPT(req, res);
+
+		expect(res.send).toHaveBeenCalledWith(
+			expect.objectContaining({
+				defenceReport: {
+					alertedDefences: [],
+					blockedReason: 'Message is too long',
+					isBlocked: true,
+					triggeredDefences: ['CHARACTER_LIMIT'],
+				},
+				reply: '',
+			})
+		);
+	});
+
+	test('GIVEN message has filtered input defence WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+		const defences: Defence[] = [
+			{
+				id: DEFENCE_ID.CHARACTER_LIMIT,
+				isActive: false,
+				isTriggered: false,
+				config: [
+					{
+						id: 'MAX_MESSAGE_LENGTH',
+						value: '240',
+					},
+				],
+			},
+			{
+				id: DEFENCE_ID.FILTER_USER_INPUT,
+				isActive: true,
+				isTriggered: false,
+				config: [{ id: 'FILTER_USER_INPUT', value: 'hey' }],
+			},
+		];
+
+		const req = openAiChatRequestMock(
+			'hey',
+			LEVEL_NAMES.SANDBOX,
+			[],
+			[],
+			defences
+		);
+		const res = responseMock();
+
+		await handleChatToGPT(req, res);
+
+		expect(res.send).toHaveBeenCalledWith(
+			expect.objectContaining({
+				defenceReport: {
+					alertedDefences: [],
+					blockedReason:
+						"Message blocked - I cannot answer questions about 'hey'!",
+					isBlocked: true,
+					triggeredDefences: ['FILTER_USER_INPUT'],
+				},
+				reply: '',
+			})
 		);
 	});
 });
