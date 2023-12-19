@@ -8,12 +8,14 @@ import {
 	handleClearChatHistory,
 	handleGetChatHistory,
 } from '@src/controller/chatController';
+import { detectTriggeredDefences } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
 	CHAT_MESSAGE_TYPE,
+	ChatDefenceReport,
 	ChatHistoryMessage,
 	ChatModel,
 } from '@src/models/chat';
@@ -46,6 +48,25 @@ jest.mock('openai', () => ({
 		},
 	})),
 }));
+
+// const mockDetectTriggeredDefences = jest.fn();
+// jest.mock('@src/defence', () => {
+// 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+// 	const originalModule = jest.requireActual('@src/defence');
+// 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+// 	return {
+// 		...originalModule,
+// 		detectTriggeredDefences: () => {
+// 			mockDetectTriggeredDefences();
+// 		},
+// 	};
+// });
+
+jest.mock('@src/defence');
+const mockDetectTriggeredDefences =
+	detectTriggeredDefences as jest.MockedFunction<
+		typeof detectTriggeredDefences
+	>;
 
 function responseMock() {
 	return {
@@ -138,6 +159,43 @@ describe('handleChatToGPT unit tests', () => {
 		expect(res.send).toHaveBeenCalledWith(
 			errorResponseMock('Message exceeds character limit', {})
 		);
+	});
+
+	describe('defence triggered', () => {
+		test('GIVEN on sandbox AND character limit defence active AND message exceeds character limit WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const req = openAiChatRequestMock('hey', LEVEL_NAMES.SANDBOX);
+			const res = responseMock();
+
+			mockDetectTriggeredDefences.mockReturnValueOnce(
+				new Promise((resolve, reject) => {
+					try {
+						resolve({
+							blockedReason: 'Message is too long',
+							isBlocked: true,
+							alertedDefences: [],
+							triggeredDefences: ['CHARACTER_LIMIT'],
+						} as ChatDefenceReport);
+					} catch (err) {
+						reject(err);
+					}
+				})
+			);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason: 'Message is too long',
+						isBlocked: true,
+						triggeredDefences: ['CHARACTER_LIMIT'],
+					},
+					reply: '',
+				})
+			);
+		});
 	});
 });
 
