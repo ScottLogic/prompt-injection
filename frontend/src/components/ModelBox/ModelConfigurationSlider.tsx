@@ -33,24 +33,23 @@ function ModelConfigurationSlider({
 
 	return (
 		<fieldset>
-			<div className="model-config-info">
-				<legend>{config.name}</legend>
-				<button
-					className="model-config-info-icon prompt-injection-min-button"
-					title={supportText}
-					aria-label={supportText}
-					onClick={() => {
-						toggleInfo();
-					}}
-				>
-					<AiOutlineInfoCircle aria-hidden />
-				</button>
-			</div>
-			{showInfo && <div className="model-config-info-text">{config.info}</div>}
+			<legend>{config.name}</legend>
+			<button
+				className="info-icon prompt-injection-min-button"
+				title={supportText}
+				aria-label={supportText}
+				onClick={() => {
+					toggleInfo();
+				}}
+			>
+				<AiOutlineInfoCircle aria-hidden />
+			</button>
+			{showInfo && <div className="info-text">{config.info}</div>}
 			<div className="model-config-slider">
 				<Slider
 					aria-label={config.id}
 					getAriaValueText={(value) => `${value}`}
+					aria-labelledby="slider"
 					min={config.min}
 					max={config.max}
 					step={0.1}

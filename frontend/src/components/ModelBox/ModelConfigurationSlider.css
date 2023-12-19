@@ -2,23 +2,22 @@ fieldset {
 	border: none;
 	margin: 0;
 	padding: 0;
-}
-
-.model-config-info {
 	display: flex;
-	align-items: center;
-	padding: 0.5rem 0;
+	flex-direction: column;
 }
 
-.model-config-info legend {
+legend {
 	margin-right: auto;
 }
 
-.model-config-info-icon {
+.info-icon {
 	font-size: 1.3rem;
+	margin-left: auto;
+	margin-top: -1.3rem;
+	margin-bottom: 1rem;
 }
 
-.model-config-info-text {
+.info-text {
 	font-size: 0.875rem;
 }
 
