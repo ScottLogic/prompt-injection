@@ -17,6 +17,7 @@ Go undercover and use prompt injection attacks on ScottBrewBot, a clever but fla
 Activate and configure a number of different prompt injection defence measures to create your own security system. Then talk to the AI and try to crack it!
 
 ## Installation
+Ensure you have Node v18+ installed. Clone this repo and run 
 
 ```bash
 npm ci
