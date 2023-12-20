@@ -49,7 +49,6 @@ function ModelConfigurationSlider({
 				<Slider
 					aria-label={config.id}
 					getAriaValueText={(value) => `${value}`}
-					aria-labelledby="slider"
 					min={config.min}
 					max={config.max}
 					step={0.1}
