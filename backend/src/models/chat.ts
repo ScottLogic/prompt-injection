@@ -71,10 +71,16 @@ interface ChatResponse {
 	openAIErrorMessage: string | null;
 }
 
+interface TransformedChatMessage {
+	preMessage: string;
+	message: string;
+	postMessage: string;
+}
+
 interface ChatHttpResponse {
 	reply: string;
 	defenceReport: ChatDefenceReport;
-	transformedMessage: string;
+	transformedMessage?: TransformedChatMessage;
 	wonLevel: boolean;
 	isError: boolean;
 	openAIErrorMessage: string | null;
@@ -106,6 +112,7 @@ export type {
 	ChatResponse,
 	ChatHttpResponse,
 	ChatHistoryMessage,
+	TransformedChatMessage,
 };
 export {
 	CHAT_MODELS,

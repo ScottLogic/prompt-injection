@@ -51,13 +51,20 @@ interface ChatDefenceReport {
 
 interface ChatMessage {
 	message: string;
+	transformedMessage?: TransformedChatMessage;
 	type: CHAT_MESSAGE_TYPE;
+}
+
+interface TransformedChatMessage {
+	preMessage: string;
+	message: string;
+	postMessage: string;
 }
 
 interface ChatResponse {
 	reply: string;
 	defenceReport: ChatDefenceReport;
-	transformedMessage: string;
+	transformedMessage?: TransformedChatMessage;
 	wonLevel: boolean;
 	isError: boolean;
 	sentEmails: EmailInfo[];
