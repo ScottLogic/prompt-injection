@@ -1,6 +1,8 @@
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
 
+// this enum must match the CHAT_MESSAGE_TYPE enum in the backend exactly
+// because these values are received from the backend when retrieving chat history
 enum CHAT_MESSAGE_TYPE {
 	BOT,
 	BOT_BLOCKED,
