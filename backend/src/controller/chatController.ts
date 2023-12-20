@@ -243,7 +243,7 @@ function simplifyOpenAIErrorMessage(openAIErrorMessage: string) {
 			.find((sentence) => sentence.includes('Please try again in'));
 		return `I'm receiving too many requests. ${tryAgainMessage}. You can upgrade your open AI key to increase the rate limit.`;
 	} else {
-		return openAIErrorMessage;
+		return 'Failed to get ChatGPT reply.';
 	}
 }
 
