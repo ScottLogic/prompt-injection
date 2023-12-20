@@ -12,6 +12,7 @@ import {
 	detectFilterList,
 } from '@src/defence';
 import * as langchain from '@src/langchain';
+import { TransformedChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
@@ -31,6 +32,14 @@ beforeEach(() => {
 		.mocked(langchain.queryPromptEvaluationModel)
 		.mockResolvedValue({ isMalicious: false });
 });
+
+function getXmlTransformedMessage(message: string): TransformedChatMessage {
+	return {
+		preMessage: `${xmlPrompt}<user_input>`,
+		message,
+		postMessage: '</user_input>',
+	};
+}
 
 test('GIVEN defence is not active WHEN activating defence THEN defence is active', () => {
 	const defence = DEFENCE_ID.SYSTEM_ROLE;
@@ -80,7 +89,7 @@ test('GIVEN no defences are active WHEN transforming message THEN message is not
 	const message = 'Hello';
 	const defences = defaultDefences;
 	const transformedMessage = transformMessage(message, defences);
-	expect(transformedMessage).toBe(message);
+	expect(transformedMessage).toBeNull();
 });
 
 test('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed', () => {
@@ -90,9 +99,7 @@ test('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
 	const updatedDefences = activateDefence(DEFENCE_ID.XML_TAGGING, defences);
 	const transformedMessage = transformMessage(message, updatedDefences);
 	// expect the message to be surrounded by XML tags
-	expect(transformedMessage).toBe(
-		`${xmlPrompt}<user_input>${message}</user_input>`
-	);
+	expect(transformedMessage).toStrictEqual(getXmlTransformedMessage(message));
 });
 
 test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN transforming message THEN message is transformed AND transformed message escapes XML tags', () => {
@@ -103,8 +110,8 @@ test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
 	const updatedDefences = activateDefence(DEFENCE_ID.XML_TAGGING, defences);
 	const transformedMessage = transformMessage(message, updatedDefences);
 	// expect the message to be surrounded by XML tags
-	expect(transformedMessage).toBe(
-		`${xmlPrompt}<user_input>${escapedMessage}</user_input>`
+	expect(transformedMessage).toStrictEqual(
+		getXmlTransformedMessage(escapedMessage)
 	);
 });
 

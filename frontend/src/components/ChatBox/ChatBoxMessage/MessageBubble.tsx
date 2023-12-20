@@ -15,18 +15,18 @@ function MessageBubble({
 
 	const messageTypeClassName =
 		message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
-			? 'message-bubble-level-info'
+			? 'level-info'
 			: message.type === CHAT_MESSAGE_TYPE.USER
-			? 'message-bubble-user'
+			? 'user'
 			: message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
-			? 'message-bubble-user-transformed'
+			? 'user transformed'
 			: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
-			? 'message-bubble-error'
+			? 'error'
 			: message.type === CHAT_MESSAGE_TYPE.BOT
-			? 'message-bubble-ai'
-			: 'message-bubble-ai-blocked';
+			? 'bot'
+			: 'bot blocked';
 
-	const positionClassName = `message-bubble-${position}`;
+	const positionClassName = `${position}`;
 
 	const className = clsx(
 		baseClassName,
@@ -35,15 +35,20 @@ function MessageBubble({
 	);
 
 	return (
-		<div className={className} lang="en">
-			{message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED && (
-				<b>Transformed: </b>
-			)}
+		<section className={className} lang="en">
 			{message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
-				<p className="level-info-header">Information</p>
+				<p className="header">Information</p>
 			)}
-			{message.message}
-		</div>
+			{message.transformedMessage ? (
+				<span>
+					{message.transformedMessage.preMessage}
+					<b>{message.transformedMessage.message}</b>
+					{message.transformedMessage.postMessage}
+				</span>
+			) : (
+				message.message
+			)}
+		</section>
 	);
 }
 

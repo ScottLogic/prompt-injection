@@ -101,7 +101,7 @@ describe('handleChatToGPT integration tests', () => {
 				alertedDefences: [],
 				triggeredDefences: [],
 			},
-			transformedMessage: transformedMessage ?? '',
+			transformedMessage: transformedMessage ?? undefined,
 			wonLevel: false,
 			isError: true,
 			sentEmails: [],
@@ -166,7 +166,6 @@ describe('handleChatToGPT integration tests', () => {
 				alertedDefences: [],
 				triggeredDefences: [],
 			},
-			transformedMessage: 'Hello chatbot',
 			wonLevel: false,
 			isError: false,
 			sentEmails: [],
@@ -195,7 +194,6 @@ describe('handleChatToGPT integration tests', () => {
 				alertedDefences: [],
 				triggeredDefences: [],
 			},
-			transformedMessage: 'send an email to bob@example.com saying hi',
 			wonLevel: false,
 			isError: false,
 			sentEmails: [testSentEmail],
@@ -232,7 +230,6 @@ describe('handleChatToGPT integration tests', () => {
 				alertedDefences: [],
 				triggeredDefences: [],
 			},
-			transformedMessage: 'send an email to bob@example.com saying hi',
 			wonLevel: false,
 			isError: false,
 			sentEmails: [testSentEmail],
@@ -252,7 +249,6 @@ describe('handleChatToGPT integration tests', () => {
 		expect(res.status).toHaveBeenCalledWith(500);
 		expect(res.send).toHaveBeenCalledWith(
 			errorResponseMock('Failed to get ChatGPT reply.', {
-				transformedMessage: 'hello',
 				openAIErrorMessage: 'OpenAI error',
 			})
 		);
@@ -276,7 +272,6 @@ describe('handleChatToGPT integration tests', () => {
 			errorResponseMock(
 				"I'm receiving too many requests. Please try again in 20s. You can upgrade your open AI key to increase the rate limit.",
 				{
-					transformedMessage: 'hello',
 					openAIErrorMessage:
 						'429 OpenAI error. yada yada. Please try again in 20s. blah blah blah.',
 				}

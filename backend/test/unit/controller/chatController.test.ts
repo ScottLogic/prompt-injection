@@ -91,7 +91,7 @@ describe('handleChatToGPT unit tests', () => {
 				alertedDefences: [],
 				triggeredDefences: [],
 			},
-			transformedMessage: transformedMessage ?? '',
+			transformedMessage: transformedMessage ?? undefined,
 			wonLevel: false,
 			isError: true,
 			sentEmails: [],
