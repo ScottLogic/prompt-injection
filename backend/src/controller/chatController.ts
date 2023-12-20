@@ -41,6 +41,7 @@ async function handleLowLevelChat(
 	);
 	chatResponse.reply = openAiReply.completion?.content?.toString() ?? '';
 	chatResponse.wonLevel = openAiReply.wonLevel;
+	chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
 }
 
 // handle the chat logic for high levels (with defence detection)
@@ -119,6 +120,9 @@ async function handleHigherLevelChat(
 		// combine blocked reason
 		chatResponse.defenceReport.blockedReason =
 			openAiReply.defenceReport.blockedReason;
+
+		// combine error message
+		chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
 	}
 }
 
@@ -134,6 +138,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		},
 		wonLevel: false,
 		isError: false,
+		openAIErrorMessage: null,
 		sentEmails: [],
 	};
 	const message = req.body.message;
@@ -177,7 +182,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		...req.session.levelState[currentLevel].chatHistory,
 	];
 	try {
-		// skip defence detection / blocking for levels 1 and 2- sets chatResponse obj
+		// skip defence detection / blocking for levels 1 and 2 - sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
 			await handleLowLevelChat(
 				req,
@@ -197,36 +202,77 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				chatModel
 			);
 		}
-
-		// if the reply was blocked then add it to the chat history
-		if (chatResponse.defenceReport.isBlocked) {
-			req.session.levelState[currentLevel].chatHistory.push({
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-				infoMessage: chatResponse.defenceReport.blockedReason,
-			});
-		} else if (!chatResponse.reply || chatResponse.reply === '') {
-			throw new Error('Failed to get chatGPT reply');
-		}
-
-		// update sent emails
-		chatResponse.sentEmails =
-			req.session.levelState[currentLevel].sentEmails.slice(numSentEmails);
 	} catch (error) {
-		// add error message to chat history
-		req.session.levelState[currentLevel].chatHistory.push({
-			completion: null,
-			chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
-			infoMessage: 'Failed to get chatGPT reply',
-		});
-		console.error(error);
-
-		handleChatError(res, chatResponse, true, 'Failed to get chatGPT reply');
+		const errorMessage =
+			error instanceof Error ? error.message : 'Failed to get chatGPT reply';
+		handleErrorGettingReply(req, res, currentLevel, chatResponse, errorMessage);
 		return;
 	}
-	// log and send the reply with defence report
+
+	if (chatResponse.defenceReport.isBlocked) {
+		// chatReponse.reply is empty if blocked
+		req.session.levelState[currentLevel].chatHistory.push({
+			completion: null,
+			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+			infoMessage: chatResponse.defenceReport.blockedReason,
+		});
+	}
+	// more error handling
+	else if (chatResponse.openAIErrorMessage) {
+		handleErrorGettingReply(
+			req,
+			res,
+			currentLevel,
+			chatResponse,
+			simplifyOpenAIErrorMessage(chatResponse.openAIErrorMessage)
+		);
+		return;
+	} else if (!chatResponse.reply) {
+		handleErrorGettingReply(
+			req,
+			res,
+			currentLevel,
+			chatResponse,
+			'Failed to get chatGPT reply'
+		);
+		return;
+	}
+
+	// update sent emails
+	chatResponse.sentEmails =
+		req.session.levelState[currentLevel].sentEmails.slice(numSentEmails);
+
 	console.log(chatResponse);
 	res.send(chatResponse);
+}
+
+function simplifyOpenAIErrorMessage(openAIErrorMessage: string) {
+	if (openAIErrorMessage.startsWith('429')) {
+		const tryAgainMessage = openAIErrorMessage
+			.split('. ')
+			.find((sentence) => sentence.includes('Please try again in'));
+		return `I'm receiving too many requests. ${tryAgainMessage}. You can upgrade your open AI key to increase the rate limit.`;
+	} else {
+		return 'Failed to get ChatGPT reply.';
+	}
+}
+
+function handleErrorGettingReply(
+	req: OpenAiChatRequest,
+	res: Response,
+	currentLevel: LEVEL_NAMES,
+	chatResponse: ChatHttpResponse,
+	errorMessage: string
+) {
+	// add error message to chat history
+	req.session.levelState[currentLevel].chatHistory.push({
+		completion: null,
+		chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+		infoMessage: errorMessage,
+	});
+	console.error(errorMessage);
+
+	handleChatError(res, chatResponse, true, errorMessage);
 }
 
 function handleGetChatHistory(req: OpenAiGetHistoryRequest, res: Response) {

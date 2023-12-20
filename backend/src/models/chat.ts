@@ -68,6 +68,7 @@ interface ChatResponse {
 	completion: ChatCompletionMessageParam | null;
 	defenceReport: ChatDefenceReport;
 	wonLevel: boolean;
+	openAIErrorMessage: string | null;
 }
 
 interface TransformedChatMessage {
@@ -82,6 +83,7 @@ interface ChatHttpResponse {
 	transformedMessage?: TransformedChatMessage;
 	wonLevel: boolean;
 	isError: boolean;
+	openAIErrorMessage: string | null;
 	sentEmails: EmailInfo[];
 }
 

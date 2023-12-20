@@ -2,14 +2,8 @@
 	--horizontal-padding: 1rem;
 	--vertical-padding: 0.5rem;
 	color: var(--email-text-colour);
-	padding-bottom: 1rem;
-	border-radius: 0.625rem;
-	overflow: hidden;
+	--border-radius: 0.625rem;
 	white-space: pre-line;
-}
-
-.sent-email:first-child {
-	padding-bottom: 0;
 }
 
 .sent-email .sent-email-title {
@@ -19,6 +13,8 @@
 	display: flex;
 	gap: 1rem;
 	align-items: center;
+	border-top-left-radius: var(--border-radius);
+	border-top-right-radius: var(--border-radius);
 }
 
 .sent-email .sent-email-main {
@@ -27,6 +23,9 @@
 
 	font-family: courier;
 	font-weight: 400;
+
+	border-bottom-left-radius: var(--border-radius);
+	border-bottom-right-radius: var(--border-radius);
 }
 
 .sent-email .sent-email-main p {
