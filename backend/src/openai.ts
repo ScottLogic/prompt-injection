@@ -188,7 +188,6 @@ async function chatGptCallFunction(
 			}
 		}
 		if (functionName === 'askQuestion') {
-			functionCall.arguments = ''; //todo -remove
 			if (functionCall.arguments) {
 				const params = JSON.parse(
 					functionCall.arguments
