@@ -8,7 +8,6 @@ export interface ThemedButtonProps {
 	appearsDifferentWhenDisabled?: boolean;
 	ariaDisabled?: boolean;
 	ariaLabel?: string;
-	disabled?: boolean;
 	title?: string;
 	onClick: () => void;
 }
@@ -18,16 +17,15 @@ function ThemedButton({
 	appearsDifferentWhenDisabled = true,
 	ariaDisabled = false,
 	ariaLabel,
-	disabled = false,
 	title,
 	onClick,
 }: ThemedButtonProps) {
 	function onClickDisabledCheck() {
-		if (!disabled && !ariaDisabled) onClick();
+		if (!ariaDisabled) onClick();
 	}
 
 	const buttonClass = clsx('themed-button', {
-		disabled: appearsDifferentWhenDisabled && (disabled || ariaDisabled),
+		disabled: appearsDifferentWhenDisabled && ariaDisabled,
 	});
 
 	return (
@@ -36,7 +34,6 @@ function ThemedButton({
 			onClick={onClickDisabledCheck}
 			aria-disabled={ariaDisabled}
 			aria-label={ariaLabel}
-			disabled={disabled}
 			title={title}
 		>
 			{children}

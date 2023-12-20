@@ -13,7 +13,7 @@ function LoadingButton({
 }) {
 	return (
 		<ThemedButton
-			disabled={isLoading}
+			aria-disabled={isLoading}
 			appearsDifferentWhenDisabled={false}
 			{...buttonProps}
 		>
