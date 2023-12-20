@@ -251,7 +251,7 @@ describe('handleChatToGPT integration tests', () => {
 
 		expect(res.status).toHaveBeenCalledWith(500);
 		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('OpenAI error', {
+			errorResponseMock('Failed to get ChatGPT reply.', {
 				transformedMessage: 'hello',
 				openAIErrorMessage: 'OpenAI error',
 			})
