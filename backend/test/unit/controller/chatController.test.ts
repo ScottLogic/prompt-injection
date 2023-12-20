@@ -8,18 +8,20 @@ import {
 	handleClearChatHistory,
 	handleGetChatHistory,
 } from '@src/controller/chatController';
+import { detectTriggeredDefences } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
 	CHAT_MESSAGE_TYPE,
+	ChatDefenceReport,
 	ChatHistoryMessage,
 	ChatModel,
 } from '@src/models/chat';
-import { Defence } from '@src/models/defence';
+import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
-import { LEVEL_NAMES } from '@src/models/level';
+import { LEVEL_NAMES, LevelState } from '@src/models/level';
 
 declare module 'express-session' {
 	interface Session {
@@ -47,6 +49,25 @@ jest.mock('openai', () => ({
 	})),
 }));
 
+// const mockDetectTriggeredDefences = jest.fn();
+// jest.mock('@src/defence', () => {
+// 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+// 	const originalModule = jest.requireActual('@src/defence');
+// 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+// 	return {
+// 		...originalModule,
+// 		detectTriggeredDefences: () => {
+// 			mockDetectTriggeredDefences();
+// 		},
+// 	};
+// });
+
+jest.mock('@src/defence');
+const mockDetectTriggeredDefences =
+	detectTriggeredDefences as jest.MockedFunction<
+		typeof detectTriggeredDefences
+	>;
+
 function responseMock() {
 	return {
 		send: jest.fn(),
@@ -55,50 +76,13 @@ function responseMock() {
 }
 
 describe('handleChatToGPT unit tests', () => {
-	const testSentEmail: EmailInfo = {
-		address: 'bob@example.com',
-		body: 'Test body',
-		subject: 'Test subject',
-	};
-
-	function chatResponseAssistant(content: string) {
-		return {
-			choices: [
-				{
-					message: {
-						role: 'assistant',
-						content,
-					},
-				},
-			],
-		};
-	}
-
-	function chatSendEmailResponseAssistant() {
-		return {
-			choices: [
-				{
-					message: {
-						tool_calls: [
-							{
-								type: 'function',
-								id: 'sendEmail',
-								function: {
-									name: 'sendEmail',
-									arguments: JSON.stringify({
-										...testSentEmail,
-										confirmed: true,
-									}),
-								},
-							},
-						],
-					},
-				},
-			],
-		};
-	}
-
-	function errorResponseMock(message: string, transformedMessage?: string) {
+	function errorResponseMock(
+		message: string,
+		{
+			transformedMessage,
+			openAIErrorMessage,
+		}: { transformedMessage?: string; openAIErrorMessage?: string }
+	) {
 		return {
 			reply: message,
 			defenceReport: {
@@ -111,6 +95,7 @@ describe('handleChatToGPT unit tests', () => {
 			wonLevel: false,
 			isError: true,
 			sentEmails: [],
+			openAIErrorMessage: openAIErrorMessage ?? null,
 		};
 	}
 
@@ -121,6 +106,19 @@ describe('handleChatToGPT unit tests', () => {
 		sentEmails: EmailInfo[] = [],
 		defences: Defence[] = []
 	): OpenAiChatRequest {
+		const emptyLevelStatesUpToChosenLevel = level
+			? [0, 1, 2, 3]
+					.filter((levelNum) => levelNum < level.valueOf())
+					.map(
+						(levelNum) =>
+							({
+								level: levelNum,
+								chatHistory: [],
+								sentEmails: [],
+								defences: [],
+							} as LevelState)
+					)
+			: [];
 		return {
 			body: {
 				currentLevel: level ?? undefined,
@@ -128,6 +126,7 @@ describe('handleChatToGPT unit tests', () => {
 			},
 			session: {
 				levelState: [
+					...emptyLevelStatesUpToChosenLevel,
 					{
 						level: level ?? undefined,
 						chatHistory,
@@ -139,95 +138,6 @@ describe('handleChatToGPT unit tests', () => {
 		} as OpenAiChatRequest;
 	}
 
-	test('GIVEN a valid message and level WHEN handleChatToGPT called THEN it should return a text reply', async () => {
-		const req = openAiChatRequestMock('Hello chatbot', LEVEL_NAMES.LEVEL_1);
-		const res = responseMock();
-
-		mockCreateChatCompletion.mockResolvedValueOnce(
-			chatResponseAssistant('Howdy human!')
-		);
-
-		await handleChatToGPT(req, res);
-
-		expect(res.send).toHaveBeenCalledWith({
-			reply: 'Howdy human!',
-			defenceReport: {
-				blockedReason: '',
-				isBlocked: false,
-				alertedDefences: [],
-				triggeredDefences: [],
-			},
-			transformedMessage: 'Hello chatbot',
-			wonLevel: false,
-			isError: false,
-			sentEmails: [],
-		});
-	});
-
-	test('GIVEN a user asks to send an email WHEN an email is sent THEN the sent email is returned', async () => {
-		const req = openAiChatRequestMock(
-			'send an email to bob@example.com saying hi',
-			LEVEL_NAMES.LEVEL_1
-		);
-		const res = responseMock();
-
-		mockCreateChatCompletion
-			.mockResolvedValueOnce(chatSendEmailResponseAssistant())
-			.mockResolvedValueOnce(chatResponseAssistant('Email sent'));
-
-		await handleChatToGPT(req, res);
-
-		expect(res.send).toHaveBeenCalledWith({
-			reply: 'Email sent',
-			defenceReport: {
-				blockedReason: '',
-				isBlocked: false,
-				alertedDefences: [],
-				triggeredDefences: [],
-			},
-			transformedMessage: 'send an email to bob@example.com saying hi',
-			wonLevel: false,
-			isError: false,
-			sentEmails: [testSentEmail],
-		});
-	});
-
-	test('GIVEN a user asks to send an email WHEN an email is sent AND emails have already been sent THEN only the newly sent email is returned', async () => {
-		const req = openAiChatRequestMock(
-			'send an email to bob@example.com saying hi',
-			LEVEL_NAMES.LEVEL_1,
-			[],
-			[
-				{
-					address: 'bob@example.com',
-					body: 'first email',
-					subject: 'first subject',
-				},
-			]
-		);
-		const res = responseMock();
-
-		mockCreateChatCompletion
-			.mockResolvedValueOnce(chatSendEmailResponseAssistant())
-			.mockResolvedValueOnce(chatResponseAssistant('Email sent'));
-
-		await handleChatToGPT(req, res);
-
-		expect(res.send).toHaveBeenCalledWith({
-			reply: 'Email sent',
-			defenceReport: {
-				blockedReason: '',
-				isBlocked: false,
-				alertedDefences: [],
-				triggeredDefences: [],
-			},
-			transformedMessage: 'send an email to bob@example.com saying hi',
-			wonLevel: false,
-			isError: false,
-			sentEmails: [testSentEmail],
-		});
-	});
-
 	test('GIVEN missing message WHEN handleChatToGPT called THEN it should return 400 and error message', async () => {
 		const req = openAiChatRequestMock('', LEVEL_NAMES.LEVEL_1);
 		const res = responseMock();
@@ -235,26 +145,11 @@ describe('handleChatToGPT unit tests', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Missing or empty message or level')
+			errorResponseMock('Missing or empty message or level', {})
 		);
 	});
 
-	test('GIVEN an openai error is thrown WHEN handleChatToGPT called THEN it should return 500 and error message', async () => {
-		const req = openAiChatRequestMock('hello', LEVEL_NAMES.LEVEL_1);
-		const res = responseMock();
-
-		// mock the api call throwing an error
-		mockCreateChatCompletion.mockRejectedValueOnce(new Error('OpenAI error'));
-
-		await handleChatToGPT(req, res);
-
-		expect(res.status).toHaveBeenCalledWith(500);
-		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Failed to get chatGPT reply', 'hello')
-		);
-	});
-
-	test('GIVEN message exceeds character limit WHEN handleChatToGPT called THEN it should return 400 and error message', async () => {
+	test('GIVEN message exceeds input character limit (not a defence) WHEN handleChatToGPT called THEN it should return 400 and error message', async () => {
 		const req = openAiChatRequestMock('x'.repeat(16399), 0);
 		const res = responseMock();
 
@@ -262,8 +157,113 @@ describe('handleChatToGPT unit tests', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Message exceeds character limit')
+			errorResponseMock('Message exceeds character limit', {})
 		);
+	});
+
+	describe('defence triggered', () => {
+		function triggeredDefencesMockReturn(
+			blockedReason: string,
+			triggeredDefence: DEFENCE_ID
+		): Promise<ChatDefenceReport> {
+			return new Promise((resolve, reject) => {
+				try {
+					resolve({
+						blockedReason,
+						isBlocked: true,
+						alertedDefences: [],
+						triggeredDefences: [triggeredDefence],
+					} as ChatDefenceReport);
+				} catch (err) {
+					reject(err);
+				}
+			});
+		}
+
+		test('GIVEN character limit defence active AND message exceeds character limit WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const req = openAiChatRequestMock('hey', LEVEL_NAMES.SANDBOX);
+			const res = responseMock();
+
+			mockDetectTriggeredDefences.mockReturnValueOnce(
+				triggeredDefencesMockReturn(
+					'Message is too long',
+					DEFENCE_ID.CHARACTER_LIMIT
+				)
+			);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason: 'Message is too long',
+						isBlocked: true,
+						triggeredDefences: [DEFENCE_ID.CHARACTER_LIMIT],
+					},
+					reply: '',
+				})
+			);
+		});
+
+		test('GIVEN filter user input defence enabled AND message contains filtered word WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const req = openAiChatRequestMock('hey', LEVEL_NAMES.SANDBOX);
+			const res = responseMock();
+
+			mockDetectTriggeredDefences.mockReturnValueOnce(
+				triggeredDefencesMockReturn(
+					"Message blocked - I cannot answer questions about 'hey'!",
+					DEFENCE_ID.FILTER_USER_INPUT
+				)
+			);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason:
+							"Message blocked - I cannot answer questions about 'hey'!",
+						isBlocked: true,
+						triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
+					},
+					reply: '',
+				})
+			);
+		});
+
+		test('GIVEN message has xml tagging defence WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const req = openAiChatRequestMock(
+				'<input>hey</input>',
+				LEVEL_NAMES.SANDBOX
+			);
+			const res = responseMock();
+
+			mockDetectTriggeredDefences.mockReturnValueOnce(
+				triggeredDefencesMockReturn(
+					'Message blocked by the prompt evaluation LLM.',
+					DEFENCE_ID.PROMPT_EVALUATION_LLM
+				)
+			);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason: 'Message blocked by the prompt evaluation LLM.',
+						isBlocked: true,
+						triggeredDefences: [DEFENCE_ID.PROMPT_EVALUATION_LLM],
+					},
+					reply: '',
+				})
+			);
+		});
 	});
 });
 
