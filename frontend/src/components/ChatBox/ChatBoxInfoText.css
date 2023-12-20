@@ -5,12 +5,7 @@
 }
 .chat-box-info.info-text {
 	color: var(--chat-info-text-colour);
-	/* background-color: yellow; */
 	margin-top: 0.1rem;
-	/* &:focus {
-		outline-offset: -0.5rem ;
-		padding:0.5rem;
-	} */
 }
 
 .chat-box-info.defence-alerted-text {
