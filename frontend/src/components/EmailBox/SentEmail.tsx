@@ -18,7 +18,8 @@ function SentEmail({ emailDetails }: { emailDetails: EmailInfo }) {
 				<p>
 					<b>Subject:</b> {emailDetails.subject}
 				</p>
-				<hr />
+				<hr aria-hidden />
+				<span className="visually-hidden">Email body: </span>
 				<p>{emailDetails.body}</p>
 			</div>
 		</div>

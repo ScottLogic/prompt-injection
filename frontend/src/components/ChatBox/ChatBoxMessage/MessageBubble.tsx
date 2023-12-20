@@ -35,15 +35,17 @@ function MessageBubble({
 	);
 
 	const messageAuthor =
-		message.type === CHAT_MESSAGE_TYPE.USER
-			? 'You said: '
-			: message.type === CHAT_MESSAGE_TYPE.BOT
-			? 'ScottBrewBot said:  '
-			: message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
+		message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
 			? 'Information message: '
+			: message.type === CHAT_MESSAGE_TYPE.USER
+			? 'You said: '
+			: message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+			? 'Your message transformed by XML tagging: '
 			: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
 			? 'Error message: '
-			: 'unknown message type ';
+			: message.type === CHAT_MESSAGE_TYPE.BOT
+			? 'ScottBrewBot said:  '
+			: 'ScottBrewBot said: ';
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
