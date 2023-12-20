@@ -223,6 +223,7 @@ async function chatGptCallFunction(
 }
 
 async function chatGptChatCompletion(
+	chatResponse: ChatResponse,
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
@@ -291,6 +292,7 @@ async function chatGptChatCompletion(
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error('Error calling createChatCompletion: ', error.message);
+			chatResponse.openAIErrorMessage = error.message;
 		}
 		return null;
 	} finally {
@@ -369,6 +371,7 @@ function getBlankChatResponse(): ChatResponse {
 			triggeredDefences: [],
 		},
 		wonLevel: false,
+		openAIErrorMessage: null,
 	};
 }
 
@@ -452,6 +455,7 @@ async function getFinalReplyAfterAllToolCalls(
 	const chatResponse: ChatResponse = getBlankChatResponse();
 	const openai = getOpenAI();
 	let reply = await chatGptChatCompletion(
+		chatResponse,
 		chatHistory,
 		defences,
 		chatModel,
@@ -479,6 +483,7 @@ async function getFinalReplyAfterAllToolCalls(
 
 		// get a new reply from ChatGPT now that the functions have been called
 		reply = await chatGptChatCompletion(
+			chatResponse,
 			chatHistory,
 			defences,
 			chatModel,
@@ -523,7 +528,7 @@ async function chatGptSendMessage(
 		currentLevel
 	);
 
-	if (!reply?.content) {
+	if (!reply?.content || chatResponse.openAIErrorMessage) {
 		return chatResponse;
 	}
 
