@@ -5,6 +5,7 @@ import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './ControlPanel.css';
+import { MODEL_DEFENCES } from '@src/Defences';
 
 function ControlPanel({
 	currentLevel,
@@ -28,21 +29,13 @@ function ControlPanel({
 }) {
 	function getDefencesConfigure() {
 		return defences.filter((defence) => {
-			return ![
-				DEFENCE_ID.PROMPT_EVALUATION_LLM,
-				DEFENCE_ID.QA_LLM,
-				DEFENCE_ID.SYSTEM_ROLE,
-			].some((id) => id === defence.id);
+			return !MODEL_DEFENCES.some((id) => id === defence.id);
 		});
 	}
 
 	function getDefencesModel() {
 		return defences.filter((defence) => {
-			return [
-				DEFENCE_ID.PROMPT_EVALUATION_LLM,
-				DEFENCE_ID.QA_LLM,
-				DEFENCE_ID.SYSTEM_ROLE,
-			].some((id) => id === defence.id);
+			return MODEL_DEFENCES.some((id) => id === defence.id);
 		});
 	}
 

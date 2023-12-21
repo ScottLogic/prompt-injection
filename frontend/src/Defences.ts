@@ -66,6 +66,13 @@ const DEFENCES_SHOWN_LEVEL3: Defence[] = [
 	),
 
 	makeDefence(
+		DEFENCE_ID.PROMPT_ENCLOSURE,
+		'Prompt Enclosure',
+		'Alter the users input by appending instructional prompts to the beginning or end of promtp',
+		[]
+	),
+
+	makeDefence(
 		DEFENCE_ID.PROMPT_EVALUATION_LLM,
 		'Prompt Evaluation LLM ',
 		'Use an LLM to evaluate the user input for malicious content and prompt injection attacks.',
@@ -89,4 +96,20 @@ const ALL_DEFENCES: Defence[] = [
 	),
 ];
 
-export { DEFENCES_SHOWN_LEVEL3, ALL_DEFENCES };
+const MODEL_DEFENCES = [
+	DEFENCE_ID.PROMPT_EVALUATION_LLM,
+	DEFENCE_ID.QA_LLM,
+	DEFENCE_ID.SYSTEM_ROLE,
+];
+
+const PROMPT_ENCLOSURE_DEFENCES = [
+	DEFENCE_ID.XML_TAGGING,
+	DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+];
+
+export {
+	DEFENCES_SHOWN_LEVEL3,
+	ALL_DEFENCES,
+	MODEL_DEFENCES,
+	PROMPT_ENCLOSURE_DEFENCES,
+};

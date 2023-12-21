@@ -5,18 +5,21 @@ import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { validateDefence } from '@src/service/defenceService';
 
 import DefenceConfiguration from './DefenceConfiguration';
+import PromptEnclosureDefenceConfiguration from './PromptEnclosureDefenceConfiguration';
 
 import './DefenceMechanism.css';
 
 function DefenceMechanism({
 	defenceDetail,
 	showConfigurations,
+	promptEnclosureDefences,
 	toggleDefence,
 	resetDefenceConfiguration,
 	setDefenceConfiguration,
 }: {
 	defenceDetail: Defence;
 	showConfigurations: boolean;
+	promptEnclosureDefences: Defence[];
 	toggleDefence: (defence: Defence) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	setDefenceConfiguration: (
@@ -72,35 +75,48 @@ function DefenceMechanism({
 		>
 			<summary>
 				<span aria-hidden>{defenceDetail.name}</span>
-				<label className="switch">
-					<input
-						type="checkbox"
-						placeholder="defence-toggle"
-						onChange={() => {
-							toggleDefence(defenceDetail);
-						}}
-						// set checked if defence is active
-						checked={defenceDetail.isActive}
-						aria-label={defenceDetail.name}
-					/>
-					<span className="slider round"></span>
-				</label>
+				{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE && (
+					<label className="switch">
+						<input
+							type="checkbox"
+							placeholder="defence-toggle"
+							onChange={() => {
+								toggleDefence(defenceDetail);
+							}}
+							// set checked if defence is active
+							checked={defenceDetail.isActive}
+							aria-label={defenceDetail.name}
+						/>
+						<span className="slider round"></span>
+					</label>
+				)}
 			</summary>
 			<div className="info-box">
 				<p>{defenceDetail.info}</p>
-				{showConfigurations &&
-					defenceDetail.config.map((config) => {
-						return (
-							<DefenceConfiguration
-								defenceId={defenceDetail.id}
-								key={config.id + configKey}
-								isActive={defenceDetail.isActive}
-								config={config}
+
+				{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE
+					? showConfigurations &&
+					  defenceDetail.config.map((config) => {
+							return (
+								<DefenceConfiguration
+									defenceId={defenceDetail.id}
+									key={config.id + configKey}
+									isActive={defenceDetail.isActive}
+									config={config}
+									setConfigurationValue={setConfigurationValue}
+									resetConfigurationValue={resetConfigurationValue}
+								/>
+							);
+					  })
+					: showConfigurations && (
+							<PromptEnclosureDefenceConfiguration
+								defences={promptEnclosureDefences}
+								toggleDefence={toggleDefence}
 								setConfigurationValue={setConfigurationValue}
 								resetConfigurationValue={resetConfigurationValue}
 							/>
-						);
-					})}
+					  )}
+
 				{showConfiguredText &&
 					(configValidated ? (
 						<p className="validation-text">

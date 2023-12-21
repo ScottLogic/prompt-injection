@@ -1,0 +1,38 @@
+.defence-radio-buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.defence-radio-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	gap: 0.5rem;
+	width: 0.75rem;
+	height: 0.75rem;
+	border: 0.125rem solid var(--main-text-colour);
+	border-radius: 50%;
+}
+
+.defence-radio-button input {
+	display: none;
+}
+
+.defence-radio-button .checkmark {
+	width: calc(100% - 0.25rem);
+	height: calc(100% - 0.25rem);
+	background-color: var(--main-text-colour);
+	border-radius: 50%;
+}
+
+.defence-radio-button input:checked + .checkmark {
+	display: inline-block;
+}
+
+.defence-radio-button .label {
+	margin-left: 15rem;
+	white-space: nowrap;
+	text-align: left;
+}

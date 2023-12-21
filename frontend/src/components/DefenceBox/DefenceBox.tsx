@@ -3,6 +3,7 @@ import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import DefenceMechanism from './DefenceMechanism';
 
 import './DefenceBox.css';
+import { PROMPT_ENCLOSURE_DEFENCES } from '@src/Defences';
 
 function DefenceBox({
 	defences,
@@ -21,13 +22,25 @@ function DefenceBox({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 }) {
+	function getPromptEnclosureDefences() {
+		return defences.filter((defence) => {
+			return PROMPT_ENCLOSURE_DEFENCES.some((id) => id === defence.id);
+		});
+	}
+	function getNotPromptEnclosureDefences() {
+		return defences.filter((defence) => {
+			return !PROMPT_ENCLOSURE_DEFENCES.some((id) => id === defence.id);
+		});
+	}
+
 	return (
 		<div className="defence-box">
-			{defences.map((defence, index) => {
+			{getNotPromptEnclosureDefences().map((defence, index) => {
 				return (
 					<DefenceMechanism
 						key={index}
 						defenceDetail={defence}
+						promptEnclosureDefences={getPromptEnclosureDefences()}
 						showConfigurations={showConfigurations}
 						toggleDefence={toggleDefence}
 						resetDefenceConfiguration={resetDefenceConfiguration}
