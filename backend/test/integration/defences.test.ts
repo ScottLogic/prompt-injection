@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { defaultDefences } from '@src/defaultDefences';
 import { activateDefence, detectTriggeredDefences } from '@src/defence';
-import { initPromptEvaluationModel } from '@src/langchain';
 import { DEFENCE_ID } from '@src/models/defence';
-import { promptEvalPrompt } from '@src/promptTemplates';
 
 // Define a mock implementation for the createChatCompletion method
 const mockCall = jest.fn();
@@ -29,11 +27,6 @@ jest.mock('@src/openai', () => {
 			return ['gpt-3', 'gpt-3.5-turbo', 'gpt-4'];
 		}),
 	};
-});
-
-beforeEach(() => {
-	// init langchain
-	initPromptEvaluationModel(promptEvalPrompt);
 });
 
 afterEach(() => {

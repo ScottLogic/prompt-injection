@@ -1,6 +1,5 @@
 /* eslint-disable import/order */
 import {
-	initPromptEvaluationModel,
 	queryDocuments,
 	queryPromptEvaluationModel,
 	initDocumentVectors,
@@ -148,9 +147,9 @@ beforeEach(() => {
 });
 
 describe('langchain integration tests ', () => {
-	test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', () => {
+	test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', async () => {
 		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-		initPromptEvaluationModel(promptEvalPrompt);
+		await queryPromptEvaluationModel('some input', promptEvalPrompt);
 		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 		expect(mockFromTemplate).toHaveBeenCalledWith(
 			`${promptEvalPrompt}\n${promptEvalContextTemplate}`
@@ -235,7 +234,7 @@ describe('langchain integration tests ', () => {
 	test('GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it does not respond in the correct format THEN it returns a final decision of false', async () => {
 		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
 
-		initPromptEvaluationModel('Prompt');
+		await queryPromptEvaluationModel('some input', 'prompt');
 
 		mockCall.mockResolvedValue({
 			promptEvalOutput: 'idk!',
@@ -283,13 +282,13 @@ describe('langchain integration tests ', () => {
 		});
 	});
 
-	test('GIVEN the users api key supports GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with GPT-4', () => {
+	test('GIVEN the users api key supports GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with GPT-4', async () => {
 		mockValidModels = ['gpt-4', 'gpt-3.5-turbo', 'gpt-3'];
 
 		const prompt = 'this is a test prompt. ';
 
 		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-		initPromptEvaluationModel(prompt);
+		await queryPromptEvaluationModel('some input', prompt);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
 			modelName: 'gpt-4',
@@ -298,13 +297,13 @@ describe('langchain integration tests ', () => {
 		});
 	});
 
-	test('GIVEN the users api key does not support GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with gpt-3.5-turbo', () => {
+	test('GIVEN the users api key does not support GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with gpt-3.5-turbo', async () => {
 		mockValidModels = ['gpt-2', 'gpt-3.5-turbo', 'gpt-3'];
 
 		const prompt = 'this is a test prompt. ';
 
 		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-		initPromptEvaluationModel(prompt);
+		await queryPromptEvaluationModel('some input', prompt);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
 			modelName: 'gpt-3.5-turbo',

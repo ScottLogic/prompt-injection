@@ -210,7 +210,6 @@ function formatEvaluationOutput(response: string) {
 
 export const setVectorisedDocuments = vectorisedDocuments.set;
 export {
-	initPromptEvaluationModel,
 	queryDocuments,
 	queryPromptEvaluationModel,
 	formatEvaluationOutput,
