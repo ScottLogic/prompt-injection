@@ -1,15 +1,17 @@
-import { ThemedButtonProps } from './ThemedButton';
-
 import './OverlayButton.css';
 
-function OverlayButton({
-	children,
-	onClick,
-}: Pick<ThemedButtonProps, 'children' | 'onClick'>) {
+interface OverlayButtonProps {
+	children: React.ReactNode;
+	onClick: () => void;
+}
+
+function OverlayButton({ children, onClick }: OverlayButtonProps) {
 	return (
 		<button className="overlay-button" onClick={onClick}>
 			{children}
 		</button>
 	);
 }
+
 export default OverlayButton;
+export type { OverlayButtonProps };

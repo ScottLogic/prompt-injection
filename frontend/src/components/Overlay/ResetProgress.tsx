@@ -1,4 +1,4 @@
-import ResetProgressButtons from '@src/components/ThemedButtons/ResetProgressButtons';
+import OverlayChoiceButtons from '@src/components/ThemedButtons/OverlayChoiceButtons';
 
 import Overlay from './Overlay';
 
@@ -21,9 +21,17 @@ function ResetProgressOverlay({
 							However any configurations you have made to defences in sandbox mode will not be lost.
 							Are you sure you want to do this?`}
 				</p>
-				<ResetProgressButtons
-					resetProgress={resetProgress}
-					closeOverlay={closeOverlay}
+				<OverlayChoiceButtons
+					button1={{
+						children: 'Reset',
+						onClick: () => {
+							void resetProgress();
+						},
+					}}
+					button2={{
+						children: 'Cancel',
+						onClick: closeOverlay,
+					}}
 				/>
 			</div>
 		</Overlay>
