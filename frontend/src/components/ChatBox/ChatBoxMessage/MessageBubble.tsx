@@ -36,7 +36,7 @@ function MessageBubble({
 
 	const messageAuthor =
 		message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
-			? 'Information message: '
+			? ''
 			: message.type === CHAT_MESSAGE_TYPE.USER
 			? 'You said: '
 			: message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
@@ -54,12 +54,13 @@ function MessageBubble({
 				<b>Transformed: </b>
 			)}
 			{message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
-				<p className="level-info-header">Information</p>
+				<>
+					<p className="level-info-header">Information</p>
+					<span className="visually-hidden"> message</span>
+				</>
 			)}
-			<p>
-				<span className="visually-hidden">{messageAuthor}</span>
-				{message.message}
-			</p>
+			<span className="visually-hidden">{messageAuthor}</span>
+			{message.message}
 		</section>
 	);
 }
