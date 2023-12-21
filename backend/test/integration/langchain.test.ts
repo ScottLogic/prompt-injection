@@ -1,7 +1,6 @@
 /* eslint-disable import/order */
 import {
 	initPromptEvaluationModel,
-	initQAModel,
 	queryDocuments,
 	queryPromptEvaluationModel,
 	initDocumentVectors,
@@ -158,13 +157,13 @@ describe('langchain integration tests ', () => {
 		);
 	});
 
-	test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is initialised THEN the llm is initialised and the prompt is set to the default', () => {
+	test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is initialised THEN the llm is initialised and the prompt is set to the default', async () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = '';
 
 		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-		initQAModel(level, prompt);
+		await queryDocuments('some question', prompt, level);
 		expect(mockFromLLM).toHaveBeenCalledTimes(1);
 		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 		expect(mockFromTemplate).toHaveBeenCalledWith(
@@ -172,13 +171,13 @@ describe('langchain integration tests ', () => {
 		);
 	});
 
-	test('GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialised and prompt is set to the correct prompt ', () => {
+	test('GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialised and prompt is set to the correct prompt ', async () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = 'this is a test prompt. ';
 
 		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-		initQAModel(level, prompt);
+		await queryDocuments('some question', prompt, level);
 		expect(mockFromLLM).toHaveBeenCalledTimes(1);
 		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 		expect(mockFromTemplate).toHaveBeenCalledWith(
@@ -250,7 +249,7 @@ describe('langchain integration tests ', () => {
 		});
 	});
 
-	test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised THEN it is initialised with GPT-4', () => {
+	test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised THEN it is initialised with GPT-4', async () => {
 		mockValidModels = ['gpt-4', 'gpt-3.5-turbo', 'gpt-3'];
 
 		const level = LEVEL_NAMES.LEVEL_1;
@@ -258,7 +257,7 @@ describe('langchain integration tests ', () => {
 
 		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-		initQAModel(level, prompt);
+		await queryDocuments('some question', prompt, level);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
 			modelName: 'gpt-4',
@@ -267,7 +266,7 @@ describe('langchain integration tests ', () => {
 		});
 	});
 
-	test('GIVEN the users api key does not support GPT-4 WHEN the QA model is initialised THEN it is initialised with gpt-3.5-turbo', () => {
+	test('GIVEN the users api key does not support GPT-4 WHEN the QA model is initialised THEN it is initialised with gpt-3.5-turbo', async () => {
 		mockValidModels = ['gpt-2', 'gpt-3.5-turbo', 'gpt-3'];
 
 		const level = LEVEL_NAMES.LEVEL_1;
@@ -275,7 +274,7 @@ describe('langchain integration tests ', () => {
 
 		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-		initQAModel(level, prompt);
+		await queryDocuments('some question', prompt, level);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
 			modelName: 'gpt-3.5-turbo',
