@@ -223,6 +223,14 @@ async function detectTriggeredDefences(message: string, defences: Defence[]) {
 
 	return defenceReport;
 }
+function getEmptyChatDefenceReport(): ChatDefenceReport {
+	return {
+		blockedReason: null,
+		isBlocked: false,
+		alertedDefences: [],
+		triggeredDefences: [],
+	};
+}
 
 function detectCharacterLimit(
 	defenceReport: ChatDefenceReport,
@@ -230,7 +238,7 @@ function detectCharacterLimit(
 	defences: Defence[]
 ) {
 	const maxMessageLength = Number(getMaxMessageLength(defences));
-	// check if the message is too long
+
 	if (message.length > maxMessageLength) {
 		console.debug('CHARACTER_LIMIT defence triggered.');
 		// check if the defence is active
@@ -244,8 +252,10 @@ function detectCharacterLimit(
 			// add the defence to the list of alerted defences
 			defenceReport.alertedDefences.push(DEFENCE_ID.CHARACTER_LIMIT);
 		}
+		return defenceReport;
+	} else {
+		return getEmptyChatDefenceReport();
 	}
-	return defenceReport;
 }
 
 function detectFilterUserInput(
