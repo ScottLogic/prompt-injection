@@ -104,6 +104,22 @@ function getSystemRole(
 	}
 }
 
+function getRandomSequenceEnclosurePrePrompt(defences: Defence[]) {
+	return getConfigValue(
+		defences,
+		DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+		'PROMPT'
+	);
+}
+
+function getRandomSequenceEnclosureLength(defences: Defence[]) {
+	return getConfigValue(
+		defences,
+		DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+		'SEQUENCE_LENGTH'
+	);
+}
+
 function getQAPromptFromConfig(defences: Defence[]) {
 	return getConfigValue(defences, DEFENCE_ID.QA_LLM, 'PROMPT');
 }
@@ -178,6 +194,33 @@ function transformXmlTagging(
 	};
 }
 
+function generateRandomString(string_length: number) {
+	let random_string = '';
+	for (let i = 0; i < string_length; i++) {
+		const random_ascii: number = Math.floor(Math.random() * 25 + 97);
+		random_string += String.fromCharCode(random_ascii);
+	}
+	return random_string;
+}
+
+// apply random sequence enclosure defense to input message
+function transformRandomSequenceEnclosure(
+	message: string,
+	defences: Defence[]
+): TransformedChatMessage {
+	console.debug('Random Sequence Enclosure defence active.');
+	const randomString: string = generateRandomString(
+		Number(getRandomSequenceEnclosureLength(defences))
+	);
+	const openTag = randomString.concat(' {{ ');
+	const closeTag = ' }} '.concat(randomString);
+	return {
+		preMessage: getRandomSequenceEnclosurePrePrompt(defences).concat(openTag),
+		message,
+		postMessage: closeTag,
+	};
+}
+
 function combineTransformedMessage(transformedMessage: TransformedChatMessage) {
 	return (
 		transformedMessage.preMessage +
@@ -193,6 +236,17 @@ function transformMessage(
 ): TransformedChatMessage | null {
 	if (isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)) {
 		const transformedMessage = transformXmlTagging(message, defences);
+		console.debug(
+			`Defences applied. Transformed message: ${combineTransformedMessage(
+				transformedMessage
+			)}`
+		);
+		return transformedMessage;
+	} else if (isDefenceActive(DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE, defences)) {
+		const transformedMessage = transformRandomSequenceEnclosure(
+			message,
+			defences
+		);
 		console.debug(
 			`Defences applied. Transformed message: ${combineTransformedMessage(
 				transformedMessage

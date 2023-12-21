@@ -499,6 +499,8 @@ async function chatGptSendMessage(
 ) {
 	console.log(`User message: '${message}'`);
 
+	console.log('messageIsTransformed', messageIsTransformed);
+
 	// add user message to chat
 	pushCompletionToHistory(
 		chatHistory,

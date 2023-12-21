@@ -1,7 +1,9 @@
+import { create } from 'domain';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from './models/defence';
 import {
 	promptEvalPrompt,
 	qAPromptSecure,
+	randomSequenceEnclosurePrompt,
 	systemRoleDefault,
 	xmlPrompt,
 } from './promptTemplates';
@@ -44,6 +46,16 @@ const defaultDefences: Defence[] = [
 		{
 			id: 'PROMPT',
 			value: xmlPrompt,
+		},
+	]),
+	createDefence(DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE, [
+		{
+			id: 'PROMPT',
+			value: randomSequenceEnclosurePrompt,
+		},
+		{
+			id: 'SEQUENCE_LENGTH',
+			value: String(10),
 		},
 	]),
 	createDefence(DEFENCE_ID.FILTER_USER_INPUT, [
