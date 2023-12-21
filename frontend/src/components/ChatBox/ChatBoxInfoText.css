@@ -6,7 +6,7 @@
 }
 .chat-box-info.info-text {
 	color: var(--chat-info-text-colour);
-	margin-top: 0.1rem;
+	margin: 0.1rem 0.1rem;
 }
 
 .chat-box-info.defence-alerted-text {
@@ -15,13 +15,14 @@
 
 .chat-box-info.defence-triggered-text {
 	color: var(--chat-triggered-text-colour);
+	margin-bottom: 0.1rem;
 }
 
 .chat-box-info.reset-level-text {
 	color: var(--chat-info-text-colour);
 	border-bottom: 1px solid var(--chat-reset-level-line-colour);
 	line-height: 0.1em;
-	margin: 0.6rem 0 0.5rem;
+	margin: 0.6rem 0.1rem;
 	&:focus {
 		outline-offset: 0.5rem;
 	}

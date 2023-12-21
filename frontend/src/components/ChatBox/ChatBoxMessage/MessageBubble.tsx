@@ -38,14 +38,12 @@ function MessageBubble({
 		message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
 			? ''
 			: message.type === CHAT_MESSAGE_TYPE.USER
-			? 'You said: '
+			? 'You said:'
 			: message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
 			? 'Your message transformed by XML tagging: '
 			: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
-			? 'Error message: '
-			: message.type === CHAT_MESSAGE_TYPE.BOT
-			? 'ScottBrewBot said:  '
-			: 'ScottBrewBot said: ';
+			? 'Error message:'
+			: 'ScottBrewBot said:';
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
