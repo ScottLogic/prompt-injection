@@ -20,8 +20,7 @@ function MainBody({
 	addSentEmails,
 	resetDefenceConfiguration,
 	resetLevel,
-	setDefenceActive,
-	setDefenceInactive,
+	toggleDefence,
 	setDefenceConfiguration,
 	incrementNumCompletedLevels,
 	openLevelsCompleteOverlay,
@@ -36,8 +35,7 @@ function MainBody({
 	addSentEmails: (emails: EmailInfo[]) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	resetLevel: () => void;
-	setDefenceActive: (defence: Defence) => void;
-	setDefenceInactive: (defence: Defence) => void;
+	toggleDefence: (defence: Defence) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
@@ -68,9 +66,8 @@ function MainBody({
 					currentLevel={currentLevel}
 					defences={defences}
 					chatModelOptions={chatModels}
+					toggleDefence={toggleDefence}
 					resetDefenceConfiguration={resetDefenceConfiguration}
-					setDefenceActive={setDefenceActive}
-					setDefenceInactive={setDefenceInactive}
 					setDefenceConfiguration={setDefenceConfiguration}
 					openDocumentViewer={openDocumentViewer}
 				/>

@@ -1,6 +1,8 @@
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
 
+// this enum must match the CHAT_MESSAGE_TYPE enum in the backend exactly
+// because these values are received from the backend when retrieving chat history
 enum CHAT_MESSAGE_TYPE {
 	BOT,
 	BOT_BLOCKED,
@@ -10,6 +12,8 @@ enum CHAT_MESSAGE_TYPE {
 	LEVEL_INFO,
 	DEFENCE_ALERTED,
 	DEFENCE_TRIGGERED,
+	SYSTEM,
+	FUNCTION_CALL,
 	ERROR_MSG,
 	RESET_LEVEL,
 }
@@ -51,13 +55,20 @@ interface ChatDefenceReport {
 
 interface ChatMessage {
 	message: string;
+	transformedMessage?: TransformedChatMessage;
 	type: CHAT_MESSAGE_TYPE;
+}
+
+interface TransformedChatMessage {
+	preMessage: string;
+	message: string;
+	postMessage: string;
 }
 
 interface ChatResponse {
 	reply: string;
 	defenceReport: ChatDefenceReport;
-	transformedMessage: string;
+	transformedMessage?: TransformedChatMessage;
 	wonLevel: boolean;
 	isError: boolean;
 	sentEmails: EmailInfo[];

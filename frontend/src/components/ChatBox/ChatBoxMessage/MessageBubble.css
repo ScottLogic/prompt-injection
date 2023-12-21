@@ -12,47 +12,53 @@
 	white-space: pre-line;
 }
 
-.message-bubble-ai {
+.message-bubble.bot {
 	border-color: var(--chat-bot-border-colour);
 	background-color: var(--chat-bot-background-colour);
 }
 
-.message-bubble-ai-blocked {
+.message-bubble.blocked {
 	border-color: var(--chat-blocked-border-colour);
 	background-color: var(--chat-blocked-background-colour);
 }
 
-.message-bubble-error {
+.message-bubble.error {
 	border-color: var(--chat-blocked-border-colour);
 	background-color: var(--chat-blocked-background-colour);
 }
 
-.message-bubble-user {
+.message-bubble.user {
 	border-color: var(--chat-user-border-colour);
 	background-color: var(--chat-user-background-colour);
 	color: var(--main-text-colour);
 }
 
-.message-bubble-user-transformed {
+.message-bubble.transformed {
 	background-color: var(--chat-transformed-background-colour);
+	border-color: var(--chat-transformed-border-colour);
+	color: var(--chat-transformed-text-colour);
 }
 
-.message-bubble-level-info .level-info-header {
-	font-weight: bold;
-	margin-top: 0;
-	margin-bottom: 0.3125rem;
+.message-bubble.transformed b {
+	color: var(--chat-transformed-text-highlight-colour);
 }
 
-.message-bubble-level-info {
+.message-bubble.level-info {
 	background-color: var(--email-background-colour);
 	color: var(--chat-level-info-text-colour);
 	max-width: 100%;
 }
 
-.message-bubble-left {
+.message-bubble.level-info .header {
+	font-weight: bold;
+	margin-top: 0;
+	margin-bottom: 0.3125rem;
+}
+
+.message-bubble.left {
 	border-top-left-radius: 0;
 }
 
-.message-bubble-right {
+.message-bubble.right {
 	border-top-right-radius: 0;
 }

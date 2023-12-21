@@ -1,3 +1,8 @@
+.loading-button.themed-button.disabled {
+	background-color: var(--action-button-background-colour);
+	color: var(--action-button-text-colour);
+}
+
 .loader {
 	position: absolute;
 	background-color: inherit;
