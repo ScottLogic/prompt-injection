@@ -7,17 +7,15 @@ import './DefenceBox.css';
 function DefenceBox({
 	defences,
 	showConfigurations,
+	toggleDefence,
 	resetDefenceConfiguration,
-	setDefenceActive,
-	setDefenceInactive,
 	setDefenceConfiguration,
 }: {
 	currentLevel: number;
 	defences: Defence[];
 	showConfigurations: boolean;
+	toggleDefence: (defence: Defence) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
-	setDefenceActive: (defence: Defence) => void;
-	setDefenceInactive: (defence: Defence) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
@@ -31,9 +29,8 @@ function DefenceBox({
 						key={index}
 						defenceDetail={defence}
 						showConfigurations={showConfigurations}
+						toggleDefence={toggleDefence}
 						resetDefenceConfiguration={resetDefenceConfiguration}
-						setDefenceActive={setDefenceActive}
-						setDefenceInactive={setDefenceInactive}
 						setDefenceConfiguration={setDefenceConfiguration}
 					/>
 				);

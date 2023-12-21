@@ -11,16 +11,14 @@ import './DefenceMechanism.css';
 function DefenceMechanism({
 	defenceDetail,
 	showConfigurations,
+	toggleDefence,
 	resetDefenceConfiguration,
-	setDefenceActive,
-	setDefenceInactive,
 	setDefenceConfiguration,
 }: {
 	defenceDetail: Defence;
 	showConfigurations: boolean;
+	toggleDefence: (defence: Defence) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
-	setDefenceActive: (defence: Defence) => void;
-	setDefenceInactive: (defence: Defence) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
@@ -63,13 +61,6 @@ function DefenceMechanism({
 			showDefenceConfiguredText(false);
 		}
 	}
-
-	function toggleDefence() {
-		defenceDetail.isActive
-			? setDefenceInactive(defenceDetail)
-			: setDefenceActive(defenceDetail);
-	}
-
 	return (
 		<details
 			className="defence-mechanism"
@@ -85,7 +76,9 @@ function DefenceMechanism({
 					<input
 						type="checkbox"
 						placeholder="defence-toggle"
-						onChange={toggleDefence}
+						onChange={() => {
+							toggleDefence(defenceDetail);
+						}}
 						// set checked if defence is active
 						checked={defenceDetail.isActive}
 						aria-label={defenceDetail.name}

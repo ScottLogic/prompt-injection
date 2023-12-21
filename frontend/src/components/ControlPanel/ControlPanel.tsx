@@ -10,18 +10,16 @@ function ControlPanel({
 	currentLevel,
 	defences,
 	chatModelOptions,
+	toggleDefence,
 	resetDefenceConfiguration,
-	setDefenceActive,
-	setDefenceInactive,
 	setDefenceConfiguration,
 	openDocumentViewer,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
 	chatModelOptions: string[];
+	toggleDefence: (defence: Defence) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
-	setDefenceActive: (defence: Defence) => void;
-	setDefenceInactive: (defence: Defence) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
@@ -66,8 +64,7 @@ function ControlPanel({
 							defences={getDefencesConfigure()}
 							showConfigurations={showConfigurations}
 							resetDefenceConfiguration={resetDefenceConfiguration}
-							setDefenceActive={setDefenceActive}
-							setDefenceInactive={setDefenceInactive}
+							toggleDefence={toggleDefence}
 							setDefenceConfiguration={setDefenceConfiguration}
 						/>
 					</details>
@@ -80,9 +77,8 @@ function ControlPanel({
 							currentLevel={currentLevel}
 							defences={getDefencesModel()}
 							showConfigurations={showConfigurations}
+							toggleDefence={toggleDefence}
 							resetDefenceConfiguration={resetDefenceConfiguration}
-							setDefenceActive={setDefenceActive}
-							setDefenceInactive={setDefenceInactive}
 							setDefenceConfiguration={setDefenceConfiguration}
 						/>
 

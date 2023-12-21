@@ -16,23 +16,13 @@ async function getDefences(level: number) {
 	return (await response.json()) as Defence[];
 }
 
-async function activateDefence(
-	defenceId: string,
+async function toggleDefence(
+	defenceId: DEFENCE_ID,
+	isActive: boolean,
 	level: number
 ): Promise<boolean> {
-	const response = await sendRequest(`${PATH}activate`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ defenceId, level }),
-	});
-	return response.status === 200;
-}
-
-async function deactivateDefence(
-	defenceId: string,
-	level: number
-): Promise<boolean> {
-	const response = await sendRequest(`${PATH}deactivate`, {
+	const requestPath = isActive ? 'deactivate' : 'activate';
+	const response = await sendRequest(`${PATH}${requestPath}`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -112,8 +102,7 @@ async function resetActiveDefences(level: number) {
 
 export {
 	getDefences,
-	activateDefence,
-	deactivateDefence,
+	toggleDefence,
 	configureDefence,
 	resetDefenceConfig,
 	resetActiveDefences,
