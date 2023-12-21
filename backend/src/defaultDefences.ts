@@ -1,4 +1,3 @@
-import { create } from 'domain';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from './models/defence';
 import {
 	promptEvalPrompt,

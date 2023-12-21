@@ -77,13 +77,21 @@ function validateFilterConfig(config: string) {
 	return config === '' || !commaPattern.test(config);
 }
 
-function validateDefence(id: string, config: string) {
-	switch (id) {
+function validateDefence(
+	defenceId: DEFENCE_ID,
+	configId: string,
+	config: string
+) {
+	switch (defenceId) {
 		case DEFENCE_ID.CHARACTER_LIMIT:
 			return validatePositiveNumberConfig(config);
 		case DEFENCE_ID.FILTER_USER_INPUT:
 		case DEFENCE_ID.FILTER_BOT_OUTPUT:
 			return validateFilterConfig(config);
+		case DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE:
+			return configId === 'SEQUENCE_LENGTH'
+				? validatePositiveNumberConfig(config)
+				: validateNonEmptyStringConfig(config);
 		default:
 			return validateNonEmptyStringConfig(config);
 	}
