@@ -63,7 +63,7 @@ function MainBody({
 
 	return (
 		<main className="main-area">
-			<div className="side-bar">
+			<div className="left-side-bar">
 				<ControlPanel
 					currentLevel={currentLevel}
 					defences={defences}
@@ -89,7 +89,7 @@ function MainBody({
 					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				/>
 			</div>
-			<div className="side-bar">
+			<div className="right-side-bar">
 				<EmailBox emails={emails} />
 			</div>
 		</main>
