@@ -10,4 +10,5 @@
 .button-area {
 	display: flex;
 	justify-content: center;
+	padding-bottom: 0.25rem;
 }
