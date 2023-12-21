@@ -208,5 +208,4 @@ function formatEvaluationOutput(response: string) {
 	}
 }
 
-export const setVectorisedDocuments = vectorisedDocuments.set;
 export { queryDocuments, queryPromptEvaluationModel, initDocumentVectors };

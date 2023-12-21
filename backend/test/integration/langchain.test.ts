@@ -3,9 +3,7 @@ import {
 	queryDocuments,
 	queryPromptEvaluationModel,
 	initDocumentVectors,
-	setVectorisedDocuments,
 } from '@src/langchain';
-import { DocumentsVector } from '@src/models/document';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
 	qAPrompt,
@@ -60,27 +58,6 @@ jest.mock('langchain/vectorstores/memory', () => {
 		},
 	};
 });
-
-class MockMemoryStore {
-	input: string;
-	constructor(input: string) {
-		this.input = input;
-	}
-	// eslint-disable-next-line @typescript-eslint/require-await
-	async asRetriever() {
-		mockAsRetriever();
-	}
-}
-
-class MockDocumentsVector implements DocumentsVector {
-	level: LEVEL_NAMES;
-	docVector: any;
-	constructor(level: LEVEL_NAMES, docVector: any) {
-		this.level = level;
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		this.docVector = new MockMemoryStore(docVector);
-	}
-}
 
 // mock DirectoryLoader
 jest.mock('langchain/document_loaders/fs/directory', () => {
@@ -141,9 +118,6 @@ beforeEach(() => {
 	process.env = {
 		OPENAI_API_KEY: 'sk-12345',
 	};
-
-	// reset the documents
-	setVectorisedDocuments([]);
 });
 
 afterEach(() => {
@@ -153,6 +127,16 @@ afterEach(() => {
 });
 
 describe('langchain integration tests ', () => {
+	test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {
+		const numberOfCalls = 4 + 1; // number of levels + common
+
+		mockSplitDocuments.mockResolvedValue([]);
+
+		await initDocumentVectors();
+		expect(mockLoader).toHaveBeenCalledTimes(numberOfCalls);
+		expect(mockSplitDocuments).toHaveBeenCalledTimes(numberOfCalls);
+	});
+
 	test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', async () => {
 		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
 		await queryPromptEvaluationModel('some input', promptEvalPrompt);
@@ -166,7 +150,6 @@ describe('langchain integration tests ', () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = '';
 
-		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		await queryDocuments('some question', prompt, level);
 		expect(mockFromLLM).toHaveBeenCalledTimes(1);
@@ -180,7 +163,6 @@ describe('langchain integration tests ', () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = 'this is a test prompt. ';
 
-		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		await queryDocuments('some question', prompt, level);
 		expect(mockFromLLM).toHaveBeenCalledTimes(1);
@@ -190,21 +172,10 @@ describe('langchain integration tests ', () => {
 		);
 	});
 
-	test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {
-		const numberOfCalls = 4 + 1; // number of levels + common
-
-		mockSplitDocuments.mockResolvedValue([]);
-
-		await initDocumentVectors();
-		expect(mockLoader).toHaveBeenCalledTimes(numberOfCalls);
-		expect(mockSplitDocuments).toHaveBeenCalledTimes(numberOfCalls);
-	});
-
 	test('GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it answers ', async () => {
 		const question = 'who is the CEO?';
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = '';
-		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		mockCall.mockResolvedValueOnce({
@@ -260,7 +231,6 @@ describe('langchain integration tests ', () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = 'this is a test prompt. ';
 
-		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		await queryDocuments('some question', prompt, level);
 
@@ -277,7 +247,6 @@ describe('langchain integration tests ', () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = 'this is a test prompt. ';
 
-		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		await queryDocuments('some question', prompt, level);
 
