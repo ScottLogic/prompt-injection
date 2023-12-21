@@ -34,11 +34,29 @@ function MessageBubble({
 		positionClassName
 	);
 
+	const messageAuthor =
+		message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
+			? ''
+			: message.type === CHAT_MESSAGE_TYPE.USER
+			? 'You said: '
+			: message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+			? 'Your message transformed by XML tagging: '
+			: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
+			? 'Error message: '
+			: message.type === CHAT_MESSAGE_TYPE.BOT
+			? 'ScottBrewBot said:  '
+			: 'ScottBrewBot said: ';
+
 	return (
-		<section className={className} lang="en">
+		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+		<section className={className} lang="en" tabIndex={0}>
 			{message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
-				<p className="header">Information</p>
+				<>
+					<p className="header">Information</p>
+					<span className="visually-hidden"> message: </span>
+				</>
 			)}
+			<span className="visually-hidden">{messageAuthor}</span>
 			{message.transformedMessage ? (
 				<span>
 					{message.transformedMessage.preMessage}
