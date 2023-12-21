@@ -36,6 +36,7 @@ function MainHeader({
 					}
 					alt="Spy Logic"
 				/>
+				<h1 className="visually-hidden">Spy Logic</h1>
 			</span>
 			<span className="main-header-middle">
 				<span className="main-header-level">Level</span>
