@@ -23,8 +23,9 @@ function MainBody({
 	toggleDefence,
 	setDefenceConfiguration,
 	incrementNumCompletedLevels,
-	openLevelsCompleteOverlay,
 	openDocumentViewer,
+	openLevelsCompleteOverlay,
+	openResetLevel,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
@@ -41,8 +42,9 @@ function MainBody({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
-	openLevelsCompleteOverlay: () => void;
 	openDocumentViewer: () => void;
+	openLevelsCompleteOverlay: () => void;
+	openResetLevel: () => void;
 }) {
 	const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
 		new Set()
@@ -81,9 +83,9 @@ function MainBody({
 					addChatMessage={addChatMessage}
 					addCompletedLevel={addCompletedLevel}
 					addSentEmails={addSentEmails}
-					resetLevel={resetLevelBody}
 					incrementNumCompletedLevels={incrementNumCompletedLevels}
 					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
+					openResetLevel={openResetLevel}
 				/>
 			</div>
 			<div className="side-bar">

@@ -1,10 +1,14 @@
+import { LEVEL_NAMES } from '@src/models/level';
+
 import OverlayChoice from './OverlayChoice';
 
 function ResetProgressOverlay({
-	resetProgress,
+	currentLevel,
+	resetLevel,
 	closeOverlay,
 }: {
-	resetProgress: () => Promise<void>;
+	currentLevel: LEVEL_NAMES;
+	resetLevel: () => Promise<void>;
 	closeOverlay: () => void;
 }) {
 	return (
@@ -12,7 +16,7 @@ function ResetProgressOverlay({
 			button1={{
 				children: 'Reset',
 				onClick: () => {
-					void resetProgress();
+					void resetLevel();
 				},
 			}}
 			button2={{
@@ -23,10 +27,11 @@ function ResetProgressOverlay({
 				<>
 					<h1> Reset all progress </h1>
 					<p>
-						{`Warning! This will reset all your progress in the levels and sandbox mode. 
-							This includes all your conversation history and sent emails. 
-							However any configurations you have made to defences in sandbox mode will not be lost.
-							Are you sure you want to do this?`}
+						Warning! This will reset all your chat history and sent emails for
+						this level.
+						{currentLevel >= LEVEL_NAMES.LEVEL_3 &&
+							'However any configurations you have made to defences will not be lost.'}
+						Are you sure you want to do this?
 					</p>
 				</>
 			}
