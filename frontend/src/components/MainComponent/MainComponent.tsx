@@ -15,7 +15,6 @@ import {
 	toggleDefence,
 	configureDefence,
 	getDefences,
-	resetActiveDefences,
 	resetDefenceConfig,
 } from '@src/service/defenceService';
 import { clearEmails, getSentEmails } from '@src/service/emailService';
@@ -84,23 +83,9 @@ function MainComponent({
 		setEmails(emails.concat(newEmails));
 	}
 
-	function getResetDefences(currentLevel: LEVEL_NAMES): Defence[] {
-		// choose appropriate defences to display
-		let defences =
-			currentLevel === LEVEL_NAMES.LEVEL_3
-				? DEFENCES_SHOWN_LEVEL3
-				: ALL_DEFENCES;
-		defences = defences.map((defence) => {
-			defence.isActive = false;
-			return defence;
-		});
-		return defences;
-	}
-
 	function resetFrontendState() {
 		setMessages([]);
 		setEmails([]);
-		setDefencesToShow(getResetDefences(currentLevel));
 		if (currentLevel !== LEVEL_NAMES.SANDBOX) {
 			setMessagesWithWelcome([]);
 		}
@@ -108,11 +93,7 @@ function MainComponent({
 	// for clearing single level progress
 	async function resetLevel() {
 		// reset on the backend
-		await Promise.all([
-			clearChat(currentLevel),
-			clearEmails(currentLevel),
-			resetActiveDefences(currentLevel),
-		]);
+		await Promise.all([clearChat(currentLevel), clearEmails(currentLevel)]);
 
 		resetFrontendState();
 		addResetMessage();
