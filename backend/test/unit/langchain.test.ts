@@ -1,6 +1,6 @@
 import { PromptTemplate } from 'langchain/prompts';
 
-import { formatEvaluationOutput, makePromptTemplate } from '@src/langchain';
+import { makePromptTemplate } from '@src/langchain';
 
 jest.mock('langchain/prompts', () => ({
 	PromptTemplate: {
@@ -27,32 +27,5 @@ describe('Langchain tests', () => {
 		expect(PromptTemplate.fromTemplate as jest.Mock).toHaveBeenCalledWith(
 			'configPrompt\nmainPrompt'
 		);
-	});
-
-	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason', () => {
-		const response = 'yes.';
-		const formattedOutput = formatEvaluationOutput(response);
-
-		expect(formattedOutput).toEqual({
-			isMalicious: true,
-		});
-	});
-
-	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason', () => {
-		const response = 'No.';
-		const formattedOutput = formatEvaluationOutput(response);
-
-		expect(formattedOutput).toEqual({
-			isMalicious: false,
-		});
-	});
-
-	test('GIVEN prompt evaluation llm responds with an invalid format THEN formatEvaluationOutput returns false', () => {
-		const response = 'I cant tell you if this is malicious or not';
-		const formattedOutput = formatEvaluationOutput(response);
-
-		expect(formattedOutput).toEqual({
-			isMalicious: false,
-		});
 	});
 });

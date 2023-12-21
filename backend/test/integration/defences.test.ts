@@ -5,7 +5,6 @@ import { DEFENCE_ID } from '@src/models/defence';
 
 // Define a mock implementation for the createChatCompletion method
 const mockCall = jest.fn();
-// mock the queryPromptEvaluationModel function
 jest.mock('langchain/chains', () => {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	const originalModule = jest.requireActual('langchain/chains');

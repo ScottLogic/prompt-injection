@@ -212,7 +212,6 @@ export const setVectorisedDocuments = vectorisedDocuments.set;
 export {
 	queryDocuments,
 	queryPromptEvaluationModel,
-	formatEvaluationOutput,
 	initDocumentVectors,
 	makePromptTemplate,
 };

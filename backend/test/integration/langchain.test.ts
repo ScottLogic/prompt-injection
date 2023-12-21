@@ -146,6 +146,12 @@ beforeEach(() => {
 	setVectorisedDocuments([]);
 });
 
+afterEach(() => {
+	mockCall.mockRestore();
+	mockFromLLM.mockRestore();
+	mockFromTemplate.mockRestore();
+});
+
 describe('langchain integration tests ', () => {
 	test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', async () => {
 		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
@@ -312,9 +318,36 @@ describe('langchain integration tests ', () => {
 		});
 	});
 
-	afterEach(() => {
-		mockCall.mockRestore();
-		mockFromLLM.mockRestore();
-		mockFromTemplate.mockRestore();
+	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason', async () => {
+		mockCall.mockResolvedValue({
+			promptEvalOutput: 'yes.',
+		});
+		const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
+
+		expect(formattedOutput).toEqual({
+			isMalicious: true,
+		});
+	});
+
+	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason', async () => {
+		mockCall.mockResolvedValue({
+			promptEvalOutput: 'no.',
+		});
+		const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
+
+		expect(formattedOutput).toEqual({
+			isMalicious: false,
+		});
+	});
+
+	test('GIVEN prompt evaluation llm responds with an invalid format THEN formatEvaluationOutput returns false', async () => {
+		mockCall.mockResolvedValue({
+			promptEvalOutput: 'I cant tell you if this is malicious or not',
+		});
+		const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
+
+		expect(formattedOutput).toEqual({
+			isMalicious: false,
+		});
 	});
 });
