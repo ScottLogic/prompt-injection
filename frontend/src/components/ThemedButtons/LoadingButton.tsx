@@ -14,20 +14,22 @@ function LoadingButton({
 	onClick: () => void;
 }) {
 	return (
-		<div className="loading-button">
-			<ThemedButton ariaDisabled={isLoading} onClick={onClick}>
-				{children}
-				{isLoading && (
-					<ThreeDots
-						width="1.5rem"
-						color="white"
-						wrapperClass="loader"
-						// blank label as by default the label is 'three-dots-loading'
-						ariaLabel=""
-					/>
-				)}
-			</ThemedButton>
-		</div>
+		<ThemedButton
+			ariaDisabled={isLoading}
+			className="loading-button"
+			onClick={onClick}
+		>
+			{children}
+			{isLoading && (
+				<ThreeDots
+					width="1.5rem"
+					color="white"
+					wrapperClass="loader"
+					// blank label as by default the label is 'three-dots-loading'
+					ariaLabel=""
+				/>
+			)}
+		</ThemedButton>
 	);
 }
 

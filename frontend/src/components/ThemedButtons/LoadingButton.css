@@ -1,13 +1,9 @@
-.loading-button .themed-button {
-	height: 100%;
-}
-
-.loading-button .themed-button.disabled {
+.loading-button.themed-button.disabled {
 	background-color: var(--action-button-background-colour);
 	color: var(--action-button-text-colour);
 }
 
-.loading-button .loader {
+.loader {
 	position: absolute;
 	background-color: inherit;
 	width: 100%;

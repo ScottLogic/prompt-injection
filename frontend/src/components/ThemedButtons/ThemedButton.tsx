@@ -7,6 +7,7 @@ export interface ThemedButtonProps {
 	children: ReactNode;
 	ariaDisabled?: boolean;
 	ariaLabel?: string;
+	className?: string;
 	title?: string;
 	onClick: () => void;
 }
@@ -15,6 +16,7 @@ function ThemedButton({
 	children,
 	ariaDisabled = false,
 	ariaLabel,
+	className,
 	title,
 	onClick,
 }: ThemedButtonProps) {
@@ -22,7 +24,7 @@ function ThemedButton({
 		if (!ariaDisabled) onClick();
 	}
 
-	const buttonClass = clsx('themed-button', {
+	const buttonClass = clsx('themed-button', className, {
 		disabled: ariaDisabled,
 	});
 
