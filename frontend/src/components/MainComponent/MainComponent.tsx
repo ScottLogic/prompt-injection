@@ -12,9 +12,8 @@ import {
 	getChatHistory,
 } from '@src/service/chatService';
 import {
-	activateDefence,
+	toggleDefence,
 	configureDefence,
-	deactivateDefence,
 	getDefences,
 	resetActiveDefences,
 	resetDefenceConfig,
@@ -187,33 +186,19 @@ function MainComponent({
 		setDefencesToShow(newDefences);
 	}
 
-	async function setDefenceActive(defence: Defence) {
-		await activateDefence(defence.id, currentLevel);
-		// update state
-		const newDefenceDetails = defencesToShow.map((defenceDetail) => {
-			if (defenceDetail.id === defence.id) {
-				defenceDetail.isActive = true;
-				defenceDetail.isTriggered = false;
-				const infoMessage = `${defence.name} defence activated`;
-				addInfoMessage(infoMessage.toLowerCase());
-			}
-			return defenceDetail;
-		});
-		setDefencesToShow(newDefenceDetails);
-	}
+	async function setDefenceToggle(defence: Defence) {
+		await toggleDefence(defence.id, defence.isActive, currentLevel);
 
-	async function setDefenceInactive(defence: Defence) {
-		await deactivateDefence(defence.id, currentLevel);
-		// update state
 		const newDefenceDetails = defencesToShow.map((defenceDetail) => {
 			if (defenceDetail.id === defence.id) {
-				defenceDetail.isActive = false;
-				defenceDetail.isTriggered = false;
-				const infoMessage = `${defence.name} defence deactivated`;
+				defenceDetail.isActive = !defence.isActive;
+				const action = defenceDetail.isActive ? 'activated' : 'deactivated';
+				const infoMessage = `${defence.name} defence ${action}`;
 				addInfoMessage(infoMessage.toLowerCase());
 			}
 			return defenceDetail;
 		});
+
 		setDefencesToShow(newDefenceDetails);
 	}
 
@@ -293,10 +278,7 @@ function MainComponent({
 					void resetDefenceConfiguration(defenceId, configId)
 				}
 				resetLevel={() => void resetLevel()}
-				setDefenceActive={(defence: Defence) => void setDefenceActive(defence)}
-				setDefenceInactive={(defence: Defence) =>
-					void setDefenceInactive(defence)
-				}
+				toggleDefence={(defence: Defence) => void setDefenceToggle(defence)}
 				setDefenceConfiguration={setDefenceConfiguration}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
