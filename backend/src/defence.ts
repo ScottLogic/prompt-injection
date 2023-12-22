@@ -227,20 +227,6 @@ async function detectTriggeredDefences(message: string, defences: Defence[]) {
 	]);
 }
 
-function getOkSingleDefenceReport(): SingleDefenceReport {
-	return { status: 'ok', blockedReason: null };
-}
-
-function getAlertedSingleDefenceReport(): SingleDefenceReport {
-	return { status: 'alerted', blockedReason: null };
-}
-
-function getTriggeredSingleDefenceReport(
-	blockedReason: string | null
-): SingleDefenceReport {
-	return { status: 'triggered', blockedReason };
-}
-
 function combineDefenceReports(
 	defenceReports: ChatDefenceReport[]
 ): ChatDefenceReport {
@@ -279,11 +265,15 @@ function detectCharacterLimit(
 
 	if (messageExceedsLimit) console.debug('CHARACTER_LIMIT defence triggered.');
 
-	return messageExceedsLimit && defenceActive
-		? getTriggeredSingleDefenceReport('Message is too long')
-		: messageExceedsLimit && !defenceActive
-		? getAlertedSingleDefenceReport()
-		: getOkSingleDefenceReport();
+	return {
+		blockedReason:
+			messageExceedsLimit && defenceActive ? 'Message is too long' : null,
+		status: !messageExceedsLimit
+			? 'ok'
+			: defenceActive
+			? 'triggered'
+			: 'alerted',
+	};
 }
 
 function detectFilterUserInput(
@@ -306,15 +296,19 @@ function detectFilterUserInput(
 		);
 	}
 
-	return filterWordsDetected && defenceActive
-		? getTriggeredSingleDefenceReport(
-				`Message blocked - I cannot answer questions about '${detectedPhrases.join(
-					"' or '"
-				)}'!`
-		  )
-		: filterWordsDetected && !defenceActive
-		? getAlertedSingleDefenceReport()
-		: getOkSingleDefenceReport();
+	return {
+		blockedReason:
+			filterWordsDetected && defenceActive
+				? `Message blocked - I cannot answer questions about '${detectedPhrases.join(
+						"' or '"
+				  )}'!`
+				: null,
+		status: !filterWordsDetected
+			? 'ok'
+			: defenceActive
+			? 'triggered'
+			: 'alerted',
+	};
 }
 
 function detectXmlTagging(
@@ -328,11 +322,10 @@ function detectXmlTagging(
 		console.debug('XML_TAGGING defence triggered.');
 	}
 
-	return containsXML && defenceActive
-		? getTriggeredSingleDefenceReport(null)
-		: containsXML && !defenceActive
-		? getAlertedSingleDefenceReport()
-		: getOkSingleDefenceReport();
+	return {
+		blockedReason: null,
+		status: !containsXML ? 'ok' : defenceActive ? 'triggered' : 'alerted',
+	};
 }
 
 async function detectEvaluationLLM(
@@ -351,12 +344,13 @@ async function detectEvaluationLLM(
 		if (evaluationResult.isMalicious) {
 			console.debug('LLM evaluation defence active and prompt is malicious.');
 
-			return getTriggeredSingleDefenceReport(
-				'Message blocked by the prompt evaluation LLM.'
-			);
+			return {
+				status: 'triggered',
+				blockedReason: 'Message blocked by the prompt evaluation LLM.',
+			};
 		}
 	}
-	return getOkSingleDefenceReport();
+	return { status: 'ok', blockedReason: null };
 }
 
 export {
