@@ -6,10 +6,12 @@ import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
+import ResetLevelOverlay from './components/Overlay/ResetLevel';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
 import { OVERLAY_TYPE } from './models/overlay';
-import { getValidModels } from './service/chatService';
+import { clearChat, getValidModels } from './service/chatService';
+import { clearEmails } from './service/emailService';
 import { resetAllLevelProgress } from './service/levelService';
 import { getSystemRoles } from './service/systemRoleService';
 
@@ -171,6 +173,15 @@ function App() {
 					/>
 				);
 				break;
+			case OVERLAY_TYPE.RESET_LEVEL:
+				setOverlayComponent(
+					<ResetLevelOverlay
+						currentLevel={currentLevel}
+						resetLevel={resetLevel}
+						closeOverlay={closeOverlay}
+					/>
+				);
+				break;
 			case OVERLAY_TYPE.RESET_PROGRESS:
 				setOverlayComponent(
 					<ResetProgressOverlay
@@ -239,6 +250,9 @@ function App() {
 	function openDocumentViewer() {
 		setOverlayType(OVERLAY_TYPE.DOCUMENTS);
 	}
+	function openResetLevelOverlay() {
+		setOverlayType(OVERLAY_TYPE.RESET_LEVEL);
+	}
 	function openResetProgressOverlay() {
 		setOverlayType(OVERLAY_TYPE.RESET_PROGRESS);
 	}
@@ -255,6 +269,16 @@ function App() {
 
 			setCurrentLevel(startLevel);
 		}
+		closeOverlay();
+	}
+
+	// resets whole game progress and start from level 1 or Sandbox
+	async function resetLevel() {
+		console.log('resetting progress for all levels');
+		// reset on the backend
+		await Promise.all([clearChat(currentLevel), clearEmails(currentLevel)]);
+		// re-render main component to update frontend chat & emails
+		setMainComponentKey(mainComponentKey + 1);
 		closeOverlay();
 	}
 
@@ -298,12 +322,13 @@ function App() {
 				numCompletedLevels={numCompletedLevels}
 				chatModels={chatModels}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
+				openDocumentViewer={openDocumentViewer}
 				openHandbook={openHandbook}
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
-				openWelcomeOverlay={openWelcomeOverlay}
+				openResetLevelOverlay={openResetLevelOverlay}
 				openResetProgressOverlay={openResetProgressOverlay}
-				openDocumentViewer={openDocumentViewer}
+				openWelcomeOverlay={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
 			/>
 		</div>

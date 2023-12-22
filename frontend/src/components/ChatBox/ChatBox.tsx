@@ -16,23 +16,19 @@ import ChatBoxInput from './ChatBoxInput';
 import './ChatBox.css';
 
 function ChatBox({
-	completedLevels,
 	currentLevel,
 	emails,
 	messages,
 	addChatMessage,
-	addCompletedLevel,
 	addSentEmails,
 	incrementNumCompletedLevels,
 	openLevelsCompleteOverlay,
 	openResetLevel,
 }: {
-	completedLevels: Set<LEVEL_NAMES>;
 	currentLevel: LEVEL_NAMES;
 	emails: EmailInfo[];
 	messages: ChatMessage[];
 	addChatMessage: (message: ChatMessage) => void;
-	addCompletedLevel: (level: LEVEL_NAMES) => void;
 	addSentEmails: (emails: EmailInfo[]) => void;
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openLevelsCompleteOverlay: () => void;
@@ -73,6 +69,13 @@ function ChatBox({
 		return currentLevel < LEVEL_NAMES.LEVEL_3
 			? `Congratulations! You have completed this level. Please click on the next level to continue.`
 			: `Congratulations, you have completed the final level of your assignment!`;
+	}
+
+	function isLevelComplete() {
+		// level is complete if the chat contains a LEVEL_INFO message
+		return messages.some(
+			(message) => message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
+		);
 	}
 
 	function processChatResponse(response: ChatResponse) {
@@ -155,8 +158,7 @@ function ChatBox({
 		// update emails
 		addSentEmails(response.sentEmails);
 
-		if (response.wonLevel && !completedLevels.has(currentLevel)) {
-			addCompletedLevel(currentLevel);
+		if (response.wonLevel && !isLevelComplete()) {
 			const successMessage = getSuccessMessage();
 			addChatMessage({
 				type: CHAT_MESSAGE_TYPE.LEVEL_INFO,

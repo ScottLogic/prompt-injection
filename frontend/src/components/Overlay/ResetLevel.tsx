@@ -2,7 +2,7 @@ import { LEVEL_NAMES } from '@src/models/level';
 
 import OverlayChoice from './OverlayChoice';
 
-function ResetProgressOverlay({
+function ResetLevelOverlay({
 	currentLevel,
 	resetLevel,
 	closeOverlay,
@@ -40,4 +40,4 @@ function ResetProgressOverlay({
 	);
 }
 
-export default ResetProgressOverlay;
+export default ResetLevelOverlay;

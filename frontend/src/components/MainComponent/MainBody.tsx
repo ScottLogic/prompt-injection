@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import ChatBox from '@src/components/ChatBox/ChatBox';
 import ControlPanel from '@src/components/ControlPanel/ControlPanel';
 import EmailBox from '@src/components/EmailBox/EmailBox';
@@ -19,7 +17,6 @@ function MainBody({
 	addChatMessage,
 	addSentEmails,
 	resetDefenceConfiguration,
-	resetLevel,
 	toggleDefence,
 	setDefenceConfiguration,
 	incrementNumCompletedLevels,
@@ -46,21 +43,6 @@ function MainBody({
 	openLevelsCompleteOverlay: () => void;
 	openResetLevel: () => void;
 }) {
-	const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
-		new Set()
-	);
-
-	function resetLevelBody() {
-		completedLevels.delete(currentLevel);
-		setCompletedLevels(completedLevels);
-		resetLevel();
-	}
-
-	function addCompletedLevel(level: LEVEL_NAMES) {
-		completedLevels.add(level);
-		setCompletedLevels(completedLevels);
-	}
-
 	return (
 		<main className="main-area">
 			<div className="side-bar">
@@ -76,12 +58,10 @@ function MainBody({
 			</div>
 			<div className="centre-area">
 				<ChatBox
-					completedLevels={completedLevels}
 					currentLevel={currentLevel}
 					emails={emails}
 					messages={messages}
 					addChatMessage={addChatMessage}
-					addCompletedLevel={addCompletedLevel}
 					addSentEmails={addSentEmails}
 					incrementNumCompletedLevels={incrementNumCompletedLevels}
 					openLevelsCompleteOverlay={openLevelsCompleteOverlay}

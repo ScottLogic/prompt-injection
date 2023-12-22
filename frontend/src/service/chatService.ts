@@ -42,64 +42,29 @@ async function getChatHistory(level: number): Promise<ChatMessage[]> {
 	const chatMessages: ChatMessage[] = [];
 	chatHistory.forEach((message) => {
 		switch (message.chatMessageType) {
-			case CHAT_MESSAGE_TYPE.BOT:
-				chatMessages.push({
-					message: message.completion?.content ?? '',
-					type: CHAT_MESSAGE_TYPE.BOT,
-				});
-				break;
-			case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
-				chatMessages.push({
-					message: message.infoMessage ?? '',
-					type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-				});
-				break;
 			case CHAT_MESSAGE_TYPE.USER:
 				chatMessages.push({
 					message: message.completion?.content ?? message.infoMessage ?? '',
-					type: CHAT_MESSAGE_TYPE.USER,
-				});
-				break;
-			case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
-				chatMessages.push({
-					message: message.completion?.content ?? '',
-					type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
-				});
-				break;
-			case CHAT_MESSAGE_TYPE.INFO:
-				chatMessages.push({
-					message: message.infoMessage ?? '',
 					type: message.chatMessageType,
 				});
 				break;
+			case CHAT_MESSAGE_TYPE.BOT:
+			case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
+				chatMessages.push({
+					message: message.completion?.content ?? '',
+					type: message.chatMessageType,
+				});
+				break;
+			case CHAT_MESSAGE_TYPE.INFO:
+			case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
 			case CHAT_MESSAGE_TYPE.LEVEL_INFO:
-				chatMessages.push({
-					message: message.infoMessage ?? '',
-					type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
-				});
-				break;
 			case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
-				chatMessages.push({
-					message: message.infoMessage ?? '',
-					type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
-				});
-				break;
 			case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
-				chatMessages.push({
-					message: message.infoMessage ?? '',
-					type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-				});
-				break;
 			case CHAT_MESSAGE_TYPE.RESET_LEVEL:
-				chatMessages.push({
-					message: message.infoMessage ?? '',
-					type: CHAT_MESSAGE_TYPE.RESET_LEVEL,
-				});
-				break;
 			case CHAT_MESSAGE_TYPE.ERROR_MSG:
 				chatMessages.push({
 					message: message.infoMessage ?? '',
-					type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+					type: message.chatMessageType,
 				});
 				break;
 			default:

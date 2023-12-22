@@ -27,28 +27,30 @@ import MainHeader from './MainHeader';
 import './MainComponent.css';
 
 function MainComponent({
+	chatModels,
 	currentLevel,
 	numCompletedLevels,
-	chatModels,
 	incrementNumCompletedLevels,
+	openDocumentViewer,
 	openHandbook,
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
-	openWelcomeOverlay,
+	openResetLevelOverlay,
 	openResetProgressOverlay,
-	openDocumentViewer,
+	openWelcomeOverlay,
 	setCurrentLevel,
 }: {
+	chatModels: string[];
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
-	chatModels: string[];
 	incrementNumCompletedLevels: (level: number) => void;
+	openDocumentViewer: () => void;
 	openHandbook: () => void;
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
-	openWelcomeOverlay: () => void;
+	openResetLevelOverlay: () => void;
 	openResetProgressOverlay: () => void;
-	openDocumentViewer: () => void;
+	openWelcomeOverlay: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
@@ -90,6 +92,7 @@ function MainComponent({
 			setMessagesWithWelcome([]);
 		}
 	}
+
 	// for clearing single level progress
 	async function resetLevel() {
 		// reset on the backend
@@ -262,8 +265,9 @@ function MainComponent({
 				toggleDefence={(defence: Defence) => void setDefenceToggle(defence)}
 				setDefenceConfiguration={setDefenceConfiguration}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
-				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openDocumentViewer={openDocumentViewer}
+				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
+				openResetLevel={openResetLevelOverlay}
 			/>
 			<MainFooter />
 		</div>
