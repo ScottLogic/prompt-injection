@@ -84,7 +84,8 @@ function ChatBox({
 		// add the transformed message to the chat box if it is different from the original message
 		if (transformedMessage) {
 			addChatMessage({
-				message: 'XML tagging enabled, your message has been transformed',
+				message:
+					`${transformedMessage.tranformationType} enabled, your message has been transformed`.toLocaleLowerCase(),
 				type: CHAT_MESSAGE_TYPE.INFO,
 			});
 			addChatMessage({
