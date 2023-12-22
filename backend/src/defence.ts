@@ -1,6 +1,10 @@
 import { defaultDefences } from './defaultDefences';
 import { queryPromptEvaluationModel } from './langchain';
-import { ChatDefenceReport, TransformedChatMessage } from './models/chat';
+import {
+	ChatDefenceReport,
+	SingleDefenceReport,
+	TransformedChatMessage,
+} from './models/chat';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -247,19 +251,10 @@ function combineDefenceReports(
 	};
 }
 
-function getEmptyChatDefenceReport(): ChatDefenceReport {
-	return {
-		blockedReason: null,
-		isBlocked: false,
-		alertedDefences: [],
-		triggeredDefences: [],
-	};
-}
-
 function detectCharacterLimit(
 	message: string,
 	defences: Defence[]
-): ChatDefenceReport {
+): SingleDefenceReport {
 	const maxMessageLength = Number(getMaxMessageLength(defences));
 
 	const messageExceedsLimit = message.length > maxMessageLength;
@@ -269,17 +264,15 @@ function detectCharacterLimit(
 
 	return messageExceedsLimit && defenceActive
 		? {
+				status: 'triggered',
 				blockedReason: 'Message is too long',
-				isBlocked: true,
-				alertedDefences: [],
-				triggeredDefences: [DEFENCE_ID.CHARACTER_LIMIT],
 		  }
 		: messageExceedsLimit && !defenceActive
 		? {
-				...getEmptyChatDefenceReport(),
-				alertedDefences: [DEFENCE_ID.CHARACTER_LIMIT],
+				status: 'alerted',
+				blockedReason: null,
 		  }
-		: getEmptyChatDefenceReport();
+		: { status: 'ok', blockedReason: null };
 }
 
 function detectFilterUserInput(
@@ -313,10 +306,10 @@ function detectFilterUserInput(
 		  }
 		: filterWordsDetected && !defenceActive
 		? {
-				...getEmptyChatDefenceReport(),
+				...getEmptySingleDefenceReport(),
 				alertedDefences: [DEFENCE_ID.FILTER_USER_INPUT],
 		  }
-		: getEmptyChatDefenceReport();
+		: getEmptySingleDefenceReport();
 }
 
 function detectXmlTagging(
@@ -332,15 +325,15 @@ function detectXmlTagging(
 
 	return containsXML && defenceActive
 		? {
-				...getEmptyChatDefenceReport(),
+				...getEmptySingleDefenceReport(),
 				triggeredDefences: [DEFENCE_ID.XML_TAGGING],
 		  }
 		: containsXML && !defenceActive
 		? {
-				...getEmptyChatDefenceReport(),
+				...getEmptySingleDefenceReport(),
 				alertedDefences: [DEFENCE_ID.XML_TAGGING],
 		  }
-		: getEmptyChatDefenceReport();
+		: getEmptySingleDefenceReport();
 }
 
 async function detectEvaluationLLM(
@@ -367,7 +360,7 @@ async function detectEvaluationLLM(
 			};
 		}
 	}
-	return getEmptyChatDefenceReport();
+	return getEmptySingleDefenceReport();
 }
 
 export {
