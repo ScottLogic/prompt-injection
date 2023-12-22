@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
+import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -15,7 +16,6 @@ import {
 	toggleDefence,
 	configureDefence,
 	getDefences,
-	resetActiveDefences,
 	resetDefenceConfig,
 } from '@src/service/defenceService';
 import { clearEmails, getSentEmails } from '@src/service/emailService';
@@ -28,28 +28,32 @@ import MainHeader from './MainHeader';
 import './MainComponent.css';
 
 function MainComponent({
+	chatModels,
 	currentLevel,
 	numCompletedLevels,
-	chatModels,
+	closeOverlay,
 	incrementNumCompletedLevels,
+	openDocumentViewer,
 	openHandbook,
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
-	openWelcomeOverlay,
+	openOverlay,
 	openResetProgressOverlay,
-	openDocumentViewer,
+	openWelcomeOverlay,
 	setCurrentLevel,
 }: {
+	chatModels: string[];
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
-	chatModels: string[];
+	closeOverlay: () => void;
 	incrementNumCompletedLevels: (level: number) => void;
+	openDocumentViewer: () => void;
 	openHandbook: () => void;
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
-	openWelcomeOverlay: () => void;
+	openOverlay: (overlayComponent: JSX.Element) => void;
 	openResetProgressOverlay: () => void;
-	openDocumentViewer: () => void;
+	openWelcomeOverlay: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
@@ -75,6 +79,19 @@ function MainComponent({
 		void setNewLevel(currentLevel);
 	}, [currentLevel]);
 
+	function openResetLevelOverlay() {
+		openOverlay(
+			<ResetLevelOverlay
+				currentLevel={currentLevel}
+				resetLevel={async () => {
+					await resetLevel();
+					closeOverlay();
+				}}
+				closeOverlay={closeOverlay}
+			/>
+		);
+	}
+
 	// methods to modify messages
 	function addChatMessage(message: ChatMessage) {
 		setMessages((messages: ChatMessage[]) => [...messages, message]);
@@ -84,35 +101,18 @@ function MainComponent({
 		setEmails(emails.concat(newEmails));
 	}
 
-	function getResetDefences(currentLevel: LEVEL_NAMES): Defence[] {
-		// choose appropriate defences to display
-		let defences =
-			currentLevel === LEVEL_NAMES.LEVEL_3
-				? DEFENCES_SHOWN_LEVEL3
-				: ALL_DEFENCES;
-		defences = defences.map((defence) => {
-			defence.isActive = false;
-			return defence;
-		});
-		return defences;
-	}
-
 	function resetFrontendState() {
 		setMessages([]);
 		setEmails([]);
-		setDefencesToShow(getResetDefences(currentLevel));
 		if (currentLevel !== LEVEL_NAMES.SANDBOX) {
 			setMessagesWithWelcome([]);
 		}
 	}
+
 	// for clearing single level progress
 	async function resetLevel() {
 		// reset on the backend
-		await Promise.all([
-			clearChat(currentLevel),
-			clearEmails(currentLevel),
-			resetActiveDefences(currentLevel),
-		]);
+		await Promise.all([clearChat(currentLevel), clearEmails(currentLevel)]);
 
 		resetFrontendState();
 		addResetMessage();
@@ -255,7 +255,7 @@ function MainComponent({
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				openHandbook={openHandbook}
-				openResetProgress={openResetProgressOverlay}
+				openResetProgressOverlay={openResetProgressOverlay}
 				openWelcome={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
 			/>
@@ -281,8 +281,9 @@ function MainComponent({
 				toggleDefence={(defence: Defence) => void setDefenceToggle(defence)}
 				setDefenceConfiguration={setDefenceConfiguration}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
-				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openDocumentViewer={openDocumentViewer}
+				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
+				openResetLevelOverlay={openResetLevelOverlay}
 			/>
 			<MainFooter />
 		</div>
