@@ -43,7 +43,7 @@ function ModelConfigurationSlider({
 				<AiOutlineInfoCircle aria-hidden />
 			</button>
 			{showInfo && <div className="info-text">{config.info}</div>}
-			<div className="model-config-slider">
+			<div className="config-slider">
 				<Slider
 					aria-label={config.id}
 					getAriaValueText={(value) => `${value}`}

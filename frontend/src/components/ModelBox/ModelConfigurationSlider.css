@@ -10,18 +10,18 @@
 	margin-right: auto;
 }
 
-.info-icon {
+.model-config-slider-fieldset .info-icon {
 	font-size: 1.3rem;
 	margin-left: auto;
 	margin-top: -1.3rem;
 	margin-bottom: 1rem;
 }
 
-.info-text {
+.model-config-slider-fieldset .info-text {
 	font-size: 0.875rem;
 }
 
-.model-config-slider {
+.model-config-slider-fieldset .config-slider {
 	width: 90%;
 	margin: 0 auto;
 	padding: 0;
