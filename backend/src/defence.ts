@@ -44,10 +44,15 @@ function resetDefenceConfig(
 	configId: DEFENCE_CONFIG_ITEM_ID,
 	defences: Defence[]
 ): Defence[] {
+	const defenceConfig = defences.find((defence) => defence.id === id)?.config;
+	if (!defenceConfig) {
+		throw new Error(`Defence ${id} not found in default defences.`);
+	}
 	const defaultValue = getConfigValue(defaultDefences, id, configId);
-	return configureDefence(id, defences, [
-		{ id: configId, value: defaultValue },
-	]);
+	const updatedConfig: DefenceConfigItem[] = defenceConfig.map((config) =>
+		config.id === configId ? { ...config, value: defaultValue } : config
+	);
+	return configureDefence(id, defences, updatedConfig);
 }
 
 function getConfigValue(
@@ -55,7 +60,6 @@ function getConfigValue(
 	defenceId: DEFENCE_ID,
 	configId: string
 ) {
-	console.log('defences = ', defences, defenceId, configId);
 	const config: DefenceConfigItem | undefined = defences
 		.find((defence) => defence.id === defenceId)
 		?.config.find((config) => config.id === configId);
