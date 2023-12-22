@@ -33,7 +33,7 @@
 .switch {
   position: relative;
   display: inline-block;
-  width: 4rem;
+  width: 3rem;
   height: 1.7rem;
 }
 
@@ -45,7 +45,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  border: 1px solid white;
+  background-color: var(--main-toggle-off-colour);
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -76,7 +77,8 @@ input:checked + .slider::before {
 }
 
 input:checked + .slider {
-  background-color: #f3213d;
+  background-color: var(--main-toggle-on-colour);
+  border: var(--slider-border-width) solid var(--main-toggle-on-colour);
 }
 
 /* Style the slider thumb when rounded */
