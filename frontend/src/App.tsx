@@ -9,7 +9,6 @@ import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetLevelOverlay from './components/Overlay/ResetLevel';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
-import { OVERLAY_TYPE } from './models/overlay';
 import { clearChat, getValidModels } from './service/chatService';
 import { clearEmails } from './service/emailService';
 import { resetAllLevelProgress } from './service/levelService';
@@ -28,7 +27,7 @@ function App() {
 	const [numCompletedLevels, setNumCompletedLevels] = useState(
 		loadNumCompletedLevels
 	);
-	const [overlayType, setOverlayType] = useState<OVERLAY_TYPE | null>(null);
+
 	const [overlayComponent, setOverlayComponent] = useState<JSX.Element | null>(
 		null
 	);
@@ -127,76 +126,6 @@ function App() {
 	}, []);
 
 	useEffect(() => {
-		if (overlayType === null) {
-			dialogRef.current?.close();
-		} else {
-			dialogRef.current?.showModal();
-		}
-
-		switch (overlayType) {
-			case OVERLAY_TYPE.WELCOME:
-				setOverlayComponent(
-					<OverlayWelcome
-						currentLevel={currentLevel}
-						setStartLevel={(level: LEVEL_NAMES) => {
-							setStartLevel(level);
-						}}
-						closeOverlay={closeOverlay}
-					/>
-				);
-				break;
-			case OVERLAY_TYPE.INFORMATION:
-				setOverlayComponent(
-					<MissionInformation
-						currentLevel={currentLevel}
-						closeOverlay={closeOverlay}
-					/>
-				);
-				break;
-			case OVERLAY_TYPE.HANDBOOK:
-				setOverlayComponent(
-					<HandbookOverlay
-						currentLevel={currentLevel}
-						numCompletedLevels={numCompletedLevels}
-						systemRoles={systemRoles}
-						closeOverlay={closeOverlay}
-					/>
-				);
-				break;
-			case OVERLAY_TYPE.LEVELS_COMPLETE:
-				setOverlayComponent(
-					<LevelsComplete
-						goToSandbox={() => {
-							goToSandbox();
-						}}
-						closeOverlay={closeOverlay}
-					/>
-				);
-				break;
-			case OVERLAY_TYPE.RESET_LEVEL:
-				setOverlayComponent(
-					<ResetLevelOverlay
-						currentLevel={currentLevel}
-						resetLevel={resetLevel}
-						closeOverlay={closeOverlay}
-					/>
-				);
-				break;
-			case OVERLAY_TYPE.RESET_PROGRESS:
-				setOverlayComponent(
-					<ResetProgressOverlay
-						resetProgress={resetProgress}
-						closeOverlay={closeOverlay}
-					/>
-				);
-				break;
-			case OVERLAY_TYPE.DOCUMENTS:
-				setOverlayComponent(<DocumentViewBox closeOverlay={closeOverlay} />);
-				break;
-			default:
-				setOverlayComponent(null);
-		}
-
 		// must re-bind event listener after changing overlay type
 		setTimeout(() => {
 			// Need timeout, else dialog consumes same click that
@@ -206,16 +135,19 @@ function App() {
 		return () => {
 			window.removeEventListener('click', handleOverlayClick);
 		};
-	}, [overlayType]);
+	}, [overlayComponent]);
 
 	const handleOverlayClick = useCallback(
 		(event: MouseEvent) => {
-			overlayType !== null &&
+			if (
+				overlayComponent !== null &&
 				contentRef.current &&
-				!event.composedPath().includes(contentRef.current) &&
+				!event.composedPath().includes(contentRef.current)
+			) {
 				closeOverlay();
+			}
 		},
-		[closeOverlay, contentRef, overlayType]
+		[closeOverlay, contentRef, overlayComponent]
 	);
 
 	const handleEscape = useCallback(
@@ -226,35 +158,76 @@ function App() {
 	);
 
 	function closeOverlay() {
-		// open the mission info after welcome page for a new user
-		if (overlayType === OVERLAY_TYPE.WELCOME) {
-			setIsNewUser(false);
-			openInformationOverlay();
-		} else {
-			setOverlayType(null);
-		}
+		dialogRef.current?.close();
+		setOverlayComponent(null);
+	}
+
+	function openOverlay(overlay: JSX.Element) {
+		setOverlayComponent(overlay);
+		dialogRef.current?.showModal();
 	}
 
 	function openWelcomeOverlay() {
-		setOverlayType(OVERLAY_TYPE.WELCOME);
+		openOverlay(
+			<OverlayWelcome
+				currentLevel={currentLevel}
+				setStartLevel={(level: LEVEL_NAMES) => {
+					setStartLevel(level);
+					// after welcome overlay, open mission info overlay
+					setIsNewUser(false);
+					openInformationOverlay();
+				}}
+				closeOverlay={closeOverlay}
+			/>
+		);
 	}
 	function openHandbook() {
-		setOverlayType(OVERLAY_TYPE.HANDBOOK);
+		openOverlay(
+			<HandbookOverlay
+				currentLevel={currentLevel}
+				numCompletedLevels={numCompletedLevels}
+				systemRoles={systemRoles}
+				closeOverlay={closeOverlay}
+			/>
+		);
 	}
 	function openInformationOverlay() {
-		setOverlayType(OVERLAY_TYPE.INFORMATION);
+		openOverlay(
+			<MissionInformation
+				currentLevel={currentLevel}
+				closeOverlay={closeOverlay}
+			/>
+		);
 	}
 	function openLevelsCompleteOverlay() {
-		setOverlayType(OVERLAY_TYPE.LEVELS_COMPLETE);
+		openOverlay(
+			<LevelsComplete
+				goToSandbox={() => {
+					goToSandbox();
+				}}
+				closeOverlay={closeOverlay}
+			/>
+		);
 	}
 	function openDocumentViewer() {
-		setOverlayType(OVERLAY_TYPE.DOCUMENTS);
+		openOverlay(<DocumentViewBox closeOverlay={closeOverlay} />);
 	}
 	function openResetLevelOverlay() {
-		setOverlayType(OVERLAY_TYPE.RESET_LEVEL);
+		openOverlay(
+			<ResetLevelOverlay
+				currentLevel={currentLevel}
+				resetLevel={resetLevel}
+				closeOverlay={closeOverlay}
+			/>
+		);
 	}
 	function openResetProgressOverlay() {
-		setOverlayType(OVERLAY_TYPE.RESET_PROGRESS);
+		openOverlay(
+			<ResetProgressOverlay
+				resetProgress={resetProgress}
+				closeOverlay={closeOverlay}
+			/>
+		);
 	}
 
 	// set the start level for a user who clicks beginner/expert
