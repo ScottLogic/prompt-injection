@@ -48,6 +48,7 @@ function ControlPanel({
 			{(currentLevel === LEVEL_NAMES.LEVEL_3 ||
 				currentLevel === LEVEL_NAMES.SANDBOX) && (
 				<>
+					<h2 className="visually-hidden">ScottBrew System Access</h2>
 					<details className="control-collapsible-section">
 						<summary className="control-collapsible-section-header">
 							Defence Configuration

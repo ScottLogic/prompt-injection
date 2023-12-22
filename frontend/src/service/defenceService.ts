@@ -98,22 +98,10 @@ function validateDefence(
 	}
 }
 
-async function resetActiveDefences(level: number) {
-	const response = await sendRequest(`${PATH}reset`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ level }),
-	});
-	return response.status === 200;
-}
-
 export {
 	getDefences,
 	toggleDefence,
 	configureDefence,
 	resetDefenceConfig,
-	resetActiveDefences,
 	validateDefence,
 };

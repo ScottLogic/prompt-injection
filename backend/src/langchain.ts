@@ -104,7 +104,7 @@ function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 		prompt: promptTemplate,
 	});
 }
-// initialise the prompt evaluation model
+
 function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 	const openAIApiKey = getOpenAIKey();
 	// use gpt-4 if avaliable to apiKey
@@ -208,13 +208,4 @@ function formatEvaluationOutput(response: string) {
 	}
 }
 
-export const setVectorisedDocuments = vectorisedDocuments.set;
-export {
-	initQAModel,
-	initPromptEvaluationModel,
-	queryDocuments,
-	queryPromptEvaluationModel,
-	formatEvaluationOutput,
-	initDocumentVectors,
-	makePromptTemplate,
-};
+export { queryDocuments, queryPromptEvaluationModel, initDocumentVectors };

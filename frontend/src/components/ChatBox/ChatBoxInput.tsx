@@ -48,7 +48,7 @@ function ChatBoxInput({
 
 	return (
 		<label>
-			<span className="visually-hidden">Chat with the chatbot</span>
+			<h2 className="visually-hidden">Chat with the chatbot</h2>
 			<ThemedTextArea
 				content={content}
 				onContentChanged={onContentChanged}

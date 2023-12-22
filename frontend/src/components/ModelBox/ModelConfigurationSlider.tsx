@@ -29,27 +29,21 @@ function ModelConfigurationSlider({
 		setValue(config.value);
 	}, [config]);
 
-	const supportText = `more info about ${config.name}`;
-
 	return (
-		<div>
-			<div className="model-config-info">
-				<div className="model-config-title">
-					<p>{config.name}</p>
-				</div>
-				<button
-					className="model-config-info-icon prompt-injection-min-button"
-					title={supportText}
-					aria-label={supportText}
-					onClick={() => {
-						toggleInfo();
-					}}
-				>
-					<AiOutlineInfoCircle aria-hidden />
-				</button>
-			</div>
-			{showInfo && <div className="model-config-info-text">{config.info}</div>}
-			<div className="model-config-slider">
+		<fieldset className="model-config-slider-fieldset">
+			<legend>{config.name}</legend>
+			<button
+				className="info-icon prompt-injection-min-button"
+				title="more info"
+				aria-label="more info"
+				onClick={() => {
+					toggleInfo();
+				}}
+			>
+				<AiOutlineInfoCircle aria-hidden />
+			</button>
+			{showInfo && <div className="info-text">{config.info}</div>}
+			<div className="config-slider">
 				<Slider
 					aria-label={config.id}
 					getAriaValueText={(value) => `${value}`}
@@ -64,7 +58,7 @@ function ModelConfigurationSlider({
 					}}
 				/>
 			</div>
-		</div>
+		</fieldset>
 	);
 }
 

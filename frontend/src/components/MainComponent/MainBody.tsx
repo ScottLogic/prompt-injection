@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import ChatBox from '@src/components/ChatBox/ChatBox';
 import ControlPanel from '@src/components/ControlPanel/ControlPanel';
 import EmailBox from '@src/components/EmailBox/EmailBox';
@@ -19,12 +17,12 @@ function MainBody({
 	addChatMessage,
 	addSentEmails,
 	resetDefenceConfiguration,
-	resetLevel,
 	toggleDefence,
 	setDefenceConfiguration,
 	incrementNumCompletedLevels,
-	openLevelsCompleteOverlay,
 	openDocumentViewer,
+	openLevelsCompleteOverlay,
+	openResetLevelOverlay,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
@@ -41,27 +39,13 @@ function MainBody({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
-	openLevelsCompleteOverlay: () => void;
 	openDocumentViewer: () => void;
+	openLevelsCompleteOverlay: () => void;
+	openResetLevelOverlay: () => void;
 }) {
-	const [completedLevels, setCompletedLevels] = useState<Set<LEVEL_NAMES>>(
-		new Set()
-	);
-
-	function resetLevelBody() {
-		completedLevels.delete(currentLevel);
-		setCompletedLevels(completedLevels);
-		resetLevel();
-	}
-
-	function addCompletedLevel(level: LEVEL_NAMES) {
-		completedLevels.add(level);
-		setCompletedLevels(completedLevels);
-	}
-
 	return (
 		<main className="main-area">
-			<div className="side-bar">
+			<div className="left-side-bar">
 				<ControlPanel
 					currentLevel={currentLevel}
 					defences={defences}
@@ -74,19 +58,17 @@ function MainBody({
 			</div>
 			<div className="centre-area">
 				<ChatBox
-					completedLevels={completedLevels}
 					currentLevel={currentLevel}
 					emails={emails}
 					messages={messages}
 					addChatMessage={addChatMessage}
-					addCompletedLevel={addCompletedLevel}
 					addSentEmails={addSentEmails}
-					resetLevel={resetLevelBody}
 					incrementNumCompletedLevels={incrementNumCompletedLevels}
 					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
+					openResetLevelOverlay={openResetLevelOverlay}
 				/>
 			</div>
-			<div className="side-bar">
+			<div className="right-side-bar">
 				<EmailBox emails={emails} />
 			</div>
 		</main>

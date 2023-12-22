@@ -13,14 +13,14 @@ function MainHeader({
 	currentLevel,
 	numCompletedLevels,
 	openHandbook,
-	openResetProgress,
+	openResetProgressOverlay,
 	openWelcome,
 	setCurrentLevel,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	openHandbook: () => void;
-	openResetProgress: () => void;
+	openResetProgressOverlay: () => void;
 	openWelcome: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
@@ -36,6 +36,7 @@ function MainHeader({
 					}
 					alt="Spy Logic"
 				/>
+				<h1 className="visually-hidden">Spy Logic</h1>
 			</span>
 			<span className="main-header-middle">
 				<span className="main-header-level">Level</span>
@@ -44,7 +45,7 @@ function MainHeader({
 					numCompletedLevels={numCompletedLevels}
 					setCurrentLevel={setCurrentLevel}
 				/>
-				<ThemedButton onClick={openResetProgress}>
+				<ThemedButton onClick={openResetProgressOverlay}>
 					<img className="reset-progress-icon" src={ResetProgress} alt="" />
 					Reset Progress
 				</ThemedButton>
