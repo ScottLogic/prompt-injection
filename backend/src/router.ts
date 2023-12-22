@@ -11,7 +11,6 @@ import {
 	handleDefenceActivation,
 	handleDefenceDeactivation,
 	handleGetDefenceStatus,
-	handleResetAllDefences,
 	handleResetSingleDefence,
 } from './controller/defenceController';
 import { handleGetDocuments } from './controller/documentController';
@@ -38,7 +37,6 @@ router.get('/health', handleHealthCheck);
 router.post('/defence/activate', handleDefenceActivation);
 router.post('/defence/deactivate', handleDefenceDeactivation);
 router.post('/defence/configure', handleConfigureDefence);
-router.post('/defence/reset', handleResetAllDefences);
 router.post('/defence/resetConfig', handleResetSingleDefence);
 router.get('/defence/status', handleGetDefenceStatus);
 
@@ -56,7 +54,6 @@ router.post('/openai/clear', handleClearChatHistory);
 router.post('/openai/model', handleSetModel);
 router.post('/openai/model/configure', handleConfigureModel);
 router.get('/openai/model', handleGetModel);
-
 router.get('/openai/validModels', handleGetValidModels);
 
 // system roles

@@ -70,15 +70,12 @@ function getMessageStyle(type: CHAT_MESSAGE_TYPE) {
 		case CHAT_MESSAGE_TYPE.RESET_LEVEL:
 		case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
 			return styles.chatBoxInfo;
-		case CHAT_MESSAGE_TYPE.USER:
-			return styles.chatBoxMessage;
 		case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
 		case CHAT_MESSAGE_TYPE.BOT:
-			return styles.chatBoxMessageBot;
 		case CHAT_MESSAGE_TYPE.LEVEL_INFO:
-			return styles.chatBoxMessageBot;
 		case CHAT_MESSAGE_TYPE.ERROR_MSG:
 			return styles.chatBoxMessageBot;
+		case CHAT_MESSAGE_TYPE.USER:
 		default:
 			return styles.chatBoxMessage;
 	}

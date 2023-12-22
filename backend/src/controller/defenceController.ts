@@ -1,6 +1,5 @@
 import { Response } from 'express';
 
-import { defaultDefences } from '@src/defaultDefences';
 import {
 	activateDefence,
 	configureDefence,
@@ -10,7 +9,6 @@ import {
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
 import { DefenceConfigResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
-import { DefenceResetRequest } from '@src/models/api/DefenceResetRequest';
 import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
 import { DefenceConfigItem } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -84,18 +82,6 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 	res.send();
 }
 
-function handleResetAllDefences(req: DefenceResetRequest, res: Response) {
-	const level = req.body.level;
-	if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
-		req.session.levelState[level].defences = defaultDefences;
-		console.debug('Defences reset');
-		res.send();
-	} else {
-		res.status(400);
-		res.send();
-	}
-}
-
 function handleResetSingleDefence(
 	req: DefenceConfigResetRequest,
 	res: Response
@@ -140,7 +126,6 @@ export {
 	handleDefenceActivation,
 	handleDefenceDeactivation,
 	handleConfigureDefence,
-	handleResetAllDefences,
 	handleResetSingleDefence,
 	handleGetDefenceStatus,
 };
