@@ -9,3 +9,36 @@
 .level-selection-box button:last-child {
 	font-size: 1rem;
 }
+
+@media (max-width: 1230px) {
+	.level-selection-box button {
+		font-size: .8rem;
+		padding: 1rem;
+	}
+}
+
+@media (max-width: 1015px) {
+	.level-selection-box button {
+		font-size: .8rem;
+		height: .5rem;
+	}
+}
+
+@media (max-width: 940px) {
+	.level-selection-box button {
+		font-size: .7rem;
+	}
+	.level-selection-box button:last-child {
+		width: auto;
+		font-size: .6rem;
+	}
+}
+
+@media (max-width: 760px) { 
+	.level-selection-box button {
+		font-size: .6rem;
+	}
+	.level-selection-box {
+		align-items: center;
+	}
+}
