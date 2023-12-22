@@ -214,13 +214,16 @@ async function detectTriggeredDefences(message: string, defences: Defence[]) {
 	const characterLimitDefenceReport = detectCharacterLimit(message, defences);
 	const filterUserInputDefenceReport = detectFilterUserInput(message, defences);
 	const xmlTaggingDefenceReport = detectXmlTagging(message, defences);
-	const evaluationDefenceReport = await detectEvaluationLLM(message, defences);
+	const evaluationLLMDefenceReport = await detectEvaluationLLM(
+		message,
+		defences
+	);
 
 	return combineDefenceReports([
 		characterLimitDefenceReport,
 		filterUserInputDefenceReport,
 		xmlTaggingDefenceReport,
-		evaluationDefenceReport,
+		evaluationLLMDefenceReport,
 	]);
 }
 
