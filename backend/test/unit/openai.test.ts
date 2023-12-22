@@ -28,10 +28,8 @@ jest.mock('openai', () => ({
 }));
 
 jest.mock('@src/openai', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	const originalModule =
 		jest.requireActual<typeof import('@src/openai')>('@src/openai');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return {
 		...originalModule,
 		initOpenAi: jest.fn(),
@@ -40,10 +38,8 @@ jest.mock('@src/openai', () => {
 });
 
 jest.mock('@src/langchain', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	const originalModule =
 		jest.requireActual<typeof import('@src/langchain')>('@src/langchain');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return {
 		...originalModule,
 		initQAModel: jest.fn(),

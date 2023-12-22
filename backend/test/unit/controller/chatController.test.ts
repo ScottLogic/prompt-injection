@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { describe, expect, jest, test } from '@jest/globals';
 import { Response } from 'express';
@@ -49,19 +48,6 @@ jest.mock('openai', () => ({
 		},
 	})),
 }));
-
-// const mockDetectTriggeredDefences = jest.fn();
-// jest.mock('@src/defence', () => {
-// 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-// 	const originalModule = jest.requireActual('@src/defence');
-// 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-// 	return {
-// 		...originalModule,
-// 		detectTriggeredDefences: () => {
-// 			mockDetectTriggeredDefences();
-// 		},
-// 	};
-// });
 
 jest.mock('@src/defence');
 const mockDetectTriggeredDefences =

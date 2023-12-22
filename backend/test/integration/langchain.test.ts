@@ -1,4 +1,15 @@
-/* eslint-disable import/order */
+import {
+	afterEach,
+	beforeEach,
+	describe,
+	test,
+	jest,
+	expect,
+} from '@jest/globals';
+import { RetrievalQAChain } from 'langchain/chains';
+import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { PromptTemplate } from 'langchain/prompts';
+
 import {
 	queryDocuments,
 	queryPromptEvaluationModel,
@@ -11,18 +22,6 @@ import {
 	promptEvalContextTemplate,
 	promptEvalPrompt,
 } from '@src/promptTemplates';
-import { RetrievalQAChain } from 'langchain/chains';
-import { PromptTemplate } from 'langchain/prompts';
-
-import { ChatOpenAI } from 'langchain/chat_models/openai';
-import {
-	afterEach,
-	beforeEach,
-	describe,
-	test,
-	jest,
-	expect,
-} from '@jest/globals';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const mockCall = jest.fn<any>();
@@ -111,10 +110,8 @@ jest.mock('langchain/chains', () => {
 RetrievalQAChain.fromLLM = mockFromLLM;
 
 jest.mock('@src/openai', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	const originalModule =
 		jest.requireActual<typeof import('@src/openai')>('@src/openai');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return {
 		...originalModule,
 		getValidOpenAIModelsList: jest.fn(() => mockValidModels),

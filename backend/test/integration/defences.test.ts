@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { afterEach, expect, jest, test } from '@jest/globals';
 
 import { defaultDefences } from '@src/defaultDefences';
@@ -8,10 +7,8 @@ import { DEFENCE_ID } from '@src/models/defence';
 // Define a mock implementation for the createChatCompletion method
 const mockCall = jest.fn();
 jest.mock('langchain/chains', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	const originalModule =
 		jest.requireActual<typeof import('langchain/chains')>('langchain/chains');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return {
 		...originalModule,
 		LLMChain: jest.fn().mockImplementation(() => ({
@@ -23,7 +20,6 @@ jest.mock('langchain/chains', () => {
 jest.mock('@src/openai', () => {
 	const originalModule =
 		jest.requireActual<typeof import('@src/openai')>('@src/openai');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return {
 		...originalModule,
 		getValidOpenAIModelsList: jest.fn().mockImplementation(() => {
