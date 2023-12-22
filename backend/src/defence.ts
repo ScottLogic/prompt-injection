@@ -1,5 +1,3 @@
-import { get } from 'node:http';
-
 import { defaultDefences } from './defaultDefences';
 import { queryPromptEvaluationModel } from './langchain';
 import { ChatDefenceReport, TransformedChatMessage } from './models/chat';
@@ -209,22 +207,46 @@ function transformMessage(
 
 // detects triggered defences in original message and blocks the message if necessary
 async function detectTriggeredDefences(message: string, defences: Defence[]) {
-	// keep track of any triggered defences
-	const defenceReport: ChatDefenceReport = {
-		blockedReason: null,
-		isBlocked: false,
-		alertedDefences: [],
-		triggeredDefences: [],
-	};
-
-	// the following methods will add triggered defences to the defenceReport
 	const characterLimitDefenceReport = detectCharacterLimit(message, defences);
 	const filterUserInputDefenceReport = detectFilterUserInput(message, defences);
 	const xmlTaggingDefenceReport = detectXmlTagging(message, defences);
 	const evaluationDefenceReport = await detectEvaluationLLM(message, defences);
 
-	return defenceReport;
+	return combineDefenceReports([
+		characterLimitDefenceReport,
+		filterUserInputDefenceReport,
+		xmlTaggingDefenceReport,
+		evaluationDefenceReport,
+	]);
 }
+
+function combineDefenceReports(
+	defenceReports: ChatDefenceReport[]
+): ChatDefenceReport {
+	const isBlocked = defenceReports.some((report) => report.isBlocked);
+	const blockedReason = defenceReports.every(
+		(report) => report.blockedReason === null
+	)
+		? null
+		: defenceReports
+				.map((report) => report.blockedReason)
+				.filter((reason) => reason !== null)
+				.join('\n');
+	const alertedDefences = defenceReports
+		.map((report) => report.alertedDefences)
+		.flat();
+	const triggeredDefences = defenceReports
+		.map((report) => report.triggeredDefences)
+		.flat();
+
+	return {
+		isBlocked,
+		blockedReason,
+		alertedDefences,
+		triggeredDefences,
+	};
+}
+
 function getEmptyChatDefenceReport(): ChatDefenceReport {
 	return {
 		blockedReason: null,
