@@ -233,7 +233,7 @@ function getAlertedSingleDefenceReport(): SingleDefenceReport {
 }
 
 function getTriggeredSingleDefenceReport(
-	blockedReason: string
+	blockedReason: string | null
 ): SingleDefenceReport {
 	return { status: 'triggered', blockedReason };
 }
@@ -317,7 +317,7 @@ function detectFilterUserInput(
 function detectXmlTagging(
 	message: string,
 	defences: Defence[]
-): ChatDefenceReport {
+): SingleDefenceReport {
 	const containsXML = containsXMLTags(message);
 	const defenceActive = isDefenceActive(DEFENCE_ID.XML_TAGGING, defences);
 
@@ -326,22 +326,16 @@ function detectXmlTagging(
 	}
 
 	return containsXML && defenceActive
-		? {
-				...getEmptySingleDefenceReport(),
-				triggeredDefences: [DEFENCE_ID.XML_TAGGING],
-		  }
+		? getTriggeredSingleDefenceReport(null)
 		: containsXML && !defenceActive
-		? {
-				...getEmptySingleDefenceReport(),
-				alertedDefences: [DEFENCE_ID.XML_TAGGING],
-		  }
-		: getEmptySingleDefenceReport();
+		? getAlertedSingleDefenceReport()
+		: getOkSingleDefenceReport();
 }
 
 async function detectEvaluationLLM(
 	message: string,
 	defences: Defence[]
-): Promise<ChatDefenceReport> {
+): Promise<SingleDefenceReport> {
 	// to save money and processing time, and to reduce risk of rate limiting, we only run if defence is active
 	if (isDefenceActive(DEFENCE_ID.PROMPT_EVALUATION_LLM, defences)) {
 		const promptEvalLLMPrompt = getPromptEvalPromptFromConfig(defences);
@@ -354,15 +348,12 @@ async function detectEvaluationLLM(
 		if (evaluationResult.isMalicious) {
 			console.debug('LLM evaluation defence active and prompt is malicious.');
 
-			return {
-				triggeredDefences: [DEFENCE_ID.PROMPT_EVALUATION_LLM],
-				isBlocked: true,
-				blockedReason: `Message blocked by the prompt evaluation LLM.`,
-				alertedDefences: [],
-			};
+			return getTriggeredSingleDefenceReport(
+				'Message blocked by the prompt evaluation LLM.'
+			);
 		}
 	}
-	return getEmptySingleDefenceReport();
+	return getOkSingleDefenceReport();
 }
 
 export {
