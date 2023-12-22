@@ -218,7 +218,7 @@ async function detectTriggeredDefences(message: string, defences: Defence[]) {
 	// the following methods will add triggered defences to the defenceReport
 	const characterLimitDefenceReport = detectCharacterLimit(message, defences);
 	const filterUserInputDefenceReport = detectFilterUserInput(message, defences);
-	detectXmlTagging(defenceReport, message, defences);
+	const xmlTaggingDefenceReport = detectXmlTagging(message, defences);
 	await detectEvaluationLLM(defenceReport, message, defences);
 
 	return defenceReport;
@@ -300,22 +300,24 @@ function detectFilterUserInput(
 }
 
 function detectXmlTagging(
-	defenceReport: ChatDefenceReport,
 	message: string,
 	defences: Defence[]
-) {
-	// check if message contains XML tags
+): ChatDefenceReport {
 	if (containsXMLTags(message)) {
 		console.debug('XML_TAGGING defence triggered.');
 		if (isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)) {
-			// add the defence to the list of triggered defences
-			defenceReport.triggeredDefences.push(DEFENCE_ID.XML_TAGGING);
+			return {
+				...getEmptyChatDefenceReport(),
+				triggeredDefences: [DEFENCE_ID.XML_TAGGING],
+			};
 		} else {
-			// add the defence to the list of alerted defences
-			defenceReport.alertedDefences.push(DEFENCE_ID.XML_TAGGING);
+			return {
+				...getEmptyChatDefenceReport(),
+				alertedDefences: [DEFENCE_ID.XML_TAGGING],
+			};
 		}
 	}
-	return defenceReport;
+	return getEmptyChatDefenceReport();
 }
 
 async function detectEvaluationLLM(
