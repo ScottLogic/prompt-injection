@@ -72,19 +72,19 @@ function DefenceMechanism({
 		>
 			<summary>
 				<label>
-					<span>{defenceDetail.name}</span>
+					<span className="toggle-label">{defenceDetail.name}</span>
 					<span className="switch">
-					<input
-						className="toggle-switch-input"
-						type="checkbox"
-						placeholder="defence-toggle"
-						onChange={() => {
-							toggleDefence(defenceDetail);
-						}}
-						// set checked if defence is active
-						checked={defenceDetail.isActive}
-					/>
-					<span className="slider round"></span>
+						<input
+							className="toggle-switch-input"
+							type="checkbox"
+							placeholder="defence-toggle"
+							onChange={() => {
+								toggleDefence(defenceDetail);
+							}}
+							// set checked if defence is active
+							checked={defenceDetail.isActive}
+						/>
+						<span className="slider round"></span>
 					</span>
 				</label>
 			</summary>
