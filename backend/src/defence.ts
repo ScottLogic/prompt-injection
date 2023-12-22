@@ -1,3 +1,5 @@
+import { get } from 'node:http';
+
 import { defaultDefences } from './defaultDefences';
 import { queryPromptEvaluationModel } from './langchain';
 import { ChatDefenceReport, TransformedChatMessage } from './models/chat';
@@ -219,7 +221,7 @@ async function detectTriggeredDefences(message: string, defences: Defence[]) {
 	const characterLimitDefenceReport = detectCharacterLimit(message, defences);
 	const filterUserInputDefenceReport = detectFilterUserInput(message, defences);
 	const xmlTaggingDefenceReport = detectXmlTagging(message, defences);
-	await detectEvaluationLLM(defenceReport, message, defences);
+	const evaluationDefenceReport = await detectEvaluationLLM(message, defences);
 
 	return defenceReport;
 }
@@ -324,27 +326,30 @@ function detectXmlTagging(
 }
 
 async function detectEvaluationLLM(
-	defenceReport: ChatDefenceReport,
 	message: string,
 	defences: Defence[]
-) {
-	// only call the prompt evaluation model if the defence is active
+): Promise<ChatDefenceReport> {
+	// to save money and processing time, and to reduce risk of rate limiting, we only run if defence is active
 	if (isDefenceActive(DEFENCE_ID.PROMPT_EVALUATION_LLM, defences)) {
-		const configPromptEvalPrompt = getPromptEvalPromptFromConfig(defences);
+		const promptEvalLLMPrompt = getPromptEvalPromptFromConfig(defences);
 
 		const evalPrompt = await queryPromptEvaluationModel(
 			message,
-			configPromptEvalPrompt
+			promptEvalLLMPrompt
 		);
+
 		if (evalPrompt.isMalicious) {
-			defenceReport.triggeredDefences.push(DEFENCE_ID.PROMPT_EVALUATION_LLM);
 			console.debug('LLM evaluation defence active and prompt is malicious.');
-			defenceReport.isBlocked = true;
-			defenceReport.blockedReason = `Message blocked by the prompt evaluation LLM.`;
+
+			return {
+				triggeredDefences: [DEFENCE_ID.PROMPT_EVALUATION_LLM],
+				isBlocked: true,
+				blockedReason: `Message blocked by the prompt evaluation LLM.`,
+				alertedDefences: [],
+			};
 		}
 	}
-	console.debug(JSON.stringify(defenceReport));
-	return defenceReport;
+	return getEmptyChatDefenceReport();
 }
 
 export {
