@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
+import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
 import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -30,12 +31,13 @@ function MainComponent({
 	chatModels,
 	currentLevel,
 	numCompletedLevels,
+	closeOverlay,
 	incrementNumCompletedLevels,
 	openDocumentViewer,
 	openHandbook,
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
-	openResetLevelOverlay,
+	openOverlay,
 	openResetProgressOverlay,
 	openWelcomeOverlay,
 	setCurrentLevel,
@@ -43,12 +45,13 @@ function MainComponent({
 	chatModels: string[];
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
+	closeOverlay: () => void;
 	incrementNumCompletedLevels: (level: number) => void;
 	openDocumentViewer: () => void;
 	openHandbook: () => void;
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
-	openResetLevelOverlay: () => void;
+	openOverlay: (overlayComponent: JSX.Element) => void;
 	openResetProgressOverlay: () => void;
 	openWelcomeOverlay: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
@@ -75,6 +78,19 @@ function MainComponent({
 	useEffect(() => {
 		void setNewLevel(currentLevel);
 	}, [currentLevel]);
+
+	function openResetLevelOverlay() {
+		openOverlay(
+			<ResetLevelOverlay
+				currentLevel={currentLevel}
+				resetLevel={async () => {
+					await resetLevel();
+					closeOverlay();
+				}}
+				closeOverlay={closeOverlay}
+			/>
+		);
+	}
 
 	// methods to modify messages
 	function addChatMessage(message: ChatMessage) {

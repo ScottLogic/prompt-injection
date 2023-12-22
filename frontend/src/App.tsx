@@ -6,11 +6,9 @@ import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
-import ResetLevelOverlay from './components/Overlay/ResetLevel';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
-import { clearChat, getValidModels } from './service/chatService';
-import { clearEmails } from './service/emailService';
+import { getValidModels } from './service/chatService';
 import { resetAllLevelProgress } from './service/levelService';
 import { getSystemRoles } from './service/systemRoleService';
 
@@ -212,15 +210,6 @@ function App() {
 	function openDocumentViewer() {
 		openOverlay(<DocumentViewBox closeOverlay={closeOverlay} />);
 	}
-	function openResetLevelOverlay() {
-		openOverlay(
-			<ResetLevelOverlay
-				currentLevel={currentLevel}
-				resetLevel={resetLevel}
-				closeOverlay={closeOverlay}
-			/>
-		);
-	}
 	function openResetProgressOverlay() {
 		openOverlay(
 			<ResetProgressOverlay
@@ -242,16 +231,6 @@ function App() {
 
 			setCurrentLevel(startLevel);
 		}
-		closeOverlay();
-	}
-
-	// resets whole game progress and start from level 1 or Sandbox
-	async function resetLevel() {
-		console.log('resetting progress for all levels');
-		// reset on the backend
-		await Promise.all([clearChat(currentLevel), clearEmails(currentLevel)]);
-		// re-render main component to update frontend chat & emails
-		setMainComponentKey(mainComponentKey + 1);
 		closeOverlay();
 	}
 
@@ -294,12 +273,13 @@ function App() {
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				chatModels={chatModels}
+				closeOverlay={closeOverlay}
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openDocumentViewer={openDocumentViewer}
 				openHandbook={openHandbook}
+				openOverlay={openOverlay}
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
-				openResetLevelOverlay={openResetLevelOverlay}
 				openResetProgressOverlay={openResetProgressOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
