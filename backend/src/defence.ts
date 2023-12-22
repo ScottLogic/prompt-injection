@@ -268,31 +268,35 @@ function detectFilterUserInput(
 		message,
 		getFilterList(defences, DEFENCE_ID.FILTER_USER_INPUT)
 	);
-	if (detectedPhrases.length > 0) {
+
+	const filterWordsDetected = detectedPhrases.length > 0;
+	const defenceActive = isDefenceActive(DEFENCE_ID.FILTER_USER_INPUT, defences);
+
+	if (filterWordsDetected) {
 		console.debug(
 			`FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
 				', '
 			)}`
 		);
-		if (isDefenceActive(DEFENCE_ID.FILTER_USER_INPUT, defences)) {
-			return {
+	}
+
+	return filterWordsDetected && defenceActive
+		? {
 				blockedReason: `Message blocked - I cannot answer questions about '${detectedPhrases.join(
 					"' or '"
 				)}'!`,
 				isBlocked: true,
 				alertedDefences: [],
 				triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
-			};
-		} else {
-			return {
+		  }
+		: filterWordsDetected && !defenceActive
+		? {
 				blockedReason: null,
 				isBlocked: false,
 				alertedDefences: [DEFENCE_ID.FILTER_USER_INPUT],
 				triggeredDefences: [],
-			};
-		}
-	}
-	return getEmptyChatDefenceReport();
+		  }
+		: getEmptyChatDefenceReport();
 }
 
 function detectXmlTagging(
