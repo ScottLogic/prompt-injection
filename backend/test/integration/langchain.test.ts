@@ -25,17 +25,17 @@ import {
 } from '@jest/globals';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const mockCall = jest.fn();
+const mockCall = jest.fn<any>();
 const mockRetrievalQAChain = {
 	call: mockCall,
 };
 const mockPromptEvalChain = {
 	call: mockCall,
 };
-const mockFromLLM = jest.fn();
-const mockFromTemplate = jest.fn();
+const mockFromLLM = jest.fn<any>();
+const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
 const mockLoader = jest.fn();
-const mockSplitDocuments = jest.fn();
+const mockSplitDocuments = jest.fn<any>();
 const mockAsRetriever = jest.fn();
 
 // eslint-disable-next-line prefer-const
@@ -88,7 +88,6 @@ jest.mock('langchain/text_splitter', () => {
 		}),
 	};
 });
-
 // mock PromptTemplate.fromTemplate static method
 jest.mock('langchain/prompts');
 PromptTemplate.fromTemplate = mockFromTemplate;
@@ -113,7 +112,8 @@ RetrievalQAChain.fromLLM = mockFromLLM;
 
 jest.mock('@src/openai', () => {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const originalModule = jest.requireActual('@src/openai');
+	const originalModule =
+		jest.requireActual<typeof import('@src/openai')>('@src/openai');
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return {
 		...originalModule,
