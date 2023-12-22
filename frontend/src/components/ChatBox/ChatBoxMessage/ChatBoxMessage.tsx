@@ -25,6 +25,7 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 			: 'centre';
 
 	const className = `chat-box-message chat-box-message-${position}`;
+
 	return (
 		<div className={className}>
 			{avatar !== 'none' && <Avatar avatar={avatar} />}
