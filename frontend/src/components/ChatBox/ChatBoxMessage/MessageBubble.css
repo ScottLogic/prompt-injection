@@ -10,6 +10,9 @@
 	border: 0.0625rem solid transparent;
 	color: var(--chat-bot-text-colour);
 	white-space: pre-line;
+	&:focus {
+		outline-offset: 0.1rem;
+	}
 }
 
 .message-bubble.bot {

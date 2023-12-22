@@ -3,6 +3,6 @@
 	flex-direction: column;
 	overflow-y: auto;
 	scrollbar-width: thin;
-	padding: 0 2rem;
+	padding: 0.3rem 2rem;
 	height: fit-content;
 }

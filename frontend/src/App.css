@@ -50,6 +50,10 @@
 	border: none;
 	padding: 0;
 	margin: 0;
+
+	&:focus {
+		outline-offset: 0.2rem;
+	}
 }
 .dialog-modal::backdrop {
 	background-color: var(--overlay-hidden-colour);

@@ -3,6 +3,7 @@
 	font-style: italic;
 	padding-top: 1rem;
 	text-align: center;
+	border-radius: 0.625rem;
 }
 .chat-box-info.info-text {
 	color: var(--chat-info-text-colour);

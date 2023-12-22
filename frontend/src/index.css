@@ -29,3 +29,7 @@ html {
 	background: var(--main-background);
 	color: var(--main-text-colour);
 }
+
+*:focus {
+	outline: 0.3rem solid var(--accent-border-colour);
+}

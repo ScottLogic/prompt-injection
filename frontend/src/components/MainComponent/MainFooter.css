@@ -34,4 +34,5 @@
 .main-footer .links a:not(:last-child)::after {
 	content: '|';
 	padding: 0 0.75rem;
+	text-decoration: none;
 }
