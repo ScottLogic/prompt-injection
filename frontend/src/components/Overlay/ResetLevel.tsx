@@ -25,7 +25,7 @@ function ResetLevelOverlay({
 			}}
 			content={
 				<>
-					<h1> Reset all progress </h1>
+					<h1> Reset level </h1>
 					<p>
 						{
 							'Warning! This will reset all your chat history and sent emails for this level.'
