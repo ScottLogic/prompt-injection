@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { afterEach, describe, expect, jest, test } from '@jest/globals';
+import { afterEach, expect, jest, test } from '@jest/globals';
 
 import { defaultDefences } from '@src/defaultDefences';
 import { activateDefence, detectTriggeredDefences } from '@src/defence';
@@ -9,7 +9,8 @@ import { DEFENCE_ID } from '@src/models/defence';
 const mockCall = jest.fn();
 jest.mock('langchain/chains', () => {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const originalModule = jest.requireActual('langchain/chains');
+	const originalModule =
+		jest.requireActual<typeof import('langchain/chains')>('langchain/chains');
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return {
 		...originalModule,
@@ -20,7 +21,8 @@ jest.mock('langchain/chains', () => {
 });
 
 jest.mock('@src/openai', () => {
-	const originalModule = jest.requireActual('@src/openai');
+	const originalModule =
+		jest.requireActual<typeof import('@src/openai')>('@src/openai');
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return {
 		...originalModule,
