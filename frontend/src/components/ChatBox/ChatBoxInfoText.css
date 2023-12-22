@@ -6,7 +6,7 @@
 }
 .chat-box-info.info-text {
 	color: var(--chat-info-text-colour);
-	margin: 0.1rem 0.1rem;
+	margin: 0.1rem;
 }
 
 .chat-box-info.defence-alerted-text {

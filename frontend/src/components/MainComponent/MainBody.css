@@ -8,10 +8,6 @@
 }
 
 .centre-area {
-	display: flex;
-	flex-direction: column-reverse;
-	position: relative;
-	height: 100%;
 	width: 55%;
 	background-color: var(--main-text-colour);
 }
