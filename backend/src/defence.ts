@@ -303,21 +303,24 @@ function detectXmlTagging(
 	message: string,
 	defences: Defence[]
 ): ChatDefenceReport {
-	if (containsXMLTags(message)) {
+	const containsXML = containsXMLTags(message);
+	const defenceActive = isDefenceActive(DEFENCE_ID.XML_TAGGING, defences);
+
+	if (containsXML) {
 		console.debug('XML_TAGGING defence triggered.');
-		if (isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)) {
-			return {
+	}
+
+	return containsXML && defenceActive
+		? {
 				...getEmptyChatDefenceReport(),
 				triggeredDefences: [DEFENCE_ID.XML_TAGGING],
-			};
-		} else {
-			return {
+		  }
+		: containsXML && !defenceActive
+		? {
 				...getEmptyChatDefenceReport(),
 				alertedDefences: [DEFENCE_ID.XML_TAGGING],
-			};
-		}
-	}
-	return getEmptyChatDefenceReport();
+		  }
+		: getEmptyChatDefenceReport();
 }
 
 async function detectEvaluationLLM(
