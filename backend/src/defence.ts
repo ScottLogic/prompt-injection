@@ -276,10 +276,8 @@ function detectCharacterLimit(
 		  }
 		: messageExceedsLimit && !defenceActive
 		? {
-				blockedReason: null,
-				isBlocked: false,
+				...getEmptyChatDefenceReport(),
 				alertedDefences: [DEFENCE_ID.CHARACTER_LIMIT],
-				triggeredDefences: [],
 		  }
 		: getEmptyChatDefenceReport();
 }
@@ -315,10 +313,8 @@ function detectFilterUserInput(
 		  }
 		: filterWordsDetected && !defenceActive
 		? {
-				blockedReason: null,
-				isBlocked: false,
+				...getEmptyChatDefenceReport(),
 				alertedDefences: [DEFENCE_ID.FILTER_USER_INPUT],
-				triggeredDefences: [],
 		  }
 		: getEmptyChatDefenceReport();
 }
