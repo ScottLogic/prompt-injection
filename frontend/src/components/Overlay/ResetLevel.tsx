@@ -27,11 +27,12 @@ function ResetLevelOverlay({
 				<>
 					<h1> Reset all progress </h1>
 					<p>
-						Warning! This will reset all your chat history and sent emails for
-						this level.
+						{
+							'Warning! This will reset all your chat history and sent emails for this level.'
+						}
 						{currentLevel >= LEVEL_NAMES.LEVEL_3 &&
-							'However any configurations you have made to defences will not be lost.'}
-						Are you sure you want to do this?
+							' However, any configurations you have made to defences will not be lost.'}
+						{' Are you sure you want to do this?'}
 					</p>
 				</>
 			}
