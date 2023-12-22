@@ -71,9 +71,11 @@ function DefenceMechanism({
 			}}
 		>
 			<summary>
-				<label className="switch">
-					<span className="toggle-label">{defenceDetail.name}</span>
+				<label>
+					<span>{defenceDetail.name}</span>
+					<span className="switch">
 					<input
+						className="toggle-switch-input"
 						type="checkbox"
 						placeholder="defence-toggle"
 						onChange={() => {
@@ -83,6 +85,7 @@ function DefenceMechanism({
 						checked={defenceDetail.isActive}
 					/>
 					<span className="slider round"></span>
+					</span>
 				</label>
 			</summary>
 			<div className="info-box">
