@@ -224,6 +224,20 @@ async function detectTriggeredDefences(message: string, defences: Defence[]) {
 	]);
 }
 
+function getOkSingleDefenceReport(): SingleDefenceReport {
+	return { status: 'ok', blockedReason: null };
+}
+
+function getAlertedSingleDefenceReport(): SingleDefenceReport {
+	return { status: 'alerted', blockedReason: null };
+}
+
+function getTriggeredSingleDefenceReport(
+	blockedReason: string
+): SingleDefenceReport {
+	return { status: 'triggered', blockedReason };
+}
+
 function combineDefenceReports(
 	defenceReports: ChatDefenceReport[]
 ): ChatDefenceReport {
@@ -263,22 +277,16 @@ function detectCharacterLimit(
 	if (messageExceedsLimit) console.debug('CHARACTER_LIMIT defence triggered.');
 
 	return messageExceedsLimit && defenceActive
-		? {
-				status: 'triggered',
-				blockedReason: 'Message is too long',
-		  }
+		? getTriggeredSingleDefenceReport('Message is too long')
 		: messageExceedsLimit && !defenceActive
-		? {
-				status: 'alerted',
-				blockedReason: null,
-		  }
-		: { status: 'ok', blockedReason: null };
+		? getAlertedSingleDefenceReport()
+		: getOkSingleDefenceReport();
 }
 
 function detectFilterUserInput(
 	message: string,
 	defences: Defence[]
-): ChatDefenceReport {
+): SingleDefenceReport {
 	const detectedPhrases = detectFilterList(
 		message,
 		getFilterList(defences, DEFENCE_ID.FILTER_USER_INPUT)
@@ -296,20 +304,14 @@ function detectFilterUserInput(
 	}
 
 	return filterWordsDetected && defenceActive
-		? {
-				blockedReason: `Message blocked - I cannot answer questions about '${detectedPhrases.join(
+		? getTriggeredSingleDefenceReport(
+				`Message blocked - I cannot answer questions about '${detectedPhrases.join(
 					"' or '"
-				)}'!`,
-				isBlocked: true,
-				alertedDefences: [],
-				triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
-		  }
+				)}'!`
+		  )
 		: filterWordsDetected && !defenceActive
-		? {
-				...getEmptySingleDefenceReport(),
-				alertedDefences: [DEFENCE_ID.FILTER_USER_INPUT],
-		  }
-		: getEmptySingleDefenceReport();
+		? getAlertedSingleDefenceReport()
+		: getOkSingleDefenceReport();
 }
 
 function detectXmlTagging(
