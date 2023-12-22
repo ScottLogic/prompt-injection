@@ -21,7 +21,7 @@ module.exports = {
 	parserOptions: {
 		project: ['./tsconfig.json', './test/tsconfig.json'],
 	},
-	plugins: ['@typescript-eslint'],
+	plugins: ['@typescript-eslint', 'jest'],
 	ignorePatterns: ['build', 'coverage', 'node_modules'],
 	rules: {
 		eqeqeq: 'error',

@@ -1,3 +1,5 @@
+import { expect, jest, test, describe } from '@jest/globals';
+
 import { defaultDefences } from '@src/defaultDefences';
 import { activateDefence, configureDefence } from '@src/defence';
 import {

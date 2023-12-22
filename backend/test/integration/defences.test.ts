@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { afterEach, describe, expect, jest, test } from '@jest/globals';
+
 import { defaultDefences } from '@src/defaultDefences';
 import { activateDefence, detectTriggeredDefences } from '@src/defence';
 import { DEFENCE_ID } from '@src/models/defence';
