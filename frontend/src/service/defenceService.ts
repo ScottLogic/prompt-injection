@@ -37,6 +37,7 @@ async function configureDefence(
 	config: DefenceConfigItem[],
 	level: number
 ): Promise<boolean> {
+	console.log('configuring', defenceId, config, level);
 	const response = await sendRequest(`${PATH}configure`, {
 		method: 'POST',
 		headers: {

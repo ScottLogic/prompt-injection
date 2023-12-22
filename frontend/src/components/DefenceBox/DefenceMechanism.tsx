@@ -40,15 +40,19 @@ function DefenceMechanism({
 		}, 3000);
 	}
 
-	function resetConfigurationValue(configId: string) {
-		resetDefenceConfiguration(defenceDetail.id, configId);
+	function resetConfigurationValue(defence: Defence, configId: string) {
+		resetDefenceConfiguration(defence.id, configId);
 		showDefenceConfiguredText(true);
 	}
 
-	async function setConfigurationValue(configId: string, value: string) {
-		const configIsValid = validateDefence(defenceDetail.id, configId, value);
+	async function setConfigurationValue(
+		defence: Defence,
+		configId: string,
+		value: string
+	) {
+		const configIsValid = validateDefence(defence.id, configId, value);
 		if (configIsValid) {
-			const newConfiguration = defenceDetail.config.map((config) => {
+			const newConfiguration = defence.config.map((config) => {
 				if (config.id === configId) {
 					config.value = value;
 				}
@@ -56,7 +60,7 @@ function DefenceMechanism({
 			});
 
 			const configured = await setDefenceConfiguration(
-				defenceDetail.id,
+				defence.id,
 				newConfiguration
 			);
 			showDefenceConfiguredText(configured);
@@ -99,7 +103,7 @@ function DefenceMechanism({
 					  defenceDetail.config.map((config) => {
 							return (
 								<DefenceConfiguration
-									defenceId={defenceDetail.id}
+									defence={defenceDetail}
 									key={config.id + configKey}
 									isActive={defenceDetail.isActive}
 									config={config}

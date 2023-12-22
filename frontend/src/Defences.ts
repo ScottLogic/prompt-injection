@@ -68,7 +68,7 @@ const DEFENCES_SHOWN_LEVEL3: Defence[] = [
 	makeDefence(
 		DEFENCE_ID.PROMPT_ENCLOSURE,
 		'Prompt Enclosure',
-		'Alter the users input by appending instructional prompts to the beginning or end of promtp',
+		'Alter the users input by appending instructional prompts and/or tags to the input.',
 		[]
 	),
 

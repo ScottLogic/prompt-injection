@@ -1,9 +1,9 @@
+import { PROMPT_ENCLOSURE_DEFENCES } from '@src/Defences';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 
 import DefenceMechanism from './DefenceMechanism';
 
 import './DefenceBox.css';
-import { PROMPT_ENCLOSURE_DEFENCES } from '@src/Defences';
 
 function DefenceBox({
 	defences,

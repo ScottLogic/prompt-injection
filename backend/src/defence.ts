@@ -55,6 +55,7 @@ function getConfigValue(
 	defenceId: DEFENCE_ID,
 	configId: string
 ) {
+	console.log('defences = ', defences, defenceId, configId);
 	const config: DefenceConfigItem | undefined = defences
 		.find((defence) => defence.id === defenceId)
 		?.config.find((config) => config.id === configId);

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
-import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
+import { DEFENCE_ID, Defence } from '@src/models/defence';
+
+import DefenceConfiguration from './DefenceConfiguration';
 
 import './PromptEnclosureDefenceConfiguration.css';
-import DefenceConfiguration from './DefenceConfiguration';
 
 function PromptEnclosureDefenceConfiguration({
 	defences,
@@ -13,8 +14,12 @@ function PromptEnclosureDefenceConfiguration({
 }: {
 	defences: Defence[];
 	toggleDefence: (defence: Defence) => void;
-	setConfigurationValue: (configId: string, value: string) => Promise<void>;
-	resetConfigurationValue: (configId: string) => void;
+	setConfigurationValue: (
+		defence: Defence,
+		configId: string,
+		value: string
+	) => Promise<void>;
+	resetConfigurationValue: (defence: Defence, configId: string) => void;
 }) {
 	const [selectedRadio, setSelectedRadio] = useState<string>('none');
 
@@ -34,8 +39,8 @@ function PromptEnclosureDefenceConfiguration({
 		});
 	}
 
+	// activate this defence and deactivate all others
 	function activateOne(defenceId: DEFENCE_ID) {
-		// activate this defence and deactivate all others
 		defences.forEach((defence) => {
 			if (defence.id === defenceId && !defence.isActive) toggleDefence(defence);
 			else if (defence.isActive) {
@@ -88,12 +93,13 @@ function PromptEnclosureDefenceConfiguration({
 				})}
 			</div>
 			{selectedRadio !== 'none' &&
-				getDefence(selectedRadio as DEFENCE_ID).config.map((config) => {
+				getDefence(selectedRadio as DEFENCE_ID).config.map((config, index) => {
+					const defence = getDefence(selectedRadio as DEFENCE_ID);
 					return (
 						<DefenceConfiguration
-							key={config.id}
-							defenceId={getDefence(selectedRadio as DEFENCE_ID).id}
-							isActive={getDefence(selectedRadio as DEFENCE_ID).isActive}
+							key={index}
+							defence={defence}
+							isActive={defence.isActive}
 							config={config}
 							setConfigurationValue={setConfigurationValue}
 							resetConfigurationValue={resetConfigurationValue}
