@@ -71,8 +71,8 @@ function DefenceMechanism({
 			}}
 		>
 			<summary>
-				<span aria-hidden>{defenceDetail.name}</span>
 				<label className="switch">
+					<span className="toggle-label">{defenceDetail.name}</span>
 					<input
 						type="checkbox"
 						placeholder="defence-toggle"
@@ -81,7 +81,6 @@ function DefenceMechanism({
 						}}
 						// set checked if defence is active
 						checked={defenceDetail.isActive}
-						aria-label={defenceDetail.name}
 					/>
 					<span className="slider round"></span>
 				</label>
