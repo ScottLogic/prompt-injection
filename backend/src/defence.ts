@@ -351,12 +351,12 @@ async function detectEvaluationLLM(
 	if (isDefenceActive(DEFENCE_ID.PROMPT_EVALUATION_LLM, defences)) {
 		const promptEvalLLMPrompt = getPromptEvalPromptFromConfig(defences);
 
-		const evalPrompt = await queryPromptEvaluationModel(
+		const evaluationResult = await queryPromptEvaluationModel(
 			message,
 			promptEvalLLMPrompt
 		);
 
-		if (evalPrompt.isMalicious) {
+		if (evaluationResult.isMalicious) {
 			console.debug('LLM evaluation defence active and prompt is malicious.');
 
 			return {
