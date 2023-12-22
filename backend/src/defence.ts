@@ -216,7 +216,7 @@ async function detectTriggeredDefences(message: string, defences: Defence[]) {
 	};
 
 	// the following methods will add triggered defences to the defenceReport
-	detectCharacterLimit(defenceReport, message, defences);
+	const characterLimitDefenceReport = detectCharacterLimit(message, defences);
 	detectFilterUserInput(defenceReport, message, defences);
 	detectXmlTagging(defenceReport, message, defences);
 	await detectEvaluationLLM(defenceReport, message, defences);
@@ -233,26 +233,29 @@ function getEmptyChatDefenceReport(): ChatDefenceReport {
 }
 
 function detectCharacterLimit(
-	defenceReport: ChatDefenceReport,
 	message: string,
 	defences: Defence[]
-) {
+): ChatDefenceReport {
 	const maxMessageLength = Number(getMaxMessageLength(defences));
 
 	if (message.length > maxMessageLength) {
 		console.debug('CHARACTER_LIMIT defence triggered.');
 		// check if the defence is active
 		if (isDefenceActive(DEFENCE_ID.CHARACTER_LIMIT, defences)) {
-			// add the defence to the list of triggered defences
-			defenceReport.triggeredDefences.push(DEFENCE_ID.CHARACTER_LIMIT);
-			// block the message
-			defenceReport.isBlocked = true;
-			defenceReport.blockedReason = 'Message is too long';
+			return {
+				blockedReason: 'Message is too long',
+				isBlocked: true,
+				alertedDefences: [],
+				triggeredDefences: [DEFENCE_ID.CHARACTER_LIMIT],
+			};
 		} else {
-			// add the defence to the list of alerted defences
-			defenceReport.alertedDefences.push(DEFENCE_ID.CHARACTER_LIMIT);
+			return {
+				blockedReason: null,
+				isBlocked: false,
+				alertedDefences: [DEFENCE_ID.CHARACTER_LIMIT],
+				triggeredDefences: [],
+			};
 		}
-		return defenceReport;
 	} else {
 		return getEmptyChatDefenceReport();
 	}
