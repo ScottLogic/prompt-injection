@@ -238,10 +238,13 @@ function detectCharacterLimit(
 ): ChatDefenceReport {
 	const maxMessageLength = Number(getMaxMessageLength(defences));
 
-	if (message.length > maxMessageLength) {
+	const messageExceedsLimit = message.length > maxMessageLength;
+	const defenceActive = isDefenceActive(DEFENCE_ID.CHARACTER_LIMIT, defences);
+
+	if (messageExceedsLimit) {
 		console.debug('CHARACTER_LIMIT defence triggered.');
 		// check if the defence is active
-		if (isDefenceActive(DEFENCE_ID.CHARACTER_LIMIT, defences)) {
+		if (defenceActive) {
 			return {
 				blockedReason: 'Message is too long',
 				isBlocked: true,
