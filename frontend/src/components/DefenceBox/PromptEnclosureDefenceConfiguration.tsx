@@ -75,7 +75,6 @@ function PromptEnclosureDefenceConfiguration({
 					<span className="checkmark"></span>
 					<span className="label">None</span>
 				</label>
-
 				{defences.map((defence, index) => {
 					return (
 						<label className="defence-radio-button" key={index}>

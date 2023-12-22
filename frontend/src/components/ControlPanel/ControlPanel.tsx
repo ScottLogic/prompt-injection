@@ -1,3 +1,4 @@
+import { MODEL_DEFENCES } from '@src/Defences';
 import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
@@ -5,7 +6,6 @@ import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './ControlPanel.css';
-import { MODEL_DEFENCES } from '@src/Defences';
 
 function ControlPanel({
 	currentLevel,
