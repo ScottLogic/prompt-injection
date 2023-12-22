@@ -1,26 +1,32 @@
-.model-config-slider {
+.model-config-slider-fieldset {
+	border: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.model-config-slider-fieldset legend {
+	margin-right: auto;
+}
+
+.model-config-slider-fieldset .info-icon {
+	font-size: 1.3rem;
+	margin-left: auto;
+	margin-top: -1.3rem;
+	margin-bottom: 1rem;
+}
+
+.model-config-slider-fieldset .info-text {
+	font-size: 0.875rem;
+}
+
+.model-config-slider-fieldset .config-slider {
 	width: 90%;
 	margin: 0 auto;
-	padding: 0 0 0 0;
+	padding: 0;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-}
-
-.model-config-info {
-	display: flex;
-	align-items: center;
-}
-
-.model-config-title {
-	margin-right: auto;
-}
-
-.model-config-info-icon {
-	font-size: 1.3rem;
-}
-
-.model-config-info-text {
-	font-size: 0.875rem;
 }
