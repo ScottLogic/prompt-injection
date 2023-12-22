@@ -255,7 +255,7 @@ function MainComponent({
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				openHandbook={openHandbook}
-				openResetProgress={openResetProgressOverlay}
+				openResetProgressOverlay={openResetProgressOverlay}
 				openWelcome={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
 			/>
@@ -283,7 +283,7 @@ function MainComponent({
 				incrementNumCompletedLevels={incrementNumCompletedLevels}
 				openDocumentViewer={openDocumentViewer}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
-				openResetLevel={openResetLevelOverlay}
+				openResetLevelOverlay={openResetLevelOverlay}
 			/>
 			<MainFooter />
 		</div>

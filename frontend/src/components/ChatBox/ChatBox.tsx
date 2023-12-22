@@ -23,7 +23,7 @@ function ChatBox({
 	addSentEmails,
 	incrementNumCompletedLevels,
 	openLevelsCompleteOverlay,
-	openResetLevel,
+	openResetLevelOverlay,
 }: {
 	currentLevel: LEVEL_NAMES;
 	emails: EmailInfo[];
@@ -32,7 +32,7 @@ function ChatBox({
 	addSentEmails: (emails: EmailInfo[]) => void;
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openLevelsCompleteOverlay: () => void;
-	openResetLevel: () => void;
+	openResetLevelOverlay: () => void;
 }) {
 	const [chatInput, setChatInput] = useState<string>('');
 	const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
@@ -233,7 +233,7 @@ function ChatBox({
 						emails={emails}
 						currentLevel={currentLevel}
 					/>
-					<button className="chat-button" onClick={openResetLevel}>
+					<button className="chat-button" onClick={openResetLevelOverlay}>
 						Reset Level
 					</button>
 				</div>

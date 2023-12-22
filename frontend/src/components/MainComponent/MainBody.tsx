@@ -22,7 +22,7 @@ function MainBody({
 	incrementNumCompletedLevels,
 	openDocumentViewer,
 	openLevelsCompleteOverlay,
-	openResetLevel,
+	openResetLevelOverlay,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
@@ -41,7 +41,7 @@ function MainBody({
 	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openDocumentViewer: () => void;
 	openLevelsCompleteOverlay: () => void;
-	openResetLevel: () => void;
+	openResetLevelOverlay: () => void;
 }) {
 	return (
 		<main className="main-area">
@@ -65,7 +65,7 @@ function MainBody({
 					addSentEmails={addSentEmails}
 					incrementNumCompletedLevels={incrementNumCompletedLevels}
 					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
-					openResetLevel={openResetLevel}
+					openResetLevelOverlay={openResetLevelOverlay}
 				/>
 			</div>
 			<div className="side-bar">
