@@ -35,7 +35,11 @@ async function getDocuments(filePath: string) {
 		chunkOverlap: 0,
 	});
 
-	return await textSplitter.splitDocuments(docs);
+	// need to disable the linting rule here
+	// as it's possible for the splitDocuments method to return undefined
+	// despite what the return type says
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	return (await textSplitter.splitDocuments(docs)) ?? [];
 }
 
 function getFilepath(target: LEVEL_NAMES | 'common') {
@@ -59,6 +63,7 @@ function getFilepath(target: LEVEL_NAMES | 'common') {
 			return '';
 	}
 }
+
 function getSandboxDocumentMetas() {
 	return [...getDocumentMetas('common'), ...getDocumentMetas('sandbox')];
 }

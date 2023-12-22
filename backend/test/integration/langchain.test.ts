@@ -1,13 +1,9 @@
 /* eslint-disable import/order */
 import {
-	initPromptEvaluationModel,
-	initQAModel,
 	queryDocuments,
 	queryPromptEvaluationModel,
 	initDocumentVectors,
-	setVectorisedDocuments,
 } from '@src/langchain';
-import { DocumentsVector } from '@src/models/document';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
 	qAPrompt,
@@ -62,27 +58,6 @@ jest.mock('langchain/vectorstores/memory', () => {
 		},
 	};
 });
-
-class MockMemoryStore {
-	input: string;
-	constructor(input: string) {
-		this.input = input;
-	}
-	// eslint-disable-next-line @typescript-eslint/require-await
-	async asRetriever() {
-		mockAsRetriever();
-	}
-}
-
-class MockDocumentsVector implements DocumentsVector {
-	level: LEVEL_NAMES;
-	docVector: any;
-	constructor(level: LEVEL_NAMES, docVector: any) {
-		this.level = level;
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		this.docVector = new MockMemoryStore(docVector);
-	}
-}
 
 // mock DirectoryLoader
 jest.mock('langchain/document_loaders/fs/directory', () => {
@@ -143,49 +118,15 @@ beforeEach(() => {
 	process.env = {
 		OPENAI_API_KEY: 'sk-12345',
 	};
+});
 
-	// reset the documents
-	setVectorisedDocuments([]);
+afterEach(() => {
+	mockCall.mockRestore();
+	mockFromLLM.mockRestore();
+	mockFromTemplate.mockRestore();
 });
 
 describe('langchain integration tests ', () => {
-	test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', () => {
-		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-		initPromptEvaluationModel(promptEvalPrompt);
-		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
-		expect(mockFromTemplate).toHaveBeenCalledWith(
-			`${promptEvalPrompt}\n${promptEvalContextTemplate}`
-		);
-	});
-
-	test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is initialised THEN the llm is initialised and the prompt is set to the default', () => {
-		const level = LEVEL_NAMES.LEVEL_1;
-		const prompt = '';
-
-		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
-		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-		initQAModel(level, prompt);
-		expect(mockFromLLM).toHaveBeenCalledTimes(1);
-		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
-		expect(mockFromTemplate).toHaveBeenCalledWith(
-			`${qAPrompt}\n${qaContextTemplate}`
-		);
-	});
-
-	test('GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialised and prompt is set to the correct prompt ', () => {
-		const level = LEVEL_NAMES.LEVEL_1;
-		const prompt = 'this is a test prompt. ';
-
-		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
-		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-		initQAModel(level, prompt);
-		expect(mockFromLLM).toHaveBeenCalledTimes(1);
-		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
-		expect(mockFromTemplate).toHaveBeenCalledWith(
-			`this is a test prompt. \n${qaContextTemplate}`
-		);
-	});
-
 	test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {
 		const numberOfCalls = 4 + 1; // number of levels + common
 
@@ -196,11 +137,45 @@ describe('langchain integration tests ', () => {
 		expect(mockSplitDocuments).toHaveBeenCalledTimes(numberOfCalls);
 	});
 
+	test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', async () => {
+		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
+		await queryPromptEvaluationModel('some input', promptEvalPrompt);
+		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
+		expect(mockFromTemplate).toHaveBeenCalledWith(
+			`${promptEvalPrompt}\n${promptEvalContextTemplate}`
+		);
+	});
+
+	test('GIVEN the QA model is not provided a prompt and currentLevel WHEN it is initialised THEN the llm is initialised and the prompt is set to the default', async () => {
+		const level = LEVEL_NAMES.LEVEL_1;
+		const prompt = '';
+
+		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
+		await queryDocuments('some question', prompt, level);
+		expect(mockFromLLM).toHaveBeenCalledTimes(1);
+		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
+		expect(mockFromTemplate).toHaveBeenCalledWith(
+			`${qAPrompt}\n${qaContextTemplate}`
+		);
+	});
+
+	test('GIVEN the QA model is provided a prompt WHEN it is initialised THEN the llm is initialised and prompt is set to the correct prompt ', async () => {
+		const level = LEVEL_NAMES.LEVEL_1;
+		const prompt = 'this is a test prompt. ';
+
+		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
+		await queryDocuments('some question', prompt, level);
+		expect(mockFromLLM).toHaveBeenCalledTimes(1);
+		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
+		expect(mockFromTemplate).toHaveBeenCalledWith(
+			`this is a test prompt. \n${qaContextTemplate}`
+		);
+	});
+
 	test('GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it answers ', async () => {
 		const question = 'who is the CEO?';
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = '';
-		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		mockCall.mockResolvedValueOnce({
@@ -236,7 +211,7 @@ describe('langchain integration tests ', () => {
 	test('GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it does not respond in the correct format THEN it returns a final decision of false', async () => {
 		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
 
-		initPromptEvaluationModel('Prompt');
+		await queryPromptEvaluationModel('some input', 'prompt');
 
 		mockCall.mockResolvedValue({
 			promptEvalOutput: 'idk!',
@@ -250,15 +225,14 @@ describe('langchain integration tests ', () => {
 		});
 	});
 
-	test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised THEN it is initialised with GPT-4', () => {
+	test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised THEN it is initialised with GPT-4', async () => {
 		mockValidModels = ['gpt-4', 'gpt-3.5-turbo', 'gpt-3'];
 
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = 'this is a test prompt. ';
 
-		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-		initQAModel(level, prompt);
+		await queryDocuments('some question', prompt, level);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
 			modelName: 'gpt-4',
@@ -267,15 +241,14 @@ describe('langchain integration tests ', () => {
 		});
 	});
 
-	test('GIVEN the users api key does not support GPT-4 WHEN the QA model is initialised THEN it is initialised with gpt-3.5-turbo', () => {
+	test('GIVEN the users api key does not support GPT-4 WHEN the QA model is initialised THEN it is initialised with gpt-3.5-turbo', async () => {
 		mockValidModels = ['gpt-2', 'gpt-3.5-turbo', 'gpt-3'];
 
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = 'this is a test prompt. ';
 
-		setVectorisedDocuments([new MockDocumentsVector(level, 'test-docs')]);
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-		initQAModel(level, prompt);
+		await queryDocuments('some question', prompt, level);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
 			modelName: 'gpt-3.5-turbo',
@@ -284,13 +257,13 @@ describe('langchain integration tests ', () => {
 		});
 	});
 
-	test('GIVEN the users api key supports GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with GPT-4', () => {
+	test('GIVEN the users api key supports GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with GPT-4', async () => {
 		mockValidModels = ['gpt-4', 'gpt-3.5-turbo', 'gpt-3'];
 
 		const prompt = 'this is a test prompt. ';
 
 		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-		initPromptEvaluationModel(prompt);
+		await queryPromptEvaluationModel('some input', prompt);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
 			modelName: 'gpt-4',
@@ -299,13 +272,13 @@ describe('langchain integration tests ', () => {
 		});
 	});
 
-	test('GIVEN the users api key does not support GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with gpt-3.5-turbo', () => {
+	test('GIVEN the users api key does not support GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with gpt-3.5-turbo', async () => {
 		mockValidModels = ['gpt-2', 'gpt-3.5-turbo', 'gpt-3'];
 
 		const prompt = 'this is a test prompt. ';
 
 		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-		initPromptEvaluationModel(prompt);
+		await queryPromptEvaluationModel('some input', prompt);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
 			modelName: 'gpt-3.5-turbo',
@@ -314,9 +287,36 @@ describe('langchain integration tests ', () => {
 		});
 	});
 
-	afterEach(() => {
-		mockCall.mockRestore();
-		mockFromLLM.mockRestore();
-		mockFromTemplate.mockRestore();
+	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason', async () => {
+		mockCall.mockResolvedValue({
+			promptEvalOutput: 'yes.',
+		});
+		const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
+
+		expect(formattedOutput).toEqual({
+			isMalicious: true,
+		});
+	});
+
+	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason', async () => {
+		mockCall.mockResolvedValue({
+			promptEvalOutput: 'no.',
+		});
+		const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
+
+		expect(formattedOutput).toEqual({
+			isMalicious: false,
+		});
+	});
+
+	test('GIVEN prompt evaluation llm responds with an invalid format THEN formatEvaluationOutput returns false', async () => {
+		mockCall.mockResolvedValue({
+			promptEvalOutput: 'I cant tell you if this is malicious or not',
+		});
+		const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
+
+		expect(formattedOutput).toEqual({
+			isMalicious: false,
+		});
 	});
 });
