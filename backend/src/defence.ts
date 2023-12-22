@@ -217,7 +217,7 @@ async function detectTriggeredDefences(message: string, defences: Defence[]) {
 
 	// the following methods will add triggered defences to the defenceReport
 	const characterLimitDefenceReport = detectCharacterLimit(message, defences);
-	detectFilterUserInput(defenceReport, message, defences);
+	const filterUserInputDefenceReport = detectFilterUserInput(message, defences);
 	detectXmlTagging(defenceReport, message, defences);
 	await detectEvaluationLLM(defenceReport, message, defences);
 
@@ -261,11 +261,9 @@ function detectCharacterLimit(
 }
 
 function detectFilterUserInput(
-	defenceReport: ChatDefenceReport,
 	message: string,
 	defences: Defence[]
-) {
-	// check for words/phrases in the block list
+): ChatDefenceReport {
 	const detectedPhrases = detectFilterList(
 		message,
 		getFilterList(defences, DEFENCE_ID.FILTER_USER_INPUT)
@@ -277,16 +275,24 @@ function detectFilterUserInput(
 			)}`
 		);
 		if (isDefenceActive(DEFENCE_ID.FILTER_USER_INPUT, defences)) {
-			defenceReport.triggeredDefences.push(DEFENCE_ID.FILTER_USER_INPUT);
-			defenceReport.isBlocked = true;
-			defenceReport.blockedReason = `Message blocked - I cannot answer questions about '${detectedPhrases.join(
-				"' or '"
-			)}'!`;
+			return {
+				blockedReason: `Message blocked - I cannot answer questions about '${detectedPhrases.join(
+					"' or '"
+				)}'!`,
+				isBlocked: true,
+				alertedDefences: [],
+				triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
+			};
 		} else {
-			defenceReport.alertedDefences.push(DEFENCE_ID.FILTER_USER_INPUT);
+			return {
+				blockedReason: null,
+				isBlocked: false,
+				alertedDefences: [DEFENCE_ID.FILTER_USER_INPUT],
+				triggeredDefences: [],
+			};
 		}
 	}
-	return defenceReport;
+	return getEmptyChatDefenceReport();
 }
 
 function detectXmlTagging(
