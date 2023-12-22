@@ -211,40 +211,48 @@ function transformMessage(
 
 // detects triggered defences in original message and blocks the message if necessary
 async function detectTriggeredDefences(message: string, defences: Defence[]) {
-	const characterLimitDefenceReport = detectCharacterLimit(message, defences);
-	const filterUserInputDefenceReport = detectFilterUserInput(message, defences);
-	const xmlTaggingDefenceReport = detectXmlTagging(message, defences);
-	const evaluationLLMDefenceReport = await detectEvaluationLLM(
-		message,
-		defences
-	);
+	const singleDefenceReports = [
+		{
+			defence: DEFENCE_ID.CHARACTER_LIMIT,
+			report: detectCharacterLimit(message, defences),
+		},
+		{
+			defence: DEFENCE_ID.FILTER_USER_INPUT,
+			report: detectFilterUserInput(message, defences),
+		},
+		{
+			defence: DEFENCE_ID.XML_TAGGING,
+			report: detectXmlTagging(message, defences),
+		},
+		{
+			defence: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+			report: await detectEvaluationLLM(message, defences),
+		},
+	];
 
-	return combineDefenceReports([
-		characterLimitDefenceReport,
-		filterUserInputDefenceReport,
-		xmlTaggingDefenceReport,
-		evaluationLLMDefenceReport,
-	]);
+	return combineDefenceReports(singleDefenceReports);
 }
 
 function combineDefenceReports(
-	defenceReports: ChatDefenceReport[]
+	defenceReports: { defence: DEFENCE_ID; report: SingleDefenceReport }[]
 ): ChatDefenceReport {
-	const isBlocked = defenceReports.some((report) => report.isBlocked);
-	const blockedReason = defenceReports.every(
-		(report) => report.blockedReason === null
-	)
-		? null
-		: defenceReports
-				.map((report) => report.blockedReason)
+	const isBlocked = defenceReports.some(
+		(report) => report.report.blockedReason
+	);
+	const blockedReason = isBlocked
+		? defenceReports
+				.map((report) => report.report.blockedReason)
 				.filter((reason) => reason !== null)
-				.join('\n');
+				.join('\n')
+		: null;
+
 	const alertedDefences = defenceReports
-		.map((report) => report.alertedDefences)
-		.flat();
+		.filter((sdr) => sdr.report.status === 'alerted')
+		.map((sdr) => sdr.defence);
+
 	const triggeredDefences = defenceReports
-		.map((report) => report.triggeredDefences)
-		.flat();
+		.filter((sdr) => sdr.report.status === 'triggered')
+		.map((sdr) => sdr.defence);
 
 	return {
 		isBlocked,
