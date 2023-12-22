@@ -241,27 +241,23 @@ function detectCharacterLimit(
 	const messageExceedsLimit = message.length > maxMessageLength;
 	const defenceActive = isDefenceActive(DEFENCE_ID.CHARACTER_LIMIT, defences);
 
-	if (messageExceedsLimit) {
-		console.debug('CHARACTER_LIMIT defence triggered.');
-		// check if the defence is active
-		if (defenceActive) {
-			return {
+	if (messageExceedsLimit) console.debug('CHARACTER_LIMIT defence triggered.');
+
+	return messageExceedsLimit && defenceActive
+		? {
 				blockedReason: 'Message is too long',
 				isBlocked: true,
 				alertedDefences: [],
 				triggeredDefences: [DEFENCE_ID.CHARACTER_LIMIT],
-			};
-		} else {
-			return {
+		  }
+		: messageExceedsLimit && !defenceActive
+		? {
 				blockedReason: null,
 				isBlocked: false,
 				alertedDefences: [DEFENCE_ID.CHARACTER_LIMIT],
 				triggeredDefences: [],
-			};
-		}
-	} else {
-		return getEmptyChatDefenceReport();
-	}
+		  }
+		: getEmptyChatDefenceReport();
 }
 
 function detectFilterUserInput(
