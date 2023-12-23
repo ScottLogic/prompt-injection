@@ -50,36 +50,38 @@
 
 /* Media Query for .game-container */
 @media (max-width: 1230px) {
-    .main-header {
-        height: 5rem; 
+	.main-header {
+		height: 5rem;
 		padding: 0rem 0rem;
-    }
+	}
 
-    .main-header .themed-button {
-        padding: 0.5rem;
-        height: 2.5rem; 
-        gap: 0.25rem; 
-		font-size: .8rem;
-    }
+	.main-header .themed-button {
+		padding: 0.5rem;
+		height: 2.5rem;
+		gap: 0.25rem;
+		font-size: 0.8rem;
+	}
 
-    .main-header-left, .main-header-middle, .main-header-right {
-        flex-grow: 1;
-    }
+	.main-header-left,
+	.main-header-middle,
+	.main-header-right {
+		flex-grow: 1;
+	}
 
-    .main-header-middle .main-header-level {
-        font-size: 1rem;
-    }
+	.main-header-middle .main-header-level {
+		font-size: 1rem;
+	}
 
 	.level-selection-box {
-		font-size: .5rem;
+		font-size: 0.5rem;
 	}
 }
 
-@media (max-width: 1015px) { 
+@media (max-width: 1015px) {
 	.main-header .themed-button {
-        gap: 0.25rem; 
-		font-size: .8rem;
-    }
+		gap: 0.25rem;
+		font-size: 0.8rem;
+	}
 
 	.main-header-middle {
 		gap: 1rem;
@@ -88,13 +90,13 @@
 	.main-header {
 		padding: 0rem 0rem;
 		height: 3.5rem;
-	} 
+	}
 	.main-header-right {
 		gap: 0rem;
 	}
 }
 
-@media (max-width: 940px) { 
+@media (max-width: 940px) {
 	.main-header-left > .titleLogo {
 		height: 50%;
 	}
@@ -106,17 +108,17 @@
 		width: auto;
 	}
 	.main-header .themed-button {
-		font-size: .5rem;
+		font-size: 0.5rem;
 	}
 	.main-header {
 		height: 3.5rem;
 	}
 }
 
-@media (max-width: 760px) { 
+@media (max-width: 760px) {
 	.main-header .themed-button {
-		font-size: .5rem;
-		padding: .4rem .4rem;
+		font-size: 0.5rem;
+		padding: 0.4rem 0.4rem;
 		height: 1.8rem;
 	}
 	.main-header {

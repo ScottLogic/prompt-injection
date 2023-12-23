@@ -17,7 +17,7 @@
 	color: var(--action-button-disabled-text-colour);
 }
 
-@media (max-width: 760px) { 
+@media (max-width: 760px) {
 	.themed-button img {
 		display: none;
 	}

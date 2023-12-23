@@ -12,31 +12,31 @@
 
 @media (max-width: 1230px) {
 	.level-selection-box button {
-		font-size: .8rem;
+		font-size: 0.8rem;
 		padding: 1rem;
 	}
 }
 
 @media (max-width: 1015px) {
 	.level-selection-box button {
-		font-size: .8rem;
-		height: .5rem;
+		font-size: 0.8rem;
+		height: 0.5rem;
 	}
 }
 
 @media (max-width: 940px) {
 	.level-selection-box button {
-		font-size: .7rem;
+		font-size: 0.7rem;
 	}
 	.level-selection-box button:last-child {
 		width: auto;
-		font-size: .6rem;
+		font-size: 0.6rem;
 	}
 }
 
-@media (max-width: 760px) { 
+@media (max-width: 760px) {
 	.level-selection-box button {
-		font-size: .6rem;
+		font-size: 0.6rem;
 	}
 	.level-selection-box {
 		align-items: center;
