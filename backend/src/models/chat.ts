@@ -55,6 +55,7 @@ interface ChatDefenceReport {
 }
 
 interface SingleDefenceReport {
+	defence: DEFENCE_ID;
 	blockedReason: string | null;
 	status: 'alerted' | 'triggered' | 'ok';
 }

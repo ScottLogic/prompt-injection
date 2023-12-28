@@ -212,47 +212,33 @@ function transformMessage(
 // detects triggered defences in original message and blocks the message if necessary
 async function detectTriggeredDefences(message: string, defences: Defence[]) {
 	const singleDefenceReports = [
-		{
-			defence: DEFENCE_ID.CHARACTER_LIMIT,
-			report: detectCharacterLimit(message, defences),
-		},
-		{
-			defence: DEFENCE_ID.FILTER_USER_INPUT,
-			report: detectFilterUserInput(message, defences),
-		},
-		{
-			defence: DEFENCE_ID.XML_TAGGING,
-			report: detectXmlTagging(message, defences),
-		},
-		{
-			defence: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-			report: await detectEvaluationLLM(message, defences),
-		},
+		detectCharacterLimit(message, defences),
+		detectFilterUserInput(message, defences),
+		detectXmlTagging(message, defences),
+		await detectEvaluationLLM(message, defences),
 	];
 
 	return combineDefenceReports(singleDefenceReports);
 }
 
 function combineDefenceReports(
-	defenceReports: { defence: DEFENCE_ID; report: SingleDefenceReport }[]
+	defenceReports: SingleDefenceReport[]
 ): ChatDefenceReport {
-	const isBlocked = defenceReports.some(
-		(report) => report.report.blockedReason
-	);
+	const isBlocked = defenceReports.some((report) => report.blockedReason);
 	const blockedReason = isBlocked
 		? defenceReports
-				.map((report) => report.report.blockedReason)
+				.map((report) => report.blockedReason)
 				.filter((reason) => reason !== null)
 				.join('\n')
 		: null;
 
 	const alertedDefences = defenceReports
-		.filter((sdr) => sdr.report.status === 'alerted')
-		.map((sdr) => sdr.defence);
+		.filter((report) => report.status === 'alerted')
+		.map((report) => report.defence);
 
 	const triggeredDefences = defenceReports
-		.filter((sdr) => sdr.report.status === 'triggered')
-		.map((sdr) => sdr.defence);
+		.filter((report) => report.status === 'triggered')
+		.map((report) => report.defence);
 
 	return {
 		isBlocked,
@@ -274,6 +260,7 @@ function detectCharacterLimit(
 	if (messageExceedsLimit) console.debug('CHARACTER_LIMIT defence triggered.');
 
 	return {
+		defence: DEFENCE_ID.CHARACTER_LIMIT,
 		blockedReason:
 			messageExceedsLimit && defenceActive ? 'Message is too long' : null,
 		status: !messageExceedsLimit
@@ -305,6 +292,7 @@ function detectFilterUserInput(
 	}
 
 	return {
+		defence: DEFENCE_ID.FILTER_USER_INPUT,
 		blockedReason:
 			filterWordsDetected && defenceActive
 				? `Message blocked - I cannot answer questions about '${detectedPhrases.join(
@@ -331,6 +319,7 @@ function detectXmlTagging(
 	}
 
 	return {
+		defence: DEFENCE_ID.XML_TAGGING,
 		blockedReason: null,
 		status: !containsXML ? 'ok' : defenceActive ? 'triggered' : 'alerted',
 	};
@@ -340,6 +329,7 @@ async function detectEvaluationLLM(
 	message: string,
 	defences: Defence[]
 ): Promise<SingleDefenceReport> {
+	const defence = DEFENCE_ID.PROMPT_EVALUATION_LLM;
 	// to save money and processing time, and to reduce risk of rate limiting, we only run if defence is active
 	if (isDefenceActive(DEFENCE_ID.PROMPT_EVALUATION_LLM, defences)) {
 		const promptEvalLLMPrompt = getPromptEvalPromptFromConfig(defences);
@@ -353,12 +343,17 @@ async function detectEvaluationLLM(
 			console.debug('LLM evaluation defence active and prompt is malicious.');
 
 			return {
+				defence,
 				status: 'triggered',
 				blockedReason: 'Message blocked by the prompt evaluation LLM.',
 			};
 		}
 	}
-	return { status: 'ok', blockedReason: null };
+	return {
+		defence,
+		status: 'ok',
+		blockedReason: null,
+	};
 }
 
 export {
