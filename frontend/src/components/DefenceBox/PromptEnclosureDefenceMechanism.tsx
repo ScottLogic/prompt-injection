@@ -54,10 +54,8 @@ function PromptEnclosureDefenceMechanism({
 		setSelectedRadio(event.target.value);
 		const defenceId = event.target.value;
 		if (defenceId === 'none') {
-			// set both defences to inactive
 			deactivateAll();
 		} else {
-			// activate the selected defence and deactivate all others
 			activateOne(defenceId as DEFENCE_ID);
 		}
 	}

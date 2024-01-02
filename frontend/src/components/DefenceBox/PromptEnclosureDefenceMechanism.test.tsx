@@ -74,7 +74,7 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 	test('when none is selected, no config items are rendered', () => {
 		async () => {
 			const { user } = renderComponent();
-			const radioButton = screen.getAllByRole('radio', { name: 'None' });
+			const radioButton = screen.getByRole('radio', { name: 'None' });
 			await user.click(radioButton);
 
 			expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
@@ -90,7 +90,7 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 	test('when xml defence is selected, only that defence info is shown and config items are rendered', () => {
 		async () => {
 			const { user } = renderComponent();
-			const radioButton = screen.getAllByRole('radio', { name: 'xml tagging' });
+			const radioButton = screen.getByRole('radio', { name: 'xml tagging' });
 			await user.click(radioButton);
 
 			expect(screen.getByText('xml tagging description')).toBeInTheDocument();
@@ -108,7 +108,7 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 	test('when rse defence is selected, only that defence info is shown and config items are rendered', () => {
 		async () => {
 			const { user } = renderComponent();
-			const radioButton = screen.getAllByRole('radio', {
+			const radioButton = screen.getByRole('radio', {
 				name: 'random sequence enclosure',
 			});
 			await user.click(radioButton);
@@ -131,7 +131,7 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 			newMockDefences[0].isActive = true;
 
 			const { user } = renderComponent(newMockDefences);
-			const radioButton = screen.getAllByRole('radio', { name: 'None' });
+			const radioButton = screen.getByRole('radio', { name: 'None' });
 			await user.click(radioButton);
 
 			expect(mockToggleDefence).toHaveBeenCalledWith(mockDefences[0]);
@@ -146,7 +146,7 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 			newMockDefences[1].isActive = true;
 
 			const { user } = renderComponent(newMockDefences);
-			const radioButton = screen.getAllByRole('radio', {
+			const radioButton = screen.getByRole('radio', {
 				name: 'xml tagging',
 			});
 			await user.click(radioButton);
@@ -163,9 +163,9 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 
 			const { user } = renderComponent(newMockDefences);
 
-			const radioButton = screen.getAllByRole('radio', {
+			const radioButton = screen.getByRole('radio', {
 				name: 'random sequence enclosure',
-			});
+			}) as Element;
 			await user.click(radioButton);
 
 			expect(mockToggleDefence).toHaveBeenCalledWith(mockDefences[1]);

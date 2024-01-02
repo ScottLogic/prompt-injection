@@ -209,7 +209,7 @@ function generateRandomString(string_length: number) {
 	return random_string;
 }
 
-// apply random sequence enclosure defense to input message
+// apply random sequence enclosure defence to input message
 function transformRandomSequenceEnclosure(
 	message: string,
 	defences: Defence[]

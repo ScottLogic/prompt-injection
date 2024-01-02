@@ -21,7 +21,7 @@ function DefenceConfigurationRadioButton({
 				onChange={onChange}
 			/>
 			<span className="checkmark"></span>
-			<span className="label">{id === 'none' ? 'None' : name}</span>
+			<span className="label">{name}</span>
 		</label>
 	);
 }
