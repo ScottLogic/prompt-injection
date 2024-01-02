@@ -5,7 +5,7 @@ import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { validateDefence } from '@src/service/defenceService';
 
 import DefenceConfiguration from './DefenceConfiguration';
-import PromptEnclosureDefenceConfiguration from './PromptEnclosureDefenceConfiguration';
+import PromptEnclosureDefenceMechanism from './PromptEnclosureDefenceMechanism';
 
 import './DefenceMechanism.css';
 
@@ -113,7 +113,7 @@ function DefenceMechanism({
 							);
 					  })
 					: showConfigurations && (
-							<PromptEnclosureDefenceConfiguration
+							<PromptEnclosureDefenceMechanism
 								defences={promptEnclosureDefences}
 								toggleDefence={toggleDefence}
 								setConfigurationValue={setConfigurationValue}

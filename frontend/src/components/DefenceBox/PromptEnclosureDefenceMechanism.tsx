@@ -5,7 +5,7 @@ import { DEFENCE_ID, Defence } from '@src/models/defence';
 
 import DefenceConfiguration from './DefenceConfiguration';
 
-function PromptEnclosureDefenceConfiguration({
+function PromptEnclosureDefenceMechanism({
 	defences,
 	toggleDefence,
 	setConfigurationValue,
@@ -63,7 +63,7 @@ function PromptEnclosureDefenceConfiguration({
 	const selectedDefence = getDefence(selectedRadio as DEFENCE_ID);
 
 	return (
-		<div className="prompt-enclosure-defence-configuration">
+		<div className="defence-mechanism">
 			<div className="defence-radio-buttons">
 				<DefenceConfigurationRadioButton
 					id="none"
@@ -81,22 +81,24 @@ function PromptEnclosureDefenceConfiguration({
 					/>
 				))}
 			</div>
-			{selectedRadio !== 'none' &&
-				selectedDefence.config.map((config, index) => {
-					const defence = selectedDefence;
-					return (
-						<DefenceConfiguration
-							key={index}
-							defence={defence}
-							isActive={defence.isActive}
-							config={config}
-							setConfigurationValue={setConfigurationValue}
-							resetConfigurationValue={resetConfigurationValue}
-						/>
-					);
-				})}
+			<div className="prompt-enclosure-configuration-area">
+				<p>{selectedRadio !== 'none' && selectedDefence.info}</p>
+				{selectedRadio !== 'none' &&
+					selectedDefence.config.map((config, index) => {
+						return (
+							<DefenceConfiguration
+								key={index}
+								defence={selectedDefence}
+								isActive={selectedDefence.isActive}
+								config={config}
+								setConfigurationValue={setConfigurationValue}
+								resetConfigurationValue={resetConfigurationValue}
+							/>
+						);
+					})}
+			</div>
 		</div>
 	);
 }
 
-export default PromptEnclosureDefenceConfiguration;
+export default PromptEnclosureDefenceMechanism;
