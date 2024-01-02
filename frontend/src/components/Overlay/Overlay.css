@@ -34,7 +34,7 @@
 	border: 0.2rem solid transparent;
 }
 
-.overlay > .close-button:focus{
+.overlay > .close-button:focus {
 	border: 0.2rem solid var(--main-text-colour);
 }
 

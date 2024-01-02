@@ -21,9 +21,9 @@
 	text-align: left;
 }
 
-.handbook-spine	button:focus {
+.handbook-spine button:focus {
 	outline-offset: -0.3rem;
-}	
+}
 
 .handbook-spine button:hover {
 	background-color: var(--handbook-tab-hover-colour);
