@@ -9,9 +9,10 @@
 	background-color: transparent;
 	color: var(--level-button-colour);
 	font-size: 1.875rem;
-	&:focus {
-		border: 0.125rem solid var(--main-text-colour);
-	}
+}
+
+.level-button:focus {
+	border: 0.125rem solid var(--main-text-colour);
 }
 
 .level-button.selected {

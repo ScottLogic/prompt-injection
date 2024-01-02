@@ -63,7 +63,8 @@
 
 .chat-box .footer .control-buttons > * {
 	flex: 1 1 0;
-	&:focus {
-		outline-offset: 0.1rem;
-	}
+}
+
+.chat-box .footer .control-buttons > *:focus {
+	outline-offset: 0.1rem;
 }

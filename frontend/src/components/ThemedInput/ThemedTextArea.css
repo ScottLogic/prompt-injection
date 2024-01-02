@@ -10,9 +10,10 @@
 	/* the textarea is automatically resized as the user types */
 	/* disable user resizing */
 	resize: none;
-	&:focus {
-		outline-offset: 0.1rem;
-	}
+}
+
+.themed-text-area :focus {
+	outline-offset: 0.1rem;
 }
 
 .themed-text-area.loose {

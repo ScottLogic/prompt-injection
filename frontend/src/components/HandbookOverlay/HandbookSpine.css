@@ -19,10 +19,11 @@
 	border: none;
 	padding: 0.75rem 1.31rem;
 	text-align: left;
-	&:focus {
-		outline-offset: -0.3rem;
-	}
 }
+
+.handbook-spine	button:focus {
+	outline-offset: -0.3rem;
+}	
 
 .handbook-spine button:hover {
 	background-color: var(--handbook-tab-hover-colour);
