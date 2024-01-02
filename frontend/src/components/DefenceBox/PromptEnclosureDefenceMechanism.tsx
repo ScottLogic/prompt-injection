@@ -21,13 +21,15 @@ function PromptEnclosureDefenceMechanism({
 	resetConfigurationValue: (defence: Defence, configId: string) => void;
 }) {
 	const [selectedRadio, setSelectedRadio] = useState<string>('none');
+	const selectedDefence = getDefence(selectedRadio as DEFENCE_ID);
 
 	function isRadioSelected(radioValue: string) {
 		return radioValue === selectedRadio;
 	}
 
-	function getDefence(defenceId: DEFENCE_ID): Defence {
-		return defences.find((defence) => defence.id === defenceId) ?? defences[0]; // todo = replace with safe
+	function getDefence(defenceId: DEFENCE_ID): Defence | undefined {
+		// will be undefined if 'none' selected
+		return defences.find((defence) => defence.id === defenceId);
 	}
 
 	function deactivateAll() {
@@ -60,8 +62,6 @@ function PromptEnclosureDefenceMechanism({
 		}
 	}
 
-	const selectedDefence = getDefence(selectedRadio as DEFENCE_ID);
-
 	return (
 		<div className="defence-mechanism">
 			<div className="defence-radio-buttons">
@@ -81,10 +81,10 @@ function PromptEnclosureDefenceMechanism({
 					/>
 				))}
 			</div>
-			<div className="prompt-enclosure-configuration-area">
-				<p>{selectedRadio !== 'none' && selectedDefence.info}</p>
-				{selectedRadio !== 'none' &&
-					selectedDefence.config.map((config, index) => {
+			{selectedDefence && (
+				<div className="prompt-enclosure-configuration-area">
+					<p>{selectedDefence.info}</p>
+					{selectedDefence.config.map((config, index) => {
 						return (
 							<DefenceConfiguration
 								key={index}
@@ -96,7 +96,8 @@ function PromptEnclosureDefenceMechanism({
 							/>
 						);
 					})}
-			</div>
+				</div>
+			)}
 		</div>
 	);
 }
