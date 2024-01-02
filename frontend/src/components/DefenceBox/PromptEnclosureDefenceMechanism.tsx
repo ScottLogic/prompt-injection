@@ -8,11 +8,13 @@ import DefenceConfiguration from './DefenceConfiguration';
 function PromptEnclosureDefenceMechanism({
 	defences,
 	toggleDefence,
+	showConfigurations,
 	setConfigurationValue,
 	resetConfigurationValue,
 }: {
 	defences: Defence[];
 	toggleDefence: (defence: Defence) => void;
+	showConfigurations: boolean;
 	setConfigurationValue: (
 		defence: Defence,
 		configId: string,
@@ -82,18 +84,19 @@ function PromptEnclosureDefenceMechanism({
 			{selectedDefence && (
 				<div className="prompt-enclosure-configuration-area">
 					<p>{selectedDefence.info}</p>
-					{selectedDefence.config.map((config, index) => {
-						return (
-							<DefenceConfiguration
-								key={index}
-								defence={selectedDefence}
-								isActive={selectedDefence.isActive}
-								config={config}
-								setConfigurationValue={setConfigurationValue}
-								resetConfigurationValue={resetConfigurationValue}
-							/>
-						);
-					})}
+					{showConfigurations &&
+						selectedDefence.config.map((config, index) => {
+							return (
+								<DefenceConfiguration
+									key={index}
+									defence={selectedDefence}
+									isActive={selectedDefence.isActive}
+									config={config}
+									setConfigurationValue={setConfigurationValue}
+									resetConfigurationValue={resetConfigurationValue}
+								/>
+							);
+						})}
 				</div>
 			)}
 		</div>

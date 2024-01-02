@@ -49,6 +49,7 @@ function renderComponent(defences: Defence[] = mockDefences) {
 		<PromptEnclosureDefenceMechanism
 			defences={defences}
 			toggleDefence={mockToggleDefence}
+			showConfigurations={true}
 			setConfigurationValue={mockSetConfigurationValue}
 			resetConfigurationValue={mockResetConfigurationValue}
 		/>

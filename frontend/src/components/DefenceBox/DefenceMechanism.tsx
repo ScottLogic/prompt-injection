@@ -98,28 +98,29 @@ function DefenceMechanism({
 			<div className="info-box">
 				<p>{defenceDetail.info}</p>
 
-				{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE
-					? showConfigurations &&
-					  defenceDetail.config.map((config) => {
-							return (
-								<DefenceConfiguration
-									defence={defenceDetail}
-									key={config.id + configKey}
-									isActive={defenceDetail.isActive}
-									config={config}
-									setConfigurationValue={setConfigurationValue}
-									resetConfigurationValue={resetConfigurationValue}
-								/>
-							);
-					  })
-					: showConfigurations && (
-							<PromptEnclosureDefenceMechanism
-								defences={promptEnclosureDefences}
-								toggleDefence={toggleDefence}
+				{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE ? (
+					showConfigurations &&
+					defenceDetail.config.map((config) => {
+						return (
+							<DefenceConfiguration
+								defence={defenceDetail}
+								key={config.id + configKey}
+								isActive={defenceDetail.isActive}
+								config={config}
 								setConfigurationValue={setConfigurationValue}
 								resetConfigurationValue={resetConfigurationValue}
 							/>
-					  )}
+						);
+					})
+				) : (
+					<PromptEnclosureDefenceMechanism
+						defences={promptEnclosureDefences}
+						toggleDefence={toggleDefence}
+						showConfigurations={showConfigurations}
+						setConfigurationValue={setConfigurationValue}
+						resetConfigurationValue={resetConfigurationValue}
+					/>
+				)}
 
 				{showConfiguredText &&
 					(configValidated ? (
