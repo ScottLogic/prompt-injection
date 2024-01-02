@@ -196,7 +196,7 @@ function transformXmlTagging(
 		preMessage: prompt.concat(openTag),
 		message: escapeXml(message),
 		postMessage: closeTag,
-		tranformationType: DEFENCE_ID.XML_TAGGING,
+		tranformationName: 'XML Tagging',
 	};
 }
 
@@ -224,7 +224,7 @@ function transformRandomSequenceEnclosure(
 		preMessage: getRandomSequenceEnclosurePrePrompt(defences).concat(openTag),
 		message,
 		postMessage: closeTag,
-		tranformationType: DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+		tranformationName: 'Random Sequence Enclosure',
 	};
 }
 

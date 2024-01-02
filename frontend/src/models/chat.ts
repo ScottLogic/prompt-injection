@@ -63,7 +63,7 @@ interface TransformedChatMessage {
 	preMessage: string;
 	message: string;
 	postMessage: string;
-	tranformationType: DEFENCE_ID;
+	tranformationName: string;
 }
 
 interface ChatResponse {
