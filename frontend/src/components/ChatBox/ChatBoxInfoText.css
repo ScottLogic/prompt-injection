@@ -3,11 +3,19 @@
 	font-style: italic;
 	padding-top: 1rem;
 	text-align: center;
-	border-radius: 0.625rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 0.75rem;
+	padding: 0.5rem;
 }
+
+.chat-box-info:focus {
+	outline-offset: 0.1rem;
+}
+
 .chat-box-info.info-text {
 	color: var(--chat-info-text-colour);
-	margin: 0.1rem;
 }
 
 .chat-box-info.defence-alerted-text {
@@ -16,17 +24,20 @@
 
 .chat-box-info.defence-triggered-text {
 	color: var(--chat-triggered-text-colour);
-	margin-bottom: 0.1rem;
 }
 
 .chat-box-info.reset-level-text {
 	color: var(--chat-info-text-colour);
 	border-bottom: 1px solid var(--chat-reset-level-line-colour);
 	line-height: 0.1em;
+	padding: 0;
 	margin: 0.6rem 0.1rem;
-	&:focus {
-		outline-offset: 0.5rem;
-	}
+	border-radius: 0;
+	display: inline-block;
+}
+
+.chat-box-info.reset-level-text:focus {
+	outline-offset: 0.5rem;
 }
 
 .chat-box-info.reset-level-text span {
