@@ -1,10 +1,9 @@
 import { useState } from 'react';
 
+import DefenceConfigurationRadioButton from '@src/components/ThemedButtons/DefenceConfigurationRadioButton';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 
 import DefenceConfiguration from './DefenceConfiguration';
-
-import './PromptEnclosureDefenceConfiguration.css';
 
 function PromptEnclosureDefenceConfiguration({
 	defences,
@@ -61,39 +60,30 @@ function PromptEnclosureDefenceConfiguration({
 		}
 	}
 
+	const selectedDefence = getDefence(selectedRadio as DEFENCE_ID);
+
 	return (
 		<div className="prompt-enclosure-defence-configuration">
 			<div className="defence-radio-buttons">
-				<label className="defence-radio-button">
-					<input
-						type="radio"
-						name="prompt-enclosure-defence"
-						value="none"
-						checked={isRadioSelected('none')}
+				<DefenceConfigurationRadioButton
+					id="none"
+					name="None"
+					checked={isRadioSelected('none')}
+					onChange={handleRadioChange}
+				/>
+				{defences.map((defence) => (
+					<DefenceConfigurationRadioButton
+						key={defence.id}
+						id={defence.id}
+						name={defence.name}
+						checked={isRadioSelected(defence.id)}
 						onChange={handleRadioChange}
 					/>
-					<span className="checkmark"></span>
-					<span className="label">None</span>
-				</label>
-				{defences.map((defence, index) => {
-					return (
-						<label className="defence-radio-button" key={index}>
-							<input
-								type="radio"
-								name="prompt-enclosure-defence"
-								value={defence.id}
-								checked={isRadioSelected(defence.id)}
-								onChange={handleRadioChange}
-							/>
-							<span className="checkmark"></span>
-							<span className="label">{defence.name}</span>
-						</label>
-					);
-				})}
+				))}
 			</div>
 			{selectedRadio !== 'none' &&
-				getDefence(selectedRadio as DEFENCE_ID).config.map((config, index) => {
-					const defence = getDefence(selectedRadio as DEFENCE_ID);
+				selectedDefence.config.map((config, index) => {
+					const defence = selectedDefence;
 					return (
 						<DefenceConfiguration
 							key={index}
