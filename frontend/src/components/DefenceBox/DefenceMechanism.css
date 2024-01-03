@@ -34,10 +34,11 @@
 
 /* Style the label to look like a switch */
 .switch {
-	position: relative;
-	display: inline-block;
+	position: absolute;
 	width: 2rem;
 	height: 1rem;
+	right: 0.75rem;
+	top: 0.75rem;
 }
 
 /* Style the slider */
