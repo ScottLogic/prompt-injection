@@ -36,7 +36,7 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 	const configId = req.body.configId as MODEL_CONFIG | undefined;
 	const value = req.body.value;
 
-	if (configId && value && value >= 0) {
+	if (configId && value !== undefined) {
 		const lastConfig = req.session.chatModel.configuration;
 		const maxValue = configId === MODEL_CONFIG.TOP_P ? 1 : 2;
 		const updatedConfig = updateConfigProperty(
@@ -51,6 +51,8 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 		} else {
 			res.status(400).send();
 		}
+	} else {
+		res.status(400).send();
 	}
 }
 
