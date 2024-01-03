@@ -1,7 +1,4 @@
-{ 
-  "extends": ["stylelint-config-standard"],
-  "ignoreFiles": [
-    "node_modules/**/*",
-    "dist/**/*"
-  ]
+{
+	"extends": ["stylelint-config-standard"],
+	"ignoreFiles": ["node_modules/**/*", "dist/**/*"]
 }
