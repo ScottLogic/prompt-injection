@@ -17,13 +17,13 @@
 	cursor: default;
 }
 
+.control-panel .control-collapsible-section-header:focus-visible {
+	border-radius: 0;
+}
+
 .control-panel
 	.control-collapsible-section[open]
 	.control-collapsible-section-header {
 	border-bottom-left-radius: 0;
 	border-bottom-right-radius: 0;
-}
-
-.control-panel .control-collapsible-section-header:focus-visible {
-	border-radius: 0;
 }

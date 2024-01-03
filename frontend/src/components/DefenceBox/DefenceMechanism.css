@@ -36,19 +36,6 @@
 	height: 0;
 }
 
-.defence-mechanism label.switch > input:checked + .slider {
-	border-color: var(--main-toggle-on-border-colour);
-	background-color: var(--main-toggle-on-colour);
-}
-
-.defence-mechanism label.switch > input:focus + .slider {
-	box-shadow: 0 0 0.0625rem var(--main-toggle-on-colour);
-}
-
-.defence-mechanism label.switch > input:checked + .slider::before {
-	transform: translateX(1rem);
-}
-
 /* The slider */
 .defence-mechanism label.switch > .slider {
 	--slider-border-width: 0.125rem;
@@ -70,6 +57,19 @@
 	width: 1rem;
 	background-color: var(--main-toggle-ball-colour);
 	transition: 0.4s;
+}
+
+.defence-mechanism label.switch > input:focus + .slider {
+	box-shadow: 0 0 0.0625rem var(--main-toggle-on-colour);
+}
+
+.defence-mechanism label.switch > input:checked + .slider {
+	border-color: var(--main-toggle-on-border-colour);
+	background-color: var(--main-toggle-on-colour);
+}
+
+.defence-mechanism label.switch > input:checked + .slider::before {
+	transform: translateX(1rem);
 }
 
 /* Rounded sliders */

@@ -30,7 +30,7 @@ function MainHeader({
 		<header className="main-header">
 			<span className="main-header-left">
 				<img
-					className="titleLogo"
+					className="title-logo"
 					src={
 						isLevelComplete ? SpyLogicTitleLogoAffirmative : SpyLogicTitleLogo
 					}
