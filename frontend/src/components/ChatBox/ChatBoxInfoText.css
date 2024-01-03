@@ -24,10 +24,10 @@
 	border-bottom: 1px solid var(--chat-reset-level-line-colour);
 	line-height: 0.1em;
 	margin: 0.6rem 0.1rem;
+}
 
-	&:focus {
-		outline-offset: 0.5rem;
-	}
+.chat-box-info.reset-level-text:focus-visible {
+	outline-offset: 0.5rem;
 }
 
 .chat-box-info.reset-level-text span {
