@@ -1,8 +1,11 @@
 .sent-email {
 	--horizontal-padding: 1rem;
 	--vertical-padding: 0.5rem;
+
 	color: var(--email-text-colour);
+
 	--border-radius: 0.625rem;
+
 	white-space: pre-line;
 }
 
@@ -20,10 +23,8 @@
 .sent-email .sent-email-main {
 	background-color: var(--email-background-colour);
 	padding: var(--vertical-padding) var(--horizontal-padding);
-
 	font-family: courier;
 	font-weight: 400;
-
 	border-bottom-left-radius: var(--border-radius);
 	border-bottom-right-radius: var(--border-radius);
 }

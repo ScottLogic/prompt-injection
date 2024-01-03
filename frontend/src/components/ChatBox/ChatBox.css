@@ -27,7 +27,6 @@
 	flex-direction: row;
 	align-items: flex-end;
 	gap: 0.5rem;
-
 	width: 100%;
 }
 
@@ -47,11 +46,9 @@
 	background-color: var(--chat-button-background-colour);
 	border: 1px solid var(--chat-button-border-colour);
 	border-radius: 0.625rem;
-
 	color: var(--chat-button-text-colour);
 	font-size: 1rem;
 	font-weight: 400;
-
 	min-height: 3.75rem;
 }
 

@@ -3,6 +3,7 @@
 	padding-top: 0.5rem;
 	height: 2.5rem;
 }
+
 /* Button fills all available width */
 .document-view-button-wrapper button {
 	flex-grow: 1;

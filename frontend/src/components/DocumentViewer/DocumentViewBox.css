@@ -4,10 +4,8 @@
 	flex-direction: column;
 	position: relative;
 	padding: 2rem;
-
 	height: 85vh;
 	aspect-ratio: 7/8;
-
 	background: var(--main-background);
 	border: 0.1875rem solid var(--main-border-colour);
 }
@@ -38,12 +36,14 @@
 	background-color: var(--document-viewer-background-colour);
 	color: var(--document-viewer-text-colour);
 	margin: auto;
+
 	/* don't scroll */
 	overflow: visible;
 }
 
 #react-doc-viewer #proxy-renderer {
 	padding: 1.25rem;
+
 	/* don't scroll */
 	overflow: visible;
 }

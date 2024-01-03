@@ -12,6 +12,7 @@
 	overflow: visible;
 	overflow-y: auto;
 }
+
 .overlay * {
 	box-sizing: border-box;
 }
@@ -19,6 +20,7 @@
 .overlay h1 {
 	text-align: center;
 }
+
 .overlay p {
 	font-size: 1.25rem;
 }

@@ -1,58 +1,48 @@
 :root {
 	--header-background-colour: #252525;
-	--footer-background-colour: #444444;
+	--footer-background-colour: #444;
 	--main-background: linear-gradient(
 		180deg,
 		var(--header-background-colour) 0%,
 		#000 100%
 	);
-
 	--accent-background-colour: #208187;
 	--accent-border-colour: #2bb3bb;
 	--accent-colour: var(--accent-border-colour);
-	--main-border-colour: #666666;
+	--main-border-colour: #666;
 	--main-text-colour: #fff;
 	--main-text-colour-inverted: #000;
 	--error-colour: #c41565;
-
-	--main-scrollbar-colour: #444444;
-	--main-scrollbar-hover-colour: #555555;
-	--main-scrollbar-border-colour: #666666;
-
+	--main-scrollbar-colour: #444;
+	--main-scrollbar-hover-colour: #555;
+	--main-scrollbar-border-colour: #666;
 	--action-button-background-colour: var(--accent-background-colour);
 	--action-button-text-colour: var(--main-text-colour);
-	--action-button-disabled-background-colour: #888888;
-	--action-button-disabled-text-colour: #111111;
-
+	--action-button-disabled-background-colour: #888;
+	--action-button-disabled-text-colour: #111;
 	--level-button-colour: var(--main-text-colour);
 	--level-button-colour-disabled: #777;
 	--level-button-border-colour: var(--accent-border-colour);
 	--level-button-border-colour-disabled: #aaaaaa80;
 	--level-button-background-colour-selected: var(--accent-background-colour);
-
 	--level-banner-border-colour: #bbb;
 	--level-banner-background-colour: #ddd;
 	--level-banner-text-colour: #444;
-
 	--main-input-active-background-colour: var(--header-background-colour);
 	--main-input-active-text-colour: var(--main-text-colour);
 	--main-input-inactive-background-colour: #b3b3b3;
 	--main-input-inactive-text-colour: #464646;
-
 	--main-toggle-ball-colour: #ececec;
 	--main-toggle-off-border-colour: var(--level-button-border-colour-disabled);
 	--main-toggle-off-colour: transparent;
 	--main-toggle-on-border-colour: var(--accent-colour);
 	--main-toggle-on-colour: var(--accent-colour);
-
 	--control-header-background-colour: #313131;
 	--control-body-background-colour: #3a3a3a;
-
 	--overlay-background-colour: #8ad5da;
 	--overlay-tab-colour: #c7e8f4;
 	--overlay-attack-background-colour: #d6d6ff;
 	--overlay-text-colour: #313131;
-
 	--handbook-background-colour: #fff;
 	--handbook-spine-background-colour: #d3d3d3;
 	--handbook-spine-separator-colour: var(--main-text-colour-inverted);
@@ -64,10 +54,8 @@
 	--handbook-scrollbar-hover-colour: #b9b9b9;
 	--handbook-locked-section-colour: #96dde133;
 	--handbook-locked-section-border-colour: #00000080;
-
 	--document-viewer-background-colour: #fff;
 	--document-viewer-text-colour: var(--main-text-colour-inverted);
-
 	--chat-bot-background-colour: #e9feff;
 	--chat-bot-border-colour: #b6ecef;
 	--chat-bot-text-colour: var(--main-text-colour-inverted);
@@ -87,10 +75,8 @@
 	--chat-button-background-colour: #eee;
 	--chat-button-border-colour: #ccc;
 	--chat-button-text-colour: #444;
-
 	--avatar-circle-user-colour: #dff4f5;
-	--avatar-circle-bot-colour: #eeeeee;
-
+	--avatar-circle-bot-colour: #eee;
 	--email-title-background-colour: #feb589;
 	--email-background-colour: #fff4ee;
 	--email-divider-colour: var(--email-text-colour);

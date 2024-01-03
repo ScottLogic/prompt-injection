@@ -2,9 +2,9 @@
 	border-radius: 1.25rem;
 	padding: 1.25rem;
 	max-width: 65%;
-	-webkit-hyphens: auto;
-	-moz-hyphens: auto;
-	-ms-hyphens: auto;
+	hyphens: auto;
+	hyphens: auto;
+	hyphens: auto;
 	hyphens: auto;
 	word-wrap: break-word;
 	border: 0.0625rem solid transparent;
