@@ -550,7 +550,6 @@ export const getValidOpenAIModelsList = validOpenAiModels.get;
 export {
 	chatGptTools,
 	chatGptSendMessage,
-	filterChatHistoryByMaxTokens,
 	getOpenAIKey,
 	getValidModelsFromOpenAI,
 };
