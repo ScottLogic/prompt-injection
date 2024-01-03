@@ -36,7 +36,7 @@ npm ci
 #### Frontend
 
 1. Copy the example environment file [.env.example](frontend/.env.example) in the frontend directory and rename it to `.env`.
-1. Replace the `VITE_BACKEND_URL` value with the backend endpoint.
+1. If you've changed the default port for running the API, adjust the `VITE_BACKEND_URL` value accordingly.
 
 ## Run
 
@@ -56,40 +56,7 @@ Note that this project also includes a VS Code launch file, to allow running API
 
 ## Development
 
-### Linting and formatting
-
-The project is configured to be linted and formatted on both the backend and frontend.
-
-If you are using VS Code, we recommend doing the following:
-
-1. Get the prettier-eslint extension.
-2. Set the default formatter to the prettier-eslint one.
-3. Configure VS Code to format your documents on save.
-
-To manually lint and format, use the following:
-
-```bash
-npm run lint
-npm run format
-```
-
-in both the backend and frontend directories.
-
-## Test
-
-### Backend
-
-```bash
-cd backend/
-npm run test
-```
-
-### Frontend
-
-```bash
-cd frontend/
-npm run test
-```
+For development instructions, see the [frontend](frontend/README.md) and [backend](backend/README.md) READMEs.
 
 ## Contributing
 
