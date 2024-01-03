@@ -78,7 +78,9 @@ function DefenceMechanism({
 			}}
 		>
 			<summary>
-				<span aria-hidden>{defenceDetail.name}</span>
+				<span aria-hidden={defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE}>
+					{defenceDetail.name}
+				</span>
 				{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE && (
 					<label className="switch">
 						<input

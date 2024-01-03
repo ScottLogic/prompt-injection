@@ -4,27 +4,43 @@
 	display: inline-block;
 }
 
+.defence-radio-button label {
+	margin-left: 2rem;
+}
+
 .defence-radio-button input {
 	opacity: 0;
 }
 
-.defence-radio-button .checkmark {
+/* checkmark outer circle */
+.defence-radio-button input + label::before {
 	position: absolute;
+	content: '';
 	top: 0;
 	left: 0;
-	height: 0.75rem;
-	width: 0.75rem;
+	height: 1rem;
+	width: 1rem;
 	border-radius: 50%;
 	border: 0.125rem solid var(--main-toggle-off-border-colour);
 }
 
-.defence-radio-button input:checked + .checkmark::after {
+/* inner circle */
+.defence-radio-button input + label::after {
 	content: '';
 	position: absolute;
-	top: 0.0625rem;
-	left: 0.0625rem;
-	height: calc(100% - 0.125rem);
-	width: calc(100% - 0.125rem);
+	opacity: 0;
+	top: 0.3125rem;
+	left: 0.3125rem;
 	border-radius: 50%;
-	background: var(--main-toggle-ball-colour);
+	border: 0.3125rem solid var(--main-toggle-ball-colour);
+	transition: 0.2s ease-in-out;
+}
+
+/* show circle when checked */
+.defence-radio-button input:checked + label::after {
+	opacity: 1;
+}
+
+.defence-radio-button input:focus + label::before {
+	box-shadow: 0 0 0 0.125rem;
 }

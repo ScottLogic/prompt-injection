@@ -45,16 +45,16 @@ function PromptEnclosureDefenceMechanism({
 	// activate this defence and deactivate all others
 	function activateOne(defenceId: DEFENCE_ID) {
 		defences.forEach((defence) => {
-			if (defence.id === defenceId && !defence.isActive) toggleDefence(defence);
-			else if (defence.isActive) {
+			if (defence.id === defenceId && !defence.isActive) {
+				toggleDefence(defence);
+			} else if (defence.isActive) {
 				toggleDefence(defence);
 			}
 		});
 	}
 
-	function handleRadioChange(event: React.ChangeEvent<HTMLInputElement>) {
-		setSelectedRadio(event.target.value);
-		const defenceId = event.target.value;
+	function handleRadioChange(defenceId: string) {
+		setSelectedRadio(defenceId);
 		if (defenceId === 'none') {
 			deactivateAll();
 		} else {
@@ -69,7 +69,9 @@ function PromptEnclosureDefenceMechanism({
 					id="none"
 					name="None"
 					checked={isRadioSelected('none')}
-					onChange={handleRadioChange}
+					onChange={() => {
+						handleRadioChange('none');
+					}}
 				/>
 				{defences.map((defence) => (
 					<DefenceConfigurationRadioButton
@@ -77,7 +79,9 @@ function PromptEnclosureDefenceMechanism({
 						id={defence.id}
 						name={defence.name}
 						checked={isRadioSelected(defence.id)}
-						onChange={handleRadioChange}
+						onChange={() => {
+							handleRadioChange(defence.id);
+						}}
 					/>
 				))}
 			</div>
