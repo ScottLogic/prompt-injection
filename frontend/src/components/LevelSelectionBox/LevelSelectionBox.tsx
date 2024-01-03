@@ -25,20 +25,25 @@ function LevelSelectionBox({
 			setCurrentLevel(newLevel);
 		}
 	}
+
 	return (
 		<div className="level-selection-box">
 			{displayLevels.map(({ id, displayName }, index) => {
+				const disabled =
+					index > numCompletedLevels && id !== LEVEL_NAMES.SANDBOX;
 				return (
 					<LevelButton
 						key={id}
 						onClick={() => {
 							handleLevelChange(id);
 						}}
-						disabled={index > numCompletedLevels && id !== LEVEL_NAMES.SANDBOX}
+						disabled={disabled}
 						selected={id === currentLevel}
 						ariaLabel={
 							id === LEVEL_NAMES.SANDBOX ? undefined : `Level ${displayName}`
 						}
+						// show tooltip if the button is disabled
+						title={disabled ? `Complete level ${index} to unlock` : undefined}
 					>
 						{displayName}
 					</LevelButton>
