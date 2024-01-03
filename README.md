@@ -75,22 +75,6 @@ npm run format
 
 in both the backend and frontend directories.
 
-## Test
-
-### Backend
-
-```bash
-cd backend/
-npm run test
-```
-
-### Frontend
-
-```bash
-cd frontend/
-npm run test
-```
-
 ## Contributing
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
