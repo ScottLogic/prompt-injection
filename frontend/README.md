@@ -31,6 +31,15 @@ Or for development, run the dev server which will hot-reload on changes:
 npm run dev
 ```
 
+## Linting and Formatting
+
+To manually lint and format:
+
+```bash
+npm run lint
+npm run format
+```
+
 ## Test
 
 We are using [Vitest](https://vitest.dev/) as our test runner. This is much like Jest, except that because we are using
