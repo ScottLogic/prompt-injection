@@ -32,6 +32,7 @@
 }
 
 .main-footer .links a:not(:last-child)::after {
+	display: inline-block;
 	content: '|';
 	padding: 0 0.75rem;
 }
