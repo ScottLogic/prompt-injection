@@ -8,6 +8,7 @@ export interface LevelButtonProps {
 	disabled?: boolean;
 	selected?: boolean;
 	ariaLabel?: string;
+	title?: string;
 	onClick: () => void;
 }
 
@@ -16,6 +17,7 @@ function LevelButton({
 	disabled = false,
 	selected = false,
 	ariaLabel,
+	title,
 	onClick,
 }: LevelButtonProps) {
 	const buttonProps = {
@@ -27,6 +29,7 @@ function LevelButton({
 		},
 		'aria-disabled': disabled,
 		'aria-label': ariaLabel,
+		title,
 	};
 
 	return <button {...buttonProps}>{children}</button>;
