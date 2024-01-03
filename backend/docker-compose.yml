@@ -1,8 +1,9 @@
 services:
   prompt-injection-api:
     environment:
-      NODE_ENV: development
+      NODE_ENV: ${NODE_ENV:-development}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      CORS_ALLOW_ORIGIN: "${CORS_ALLOW_ORIGIN:-*}"
       PORT: 3001
     build: .
     image: 'scottlogic/prompt-injection-api'

@@ -1,14 +1,8 @@
-import {
-	ConnectionType,
-	Integration,
-	IntegrationType,
-	RestApi,
-	VpcLink
-} from 'aws-cdk-lib/aws-apigateway';
+import { ConnectionType, Integration, IntegrationType, RestApi, VpcLink } from 'aws-cdk-lib/aws-apigateway';
 import { UserPool, UserPoolClient, UserPoolDomain, } from 'aws-cdk-lib/aws-cognito';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
-import { Cluster, ContainerImage, Secret as EnvSecret, } from 'aws-cdk-lib/aws-ecs';
+import { Cluster, ContainerImage, PropagatedTagSource, Secret as EnvSecret, } from 'aws-cdk-lib/aws-ecs';
 import { NetworkLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
 //import { ListenerAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 //import { AuthenticateCognitoAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
@@ -33,6 +27,7 @@ export class ApiStack extends Stack {
 	constructor(scope: Construct, id: string, props: ApiStackProps) {
 		super(scope, id, props);
 		//const { userPool, userPoolClient, userPoolDomain } = props;
+		const { webappUrl } = props;
 
 		const generateResourceName = resourceName(scope);
 		const generateResourceDescription = resourceDescription(scope);
@@ -60,7 +55,7 @@ export class ApiStack extends Stack {
 		// Create a private, network-load-balanced Fargate service
 		const containerPort = 3001;
 		const fargateServiceName = generateResourceName('fargate');
-		const loadBalancerName = generateResourceName('nlb');
+		const loadBalancerName = generateResourceName('loadbalancer');
 		const fargateService = new NetworkLoadBalancedFargateService(
 			this,
 			fargateServiceName,
@@ -75,6 +70,7 @@ export class ApiStack extends Stack {
 					environment: {
 						NODE_ENV: 'development',
 						PORT: `${containerPort}`,
+						CORS_ALLOW_ORIGIN: webappUrl,
 					},
 					secrets: {
 						OPENAI_API_KEY: EnvSecret.fromSecretsManager(
@@ -91,7 +87,9 @@ export class ApiStack extends Stack {
 				loadBalancer: new NetworkLoadBalancer(this, loadBalancerName, {
 					loadBalancerName,
 					vpc,
+					crossZoneEnabled: true,
 				}),
+				propagateTags: PropagatedTagSource.SERVICE,
 			}
 		);
 		this.loadBalancerUrl = `http://${fargateService.loadBalancer.loadBalancerDnsName}`;
@@ -124,7 +122,7 @@ export class ApiStack extends Stack {
 		const api = new RestApi(this, generateResourceName('api'), {
 			description: generateResourceDescription('API'),
 			deployOptions: {
-				dataTraceEnabled: true,
+				dataTraceEnabled: true, // TODO Disable this after testing
 				tracingEnabled: true,
 				stageName: stageName(scope),
 			},
@@ -140,7 +138,7 @@ export class ApiStack extends Stack {
 			}),
 		}).addCorsPreflight({
 			allowHeaders: ['X-Forwarded-For', 'Content-Type', 'Authorization'],
-			allowOrigins: [props.webappUrl],
+			allowOrigins: [webappUrl],
 		});
 	}
 }
