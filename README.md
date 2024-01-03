@@ -36,7 +36,7 @@ npm ci
 #### Frontend
 
 1. Copy the example environment file [.env.example](frontend/.env.example) in the frontend directory and rename it to `.env`.
-1. Replace the `VITE_BACKEND_URL` value with the backend endpoint.
+1. If you've changed the default port for running the API, adjust the `VITE_BACKEND_URL` value accordingly.
 
 ## Run
 
