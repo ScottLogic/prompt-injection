@@ -7,17 +7,19 @@ import './LoadingButton.css';
 function LoadingButton({
 	children,
 	isLoading = false,
+	loadingTooltip,
 	onClick,
 }: {
 	children: React.ReactNode;
 	isLoading?: boolean;
+	loadingTooltip?: string;
 	onClick: () => void;
 }) {
 	return (
 		<ThemedButton
 			ariaDisabled={isLoading}
 			// tooltip is shown when button is disabled
-			title={isLoading ? 'Loading' : undefined}
+			title={isLoading ? loadingTooltip : undefined}
 			className="loading-button"
 			onClick={onClick}
 		>
