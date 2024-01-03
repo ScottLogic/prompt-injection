@@ -12,7 +12,7 @@
 	white-space: pre-line;
 }
 
-.message-bubble:focus {
+.message-bubble:focus-visible {
 	outline-offset: 0.1rem;
 }
 

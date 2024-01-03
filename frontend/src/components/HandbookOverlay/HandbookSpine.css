@@ -21,7 +21,7 @@
 	text-align: left;
 }
 
-.handbook-spine button:focus {
+.handbook-spine button:focus-visible {
 	outline-offset: -0.3rem;
 }
 

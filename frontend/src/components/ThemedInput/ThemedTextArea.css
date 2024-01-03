@@ -12,7 +12,7 @@
 	resize: none;
 }
 
-.themed-text-area:focus {
+.themed-text-area:focus-visible {
 	outline-offset: 0.1rem;
 }
 

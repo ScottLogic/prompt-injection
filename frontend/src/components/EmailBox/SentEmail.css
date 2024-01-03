@@ -7,7 +7,7 @@
 	border: 1px solid var(--header-background-colour);
 }
 
-.sent-email:focus {
+.sent-email:focus-visible {
 	outline-offset: 0.1rem;
 	border-radius: 0.625rem;
 	border: 1px solid var(--main-text-colour);

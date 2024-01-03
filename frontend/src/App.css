@@ -52,7 +52,7 @@
 	margin: 0;
 }
 
-.dialog-modal:focus {
+.dialog-modal:focus-visible {
 	outline-offset: 0.2rem;
 }
 

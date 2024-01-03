@@ -11,7 +11,7 @@
 	font-size: 1.875rem;
 }
 
-.level-button:focus {
+.level-button:focus-visible {
 	border: 0.125rem solid var(--main-text-colour);
 }
 

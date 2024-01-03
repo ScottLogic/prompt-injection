@@ -1,7 +1,6 @@
 .chat-box-info {
 	font-size: 0.875rem;
 	font-style: italic;
-	padding-top: 1rem;
 	text-align: center;
 	display: flex;
 	justify-content: center;
@@ -10,7 +9,7 @@
 	padding: 0.5rem;
 }
 
-.chat-box-info:focus {
+.chat-box-info:focus-visible {
 	outline-offset: 0.1rem;
 }
 
@@ -36,7 +35,7 @@
 	display: inline-block;
 }
 
-.chat-box-info.reset-level-text:focus {
+.chat-box-info.reset-level-text:focus-visible {
 	outline-offset: 0.5rem;
 }
 

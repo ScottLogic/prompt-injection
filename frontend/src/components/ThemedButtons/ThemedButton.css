@@ -11,10 +11,10 @@
 	font-size: 1rem;
 	font-weight: 600;
 	border: 1px solid var(--action-button-background-colour);
+}
 
-	&:focus {
-		border: 1px solid var(--main-text-colour);
-	}
+.themed-button:focus-visible {
+	border: 1px solid var(--main-text-colour);
 }
 
 .themed-button.disabled {

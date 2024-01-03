@@ -65,6 +65,6 @@
 	flex: 1 1 0;
 }
 
-.chat-box .footer .control-buttons > *:focus {
+.chat-box .footer .control-buttons > *:focus-visible {
 	outline-offset: 0.1rem;
 }
