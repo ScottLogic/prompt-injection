@@ -13,8 +13,7 @@ function updateConfigProperty(
 	max: number
 ): ChatModelConfiguration | null {
 	if (value >= 0 && value <= max) {
-		config[configId] = value;
-		return config;
+		return { ...config, [configId]: value };
 	}
 	return null;
 }
@@ -37,28 +36,17 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 	const configId = req.body.configId as MODEL_CONFIG | undefined;
 	const value = req.body.value;
 
-	let updated = null;
-
 	if (configId && value && value >= 0) {
 		const lastConfig = req.session.chatModel.configuration;
-		switch (configId) {
-			case MODEL_CONFIG.TEMPERATURE:
-				updated = updateConfigProperty(lastConfig, configId, value, 2);
-				break;
-			case MODEL_CONFIG.TOP_P:
-				updated = updateConfigProperty(lastConfig, configId, value, 1);
-				break;
-			case MODEL_CONFIG.FREQUENCY_PENALTY:
-				updated = updateConfigProperty(lastConfig, configId, value, 2);
-				break;
-			case MODEL_CONFIG.PRESENCE_PENALTY:
-				updated = updateConfigProperty(lastConfig, configId, value, 2);
-				break;
-			default:
-				res.status(400).send();
-		}
-		if (updated) {
-			req.session.chatModel.configuration = updated;
+		const maxValue = configId === MODEL_CONFIG.TOP_P ? 1 : 2;
+		const updatedConfig = updateConfigProperty(
+			lastConfig,
+			configId,
+			value,
+			maxValue
+		);
+		if (updatedConfig) {
+			req.session.chatModel.configuration = updatedConfig;
 			res.status(200).send();
 		} else {
 			res.status(400).send();
