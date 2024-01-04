@@ -8,7 +8,7 @@ import {
 	handleClearChatHistory,
 	handleGetChatHistory,
 } from '@src/controller/chatController';
-import { detectTriggeredDefences } from '@src/defence';
+import { detectTriggeredInputDefences } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
@@ -56,7 +56,7 @@ jest.mock('openai', () => ({
 // 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 // 	return {
 // 		...originalModule,
-// 		detectTriggeredDefences: () => {
+// 		detectTriggeredInputDefences: () => {
 // 			mockDetectTriggeredDefences();
 // 		},
 // 	};
@@ -64,8 +64,8 @@ jest.mock('openai', () => ({
 
 jest.mock('@src/defence');
 const mockDetectTriggeredDefences =
-	detectTriggeredDefences as jest.MockedFunction<
-		typeof detectTriggeredDefences
+	detectTriggeredInputDefences as jest.MockedFunction<
+		typeof detectTriggeredInputDefences
 	>;
 
 function responseMock() {

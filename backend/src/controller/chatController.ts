@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import {
 	transformMessage,
-	detectTriggeredDefences,
+	detectTriggeredInputDefences,
 	combineTransformedMessage,
 } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
@@ -69,7 +69,7 @@ async function handleHigherLevelChat(
 	}
 
 	// detect defences on input message
-	const triggeredDefencesPromise = detectTriggeredDefences(
+	const triggeredDefencesPromise = detectTriggeredInputDefences(
 		message,
 		req.session.levelState[currentLevel].defences
 	).then((DefenceReport) => {

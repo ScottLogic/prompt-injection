@@ -210,7 +210,10 @@ function transformMessage(
 }
 
 // detects triggered defences in original message and blocks the message if necessary
-async function detectTriggeredDefences(message: string, defences: Defence[]) {
+async function detectTriggeredInputDefences(
+	message: string,
+	defences: Defence[]
+) {
 	const singleDefenceReports = [
 		detectCharacterLimit(message, defences),
 		detectFilterUserInput(message, defences),
@@ -361,7 +364,7 @@ export {
 	configureDefence,
 	deactivateDefence,
 	resetDefenceConfig,
-	detectTriggeredDefences,
+	detectTriggeredInputDefences,
 	getQAPromptFromConfig,
 	getSystemRole,
 	isDefenceActive,

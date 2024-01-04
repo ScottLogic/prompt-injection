@@ -4,7 +4,7 @@ import {
 	configureDefence,
 	deactivateDefence,
 	resetDefenceConfig,
-	detectTriggeredDefences,
+	detectTriggeredInputDefences,
 	getQAPromptFromConfig,
 	getSystemRole,
 	isDefenceActive,
@@ -118,7 +118,7 @@ test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
 test('GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered', async () => {
 	const message = 'Hello';
 	const defences = defaultDefences;
-	const defenceReport = await detectTriggeredDefences(message, defences);
+	const defenceReport = await detectTriggeredInputDefences(message, defences);
 	expect(defenceReport.blockedReason).toBe(null);
 	expect(defenceReport.isBlocked).toBe(false);
 	expect(defenceReport.triggeredDefences.length).toBe(0);
@@ -136,7 +136,7 @@ test(
 			activateDefence(DEFENCE_ID.CHARACTER_LIMIT, defaultDefences),
 			[{ id: 'MAX_MESSAGE_LENGTH', value: '3' }]
 		);
-		const defenceReport = await detectTriggeredDefences(message, defences);
+		const defenceReport = await detectTriggeredInputDefences(message, defences);
 		expect(defenceReport.blockedReason).toBe('Message is too long');
 		expect(defenceReport.isBlocked).toBe(true);
 		expect(defenceReport.triggeredDefences).toContain(
@@ -157,7 +157,7 @@ test(
 			activateDefence(DEFENCE_ID.CHARACTER_LIMIT, defaultDefences),
 			[{ id: 'MAX_MESSAGE_LENGTH', value: '280' }]
 		);
-		const defenceReport = await detectTriggeredDefences(message, defences);
+		const defenceReport = await detectTriggeredInputDefences(message, defences);
 		expect(defenceReport.blockedReason).toBe(null);
 		expect(defenceReport.isBlocked).toBe(false);
 		expect(defenceReport.triggeredDefences.length).toBe(0);
@@ -181,7 +181,7 @@ test(
 				},
 			]
 		);
-		const defenceReport = await detectTriggeredDefences(message, defences);
+		const defenceReport = await detectTriggeredInputDefences(message, defences);
 		expect(defenceReport.blockedReason).toBe(null);
 		expect(defenceReport.isBlocked).toBe(false);
 		expect(defenceReport.alertedDefences).toContain(DEFENCE_ID.CHARACTER_LIMIT);
@@ -192,7 +192,7 @@ test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN det
 	const message = '<Hello>';
 	// activate XML_TAGGING defence
 	const defences = activateDefence(DEFENCE_ID.XML_TAGGING, defaultDefences);
-	const defenceReport = await detectTriggeredDefences(message, defences);
+	const defenceReport = await detectTriggeredInputDefences(message, defences);
 	expect(defenceReport.blockedReason).toBe(null);
 	expect(defenceReport.isBlocked).toBe(false);
 	expect(defenceReport.triggeredDefences).toContain(DEFENCE_ID.XML_TAGGING);
@@ -201,7 +201,7 @@ test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN det
 test('GIVEN XML_TAGGING defence is inactive AND message contains XML tags WHEN detecting triggered defences THEN XML_TAGGING defence is alerted', async () => {
 	const message = '<Hello>';
 	const defences = defaultDefences;
-	const defenceReport = await detectTriggeredDefences(message, defences);
+	const defenceReport = await detectTriggeredInputDefences(message, defences);
 	expect(defenceReport.blockedReason).toBe(null);
 	expect(defenceReport.isBlocked).toBe(false);
 	expect(defenceReport.alertedDefences).toContain(DEFENCE_ID.XML_TAGGING);
@@ -308,7 +308,7 @@ test('GIVEN the prompt evaluation LLM prompt has not been configured WHEN detect
 		DEFENCE_ID.PROMPT_EVALUATION_LLM,
 		defaultDefences
 	);
-	await detectTriggeredDefences(message, defences);
+	await detectTriggeredInputDefences(message, defences);
 
 	expect(langchain.queryPromptEvaluationModel).toHaveBeenCalledWith(
 		message,
@@ -329,7 +329,7 @@ test('GIVEN the prompt evaluation LLM prompt has been configured WHEN detecting 
 			},
 		]
 	);
-	await detectTriggeredDefences(message, defences);
+	await detectTriggeredInputDefences(message, defences);
 
 	expect(langchain.queryPromptEvaluationModel).toHaveBeenCalledWith(
 		message,
