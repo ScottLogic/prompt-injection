@@ -381,33 +381,9 @@ async function getFinalReplyAfterAllToolCalls(
 ) {
 	const chatResponse: ChatResponse = getBlankChatResponse();
 	const openai = getOpenAI();
-	let reply = await chatGptChatCompletion(
-		chatResponse,
-		chatHistory,
-		defences,
-		chatModel,
-		openai,
-		currentLevel
-	);
+	let reply: ChatCompletionMessageParam | null = null;
 
-	// check if GPT wanted to call a tool
-	while (reply?.tool_calls) {
-		// push the assistant message to the chat
-		pushMessageToHistory(chatHistory, {
-			completion: reply,
-			chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
-		});
-
-		const wonLevel = await performToolCalls(
-			reply.tool_calls,
-			chatHistory,
-			defences,
-			sentEmails,
-			currentLevel
-		);
-		chatResponse.wonLevel = chatResponse.wonLevel || wonLevel;
-
-		// get a new reply from ChatGPT now that the functions have been called
+	do {
 		reply = await chatGptChatCompletion(
 			chatResponse,
 			chatHistory,
@@ -416,7 +392,25 @@ async function getFinalReplyAfterAllToolCalls(
 			openai,
 			currentLevel
 		);
-	}
+
+		if (reply?.tool_calls) {
+			// push the assistant message to the chat
+			pushMessageToHistory(chatHistory, {
+				completion: reply,
+				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+			});
+
+			const wonLevel = await performToolCalls(
+				reply.tool_calls,
+				chatHistory,
+				defences,
+				sentEmails,
+				currentLevel
+			);
+			chatResponse.wonLevel = chatResponse.wonLevel || wonLevel;
+		}
+		// repeat until there are no more tool calls
+	} while (reply?.tool_calls);
 
 	// chat history gets mutated, so no need to return it
 	return { reply, chatResponse };
