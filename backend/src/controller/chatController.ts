@@ -15,6 +15,7 @@ import {
 	ChatDefenceReport,
 	ChatHttpResponse,
 	ChatModel,
+	combineChatDefenceReports,
 	defaultChatModel,
 	pushMessageToHistory,
 } from '@src/models/chat';
@@ -150,31 +151,13 @@ async function handleHigherLevelChat(
 	} else {
 		chatResponse.wonLevel = openAiReply.wonLevel;
 		chatResponse.reply = botReply ?? '';
-
-		// combine alerted defences
-		chatResponse.defenceReport.alertedDefences = [
-			...inputDefenceReport.alertedDefences,
-			...openAiReply.defenceReport.alertedDefences,
-			...outputDefenceReport.alertedDefences,
-		];
-		// combine triggered defences
-		chatResponse.defenceReport.triggeredDefences = [
-			...inputDefenceReport.triggeredDefences,
-			...openAiReply.defenceReport.triggeredDefences,
-			...outputDefenceReport.triggeredDefences,
-		];
-		// combine blocked
-		chatResponse.defenceReport.isBlocked =
-			openAiReply.defenceReport.isBlocked || outputDefenceReport.isBlocked;
-		// combine blocked reason
-		chatResponse.defenceReport.blockedReason = [
-			openAiReply.defenceReport.blockedReason,
-			outputDefenceReport.blockedReason,
-		]
-			.filter((reason) => reason !== null)
-			.join('\n');
-		// combine error message
 		chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
+		chatResponse.defenceReport = combineChatDefenceReports([
+			chatResponse.defenceReport,
+			inputDefenceReport,
+			openAiReply.defenceReport,
+			outputDefenceReport,
+		]);
 	}
 }
 
