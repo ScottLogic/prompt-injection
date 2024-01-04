@@ -13,6 +13,7 @@
 	--main-border-colour: #666666;
 	--main-text-colour: #fff;
 	--main-text-colour-inverted: #000;
+	--main-text-accent-colour: #73D1D6;
 	--error-colour: #c41565;
 
 	--main-scrollbar-colour: #444444;
@@ -40,7 +41,7 @@
 	--main-input-inactive-text-colour: #464646;
 
 	--main-toggle-ball-colour: #ececec;
-	--main-toggle-off-border-colour: var(--level-button-border-colour-disabled);
+	--main-toggle-off-border-colour: #aaaaaa;
 	--main-toggle-off-colour: transparent;
 	--main-toggle-on-border-colour: var(--accent-colour);
 	--main-toggle-on-colour: var(--accent-colour);
