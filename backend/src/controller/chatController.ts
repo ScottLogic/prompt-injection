@@ -17,6 +17,7 @@ import {
 	ChatHttpResponse,
 	ChatModel,
 	defaultChatModel,
+	pushMessageToHistory,
 } from '@src/models/chat';
 import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
@@ -63,7 +64,7 @@ async function handleHigherLevelChat(
 	if (transformedMessage) {
 		chatResponse.transformedMessage = transformedMessage;
 		// if message has been transformed then add the original to chat history and send transformed to chatGPT
-		req.session.levelState[currentLevel].chatHistory.push({
+		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
 			completion: null,
 			chatMessageType: CHAT_MESSAGE_TYPE.USER,
 			infoMessage: message,
@@ -113,7 +114,7 @@ async function handleHigherLevelChat(
 		// restore the original chat history
 		req.session.levelState[currentLevel].chatHistory = chatHistoryBefore;
 		// add user message to the chat history (not as completion)
-		req.session.levelState[currentLevel].chatHistory.push({
+		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
 			completion: null,
 			chatMessageType: CHAT_MESSAGE_TYPE.USER,
 			infoMessage: message,
@@ -234,7 +235,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 
 	if (chatResponse.defenceReport.isBlocked) {
 		// chatReponse.reply is empty if blocked
-		req.session.levelState[currentLevel].chatHistory.push({
+		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
 			completion: null,
 			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
 			infoMessage: chatResponse.defenceReport.blockedReason,
@@ -287,7 +288,7 @@ function handleErrorGettingReply(
 	errorMessage: string
 ) {
 	// add error message to chat history
-	req.session.levelState[currentLevel].chatHistory.push({
+	pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
 		completion: null,
 		chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
 		infoMessage: errorMessage,
@@ -317,7 +318,7 @@ function handleAddToChatHistory(req: OpenAiAddHistoryRequest, res: Response) {
 		level !== undefined &&
 		level >= LEVEL_NAMES.LEVEL_1
 	) {
-		req.session.levelState[level].chatHistory.push({
+		pushMessageToHistory(req.session.levelState[level].chatHistory, {
 			completion: null,
 			chatMessageType,
 			infoMessage,

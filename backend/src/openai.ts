@@ -19,6 +19,7 @@ import {
 	ChatHistoryMessage,
 	ChatModel,
 	ChatResponse,
+	pushMessageToHistory,
 } from './models/chat';
 import { DEFENCE_ID, Defence } from './models/defence';
 import { EmailInfo, EmailResponse } from './models/email';
@@ -324,34 +325,6 @@ function getChatCompletionsFromHistory(
 	return reducedCompletions;
 }
 
-function pushCompletionToHistory(
-	chatHistory: ChatHistoryMessage[],
-	completion: ChatCompletionMessageParam,
-	chatMessageType: CHAT_MESSAGE_TYPE
-) {
-	// limit the length of the chat history
-	const maxChatHistoryLength = 1000;
-
-	if (chatMessageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
-		// remove the oldest message, not including system role message
-		if (chatHistory.length >= maxChatHistoryLength) {
-			if (chatHistory[0].completion?.role !== 'system') {
-				chatHistory.shift();
-			} else {
-				chatHistory.splice(1, 1);
-			}
-		}
-		chatHistory.push({
-			completion,
-			chatMessageType,
-		});
-	} else {
-		// do not add the bots reply which was subsequently blocked
-		console.log('Skipping adding blocked message to chat history', completion);
-	}
-	return chatHistory;
-}
-
 function getBlankChatResponse(): ChatResponse {
 	return {
 		completion: null,
@@ -390,11 +363,10 @@ async function performToolCalls(
 			chatResponse.wonLevel = functionCallReply.wonLevel;
 
 			// add the function call to the chat history
-			pushCompletionToHistory(
-				chatHistory,
-				functionCallReply.completion,
-				CHAT_MESSAGE_TYPE.FUNCTION_CALL
-			);
+			pushMessageToHistory(chatHistory, {
+				completion: functionCallReply.completion,
+				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+			});
 		}
 	}
 }
@@ -420,11 +392,10 @@ async function getFinalReplyAfterAllToolCalls(
 	// check if GPT wanted to call a tool
 	while (reply?.tool_calls) {
 		// push the assistant message to the chat
-		pushCompletionToHistory(
-			chatHistory,
-			reply,
-			CHAT_MESSAGE_TYPE.FUNCTION_CALL
-		);
+		pushMessageToHistory(chatHistory, {
+			completion: reply,
+			chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+		});
 
 		await performToolCalls(
 			chatResponse,
@@ -462,16 +433,15 @@ async function chatGptSendMessage(
 	console.log(`User message: '${message}'`);
 
 	// add user message to chat
-	pushCompletionToHistory(
-		chatHistory,
-		{
+	pushMessageToHistory(chatHistory, {
+		completion: {
 			role: 'user',
 			content: message,
 		},
-		messageIsTransformed
+		chatMessageType: messageIsTransformed
 			? CHAT_MESSAGE_TYPE.USER_TRANSFORMED
-			: CHAT_MESSAGE_TYPE.USER
-	);
+			: CHAT_MESSAGE_TYPE.USER,
+	});
 
 	// mutates chatHistory
 	const { reply, chatResponse } = await getFinalReplyAfterAllToolCalls(
