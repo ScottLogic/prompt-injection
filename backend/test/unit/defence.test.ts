@@ -38,7 +38,7 @@ function getXmlTransformedMessage(message: string): TransformedChatMessage {
 		preMessage: `${xmlPrompt}<user_input>`,
 		message,
 		postMessage: '</user_input>',
-		tranformationName: 'XML Tagging',
+		transformationName: 'XML Tagging',
 	};
 }
 

@@ -72,10 +72,8 @@ function getConfigValue(
 }
 
 function getMaxMessageLength(defences: Defence[]) {
-	return getConfigValue(
-		defences,
-		DEFENCE_ID.CHARACTER_LIMIT,
-		'MAX_MESSAGE_LENGTH'
+	return Number(
+		getConfigValue(defences, DEFENCE_ID.CHARACTER_LIMIT, 'MAX_MESSAGE_LENGTH')
 	);
 }
 
@@ -118,10 +116,12 @@ function getRandomSequenceEnclosurePrePrompt(defences: Defence[]) {
 }
 
 function getRandomSequenceEnclosureLength(defences: Defence[]) {
-	return getConfigValue(
-		defences,
-		DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
-		'SEQUENCE_LENGTH'
+	return Number(
+		getConfigValue(
+			defences,
+			DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+			'SEQUENCE_LENGTH'
+		)
 	);
 }
 
@@ -196,17 +196,14 @@ function transformXmlTagging(
 		preMessage: prompt.concat(openTag),
 		message: escapeXml(message),
 		postMessage: closeTag,
-		tranformationName: 'XML Tagging',
+		transformationName: 'XML Tagging',
 	};
 }
 
-function generateRandomString(string_length: number) {
-	let random_string = '';
-	for (let i = 0; i < string_length; i++) {
-		const random_ascii: number = Math.floor(Math.random() * 25 + 97);
-		random_string += String.fromCharCode(random_ascii);
-	}
-	return random_string;
+function generateRandomString(length: number) {
+	return Array.from({ length }, () =>
+		String.fromCharCode(Math.floor(Math.random() * 26 + 97))
+	).join('');
 }
 
 // apply random sequence enclosure defence to input message
@@ -216,7 +213,7 @@ function transformRandomSequenceEnclosure(
 ): TransformedChatMessage {
 	console.debug('Random Sequence Enclosure defence active.');
 	const randomString: string = generateRandomString(
-		Number(getRandomSequenceEnclosureLength(defences))
+		getRandomSequenceEnclosureLength(defences)
 	);
 	const openTag = randomString.concat(' {{ ');
 	const closeTag = ' }} '.concat(randomString);
@@ -224,7 +221,7 @@ function transformRandomSequenceEnclosure(
 		preMessage: getRandomSequenceEnclosurePrePrompt(defences).concat(openTag),
 		message,
 		postMessage: closeTag,
-		tranformationName: 'Random Sequence Enclosure',
+		transformationName: 'Random Sequence Enclosure',
 	};
 }
 
@@ -290,7 +287,7 @@ function detectCharacterLimit(
 	message: string,
 	defences: Defence[]
 ) {
-	const maxMessageLength = Number(getMaxMessageLength(defences));
+	const maxMessageLength = getMaxMessageLength(defences);
 	// check if the message is too long
 	if (message.length > maxMessageLength) {
 		console.debug('CHARACTER_LIMIT defence triggered.');
