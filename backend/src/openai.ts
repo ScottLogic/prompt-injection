@@ -9,8 +9,6 @@ import {
 import {
 	isDefenceActive,
 	getSystemRole,
-	detectFilterList,
-	getFilterList,
 	getQAPromptFromConfig,
 } from './defence';
 import { sendEmail } from './email';
@@ -371,36 +369,6 @@ function getBlankChatResponse(): ChatResponse {
 	};
 }
 
-function applyOutputFilterDefence(
-	message: string,
-	defences: Defence[],
-	chatResponse: ChatResponse
-) {
-	const detectedPhrases = detectFilterList(
-		message,
-		getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
-	);
-
-	if (detectedPhrases.length > 0) {
-		console.debug(
-			'FILTER_BOT_OUTPUT defence triggered. Detected phrases from blocklist:',
-			detectedPhrases
-		);
-		if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
-			chatResponse.defenceReport.triggeredDefences.push(
-				DEFENCE_ID.FILTER_BOT_OUTPUT
-			);
-			chatResponse.defenceReport.isBlocked = true;
-			chatResponse.defenceReport.blockedReason =
-				'My original response was blocked as it contained a restricted word/phrase. Ask me something else. ';
-		} else {
-			chatResponse.defenceReport.alertedDefences.push(
-				DEFENCE_ID.FILTER_BOT_OUTPUT
-			);
-		}
-	}
-}
-
 async function performToolCalls(
 	chatResponse: ChatResponse,
 	toolCalls: ChatCompletionMessageToolCall[],
@@ -526,12 +494,6 @@ async function chatGptSendMessage(
 
 	chatResponse.completion = reply;
 
-	if (
-		currentLevel === LEVEL_NAMES.LEVEL_3 ||
-		currentLevel === LEVEL_NAMES.SANDBOX
-	) {
-		applyOutputFilterDefence(reply.content, defences, chatResponse);
-	}
 	// add the ai reply to the chat history
 	pushCompletionToHistory(
 		chatHistory,

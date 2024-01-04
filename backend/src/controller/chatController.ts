@@ -4,6 +4,7 @@ import {
 	transformMessage,
 	detectTriggeredInputDefences,
 	combineTransformedMessage,
+	detectTriggeredOutputDefences,
 } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
@@ -11,6 +12,7 @@ import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
 	CHAT_MESSAGE_TYPE,
+	ChatDefenceReport,
 	ChatHistoryMessage,
 	ChatHttpResponse,
 	ChatModel,
@@ -95,6 +97,19 @@ async function handleHigherLevelChat(
 		openAiReplyPromise,
 	]);
 
+	const botReply = openAiReply.completion?.content?.toString();
+	const outputDefenceReport: ChatDefenceReport = botReply
+		? detectTriggeredOutputDefences(
+				botReply,
+				req.session.levelState[currentLevel].defences
+		  )
+		: {
+				blockedReason: null,
+				isBlocked: false,
+				alertedDefences: [],
+				triggeredDefences: [],
+		  };
+
 	// if input message is blocked, restore the original chat history and add user message (not as completion)
 	if (chatResponse.defenceReport.isBlocked) {
 		// restore the original chat history
@@ -107,20 +122,24 @@ async function handleHigherLevelChat(
 		});
 	} else {
 		chatResponse.wonLevel = openAiReply.wonLevel;
-		chatResponse.reply = openAiReply.completion?.content?.toString() ?? '';
+		chatResponse.reply = botReply ?? '';
 
 		// combine triggered defences
 		chatResponse.defenceReport.triggeredDefences = [
 			...chatResponse.defenceReport.triggeredDefences,
 			...openAiReply.defenceReport.triggeredDefences,
+			...outputDefenceReport.triggeredDefences,
 		];
 		// combine blocked
-		chatResponse.defenceReport.isBlocked = openAiReply.defenceReport.isBlocked;
-
+		chatResponse.defenceReport.isBlocked =
+			openAiReply.defenceReport.isBlocked || outputDefenceReport.isBlocked;
 		// combine blocked reason
-		chatResponse.defenceReport.blockedReason =
-			openAiReply.defenceReport.blockedReason;
-
+		chatResponse.defenceReport.blockedReason = [
+			outputDefenceReport.blockedReason,
+			openAiReply.defenceReport.blockedReason,
+		]
+			.filter((reason) => reason !== null)
+			.join('\n');
 		// combine error message
 		chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
 	}
