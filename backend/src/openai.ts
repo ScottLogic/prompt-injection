@@ -410,7 +410,7 @@ async function getFinalReplyAfterAllToolCalls(
 		}
 
 		// repeat until there are no more tool calls
-	} while (reply?.tool_calls);
+	} while (reply.tool_calls);
 
 	// chat history gets mutated, so no need to return it
 	return { reply, chatResponse };
@@ -435,11 +435,9 @@ async function chatGptSendMessage(
 		currentLevel
 	);
 
-	if (!reply?.content || chatResponse.openAIErrorMessage) {
-		return chatResponse;
+	if (reply?.content && !chatResponse.openAIErrorMessage) {
+		chatResponse.completion = reply;
 	}
-
-	chatResponse.completion = reply;
 	return chatResponse;
 }
 
