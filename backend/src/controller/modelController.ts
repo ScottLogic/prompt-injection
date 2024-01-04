@@ -3,20 +3,8 @@ import { Request, Response } from 'express';
 import { OpenAIGetModelRequest } from '@src/models/api/OpenAIGetModelRequest';
 import { OpenAiConfigureModelRequest } from '@src/models/api/OpenAiConfigureModelRequest';
 import { OpenAiSetModelRequest } from '@src/models/api/OpenAiSetModelRequest';
-import { ChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
+import { MODEL_CONFIG } from '@src/models/chat';
 import { getValidOpenAIModelsList } from '@src/openai';
-
-function updateConfigProperty(
-	config: ChatModelConfiguration,
-	configId: MODEL_CONFIG,
-	value: number,
-	max: number
-): ChatModelConfiguration | null {
-	if (value >= 0 && value <= max) {
-		return { ...config, [configId]: value };
-	}
-	return null;
-}
 
 function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 	const { model } = req.body;
@@ -35,22 +23,11 @@ function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 	const configId = req.body.configId as MODEL_CONFIG | undefined;
 	const value = req.body.value;
+	const maxValue = configId === MODEL_CONFIG.TOP_P ? 1 : 2;
 
-	if (configId && value !== undefined) {
-		const lastConfig = req.session.chatModel.configuration;
-		const maxValue = configId === MODEL_CONFIG.TOP_P ? 1 : 2;
-		const updatedConfig = updateConfigProperty(
-			lastConfig,
-			configId,
-			value,
-			maxValue
-		);
-		if (updatedConfig) {
-			req.session.chatModel.configuration = updatedConfig;
-			res.status(200).send();
-		} else {
-			res.status(400).send();
-		}
+	if (configId && value !== undefined && value >= 0 && value <= maxValue) {
+		req.session.chatModel.configuration[configId] = value;
+		res.status(200).send();
 	} else {
 		res.status(400).send();
 	}
