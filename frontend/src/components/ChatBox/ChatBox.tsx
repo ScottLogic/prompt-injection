@@ -223,6 +223,7 @@ function ChatBox({
 						<LoadingButton
 							onClick={() => void sendChatMessage()}
 							isLoading={isSendingMessage}
+							loadingTooltip="Sending message..."
 						>
 							send
 						</LoadingButton>

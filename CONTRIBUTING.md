@@ -47,12 +47,12 @@ Please do read through our [code of conduct](CODE_OF_CONDUCT.md) before contribu
 
 ## When you submit a PR
 
-- [Link the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) that PR addresses.
+- [Link the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) that the PR addresses.
 - Link any related PRs.
 - Have you added tests?
 - Are all workflow steps passing?
 - Is it ready for review? _If not, create a draft._
-- include the ticket number in the PR name.
+- Include the ticket number in the PR name.
 
 ### Adding tests
 

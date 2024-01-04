@@ -149,6 +149,7 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 		await user.click(radioButton);
 
 		expect(mockToggleDefence).toHaveBeenCalledWith(newMockDefences[0]);
+		// the active defence is not toggled off
 		expect(mockToggleDefence).not.toHaveBeenCalledWith(newMockDefences[1]);
 	});
 

@@ -70,6 +70,7 @@ function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
 					<LoadingButton
 						onClick={() => void submitSelectedModel()}
 						isLoading={isSettingModel}
+						loadingTooltip="Changing model..."
 					>
 						Choose
 					</LoadingButton>
