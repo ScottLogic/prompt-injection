@@ -12,7 +12,7 @@ function DefenceConfigurationRadioButton({
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
 	return (
-		<div className="defence-radio-button" key={id}>
+		<label className="defence-radio-button" key={id}>
 			<input
 				type="radio"
 				id={id}
@@ -21,8 +21,8 @@ function DefenceConfigurationRadioButton({
 				checked={checked}
 				onChange={onChange}
 			/>
-			<label htmlFor={id}>{name}</label>
-		</div>
+			<span>{name}</span>
+		</label>
 	);
 }
 
