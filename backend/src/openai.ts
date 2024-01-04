@@ -16,7 +16,6 @@ import { queryDocuments } from './langchain';
 import {
 	CHAT_MESSAGE_TYPE,
 	CHAT_MODELS,
-	ChatDefenceReport,
 	ChatHistoryMessage,
 	ChatModel,
 	ChatResponse,
@@ -144,7 +143,6 @@ function isChatGptFunction(functionName: string) {
 }
 
 async function chatGptCallFunction(
-	defenceReport: ChatDefenceReport,
 	defences: Defence[],
 	toolCallId: string,
 	functionCall: ChatCompletionMessageToolCall.Function,
@@ -211,7 +209,6 @@ async function chatGptCallFunction(
 
 	return {
 		completion: reply,
-		defenceReport,
 		wonLevel,
 	};
 }
@@ -359,7 +356,7 @@ function getBlankChatResponse(): ChatResponse {
 	return {
 		completion: null,
 		defenceReport: {
-			blockedReason: '',
+			blockedReason: null,
 			isBlocked: false,
 			alertedDefences: [],
 			triggeredDefences: [],
@@ -384,7 +381,6 @@ async function performToolCalls(
 		if (toolCall.type === 'function') {
 			// call the function and get a new reply and defence info from
 			const functionCallReply = await chatGptCallFunction(
-				chatResponse.defenceReport,
 				defences,
 				toolCall.id,
 				toolCall.function,
@@ -399,8 +395,6 @@ async function performToolCalls(
 				functionCallReply.completion,
 				CHAT_MESSAGE_TYPE.FUNCTION_CALL
 			);
-			// update the defence info
-			chatResponse.defenceReport = functionCallReply.defenceReport;
 		}
 	}
 }
@@ -493,18 +487,6 @@ async function chatGptSendMessage(
 	}
 
 	chatResponse.completion = reply;
-
-	// add the ai reply to the chat history
-	pushCompletionToHistory(
-		chatHistory,
-		reply,
-		chatResponse.defenceReport.isBlocked
-			? CHAT_MESSAGE_TYPE.BOT_BLOCKED
-			: CHAT_MESSAGE_TYPE.BOT
-	);
-
-	// log the entire chat history so far
-	console.log(chatHistory);
 	return chatResponse;
 }
 

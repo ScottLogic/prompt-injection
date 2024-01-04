@@ -108,12 +108,11 @@ async function handleHigherLevelChat(
 				triggeredDefences: [],
 		  };
 
-	// if input message is blocked, restore the original chat history and add user message (not as completion)
 	if (inputDefenceReport.isBlocked) {
 		chatResponse.defenceReport = inputDefenceReport;
 		// restore the original chat history
 		req.session.levelState[currentLevel].chatHistory = chatHistoryBefore;
-
+		// add user message to the chat history (not as completion)
 		req.session.levelState[currentLevel].chatHistory.push({
 			completion: null,
 			chatMessageType: CHAT_MESSAGE_TYPE.USER,
@@ -240,9 +239,8 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
 			infoMessage: chatResponse.defenceReport.blockedReason,
 		});
-	}
-	// more error handling
-	else if (chatResponse.openAIErrorMessage) {
+	} else if (chatResponse.openAIErrorMessage) {
+		// more error handling
 		handleErrorGettingReply(
 			req,
 			res,
