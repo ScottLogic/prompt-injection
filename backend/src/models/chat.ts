@@ -54,6 +54,12 @@ interface ChatDefenceReport {
 	triggeredDefences: DEFENCE_ID[];
 }
 
+interface SingleDefenceReport {
+	defence: DEFENCE_ID;
+	blockedReason: string | null;
+	status: 'alerted' | 'triggered' | 'ok';
+}
+
 interface ChatAnswer {
 	reply: string;
 	questionAnswered: boolean;
@@ -121,4 +127,5 @@ export {
 	ChatModel,
 	ChatModelConfiguration,
 	defaultChatModel,
+	SingleDefenceReport,
 };
