@@ -1,9 +1,30 @@
+.defence-mechanism-fieldset {
+	background-color: purple;
+	display: flex;
+	justify-content: space-between;
+	align-items: start;
+	max-width: 100%;
+	padding: 0;
+}
+
+.defence-mechanism-summary {
+	background-color: blue;
+	min-width: fit-content;
+	max-width: 70%;
+}
+
+.defence-mechanism-form {
+	background-color: green;
+	max-width: 30%;
+	/* justify-self: end; */
+}
+
 .defence-mechanism {
 	cursor: default;
 }
 
 .defence-mechanism > * {
-	padding: 0.75rem;
+	/* padding: 0.5rem; */
 }
 
 .defence-mechanism > summary {
@@ -12,6 +33,9 @@
 
 .defence-mechanism .info-box {
 	font-size: 0.875rem;
+	background-color: blueviolet;
+	width: 20vw;
+	margin-top: 0.5em;
 }
 
 .defence-mechanism .info-box :first-child {
@@ -25,7 +49,7 @@
 
 form {
 	display: inline-block;
-	width: calc(100% - 1.5em);
+	/* width: calc(100% - 1.5em); */
 }
 
 /* default checkbox hidden without removing it from the DOM */
@@ -43,8 +67,10 @@ form {
 .toggles [type='checkbox'] + label {
 	display: block;
 	position: relative;
-	padding: 0.1em;
-	max-width: 100%;
+	/* padding: 0.1em; */
+	max-width: fit-content;
+	text-align: right;
+	padding-right: 3em;
 }
 
 /* the  label hovered or focused*/
