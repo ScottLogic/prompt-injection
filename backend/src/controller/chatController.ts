@@ -13,7 +13,6 @@ import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest
 import {
 	CHAT_MESSAGE_TYPE,
 	ChatDefenceReport,
-	ChatHistoryMessage,
 	ChatHttpResponse,
 	ChatModel,
 	defaultChatModel,
@@ -32,13 +31,21 @@ async function handleLowLevelChat(
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel
 ) {
+	// add user message to chat
+	pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
+		completion: {
+			role: 'user',
+			content: message,
+		},
+		chatMessageType: CHAT_MESSAGE_TYPE.USER,
+	});
+
 	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
 		req.session.levelState[currentLevel].chatHistory,
 		req.session.levelState[currentLevel].defences,
 		chatModel,
 		message,
-		false,
 		req.session.levelState[currentLevel].sentEmails,
 		currentLevel
 	);
@@ -51,11 +58,16 @@ async function handleLowLevelChat(
 async function handleHigherLevelChat(
 	req: OpenAiChatRequest,
 	message: string,
-	chatHistoryBefore: ChatHistoryMessage[],
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel
 ) {
+	// record the history before chat completion called
+	// so we can restore it if the message is blocked
+	const chatHistoryBefore = [
+		...req.session.levelState[currentLevel].chatHistory,
+	];
+
 	// transform the message according to active defences
 	const transformedMessage = transformMessage(
 		message,
@@ -63,11 +75,28 @@ async function handleHigherLevelChat(
 	);
 	if (transformedMessage) {
 		chatResponse.transformedMessage = transformedMessage;
-		// if message has been transformed then add the original to chat history and send transformed to chatGPT
+		// if message has been transformed then add the original to chat history
 		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
 			completion: null,
 			chatMessageType: CHAT_MESSAGE_TYPE.USER,
 			infoMessage: message,
+		});
+		// then add the transformed message to send to chatGPT
+		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
+			completion: {
+				role: 'user',
+				content: combineTransformedMessage(transformedMessage),
+			},
+			chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+		});
+	} else {
+		// not transformed, so just add the original message to chat history
+		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
+			completion: {
+				role: 'user',
+				content: message,
+			},
+			chatMessageType: CHAT_MESSAGE_TYPE.USER,
 		});
 	}
 
@@ -85,7 +114,6 @@ async function handleHigherLevelChat(
 		transformedMessage
 			? combineTransformedMessage(transformedMessage)
 			: message,
-		transformedMessage ? true : false,
 		req.session.levelState[currentLevel].sentEmails,
 		currentLevel
 	);
@@ -201,10 +229,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			? req.session.chatModel
 			: defaultChatModel;
 
-	// record the history before chat completion called
-	const chatHistoryBefore = [
-		...req.session.levelState[currentLevel].chatHistory,
-	];
 	try {
 		// skip defence detection / blocking for levels 1 and 2 - sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
@@ -220,7 +244,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			await handleHigherLevelChat(
 				req,
 				message,
-				chatHistoryBefore,
 				chatResponse,
 				currentLevel,
 				chatModel
@@ -259,6 +282,15 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			'Failed to get chatGPT reply'
 		);
 		return;
+	} else {
+		// add bot message to chat history
+		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
+			completion: {
+				role: 'assistant',
+				content: chatResponse.reply,
+			},
+			chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+		});
 	}
 
 	// update sent emails

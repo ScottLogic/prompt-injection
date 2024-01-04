@@ -426,22 +426,10 @@ async function chatGptSendMessage(
 	defences: Defence[],
 	chatModel: ChatModel,
 	message: string,
-	messageIsTransformed: boolean,
 	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	console.log(`User message: '${message}'`);
-
-	// add user message to chat
-	pushMessageToHistory(chatHistory, {
-		completion: {
-			role: 'user',
-			content: message,
-		},
-		chatMessageType: messageIsTransformed
-			? CHAT_MESSAGE_TYPE.USER_TRANSFORMED
-			: CHAT_MESSAGE_TYPE.USER,
-	});
 
 	// mutates chatHistory
 	const { reply, chatResponse } = await getFinalReplyAfterAllToolCalls(
