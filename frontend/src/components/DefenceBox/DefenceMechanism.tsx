@@ -70,6 +70,7 @@ function DefenceMechanism({
 				setConfigKey(configKey + 1);
 			}}
 		>
+			<summary>
 			<form>
 				<div className="toggles">
 					<input
@@ -86,6 +87,7 @@ function DefenceMechanism({
 					<label htmlFor={defenceDetail.id}>{defenceDetail.name}</label>
 				</div>
 			</form>
+			</summary>
 			<div className="info-box">
 				<p>{defenceDetail.info}</p>
 				{showConfigurations &&

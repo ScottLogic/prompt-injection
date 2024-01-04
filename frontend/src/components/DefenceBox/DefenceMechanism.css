@@ -7,7 +7,6 @@
 }
 
 .defence-mechanism > summary {
-	position: relative;
 	font-size: 1rem;
 }
 
@@ -25,13 +24,11 @@
 }
 
 form {
-	padding: 1em 2em;
+	display: inline-block;
+	width: calc(100% - 1.5em);
 }
 
-form > div + div {
-	margin: 2em 0 0 0;
-}
-
+/* default checkbox hidden without removing it from the DOM */
 .toggles [type='checkbox'] {
 	position: absolute;
 	top: auto;
@@ -73,7 +70,7 @@ form > div + div {
 .toggles [type='checkbox'] + label::after {
 	content: '';
 	position: absolute;
-	height: 1em;
+	height: 0.9em;
 	transition: all 0.25s ease;
 }
 
@@ -82,20 +79,20 @@ form > div + div {
 	right: 0;
 	top: 0.1em;
 	width: 1.9em;
-	border: 0.2em solid var(--main-toggle-off-border-colour);
+	border: 0.15em solid var(--main-toggle-off-border-colour);
 	background: var(--main-toggle-off-colour);
 	border-radius: 1.1em;
 }
 
 /* round toggle slider */
 .toggles [type='checkbox'] + label::after {
-	right: 1em;
-	top: 0.25em;
+	right: 0.95em;
+	top: 0.17em;
 	background: var(--main-text-colour);
 	background-position: center center;
 	border-radius: 50%;
 	width: 1em;
-	border: 0.1em solid var(--main-toggle-off-border-colour);
+	border: 0.05em solid var(--main-toggle-off-border-colour);
 }
 
 /* round toggle slider sliding to the right */
