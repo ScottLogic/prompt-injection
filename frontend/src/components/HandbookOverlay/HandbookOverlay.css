@@ -23,11 +23,10 @@
 }
 
 .handbook-overlay .content {
-	padding: 0 1.7rem;
+	padding: 0 1.75rem 0.5rem;
 	margin-top: 3rem;
 	margin-right: 0.5rem;
-	margin-bottom: 0.2rem;
-	padding-bottom: 0.5rem;
+	margin-bottom: 0.25rem;
 
 	overflow-y: auto;
 	/* firefox scrollbar styling */

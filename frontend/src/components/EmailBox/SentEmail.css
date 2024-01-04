@@ -4,13 +4,13 @@
 	color: var(--email-text-colour);
 	--border-radius: 0.625rem;
 	white-space: pre-line;
-	border: 1px solid var(--header-background-colour);
+	border: 0.125rem solid var(--header-background-colour);
 }
 
 .sent-email:focus-visible {
-	outline-offset: 0.1rem;
+	outline-offset: 0.125rem;
 	border-radius: 0.625rem;
-	border: 1px solid var(--main-text-colour);
+	border: 0.125rem solid var(--main-text-colour);
 }
 
 .sent-email .sent-email-title {

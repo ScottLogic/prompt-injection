@@ -31,11 +31,11 @@
 	color: inherit;
 	font-size: 1.5rem;
 	font-weight: bold;
-	border: 0.2rem solid transparent;
+	border: 0.1875rem solid transparent;
 }
 
 .overlay > .close-button:focus-visible {
-	border: 0.2rem solid var(--main-text-colour);
+	border-color: var(--main-text-colour);
 }
 
 .overlay > .close-button:hover {

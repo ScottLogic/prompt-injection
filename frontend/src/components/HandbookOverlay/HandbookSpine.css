@@ -22,7 +22,7 @@
 }
 
 .handbook-spine button:focus-visible {
-	outline-offset: -0.3rem;
+	outline-offset: -0.25rem;
 }
 
 .handbook-spine button:hover {

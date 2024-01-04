@@ -14,7 +14,7 @@
 }
 
 .main-footer > a:focus-visible {
-	outline-offset: -0.3rem;
+	outline-offset: -0.25rem;
 }
 
 .main-footer > a svg {

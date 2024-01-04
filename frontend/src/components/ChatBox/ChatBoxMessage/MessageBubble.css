@@ -13,7 +13,7 @@
 }
 
 .message-bubble:focus-visible {
-	outline-offset: 0.1rem;
+	outline-offset: 0.125rem;
 }
 
 .message-bubble.bot {

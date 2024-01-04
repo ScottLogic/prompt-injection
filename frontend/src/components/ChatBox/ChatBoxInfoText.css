@@ -5,12 +5,11 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-top: 0.75rem;
-	padding: 0.5rem;
+	padding: 0.125rem;
 }
 
 .chat-box-info:focus-visible {
-	outline-offset: 0.1rem;
+	outline-offset: 0.125rem;
 }
 
 .chat-box-info.info-text {
@@ -29,8 +28,8 @@
 	color: var(--chat-info-text-colour);
 	border-bottom: 1px solid var(--chat-reset-level-line-colour);
 	line-height: 0.1em;
-	padding: 0;
-	margin: 0.6rem 0.1rem;
+	/* padding: 0; */
+	/* margin: 0.6rem 0.1rem; */
 	border-radius: 0;
 	display: inline-block;
 }

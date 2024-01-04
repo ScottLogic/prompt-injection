@@ -12,7 +12,7 @@
 }
 
 .level-button:focus-visible {
-	border: 0.125rem solid var(--main-text-colour);
+	border-color: var(--main-text-colour);
 }
 
 .level-button.selected {

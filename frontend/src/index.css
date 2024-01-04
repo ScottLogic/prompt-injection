@@ -31,5 +31,5 @@ html {
 }
 
 *:focus-visible {
-	outline: 0.3rem solid var(--accent-border-colour);
+	outline: 0.25rem solid var(--accent-border-colour);
 }

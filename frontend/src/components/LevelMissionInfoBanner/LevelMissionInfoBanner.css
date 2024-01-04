@@ -9,6 +9,10 @@
 	align-items: center;
 }
 
+.level-mission-info-banner:focus-visible {
+	outline-offset: -0.25rem;
+}
+
 .level-title-area {
 	min-width: 10%;
 	font-size: 1.875rem;
