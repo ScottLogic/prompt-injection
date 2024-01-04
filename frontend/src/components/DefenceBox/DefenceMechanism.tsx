@@ -70,24 +70,22 @@ function DefenceMechanism({
 				setConfigKey(configKey + 1);
 			}}
 		>
-			<summary>
-				<label>
-					<span className="toggle-label">{defenceDetail.name}</span>
-					<span className="switch">
-						<input
-							className="toggle-switch-input"
-							type="checkbox"
-							placeholder="defence-toggle"
-							onChange={() => {
-								toggleDefence(defenceDetail);
-							}}
-							// set checked if defence is active
-							checked={defenceDetail.isActive}
-						/>
-						<span className="slider round"></span>
-					</span>
-				</label>
-			</summary>
+			<form>
+				<div className="toggles">
+					<input
+						id={defenceDetail.id}
+						className="toggle-switch-input"
+						type="checkbox"
+						placeholder="defence-toggle"
+						onChange={() => {
+							toggleDefence(defenceDetail);
+						}}
+						// set checked if defence is active
+						checked={defenceDetail.isActive}
+					/>
+					<label htmlFor={defenceDetail.id}>{defenceDetail.name}</label>
+				</div>
+			</form>
 			<div className="info-box">
 				<p>{defenceDetail.info}</p>
 				{showConfigurations &&

@@ -24,77 +24,257 @@
 	font-weight: 600;
 }
 
-.toggle-label {
-	margin-right: 0.5rem;
-}
-/* Hide the default checkbox */
-.toggle-switch-input {
-	opacity: 0;
-	width: 0;
-	height: 0;
+form {
+	padding: 1em 2em;
 }
 
+form > div + div {
+	margin: 2em 0 0 0;
+}
 
-/* Style the label to look like a switch */
-.switch {
+.toggles [disabled] + label,
+.toggles [disabled]:hover + label {
+	color: #999;
+}
+
+.toggles [type='checkbox'] {
 	position: absolute;
-	width: 2rem;
-	height: 1rem;
-	right: 0.75rem;
-	top: 0.75rem;
+	top: auto;
+	overflow: hidden;
+	clip: rect(1px, 1px, 1px, 1px);
+	width: 1px;
+	height: 1px;
+	white-space: nowrap;
 }
 
-.switch:focus-within {
-	outline-style: auto;
-	border-radius: 0.5rem;
+.toggles [type='checkbox'] + label {
+	display: block;
+	position: relative;
+	padding: 0.5em;
+	padding-left: 4em;
+	max-width: calc(100% - 2em);
 }
 
-/* Style the slider */
-.slider {
-	--slider-border-width: 0.125rem;
-	position: absolute;
-	cursor: pointer;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	border: var(--slider-border-width) solid var(--main-toggle-off-border-colour);
-	background-color: var(--main-toggle-off-colour);
-	-webkit-transition: 0.4s;
-	transition: 0.4s;
+.toggles [type='checkbox']:focus + label,
+.toggles [type='checkbox']:hover + label {
+	color: #00f;
 }
 
-/* Style the round slider */
-.slider.round {
-	border-radius: 0.5rem;
+.toggles [type='checkbox']:focus + label::before,
+.toggles [type='checkbox']:hover + label::before {
+	box-shadow: 0 0 0.5em #333;
 }
 
-/* Style the slider thumb */
-.slider::before {
-	position: absolute;
+.toggles [type='checkbox']:focus + label::after,
+.toggles [type='checkbox']:hover + label::after {
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50' fill='rgba(0,0,0,.25)'/%3E%3C/svg%3E");
+	background-size: 30%;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.toggles [type='checkbox'] + label::before,
+.toggles [type='checkbox'] + label::after {
 	content: '';
-	height: 1rem;
-	width: 1rem;
-	top: calc(-1 * var(--slider-border-width));
-	left: calc(-1 * var(--slider-border-width));
-	background-color: var(--main-toggle-ball-colour);
-	-webkit-transition: 0.4s;
-	transition: 0.4s;
+	position: absolute;
+	height: 1.5em;
+	transition: all 0.25s ease;
 }
 
-/* Style the slider thumb when checked */
-input:checked + .slider::before {
-	-webkit-transform: translateX(1rem);
-	-ms-transform: translateX(1rem);
-	transform: translateX(1rem);
+.toggles [type='checkbox'] + label::before {
+	left: 0;
+	top: 0.2em;
+	width: 3em;
+	border: 0.2em solid #767676;
+	background: #767676;
+	border-radius: 1.1em;
 }
 
-input:checked + .slider {
-	background-color: var(--main-toggle-on-colour);
-	border: var(--slider-border-width) solid var(--main-toggle-on-colour);
-}
-
-/* Style the slider thumb when rounded */
-.slider.round::before {
+.toggles [type='checkbox'] + label::after {
+	left: 0;
+	top: 0.25em;
+	background-color: #fff;
+	background-position: center center;
 	border-radius: 50%;
+	width: 1.5em;
+	border: 0.15em solid #767676;
+}
+
+.toggles [type='checkbox']:checked + label::after {
+	left: 1.6em;
+	border-color: #36a829;
+	color: #36a829;
+}
+
+.toggles [type='checkbox']:indeterminate + label::after {
+	left: 0.8em;
+}
+
+.toggles [type='checkbox']:indeterminate + label::before {
+	background-color: #ddd;
+}
+
+.toggles [type='checkbox']:checked + label::before {
+	background-color: #36a829;
+	border-color: #36a829;
+}
+
+.toggles [type='checkbox'][disabled] + label::before {
+	background-color: transparent;
+	border-color: #ddd;
+}
+
+.toggles [type='checkbox'][disabled] + label::after {
+	border-color: #ddd;
+}
+
+.toggles [disabled]:hover + label {
+	color: #999; /* case for CSS custom property if not supporting IE/Edge */
+}
+
+.toggles [type='checkbox'][disabled]:hover + label::before {
+	box-shadow: none;
+}
+
+.toggles [type='checkbox'][disabled]:hover + label::after {
+	background-image: none;
+}
+
+/* Put toggles on the right like the iOS the kids like */
+
+.toggles.flip [type='checkbox'] + label::before,
+.toggles.flip [type='checkbox'] + label::after {
+	left: auto;
+	right: 0;
+}
+
+.toggles.flip [type='checkbox'] + label::after {
+	left: auto;
+	right: 1.6em;
+}
+
+.toggles.flip [type='checkbox']:checked + label::after {
+	right: 0;
+}
+
+.toggles.flip [type='checkbox']:indeterminate + label::after {
+	right: 0.8em;
+}
+
+.toggles.flip [type='checkbox'] + label {
+	padding-left: 0;
+	padding-right: 4em;
+}
+
+/* Windows High Contrast Mode Support */
+@media screen and (-ms-high-contrast: active) {
+	.toggles [type='checkbox']:focus + label::before,
+	.toggles [type='checkbox']:hover + label::before {
+		outline: 1px dotted windowText;
+		outline-offset: 0.25em;
+	}
+	.toggles [type='checkbox'] + label::after {
+		background-color: windowText;
+	}
+	.toggles [type='checkbox'][disabled] + label::after {
+		background-color: transparent;
+	}
+}
+
+/* Reduced motion */
+@media screen and (prefers-reduced-motion: reduce) {
+	.toggles [type='checkbox'] + label::before,
+	.toggles [type='checkbox'] + label::after {
+		transition: none;
+	}
+}
+
+/* Dark mode */
+@media screen and (prefers-color-scheme: dark) {
+	body {
+		background-color: #101010;
+		color: #fff;
+	}
+	a:link {
+		color: #99f;
+	}
+	.toggles {
+		color: #fff;
+	}
+	fieldset.toggles {
+		border: 0.1em solid rgba(255, 255, 255, 0.15);
+	}
+	.toggles [type='checkbox']:focus + label,
+	.toggles [type='checkbox']:hover + label {
+		color: #99f;
+	}
+	.toggles [type='checkbox'] + label::before {
+		border-color: #808080;
+		background: #808080;
+	}
+	.toggles [type='checkbox'] + label::after {
+		background-color: #101010;
+	}
+	.toggles [type='checkbox']:not([disabled]):indeterminate + label::before {
+		background-color: #444;
+	}
+	.toggles [type='checkbox']:focus + label::after,
+	.toggles [type='checkbox']:hover + label::after {
+		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50' fill='rgba(255,255,255,.25)'/%3E%3C/svg%3E");
+	}
+	.toggles [type='checkbox'][disabled] + label::before,
+	.toggles [type='checkbox'][disabled] + label::after {
+		border-color: #555;
+	}
+}
+
+/* RTL */
+/* https://twitter.com/dror3go/status/1102946375396982784 */
+*[dir='rtl'] .toggles [type='checkbox'] + label {
+	padding-left: 0;
+	padding-right: 4em;
+}
+
+*[dir='rtl'] .toggles [type='checkbox'] + label::before,
+*[dir='rtl'] .toggles [type='checkbox'] + label::after {
+	left: auto;
+	right: 0;
+}
+
+*[dir='rtl'] .toggles [type='checkbox'] + label::after {
+	right: 0;
+}
+
+*[dir='rtl'] .toggles [type='checkbox']:checked + label::after {
+	right: 1.6em;
+}
+
+*[dir='rtl'] .toggles [type='checkbox']:indeterminate + label::after {
+	right: 0.8em;
+}
+
+/* Put toggles on the right like the iOS the kids like */
+
+*[dir='rtl'] .toggles.flip [type='checkbox'] + label::before,
+*[dir='rtl'] .toggles.flip [type='checkbox'] + label::after {
+	left: 0;
+	right: auto;
+}
+
+*[dir='rtl'] .toggles.flip [type='checkbox'] + label::after {
+	right: auto;
+	left: 1.6em;
+}
+
+*[dir='rtl'] .toggles.flip [type='checkbox']:checked + label::after {
+	left: 0;
+}
+
+*[dir='rtl'] .toggles.flip [type='checkbox']:indeterminate + label::after {
+	left: 0.8em;
+}
+
+*[dir='rtl'] .toggles.flip [type='checkbox'] + label {
+	padding-right: 0;
+	padding-left: 4em;
 }
