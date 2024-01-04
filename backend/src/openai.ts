@@ -340,13 +340,13 @@ function getBlankChatResponse(): ChatResponse {
 }
 
 async function performToolCalls(
-	chatResponse: ChatResponse,
 	toolCalls: ChatCompletionMessageToolCall[],
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES
 ) {
+	let wonLevel = false;
 	for (const toolCall of toolCalls) {
 		// only tool type supported by openai is function
 
@@ -360,7 +360,7 @@ async function performToolCalls(
 				sentEmails,
 				currentLevel
 			);
-			chatResponse.wonLevel = functionCallReply.wonLevel;
+			wonLevel = wonLevel || functionCallReply.wonLevel;
 
 			// add the function call to the chat history
 			pushMessageToHistory(chatHistory, {
@@ -369,6 +369,7 @@ async function performToolCalls(
 			});
 		}
 	}
+	return wonLevel;
 }
 
 async function getFinalReplyAfterAllToolCalls(
@@ -397,14 +398,14 @@ async function getFinalReplyAfterAllToolCalls(
 			chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
 		});
 
-		await performToolCalls(
-			chatResponse,
+		const wonLevel = await performToolCalls(
 			reply.tool_calls,
 			chatHistory,
 			defences,
 			sentEmails,
 			currentLevel
 		);
+		chatResponse.wonLevel = chatResponse.wonLevel || wonLevel;
 
 		// get a new reply from ChatGPT now that the functions have been called
 		reply = await chatGptChatCompletion(
