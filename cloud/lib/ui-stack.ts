@@ -6,7 +6,7 @@ import {
 	ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib/core';
+import { CfnOutput, Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib/core';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import {
 	BlockPublicAccess,
@@ -79,5 +79,9 @@ export class UiStack extends Stack {
 			}
 		);
 		this.cloudfrontUrl = `https://${cloudFront.domainName}`;
+
+		new CfnOutput(this, 'WebURL', {
+			value: this.cloudfrontUrl,
+		});
 	}
 }
