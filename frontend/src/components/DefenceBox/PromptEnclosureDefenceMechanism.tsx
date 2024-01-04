@@ -7,14 +7,14 @@ import DefenceConfiguration from './DefenceConfiguration';
 
 function PromptEnclosureDefenceMechanism({
 	defences,
-	toggleDefence,
 	showConfigurations,
+	toggleDefence,
 	setConfigurationValue,
 	resetConfigurationValue,
 }: {
 	defences: Defence[];
-	toggleDefence: (defence: Defence) => void;
 	showConfigurations: boolean;
+	toggleDefence: (defence: Defence) => void;
 	setConfigurationValue: (
 		defence: Defence,
 		configId: string,

@@ -63,7 +63,7 @@ interface TransformedChatMessage {
 	preMessage: string;
 	message: string;
 	postMessage: string;
-	tranformationName: string;
+	transformationName: string;
 }
 
 interface ChatResponse {

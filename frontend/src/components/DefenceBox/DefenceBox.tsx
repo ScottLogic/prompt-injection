@@ -22,25 +22,21 @@ function DefenceBox({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 }) {
-	function getPromptEnclosureDefences() {
-		return defences.filter((defence) => {
-			return PROMPT_ENCLOSURE_DEFENCES.some((id) => id === defence.id);
-		});
-	}
-	function getNotPromptEnclosureDefences() {
-		return defences.filter((defence) => {
-			return !PROMPT_ENCLOSURE_DEFENCES.some((id) => id === defence.id);
-		});
-	}
+	const promptEnclosureDefences = defences.filter((defence) =>
+		PROMPT_ENCLOSURE_DEFENCES.some((id) => id === defence.id)
+	);
+	const notPromptEnclosureDefences = defences.filter(
+		(defence) => !promptEnclosureDefences.includes(defence)
+	);
 
 	return (
 		<div className="defence-box">
-			{getNotPromptEnclosureDefences().map((defence, index) => {
+			{notPromptEnclosureDefences.map((defence, index) => {
 				return (
 					<DefenceMechanism
 						key={index}
 						defenceDetail={defence}
-						promptEnclosureDefences={getPromptEnclosureDefences()}
+						promptEnclosureDefences={promptEnclosureDefences}
 						showConfigurations={showConfigurations}
 						toggleDefence={toggleDefence}
 						resetDefenceConfiguration={resetDefenceConfiguration}

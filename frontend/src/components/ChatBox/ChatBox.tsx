@@ -85,7 +85,7 @@ function ChatBox({
 		if (transformedMessage) {
 			addChatMessage({
 				message:
-					`${transformedMessage.tranformationName} enabled, your message has been transformed`.toLocaleLowerCase(),
+					`${transformedMessage.transformationName} enabled, your message has been transformed`.toLocaleLowerCase(),
 				type: CHAT_MESSAGE_TYPE.INFO,
 			});
 			addChatMessage({

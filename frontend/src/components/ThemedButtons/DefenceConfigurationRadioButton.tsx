@@ -12,7 +12,7 @@ function DefenceConfigurationRadioButton({
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
 	return (
-		<label className="defence-radio-button" key={id}>
+		<label className="defence-radio-button">
 			<input
 				type="radio"
 				id={id}
