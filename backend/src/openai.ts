@@ -145,6 +145,60 @@ function isChatGptFunction(functionName: string) {
 	return chatGptTools.some((tool) => tool.function.name === functionName);
 }
 
+async function handleAskQuestionFunction(
+	functionCallArgs: string | undefined,
+	currentLevel: LEVEL_NAMES,
+	defences: Defence[]
+) {
+	if (functionCallArgs) {
+		const params = JSON.parse(functionCallArgs) as FunctionAskQuestionParams;
+		console.debug(`Asking question: ${params.question}`);
+		// if asking a question, call the queryDocuments
+		let configQAPrompt = '';
+		if (isDefenceActive(DEFENCE_ID.QA_LLM, defences)) {
+			configQAPrompt = getQAPromptFromConfig(defences);
+		}
+		return {
+			reply: (
+				await queryDocuments(params.question, configQAPrompt, currentLevel)
+			).reply,
+		};
+	} else {
+		console.error('No arguments provided to askQuestion function');
+		return { reply: "Reply with 'I don't know what to ask'" };
+	}
+}
+
+function handleSendEmailFunction(
+	functionCallArgs: string | undefined,
+	currentLevel: LEVEL_NAMES
+) {
+	if (functionCallArgs) {
+		const params = JSON.parse(functionCallArgs) as FunctionSendEmailParams;
+		console.debug('Send email params: ', JSON.stringify(params));
+
+		const emailResponse: EmailResponse = sendEmail(
+			params.address,
+			params.subject,
+			params.body,
+			params.confirmed,
+			currentLevel
+		);
+		return {
+			reply: emailResponse.response,
+			wonLevel: emailResponse.wonLevel,
+			sentEmails: emailResponse.sentEmail ? [emailResponse.sentEmail] : [],
+		};
+	} else {
+		console.error('No arguments provided to sendEmail function');
+		return {
+			reply: "Reply with 'I don't know what to send'",
+			wonLevel: false,
+			sendEmails: [],
+		};
+	}
+}
+
 async function chatGptCallFunction(
 	defenceReport: ChatDefenceReport,
 	defences: Defence[],
@@ -154,67 +208,48 @@ async function chatGptCallFunction(
 	// default to sandbox
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-	const reply: ChatCompletionMessageParam = {
-		role: 'tool',
-		content: '',
-		tool_call_id: toolCallId,
-	};
+	const functionName = functionCall.name;
+	let functionReply = '';
 	let wonLevel = false;
-	// get the function name
-	const functionName: string = functionCall.name;
+	const updatedSentEmails = [...sentEmails];
 
 	// check if we know the function
 	if (isChatGptFunction(functionName)) {
 		console.debug(`Function call: ${functionName}`);
 		// call the function
 		if (functionName === 'sendEmail') {
-			if (functionCall.arguments) {
-				const params = JSON.parse(
-					functionCall.arguments
-				) as FunctionSendEmailParams;
-				console.debug('Send email params: ', JSON.stringify(params));
-				const emailResponse: EmailResponse = sendEmail(
-					params.address,
-					params.subject,
-					params.body,
-					params.confirmed,
-					currentLevel
-				);
-				reply.content = emailResponse.response;
-				wonLevel = emailResponse.wonLevel;
-				if (emailResponse.sentEmail) {
-					sentEmails.push(emailResponse.sentEmail);
-				}
+			const emailFunctionOutput = handleSendEmailFunction(
+				functionCall.arguments,
+				currentLevel
+			);
+			functionReply = emailFunctionOutput.reply;
+			wonLevel = emailFunctionOutput.wonLevel;
+			if (emailFunctionOutput.sentEmails) {
+				updatedSentEmails.push(...emailFunctionOutput.sentEmails);
 			}
 		}
 		if (functionName === 'askQuestion') {
-			if (functionCall.arguments) {
-				const params = JSON.parse(
-					functionCall.arguments
-				) as FunctionAskQuestionParams;
-				console.debug(`Asking question: ${params.question}`);
-				// if asking a question, call the queryDocuments
-				let configQAPrompt = '';
-				if (isDefenceActive(DEFENCE_ID.QA_LLM, defences)) {
-					configQAPrompt = getQAPromptFromConfig(defences);
-				}
-				reply.content = (
-					await queryDocuments(params.question, configQAPrompt, currentLevel)
-				).reply;
-			} else {
-				console.error('No arguments provided to askQuestion function');
-				reply.content = "Reply with 'I don't know what to ask'";
-			}
+			const askQuestionFunctionOutput = await handleAskQuestionFunction(
+				functionCall.arguments,
+				currentLevel,
+				defences
+			);
+			functionReply = askQuestionFunctionOutput.reply;
 		}
 	} else {
 		console.error(`Unknown function: ${functionName}`);
-		reply.content = 'Unknown function - reply again. ';
+		functionReply = 'Unknown function - reply again. ';
 	}
 
 	return {
-		completion: reply,
+		completion: {
+			role: 'tool',
+			content: functionReply,
+			tool_call_id: toolCallId,
+		},
 		defenceReport,
 		wonLevel,
+		updatedSentEmails,
 	};
 }
 
