@@ -74,9 +74,7 @@ async function handleHigherLevelChat(
 	const triggeredDefencesPromise = detectTriggeredInputDefences(
 		message,
 		req.session.levelState[currentLevel].defences
-	).then((DefenceReport) => {
-		chatResponse.defenceReport = DefenceReport;
-	});
+	);
 
 	// get the chatGPT reply
 	const openAiReplyPromise = chatGptSendMessage(
@@ -92,10 +90,11 @@ async function handleHigherLevelChat(
 	);
 
 	// run defence detection and chatGPT concurrently
-	const [, openAiReply] = await Promise.all([
+	const [inputDefenceReport, openAiReply] = await Promise.all([
 		triggeredDefencesPromise,
 		openAiReplyPromise,
 	]);
+	chatResponse.defenceReport = inputDefenceReport;
 
 	const botReply = openAiReply.completion?.content?.toString();
 	const outputDefenceReport: ChatDefenceReport = botReply
