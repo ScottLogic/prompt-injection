@@ -94,7 +94,6 @@ async function handleHigherLevelChat(
 		triggeredDefencesPromise,
 		openAiReplyPromise,
 	]);
-	chatResponse.defenceReport = inputDefenceReport;
 
 	const botReply = openAiReply.completion?.content?.toString();
 	const outputDefenceReport: ChatDefenceReport = botReply
@@ -110,7 +109,8 @@ async function handleHigherLevelChat(
 		  };
 
 	// if input message is blocked, restore the original chat history and add user message (not as completion)
-	if (chatResponse.defenceReport.isBlocked) {
+	if (inputDefenceReport.isBlocked) {
+		chatResponse.defenceReport = inputDefenceReport;
 		// restore the original chat history
 		req.session.levelState[currentLevel].chatHistory = chatHistoryBefore;
 
@@ -123,9 +123,15 @@ async function handleHigherLevelChat(
 		chatResponse.wonLevel = openAiReply.wonLevel;
 		chatResponse.reply = botReply ?? '';
 
+		// combine alerted defences
+		chatResponse.defenceReport.alertedDefences = [
+			...inputDefenceReport.alertedDefences,
+			...openAiReply.defenceReport.alertedDefences,
+			...outputDefenceReport.alertedDefences,
+		];
 		// combine triggered defences
 		chatResponse.defenceReport.triggeredDefences = [
-			...chatResponse.defenceReport.triggeredDefences,
+			...inputDefenceReport.triggeredDefences,
 			...openAiReply.defenceReport.triggeredDefences,
 			...outputDefenceReport.triggeredDefences,
 		];
@@ -134,8 +140,8 @@ async function handleHigherLevelChat(
 			openAiReply.defenceReport.isBlocked || outputDefenceReport.isBlocked;
 		// combine blocked reason
 		chatResponse.defenceReport.blockedReason = [
-			outputDefenceReport.blockedReason,
 			openAiReply.defenceReport.blockedReason,
+			outputDefenceReport.blockedReason,
 		]
 			.filter((reason) => reason !== null)
 			.join('\n');
