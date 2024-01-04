@@ -138,8 +138,15 @@ async function handleHigherLevelChat(
 				triggeredDefences: [],
 		  };
 
-	if (inputDefenceReport.isBlocked) {
-		chatResponse.defenceReport = inputDefenceReport;
+	chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
+	chatResponse.defenceReport = combineChatDefenceReports([
+		chatResponse.defenceReport,
+		inputDefenceReport,
+		openAiReply.defenceReport,
+		outputDefenceReport,
+	]);
+
+	if (chatResponse.defenceReport.isBlocked) {
 		// restore the original chat history
 		req.session.levelState[currentLevel].chatHistory = chatHistoryBefore;
 		// add user message to the chat history (not as completion)
@@ -151,13 +158,6 @@ async function handleHigherLevelChat(
 	} else {
 		chatResponse.wonLevel = openAiReply.wonLevel;
 		chatResponse.reply = botReply ?? '';
-		chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
-		chatResponse.defenceReport = combineChatDefenceReports([
-			chatResponse.defenceReport,
-			inputDefenceReport,
-			openAiReply.defenceReport,
-			outputDefenceReport,
-		]);
 	}
 }
 
@@ -166,7 +166,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	const chatResponse: ChatHttpResponse = {
 		reply: '',
 		defenceReport: {
-			blockedReason: '',
+			blockedReason: null,
 			isBlocked: false,
 			alertedDefences: [],
 			triggeredDefences: [],
