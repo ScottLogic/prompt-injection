@@ -215,13 +215,11 @@ async function chatGptCallFunction(
 }
 
 async function chatGptChatCompletion(
-	chatResponse: ChatResponse,
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
 	openai: OpenAI,
 	// default to sandbox
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	// check if we need to set a system role
@@ -281,12 +279,6 @@ async function chatGptChatCompletion(
 			chat_completion.usage
 		);
 		return chat_completion.choices[0].message;
-	} catch (error) {
-		if (error instanceof Error) {
-			console.error('Error calling createChatCompletion: ', error.message);
-			chatResponse.openAIErrorMessage = error.message;
-		}
-		return null;
 	} finally {
 		const endTime = new Date().getTime();
 		console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
@@ -384,16 +376,23 @@ async function getFinalReplyAfterAllToolCalls(
 	let reply: ChatCompletionMessageParam | null = null;
 
 	do {
-		reply = await chatGptChatCompletion(
-			chatResponse,
-			chatHistory,
-			defences,
-			chatModel,
-			openai,
-			currentLevel
-		);
+		try {
+			reply = await chatGptChatCompletion(
+				chatHistory,
+				defences,
+				chatModel,
+				openai,
+				currentLevel
+			);
+		} catch (error) {
+			if (error instanceof Error) {
+				console.error('Error calling createChatCompletion: ', error.message);
+				chatResponse.openAIErrorMessage = error.message;
+			}
+			break;
+		}
 
-		if (reply?.tool_calls) {
+		if (reply.tool_calls) {
 			// push the assistant message to the chat
 			pushMessageToHistory(chatHistory, {
 				completion: reply,
@@ -409,6 +408,7 @@ async function getFinalReplyAfterAllToolCalls(
 			);
 			chatResponse.wonLevel = chatResponse.wonLevel || wonLevel;
 		}
+
 		// repeat until there are no more tool calls
 	} while (reply?.tool_calls);
 
