@@ -23,7 +23,7 @@
 .sent-email .sent-email-main {
 	background-color: var(--email-background-colour);
 	padding: var(--vertical-padding) var(--horizontal-padding);
-	font-family: courier, sans-serif;
+	font-family: courier, monospace;
 	font-weight: 400;
 	border-bottom-left-radius: var(--border-radius);
 	border-bottom-right-radius: var(--border-radius);
