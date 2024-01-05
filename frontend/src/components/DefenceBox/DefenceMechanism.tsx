@@ -61,9 +61,26 @@ function DefenceMechanism({
 			showDefenceConfiguredText(false);
 		}
 	}
+	
 	return (
 		<fieldset className="defence-mechanism-fieldset">
-			<legend>{defenceDetail.name}</legend>
+			<legend className="defence-mechanism-legend">{defenceDetail.name}</legend>
+			<form className="defence-mechanism-form">
+				<div className="toggles">
+					<input
+						id={defenceDetail.id}
+						className="toggle-switch-input"
+						type="checkbox"
+						placeholder="defence-toggle"
+						onChange={() => {
+							toggleDefence(defenceDetail);
+						}}
+						// set checked if defence is active
+						checked={defenceDetail.isActive}
+					/>
+					<label htmlFor={defenceDetail.id}>{defenceDetail.isActive? 'on' : 'off'}</label>
+				</div>
+			</form>
 		<details
 			className="defence-mechanism"
 			onToggle={() => {
@@ -73,7 +90,7 @@ function DefenceMechanism({
 			}}
 		>
 			<summary className="defence-mechanism-summary">
-			more
+			details
 			</summary>
 			<div className="info-box">
 				<p>{defenceDetail.info}</p>
@@ -102,22 +119,6 @@ function DefenceMechanism({
 					))}
 			</div>
 		</details>
-			<form className="defence-mechanism-form">
-				<div className="toggles">
-					<input
-						id={defenceDetail.id}
-						className="toggle-switch-input"
-						type="checkbox"
-						placeholder="defence-toggle"
-						onChange={() => {
-							toggleDefence(defenceDetail);
-						}}
-						// set checked if defence is active
-						checked={defenceDetail.isActive}
-					/>
-					<label htmlFor={defenceDetail.id}>{defenceDetail.isActive? 'on' : 'off'}</label>
-				</div>
-			</form>
 		</fieldset>
 	);
 }

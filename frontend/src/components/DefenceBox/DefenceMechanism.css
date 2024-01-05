@@ -1,55 +1,68 @@
 .defence-mechanism-fieldset {
-	background-color: purple;
-	display: flex;
+	border: 3px solid #707070;
+	border-radius: 0.5rem;
 	justify-content: space-between;
 	align-items: start;
-	max-width: 100%;
-	padding: 0;
+	margin: 0.1em;
+	min-height: fit-content;
+	/* border: none; */
 }
 
+/* the name of the fieldset */
+.defence-mechanism-legend {
+	padding: 0.3em;
+}
+
+/* the more button to expand the details */
 .defence-mechanism-summary {
-	background-color: blue;
-	min-width: fit-content;
-	max-width: 70%;
+	width: fit-content;
+	border: 2px outset #707070;
+	border-radius: 5px;
+	padding: 0.5rem;
+	/* background-color: #707070; */
+	width: 4em;
+	text-align: right;
 }
 
+.defence-mechanism-fieldset details > summary {
+  list-style:none;
+}
+.defence-mechanism-fieldset  details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* the toggle and label combined */
 .defence-mechanism-form {
-	background-color: green;
-	max-width: 30%;
-	/* justify-self: end; */
+	position: absolute;
+	right: 1em;
 }
 
 .defence-mechanism {
 	cursor: default;
 }
 
-.defence-mechanism > * {
-	/* padding: 0.5rem; */
-}
+/* .defence-mechanism > * {
+	padding: 0.5rem;
+} */
 
 .defence-mechanism > summary {
 	font-size: 1rem;
 }
 
+/* the expanded description and further controls */
 .defence-mechanism .info-box {
 	font-size: 0.875rem;
-	background-color: blueviolet;
-	width: 20vw;
-	margin-top: 0.5em;
+	padding: 0.5em;
+		/* background-color: #707070; */
 }
 
 .defence-mechanism .info-box :first-child {
-	margin-top: 0;
+	/* margin: 0; */
 }
 
 .defence-mechanism .info-box .validation-text {
 	font-size: inherit;
 	font-weight: 600;
-}
-
-form {
-	display: inline-block;
-	/* width: calc(100% - 1.5em); */
 }
 
 /* default checkbox hidden without removing it from the DOM */
@@ -67,7 +80,6 @@ form {
 .toggles [type='checkbox'] + label {
 	display: block;
 	position: relative;
-	/* padding: 0.1em; */
 	max-width: fit-content;
 	text-align: right;
 	padding-right: 3em;
@@ -152,4 +164,18 @@ form {
 	.toggles [type='checkbox'] + label::after {
 		transition: none;
 	}
+}
+
+/* style for when details element is expandded */
+.defence-mechanism-fieldset details[open] > summary {
+  border-style: inset;
+}
+
+.defence-mechanism-fieldset details[open] > summary::before {
+  content: '- ';
+}
+
+/* style for when details element is collapsed */
+.defence-mechanism-fieldset details > summary::before {
+  content: '+ ';
 }

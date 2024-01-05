@@ -1,7 +1,8 @@
+/* the parent of this is .left-side-bar */
 .control-panel {
 	height: 100%;
 	overflow-y: auto;
-	padding: 1.875rem;
+	margin-bottom: 2em;
 }
 
 .control-panel .control-collapsible-section {
