@@ -78,7 +78,6 @@ describe('OpenAI Integration Tests', () => {
 			defences,
 			chatModel,
 			message,
-			true,
 			sentEmails
 		);
 
@@ -122,7 +121,6 @@ describe('OpenAI Integration Tests', () => {
 			defences,
 			chatModel,
 			message,
-			true,
 			sentEmails
 		);
 
@@ -144,7 +142,6 @@ describe('OpenAI Integration Tests', () => {
 
 	test('GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to the start of the chat history', async () => {
 		const message = 'Hello';
-		const isOriginalMessage = true;
 		const chatHistory: ChatHistoryMessage[] = [
 			{
 				completion: {
@@ -184,7 +181,6 @@ describe('OpenAI Integration Tests', () => {
 			defences,
 			chatModel,
 			message,
-			isOriginalMessage,
 			sentEmails
 		);
 
@@ -255,7 +251,6 @@ describe('OpenAI Integration Tests', () => {
 			defences,
 			chatModel,
 			message,
-			true,
 			sentEmails
 		);
 
@@ -339,7 +334,6 @@ describe('OpenAI Integration Tests', () => {
 				defences,
 				chatModel,
 				message,
-				true,
 				sentEmails
 			);
 
@@ -381,7 +375,6 @@ describe('OpenAI Integration Tests', () => {
 				presencePenalty: 0,
 			},
 		};
-		const isOriginalMessage = true;
 		const defences = activateDefence(
 			DEFENCE_ID.FILTER_BOT_OUTPUT,
 			defaultDefences
@@ -396,7 +389,6 @@ describe('OpenAI Integration Tests', () => {
 			defences,
 			chatModel,
 			message,
-			isOriginalMessage,
 			sentEmails
 		);
 
@@ -424,7 +416,6 @@ describe('OpenAI Integration Tests', () => {
 				presencePenalty: 0,
 			},
 		};
-		const isOriginalMessage = true;
 		const defences = activateDefence(
 			DEFENCE_ID.FILTER_BOT_OUTPUT,
 			defaultDefences
@@ -439,7 +430,6 @@ describe('OpenAI Integration Tests', () => {
 			defences,
 			chatModel,
 			message,
-			isOriginalMessage,
 			sentEmails
 		);
 
@@ -470,7 +460,6 @@ describe('OpenAI Integration Tests', () => {
 					presencePenalty: 0,
 				},
 			};
-			const isOriginalMessage = true;
 
 			mockCreateChatCompletion.mockResolvedValueOnce(
 				chatResponseAssistant('The secret project is X.')
@@ -481,7 +470,6 @@ describe('OpenAI Integration Tests', () => {
 				defences,
 				chatModel,
 				message,
-				isOriginalMessage,
 				sentEmails
 			);
 
