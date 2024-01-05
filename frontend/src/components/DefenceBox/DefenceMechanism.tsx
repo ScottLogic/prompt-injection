@@ -61,7 +61,7 @@ function DefenceMechanism({
 			showDefenceConfiguredText(false);
 		}
 	}
-	
+
 	return (
 		<fieldset className="defence-mechanism-fieldset">
 			<legend className="defence-mechanism-legend">{defenceDetail.name}</legend>
@@ -78,47 +78,47 @@ function DefenceMechanism({
 						// set checked if defence is active
 						checked={defenceDetail.isActive}
 					/>
-					<label htmlFor={defenceDetail.id}>{defenceDetail.isActive? 'on' : 'off'}</label>
+					<label htmlFor={defenceDetail.id}>
+						{defenceDetail.isActive ? 'on' : 'off'}
+					</label>
 				</div>
 			</form>
-		<details
-			className="defence-mechanism"
-			onToggle={() => {
-				// re-render the configuration component when detail is toggled
-				// this is to resize the textarea when detail is expanded
-				setConfigKey(configKey + 1);
-			}}
-		>
-			<summary className="defence-mechanism-summary">
-			details
-			</summary>
-			<div className="info-box">
-				<p>{defenceDetail.info}</p>
-				{showConfigurations &&
-					defenceDetail.config.map((config) => {
-						return (
-							<DefenceConfiguration
-								defenceId={defenceDetail.id}
-								key={config.id + configKey}
-								isActive={defenceDetail.isActive}
-								config={config}
-								setConfigurationValue={setConfigurationValue}
-								resetConfigurationValue={resetConfigurationValue}
-							/>
-						);
-					})}
-				{showConfiguredText &&
-					(configValidated ? (
-						<p className="validation-text">
-							<TiTick /> defence successfully configured
-						</p>
-					) : (
-						<p className="validation-text">
-							<TiTimes /> invalid input - configuration failed
-						</p>
-					))}
-			</div>
-		</details>
+			<details
+				className="defence-mechanism"
+				onToggle={() => {
+					// re-render the configuration component when detail is toggled
+					// this is to resize the textarea when detail is expanded
+					setConfigKey(configKey + 1);
+				}}
+			>
+				<summary className="defence-mechanism-summary">details</summary>
+				<div className="info-box">
+					<p>{defenceDetail.info}</p>
+					{showConfigurations &&
+						defenceDetail.config.map((config) => {
+							return (
+								<DefenceConfiguration
+									defenceId={defenceDetail.id}
+									key={config.id + configKey}
+									isActive={defenceDetail.isActive}
+									config={config}
+									setConfigurationValue={setConfigurationValue}
+									resetConfigurationValue={resetConfigurationValue}
+								/>
+							);
+						})}
+					{showConfiguredText &&
+						(configValidated ? (
+							<p className="validation-text">
+								<TiTick /> defence successfully configured
+							</p>
+						) : (
+							<p className="validation-text">
+								<TiTimes /> invalid input - configuration failed
+							</p>
+						))}
+				</div>
+			</details>
 		</fieldset>
 	);
 }
