@@ -9,7 +9,8 @@ function pushMessageToHistory(
 	const maxChatHistoryLength = 1000;
 
 	// remove the oldest message, not including system role message
-	if (chatHistory.length >= maxChatHistoryLength) {
+	// until the length of the chat history is less than maxChatHistoryLength
+	while (chatHistory.length >= maxChatHistoryLength) {
 		if (chatHistory[0].completion?.role !== 'system') {
 			chatHistory.shift();
 		} else {
