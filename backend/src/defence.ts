@@ -210,7 +210,10 @@ function transformMessage(
 }
 
 // detects triggered defences in original message and blocks the message if necessary
-async function detectTriggeredDefences(message: string, defences: Defence[]) {
+async function detectTriggeredInputDefences(
+	message: string,
+	defences: Defence[]
+) {
 	const singleDefenceReports = [
 		detectCharacterLimit(message, defences),
 		detectFilterUserInput(message, defences),
@@ -218,6 +221,12 @@ async function detectTriggeredDefences(message: string, defences: Defence[]) {
 		await detectEvaluationLLM(message, defences),
 	];
 
+	return combineDefenceReports(singleDefenceReports);
+}
+
+// detects triggered defences in bot output and blocks the message if necessary
+function detectTriggeredOutputDefences(message: string, defences: Defence[]) {
+	const singleDefenceReports = [detectFilterBotOutput(message, defences)];
 	return combineDefenceReports(singleDefenceReports);
 }
 
@@ -307,6 +316,40 @@ function detectFilterUserInput(
 	};
 }
 
+function detectFilterBotOutput(
+	message: string,
+	defences: Defence[]
+): SingleDefenceReport {
+	const detectedPhrases = detectFilterList(
+		message,
+		getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
+	);
+
+	const filterWordsDetected = detectedPhrases.length > 0;
+	const defenceActive = isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences);
+
+	if (filterWordsDetected) {
+		console.debug(
+			`FILTER_BOT_OUTPUT defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
+				', '
+			)}`
+		);
+	}
+
+	return {
+		defence: DEFENCE_ID.FILTER_BOT_OUTPUT,
+		blockedReason:
+			filterWordsDetected && defenceActive
+				? 'My original response was blocked as it contained a restricted word/phrase. Ask me something else. '
+				: null,
+		status: !filterWordsDetected
+			? 'ok'
+			: defenceActive
+			? 'triggered'
+			: 'alerted',
+	};
+}
+
 function detectXmlTagging(
 	message: string,
 	defences: Defence[]
@@ -361,12 +404,11 @@ export {
 	configureDefence,
 	deactivateDefence,
 	resetDefenceConfig,
-	detectTriggeredDefences,
+	detectTriggeredInputDefences,
+	detectTriggeredOutputDefences,
 	getQAPromptFromConfig,
 	getSystemRole,
 	isDefenceActive,
 	transformMessage,
-	getFilterList,
-	detectFilterList,
 	combineTransformedMessage,
 };

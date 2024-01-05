@@ -2,8 +2,9 @@ import { Response } from 'express';
 
 import {
 	transformMessage,
-	detectTriggeredDefences,
+	detectTriggeredInputDefences,
 	combineTransformedMessage,
+	detectTriggeredOutputDefences,
 } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
@@ -11,6 +12,7 @@ import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
 	CHAT_MESSAGE_TYPE,
+	ChatDefenceReport,
 	ChatHistoryMessage,
 	ChatHttpResponse,
 	ChatModel,
@@ -18,8 +20,60 @@ import {
 } from '@src/models/chat';
 import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
+import { pushMessageToHistory } from '@src/utils/chat';
 
 import { handleChatError } from './handleError';
+
+function combineChatDefenceReports(
+	reports: ChatDefenceReport[]
+): ChatDefenceReport {
+	const combinedReport: ChatDefenceReport = {
+		blockedReason: reports
+			.filter((report) => report.blockedReason !== null)
+			.map((report) => report.blockedReason)
+			.join('\n'),
+		isBlocked: reports.some((report) => report.isBlocked),
+		alertedDefences: reports.map((report) => report.alertedDefences).flat(),
+		triggeredDefences: reports.map((report) => report.triggeredDefences).flat(),
+	};
+	return combinedReport;
+}
+
+function getChatHistoryUserMessages(
+	message: string,
+	transformedMessage: string | null
+): ChatHistoryMessage[] {
+	if (transformedMessage) {
+		// if message has been transformed
+		return [
+			// original message
+			{
+				completion: null,
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				infoMessage: message,
+			},
+			// transformed message
+			{
+				completion: {
+					role: 'user',
+					content: transformedMessage,
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+			},
+		];
+	} else {
+		// not transformed, so just return the original message
+		return [
+			{
+				completion: {
+					role: 'user',
+					content: message,
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+			},
+		];
+	}
+}
 
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
@@ -29,13 +83,20 @@ async function handleLowLevelChat(
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel
 ) {
+	const chatHistoryUserMessages = getChatHistoryUserMessages(message, null);
+	chatHistoryUserMessages.forEach((message) => {
+		pushMessageToHistory(
+			req.session.levelState[currentLevel].chatHistory,
+			message
+		);
+	});
+
 	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
 		req.session.levelState[currentLevel].chatHistory,
 		req.session.levelState[currentLevel].defences,
 		chatModel,
 		message,
-		false,
 		req.session.levelState[currentLevel].sentEmails,
 		currentLevel
 	);
@@ -48,33 +109,42 @@ async function handleLowLevelChat(
 async function handleHigherLevelChat(
 	req: OpenAiChatRequest,
 	message: string,
-	chatHistoryBefore: ChatHistoryMessage[],
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel
 ) {
+	// record the history before chat completion called
+	// so we can restore it if the message is blocked
+	const chatHistoryBefore = [
+		...req.session.levelState[currentLevel].chatHistory,
+	];
+
 	// transform the message according to active defences
 	const transformedMessage = transformMessage(
 		message,
 		req.session.levelState[currentLevel].defences
 	);
+
+	const chatHistoryUserMessages = getChatHistoryUserMessages(
+		message,
+		transformedMessage ? combineTransformedMessage(transformedMessage) : null
+	);
+	chatHistoryUserMessages.forEach((message) => {
+		pushMessageToHistory(
+			req.session.levelState[currentLevel].chatHistory,
+			message
+		);
+	});
+
 	if (transformedMessage) {
 		chatResponse.transformedMessage = transformedMessage;
-		// if message has been transformed then add the original to chat history and send transformed to chatGPT
-		req.session.levelState[currentLevel].chatHistory.push({
-			completion: null,
-			chatMessageType: CHAT_MESSAGE_TYPE.USER,
-			infoMessage: message,
-		});
 	}
 
 	// detect defences on input message
-	const triggeredDefencesPromise = detectTriggeredDefences(
+	const triggeredDefencesPromise = detectTriggeredInputDefences(
 		message,
 		req.session.levelState[currentLevel].defences
-	).then((DefenceReport) => {
-		chatResponse.defenceReport = DefenceReport;
-	});
+	);
 
 	// get the chatGPT reply
 	const openAiReplyPromise = chatGptSendMessage(
@@ -84,45 +154,48 @@ async function handleHigherLevelChat(
 		transformedMessage
 			? combineTransformedMessage(transformedMessage)
 			: message,
-		transformedMessage ? true : false,
 		req.session.levelState[currentLevel].sentEmails,
 		currentLevel
 	);
 
 	// run defence detection and chatGPT concurrently
-	const [, openAiReply] = await Promise.all([
+	const [inputDefenceReport, openAiReply] = await Promise.all([
 		triggeredDefencesPromise,
 		openAiReplyPromise,
 	]);
 
-	// if input message is blocked, restore the original chat history and add user message (not as completion)
+	chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
+
+	const botReply = openAiReply.completion?.content?.toString();
+	const outputDefenceReport = botReply
+		? detectTriggeredOutputDefences(
+				botReply,
+				req.session.levelState[currentLevel].defences
+		  )
+		: null;
+
+	const defenceReports = [
+		chatResponse.defenceReport,
+		inputDefenceReport,
+		openAiReply.defenceReport,
+	];
+	if (outputDefenceReport) {
+		defenceReports.push(outputDefenceReport);
+	}
+	chatResponse.defenceReport = combineChatDefenceReports(defenceReports);
+
 	if (chatResponse.defenceReport.isBlocked) {
 		// restore the original chat history
 		req.session.levelState[currentLevel].chatHistory = chatHistoryBefore;
-
-		req.session.levelState[currentLevel].chatHistory.push({
+		// add user message to the chat history (not as completion)
+		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
 			completion: null,
 			chatMessageType: CHAT_MESSAGE_TYPE.USER,
 			infoMessage: message,
 		});
 	} else {
 		chatResponse.wonLevel = openAiReply.wonLevel;
-		chatResponse.reply = openAiReply.completion?.content?.toString() ?? '';
-
-		// combine triggered defences
-		chatResponse.defenceReport.triggeredDefences = [
-			...chatResponse.defenceReport.triggeredDefences,
-			...openAiReply.defenceReport.triggeredDefences,
-		];
-		// combine blocked
-		chatResponse.defenceReport.isBlocked = openAiReply.defenceReport.isBlocked;
-
-		// combine blocked reason
-		chatResponse.defenceReport.blockedReason =
-			openAiReply.defenceReport.blockedReason;
-
-		// combine error message
-		chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
+		chatResponse.reply = botReply ?? '';
 	}
 }
 
@@ -131,7 +204,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	const chatResponse: ChatHttpResponse = {
 		reply: '',
 		defenceReport: {
-			blockedReason: '',
+			blockedReason: null,
 			isBlocked: false,
 			alertedDefences: [],
 			triggeredDefences: [],
@@ -177,10 +250,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			? req.session.chatModel
 			: defaultChatModel;
 
-	// record the history before chat completion called
-	const chatHistoryBefore = [
-		...req.session.levelState[currentLevel].chatHistory,
-	];
 	try {
 		// skip defence detection / blocking for levels 1 and 2 - sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
@@ -196,7 +265,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			await handleHigherLevelChat(
 				req,
 				message,
-				chatHistoryBefore,
 				chatResponse,
 				currentLevel,
 				chatModel
@@ -211,14 +279,13 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 
 	if (chatResponse.defenceReport.isBlocked) {
 		// chatReponse.reply is empty if blocked
-		req.session.levelState[currentLevel].chatHistory.push({
+		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
 			completion: null,
 			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
 			infoMessage: chatResponse.defenceReport.blockedReason,
 		});
-	}
-	// more error handling
-	else if (chatResponse.openAIErrorMessage) {
+	} else if (chatResponse.openAIErrorMessage) {
+		// more error handling
 		handleErrorGettingReply(
 			req,
 			res,
@@ -236,6 +303,15 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			'Failed to get chatGPT reply'
 		);
 		return;
+	} else {
+		// add bot message to chat history
+		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
+			completion: {
+				role: 'assistant',
+				content: chatResponse.reply,
+			},
+			chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+		});
 	}
 
 	// update sent emails
@@ -265,7 +341,7 @@ function handleErrorGettingReply(
 	errorMessage: string
 ) {
 	// add error message to chat history
-	req.session.levelState[currentLevel].chatHistory.push({
+	pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
 		completion: null,
 		chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
 		infoMessage: errorMessage,
@@ -295,7 +371,7 @@ function handleAddToChatHistory(req: OpenAiAddHistoryRequest, res: Response) {
 		level !== undefined &&
 		level >= LEVEL_NAMES.LEVEL_1
 	) {
-		req.session.levelState[level].chatHistory.push({
+		pushMessageToHistory(req.session.levelState[level].chatHistory, {
 			completion: null,
 			chatMessageType,
 			infoMessage,

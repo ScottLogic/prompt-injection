@@ -96,7 +96,6 @@ interface ChatHttpResponse {
 interface ChatHistoryMessage {
 	completion: ChatCompletionMessageParam | null;
 	chatMessageType: CHAT_MESSAGE_TYPE;
-	numTokens?: number | null;
 	infoMessage?: string | null;
 }
 

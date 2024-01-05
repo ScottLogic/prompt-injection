@@ -161,7 +161,7 @@ describe('handleChatToGPT integration tests', () => {
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Howdy human!',
 			defenceReport: {
-				blockedReason: '',
+				blockedReason: null,
 				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
@@ -189,7 +189,7 @@ describe('handleChatToGPT integration tests', () => {
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Email sent',
 			defenceReport: {
-				blockedReason: '',
+				blockedReason: null,
 				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
@@ -225,7 +225,7 @@ describe('handleChatToGPT integration tests', () => {
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Email sent',
 			defenceReport: {
-				blockedReason: '',
+				blockedReason: null,
 				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
