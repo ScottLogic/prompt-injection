@@ -13,6 +13,7 @@ import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest
 import {
 	CHAT_MESSAGE_TYPE,
 	ChatDefenceReport,
+	ChatHistoryMessage,
 	ChatHttpResponse,
 	ChatModel,
 	combineChatDefenceReports,
@@ -24,6 +25,42 @@ import { chatGptSendMessage } from '@src/openai';
 
 import { handleChatError } from './handleError';
 
+function getChatHistoryUserMessages(
+	message: string,
+	transformedMessage: string | null
+): ChatHistoryMessage[] {
+	if (transformedMessage) {
+		// if message has been transformed
+		return [
+			// original message
+			{
+				completion: null,
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				infoMessage: message,
+			},
+			// transformed message
+			{
+				completion: {
+					role: 'user',
+					content: transformedMessage,
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+			},
+		];
+	} else {
+		// not transformed, so just return the original message
+		return [
+			{
+				completion: {
+					role: 'user',
+					content: message,
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+			},
+		];
+	}
+}
+
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
 	req: OpenAiChatRequest,
@@ -32,13 +69,12 @@ async function handleLowLevelChat(
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel
 ) {
-	// add user message to chat
-	pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
-		completion: {
-			role: 'user',
-			content: message,
-		},
-		chatMessageType: CHAT_MESSAGE_TYPE.USER,
+	const chatHistoryUserMessages = getChatHistoryUserMessages(message, null);
+	chatHistoryUserMessages.forEach((message) => {
+		pushMessageToHistory(
+			req.session.levelState[currentLevel].chatHistory,
+			message
+		);
 	});
 
 	// get the chatGPT reply
@@ -74,31 +110,20 @@ async function handleHigherLevelChat(
 		message,
 		req.session.levelState[currentLevel].defences
 	);
+
+	const chatHistoryUserMessages = getChatHistoryUserMessages(
+		message,
+		transformedMessage ? combineTransformedMessage(transformedMessage) : null
+	);
+	chatHistoryUserMessages.forEach((message) => {
+		pushMessageToHistory(
+			req.session.levelState[currentLevel].chatHistory,
+			message
+		);
+	});
+
 	if (transformedMessage) {
 		chatResponse.transformedMessage = transformedMessage;
-		// if message has been transformed then add the original to chat history
-		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
-			completion: null,
-			chatMessageType: CHAT_MESSAGE_TYPE.USER,
-			infoMessage: message,
-		});
-		// then add the transformed message to send to chatGPT
-		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
-			completion: {
-				role: 'user',
-				content: combineTransformedMessage(transformedMessage),
-			},
-			chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
-		});
-	} else {
-		// not transformed, so just add the original message to chat history
-		pushMessageToHistory(req.session.levelState[currentLevel].chatHistory, {
-			completion: {
-				role: 'user',
-				content: message,
-			},
-			chatMessageType: CHAT_MESSAGE_TYPE.USER,
-		});
 	}
 
 	// detect defences on input message
