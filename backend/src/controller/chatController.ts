@@ -30,7 +30,7 @@ async function handleLowLevelChat(
 	chatModel: ChatModel
 ) {
 	// get the chatGPT reply
-	const openAiReply = await chatGptSendMessage(
+	const gptResponse = await chatGptSendMessage(
 		req.session.levelState[currentLevel].chatHistory,
 		req.session.levelState[currentLevel].defences,
 		chatModel,
@@ -39,9 +39,17 @@ async function handleLowLevelChat(
 		req.session.levelState[currentLevel].sentEmails,
 		currentLevel
 	);
-	chatResponse.reply = openAiReply.completion?.content?.toString() ?? '';
-	chatResponse.wonLevel = openAiReply.wonLevel;
-	chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
+
+	// todo - clean up
+	chatResponse.reply =
+		gptResponse.chatResponse.completion?.content?.toString() ?? '';
+	chatResponse.wonLevel = gptResponse.chatResponse.wonLevel;
+	chatResponse.openAIErrorMessage = gptResponse.chatResponse.openAIErrorMessage;
+
+	// todo - update session with state
+	req.session.levelState[currentLevel].chatHistory = gptResponse.chatHistory;
+	req.session.levelState[currentLevel].sentEmails = gptResponse.sentEmails;
+	req.session.levelState[currentLevel].defences = gptResponse.defences;
 }
 
 // handle the chat logic for high levels (with defence detection)
@@ -106,24 +114,32 @@ async function handleHigherLevelChat(
 			infoMessage: message,
 		});
 	} else {
-		chatResponse.wonLevel = openAiReply.wonLevel;
-		chatResponse.reply = openAiReply.completion?.content?.toString() ?? '';
+		chatResponse.wonLevel = openAiReply.chatResponse.wonLevel;
+		chatResponse.reply =
+			openAiReply.chatResponse.completion?.content?.toString() ?? '';
 
 		// combine triggered defences
 		chatResponse.defenceReport.triggeredDefences = [
 			...chatResponse.defenceReport.triggeredDefences,
-			...openAiReply.defenceReport.triggeredDefences,
+			...openAiReply.chatResponse.defenceReport.triggeredDefences,
 		];
 		// combine blocked
-		chatResponse.defenceReport.isBlocked = openAiReply.defenceReport.isBlocked;
+		chatResponse.defenceReport.isBlocked =
+			openAiReply.chatResponse.defenceReport.isBlocked;
 
 		// combine blocked reason
 		chatResponse.defenceReport.blockedReason =
-			openAiReply.defenceReport.blockedReason;
+			openAiReply.chatResponse.defenceReport.blockedReason;
 
 		// combine error message
-		chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
+		chatResponse.openAIErrorMessage =
+			openAiReply.chatResponse.openAIErrorMessage;
 	}
+
+	// todo - move to handleChatToGPT
+	req.session.levelState[currentLevel].chatHistory = openAiReply.chatHistory;
+	req.session.levelState[currentLevel].sentEmails = openAiReply.sentEmails;
+	req.session.levelState[currentLevel].defences = openAiReply.defences;
 }
 
 async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {

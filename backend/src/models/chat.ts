@@ -60,6 +60,19 @@ interface SingleDefenceReport {
 	status: 'alerted' | 'triggered' | 'ok';
 }
 
+interface FunctionCallResponse {
+	completion: ChatCompletionMessageParam;
+	defenceReport: ChatDefenceReport;
+	wonLevel: boolean;
+	sentEmails: EmailInfo[];
+}
+
+interface ToolCallResponse {
+	functionCallReply?: FunctionCallResponse;
+	chatResponse?: ChatResponse;
+	chatHistory: ChatHistoryMessage[];
+}
+
 interface ChatAnswer {
 	reply: string;
 	questionAnswered: boolean;
@@ -119,6 +132,8 @@ export type {
 	ChatHttpResponse,
 	ChatHistoryMessage,
 	TransformedChatMessage,
+	FunctionCallResponse,
+	ToolCallResponse,
 };
 export {
 	CHAT_MODELS,
