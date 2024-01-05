@@ -410,7 +410,5 @@ export {
 	getSystemRole,
 	isDefenceActive,
 	transformMessage,
-	getFilterList,
-	detectFilterList,
 	combineTransformedMessage,
 };
