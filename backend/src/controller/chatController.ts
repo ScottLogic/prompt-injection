@@ -16,7 +16,6 @@ import {
 	ChatHistoryMessage,
 	ChatHttpResponse,
 	ChatModel,
-	combineChatDefenceReports,
 	defaultChatModel,
 	pushMessageToHistory,
 } from '@src/models/chat';
@@ -24,6 +23,21 @@ import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
 
 import { handleChatError } from './handleError';
+
+function combineChatDefenceReports(
+	reports: ChatDefenceReport[]
+): ChatDefenceReport {
+	const combinedReport: ChatDefenceReport = {
+		blockedReason: reports
+			.filter((report) => report.blockedReason !== null)
+			.map((report) => report.blockedReason)
+			.join('\n'),
+		isBlocked: reports.some((report) => report.isBlocked),
+		alertedDefences: reports.map((report) => report.alertedDefences).flat(),
+		triggeredDefences: reports.map((report) => report.triggeredDefences).flat(),
+	};
+	return combinedReport;
+}
 
 function getChatHistoryUserMessages(
 	message: string,

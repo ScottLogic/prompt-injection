@@ -110,21 +110,6 @@ const defaultChatModel: ChatModel = {
 	},
 };
 
-function combineChatDefenceReports(
-	reports: ChatDefenceReport[]
-): ChatDefenceReport {
-	const combinedReport: ChatDefenceReport = {
-		blockedReason: reports
-			.filter((report) => report.blockedReason !== null)
-			.map((report) => report.blockedReason)
-			.join('\n'),
-		isBlocked: reports.some((report) => report.isBlocked),
-		alertedDefences: reports.map((report) => report.alertedDefences).flat(),
-		triggeredDefences: reports.map((report) => report.triggeredDefences).flat(),
-	};
-	return combinedReport;
-}
-
 // mutates the chat history
 function pushMessageToHistory(
 	chatHistory: ChatHistoryMessage[],
@@ -161,6 +146,5 @@ export {
 	ChatModelConfiguration,
 	defaultChatModel,
 	SingleDefenceReport,
-	combineChatDefenceReports,
 	pushMessageToHistory,
 };
