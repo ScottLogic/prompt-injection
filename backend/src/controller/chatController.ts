@@ -17,10 +17,10 @@ import {
 	ChatHttpResponse,
 	ChatModel,
 	defaultChatModel,
-	pushMessageToHistory,
 } from '@src/models/chat';
 import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
+import { pushMessageToHistory } from '@src/utils/chat';
 
 import { handleChatError } from './handleError';
 

@@ -19,7 +19,6 @@ import {
 	ChatHistoryMessage,
 	ChatModel,
 	ChatResponse,
-	pushMessageToHistory,
 } from './models/chat';
 import { DEFENCE_ID, Defence } from './models/defence';
 import { EmailInfo, EmailResponse } from './models/email';
@@ -28,6 +27,7 @@ import {
 	FunctionAskQuestionParams,
 	FunctionSendEmailParams,
 } from './models/openai';
+import { pushMessageToHistory } from './utils/chat';
 import {
 	chatModelMaxTokens,
 	countTotalPromptTokens,
