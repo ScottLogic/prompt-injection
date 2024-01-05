@@ -1,9 +1,10 @@
 .level-selection-box {
 	position: relative;
+
 	display: flex;
-	justify-content: center;
-	align-items: stretch;
 	gap: 0.5rem;
+	align-items: stretch;
+	justify-content: center;
 }
 
 .level-selection-box button:last-child {

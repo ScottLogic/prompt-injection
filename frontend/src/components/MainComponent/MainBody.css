@@ -1,8 +1,9 @@
 .main-area {
+	overflow: hidden;
 	display: flex;
 	flex-direction: row;
 	flex-grow: 1;
-	overflow: hidden;
+
 	background: var(--main-background);
 	border-top: 0.125rem solid var(--level-banner-border-colour);
 }
@@ -15,13 +16,13 @@
 .left-side-bar {
 	display: flex;
 	flex-direction: column;
-	height: 100%;
 	width: 30%;
+	height: 100%;
 }
 
 .right-side-bar {
 	display: flex;
 	flex-direction: column-reverse;
-	height: 100%;
 	width: 30%;
+	height: 100%;
 }

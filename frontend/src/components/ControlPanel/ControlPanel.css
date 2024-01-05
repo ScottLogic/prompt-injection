@@ -1,20 +1,20 @@
 .control-panel {
-	height: 100%;
 	overflow-y: auto;
+	height: 100%;
 	padding: 1.875rem;
 }
 
 .control-panel .control-collapsible-section {
-	background-color: var(--control-body-background-colour);
 	margin-bottom: 0.75rem;
+	background-color: var(--control-body-background-colour);
 	border-radius: 0.5rem;
 }
 
 .control-panel .control-collapsible-section-header {
-	background-color: var(--control-header-background-colour);
-	padding: 0.75rem;
-	border-radius: 0.5rem;
 	cursor: default;
+	padding: 0.75rem;
+	background-color: var(--control-header-background-colour);
+	border-radius: 0.5rem;
 }
 
 .control-panel .control-collapsible-section-header:focus-visible {
@@ -24,6 +24,6 @@
 .control-panel
 	.control-collapsible-section[open]
 	.control-collapsible-section-header {
-	border-bottom-left-radius: 0;
 	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
 }

@@ -1,14 +1,18 @@
 .level-button {
-	display: flex;
-	justify-content: center;
-	align-items: center;
 	position: relative;
-	border: 0.125rem solid var(--level-button-border-colour);
-	padding: 1rem;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
 	height: 3.125rem;
-	background-color: transparent;
-	color: var(--level-button-colour);
+	padding: 1rem;
+
 	font-size: 1.875rem;
+	color: var(--level-button-colour);
+
+	background-color: transparent;
+	border: 0.125rem solid var(--level-button-border-colour);
 }
 
 .level-button.selected {
@@ -16,6 +20,6 @@
 }
 
 .level-button[aria-disabled='true'] {
-	border-color: var(--level-button-border-colour-disabled);
 	color: var(--level-button-colour-disabled);
+	border-color: var(--level-button-border-colour-disabled);
 }

@@ -1,14 +1,17 @@
 .loading-button.themed-button.disabled {
-	background-color: var(--action-button-background-colour);
 	color: var(--action-button-text-colour);
+	background-color: var(--action-button-background-colour);
 }
 
 .loader {
 	position: absolute;
-	background-color: inherit;
-	width: 100%;
-	height: 100%;
-	border-radius: inherit;
+
 	align-items: center;
 	justify-content: center;
+
+	width: 100%;
+	height: 100%;
+
+	background-color: inherit;
+	border-radius: inherit;
 }

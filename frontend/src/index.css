@@ -1,8 +1,11 @@
 body {
-	height: 100%;
 	overflow: hidden;
+
+	height: 100%;
 	margin: 0;
+
 	font-family: 'Noto Sans', Arial, sans-serif;
+
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
@@ -27,6 +30,6 @@ code {
 
 html {
 	height: 100%;
-	background: var(--main-background);
 	color: var(--main-text-colour);
+	background: var(--main-background);
 }

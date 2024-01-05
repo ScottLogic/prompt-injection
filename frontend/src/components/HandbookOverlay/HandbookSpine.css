@@ -1,20 +1,24 @@
 .handbook-spine {
 	display: flex;
 	flex-direction: column;
+
 	min-width: 6rem;
 	max-width: 6rem;
 	padding-top: 3rem;
-	border-right: 0.0625rem solid var(--handbook-spine-separator-colour);
-	background-color: var(--handbook-spine-background-colour);
+
 	font-size: 1.125rem;
+
+	background-color: var(--handbook-spine-background-colour);
+	border-right: 0.0625rem solid var(--handbook-spine-separator-colour);
 }
 
 .handbook-spine button {
+	padding: 0.75rem 1.31rem;
+	text-align: left;
+
 	/* remove default button styling */
 	background: none;
 	border: none;
-	padding: 0.75rem 1.31rem;
-	text-align: left;
 }
 
 .handbook-spine button:hover {
@@ -22,6 +26,6 @@
 }
 
 .handbook-spine button[aria-selected='true'] {
-	background-color: var(--handbook-tab-selected-colour);
 	color: var(--handbook-text-selected-colour);
+	background-color: var(--handbook-tab-selected-colour);
 }

@@ -1,12 +1,15 @@
 .level-mission-info-banner {
-	background-color: var(--level-banner-background-colour);
-	border: 1px solid var(--level-banner-border-colour);
-	min-height: 5rem;
-	color: var(--level-banner-text-colour);
-	padding: 0 1.5rem;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+
+	min-height: 5rem;
+	padding: 0 1.5rem;
+
+	color: var(--level-banner-text-colour);
+
+	background-color: var(--level-banner-background-colour);
+	border: 1px solid var(--level-banner-border-colour);
 }
 
 .level-title-area {
@@ -16,6 +19,6 @@
 }
 
 .level-mission-info-banner > p {
-	text-align: left;
 	font-size: 1rem;
+	text-align: left;
 }

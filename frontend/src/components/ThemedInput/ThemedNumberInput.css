@@ -1,8 +1,8 @@
 /* hide arrows in webkit browsers */
 .themed-number-input::-webkit-inner-spin-button,
 .themed-number-input::-webkit-outer-spin-button {
-	appearance: none;
 	margin: 0;
+	appearance: none;
 }
 
 /* hide arrows in firefox */

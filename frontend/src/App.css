@@ -3,10 +3,9 @@
 }
 
 #root {
-	height: 100%;
-
 	/* firefox scrollbar styling */
 	scrollbar-color: var(--main-scrollbar-colour) transparent;
+	height: 100%;
 }
 
 ::-webkit-scrollbar {
@@ -25,19 +24,22 @@
 }
 
 .prompt-injection-min-button {
-	/* remove default button styling */
-	background-color: transparent;
-	border: 0.0625rem solid transparent;
-	color: var(--main-text-colour);
-	padding: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+
+	padding: 0;
+
+	color: var(--main-text-colour);
+
+	/* remove default button styling */
+	background-color: transparent;
+	border: 0.0625rem solid transparent;
 }
 
 .prompt-injection-min-button:hover {
-	border-color: var(--main-text-colour);
 	text-decoration: none;
+	border-color: var(--main-text-colour);
 }
 
 .dialog-modal {
@@ -46,10 +48,12 @@
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+
+	margin: 0;
+	padding: 0;
+
 	background-color: transparent;
 	border: none;
-	padding: 0;
-	margin: 0;
 }
 
 .dialog-modal::backdrop {
@@ -57,7 +61,7 @@
 }
 
 hr {
+	margin: 0.5rem 0;
 	border-top: 0.0625rem solid black;
 	border-bottom: transparent;
-	margin: 0.5rem 0;
 }

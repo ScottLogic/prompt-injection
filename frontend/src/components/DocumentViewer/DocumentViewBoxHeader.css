@@ -1,26 +1,31 @@
 .view-documents-header {
-	color: var(--main-text-colour);
-	padding-bottom: 0.25rem;
 	display: flex;
 	flex-direction: column;
-	align-items: stretch;
 	gap: 1.25rem;
+	align-items: stretch;
+
+	padding-bottom: 0.25rem;
+
+	color: var(--main-text-colour);
 }
 
 .view-documents-header h2 {
 	width: 100%;
-	text-align: center;
-	padding-bottom: 1rem;
-	border-bottom: solid 0.0625rem var(--main-border-colour);
 	margin: 0;
+	padding-bottom: 1rem;
+
+	text-align: center;
+
+	border-bottom: solid 0.0625rem var(--main-border-colour);
 }
 
 .view-documents-header .nav {
 	display: flex;
-	align-items: center;
-	justify-content: center;
 	flex-direction: column;
 	gap: 0.5rem;
+	align-items: center;
+	justify-content: center;
+
 	width: 100%;
 }
 
@@ -33,12 +38,12 @@
 .view-documents-header .button-container {
 	display: flex;
 	gap: 1rem;
+	align-items: center;
 	align-self: stretch;
 	justify-content: space-between;
-	align-items: center;
 }
 
 .view-documents-header .button-container button {
-	white-space: nowrap;
 	flex: 0 0 30%;
+	white-space: nowrap;
 }

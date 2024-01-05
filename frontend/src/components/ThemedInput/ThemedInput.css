@@ -1,19 +1,21 @@
 .themed-input {
 	box-sizing: border-box;
-	border-radius: 0.25rem;
-	border-style: solid;
-	border-width: 0.0625rem;
-	padding: 0.125rem;
 	width: 100%;
-	background-color: var(--main-input-active-background-colour);
-	color: var(--main-input-active-text-colour);
+	padding: 0.125rem;
+
+	font-family: inherit;
 
 	/* must inherit to override default styling */
 	font-size: inherit;
-	font-family: inherit;
+	color: var(--main-input-active-text-colour);
+
+	background-color: var(--main-input-active-background-colour);
+	border-style: solid;
+	border-width: 0.0625rem;
+	border-radius: 0.25rem;
 }
 
 .themed-input.disabled {
-	background-color: var(--main-input-inactive-background-colour);
 	color: var(--main-input-inactive-text-colour);
+	background-color: var(--main-input-inactive-background-colour);
 }

@@ -1,13 +1,13 @@
 .chat-box-info {
+	padding-top: 1rem;
 	font-size: 0.875rem;
 	font-style: italic;
-	padding-top: 1rem;
 	text-align: center;
 }
 
 .chat-box-info.info-text {
-	color: var(--chat-info-text-colour);
 	margin: 0.1rem;
+	color: var(--chat-info-text-colour);
 }
 
 .chat-box-info.defence-alerted-text {
@@ -15,15 +15,15 @@
 }
 
 .chat-box-info.defence-triggered-text {
-	color: var(--chat-triggered-text-colour);
 	margin-bottom: 0.1rem;
+	color: var(--chat-triggered-text-colour);
 }
 
 .chat-box-info.reset-level-text {
+	margin: 0.6rem 0.1rem;
+	line-height: 0.1em;
 	color: var(--chat-info-text-colour);
 	border-bottom: 1px solid var(--chat-reset-level-line-colour);
-	line-height: 0.1em;
-	margin: 0.6rem 0.1rem;
 }
 
 .chat-box-info.reset-level-text:focus-visible {
@@ -31,6 +31,6 @@
 }
 
 .chat-box-info.reset-level-text span {
-	background: var(--main-text-colour);
 	padding: 0 1rem;
+	background: var(--main-text-colour);
 }
