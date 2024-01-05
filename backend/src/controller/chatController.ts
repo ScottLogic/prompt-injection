@@ -255,8 +255,8 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	}
 
 	// update sent emails
-	chatResponse.sentEmails =
-		req.session.levelState[currentLevel].sentEmails.slice(numSentEmails);
+	// chatResponse.sentEmails =
+	// 	req.session.levelState[currentLevel].sentEmails.slice(numSentEmails);
 
 	console.log(chatResponse);
 	res.send(chatResponse);

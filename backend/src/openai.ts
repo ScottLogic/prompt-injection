@@ -263,7 +263,7 @@ async function chatGptChatCompletion(
 ): Promise<{
 	completion: ChatCompletionMessage | null;
 	chatHistory: ChatHistoryMessage[];
-	openAIErrorMessage?: string;
+	openAIErrorMessage: string | null;
 }> {
 	console.log('chatGptChatCompletion: chatHistory=', chatHistory);
 
@@ -328,6 +328,7 @@ async function chatGptChatCompletion(
 		return {
 			completion: chat_completion.choices[0].message,
 			chatHistory: updatedChatHistory,
+			openAIErrorMessage: null,
 		};
 	} catch (error) {
 		if (error instanceof Error) {
@@ -403,20 +404,6 @@ function pushCompletionToHistory(
 		console.log('Skipping adding blocked message to chat history', completion);
 	}
 	return updatedChatHistory;
-}
-
-function getBlankChatResponse(): ChatResponse {
-	return {
-		completion: null,
-		defenceReport: {
-			blockedReason: '',
-			isBlocked: false,
-			alertedDefences: [],
-			triggeredDefences: [],
-		},
-		wonLevel: false,
-		openAIErrorMessage: null,
-	};
 }
 
 function applyOutputFilterDefence(
@@ -495,6 +482,7 @@ async function getFinalReplyAfterAllToolCalls(
 	currentLevel: LEVEL_NAMES
 ) {
 	let updatedSentEmails = [...sentEmails];
+	let wonLevel = false;
 	const openai = getOpenAI();
 
 	let gptReply = await chatGptChatCompletion(
@@ -504,16 +492,7 @@ async function getFinalReplyAfterAllToolCalls(
 		openai,
 		currentLevel
 	);
-
 	let updatedChatHistory = gptReply.chatHistory;
-
-	// if (openAIErrorMessage) {
-	// 	return {
-	// 		chatResponse: { ...updatedChatResponse, openAIErrorMessage },
-	// 		chatHistory: chatHistory,
-	// 		sentEmails: updatedSentEmails,
-	// 	};
-	// }
 
 	// check if GPT wanted to call a tool
 	while (gptReply.completion?.tool_calls) {
@@ -535,6 +514,7 @@ async function getFinalReplyAfterAllToolCalls(
 		updatedChatHistory = toolCallReply.chatHistory;
 		updatedSentEmails =
 			toolCallReply.functionCallReply?.sentEmails ?? updatedSentEmails;
+		wonLevel = toolCallReply.functionCallReply?.wonLevel ?? false;
 
 		// get a new reply from ChatGPT now that the functions have been called
 		gptReply = await chatGptChatCompletion(
@@ -547,8 +527,10 @@ async function getFinalReplyAfterAllToolCalls(
 	}
 	return {
 		gptReply,
+		wonLevel,
 		chatHistory: updatedChatHistory,
 		sentEmails: updatedSentEmails,
+		errorMessage: gptReply.openAIErrorMessage,
 	};
 }
 
@@ -561,19 +543,11 @@ async function chatGptSendMessage(
 	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-	// todo - NEED TO RETURN
-	// const chatResponse: ChatResponse = getBlankChatResponse();
-	const updatedChatHistory = [...chatHistory];
-	const updatedSentEmails = [...sentEmails];
-	const updatedDefences = [...defences];
-
-	console.log('chatGptSendMessage: chatHistory=', chatHistory);
-
 	console.log(`User message: '${message}'`);
 
 	// add user message to chat
-	chatHistory = pushCompletionToHistory(
-		chatHistory,
+	let updatedChatHistory = pushCompletionToHistory(
+		[...chatHistory],
 		{
 			role: 'user',
 			content: message,
@@ -583,37 +557,45 @@ async function chatGptSendMessage(
 			: CHAT_MESSAGE_TYPE.USER
 	);
 	const finalToolCallResponse = await getFinalReplyAfterAllToolCalls(
-		chatHistory,
-		defences,
+		updatedChatHistory,
+		[...defences],
 		chatModel,
-		sentEmails,
+		[...sentEmails],
 		currentLevel
 	);
 
-	chatHistory = finalToolCallResponse.chatHistory;
-	const reply = finalToolCallResponse.gptReply.completion;
+	const replyCompletion = finalToolCallResponse.gptReply.completion;
+	updatedChatHistory = finalToolCallResponse.chatHistory;
+	const updatedSentEmails = finalToolCallResponse.sentEmails;
 
-	const chatResponse: ChatResponse = getBlankChatResponse();
+	const chatResponse: ChatResponse = {
+		completion: replyCompletion,
+		defenceReport: {
+			blockedReason: '',
+			isBlocked: false,
+			alertedDefences: [],
+			triggeredDefences: [],
+		},
+		wonLevel: finalToolCallResponse.wonLevel,
+		openAIErrorMessage: finalToolCallResponse.gptReply.openAIErrorMessage,
+	};
 
-	sentEmails = finalToolCallResponse.sentEmails;
-
-	// todo - add openAIErrorMessage to chatResponse
-	if (!reply?.content || chatResponse.openAIErrorMessage) {
+	if (!chatResponse.completion?.content || chatResponse.openAIErrorMessage) {
 		return { chatResponse, chatHistory, sentEmails, defences };
 	}
 
-	chatResponse.completion = reply;
+	// TODO - being moved in other refactor
+	// if (
+	// 	currentLevel === LEVEL_NAMES.LEVEL_3 ||
+	// 	currentLevel === LEVEL_NAMES.SANDBOX
+	// ) {
+	// 	applyOutputFilterDefence(chatResponse.completion.content, defences, chatResponse);
+	// }
 
-	if (
-		currentLevel === LEVEL_NAMES.LEVEL_3 ||
-		currentLevel === LEVEL_NAMES.SANDBOX
-	) {
-		applyOutputFilterDefence(reply.content, defences, chatResponse);
-	}
 	// add the ai reply to the chat history
-	chatHistory = pushCompletionToHistory(
-		chatHistory,
-		reply,
+	updatedChatHistory = pushCompletionToHistory(
+		updatedChatHistory,
+		chatResponse.completion,
 		chatResponse.defenceReport.isBlocked
 			? CHAT_MESSAGE_TYPE.BOT_BLOCKED
 			: CHAT_MESSAGE_TYPE.BOT
@@ -621,7 +603,12 @@ async function chatGptSendMessage(
 
 	// log the entire chat history so far
 	console.log(chatHistory);
-	return { chatResponse, chatHistory, sentEmails, defences };
+	return {
+		chatResponse,
+		chatHistory: updatedChatHistory,
+		sentEmails: updatedSentEmails,
+		defences,
+	};
 }
 
 export const getValidOpenAIModelsList = validOpenAiModels.get;
