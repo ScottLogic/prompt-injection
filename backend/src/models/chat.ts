@@ -60,6 +60,13 @@ interface SingleDefenceReport {
 	status: 'alerted' | 'triggered' | 'ok';
 }
 
+interface gptSentMessageResponse {
+	chatResponse: ChatResponse;
+	chatHistory: ChatHistoryMessage[];
+	sentEmails: EmailInfo[];
+	defences: SingleDefenceReport[];
+}
+
 interface FunctionCallResponse {
 	completion: ChatCompletionMessageParam;
 	defenceReport: ChatDefenceReport;

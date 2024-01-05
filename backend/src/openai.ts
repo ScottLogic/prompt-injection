@@ -4,6 +4,7 @@ import {
 	ChatCompletionTool,
 	ChatCompletionMessageToolCall,
 	ChatCompletionSystemMessageParam,
+	ChatCompletionMessage,
 } from 'openai/resources/chat/completions';
 
 import {
@@ -18,7 +19,6 @@ import { queryDocuments } from './langchain';
 import {
 	CHAT_MESSAGE_TYPE,
 	CHAT_MODELS,
-	ChatDefenceReport,
 	ChatHistoryMessage,
 	ChatModel,
 	ChatResponse,
@@ -37,7 +37,6 @@ import {
 	countTotalPromptTokens,
 	filterChatHistoryByMaxTokens,
 } from './utils/token';
-import { Tool } from 'langchain/dist/tools/base';
 
 // tools available to chatGPT
 const chatGptTools: ChatCompletionTool[] = [
@@ -203,7 +202,6 @@ function handleSendEmailFunction(
 }
 
 async function chatGptCallFunction(
-	defenceReport: ChatDefenceReport,
 	defences: Defence[],
 	toolCallId: string,
 	functionCall: ChatCompletionMessageToolCall.Function,
@@ -243,23 +241,18 @@ async function chatGptCallFunction(
 		console.error(`Unknown function: ${functionName}`);
 		functionReply = 'Unknown function - reply again. ';
 	}
-
-	console.log('updatedSentEmails=', updatedSentEmails);
-
 	return {
 		completion: {
 			role: 'tool',
 			content: functionReply,
 			tool_call_id: toolCallId,
 		} as ChatCompletionMessageParam,
-		defenceReport,
 		wonLevel,
 		sentEmails: updatedSentEmails,
 	};
 }
 
 async function chatGptChatCompletion(
-	chatResponse: ChatResponse,
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
@@ -267,7 +260,15 @@ async function chatGptChatCompletion(
 	// default to sandbox
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
-) {
+): Promise<{
+	completion: ChatCompletionMessage | null;
+	chatHistory: ChatHistoryMessage[];
+	openAIErrorMessage?: string;
+}> {
+	console.log('chatGptChatCompletion: chatHistory=', chatHistory);
+
+	const updatedChatHistory = [...chatHistory];
+
 	// check if we need to set a system role
 	// system role is always active on levels
 	if (
@@ -285,7 +286,7 @@ async function chatGptChatCompletion(
 		);
 		if (!systemRole) {
 			// add the system role to the start of the chat history
-			chatHistory.unshift({
+			updatedChatHistory.unshift({
 				completion: completionConfig,
 				chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
 			});
@@ -296,10 +297,10 @@ async function chatGptChatCompletion(
 	} else {
 		// remove the system role from the chat history
 		while (
-			chatHistory.length > 0 &&
-			chatHistory[0].completion?.role === 'system'
+			updatedChatHistory.length > 0 &&
+			updatedChatHistory[0].completion?.role === 'system'
 		) {
-			chatHistory.shift();
+			updatedChatHistory.shift();
 		}
 	}
 	console.debug('Talking to model: ', JSON.stringify(chatModel));
@@ -315,7 +316,7 @@ async function chatGptChatCompletion(
 			top_p: chatModel.configuration.topP,
 			frequency_penalty: chatModel.configuration.frequencyPenalty,
 			presence_penalty: chatModel.configuration.presencePenalty,
-			messages: getChatCompletionsFromHistory(chatHistory, chatModel.id),
+			messages: getChatCompletionsFromHistory(updatedChatHistory, chatModel.id),
 			tools: chatGptTools,
 		});
 		console.debug(
@@ -324,13 +325,19 @@ async function chatGptChatCompletion(
 			' tokens=',
 			chat_completion.usage
 		);
-		return chat_completion.choices[0].message;
+		return {
+			completion: chat_completion.choices[0].message,
+			chatHistory: updatedChatHistory,
+		};
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error('Error calling createChatCompletion: ', error.message);
-			chatResponse.openAIErrorMessage = error.message;
 		}
-		return null;
+		return {
+			completion: null,
+			chatHistory: updatedChatHistory,
+			openAIErrorMessage: 'TODO - ERROR MSG',
+		};
 	} finally {
 		const endTime = new Date().getTime();
 		console.debug(`OpenAI chat completion took ${endTime - startTime}ms`);
@@ -443,15 +450,12 @@ function applyOutputFilterDefence(
 }
 
 async function performToolCalls(
-	chatResponse: ChatResponse,
 	toolCalls: ChatCompletionMessageToolCall[],
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES
 ): Promise<ToolCallResponse> {
-	console.debug('performToolCalls: chatHistory=', chatHistory);
-
 	let updatedChatHistory = [...chatHistory];
 
 	for (const toolCall of toolCalls) {
@@ -460,100 +464,92 @@ async function performToolCalls(
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (toolCall.type === 'function') {
 			const functionCallReply = await chatGptCallFunction(
-				chatResponse.defenceReport,
 				defences,
 				toolCall.id,
 				toolCall.function,
 				sentEmails,
 				currentLevel
 			);
-
-			console.log(
-				'functionCallReply.sentEmails=',
-				functionCallReply.sentEmails
-			);
-
-			chatResponse = {
-				...chatResponse,
-				wonLevel: functionCallReply.wonLevel,
-				defenceReport: functionCallReply.defenceReport,
-			};
-
 			updatedChatHistory = pushCompletionToHistory(
 				updatedChatHistory,
 				functionCallReply.completion,
 				CHAT_MESSAGE_TYPE.FUNCTION_CALL
 			);
-
 			return {
 				functionCallReply,
 				chatHistory: updatedChatHistory,
-				chatResponse,
 			};
 		}
 	}
-	// If no function tool calls were processed, return original state
-	return { chatHistory, chatResponse };
+	// if no function called, return original state
+	return {
+		chatHistory,
+	};
 }
 
 async function getFinalReplyAfterAllToolCalls(
-	chatHistory: ChatHistoryMessage[],
+	initChatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
 	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES
 ) {
-	console.debug('getFinalReplyAfterAllToolCalls: chatHistory=', chatHistory);
-
-	const chatResponse: ChatResponse = getBlankChatResponse();
+	let updatedSentEmails = [...sentEmails];
 	const openai = getOpenAI();
-	let reply = await chatGptChatCompletion(
-		chatResponse,
-		chatHistory,
+
+	let gptReply = await chatGptChatCompletion(
+		[...initChatHistory],
 		defences,
 		chatModel,
 		openai,
 		currentLevel
 	);
 
+	let updatedChatHistory = gptReply.chatHistory;
+
+	// if (openAIErrorMessage) {
+	// 	return {
+	// 		chatResponse: { ...updatedChatResponse, openAIErrorMessage },
+	// 		chatHistory: chatHistory,
+	// 		sentEmails: updatedSentEmails,
+	// 	};
+	// }
+
 	// check if GPT wanted to call a tool
-	while (reply?.tool_calls) {
+	while (gptReply.completion?.tool_calls) {
 		// push the assistant message to the chat
-		chatHistory = pushCompletionToHistory(
-			chatHistory,
-			reply,
+		updatedChatHistory = pushCompletionToHistory(
+			updatedChatHistory,
+			gptReply.completion,
 			CHAT_MESSAGE_TYPE.FUNCTION_CALL
 		);
 
 		const toolCallReply = await performToolCalls(
-			chatResponse,
-			reply.tool_calls,
-			chatHistory,
+			gptReply.completion.tool_calls,
+			updatedChatHistory,
 			defences,
-			sentEmails,
+			updatedSentEmails,
 			currentLevel
 		);
 
-		console.log('toolCallReply=', toolCallReply);
-
-		//todo - remove
-		chatHistory = toolCallReply.chatHistory;
-		sentEmails = toolCallReply.functionCallReply?.sentEmails ?? sentEmails;
-
-		console.log('sentEmails=', sentEmails);
+		updatedChatHistory = toolCallReply.chatHistory;
+		updatedSentEmails =
+			toolCallReply.functionCallReply?.sentEmails ?? updatedSentEmails;
 
 		// get a new reply from ChatGPT now that the functions have been called
-		reply = await chatGptChatCompletion(
-			chatResponse,
-			chatHistory,
+		gptReply = await chatGptChatCompletion(
+			updatedChatHistory,
 			defences,
 			chatModel,
 			openai,
 			currentLevel
 		);
 	}
-
-	return { reply, chatResponse, chatHistory, sentEmails };
+	return {
+		gptReply,
+		chatHistory: updatedChatHistory,
+		sentEmails: updatedSentEmails,
+	};
 }
 
 async function chatGptSendMessage(
@@ -595,10 +591,13 @@ async function chatGptSendMessage(
 	);
 
 	chatHistory = finalToolCallResponse.chatHistory;
-	const reply = finalToolCallResponse.reply;
-	const chatResponse = finalToolCallResponse.chatResponse;
+	const reply = finalToolCallResponse.gptReply.completion;
+
+	const chatResponse: ChatResponse = getBlankChatResponse();
+
 	sentEmails = finalToolCallResponse.sentEmails;
 
+	// todo - add openAIErrorMessage to chatResponse
 	if (!reply?.content || chatResponse.openAIErrorMessage) {
 		return { chatResponse, chatHistory, sentEmails, defences };
 	}
