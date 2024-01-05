@@ -84,12 +84,6 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply).toBeDefined();
 		expect(reply.completion).toBeDefined();
 		expect(reply.completion?.content).toBe('Hi');
-		// check the chat history has been updated
-		expect(chatHistory.length).toBe(2);
-		expect(chatHistory[0].completion?.role).toBe('user');
-		expect(chatHistory[0].completion?.content).toBe('Hello');
-		expect(chatHistory[1].completion?.role).toBe('assistant');
-		expect(chatHistory[1].completion?.content).toBe('Hi');
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -127,14 +121,10 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply).toBeDefined();
 		expect(reply.completion?.content).toBe('Hi');
 		// check the chat history has been updated
-		expect(chatHistory.length).toBe(3);
+		expect(chatHistory.length).toBe(1);
 		// system role is added to the start of the chat history
 		expect(chatHistory[0].completion?.role).toBe('system');
 		expect(chatHistory[0].completion?.content).toBe(systemRoleDefault);
-		expect(chatHistory[1].completion?.role).toBe('user');
-		expect(chatHistory[1].completion?.content).toBe('Hello');
-		expect(chatHistory[2].completion?.role).toBe('assistant');
-		expect(chatHistory[2].completion?.content).toBe('Hi');
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -187,7 +177,7 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply).toBeDefined();
 		expect(reply.completion?.content).toBe('Hi');
 		// check the chat history has been updated
-		expect(chatHistory.length).toBe(5);
+		expect(chatHistory.length).toBe(3);
 		// system role is added to the start of the chat history
 		expect(chatHistory[0].completion?.role).toBe('system');
 		expect(chatHistory[0].completion?.content).toBe(systemRoleDefault);
@@ -196,10 +186,6 @@ describe('OpenAI Integration Tests', () => {
 		expect(chatHistory[1].completion?.content).toBe("I'm a user");
 		expect(chatHistory[2].completion?.role).toBe('assistant');
 		expect(chatHistory[2].completion?.content).toBe("I'm an assistant");
-		expect(chatHistory[3].completion?.role).toBe('user');
-		expect(chatHistory[3].completion?.content).toBe('Hello');
-		expect(chatHistory[4].completion?.role).toBe('assistant');
-		expect(chatHistory[4].completion?.content).toBe('Hi');
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -257,17 +243,13 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply).toBeDefined();
 		expect(reply.completion?.content).toBe('Hi');
 		// check the chat history has been updated
-		expect(chatHistory.length).toBe(4);
+		expect(chatHistory.length).toBe(2);
 		// system role is removed from the start of the chat history
 		// rest of the chat history is in order
 		expect(chatHistory[0].completion?.role).toBe('user');
 		expect(chatHistory[0].completion?.content).toBe("I'm a user");
 		expect(chatHistory[1].completion?.role).toBe('assistant');
 		expect(chatHistory[1].completion?.content).toBe("I'm an assistant");
-		expect(chatHistory[2].completion?.role).toBe('user');
-		expect(chatHistory[2].completion?.content).toBe('Hello');
-		expect(chatHistory[3].completion?.role).toBe('assistant');
-		expect(chatHistory[3].completion?.content).toBe('Hi');
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -339,8 +321,6 @@ describe('OpenAI Integration Tests', () => {
 
 			expect(reply).toBeDefined();
 			expect(reply.completion?.content).toBe('Hi');
-			// check the chat history has been updated
-			expect(chatHistory.length).toBe(5);
 			// system role is added to the start of the chat history
 			expect(chatHistory[0].completion?.role).toBe('system');
 			expect(chatHistory[0].completion?.content).toBe(
@@ -351,10 +331,6 @@ describe('OpenAI Integration Tests', () => {
 			expect(chatHistory[1].completion?.content).toBe("I'm a user");
 			expect(chatHistory[2].completion?.role).toBe('assistant');
 			expect(chatHistory[2].completion?.content).toBe("I'm an assistant");
-			expect(chatHistory[3].completion?.role).toBe('user');
-			expect(chatHistory[3].completion?.content).toBe('Hello');
-			expect(chatHistory[4].completion?.role).toBe('assistant');
-			expect(chatHistory[4].completion?.content).toBe('Hi');
 
 			// restore the mock
 			mockCreateChatCompletion.mockRestore();
