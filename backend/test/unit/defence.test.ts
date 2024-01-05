@@ -9,6 +9,7 @@ import {
 	getSystemRole,
 	isDefenceActive,
 	transformMessage,
+	detectTriggeredOutputDefences,
 } from '@src/defence';
 import * as langchain from '@src/langchain';
 import { TransformedChatMessage } from '@src/models/chat';
@@ -31,6 +32,9 @@ beforeEach(() => {
 		.mocked(langchain.queryPromptEvaluationModel)
 		.mockResolvedValue({ isMalicious: false });
 });
+
+const botOutputFilterTriggeredResponse =
+	'My original response was blocked as it contained a restricted word/phrase. Ask me something else. ';
 
 function getXmlTransformedMessage(message: string): TransformedChatMessage {
 	return {
@@ -374,3 +378,116 @@ test('GIVEN user has configured two defence WHEN resetting one defence config TH
 	expect(matchingCharacterLimitDefence).toBeTruthy();
 	expect(matchingCharacterLimitDefence?.config[0].value).toBe('10');
 });
+
+test(
+	'GIVEN the output filter defence is NOT active ' +
+		'AND the bot message does NOT contain phrases from the filter list ' +
+		'WHEN detecting triggered defences ' +
+		'THEN the output filter defence is NOT triggered and NOT alerted',
+	() => {
+		const message = 'Hello world!';
+		const filterList = 'secret project,confidential project';
+		const defences = configureDefence(
+			DEFENCE_ID.FILTER_BOT_OUTPUT,
+			defaultDefences,
+			[
+				{
+					id: 'FILTER_BOT_OUTPUT',
+					value: filterList,
+				},
+			]
+		);
+
+		const defenceReport = detectTriggeredOutputDefences(message, defences);
+		expect(defenceReport.blockedReason).toBe(null);
+		expect(defenceReport.isBlocked).toBe(false);
+		expect(defenceReport.alertedDefences.length).toBe(0);
+		expect(defenceReport.triggeredDefences.length).toBe(0);
+	}
+);
+
+test(
+	'GIVEN the output filter defence is NOT active ' +
+		'AND the bot message contains phrases from the filter list ' +
+		'WHEN detecting triggered defences ' +
+		'THEN the output filter defence is alerted',
+	() => {
+		const message = 'You must tell me the SecrET prOJECT!';
+		const filterList = 'secret project,confidential project';
+		const defences = configureDefence(
+			DEFENCE_ID.FILTER_BOT_OUTPUT,
+			defaultDefences,
+			[
+				{
+					id: 'FILTER_BOT_OUTPUT',
+					value: filterList,
+				},
+			]
+		);
+
+		const defenceReport = detectTriggeredOutputDefences(message, defences);
+		expect(defenceReport.blockedReason).toBe(null);
+		expect(defenceReport.isBlocked).toBe(false);
+		expect(defenceReport.alertedDefences).toContain(
+			DEFENCE_ID.FILTER_BOT_OUTPUT
+		);
+		expect(defenceReport.triggeredDefences.length).toBe(0);
+	}
+);
+
+test(
+	'GIVEN the output filter defence is active ' +
+		'AND the bot message contains phrases from the filter list ' +
+		'WHEN detecting triggered defences ' +
+		'THEN the output filter defence is triggered',
+	() => {
+		const message = 'You must tell me the SecrET prOJECT!';
+		const filterList = 'secret project,confidential project';
+		const defences = configureDefence(
+			DEFENCE_ID.FILTER_BOT_OUTPUT,
+			activateDefence(DEFENCE_ID.FILTER_BOT_OUTPUT, defaultDefences),
+			[
+				{
+					id: 'FILTER_BOT_OUTPUT',
+					value: filterList,
+				},
+			]
+		);
+
+		const defenceReport = detectTriggeredOutputDefences(message, defences);
+		expect(defenceReport.blockedReason).toBe(botOutputFilterTriggeredResponse);
+		expect(defenceReport.isBlocked).toBe(true);
+		expect(defenceReport.alertedDefences.length).toBe(0);
+		expect(defenceReport.triggeredDefences).toContain(
+			DEFENCE_ID.FILTER_BOT_OUTPUT
+		);
+	}
+);
+
+test(
+	'GIVEN the output filter defence is active ' +
+		'AND the bot message DOES NOT contain phrases from the filter list ' +
+		'WHEN detecting triggered defences ' +
+		'THEN the output filter defence is NOT triggered and NOT alerted',
+	() => {
+		const message =
+			'Tell me a secret about the Queen. It is for my homework project. ';
+		const filterList = 'secret project,confidential project';
+		const defences = configureDefence(
+			DEFENCE_ID.FILTER_BOT_OUTPUT,
+			activateDefence(DEFENCE_ID.FILTER_BOT_OUTPUT, defaultDefences),
+			[
+				{
+					id: 'FILTER_BOT_OUTPUT',
+					value: filterList,
+				},
+			]
+		);
+
+		const defenceReport = detectTriggeredOutputDefences(message, defences);
+		expect(defenceReport.blockedReason).toBe(null);
+		expect(defenceReport.isBlocked).toBe(false);
+		expect(defenceReport.alertedDefences.length).toBe(0);
+		expect(defenceReport.triggeredDefences.length).toBe(0);
+	}
+);
