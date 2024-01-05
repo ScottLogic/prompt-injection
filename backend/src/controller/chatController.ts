@@ -150,26 +150,25 @@ async function handleHigherLevelChat(
 		openAiReplyPromise,
 	]);
 
+	chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
+
 	const botReply = openAiReply.completion?.content?.toString();
-	const outputDefenceReport: ChatDefenceReport = botReply
+	const outputDefenceReport = botReply
 		? detectTriggeredOutputDefences(
 				botReply,
 				req.session.levelState[currentLevel].defences
 		  )
-		: {
-				blockedReason: null,
-				isBlocked: false,
-				alertedDefences: [],
-				triggeredDefences: [],
-		  };
+		: null;
 
-	chatResponse.openAIErrorMessage = openAiReply.openAIErrorMessage;
-	chatResponse.defenceReport = combineChatDefenceReports([
+	const defenceReports = [
 		chatResponse.defenceReport,
 		inputDefenceReport,
 		openAiReply.defenceReport,
-		outputDefenceReport,
-	]);
+	];
+	if (outputDefenceReport) {
+		defenceReports.push(outputDefenceReport);
+	}
+	chatResponse.defenceReport = combineChatDefenceReports(defenceReports);
 
 	if (chatResponse.defenceReport.isBlocked) {
 		// restore the original chat history
