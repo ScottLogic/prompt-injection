@@ -331,13 +331,15 @@ async function chatGptChatCompletion(
 			openAIErrorMessage: null,
 		};
 	} catch (error) {
+		let openAIErrorMessage = '';
 		if (error instanceof Error) {
 			console.error('Error calling createChatCompletion: ', error.message);
+			openAIErrorMessage = error.message;
 		}
 		return {
 			completion: null,
 			chatHistory: updatedChatHistory,
-			openAIErrorMessage: 'TODO - ERROR MSG',
+			openAIErrorMessage,
 		};
 	} finally {
 		const endTime = new Date().getTime();
@@ -475,7 +477,7 @@ async function performToolCalls(
 }
 
 async function getFinalReplyAfterAllToolCalls(
-	initChatHistory: ChatHistoryMessage[],
+	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
 	sentEmails: EmailInfo[],
@@ -486,7 +488,7 @@ async function getFinalReplyAfterAllToolCalls(
 	const openai = getOpenAI();
 
 	let gptReply = await chatGptChatCompletion(
-		[...initChatHistory],
+		[...chatHistory],
 		defences,
 		chatModel,
 		openai,
@@ -564,12 +566,11 @@ async function chatGptSendMessage(
 		currentLevel
 	);
 
-	const replyCompletion = finalToolCallResponse.gptReply.completion;
 	updatedChatHistory = finalToolCallResponse.chatHistory;
 	const updatedSentEmails = finalToolCallResponse.sentEmails;
 
 	const chatResponse: ChatResponse = {
-		completion: replyCompletion,
+		completion: finalToolCallResponse.gptReply.completion,
 		defenceReport: {
 			blockedReason: '',
 			isBlocked: false,
