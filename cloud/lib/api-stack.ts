@@ -1,26 +1,24 @@
-import { CfnStage, HttpApi, VpcLink } from 'aws-cdk-lib/aws-apigatewayv2';
+import { CorsHttpMethod, HttpApi, VpcLink } from 'aws-cdk-lib/aws-apigatewayv2';
 import { HttpAlbIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
-import { UserPool, UserPoolClient, UserPoolDomain, } from 'aws-cdk-lib/aws-cognito';
+//import { UserPool, UserPoolClient, UserPoolDomain, } from 'aws-cdk-lib/aws-cognito';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
 import { Cluster, ContainerImage, PropagatedTagSource, Secret as EnvSecret, } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
 //import { ListenerAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 //import { AuthenticateCognitoAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
-import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { LogGroup } from 'aws-cdk-lib/aws-logs';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
-import { CfnOutput, Stack, StackProps, Tags } from 'aws-cdk-lib/core';
+import { CfnOutput, RemovalPolicy, Stack, StackProps, Tags } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { join } from 'node:path';
 
 import { resourceDescription, resourceName } from './resourceNamingUtils';
 
 type ApiStackProps = StackProps & {
-	userPool: UserPool;
-	userPoolClient: UserPoolClient;
-	userPoolDomain: UserPoolDomain;
+	// userPool: UserPool;
+	// userPoolClient: UserPoolClient;
+	// userPoolDomain: UserPoolDomain;
 	webappUrl: string;
 };
 
@@ -29,7 +27,7 @@ export class ApiStack extends Stack {
 
 	constructor(scope: Construct, id: string, props: ApiStackProps) {
 		super(scope, id, props);
-		// TODO Enable cognito auth on APIGateway
+		// TODO Enable cognito auth on APIGateway? Or just rate-limit it?
 		const { /*userPool, userPoolClient, userPoolDomain,*/ webappUrl } = props;
 
 		const generateResourceName = resourceName(scope);
@@ -45,7 +43,11 @@ export class ApiStack extends Stack {
 
 		// Default AZs is all in region, but for environment-agnostic stack, max is 2!
 		const vpcName = generateResourceName('vpc');
-		const vpc = new Vpc(this, vpcName, { vpcName, maxAzs: 2 });
+		const vpc = new Vpc(this, vpcName, {
+			vpcName,
+			restrictDefaultSecurityGroup: false, // TODO blog about this!
+			maxAzs: 2,
+		});
 		const clusterName = generateResourceName('cluster');
 		const cluster = new Cluster(this, clusterName, { clusterName, vpc });
 
@@ -55,7 +57,7 @@ export class ApiStack extends Stack {
 			'dev/SpyLogic/ApiKey'
 		);
 
-		// Create a private, network-load-balanced Fargate service
+		// Create a private, application-load-balanced Fargate service
 		const containerPort = 3001;
 		const fargateServiceName = generateResourceName('fargate');
 		const loadBalancerName = generateResourceName('loadbalancer');
@@ -97,7 +99,11 @@ export class ApiStack extends Stack {
 			path: '/health',
 		});
 		fargateService.loadBalancer.logAccessLogs(
-			new Bucket(this, loadBalancerLogName, { bucketName: loadBalancerLogName })
+			new Bucket(this, loadBalancerLogName, {
+				bucketName: loadBalancerLogName,
+				autoDeleteObjects: true,
+				removalPolicy: RemovalPolicy.DESTROY,
+			})
 		);
 		//this.loadBalancerUrl = `http://${fargateService.loadBalancer.loadBalancerDnsName}`;
 
@@ -134,6 +140,8 @@ export class ApiStack extends Stack {
 			corsPreflight: {
 				allowHeaders: ['X-Forwarded-For', 'Content-Type', 'Authorization'],
 				allowOrigins: [webappUrl],
+				allowMethods: [CorsHttpMethod.ANY], // TODO Mention this in blog!
+				allowCredentials: true,
 			},
 		});
 		api.addRoutes({
@@ -144,22 +152,6 @@ export class ApiStack extends Stack {
 				{ vpcLink },
 			),
 		});
-
-		// Logging not yet available in V2 API, so use CFN escape hatches.
-		const apiLogGroup = new LogGroup(this, generateResourceName('api-logs'), { retention: 1 });
-		apiLogGroup.grantWrite(new ServicePrincipal('apigateway.amazonaws.com'));
-		(api.defaultStage!.node.defaultChild as CfnStage).accessLogSettings = {
-			destinationArn: apiLogGroup.logGroupArn,
-			format: JSON.stringify({
-				requestId: '$context.requestId',
-				sourceIp: '$context.identity.sourceIp',
-				requestTime: '$context.requestTime',
-				httpMethod: '$context.httpMethod',
-				path: '$context.path',
-				status: '$context.status',
-				responseLength: '$context.responseLength',
-			}),
-		};
 
 		new CfnOutput(this, 'APIGatewayURL', {
 			value: api.defaultStage!.url,
