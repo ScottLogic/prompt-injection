@@ -498,7 +498,6 @@ async function chatGptSendMessage(
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	console.log(`User message: '${message}'`);
-
 	// add user message to chat
 	pushCompletionToHistory(
 		chatHistory,

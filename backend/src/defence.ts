@@ -48,10 +48,15 @@ function resetDefenceConfig(
 	configId: DEFENCE_CONFIG_ITEM_ID,
 	defences: Defence[]
 ): Defence[] {
+	const defenceConfig = defences.find((defence) => defence.id === id)?.config;
+	if (!defenceConfig) {
+		throw new Error(`Defence ${id} not found in default defences.`);
+	}
 	const defaultValue = getConfigValue(defaultDefences, id, configId);
-	return configureDefence(id, defences, [
-		{ id: configId, value: defaultValue },
-	]);
+	const updatedConfig: DefenceConfigItem[] = defenceConfig.map((config) =>
+		config.id === configId ? { ...config, value: defaultValue } : config
+	);
+	return configureDefence(id, defences, updatedConfig);
 }
 
 function getConfigValue(
@@ -71,10 +76,8 @@ function getConfigValue(
 }
 
 function getMaxMessageLength(defences: Defence[]) {
-	return getConfigValue(
-		defences,
-		DEFENCE_ID.CHARACTER_LIMIT,
-		'MAX_MESSAGE_LENGTH'
+	return Number(
+		getConfigValue(defences, DEFENCE_ID.CHARACTER_LIMIT, 'MAX_MESSAGE_LENGTH')
 	);
 }
 
@@ -106,6 +109,24 @@ function getSystemRole(
 		default:
 			return getConfigValue(defences, DEFENCE_ID.SYSTEM_ROLE, 'SYSTEM_ROLE');
 	}
+}
+
+function getRandomSequenceEnclosurePrePrompt(defences: Defence[]) {
+	return getConfigValue(
+		defences,
+		DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+		'PROMPT'
+	);
+}
+
+function getRandomSequenceEnclosureLength(defences: Defence[]) {
+	return Number(
+		getConfigValue(
+			defences,
+			DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+			'SEQUENCE_LENGTH'
+		)
+	);
 }
 
 function getQAPromptFromConfig(defences: Defence[]) {
@@ -179,6 +200,32 @@ function transformXmlTagging(
 		preMessage: prompt.concat(openTag),
 		message: escapeXml(message),
 		postMessage: closeTag,
+		transformationName: 'XML Tagging',
+	};
+}
+
+function generateRandomString(length: number) {
+	return Array.from({ length }, () =>
+		String.fromCharCode(Math.floor(Math.random() * 26 + 97))
+	).join('');
+}
+
+// apply random sequence enclosure defence to input message
+function transformRandomSequenceEnclosure(
+	message: string,
+	defences: Defence[]
+): TransformedChatMessage {
+	console.debug('Random Sequence Enclosure defence active.');
+	const randomString: string = generateRandomString(
+		getRandomSequenceEnclosureLength(defences)
+	);
+	const openTag = randomString.concat(' {{ ');
+	const closeTag = ' }} '.concat(randomString);
+	return {
+		preMessage: getRandomSequenceEnclosurePrePrompt(defences).concat(openTag),
+		message,
+		postMessage: closeTag,
+		transformationName: 'Random Sequence Enclosure',
 	};
 }
 
@@ -197,6 +244,17 @@ function transformMessage(
 ): TransformedChatMessage | null {
 	if (isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)) {
 		const transformedMessage = transformXmlTagging(message, defences);
+		console.debug(
+			`Defences applied. Transformed message: ${combineTransformedMessage(
+				transformedMessage
+			)}`
+		);
+		return transformedMessage;
+	} else if (isDefenceActive(DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE, defences)) {
+		const transformedMessage = transformRandomSequenceEnclosure(
+			message,
+			defences
+		);
 		console.debug(
 			`Defences applied. Transformed message: ${combineTransformedMessage(
 				transformedMessage
@@ -252,7 +310,7 @@ function detectCharacterLimit(
 	message: string,
 	defences: Defence[]
 ): SingleDefenceReport {
-	const maxMessageLength = Number(getMaxMessageLength(defences));
+	const maxMessageLength = getMaxMessageLength(defences);
 
 	const messageExceedsLimit = message.length > maxMessageLength;
 	const defenceActive = isDefenceActive(DEFENCE_ID.CHARACTER_LIMIT, defences);
