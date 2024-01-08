@@ -186,7 +186,7 @@ describe('handleChatToGPT unit tests', () => {
 
 			mockDetectTriggeredDefences.mockReturnValueOnce(
 				triggeredDefencesMockReturn(
-					'Message is too long',
+					'Message Blocked: Input exceeded character limit.',
 					DEFENCE_ID.CHARACTER_LIMIT
 				)
 			);
@@ -198,7 +198,7 @@ describe('handleChatToGPT unit tests', () => {
 				expect.objectContaining({
 					defenceReport: {
 						alertedDefences: [],
-						blockedReason: 'Message is too long',
+						blockedReason: 'Message Blocked: Input exceeded character limit.',
 						isBlocked: true,
 						triggeredDefences: [DEFENCE_ID.CHARACTER_LIMIT],
 					},
@@ -213,7 +213,7 @@ describe('handleChatToGPT unit tests', () => {
 
 			mockDetectTriggeredDefences.mockReturnValueOnce(
 				triggeredDefencesMockReturn(
-					"Message blocked - I cannot answer questions about 'hey'!",
+					"Message Blocked: I cannot answer questions about 'hey'!",
 					DEFENCE_ID.FILTER_USER_INPUT
 				)
 			);
@@ -226,7 +226,7 @@ describe('handleChatToGPT unit tests', () => {
 					defenceReport: {
 						alertedDefences: [],
 						blockedReason:
-							"Message blocked - I cannot answer questions about 'hey'!",
+							"Message Blocked: I cannot answer questions about 'hey'!",
 						isBlocked: true,
 						triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
 					},
@@ -244,7 +244,7 @@ describe('handleChatToGPT unit tests', () => {
 
 			mockDetectTriggeredDefences.mockReturnValueOnce(
 				triggeredDefencesMockReturn(
-					'Message blocked by the prompt evaluation LLM.',
+					'Message Blocked: The prompt evaluation LLM detected a malicious input.',
 					DEFENCE_ID.PROMPT_EVALUATION_LLM
 				)
 			);
@@ -256,7 +256,8 @@ describe('handleChatToGPT unit tests', () => {
 				expect.objectContaining({
 					defenceReport: {
 						alertedDefences: [],
-						blockedReason: 'Message blocked by the prompt evaluation LLM.',
+						blockedReason:
+							'Message Blocked: The prompt evaluation LLM detected a malicious input.',
 						isBlocked: true,
 						triggeredDefences: [DEFENCE_ID.PROMPT_EVALUATION_LLM],
 					},

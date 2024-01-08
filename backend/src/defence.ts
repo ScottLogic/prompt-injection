@@ -320,7 +320,9 @@ function detectCharacterLimit(
 	return {
 		defence: DEFENCE_ID.CHARACTER_LIMIT,
 		blockedReason:
-			messageExceedsLimit && defenceActive ? 'Message is too long' : null,
+			messageExceedsLimit && defenceActive
+				? 'Message Blocked: Input exceeded character limit.'
+				: null,
 		status: !messageExceedsLimit
 			? 'ok'
 			: defenceActive
@@ -353,7 +355,7 @@ function detectFilterUserInput(
 		defence: DEFENCE_ID.FILTER_USER_INPUT,
 		blockedReason:
 			filterWordsDetected && defenceActive
-				? `Message blocked - I cannot answer questions about '${detectedPhrases.join(
+				? `Message Blocked: I cannot answer questions about '${detectedPhrases.join(
 						"' or '"
 				  )}'!`
 				: null,
@@ -403,7 +405,8 @@ async function detectEvaluationLLM(
 			return {
 				defence,
 				status: 'triggered',
-				blockedReason: 'Message blocked by the prompt evaluation LLM.',
+				blockedReason:
+					'Message Blocked: The prompt evaluation LLM detected a malicious input.',
 			};
 		}
 	}

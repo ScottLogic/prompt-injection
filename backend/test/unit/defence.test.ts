@@ -162,7 +162,9 @@ test(
 			[{ id: 'MAX_MESSAGE_LENGTH', value: '3' }]
 		);
 		const defenceReport = await detectTriggeredDefences(message, defences);
-		expect(defenceReport.blockedReason).toBe('Message is too long');
+		expect(defenceReport.blockedReason).toBe(
+			'Message Blocked: Input exceeded character limit.'
+		);
 		expect(defenceReport.isBlocked).toBe(true);
 		expect(defenceReport.triggeredDefences).toContain(
 			DEFENCE_ID.CHARACTER_LIMIT
