@@ -23,12 +23,11 @@ import {
 	promptEvalPrompt,
 } from '@src/promptTemplates';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const mockRetrievalQAChain = {
-	call: jest.fn<any>(),
+	call: jest.fn<() => Promise<{ text: string }>>(),
 };
 const mockPromptEvalChain = {
-	call: jest.fn<any>(),
+	call: jest.fn<() => Promise<{ promptEvalOutput: string }>>(),
 };
 const mockFromLLM = jest.fn<any>();
 const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
@@ -141,7 +140,6 @@ describe('langchain integration tests ', () => {
 	});
 
 	test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', async () => {
-		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
 		await queryPromptEvaluationModel('some input', promptEvalPrompt);
 		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 		expect(mockFromTemplate).toHaveBeenCalledWith(
@@ -191,7 +189,7 @@ describe('langchain integration tests ', () => {
 	});
 
 	test('GIVEN the prompt evaluation model is not initialised WHEN it is asked to evaluate an input it returns an empty response', async () => {
-		mockPromptEvalChain.call.mockResolvedValue({ text: '' });
+		mockPromptEvalChain.call.mockResolvedValueOnce({ promptEvalOutput: '' });
 		const result = await queryPromptEvaluationModel('message', 'Prompt');
 		expect(result).toEqual({
 			isMalicious: false,
