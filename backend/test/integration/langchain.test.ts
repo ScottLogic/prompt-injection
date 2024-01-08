@@ -1,4 +1,15 @@
-/* eslint-disable import/order */
+import {
+	afterEach,
+	beforeEach,
+	describe,
+	test,
+	jest,
+	expect,
+} from '@jest/globals';
+import { RetrievalQAChain } from 'langchain/chains';
+import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { PromptTemplate } from 'langchain/prompts';
+
 import {
 	queryDocuments,
 	queryPromptEvaluationModel,
@@ -11,23 +22,18 @@ import {
 	promptEvalContextTemplate,
 	promptEvalPrompt,
 } from '@src/promptTemplates';
-import { RetrievalQAChain } from 'langchain/chains';
-import { PromptTemplate } from 'langchain/prompts';
-
-import { ChatOpenAI } from 'langchain/chat_models/openai';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const mockCall = jest.fn();
 const mockRetrievalQAChain = {
-	call: mockCall,
+	call: jest.fn<any>(),
 };
 const mockPromptEvalChain = {
-	call: mockCall,
+	call: jest.fn<any>(),
 };
-const mockFromLLM = jest.fn();
-const mockFromTemplate = jest.fn();
+const mockFromLLM = jest.fn<any>();
+const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
 const mockLoader = jest.fn();
-const mockSplitDocuments = jest.fn();
+const mockSplitDocuments = jest.fn<any>();
 const mockAsRetriever = jest.fn();
 
 // eslint-disable-next-line prefer-const
@@ -80,7 +86,6 @@ jest.mock('langchain/text_splitter', () => {
 		}),
 	};
 });
-
 // mock PromptTemplate.fromTemplate static method
 jest.mock('langchain/prompts');
 PromptTemplate.fromTemplate = mockFromTemplate;
@@ -95,18 +100,15 @@ jest.mock('langchain/chains', () => {
 			return mockRetrievalQAChain;
 		}),
 		LLMChain: jest.fn().mockImplementation(() => {
-			return {
-				call: mockCall,
-			};
+			return mockPromptEvalChain;
 		}),
 	};
 });
 RetrievalQAChain.fromLLM = mockFromLLM;
 
 jest.mock('@src/openai', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const originalModule = jest.requireActual('@src/openai');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	const originalModule =
+		jest.requireActual<typeof import('@src/openai')>('@src/openai');
 	return {
 		...originalModule,
 		getValidOpenAIModelsList: jest.fn(() => mockValidModels),
@@ -121,7 +123,8 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-	mockCall.mockRestore();
+	mockPromptEvalChain.call.mockRestore();
+	mockRetrievalQAChain.call.mockRestore();
 	mockFromLLM.mockRestore();
 	mockFromTemplate.mockRestore();
 });
@@ -178,17 +181,17 @@ describe('langchain integration tests ', () => {
 		const prompt = '';
 
 		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-		mockCall.mockResolvedValueOnce({
+		mockRetrievalQAChain.call.mockResolvedValueOnce({
 			text: 'The CEO is Bill.',
 		});
 		const answer = await queryDocuments(question, prompt, level);
 		expect(mockFromLLM).toHaveBeenCalledTimes(1);
-		expect(mockCall).toHaveBeenCalledTimes(1);
+		expect(mockRetrievalQAChain.call).toHaveBeenCalledTimes(1);
 		expect(answer.reply).toEqual('The CEO is Bill.');
 	});
 
 	test('GIVEN the prompt evaluation model is not initialised WHEN it is asked to evaluate an input it returns an empty response', async () => {
-		mockCall.mockResolvedValue({ text: '' });
+		mockPromptEvalChain.call.mockResolvedValue({ text: '' });
 		const result = await queryPromptEvaluationModel('message', 'Prompt');
 		expect(result).toEqual({
 			isMalicious: false,
@@ -196,7 +199,7 @@ describe('langchain integration tests ', () => {
 	});
 
 	test('GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it responds in the correct format THEN it returns a final decision', async () => {
-		mockCall.mockResolvedValue({
+		mockPromptEvalChain.call.mockResolvedValueOnce({
 			promptEvalOutput: 'yes.',
 		});
 		const result = await queryPromptEvaluationModel(
@@ -209,11 +212,9 @@ describe('langchain integration tests ', () => {
 	});
 
 	test('GIVEN the prompt evaluation model is initialised WHEN it is asked to evaluate an input AND it does not respond in the correct format THEN it returns a final decision of false', async () => {
-		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
-
 		await queryPromptEvaluationModel('some input', 'prompt');
 
-		mockCall.mockResolvedValue({
+		mockPromptEvalChain.call.mockResolvedValue({
 			promptEvalOutput: 'idk!',
 		});
 		const result = await queryPromptEvaluationModel(
@@ -262,7 +263,6 @@ describe('langchain integration tests ', () => {
 
 		const prompt = 'this is a test prompt. ';
 
-		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
 		await queryPromptEvaluationModel('some input', prompt);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
@@ -277,7 +277,6 @@ describe('langchain integration tests ', () => {
 
 		const prompt = 'this is a test prompt. ';
 
-		mockFromLLM.mockImplementation(() => mockPromptEvalChain);
 		await queryPromptEvaluationModel('some input', prompt);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
@@ -288,7 +287,7 @@ describe('langchain integration tests ', () => {
 	});
 
 	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason', async () => {
-		mockCall.mockResolvedValue({
+		mockPromptEvalChain.call.mockResolvedValue({
 			promptEvalOutput: 'yes.',
 		});
 		const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
@@ -299,19 +298,8 @@ describe('langchain integration tests ', () => {
 	});
 
 	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason', async () => {
-		mockCall.mockResolvedValue({
+		mockPromptEvalChain.call.mockResolvedValue({
 			promptEvalOutput: 'no.',
-		});
-		const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
-
-		expect(formattedOutput).toEqual({
-			isMalicious: false,
-		});
-	});
-
-	test('GIVEN prompt evaluation llm responds with an invalid format THEN formatEvaluationOutput returns false', async () => {
-		mockCall.mockResolvedValue({
-			promptEvalOutput: 'I cant tell you if this is malicious or not',
 		});
 		const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
 

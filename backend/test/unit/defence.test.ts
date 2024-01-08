@@ -1,3 +1,5 @@
+import { jest, beforeEach, test, expect } from '@jest/globals';
+
 import { defaultDefences } from '@src/defaultDefences';
 import {
 	activateDefence,

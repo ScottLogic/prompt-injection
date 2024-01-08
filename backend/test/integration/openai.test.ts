@@ -1,3 +1,5 @@
+import { expect, jest, test, describe } from '@jest/globals';
+
 import { defaultDefences } from '@src/defaultDefences';
 import { activateDefence, configureDefence } from '@src/defence';
 import {
@@ -11,8 +13,8 @@ import { EmailInfo } from '@src/models/email';
 import { chatGptSendMessage } from '@src/openai';
 import { systemRoleDefault } from '@src/promptTemplates';
 
-// Define a mock implementation for the createChatCompletion method
-const mockCreateChatCompletion = jest.fn();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockCreateChatCompletion = jest.fn<any>();
 // Mock the OpenAIApi class
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
@@ -26,9 +28,8 @@ jest.mock('openai', () => ({
 
 // mock the queryPromptEvaluationModel function
 jest.mock('@src/langchain', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const originalModule = jest.requireActual('@src/langchain');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	const originalModule =
+		jest.requireActual<typeof import('@src/langchain')>('@src/langchain');
 	return {
 		...originalModule,
 		queryPromptEvaluationModel: () => {

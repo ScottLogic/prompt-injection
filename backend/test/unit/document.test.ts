@@ -1,10 +1,11 @@
+import { expect, jest, test } from '@jest/globals';
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 
 import { getCommonDocuments, getLevelDocuments } from '@src/document';
 import { LEVEL_NAMES } from '@src/models/level';
 
-const mockLoader = jest.fn();
-const mockSplitDocuments = jest.fn();
+const mockLoader = jest.fn<() => Promise<Document[]>>();
+const mockSplitDocuments = jest.fn<() => Promise<string[]>>();
 
 // mock DirectoryLoader
 jest.mock('langchain/document_loaders/fs/directory', () => {

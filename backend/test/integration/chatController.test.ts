@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/unbound-method */
+import { expect, jest, test, describe } from '@jest/globals';
 import { Response } from 'express';
 
 import { handleChatToGPT } from '@src/controller/chatController';
@@ -24,7 +24,8 @@ declare module 'express-session' {
 }
 
 // mock the api call
-const mockCreateChatCompletion = jest.fn();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockCreateChatCompletion = jest.fn<any>();
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
 		chat: {

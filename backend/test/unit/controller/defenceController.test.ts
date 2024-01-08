@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+import { expect, test, jest, describe } from '@jest/globals';
 import { Response } from 'express';
 
 import { handleConfigureDefence } from '@src/controller/defenceController';
@@ -88,7 +89,7 @@ describe('handleConfigureDefence', () => {
 		);
 	});
 
-	it('WHEN missing defenceId THEN does not configure defences', () => {
+	test('WHEN missing defenceId THEN does not configure defences', () => {
 		const req: DefenceConfigureRequest = {
 			body: {
 				level: LEVEL_NAMES.LEVEL_1,
@@ -109,7 +110,7 @@ describe('handleConfigureDefence', () => {
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId, config or level');
 	});
 
-	it('WHEN missing config THEN does not configure defences', () => {
+	test('WHEN missing config THEN does not configure defences', () => {
 		const req: DefenceConfigureRequest = {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
@@ -125,7 +126,7 @@ describe('handleConfigureDefence', () => {
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId, config or level');
 	});
 
-	it('WHEN missing level THEN does not configure defences', () => {
+	test('WHEN missing level THEN does not configure defences', () => {
 		const req: DefenceConfigureRequest = {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
@@ -146,7 +147,7 @@ describe('handleConfigureDefence', () => {
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId, config or level');
 	});
 
-	it('WHEN config value exceeds character limit THEN does not configure defences', () => {
+	test('WHEN config value exceeds character limit THEN does not configure defences', () => {
 		const CHARACTER_LIMIT = 5000;
 		const longConfigValue = 'a'.repeat(CHARACTER_LIMIT + 1);
 
