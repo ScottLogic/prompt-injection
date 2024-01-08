@@ -60,6 +60,26 @@ interface SingleDefenceReport {
 	status: 'alerted' | 'triggered' | 'ok';
 }
 
+interface gptSentMessageResponse {
+	chatResponse: ChatResponse;
+	chatHistory: ChatHistoryMessage[];
+	sentEmails: EmailInfo[];
+	defences: SingleDefenceReport[];
+}
+
+interface FunctionCallResponse {
+	completion: ChatCompletionMessageParam;
+	defenceReport: ChatDefenceReport;
+	wonLevel: boolean;
+	sentEmails: EmailInfo[];
+}
+
+interface ToolCallResponse {
+	functionCallReply?: FunctionCallResponse;
+	chatResponse?: ChatResponse;
+	chatHistory: ChatHistoryMessage[];
+}
+
 interface ChatAnswer {
 	reply: string;
 	questionAnswered: boolean;
@@ -120,6 +140,8 @@ export type {
 	ChatHttpResponse,
 	ChatHistoryMessage,
 	TransformedChatMessage,
+	FunctionCallResponse,
+	ToolCallResponse,
 };
 export {
 	CHAT_MODELS,
