@@ -8,6 +8,7 @@
 		"strict": true,
 		"noImplicitAny": true,
 		"esModuleInterop": true,
+		"isolatedModules": true,
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true,
 		"noUnusedLocals": true,

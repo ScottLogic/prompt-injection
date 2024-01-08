@@ -3,6 +3,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-development}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      SESSION_SECRET: ${SESSION_SECRET}
       CORS_ALLOW_ORIGIN: "${CORS_ALLOW_ORIGIN:-*}"
       PORT: 3001
     build: .

@@ -116,17 +116,17 @@ export type {
 	ChatAnswer,
 	ChatDefenceReport,
 	ChatMalicious,
+	ChatModel,
+	ChatModelConfiguration,
 	ChatResponse,
 	ChatHttpResponse,
 	ChatHistoryMessage,
+	SingleDefenceReport,
 	TransformedChatMessage,
 };
 export {
 	CHAT_MODELS,
 	CHAT_MESSAGE_TYPE,
 	MODEL_CONFIG,
-	ChatModel,
-	ChatModelConfiguration,
 	defaultChatModel,
-	SingleDefenceReport,
 };

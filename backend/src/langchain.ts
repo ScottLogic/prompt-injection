@@ -20,11 +20,12 @@ import {
 
 // store vectorised documents for each level as array
 const vectorisedDocuments = (() => {
-	let docs: DocumentsVector[] = [];
+	const docs: DocumentsVector[] = [];
 	return {
 		get: () => docs,
 		set: (newDocs: DocumentsVector[]) => {
-			docs = newDocs;
+			while (docs.length > 0) docs.pop();
+			docs.push(...newDocs);
 		},
 	};
 })();

@@ -9,7 +9,7 @@ function makeUrl(path: string): URL {
 }
 
 async function sendRequest(path: string, options: RequestInit) {
-	return fetch(makeUrl(path), { ...options, credentials: 'include' });
+	return fetch(makeUrl(path), { ...options, credentials: 'same-origin' });
 }
 
 export { getBackendUrl, sendRequest };

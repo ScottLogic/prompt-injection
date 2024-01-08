@@ -51,10 +51,11 @@ const sessionOpts: session.SessionOptions = {
 
 app.use(session(sessionOpts));
 
+const allowOrigin = process.env.CORS_ALLOW_ORIGIN || '*';
 app.use(
 	cors({
-		credentials: true,
-		origin: process.env.CORS_ALLOW_ORIGIN || '*',
+		origin: allowOrigin,
+		credentials: allowOrigin !== '*',
 	})
 );
 
