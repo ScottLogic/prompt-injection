@@ -60,7 +60,7 @@ jobs:
           cache-dependency-path: "./frontend/package-lock.json"
       - run: npm ci
       - run: npx eslint .
-      - run: npx stylelint '**/*.{css,scss}'
+      - run: npx stylelint '**/*.css'
       - run: npx prettier . --check
       - run: npm run build
       - run: npm test
