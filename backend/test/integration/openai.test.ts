@@ -13,9 +13,10 @@ import { EmailInfo } from '@src/models/email';
 import { chatGptSendMessage } from '@src/openai';
 import { systemRoleDefault } from '@src/promptTemplates';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockCreateChatCompletion = jest.fn<any>();
-// Mock the OpenAIApi class
+const mockCreateChatCompletion =
+	jest.fn<() => Promise<ReturnType<typeof chatResponseAssistant>>>();
+
+// Mock the OpenAI api class
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
 		chat: {
