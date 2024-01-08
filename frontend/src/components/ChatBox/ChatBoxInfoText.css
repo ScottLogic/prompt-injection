@@ -1,7 +1,7 @@
 .chat-box-info {
 	padding-top: 1rem;
-	font-size: 0.875rem;
 	font-style: italic;
+	font-size: 0.875rem;
 	text-align: center;
 }
 
@@ -21,9 +21,9 @@
 
 .chat-box-info.reset-level-text {
 	margin: 0.6rem 0.1rem;
-	line-height: 0.1em;
-	color: var(--chat-info-text-colour);
 	border-bottom: 1px solid var(--chat-reset-level-line-colour);
+	color: var(--chat-info-text-colour);
+	line-height: 0.1em;
 }
 
 .chat-box-info.reset-level-text:focus-visible {

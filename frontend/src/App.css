@@ -3,9 +3,10 @@
 }
 
 #root {
+	height: 100%;
+
 	/* firefox scrollbar styling */
 	scrollbar-color: var(--main-scrollbar-colour) transparent;
-	height: 100%;
 }
 
 ::-webkit-scrollbar {
@@ -14,9 +15,9 @@
 
 /* draggable scrolling handle */
 ::-webkit-scrollbar-thumb {
-	background-color: var(--main-scrollbar-colour);
 	border-color: var(--main-scrollbar-border-colour);
 	border-radius: 1.25rem;
+	background-color: var(--main-scrollbar-colour);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -25,21 +26,19 @@
 
 .prompt-injection-min-button {
 	display: flex;
-	align-items: center;
 	justify-content: center;
-
+	align-items: center;
 	padding: 0;
-
-	color: var(--main-text-colour);
+	border: 0.0625rem solid transparent;
 
 	/* remove default button styling */
 	background-color: transparent;
-	border: 0.0625rem solid transparent;
+	color: var(--main-text-colour);
 }
 
 .prompt-injection-min-button:hover {
-	text-decoration: none;
 	border-color: var(--main-text-colour);
+	text-decoration: none;
 }
 
 .dialog-modal {
@@ -47,13 +46,11 @@
 	position: fixed;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%, -50%);
-
 	margin: 0;
 	padding: 0;
-
-	background-color: transparent;
 	border: none;
+	background-color: transparent;
+	transform: translate(-50%, -50%);
 }
 
 .dialog-modal::backdrop {

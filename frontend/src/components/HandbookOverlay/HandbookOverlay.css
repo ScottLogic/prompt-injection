@@ -1,13 +1,10 @@
 .handbook-overlay {
 	display: flex;
 	flex-direction: row;
-
-	aspect-ratio: 7/8;
 	height: 85vh;
-
-	color: var(--handbook-text-colour);
-
 	background-color: var(--handbook-background-colour);
+	color: var(--handbook-text-colour);
+	aspect-ratio: 7/8;
 }
 
 .handbook-overlay .close-button {
@@ -26,15 +23,14 @@
 }
 
 .handbook-overlay .content {
-	/* firefox scrollbar styling */
-	scrollbar-color: var(--handbook-scrollbar-colour) transparent;
-
 	overflow-y: auto;
-
 	margin-top: 3rem;
 	margin-right: 0.5rem;
 	margin-bottom: 0.5rem;
 	padding: 0 1.7rem;
+
+	/* firefox scrollbar styling */
+	scrollbar-color: var(--handbook-scrollbar-colour) transparent;
 }
 
 /* webkit scrollbar styling */

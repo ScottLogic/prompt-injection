@@ -1,11 +1,9 @@
 .email-box {
-	scrollbar-width: thin;
-
-	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
-
+	overflow-y: auto;
 	height: fit-content;
 	padding: 1rem;
+	scrollbar-width: thin;
 }

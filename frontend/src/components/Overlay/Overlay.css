@@ -1,20 +1,16 @@
 .overlay {
 	position: relative;
-
 	overflow: visible;
 	overflow-y: auto;
-
 	box-sizing: border-box;
 	width: 50vw;
 	height: fit-content;
 	max-height: 80vh;
 	padding: 0;
-
-	color: var(--overlay-text-colour);
-
-	background-color: var(--overlay-background-colour);
 	border: none;
 	border-radius: 0.625rem;
+	background-color: var(--overlay-background-colour);
+	color: var(--overlay-text-colour);
 }
 
 .overlay * {
@@ -33,12 +29,10 @@
 	position: absolute;
 	top: 1rem;
 	right: 1rem;
-
 	padding: 0.125rem 0.5rem;
-
-	font-size: 1.5rem;
-	font-weight: bold;
 	color: inherit;
+	font-weight: bold;
+	font-size: 1.5rem;
 }
 
 .overlay > .close-button:hover {
@@ -47,8 +41,8 @@
 }
 
 .overlay-content {
-	overflow: hidden;
 	display: flex;
+	overflow: hidden;
 	height: 100%;
 	padding: 1.5rem;
 }

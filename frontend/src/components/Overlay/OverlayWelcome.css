@@ -5,20 +5,20 @@
 }
 
 .welcome h1 {
-	font-size: 2.5rem;
 	font-weight: 700;
+	font-size: 2.5rem;
 	text-align: center;
 }
 
 .welcome h2 {
-	font-size: 2rem;
 	font-weight: 700;
+	font-size: 2rem;
 	text-align: center;
 }
 
 .welcome p {
-	font-size: 1.25rem;
 	font-weight: 500;
+	font-size: 1.25rem;
 }
 
 .welcome .project-icon {

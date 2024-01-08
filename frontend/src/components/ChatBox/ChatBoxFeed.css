@@ -1,10 +1,8 @@
 .chat-box-feed {
-	scrollbar-width: thin;
-
-	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
-
+	overflow-y: auto;
 	height: fit-content;
 	padding: 0 2rem;
+	scrollbar-width: thin;
 }

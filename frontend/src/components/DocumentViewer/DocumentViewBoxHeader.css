@@ -3,9 +3,7 @@
 	flex-direction: column;
 	gap: 1.25rem;
 	align-items: stretch;
-
 	padding-bottom: 0.25rem;
-
 	color: var(--main-text-colour);
 }
 
@@ -13,19 +11,16 @@
 	width: 100%;
 	margin: 0;
 	padding-bottom: 1rem;
-
-	text-align: center;
-
 	border-bottom: solid 0.0625rem var(--main-border-colour);
+	text-align: center;
 }
 
 .view-documents-header .nav {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
-	align-items: center;
 	justify-content: center;
-
+	align-items: center;
 	width: 100%;
 }
 
@@ -38,9 +33,9 @@
 .view-documents-header .button-container {
 	display: flex;
 	gap: 1rem;
+	justify-content: space-between;
 	align-items: center;
 	align-self: stretch;
-	justify-content: space-between;
 }
 
 .view-documents-header .button-container button {

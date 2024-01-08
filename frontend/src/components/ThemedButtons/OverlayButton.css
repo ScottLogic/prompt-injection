@@ -1,18 +1,14 @@
 .overlay-button {
 	display: flex;
-	align-items: center;
 	justify-content: center;
-
+	align-items: center;
 	padding: 1rem 3rem;
-
-	font-size: 1.25rem;
-	font-weight: 700;
-	line-height: 1;
-
-	background-color: var(--overlay-background-colour);
 	border: 0.0625rem solid var(--overlay-tab-colour);
 	border-radius: 0.5rem;
-
+	background-color: var(--overlay-background-colour);
+	font-weight: 700;
+	font-size: 1.25rem;
+	line-height: 1;
 	transition: ease 0.1s;
 }
 

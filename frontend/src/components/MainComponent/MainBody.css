@@ -1,11 +1,10 @@
 .main-area {
-	overflow: hidden;
 	display: flex;
-	flex-direction: row;
 	flex-grow: 1;
-
-	background: var(--main-background);
+	flex-direction: row;
+	overflow: hidden;
 	border-top: 0.125rem solid var(--level-banner-border-colour);
+	background: var(--main-background);
 }
 
 .centre-area {

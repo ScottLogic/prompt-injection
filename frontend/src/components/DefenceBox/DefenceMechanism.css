@@ -20,7 +20,6 @@
 	position: absolute;
 	top: 0.75rem;
 	right: 0.75rem;
-
 	width: 2rem;
 	height: 1rem;
 }
@@ -41,29 +40,22 @@
 .defence-mechanism label.switch > .slider {
 	--slider-border-width: 0.125rem;
 
-	cursor: pointer;
-
 	position: absolute;
 	inset: 0;
-
-	background-color: var(--main-toggle-off-colour);
 	border: var(--slider-border-width) solid var(--main-toggle-off-border-colour);
-
+	background-color: var(--main-toggle-off-colour);
+	cursor: pointer;
 	transition: 0.4s;
 }
 
 .defence-mechanism label.switch > .slider::before {
 	content: '';
-
 	position: absolute;
 	top: calc(-1 * var(--slider-border-width));
 	left: calc(-1 * var(--slider-border-width));
-
 	width: 1rem;
 	height: 1rem;
-
 	background-color: var(--main-toggle-ball-colour);
-
 	transition: 0.4s;
 }
 
@@ -72,8 +64,8 @@
 }
 
 .defence-mechanism label.switch > input:checked + .slider {
-	background-color: var(--main-toggle-on-colour);
 	border-color: var(--main-toggle-on-border-colour);
+	background-color: var(--main-toggle-on-colour);
 }
 
 .defence-mechanism label.switch > input:checked + .slider::before {
@@ -98,6 +90,6 @@
 }
 
 .defence-mechanism .info-box .validation-text {
-	font-size: inherit;
 	font-weight: 600;
+	font-size: inherit;
 }

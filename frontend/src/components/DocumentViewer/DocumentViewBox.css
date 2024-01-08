@@ -1,39 +1,34 @@
 .document-popup-inner {
 	position: relative;
-
 	display: flex;
 	flex-direction: column;
-
 	box-sizing: border-box;
-	aspect-ratio: 7/8;
 	height: 85vh;
 	padding: 2rem;
-
-	background: var(--main-background);
 	border: 0.1875rem solid var(--main-border-colour);
+	background: var(--main-background);
+	aspect-ratio: 7/8;
 }
 
 .document-popup-inner .close-button {
 	position: absolute;
 	top: 1rem;
 	right: 1rem;
-
 	padding: 0.25rem 0.75rem;
-
-	font-size: 1.75rem;
-	font-weight: bold;
 	color: var(--main-text-colour);
+	font-weight: bold;
+	font-size: 1.75rem;
 	text-decoration: none;
 }
 
 .document-popup-inner .close-button:hover {
-	color: var(--accent-border-colour);
 	border-color: var(--accent-border-colour);
+	color: var(--accent-border-colour);
 }
 
 .document-viewer-container {
-	overflow-y: auto;
 	flex-grow: 1;
+	overflow-y: auto;
 	background-color: var(--document-viewer-background-colour);
 }
 
@@ -41,8 +36,8 @@
 	/* don't scroll */
 	overflow: visible;
 	margin: auto;
-	color: var(--document-viewer-text-colour);
 	background-color: var(--document-viewer-background-colour);
+	color: var(--document-viewer-text-colour);
 }
 
 #react-doc-viewer #proxy-renderer {

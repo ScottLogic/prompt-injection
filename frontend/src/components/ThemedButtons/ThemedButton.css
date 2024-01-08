@@ -1,22 +1,18 @@
 .themed-button {
 	position: relative;
-
 	display: flex;
-	align-items: center;
 	justify-content: center;
-
+	align-items: center;
 	padding: 0.5rem;
-
-	font-size: 1rem;
-	font-weight: 600;
-	color: var(--action-button-text-colour);
-
-	background-color: var(--action-button-background-colour);
 	border: none;
 	border-radius: 0.625rem;
+	background-color: var(--action-button-background-colour);
+	color: var(--action-button-text-colour);
+	font-weight: 600;
+	font-size: 1rem;
 }
 
 .themed-button.disabled {
-	color: var(--action-button-disabled-text-colour);
 	background-color: var(--action-button-disabled-background-colour);
+	color: var(--action-button-disabled-text-colour);
 }
