@@ -81,6 +81,7 @@ interface TransformedChatMessage {
 	preMessage: string;
 	message: string;
 	postMessage: string;
+	transformationName: string;
 }
 
 interface ChatHttpResponse {
