@@ -1,11 +1,8 @@
 .defence-mechanism-fieldset {
-	border: 3px solid #707070;
+	border: 0.25rem solid var(--control-config-border);
 	border-radius: 0.5rem;
-	/* justify-content: space-between; */
-	/* align-items: start; */
 	margin: 0.1em;
 	min-height: fit-content;
-	/* border: none; */
 }
 
 /* the name of the fieldset */
@@ -16,14 +13,17 @@
 /* the more button to expand the details */
 .defence-mechanism-summary {
 	width: fit-content;
-	border: 2px outset #707070;
-	border-radius: 5px;
+	border: 0.125rem outset var(--control-config-border);
+	border-radius: 0.25rem;
 	padding: 0.5rem;
-	/* background-color: #707070; */
-	width: 4em;
-	text-align: right;
 }
 
+/* style for when details element is expanded */
+.defence-mechanism-fieldset details[open] > summary {
+	border-style: inset;
+}
+
+/* remove the default triangle on the summary element*/
 .defence-mechanism-fieldset details > summary {
 	list-style: none;
 }
@@ -41,10 +41,6 @@
 	cursor: default;
 }
 
-/* .defence-mechanism > * {
-	padding: 0.5rem;
-} */
-
 .defence-mechanism > summary {
 	font-size: 1rem;
 }
@@ -53,17 +49,14 @@
 .defence-mechanism .info-box {
 	font-size: 0.875rem;
 	padding: 0.5em;
-	/* background-color: #707070; */
-}
-
-.defence-mechanism .info-box :first-child {
-	/* margin: 0; */
 }
 
 .defence-mechanism .info-box .validation-text {
 	font-size: inherit;
 	font-weight: 600;
 }
+
+/* adapted from: https://adrianroselli.com/2019/03/under-engineered-toggles.html */
 
 /* default checkbox hidden without removing it from the DOM */
 .toggles [type='checkbox'] {
@@ -164,18 +157,4 @@
 	.toggles [type='checkbox'] + label::after {
 		transition: none;
 	}
-}
-
-/* style for when details element is expanded */
-.defence-mechanism-fieldset details[open] > summary {
-	border-style: inset;
-}
-
-.defence-mechanism-fieldset details[open] > summary::before {
-	content: '- ';
-}
-
-/* style for when details element is collapsed */
-.defence-mechanism-fieldset details > summary::before {
-	content: '+ ';
 }
