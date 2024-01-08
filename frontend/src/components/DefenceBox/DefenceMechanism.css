@@ -1,92 +1,66 @@
+.defence-mechanism-fieldset {
+	border: 0.25rem solid var(--control-config-border);
+	border-radius: 0.5rem;
+	margin: 0.1em;
+	min-height: fit-content;
+}
+
+/* the name of the fieldset */
+.defence-mechanism-legend {
+	padding: 0.3em;
+}
+
+/* the more button to expand the details */
+.defence-mechanism-summary {
+	width: fit-content;
+	border: 0.125rem outset var(--control-config-border);
+	border-radius: 0.25rem;
+	padding: 0.5rem;
+}
+
+/* style for when details element is expanded */
+.defence-mechanism-fieldset details[open] > summary {
+	border-style: inset;
+}
+
+/* remove the default triangle on the summary element*/
+.defence-mechanism-fieldset details > summary {
+	list-style: none;
+}
+.defence-mechanism-fieldset details > summary::-webkit-details-marker {
+	display: none;
+}
+
+/* the toggle and label combined */
+.defence-mechanism-form {
+	position: absolute;
+	right: 1em;
+}
+
 .defence-mechanism {
 	cursor: default;
 }
 
-.defence-mechanism > * {
+/* .defence-mechanism > * {
 	padding: 0.75rem;
-}
+} */
 
 .defence-mechanism > summary {
-	position: relative;
 	font-size: 1rem;
-}
-
-/*
- * Modified from https://www.w3schools.com/howto/howto_css_switch.asp
-*/
-
-/* The switch - the box around the slider */
-.defence-mechanism label.switch {
-	position: absolute;
-	top: 0.75rem;
-	right: 0.75rem;
-	width: 2rem;
-	height: 1rem;
-}
-
-.defence-mechanism label.switch:focus-within {
-	border-radius: 0.5rem;
-	outline-style: auto;
-}
-
-/* Hide default HTML checkbox */
-.defence-mechanism label.switch > input {
-	width: 0;
-	height: 0;
-	opacity: 0;
-}
-
-/* The slider */
-.defence-mechanism label.switch > .slider {
-	--slider-border-width: 0.125rem;
-
-	position: absolute;
-	inset: 0;
-	border: var(--slider-border-width) solid var(--main-toggle-off-border-colour);
-	background-color: var(--main-toggle-off-colour);
-	cursor: pointer;
-	transition: 0.4s;
-}
-
-.defence-mechanism label.switch > .slider::before {
-	content: '';
-	position: absolute;
-	top: calc(-1 * var(--slider-border-width));
-	left: calc(-1 * var(--slider-border-width));
-	width: 1rem;
-	height: 1rem;
-	background-color: var(--main-toggle-ball-colour);
-	transition: 0.4s;
-}
-
-.defence-mechanism label.switch > input:focus + .slider {
-	box-shadow: 0 0 0.0625rem var(--main-toggle-on-colour);
-}
-
-.defence-mechanism label.switch > input:checked + .slider {
-	border-color: var(--main-toggle-on-border-colour);
-	background-color: var(--main-toggle-on-colour);
-}
-
-.defence-mechanism label.switch > input:checked + .slider::before {
-	transform: translateX(1rem);
-}
-
-/* Rounded sliders */
-.defence-mechanism label.switch > .slider.round {
-	border-radius: 0.5rem;
-}
-
-.defence-mechanism label.switch > .slider.round::before {
-	border-radius: 50%;
 }
 
 .defence-mechanism .info-box {
 	font-size: 0.875rem;
 }
 
-.defence-mechanism .info-box :first-child {
+/* .defence-mechanism .info-box :first-child {
 	margin-top: 0;
+} */
+
+/* the expanded description and further controls */
+.defence-mechanism .info-box {
+	font-size: 0.875rem;
+	padding: 0.5em;
 }
 
 .defence-mechanism .info-box .validation-text {
@@ -103,4 +77,107 @@
 
 .defence-mechanism .prompt-enclosure-configuration-area {
 	padding: 0;
+}
+
+/* adapted from: https://adrianroselli.com/2019/03/under-engineered-toggles.html */
+
+/* default checkbox hidden without removing it from the DOM */
+.toggles [type='checkbox'] {
+	position: absolute;
+	top: auto;
+	overflow: hidden;
+	clip: rect(1px, 1px, 1px, 1px);
+	width: 1px;
+	height: 1px;
+	white-space: nowrap;
+}
+
+/* the  label */
+.toggles [type='checkbox'] + label {
+	display: block;
+	position: relative;
+	max-width: fit-content;
+	text-align: right;
+	padding-right: 3em;
+}
+
+/* the  label hovered or focused*/
+.toggles [type='checkbox']:focus + label,
+.toggles [type='checkbox']:hover + label {
+	color: var(--main-text-accent-colour);
+}
+
+.toggles [type='checkbox']:focus + label::before,
+.toggles [type='checkbox']:hover + label::before {
+	box-shadow: 0 0 0.3em var(--main-text-colour);
+}
+
+.toggles [type='checkbox']:focus + label::after,
+.toggles [type='checkbox']:hover + label::after {
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50' fill='rgba(0,0,0,.25)'/%3E%3C/svg%3E");
+	background-size: 30%;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.toggles [type='checkbox'] + label::before,
+.toggles [type='checkbox'] + label::after {
+	content: '';
+	position: absolute;
+	height: 0.9em;
+	transition: all 0.25s ease;
+}
+
+/* background oval before it's checked */
+.toggles [type='checkbox'] + label::before {
+	right: 0;
+	top: 0.1em;
+	width: 1.9em;
+	border: 0.15em solid var(--main-toggle-off-border-colour);
+	background: var(--main-toggle-off-colour);
+	border-radius: 1.1em;
+}
+
+/* round toggle slider */
+.toggles [type='checkbox'] + label::after {
+	right: 0.95em;
+	top: 0.17em;
+	background: var(--main-text-colour);
+	background-position: center center;
+	border-radius: 50%;
+	width: 1em;
+	border: 0.05em solid var(--main-toggle-off-border-colour);
+}
+
+/* round toggle slider sliding to the right */
+.toggles [type='checkbox']:checked + label::after {
+	right: 0.1em;
+	border-color: var(--main-toggle-on-border-colour);
+	color: var(--main-toggle-on-border-colour);
+}
+
+/* background oval when it's checked */
+.toggles [type='checkbox']:checked + label::before {
+	background-color: var(--main-toggle-on-border-colour);
+	border-color: var(--main-toggle-on-border-colour);
+}
+
+/* Windows High Contrast Mode Support */
+@media screen and (-ms-high-contrast: active) {
+	.toggles [type='checkbox']:focus + label::before,
+	.toggles [type='checkbox']:hover + label::before {
+		outline: 1px dotted windowText;
+		outline-offset: 0.25em;
+	}
+	.toggles [type='checkbox'] + label::after {
+		background-color: windowText;
+	}
+}
+
+/* Reduced motion */
+@media screen and (prefers-reduced-motion: reduce) {
+	.toggles [type='checkbox'] + label::before,
+	.toggles [type='checkbox'] + label::after {
+		transition: none;
+	}
 }
