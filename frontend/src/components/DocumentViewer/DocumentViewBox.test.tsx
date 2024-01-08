@@ -18,7 +18,7 @@ interface MockDocument {
 	content: string;
 }
 
-describe.skip('DocumentViewBox component tests', () => {
+describe('DocumentViewBox component tests', () => {
 	const URI = 'localhost:1234';
 	const defaultDocuments: MockDocument[] = [
 		{
