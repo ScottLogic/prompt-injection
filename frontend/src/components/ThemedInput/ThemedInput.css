@@ -1,11 +1,10 @@
 .themed-input {
 	box-sizing: border-box;
-	border-radius: 0.25rem;
-	border-style: solid;
-	border-width: 0.0625rem;
-	padding: 0.125rem;
 	width: 100%;
-
+	padding: 0.125rem;
+	border-width: 0.0625rem;
+	border-style: solid;
+	border-radius: 0.25rem;
 	background-color: var(--main-input-active-background-colour);
 	color: var(--main-input-active-text-colour);
 

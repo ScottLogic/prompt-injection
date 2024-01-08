@@ -1,7 +1,7 @@
 .welcome {
-	padding: 0 1.5rem;
 	overflow-y: auto;
 	margin-top: 2rem;
+	padding: 0 1.5rem;
 }
 
 .welcome h1 {
@@ -11,9 +11,9 @@
 }
 
 .welcome h2 {
-	text-align: center;
 	font-weight: 700;
 	font-size: 2rem;
+	text-align: center;
 }
 
 .welcome p {

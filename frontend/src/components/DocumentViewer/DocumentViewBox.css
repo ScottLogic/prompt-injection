@@ -1,25 +1,23 @@
 .document-popup-inner {
-	box-sizing: border-box;
+	position: relative;
 	display: flex;
 	flex-direction: column;
-	position: relative;
-	padding: 2rem;
-
+	box-sizing: border-box;
 	height: 85vh;
-	aspect-ratio: 7/8;
-
-	background: var(--main-background);
+	padding: 2rem;
 	border: 0.1875rem solid var(--main-border-colour);
+	background: var(--main-background);
+	aspect-ratio: 7/8;
 }
 
 .document-popup-inner .close-button {
-	color: var(--main-text-colour);
 	position: absolute;
 	top: 1rem;
 	right: 1rem;
 	padding: 0.25rem 0.75rem;
-	font-size: 1.75rem;
+	color: var(--main-text-colour);
 	font-weight: bold;
+	font-size: 1.75rem;
 	text-decoration: none;
 }
 
@@ -30,22 +28,22 @@
 
 .document-viewer-container {
 	flex-grow: 1;
-	background-color: var(--document-viewer-background-colour);
 	overflow-y: auto;
+	background-color: var(--document-viewer-background-colour);
 }
 
 #react-doc-viewer {
-	background-color: var(--document-viewer-background-colour);
-	color: var(--document-viewer-text-colour);
-	margin: auto;
 	/* don't scroll */
 	overflow: visible;
+	margin: auto;
+	background-color: var(--document-viewer-background-colour);
+	color: var(--document-viewer-text-colour);
 }
 
 #react-doc-viewer #proxy-renderer {
-	padding: 1.25rem;
 	/* don't scroll */
 	overflow: visible;
+	padding: 1.25rem;
 }
 
 #react-doc-viewer #txt-renderer {

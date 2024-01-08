@@ -1,15 +1,15 @@
 .themed-button {
+	position: relative;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	position: relative;
+	padding: 0.5rem;
 	border: none;
 	border-radius: 0.625rem;
-	padding: 0.5rem;
 	background-color: var(--action-button-background-colour);
 	color: var(--action-button-text-colour);
-	font-size: 1rem;
 	font-weight: 600;
+	font-size: 1rem;
 }
 
 .themed-button.disabled {

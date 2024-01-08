@@ -1,9 +1,9 @@
 .model-config-slider-fieldset {
-	border: none;
-	margin: 0;
-	padding: 0;
 	display: flex;
 	flex-direction: column;
+	margin: 0;
+	padding: 0;
+	border: none;
 }
 
 .model-config-slider-fieldset legend {
@@ -11,10 +11,10 @@
 }
 
 .model-config-slider-fieldset .info-icon {
-	font-size: 1.3rem;
-	margin-left: auto;
 	margin-top: -1.3rem;
 	margin-bottom: 1rem;
+	margin-left: auto;
+	font-size: 1.3rem;
 }
 
 .model-config-slider-fieldset .info-text {
@@ -22,11 +22,11 @@
 }
 
 .model-config-slider-fieldset .config-slider {
-	width: 90%;
-	margin: 0 auto;
-	padding: 0;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	width: 90%;
+	margin: 0 auto;
+	padding: 0;
 }
