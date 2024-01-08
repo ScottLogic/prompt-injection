@@ -3,13 +3,17 @@
 	justify-content: center;
 	align-items: center;
 	position: relative;
-	border: none;
 	border-radius: 0.625rem;
 	padding: 0.5rem;
 	background-color: var(--action-button-background-colour);
 	color: var(--action-button-text-colour);
 	font-size: 1rem;
 	font-weight: 600;
+	border: 0.125rem solid var(--action-button-background-colour);
+}
+
+.themed-button:focus-visible {
+	border-color: var(--main-text-colour);
 }
 
 .themed-button.disabled {

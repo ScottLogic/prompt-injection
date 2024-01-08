@@ -11,6 +11,10 @@
 	font-size: 1.875rem;
 }
 
+.level-button:focus-visible {
+	border-color: var(--main-text-colour);
+}
+
 .level-button.selected {
 	background-color: var(--level-button-background-colour-selected);
 }
