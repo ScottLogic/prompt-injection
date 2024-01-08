@@ -41,10 +41,6 @@
 	cursor: default;
 }
 
-/* .defence-mechanism > * {
-	padding: 0.75rem;
-} */
-
 .defence-mechanism > summary {
 	font-size: 1rem;
 }
@@ -53,9 +49,9 @@
 	font-size: 0.875rem;
 }
 
-/* .defence-mechanism .info-box :first-child {
+.defence-mechanism .info-box :first-child {
 	margin-top: 0;
-} */
+}
 
 /* the expanded description and further controls */
 .defence-mechanism .info-box {
@@ -160,18 +156,6 @@
 .toggles [type='checkbox']:checked + label::before {
 	background-color: var(--main-toggle-on-border-colour);
 	border-color: var(--main-toggle-on-border-colour);
-}
-
-/* Windows High Contrast Mode Support */
-@media screen and (-ms-high-contrast: active) {
-	.toggles [type='checkbox']:focus + label::before,
-	.toggles [type='checkbox']:hover + label::before {
-		outline: 1px dotted windowText;
-		outline-offset: 0.25em;
-	}
-	.toggles [type='checkbox'] + label::after {
-		background-color: windowText;
-	}
 }
 
 /* Reduced motion */
