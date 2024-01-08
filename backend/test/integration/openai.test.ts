@@ -404,7 +404,7 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply.defenceReport.isBlocked).toBe(true);
 		expect(reply.defenceReport.triggeredDefences.length).toBe(1);
 		expect(reply.defenceReport.blockedReason).toBe(
-			'My original response was blocked as it contained a restricted word/phrase. Ask me something else. '
+			'Message Blocked: My response was blocked as it contained a restricted word/phrase.'
 		);
 
 		mockCreateChatCompletion.mockRestore();
