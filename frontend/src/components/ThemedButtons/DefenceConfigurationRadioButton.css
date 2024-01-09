@@ -1,7 +1,7 @@
 .defence-radio-button {
 	position: relative;
-	cursor: pointer;
 	display: inline-block;
+	cursor: pointer;
 }
 
 .defence-radio-button input {
@@ -14,25 +14,25 @@
 
 /* checkmark outer circle */
 .defence-radio-button input + span::before {
-	position: absolute;
 	content: '';
+	position: absolute;
 	top: 0;
 	left: 0;
-	height: 1rem;
 	width: 1rem;
-	border-radius: 50%;
+	height: 1rem;
 	border: 0.125rem solid var(--main-toggle-off-border-colour);
+	border-radius: 50%;
 }
 
 /* inner circle */
 .defence-radio-button input + span::after {
 	content: '';
 	position: absolute;
-	opacity: 0;
 	top: 0.3125rem;
 	left: 0.3125rem;
-	border-radius: 50%;
 	border: 0.3125rem solid var(--main-toggle-ball-colour);
+	border-radius: 50%;
+	opacity: 0;
 	transition: 0.2s ease-in-out;
 }
 

@@ -1,27 +1,26 @@
 .level-mission-info-banner {
-	background-color: var(--level-banner-background-colour);
-	border: 0.5rem solid transparent;
-	color: var(--level-banner-text-colour);
-	padding: 0.5rem 1.5rem;
 	display: flex;
-	align-items: center;
 	gap: 0.5rem;
+	align-items: center;
+	padding: 0.5rem 1.5rem;
+	border: 0.5rem solid transparent;
+	background-color: var(--level-banner-background-colour);
+	color: var(--level-banner-text-colour);
 }
 
 .level-mission-info-banner:focus-visible {
-	outline-offset: -0.25rem;
-	border-color: var(--main-text-colour);
 	border-style: double;
+	border-color: var(--main-text-colour);
+	outline-offset: -0.25rem;
 }
 
 .level-title-area {
 	min-width: 10%;
-	font-size: 1.875rem;
 	font-weight: 800;
+	font-size: 1.875rem;
 }
 
 .level-mission-info-banner > p {
-	text-align: left;
-	font-size: 1rem;
 	margin: 0;
+	font-size: 1rem;
 }

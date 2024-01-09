@@ -1,12 +1,10 @@
 .handbook-overlay {
 	display: flex;
 	flex-direction: row;
-
 	height: 85vh;
-	aspect-ratio: 7/8;
-
 	background-color: var(--handbook-background-colour);
 	color: var(--handbook-text-colour);
+	aspect-ratio: 7/8;
 }
 
 .handbook-overlay .close-button {
@@ -14,28 +12,31 @@
 	top: 0.25rem;
 	right: 0.25rem;
 }
+
 .handbook-overlay .close-button:hover svg rect {
 	fill: black;
 	stroke: white;
 }
+
 .handbook-overlay .close-button:hover svg path {
 	fill: white;
 }
 
 .handbook-overlay .content {
-	padding: 0 1.75rem 0.5rem;
 	margin-top: 3rem;
 	margin-right: 0.5rem;
 	margin-bottom: 0.25rem;
+	padding: 0 1.75rem 0.5rem;
 
-	overflow-y: auto;
 	/* firefox scrollbar styling */
 	scrollbar-color: var(--handbook-scrollbar-colour) transparent;
 }
+
 /* webkit scrollbar styling */
 .handbook-overlay .content::-webkit-scrollbar-thumb {
 	background-color: var(--handbook-scrollbar-colour);
 }
+
 .handbook-overlay .content::-webkit-scrollbar-thumb:hover {
 	background-color: var(--handbook-scrollbar-hover-colour);
 }
