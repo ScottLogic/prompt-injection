@@ -49,7 +49,7 @@ function createLevelObject(
 	return obj;
 }
 
-describe('handleResetAllDefences unit tests', () => {
+describe('handleResetProgress unit tests', () => {
 	test('GIVEN a chat history THEN should reset all chatHistory for all levels', () => {
 		const mockChatHistory: ChatHistoryMessage[] = [
 			{
