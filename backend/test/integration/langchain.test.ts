@@ -120,6 +120,8 @@ beforeEach(() => {
 	process.env = {
 		OPENAI_API_KEY: 'sk-12345',
 	};
+
+	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 });
 
 afterEach(() => {
@@ -164,7 +166,6 @@ describe('langchain integration tests ', () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = 'this is a test prompt. ';
 
-		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		await queryDocuments('some question', prompt, level);
 		expect(mockFromLLM).toHaveBeenCalledTimes(1);
 		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
@@ -178,7 +179,6 @@ describe('langchain integration tests ', () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = '';
 
-		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		mockRetrievalQAChain.call.mockResolvedValueOnce({
 			text: 'The CEO is Bill.',
 		});
@@ -230,7 +230,6 @@ describe('langchain integration tests ', () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = 'this is a test prompt. ';
 
-		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		await queryDocuments('some question', prompt, level);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
@@ -246,7 +245,6 @@ describe('langchain integration tests ', () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = 'this is a test prompt. ';
 
-		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		await queryDocuments('some question', prompt, level);
 
 		expect(ChatOpenAI).toHaveBeenCalledWith({
