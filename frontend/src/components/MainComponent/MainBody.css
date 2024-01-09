@@ -22,6 +22,6 @@
 .right-side-bar {
 	display: flex;
 	flex-direction: column-reverse;
-	height: 100%;
 	width: 30%;
+	height: 100%;
 }

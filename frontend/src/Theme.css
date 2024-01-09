@@ -49,7 +49,7 @@
 
 	/* toggle switch */
 	--main-toggle-ball-colour: #ececec;
-	--main-toggle-off-border-colour: #aaaaaa;
+	--main-toggle-off-border-colour: #aaa;
 	--main-toggle-off-colour: transparent;
 	--main-toggle-on-border-colour: var(--accent-colour);
 	--main-toggle-on-colour: var(--accent-colour);
