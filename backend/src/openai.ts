@@ -581,7 +581,7 @@ async function chatGptSendMessage(
 	};
 
 	if (!chatResponse.completion?.content || chatResponse.openAIErrorMessage) {
-		return { chatResponse, chatHistory, sentEmails, defences };
+		return { chatResponse, chatHistory, sentEmails };
 	}
 
 	// TODO - being moved in other refactor
@@ -607,7 +607,6 @@ async function chatGptSendMessage(
 		chatResponse,
 		chatHistory: updatedChatHistory,
 		sentEmails: updatedSentEmails,
-		defences,
 	};
 }
 

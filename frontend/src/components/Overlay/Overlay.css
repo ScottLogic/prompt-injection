@@ -1,17 +1,18 @@
 .overlay {
-	box-sizing: border-box;
 	position: relative;
-	border: none;
-	border-radius: 0.625rem;
-	padding: 0;
-	background-color: var(--overlay-background-colour);
-	color: var(--overlay-text-colour);
+	overflow: visible;
+	overflow-y: auto;
+	box-sizing: border-box;
 	width: 50vw;
 	height: fit-content;
 	max-height: 80vh;
-	overflow: visible;
-	overflow-y: auto;
+	padding: 0;
+	border: none;
+	border-radius: 0.625rem;
+	background-color: var(--overlay-background-colour);
+	color: var(--overlay-text-colour);
 }
+
 .overlay * {
 	box-sizing: border-box;
 }
@@ -19,6 +20,7 @@
 .overlay h1 {
 	text-align: center;
 }
+
 .overlay p {
 	font-size: 1.25rem;
 }
@@ -28,10 +30,14 @@
 	top: 1rem;
 	right: 1rem;
 	padding: 0.125rem 0.5rem;
+	border: 0.1875rem solid transparent;
 	color: inherit;
-	font-size: 1.5rem;
 	font-weight: bold;
 	border: 0.1875rem solid transparent;
+}
+
+.overlay > .close-button:focus-visible {
+	border-color: var(--main-text-colour);
 }
 
 .overlay > .close-button:focus-visible {
@@ -44,8 +50,8 @@
 }
 
 .overlay-content {
-	padding: 1.5rem;
-	overflow: hidden;
 	display: flex;
+	overflow: hidden;
 	height: 100%;
+	padding: 1.5rem;
 }

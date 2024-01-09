@@ -1,15 +1,16 @@
 .message-bubble {
-	border-radius: 1.25rem;
-	padding: 1.25rem;
 	max-width: 65%;
-	-webkit-hyphens: auto;
-	-moz-hyphens: auto;
-	-ms-hyphens: auto;
-	hyphens: auto;
-	word-wrap: break-word;
+	padding: 1.25rem;
 	border: 0.0625rem solid transparent;
+	border-radius: 1.25rem;
 	color: var(--chat-bot-text-colour);
 	white-space: pre-line;
+	word-wrap: break-word;
+	hyphens: auto;
+}
+
+.message-bubble:focus-visible {
+	outline-offset: 0.125rem;
 }
 
 .message-bubble:focus-visible {
@@ -38,8 +39,8 @@
 }
 
 .message-bubble.transformed {
-	background-color: var(--chat-transformed-background-colour);
 	border-color: var(--chat-transformed-border-colour);
+	background-color: var(--chat-transformed-background-colour);
 	color: var(--chat-transformed-text-colour);
 }
 
@@ -48,15 +49,15 @@
 }
 
 .message-bubble.level-info {
+	max-width: 100%;
 	background-color: var(--email-background-colour);
 	color: var(--chat-level-info-text-colour);
-	max-width: 100%;
 }
 
 .message-bubble.level-info .header {
-	font-weight: bold;
 	margin-top: 0;
 	margin-bottom: 0.3125rem;
+	font-weight: bold;
 }
 
 .message-bubble.left {

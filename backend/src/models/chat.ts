@@ -94,7 +94,7 @@ interface LevelHandlerResponse {
 	chatResponse: ChatResponse;
 	chatHistory: ChatHistoryMessage[];
 	sentEmails: EmailInfo[];
-	defences: SingleDefenceReport[];
+	defences?: SingleDefenceReport[]; // todo- can remove?
 }
 
 interface ChatResponse {
