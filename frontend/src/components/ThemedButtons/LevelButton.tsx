@@ -1,10 +1,9 @@
 import { clsx } from 'clsx';
-import { ReactNode } from 'react';
 
 import './LevelButton.css';
 
 export interface LevelButtonProps {
-	children: ReactNode;
+	displayName: string;
 	disabled?: boolean;
 	selected?: boolean;
 	ariaLabel?: string;
@@ -13,14 +12,14 @@ export interface LevelButtonProps {
 }
 
 function LevelButton({
-	children,
+	displayName,
 	disabled = false,
 	selected = false,
 	ariaLabel,
 	tooltip,
 	onClick,
 }: LevelButtonProps) {
-	const tooltipId = `level-button-desc-${ariaLabel}`;
+	const tooltipId = `level-button-desc-${displayName.toLowerCase()}`;
 
 	const buttonProps = {
 		className: clsx('level-button', {
@@ -36,7 +35,7 @@ function LevelButton({
 
 	return (
 		<>
-			<button {...buttonProps}>{children}</button>
+			<button {...buttonProps}>{displayName}</button>
 			{tooltip && (
 				<div role="tooltip" id={tooltipId} className="level-button-tooltip">
 					{tooltip}

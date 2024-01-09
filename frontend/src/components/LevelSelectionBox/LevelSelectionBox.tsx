@@ -34,6 +34,7 @@ function LevelSelectionBox({
 				return (
 					<LevelButton
 						key={id}
+						displayName={displayName}
 						onClick={() => {
 							handleLevelChange(id);
 						}}
@@ -44,9 +45,7 @@ function LevelSelectionBox({
 						}
 						// show tooltip if the button is disabled
 						tooltip={disabled ? `Complete level ${index} to unlock` : undefined}
-					>
-						{displayName}
-					</LevelButton>
+					/>
 				);
 			})}
 		</div>
