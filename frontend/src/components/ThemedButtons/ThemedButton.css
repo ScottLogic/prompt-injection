@@ -18,3 +18,20 @@
 	background-color: var(--action-button-disabled-background-colour);
 	color: var(--action-button-disabled-text-colour);
 }
+
+.themed-button-tooltip {
+	position: absolute;
+	top: 125%;
+	display: none;
+	padding: 0.125rem;
+	border-width: 0.0625rem;
+	border-style: solid;
+	border-color: var(--tooltip-border-colour);
+	background-color: var(--tooltip-background-colour);
+	color: var(--tooltip-text-colour);
+}
+
+.themed-button:hover + .themed-button-tooltip,
+.themed-button:focus + .themed-button-tooltip {
+	display: block;
+}

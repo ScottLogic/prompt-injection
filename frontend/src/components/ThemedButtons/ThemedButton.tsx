@@ -8,7 +8,7 @@ export interface ThemedButtonProps {
 	ariaDisabled?: boolean;
 	ariaLabel?: string;
 	className?: string;
-	title?: string;
+	tooltip?: string;
 	onClick: () => void;
 }
 
@@ -17,7 +17,7 @@ function ThemedButton({
 	ariaDisabled = false,
 	ariaLabel,
 	className,
-	title,
+	tooltip,
 	onClick,
 }: ThemedButtonProps) {
 	function onClickDisabledCheck() {
@@ -28,16 +28,25 @@ function ThemedButton({
 		disabled: ariaDisabled,
 	});
 
+	// create unique ID for tooltip from a UUID
+	const tooltipId = `themed-button-desc-${crypto.randomUUID()}`;
+
 	return (
-		<button
-			className={buttonClass}
-			onClick={onClickDisabledCheck}
-			aria-disabled={ariaDisabled}
-			aria-label={ariaLabel}
-			title={title}
-		>
-			{children}
-		</button>
+		<>
+			<button
+				className={buttonClass}
+				onClick={onClickDisabledCheck}
+				aria-disabled={ariaDisabled}
+				aria-label={ariaLabel}
+			>
+				{children}
+			</button>
+			{tooltip && (
+				<div role="tooltip" id={tooltipId} className="themed-button-tooltip">
+					{tooltip}
+				</div>
+			)}
+		</>
 	);
 }
 

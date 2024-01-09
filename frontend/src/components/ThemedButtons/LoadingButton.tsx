@@ -19,7 +19,7 @@ function LoadingButton({
 		<ThemedButton
 			ariaDisabled={isLoading}
 			// tooltip is shown when button is disabled
-			title={isLoading ? loadingTooltip : undefined}
+			tooltip={isLoading ? loadingTooltip : undefined}
 			className="loading-button"
 			onClick={onClick}
 		>
