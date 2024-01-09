@@ -23,3 +23,20 @@
 	border-color: var(--level-button-border-colour-disabled);
 	color: var(--level-button-colour-disabled);
 }
+
+.level-button-tooltip {
+	position: absolute;
+	top: 125%;
+	display: none;
+	padding: 0.125rem;
+	border-width: 0.0625rem;
+	border-style: solid;
+	border-color: var(--tooltip-border-colour);
+	background-color: var(--tooltip-background-colour);
+	color: var(--tooltip-text-colour);
+}
+
+.level-button:hover + .level-button-tooltip,
+.level-button:focus + .level-button-tooltip {
+	display: block;
+}

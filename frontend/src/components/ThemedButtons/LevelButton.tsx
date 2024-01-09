@@ -8,7 +8,7 @@ export interface LevelButtonProps {
 	disabled?: boolean;
 	selected?: boolean;
 	ariaLabel?: string;
-	title?: string;
+	tooltip?: string;
 	onClick: () => void;
 }
 
@@ -17,9 +17,11 @@ function LevelButton({
 	disabled = false,
 	selected = false,
 	ariaLabel,
-	title,
+	tooltip,
 	onClick,
 }: LevelButtonProps) {
+	const tooltipId = `level-button-desc-${ariaLabel}`;
+
 	const buttonProps = {
 		className: clsx('level-button', {
 			selected,
@@ -27,12 +29,21 @@ function LevelButton({
 		onClick: () => {
 			!disabled && onClick();
 		},
+		'aria-describedby': tooltipId,
 		'aria-disabled': disabled,
 		'aria-label': ariaLabel,
-		title,
 	};
 
-	return <button {...buttonProps}>{children}</button>;
+	return (
+		<>
+			<button {...buttonProps}>{children}</button>
+			{tooltip && (
+				<div role="tooltip" id={tooltipId} className="level-button-tooltip">
+					{tooltip}
+				</div>
+			)}
+		</>
+	);
 }
 
 export default LevelButton;

@@ -43,7 +43,7 @@ function LevelSelectionBox({
 							id === LEVEL_NAMES.SANDBOX ? undefined : `Level ${displayName}`
 						}
 						// show tooltip if the button is disabled
-						title={disabled ? `Complete level ${index} to unlock` : undefined}
+						tooltip={disabled ? `Complete level ${index} to unlock` : undefined}
 					>
 						{displayName}
 					</LevelButton>
