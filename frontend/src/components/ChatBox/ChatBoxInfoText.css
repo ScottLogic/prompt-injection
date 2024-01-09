@@ -1,11 +1,11 @@
 .chat-box-info {
-	font-size: 0.875rem;
-	font-style: italic;
-	text-align: center;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	padding: 0.125rem;
+	font-style: italic;
+	font-size: 0.875rem;
+	text-align: center;
 }
 
 .chat-box-info:focus-visible {
@@ -25,13 +25,13 @@
 }
 
 .chat-box-info.reset-level-text {
-	color: var(--chat-info-text-colour);
-	border-bottom: 1px solid var(--chat-reset-level-line-colour);
-	line-height: 0.1em;
-	padding: 0;
-	margin: 0.6rem 0.1rem;
-	border-radius: 0;
 	display: inline-block;
+	margin: 0.6rem 0.1rem;
+	padding: 0;
+	border-bottom: 1px solid var(--chat-reset-level-line-colour);
+	border-radius: 0;
+	color: var(--chat-info-text-colour);
+	line-height: 0.1em;
 }
 
 .chat-box-info.reset-level-text:focus-visible {
@@ -39,6 +39,6 @@
 }
 
 .chat-box-info.reset-level-text span {
-	background: var(--main-text-colour);
 	padding: 0 1rem;
+	background: var(--main-text-colour);
 }

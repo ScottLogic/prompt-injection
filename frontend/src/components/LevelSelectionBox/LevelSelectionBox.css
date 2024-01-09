@@ -1,9 +1,9 @@
 .level-selection-box {
 	position: relative;
 	display: flex;
+	gap: 0.5rem;
 	justify-content: center;
 	align-items: stretch;
-	gap: 0.5rem;
 }
 
 .level-selection-box button:last-child {
