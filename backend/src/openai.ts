@@ -4,14 +4,11 @@ import {
 	ChatCompletionTool,
 	ChatCompletionMessageToolCall,
 	ChatCompletionSystemMessageParam,
-	ChatCompletionMessage,
 } from 'openai/resources/chat/completions';
 
 import {
 	isDefenceActive,
 	getSystemRole,
-	detectFilterList,
-	getFilterList,
 	getQAPromptFromConfig,
 } from './defence';
 import { sendEmail } from './email';
@@ -260,13 +257,7 @@ async function chatGptChatCompletion(
 	// default to sandbox
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
-): Promise<{
-	completion: ChatCompletionMessage | null;
-	chatHistory: ChatHistoryMessage[];
-	openAIErrorMessage: string | null;
-}> {
-	console.log('chatGptChatCompletion: chatHistory=', chatHistory);
-
+) {
 	const updatedChatHistory = [...chatHistory];
 
 	// check if we need to set a system role
@@ -408,36 +399,6 @@ function pushCompletionToHistory(
 	return updatedChatHistory;
 }
 
-function applyOutputFilterDefence(
-	message: string,
-	defences: Defence[],
-	chatResponse: ChatResponse
-) {
-	const detectedPhrases = detectFilterList(
-		message,
-		getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
-	);
-
-	if (detectedPhrases.length > 0) {
-		console.debug(
-			'FILTER_BOT_OUTPUT defence triggered. Detected phrases from blocklist:',
-			detectedPhrases
-		);
-		if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
-			chatResponse.defenceReport.triggeredDefences.push(
-				DEFENCE_ID.FILTER_BOT_OUTPUT
-			);
-			chatResponse.defenceReport.isBlocked = true;
-			chatResponse.defenceReport.blockedReason =
-				'Message Blocked: My response was blocked as it contained a restricted word/phrase.';
-		} else {
-			chatResponse.defenceReport.alertedDefences.push(
-				DEFENCE_ID.FILTER_BOT_OUTPUT
-			);
-		}
-	}
-}
-
 async function performToolCalls(
 	toolCalls: ChatCompletionMessageToolCall[],
 	chatHistory: ChatHistoryMessage[],
@@ -532,7 +493,6 @@ async function getFinalReplyAfterAllToolCalls(
 		wonLevel,
 		chatHistory: updatedChatHistory,
 		sentEmails: updatedSentEmails,
-		errorMessage: gptReply.openAIErrorMessage,
 	};
 }
 
@@ -544,7 +504,11 @@ async function chatGptSendMessage(
 	messageIsTransformed: boolean,
 	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
-) {
+): Promise<{
+	chatResponse: ChatResponse;
+	chatHistory: ChatHistoryMessage[];
+	sentEmails: EmailInfo[];
+}> {
 	console.log(`User message: '${message}'`);
 	// add user message to chat
 	let updatedChatHistory = pushCompletionToHistory(
@@ -584,14 +548,6 @@ async function chatGptSendMessage(
 		return { chatResponse, chatHistory, sentEmails };
 	}
 
-	// TODO - being moved in other refactor
-	// if (
-	// 	currentLevel === LEVEL_NAMES.LEVEL_3 ||
-	// 	currentLevel === LEVEL_NAMES.SANDBOX
-	// ) {
-	// 	applyOutputFilterDefence(chatResponse.completion.content, defences, chatResponse);
-	// }
-
 	// add the ai reply to the chat history
 	updatedChatHistory = pushCompletionToHistory(
 		updatedChatHistory,
@@ -601,8 +557,6 @@ async function chatGptSendMessage(
 			: CHAT_MESSAGE_TYPE.BOT
 	);
 
-	// log the entire chat history so far
-	console.log(chatHistory);
 	return {
 		chatResponse,
 		chatHistory: updatedChatHistory,

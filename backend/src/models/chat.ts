@@ -60,16 +60,8 @@ interface SingleDefenceReport {
 	status: 'alerted' | 'triggered' | 'ok';
 }
 
-interface gptSentMessageResponse {
-	chatResponse: ChatResponse;
-	chatHistory: ChatHistoryMessage[];
-	sentEmails: EmailInfo[];
-	defences: SingleDefenceReport[];
-}
-
 interface FunctionCallResponse {
 	completion: ChatCompletionMessageParam;
-	defenceReport: ChatDefenceReport;
 	wonLevel: boolean;
 	sentEmails: EmailInfo[];
 }
@@ -88,13 +80,6 @@ interface ChatAnswer {
 interface ChatMalicious {
 	isMalicious: boolean;
 	reason: string;
-}
-
-interface LevelHandlerResponse {
-	chatResponse: ChatResponse;
-	chatHistory: ChatHistoryMessage[];
-	sentEmails: EmailInfo[];
-	defences?: SingleDefenceReport[]; // todo- can remove?
 }
 
 interface ChatResponse {
@@ -118,6 +103,12 @@ interface ChatHttpResponse {
 	wonLevel: boolean;
 	isError: boolean;
 	openAIErrorMessage: string | null;
+	sentEmails: EmailInfo[];
+}
+
+interface LevelHandlerResponse {
+	chatResponse: ChatHttpResponse;
+	chatHistory: ChatHistoryMessage[];
 	sentEmails: EmailInfo[];
 }
 

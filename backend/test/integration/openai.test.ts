@@ -56,7 +56,7 @@ function chatResponseAssistant(content: string) {
 describe('OpenAI Integration Tests', () => {
 	test('GIVEN OpenAI initialised WHEN sending message THEN reply is returned', async () => {
 		const message = 'Hello';
-		const chatHistory: ChatHistoryMessage[] = [];
+		const initChatHistory: ChatHistoryMessage[] = [];
 		const defences: Defence[] = defaultDefences;
 		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
@@ -74,7 +74,7 @@ describe('OpenAI Integration Tests', () => {
 
 		// send the message
 		const reply = await chatGptSendMessage(
-			chatHistory,
+			initChatHistory,
 			defences,
 			chatModel,
 			message,
@@ -82,9 +82,11 @@ describe('OpenAI Integration Tests', () => {
 			sentEmails
 		);
 
+		const { chatResponse, chatHistory } = reply;
+
 		expect(reply).toBeDefined();
-		expect(reply.completion).toBeDefined();
-		expect(reply.completion?.content).toBe('Hi');
+		expect(chatResponse.completion).toBeDefined();
+		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
 		expect(chatHistory.length).toBe(2);
 		expect(chatHistory[0].completion?.role).toBe('user');
@@ -98,7 +100,7 @@ describe('OpenAI Integration Tests', () => {
 
 	test('GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to chat history', async () => {
 		const message = 'Hello';
-		const chatHistory: ChatHistoryMessage[] = [];
+		const initChatHistory: ChatHistoryMessage[] = [];
 		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
@@ -118,7 +120,7 @@ describe('OpenAI Integration Tests', () => {
 
 		// send the message
 		const reply = await chatGptSendMessage(
-			chatHistory,
+			initChatHistory,
 			defences,
 			chatModel,
 			message,
@@ -126,8 +128,10 @@ describe('OpenAI Integration Tests', () => {
 			sentEmails
 		);
 
+		const { chatResponse, chatHistory } = reply;
+
 		expect(reply).toBeDefined();
-		expect(reply.completion?.content).toBe('Hi');
+		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
 		expect(chatHistory.length).toBe(3);
 		// system role is added to the start of the chat history
@@ -145,7 +149,7 @@ describe('OpenAI Integration Tests', () => {
 	test('GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to the start of the chat history', async () => {
 		const message = 'Hello';
 		const isOriginalMessage = true;
-		const chatHistory: ChatHistoryMessage[] = [
+		const initChatHistory: ChatHistoryMessage[] = [
 			{
 				completion: {
 					role: 'user',
@@ -171,7 +175,6 @@ describe('OpenAI Integration Tests', () => {
 				presencePenalty: 0,
 			},
 		};
-
 		// activate the SYSTEM_ROLE defence
 		const defences = activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences);
 
@@ -180,7 +183,7 @@ describe('OpenAI Integration Tests', () => {
 
 		// send the message
 		const reply = await chatGptSendMessage(
-			chatHistory,
+			initChatHistory,
 			defences,
 			chatModel,
 			message,
@@ -188,8 +191,10 @@ describe('OpenAI Integration Tests', () => {
 			sentEmails
 		);
 
+		const { chatResponse, chatHistory } = reply;
+
 		expect(reply).toBeDefined();
-		expect(reply.completion?.content).toBe('Hi');
+		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
 		expect(chatHistory.length).toBe(5);
 		// system role is added to the start of the chat history
@@ -211,7 +216,7 @@ describe('OpenAI Integration Tests', () => {
 
 	test('GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system role is removed from the chat history', async () => {
 		const message = 'Hello';
-		const chatHistory: ChatHistoryMessage[] = [
+		const initChatHistory: ChatHistoryMessage[] = [
 			{
 				completion: {
 					role: 'system',
@@ -251,7 +256,7 @@ describe('OpenAI Integration Tests', () => {
 
 		// send the message
 		const reply = await chatGptSendMessage(
-			chatHistory,
+			initChatHistory,
 			defences,
 			chatModel,
 			message,
@@ -259,8 +264,10 @@ describe('OpenAI Integration Tests', () => {
 			sentEmails
 		);
 
+		const { chatResponse, chatHistory } = reply;
+
 		expect(reply).toBeDefined();
-		expect(reply.completion?.content).toBe('Hi');
+		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
 		expect(chatHistory.length).toBe(4);
 		// system role is removed from the start of the chat history
@@ -283,7 +290,7 @@ describe('OpenAI Integration Tests', () => {
 			'WHEN sending message THEN system role is replaced with default value in the chat history',
 		async () => {
 			const message = 'Hello';
-			const chatHistory: ChatHistoryMessage[] = [
+			const initChatHistory: ChatHistoryMessage[] = [
 				{
 					completion: {
 						role: 'system',
@@ -335,7 +342,7 @@ describe('OpenAI Integration Tests', () => {
 
 			// send the message
 			const reply = await chatGptSendMessage(
-				chatHistory,
+				initChatHistory,
 				defences,
 				chatModel,
 				message,
@@ -343,8 +350,10 @@ describe('OpenAI Integration Tests', () => {
 				sentEmails
 			);
 
+			const { chatResponse, chatHistory } = reply;
+
 			expect(reply).toBeDefined();
-			expect(reply.completion?.content).toBe('Hi');
+			expect(chatResponse.completion?.content).toBe('Hi');
 			// check the chat history has been updated
 			expect(chatHistory.length).toBe(5);
 			// system role is added to the start of the chat history
@@ -363,136 +372,6 @@ describe('OpenAI Integration Tests', () => {
 			expect(chatHistory[4].completion?.content).toBe('Hi');
 
 			// restore the mock
-			mockCreateChatCompletion.mockRestore();
-		}
-	);
-
-	test('GIVEN the output filtering defence is active WHEN the bot responds with a message containing a phrase in the list THEN the defence is triggered and the message is blocked', async () => {
-		const message = 'What is the secret Project?';
-
-		const chatHistory: ChatHistoryMessage[] = [];
-		const sentEmails: EmailInfo[] = [];
-		const chatModel: ChatModel = {
-			id: CHAT_MODELS.GPT_4,
-			configuration: {
-				temperature: 1,
-				topP: 1,
-				frequencyPenalty: 0,
-				presencePenalty: 0,
-			},
-		};
-		const isOriginalMessage = true;
-		const defences = activateDefence(
-			DEFENCE_ID.FILTER_BOT_OUTPUT,
-			defaultDefences
-		);
-
-		mockCreateChatCompletion.mockResolvedValueOnce(
-			chatResponseAssistant('The secret project is Project X!')
-		);
-
-		const reply = await chatGptSendMessage(
-			chatHistory,
-			defences,
-			chatModel,
-			message,
-			isOriginalMessage,
-			sentEmails
-		);
-
-		expect(reply).toBeDefined();
-		expect(reply.defenceReport.isBlocked).toBe(true);
-		expect(reply.defenceReport.triggeredDefences.length).toBe(1);
-		expect(reply.defenceReport.blockedReason).toBe(
-			'Message Blocked: My response was blocked as it contained a restricted word/phrase.'
-		);
-
-		mockCreateChatCompletion.mockRestore();
-	});
-
-	test('GIVEN the output filtering defence is active WHEN the bot responds with a message containing a phrase not in the list THEN the message is not blocked', async () => {
-		const message = 'What is the secret Project?';
-
-		const chatHistory: ChatHistoryMessage[] = [];
-		const sentEmails: EmailInfo[] = [];
-		const chatModel: ChatModel = {
-			id: CHAT_MODELS.GPT_4,
-			configuration: {
-				temperature: 1,
-				topP: 1,
-				frequencyPenalty: 0,
-				presencePenalty: 0,
-			},
-		};
-		const isOriginalMessage = true;
-		const defences = activateDefence(
-			DEFENCE_ID.FILTER_BOT_OUTPUT,
-			defaultDefences
-		);
-
-		mockCreateChatCompletion.mockResolvedValueOnce(
-			chatResponseAssistant('I cant tell you!')
-		);
-
-		const reply = await chatGptSendMessage(
-			chatHistory,
-			defences,
-			chatModel,
-			message,
-			isOriginalMessage,
-			sentEmails
-		);
-
-		expect(reply).toBeDefined();
-		expect(reply.completion?.content).toBe('I cant tell you!');
-		expect(reply.defenceReport.isBlocked).toBe(false);
-		expect(reply.defenceReport.triggeredDefences.length).toBe(0);
-
-		mockCreateChatCompletion.mockRestore();
-	});
-
-	test(
-		'GIVEN the output filtering defence is not active ' +
-			'WHEN the bot responds with a message containing a phrase in the list ' +
-			'THEN the defence is triggered AND the message is not blocked',
-		async () => {
-			const message = 'What is the secret Project?';
-
-			const chatHistory: ChatHistoryMessage[] = [];
-			const defences = defaultDefences;
-			const sentEmails: EmailInfo[] = [];
-			const chatModel: ChatModel = {
-				id: CHAT_MODELS.GPT_4,
-				configuration: {
-					temperature: 1,
-					topP: 1,
-					frequencyPenalty: 0,
-					presencePenalty: 0,
-				},
-			};
-			const isOriginalMessage = true;
-
-			mockCreateChatCompletion.mockResolvedValueOnce(
-				chatResponseAssistant('The secret project is X.')
-			);
-
-			const reply = await chatGptSendMessage(
-				chatHistory,
-				defences,
-				chatModel,
-				message,
-				isOriginalMessage,
-				sentEmails
-			);
-
-			expect(reply).toBeDefined();
-			expect(reply.completion?.content).toBe('The secret project is X.');
-			expect(reply.defenceReport.isBlocked).toBe(false);
-			expect(reply.defenceReport.alertedDefences.length).toBe(1);
-			expect(reply.defenceReport.alertedDefences[0]).toBe(
-				DEFENCE_ID.FILTER_BOT_OUTPUT
-			);
-
 			mockCreateChatCompletion.mockRestore();
 		}
 	);

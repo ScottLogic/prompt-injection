@@ -7,7 +7,7 @@ function sendErrorResponse(
 	statusCode: number,
 	errorMessage: string
 ) {
-	return res.status(statusCode).json(errorMessage);
+	res.status(statusCode).send(errorMessage);
 }
 
 function handleChatError(
@@ -30,8 +30,7 @@ function handleChatError(
 				: chatResponse.defenceReport.blockedReason,
 		},
 	};
-
-	return res.status(statusCode).json(updatedChatResponse);
+	res.status(statusCode).send(updatedChatResponse);
 }
 
 export { sendErrorResponse, handleChatError };

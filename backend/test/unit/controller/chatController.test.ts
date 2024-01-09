@@ -71,7 +71,7 @@ const mockDetectTriggeredDefences =
 function responseMock() {
 	return {
 		send: jest.fn(),
-		status: jest.fn(),
+		status: jest.fn().mockReturnThis(),
 	} as unknown as Response;
 }
 
