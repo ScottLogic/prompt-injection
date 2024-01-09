@@ -19,7 +19,10 @@ function LevelButton({
 	tooltip,
 	onClick,
 }: LevelButtonProps) {
-	const tooltipId = `level-button-desc-${displayName.toLowerCase()}`;
+	// replace spaces with dashes and make lowercase
+	const tooltipId = `level-button-desc-${displayName
+		.replace(/\s+/g, '-')
+		.toLowerCase()}`;
 
 	const buttonProps = {
 		className: clsx('level-button', {
