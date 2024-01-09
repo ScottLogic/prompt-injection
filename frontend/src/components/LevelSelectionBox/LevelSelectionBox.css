@@ -9,3 +9,23 @@
 .level-selection-box button:last-child {
 	font-size: 1rem;
 }
+
+.level-button.themed-button {
+	height: 3.125rem;
+	padding: 1rem;
+	border: 0.125rem solid var(--level-button-border-colour);
+	border-radius: 0;
+	background-color: transparent;
+	color: var(--level-button-colour);
+	font-size: 1.875rem;
+}
+
+.level-button.themed-button.selected {
+	background-color: var(--level-button-background-colour-selected);
+}
+
+.level-button.themed-button.disabled {
+	background-color: transparent;
+	border-color: var(--level-button-border-colour-disabled);
+	color: var(--level-button-colour-disabled);
+}

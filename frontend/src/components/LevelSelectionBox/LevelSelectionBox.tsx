@@ -1,5 +1,7 @@
+import { clsx } from 'clsx';
+
 import { LEVELS } from '@src/Levels';
-import LevelButton from '@src/components/LevelSelectionBox/LevelButton';
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './LevelSelectionBox.css';
@@ -31,21 +33,25 @@ function LevelSelectionBox({
 			{displayLevels.map(({ id, displayName }, index) => {
 				const disabled =
 					index > numCompletedLevels && id !== LEVEL_NAMES.SANDBOX;
+				const className = clsx('level-button', {
+					selected: id === currentLevel,
+				});
 				return (
-					<LevelButton
+					<ThemedButton
 						key={id}
-						displayName={displayName}
 						onClick={() => {
 							handleLevelChange(id);
 						}}
-						disabled={disabled}
-						selected={id === currentLevel}
+						ariaDisabled={disabled}
 						ariaLabel={
 							id === LEVEL_NAMES.SANDBOX ? undefined : `Level ${displayName}`
 						}
+						className={className}
 						// show tooltip if the button is disabled
 						tooltip={disabled ? `Complete level ${index} to unlock` : undefined}
-					/>
+					>
+						{displayName}
+					</ThemedButton>
 				);
 			})}
 		</div>
