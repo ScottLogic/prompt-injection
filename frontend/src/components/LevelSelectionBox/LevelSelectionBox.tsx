@@ -1,5 +1,5 @@
 import { LEVELS } from '@src/Levels';
-import LevelButton from '@src/components/ThemedButtons/LevelButton';
+import LevelButton from '@src/components/LevelSelectionBox/LevelButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './LevelSelectionBox.css';
