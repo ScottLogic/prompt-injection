@@ -32,7 +32,7 @@ const mockPromptEvalChain = {
 const mockFromLLM = jest.fn<any>();
 const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
 const mockLoader = jest.fn();
-const mockSplitDocuments = jest.fn<any>();
+const mockSplitDocuments = jest.fn<() => Promise<unknown>>();
 const mockAsRetriever = jest.fn();
 
 // eslint-disable-next-line prefer-const
@@ -151,7 +151,6 @@ describe('langchain integration tests ', () => {
 		const level = LEVEL_NAMES.LEVEL_1;
 		const prompt = '';
 
-		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
 		await queryDocuments('some question', prompt, level);
 		expect(mockFromLLM).toHaveBeenCalledTimes(1);
 		expect(mockFromTemplate).toHaveBeenCalledTimes(1);
