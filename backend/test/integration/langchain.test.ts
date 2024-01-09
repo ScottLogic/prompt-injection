@@ -29,7 +29,7 @@ const mockRetrievalQAChain = {
 const mockPromptEvalChain = {
 	call: jest.fn<() => Promise<{ promptEvalOutput: string }>>(),
 };
-const mockFromLLM = jest.fn<any>();
+const mockFromLLM = jest.fn<() => typeof mockRetrievalQAChain>();
 const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
 const mockLoader = jest.fn();
 const mockSplitDocuments = jest.fn<() => Promise<unknown>>();
@@ -103,7 +103,8 @@ jest.mock('langchain/chains', () => {
 		}),
 	};
 });
-RetrievalQAChain.fromLLM = mockFromLLM;
+RetrievalQAChain.fromLLM =
+	mockFromLLM as unknown as typeof RetrievalQAChain.fromLLM;
 
 jest.mock('@src/openai', () => {
 	const originalModule =
