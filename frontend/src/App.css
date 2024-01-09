@@ -51,6 +51,12 @@
 	padding: 0;
 	margin: 0;
 }
+
+.dialog-modal:focus-visible {
+	outline-offset: 0.1875rem;
+	border-radius: 0.625rem;
+}
+
 .dialog-modal::backdrop {
 	background-color: var(--overlay-hidden-colour);
 }
