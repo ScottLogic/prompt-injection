@@ -8,7 +8,10 @@ export interface ThemedButtonProps {
 	ariaDisabled?: boolean;
 	ariaLabel?: string;
 	className?: string;
-	tooltip?: string;
+	tooltip?: {
+		id: string;
+		text: string;
+	};
 	onClick: () => void;
 }
 
@@ -28,8 +31,9 @@ function ThemedButton({
 		disabled: ariaDisabled,
 	});
 
-	// create unique ID for tooltip from a UUID
-	const tooltipId = `themed-button-desc-${crypto.randomUUID()}`;
+	const tooltipId = `themed-button-desc-${tooltip?.id
+		.replace(/\s/g, '-')
+		.toLowerCase()}`;
 
 	return (
 		<>
@@ -44,7 +48,7 @@ function ThemedButton({
 			</button>
 			{tooltip && (
 				<div role="tooltip" id={tooltipId} className="themed-button-tooltip">
-					{tooltip}
+					{tooltip.text}
 				</div>
 			)}
 		</>

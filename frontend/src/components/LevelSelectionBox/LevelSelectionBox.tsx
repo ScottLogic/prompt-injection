@@ -48,7 +48,14 @@ function LevelSelectionBox({
 						}
 						className={className}
 						// show tooltip if the button is disabled
-						tooltip={disabled ? `Complete level ${index} to unlock` : undefined}
+						tooltip={
+							disabled
+								? {
+										id: `level-${index}`,
+										text: `Complete level ${index} to unlock`,
+								  }
+								: undefined
+						}
 					>
 						{displayName}
 					</ThemedButton>
