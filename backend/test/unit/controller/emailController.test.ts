@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { expect, test, jest, describe } from '@jest/globals';
 import { Response } from 'express';
 
