@@ -90,6 +90,13 @@ interface ChatMalicious {
 	reason: string;
 }
 
+interface LevelHandlerResponse {
+	chatResponse: ChatHttpResponse;
+	chatHistory: ChatHistoryMessage[];
+	sentEmails: EmailInfo[];
+	defences: SingleDefenceReport[];
+}
+
 interface ChatResponse {
 	completion: ChatCompletionMessageParam | null;
 	defenceReport: ChatDefenceReport;
@@ -101,6 +108,7 @@ interface TransformedChatMessage {
 	preMessage: string;
 	message: string;
 	postMessage: string;
+	transformationName: string;
 }
 
 interface ChatHttpResponse {
@@ -136,6 +144,7 @@ export type {
 	ChatDefenceReport,
 	ChatMalicious,
 	ChatResponse,
+	LevelHandlerResponse,
 	ChatHttpResponse,
 	ChatHistoryMessage,
 	TransformedChatMessage,
