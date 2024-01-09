@@ -3,13 +3,15 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 0.5rem;
-	border: none;
+	border: 0.125rem solid var(--action-button-background-colour);
 	border-radius: 0.625rem;
 	background-color: var(--action-button-background-colour);
 	color: var(--action-button-text-colour);
 	font-weight: 600;
-	font-size: 1rem;
+}
+
+.themed-button:focus-visible {
+	border-color: var(--main-text-colour);
 }
 
 .themed-button.disabled {

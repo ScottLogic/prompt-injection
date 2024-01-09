@@ -53,6 +53,11 @@
 	transform: translate(-50%, -50%);
 }
 
+.dialog-modal:focus-visible {
+	border-radius: 0.625rem;
+	outline-offset: 0.1875rem;
+}
+
 .dialog-modal::backdrop {
 	background-color: var(--overlay-hidden-colour);
 }

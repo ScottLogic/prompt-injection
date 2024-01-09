@@ -93,3 +93,14 @@
 	font-weight: 600;
 	font-size: inherit;
 }
+
+.defence-mechanism .defence-radio-buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 0.75rem 0;
+}
+
+.defence-mechanism .prompt-enclosure-configuration-area {
+	padding: 0;
+}

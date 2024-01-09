@@ -40,6 +40,15 @@ npm run docker:logs
 npm run docker:stop
 ```
 
+## Linting and Formatting
+
+To manually lint and format:
+
+```bash
+npm run lint
+npm run format
+```
+
 ## Test
 
 ```bash

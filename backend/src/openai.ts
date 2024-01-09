@@ -392,7 +392,7 @@ function applyOutputFilterDefence(
 			);
 			chatResponse.defenceReport.isBlocked = true;
 			chatResponse.defenceReport.blockedReason =
-				'My original response was blocked as it contained a restricted word/phrase. Ask me something else. ';
+				'Message Blocked: My response was blocked as it contained a restricted word/phrase.';
 		} else {
 			chatResponse.defenceReport.alertedDefences.push(
 				DEFENCE_ID.FILTER_BOT_OUTPUT
@@ -498,7 +498,6 @@ async function chatGptSendMessage(
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	console.log(`User message: '${message}'`);
-
 	// add user message to chat
 	pushCompletionToHistory(
 		chatHistory,

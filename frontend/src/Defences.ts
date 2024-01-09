@@ -52,9 +52,26 @@ const DEFENCES_SHOWN_LEVEL3: Defence[] = [
 	makeDefence(
 		DEFENCE_ID.XML_TAGGING,
 		'XML Tagging',
-		'Enclose the users prompt between <user_input> tags and escapes xml characters in raw input and provides instructional prompt to model to follow only enclosed instructions. This is a form of prompt validation.',
+		"Enclose user's prompt between <user_input> tags and give an instructional prompt. Escapes XML characters in raw input.",
 		[makeDefenceConfigItem('PROMPT', 'prompt', 'text')]
 	),
+	makeDefence(
+		DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+		'Random Sequence Enclosure',
+		"Enclose user's prompt between random sequences of characters and give an instructional prompt.",
+		[
+			makeDefenceConfigItem('PROMPT', 'prompt', 'text'),
+			makeDefenceConfigItem('SEQUENCE_LENGTH', 'sequence length', 'number'),
+		]
+	),
+
+	makeDefence(
+		DEFENCE_ID.PROMPT_ENCLOSURE,
+		'Prompt Enclosure',
+		"Alter the user's input by attaching instructional prompts and/or tags to the input.",
+		[]
+	),
+
 	makeDefence(
 		DEFENCE_ID.PROMPT_EVALUATION_LLM,
 		'Prompt Evaluation LLM ',
@@ -79,4 +96,20 @@ const ALL_DEFENCES: Defence[] = [
 	),
 ];
 
-export { DEFENCES_SHOWN_LEVEL3, ALL_DEFENCES };
+const MODEL_DEFENCES = [
+	DEFENCE_ID.PROMPT_EVALUATION_LLM,
+	DEFENCE_ID.QA_LLM,
+	DEFENCE_ID.SYSTEM_ROLE,
+];
+
+const PROMPT_ENCLOSURE_DEFENCES = [
+	DEFENCE_ID.XML_TAGGING,
+	DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+];
+
+export {
+	DEFENCES_SHOWN_LEVEL3,
+	ALL_DEFENCES,
+	MODEL_DEFENCES,
+	PROMPT_ENCLOSURE_DEFENCES,
+};

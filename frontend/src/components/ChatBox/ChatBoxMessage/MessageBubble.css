@@ -9,6 +9,10 @@
 	hyphens: auto;
 }
 
+.message-bubble:focus-visible {
+	outline-offset: 0.125rem;
+}
+
 .message-bubble.bot {
 	border-color: var(--chat-bot-border-colour);
 	background-color: var(--chat-bot-background-colour);

@@ -18,6 +18,10 @@
 	text-align: left;
 }
 
+.handbook-spine button:focus-visible {
+	outline-offset: -0.25rem;
+}
+
 .handbook-spine button:hover {
 	background-color: var(--handbook-tab-hover-colour);
 }

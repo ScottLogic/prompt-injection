@@ -30,9 +30,13 @@
 	top: 1rem;
 	right: 1rem;
 	padding: 0.125rem 0.5rem;
+	border: 0.1875rem solid transparent;
 	color: inherit;
 	font-weight: bold;
-	font-size: 1.5rem;
+}
+
+.overlay > .close-button:focus-visible {
+	border-color: var(--main-text-colour);
 }
 
 .overlay > .close-button:hover {
