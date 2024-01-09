@@ -1,3 +1,4 @@
+import { PROMPT_ENCLOSURE_DEFENCES } from '@src/Defences';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 
 import DefenceMechanism from './DefenceMechanism';
@@ -21,13 +22,21 @@ function DefenceBox({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 }) {
+	const promptEnclosureDefences = defences.filter((defence) =>
+		PROMPT_ENCLOSURE_DEFENCES.some((id) => id === defence.id)
+	);
+	const notPromptEnclosureDefences = defences.filter(
+		(defence) => !promptEnclosureDefences.includes(defence)
+	);
+
 	return (
 		<div className="defence-box">
-			{defences.map((defence, index) => {
+			{notPromptEnclosureDefences.map((defence, index) => {
 				return (
 					<DefenceMechanism
 						key={index}
 						defenceDetail={defence}
+						promptEnclosureDefences={promptEnclosureDefences}
 						showConfigurations={showConfigurations}
 						toggleDefence={toggleDefence}
 						resetDefenceConfiguration={resetDefenceConfiguration}

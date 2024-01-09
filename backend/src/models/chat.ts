@@ -91,7 +91,7 @@ interface ChatMalicious {
 }
 
 interface LevelHandlerResponse {
-	chatResponse: ChatHttpResponse;
+	chatResponse: ChatResponse;
 	chatHistory: ChatHistoryMessage[];
 	sentEmails: EmailInfo[];
 	defences: SingleDefenceReport[];

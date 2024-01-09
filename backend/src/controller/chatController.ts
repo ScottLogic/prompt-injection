@@ -36,7 +36,7 @@ async function handleLowLevelChat(
 	sentEmails: EmailInfo[]
 ) {
 	// get the chatGPT reply
-	const gptResponse = await chatGptSendMessage(
+	const openAiReply = await chatGptSendMessage(
 		[...chatHistory],
 		[...defences],
 		chatModel,
@@ -48,16 +48,14 @@ async function handleLowLevelChat(
 
 	const updatedChatResponse: ChatHttpResponse = {
 		...chatResponse,
-		reply: gptResponse.chatResponse.completion?.content?.toString() ?? '',
-		wonLevel: gptResponse.chatResponse.wonLevel,
-		openAIErrorMessage: gptResponse.chatResponse.openAIErrorMessage,
+		reply: openAiReply.chatResponse.completion?.content?.toString() ?? '',
+		wonLevel: openAiReply.chatResponse.wonLevel,
+		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 	};
-
 	return {
 		chatResponse: updatedChatResponse,
-		chatHistory: gptResponse.chatHistory,
-		sentEmails: gptResponse.sentEmails,
-		defences: gptResponse.defences,
+		chatHistory: openAiReply.chatHistory,
+		sentEmails: openAiReply.sentEmails,
 	};
 }
 
@@ -71,14 +69,12 @@ async function handleHigherLevelChat(
 	defences: Defence[],
 	sentEmails: EmailInfo[]
 ): Promise<LevelHandlerResponse> {
-	let wonLevel = false;
-	let reply = null;
-	let openAIErrorMessage = null;
 	let updatedChatHistory = [...chatHistory];
-
 	let updatedChatResponse: ChatHttpResponse = {
 		...chatResponse,
 	};
+
+	console.debug('*** handleHigherLevelChat ***');
 
 	// transform the message according to active defences
 	const transformedMessage = transformMessage(message, defences);
@@ -91,6 +87,7 @@ async function handleHigherLevelChat(
 			infoMessage: message,
 		});
 	}
+	console.log('defences: ', defences);
 	// detect defences on input message
 	const triggeredDefencesPromise = detectTriggeredDefences(message, defences);
 
@@ -116,48 +113,42 @@ async function handleHigherLevelChat(
 	// if input message is blocked, restore the original chat history and add user message (not as completion)
 	if (defenceReport.isBlocked) {
 		updatedChatHistory = [
-			...chatHistory,
+			...updatedChatHistory,
 			{
 				completion: null,
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 				infoMessage: message,
 			},
 		];
-
 		updatedChatResponse.defenceReport = defenceReport;
 	} else {
-		wonLevel = openAiReply.chatResponse.wonLevel;
-		reply = openAiReply.chatResponse.completion?.content?.toString() ?? '';
+		// Update other fields using immutable operations
+		updatedChatResponse = {
+			...updatedChatResponse,
+			reply: openAiReply.chatResponse.completion?.content?.toString() ?? '',
+			wonLevel: openAiReply.chatResponse.wonLevel,
+			openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
+		};
+
+		updatedChatHistory = openAiReply.chatHistory;
 
 		// combine triggered defences
 		defenceReport.triggeredDefences = [
 			...chatResponse.defenceReport.triggeredDefences,
 			...openAiReply.chatResponse.defenceReport.triggeredDefences,
 		];
-
 		// combine blocked
 		defenceReport.isBlocked = openAiReply.chatResponse.defenceReport.isBlocked;
 		defenceReport.blockedReason =
 			openAiReply.chatResponse.defenceReport.blockedReason;
-
-		// combine error message
-		openAIErrorMessage = openAiReply.chatResponse.openAIErrorMessage;
-
-		console.log({ wonLevel, reply, openAIErrorMessage });
-
-		updatedChatResponse = {
-			...chatResponse,
-			reply,
-			wonLevel,
-			openAIErrorMessage,
-			defenceReport,
-		};
 	}
+
+	console.log('updatedChatHistory: ', updatedChatHistory);
+
 	return {
 		chatResponse: updatedChatResponse,
 		chatHistory: updatedChatHistory,
 		sentEmails: openAiReply.sentEmails,
-		defences: openAiReply.defences,
 	} as LevelHandlerResponse;
 }
 
@@ -222,7 +213,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 
 	const defences = [...req.session.levelState[currentLevel].defences];
 
-	let levelResult: LevelHandlerResponse | null = null;
+	let levelResult = null;
 	try {
 		// skip defence detection / blocking for levels 1 and 2 - sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
@@ -236,7 +227,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				totalSentEmails
 			);
 		} else {
-			// apply the defence detection for level 3 and sandbox - sets chatResponse obj
+			// apply the defence detection for level 3 and sandbox
 			levelResult = await handleHigherLevelChat(
 				message,
 				chatResponse,
@@ -268,6 +259,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	chatResponse.wonLevel = levelResult.chatResponse.wonLevel;
 	chatResponse.openAIErrorMessage = levelResult.chatResponse.openAIErrorMessage;
 	chatResponse.sentEmails = levelResult.sentEmails.slice(numSentEmails);
+	chatResponse.defenceReport = levelResult.chatResponse.defenceReport;
 
 	if (levelResult.chatResponse.defenceReport.isBlocked) {
 		// chatReponse.reply is empty if blocked
@@ -295,9 +287,9 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	// update state
 	req.session.levelState[currentLevel].chatHistory = updatedChatHistory;
 	req.session.levelState[currentLevel].sentEmails = totalSentEmails;
-	req.session.levelState[currentLevel].defences = levelResult.defences;
+	// req.session.levelState[currentLevel].defences = levelResult.defences;
 
-	console.log(chatResponse);
+	console.log('chatResponse: ', chatResponse);
 	res.send(chatResponse);
 }
 
