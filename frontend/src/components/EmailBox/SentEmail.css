@@ -6,13 +6,6 @@
 	border: 0.125rem solid var(--header-background-colour);
 	color: var(--email-text-colour);
 	white-space: pre-line;
-	border: 0.125rem solid var(--header-background-colour);
-}
-
-.sent-email:focus-visible {
-	outline-offset: 0.125rem;
-	border-radius: 0.625rem;
-	border-color: var(--main-text-colour);
 }
 
 .sent-email:focus-visible {

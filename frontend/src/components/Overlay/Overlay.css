@@ -33,11 +33,6 @@
 	border: 0.1875rem solid transparent;
 	color: inherit;
 	font-weight: bold;
-	border: 0.1875rem solid transparent;
-}
-
-.overlay > .close-button:focus-visible {
-	border-color: var(--main-text-colour);
 }
 
 .overlay > .close-button:focus-visible {

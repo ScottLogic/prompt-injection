@@ -504,11 +504,7 @@ async function chatGptSendMessage(
 	messageIsTransformed: boolean,
 	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
-): Promise<{
-	chatResponse: ChatResponse;
-	chatHistory: ChatHistoryMessage[];
-	sentEmails: EmailInfo[];
-}> {
+) {
 	console.log(`User message: '${message}'`);
 	// add user message to chat
 	let updatedChatHistory = pushCompletionToHistory(

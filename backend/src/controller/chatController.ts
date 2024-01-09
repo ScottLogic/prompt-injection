@@ -23,6 +23,7 @@ import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
 
 import { handleChatError } from './handleError';
+import { error } from 'console';
 
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
@@ -82,9 +83,7 @@ async function handleHigherLevelChat(
 			chatMessageType: CHAT_MESSAGE_TYPE.USER,
 			infoMessage: message,
 		});
-		console.log('transformedMessage: ', transformedMessage);
 	}
-
 	// detect defences on input message
 	const triggeredDefencesPromise = detectTriggeredDefences(message, defences);
 
@@ -196,13 +195,9 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			? req.session.chatModel
 			: defaultChatModel;
 
-	// record the history before chat completion called - incase we need to revert due to block
-	const chatHistoryBefore = [
+	let updatedChatHistory = [
 		...req.session.levelState[currentLevel].chatHistory,
 	];
-	// chat history for updating
-	let updatedChatHistory = [...chatHistoryBefore];
-
 	const defences = [...req.session.levelState[currentLevel].defences];
 
 	let levelResult = null;
@@ -214,7 +209,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				initChatResponse,
 				currentLevel,
 				chatModel,
-				chatHistoryBefore,
+				updatedChatHistory,
 				defences,
 				totalSentEmails
 			);
@@ -225,7 +220,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				initChatResponse,
 				currentLevel,
 				chatModel,
-				chatHistoryBefore,
+				updatedChatHistory,
 				defences,
 				totalSentEmails
 			);
@@ -240,7 +235,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		handleChatError(res, initChatResponse, true, errorMessage, 500);
 		return;
 	}
-	// update chat history
+
 	updatedChatHistory = levelResult.chatHistory;
 	totalSentEmails.push(...levelResult.sentEmails);
 
@@ -267,16 +262,12 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		const errorMsg = simplifyOpenAIErrorMessage(
 			updatedChatResponse.openAIErrorMessage
 		);
-		console.log('error message: ', errorMsg);
 		updatedChatHistory = addErrorToChatHistory(updatedChatHistory, errorMsg);
 		handleChatError(res, updatedChatResponse, true, errorMsg, 500);
 		return;
 	} else if (!levelResult.chatResponse.reply) {
 		const errorMsg = 'Failed to get chatGPT reply';
-		updatedChatHistory = addErrorToChatHistory(
-			updatedChatHistory,
-			'Failed to get chatGPT reply'
-		);
+		updatedChatHistory = addErrorToChatHistory(updatedChatHistory, errorMsg);
 		handleChatError(res, updatedChatResponse, true, errorMsg, 500);
 		return;
 	}
