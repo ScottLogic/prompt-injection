@@ -36,6 +36,7 @@ function ThemedButton({
 			<button
 				className={buttonClass}
 				onClick={onClickDisabledCheck}
+				aria-describedby={tooltipId}
 				aria-disabled={ariaDisabled}
 				aria-label={ariaLabel}
 			>
