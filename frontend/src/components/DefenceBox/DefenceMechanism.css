@@ -18,9 +18,8 @@
 	border-radius: 0.25rem;
 }
 
-/* style for when details element is expanded */
-.defence-mechanism-fieldset details[open] > summary {
-	border-style: inset;
+.defence-mechanism > summary {
+	font-size: 1rem;
 }
 
 /* remove the default triangle on the summary element */
@@ -32,6 +31,11 @@
 	display: none;
 }
 
+/* style for when details element is expanded */
+.defence-mechanism-fieldset details[open] > summary {
+	border-style: inset;
+}
+
 /* the toggle and label combined */
 .defence-mechanism-form {
 	position: absolute;
@@ -40,14 +44,6 @@
 
 .defence-mechanism {
 	cursor: default;
-}
-
-.defence-mechanism > summary {
-	font-size: 1rem;
-}
-
-.defence-mechanism .info-box {
-	font-size: 0.875rem;
 }
 
 .defence-mechanism .info-box :first-child {
@@ -98,31 +94,18 @@
 	text-align: right;
 }
 
-/* the  label hovered or focused */
-.toggles [type='checkbox']:focus + label,
-.toggles [type='checkbox']:hover + label {
-	color: var(--main-text-accent-colour);
-}
-
-.toggles [type='checkbox']:focus + label::before,
-.toggles [type='checkbox']:hover + label::before {
-	box-shadow: 0 0 0.3em var(--main-text-colour);
-}
-
-.toggles [type='checkbox']:focus + label::after,
-.toggles [type='checkbox']:hover + label::after {
-	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50' fill='rgba(0,0,0,.25)'/%3E%3C/svg%3E");
-	background-position: center center;
-	background-size: 30%;
-	background-repeat: no-repeat;
-}
-
 .toggles [type='checkbox'] + label::before,
 .toggles [type='checkbox'] + label::after {
 	content: '';
 	position: absolute;
 	height: 0.9em;
 	transition: all 0.25s ease;
+}
+
+/* the  label hovered or focused */
+.toggles [type='checkbox']:focus + label,
+.toggles [type='checkbox']:hover + label {
+	color: var(--main-text-accent-colour);
 }
 
 /* background oval before it's checked */
@@ -144,6 +127,19 @@
 	border-radius: 50%;
 	background: var(--main-text-colour);
 	background-position: center center;
+}
+
+.toggles [type='checkbox']:focus + label::before,
+.toggles [type='checkbox']:hover + label::before {
+	box-shadow: 0 0 0.3em var(--main-text-colour);
+}
+
+.toggles [type='checkbox']:focus + label::after,
+.toggles [type='checkbox']:hover + label::after {
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50' fill='rgba(0,0,0,.25)'/%3E%3C/svg%3E");
+	background-position: center center;
+	background-size: 30%;
+	background-repeat: no-repeat;
 }
 
 /* round toggle slider sliding to the right */
