@@ -67,4 +67,14 @@ module.exports = {
 		'@typescript-eslint/consistent-type-definitions': 0, // disable rule. Eventually use below rule to enforce type over interface
 		// '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
 	},
+	overrides: [
+		{
+			files: ['*.test.ts'],
+			plugins: ['jest'],
+			rules: {
+				'@typescript-eslint/unbound-method': 'off',
+				'jest/unbound-method': 'error',
+			},
+		},
+	],
 };
