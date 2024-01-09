@@ -23,7 +23,6 @@ import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
 
 import { handleChatError } from './handleError';
-import { error } from 'console';
 
 // handle the chat logic for level 1 and 2 with no defences applied
 async function handleLowLevelChat(
@@ -37,12 +36,12 @@ async function handleLowLevelChat(
 ): Promise<LevelHandlerResponse> {
 	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
-		[...chatHistory],
-		[...defences],
+		chatHistory,
+		defences,
 		chatModel,
 		message,
 		false,
-		[...sentEmails],
+		sentEmails,
 		currentLevel
 	);
 
@@ -116,25 +115,37 @@ async function handleHigherLevelChat(
 				infoMessage: message,
 			},
 		];
-		updatedChatResponse.defenceReport = defenceReport;
+		updatedChatResponse = {
+			...updatedChatResponse,
+			defenceReport,
+		};
 	} else {
+		updatedChatHistory = openAiReply.chatHistory;
+
+		// combine alerted and triggered defences
+		const combinedAlertedDefences = [
+			...defenceReport.alertedDefences,
+			...openAiReply.chatResponse.defenceReport.alertedDefences,
+		];
+		const combinedTriggeredDefences = [
+			...defenceReport.triggeredDefences,
+			...openAiReply.chatResponse.defenceReport.triggeredDefences,
+		];
+		// combine blocked
+
 		updatedChatResponse = {
 			...updatedChatResponse,
 			reply: openAiReply.chatResponse.completion?.content?.toString() ?? '',
 			wonLevel: openAiReply.chatResponse.wonLevel,
 			openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
+			defenceReport: {
+				...defenceReport,
+				alertedDefences: combinedAlertedDefences,
+				triggeredDefences: combinedTriggeredDefences,
+				isBlocked: openAiReply.chatResponse.defenceReport.isBlocked,
+				blockedReason: openAiReply.chatResponse.defenceReport.blockedReason,
+			},
 		};
-		updatedChatHistory = openAiReply.chatHistory;
-
-		// combine triggered defences
-		defenceReport.triggeredDefences = [
-			...chatResponse.defenceReport.triggeredDefences,
-			...openAiReply.chatResponse.defenceReport.triggeredDefences,
-		];
-		// combine blocked
-		defenceReport.isBlocked = openAiReply.chatResponse.defenceReport.isBlocked;
-		defenceReport.blockedReason =
-			openAiReply.chatResponse.defenceReport.blockedReason;
 	}
 	return {
 		chatResponse: updatedChatResponse,
@@ -329,11 +340,14 @@ function handleAddToChatHistory(req: OpenAiAddHistoryRequest, res: Response) {
 		level !== undefined &&
 		level >= LEVEL_NAMES.LEVEL_1
 	) {
-		req.session.levelState[level].chatHistory.push({
-			completion: null,
-			chatMessageType,
-			infoMessage,
-		});
+		req.session.levelState[level].chatHistory = [
+			...req.session.levelState[level].chatHistory,
+			{
+				completion: null,
+				chatMessageType,
+				infoMessage,
+			},
+		];
 		res.send();
 	} else {
 		res.status(400);
