@@ -488,7 +488,7 @@ async function chatGptSendMessage(
 	const chatResponse: ChatResponse = {
 		completion: finalToolCallResponse.gptReply.completion,
 		defenceReport: {
-			blockedReason: '',
+			blockedReason: null,
 			isBlocked: false,
 			alertedDefences: [],
 			triggeredDefences: [],
