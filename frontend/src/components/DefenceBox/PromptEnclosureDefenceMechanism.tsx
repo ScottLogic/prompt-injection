@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import DefenceConfigurationRadioButton from '@src/components/ThemedButtons/DefenceConfigurationRadioButton';
+import DefenceConfigurationRadioButton from '@src/components/DefenceBox/DefenceConfigurationRadioButton';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 
 import DefenceConfiguration from './DefenceConfiguration';
