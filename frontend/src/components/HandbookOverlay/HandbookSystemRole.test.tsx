@@ -9,12 +9,15 @@ describe('HandbookSystemRole component tests', () => {
 	const level1SystemRole = 'System Role for level 1';
 	const level2SystemRole = 'System Role for level 2';
 	const level3SystemRole = 'System Role for level 3';
+	const errorMessage =
+		'Unable to fetch system role information. Try again in a few minutes.';
 
 	const systemRoles: LevelSystemRole[] = [
 		{ level: LEVEL_NAMES.LEVEL_1, systemRole: level1SystemRole },
 		{ level: LEVEL_NAMES.LEVEL_2, systemRole: level2SystemRole },
 		{ level: LEVEL_NAMES.LEVEL_3, systemRole: level3SystemRole },
 	];
+	const emptySystemRoles: LevelSystemRole[] = [];
 
 	test('renders no system roles and instead renders locked boxes when no levels complete', () => {
 		const numLevelsCompleted = 0;
@@ -120,5 +123,42 @@ describe('HandbookSystemRole component tests', () => {
 		// check no locked boxes
 		const lockedBox = container.getElementsByClassName('role-locked');
 		expect(lockedBox).toHaveLength(0);
+	});
+
+	test('renders an error message when no system roles are passed to it', () => {
+		const numLevelsCompleted = 0;
+
+		const { container } = render(
+			<HandbookSystemRole
+				numCompletedLevels={numLevelsCompleted}
+				systemRoles={emptySystemRoles}
+			/>
+		);
+
+		expect(screen.getByText('System Roles')).toBeInTheDocument();
+
+		// make sure no system roles are displayed on the page
+		expect(screen.queryAllByText(level1SystemRole)).toHaveLength(0);
+		expect(screen.queryAllByText(level2SystemRole)).toHaveLength(0);
+		expect(screen.queryAllByText(level3SystemRole)).toHaveLength(0);
+
+		// check that the error message is displayed
+		expect(screen.queryAllByText(errorMessage)).toHaveLength(1);
+	});
+
+	test('renders no error message when system roles are passed to it', () => {
+		const numLevelsCompleted = 0;
+
+		const { container } = render(
+			<HandbookSystemRole
+				numCompletedLevels={numLevelsCompleted}
+				systemRoles={systemRoles}
+			/>
+		);
+
+		expect(screen.getByText('System Roles')).toBeInTheDocument();
+
+		// check that the error message is not being displayed
+		expect(screen.queryAllByText(errorMessage)).toHaveLength(0);
 	});
 });
