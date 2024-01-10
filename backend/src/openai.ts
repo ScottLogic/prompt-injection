@@ -24,7 +24,7 @@ import {
 	ToolCallResponse,
 } from './models/chat';
 import { DEFENCE_ID, Defence } from './models/defence';
-import { EmailInfo, EmailResponse } from './models/email';
+import { EmailResponse } from './models/email';
 import { LEVEL_NAMES } from './models/level';
 import {
 	FunctionAskQuestionParams,
@@ -204,14 +204,13 @@ async function chatGptCallFunction(
 	defences: Defence[],
 	toolCallId: string,
 	functionCall: ChatCompletionMessageToolCall.Function,
-	sentEmails: EmailInfo[],
 	// default to sandbox
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ): Promise<FunctionCallResponse> {
 	const functionName = functionCall.name;
 	let functionReply = '';
 	let wonLevel = false;
-	const updatedSentEmails = [...sentEmails];
+	const sentEmails = [];
 
 	// check if we know the function
 	if (isChatGptFunction(functionName)) {
@@ -225,7 +224,7 @@ async function chatGptCallFunction(
 			functionReply = emailFunctionOutput.reply;
 			wonLevel = emailFunctionOutput.wonLevel;
 			if (emailFunctionOutput.sentEmails) {
-				updatedSentEmails.push(...emailFunctionOutput.sentEmails);
+				sentEmails.push(...emailFunctionOutput.sentEmails);
 			}
 		}
 		if (functionName === 'askQuestion') {
@@ -247,7 +246,7 @@ async function chatGptCallFunction(
 			tool_call_id: toolCallId,
 		} as ChatCompletionMessageParam,
 		wonLevel,
-		sentEmails: updatedSentEmails,
+		sentEmails,
 	};
 }
 
@@ -375,7 +374,6 @@ async function performToolCalls(
 	toolCalls: ChatCompletionMessageToolCall[],
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
-	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES
 ): Promise<ToolCallResponse> {
 	let updatedChatHistory = [...chatHistory];
@@ -389,7 +387,6 @@ async function performToolCalls(
 				defences,
 				toolCall.id,
 				toolCall.function,
-				sentEmails,
 				currentLevel
 			);
 			updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
@@ -412,14 +409,13 @@ async function getFinalReplyAfterAllToolCalls(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
-	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES
 ) {
-	let updatedSentEmails = [...sentEmails];
 	let updatedChatHistory = [...chatHistory];
+	const sentEmails = [];
 	let wonLevel = false;
-	const openai = getOpenAI();
 
+	const openai = getOpenAI();
 	let gptReply: ChatGptReply | null = null;
 
 	do {
@@ -444,13 +440,13 @@ async function getFinalReplyAfterAllToolCalls(
 				gptReply.completion.tool_calls,
 				updatedChatHistory,
 				defences,
-				updatedSentEmails,
 				currentLevel
 			);
 
 			updatedChatHistory = toolCallReply.chatHistory;
-			updatedSentEmails =
-				toolCallReply.functionCallReply?.sentEmails ?? updatedSentEmails;
+			if (toolCallReply.functionCallReply?.sentEmails) {
+				sentEmails.push(...toolCallReply.functionCallReply.sentEmails);
+			}
 			wonLevel =
 				(wonLevel || toolCallReply.functionCallReply?.wonLevel) ?? false;
 		}
@@ -460,7 +456,7 @@ async function getFinalReplyAfterAllToolCalls(
 		gptReply,
 		wonLevel,
 		chatHistory: updatedChatHistory,
-		sentEmails: updatedSentEmails,
+		sentEmails,
 	};
 }
 
@@ -469,7 +465,6 @@ async function chatGptSendMessage(
 	defences: Defence[],
 	chatModel: ChatModel,
 	message: string,
-	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	console.log(`User message: '${message}'`);
@@ -477,12 +472,11 @@ async function chatGptSendMessage(
 		chatHistory,
 		[...defences],
 		chatModel,
-		[...sentEmails],
 		currentLevel
 	);
 
 	const updatedChatHistory = finalToolCallResponse.chatHistory;
-	const updatedSentEmails = finalToolCallResponse.sentEmails;
+	const sentEmails = finalToolCallResponse.sentEmails;
 
 	const chatResponse: ChatResponse = {
 		completion: finalToolCallResponse.gptReply.completion,
@@ -503,7 +497,7 @@ async function chatGptSendMessage(
 	return {
 		chatResponse,
 		chatHistory: updatedChatHistory,
-		sentEmails: updatedSentEmails,
+		sentEmails,
 	};
 }
 

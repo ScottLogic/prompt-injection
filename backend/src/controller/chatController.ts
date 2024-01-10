@@ -85,8 +85,7 @@ async function handleLowLevelChat(
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel,
 	chatHistory: ChatHistoryMessage[],
-	defences: Defence[],
-	sentEmails: EmailInfo[]
+	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
 	let updatedChatHistory = [...chatHistory];
 	const chatHistoryUserMessages = getChatHistoryUserMessages(message, null);
@@ -100,7 +99,6 @@ async function handleLowLevelChat(
 		defences,
 		chatModel,
 		message,
-		sentEmails,
 		currentLevel
 	);
 
@@ -124,8 +122,7 @@ async function handleHigherLevelChat(
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel,
 	chatHistory: ChatHistoryMessage[],
-	defences: Defence[],
-	sentEmails: EmailInfo[]
+	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
 	let updatedChatHistory = [...chatHistory];
 	const updatedChatResponse = {
@@ -159,7 +156,6 @@ async function handleHigherLevelChat(
 		transformedMessage
 			? combineTransformedMessage(transformedMessage)
 			: message,
-		sentEmails,
 		currentLevel
 	);
 
@@ -249,8 +245,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	const totalSentEmails: EmailInfo[] = [
 		...req.session.levelState[currentLevel].sentEmails,
 	];
-	// keep track of the number of sent emails
-	const numSentEmails = totalSentEmails.length;
 
 	// use default model for levels, allow user to select in sandbox
 	const chatModel =
@@ -273,8 +267,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				currentLevel,
 				chatModel,
 				updatedChatHistory,
-				defences,
-				totalSentEmails
+				defences
 			);
 		} else {
 			// apply the defence detection for level 3 and sandbox
@@ -284,8 +277,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				currentLevel,
 				chatModel,
 				updatedChatHistory,
-				defences,
-				totalSentEmails
+				defences
 			);
 		}
 	} catch (error) {
@@ -308,7 +300,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		reply: levelResult.chatResponse.reply,
 		wonLevel: levelResult.chatResponse.wonLevel,
 		openAIErrorMessage: levelResult.chatResponse.openAIErrorMessage,
-		sentEmails: levelResult.sentEmails.slice(numSentEmails),
+		sentEmails: levelResult.sentEmails,
 		defenceReport: levelResult.chatResponse.defenceReport,
 		transformedMessage: levelResult.chatResponse.transformedMessage,
 	};
