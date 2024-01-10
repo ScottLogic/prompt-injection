@@ -7,7 +7,6 @@ import {
 	ChatModel,
 } from '@src/models/chat';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
-import { EmailInfo } from '@src/models/email';
 import { chatGptSendMessage } from '@src/openai';
 import { systemRoleDefault } from '@src/promptTemplates';
 
@@ -58,7 +57,6 @@ describe('OpenAI Integration Tests', () => {
 		const message = 'Hello';
 		const initChatHistory: ChatHistoryMessage[] = [];
 		const defences: Defence[] = defaultDefences;
-		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
 			configuration: {
@@ -77,8 +75,7 @@ describe('OpenAI Integration Tests', () => {
 			initChatHistory,
 			defences,
 			chatModel,
-			message,
-			sentEmails
+			message
 		);
 
 		expect(reply).toBeDefined();
@@ -92,7 +89,6 @@ describe('OpenAI Integration Tests', () => {
 	test('GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to chat history', async () => {
 		const message = 'Hello';
 		const initChatHistory: ChatHistoryMessage[] = [];
-		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
 			configuration: {
@@ -114,8 +110,7 @@ describe('OpenAI Integration Tests', () => {
 			initChatHistory,
 			defences,
 			chatModel,
-			message,
-			sentEmails
+			message
 		);
 
 		const { chatResponse, chatHistory } = reply;
@@ -150,7 +145,6 @@ describe('OpenAI Integration Tests', () => {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 			},
 		];
-		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
 			configuration: {
@@ -171,8 +165,7 @@ describe('OpenAI Integration Tests', () => {
 			initChatHistory,
 			defences,
 			chatModel,
-			message,
-			sentEmails
+			message
 		);
 
 		const { chatResponse, chatHistory } = reply;
@@ -220,7 +213,6 @@ describe('OpenAI Integration Tests', () => {
 			},
 		];
 		const defences: Defence[] = defaultDefences;
-		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
 			configuration: {
@@ -239,8 +231,7 @@ describe('OpenAI Integration Tests', () => {
 			initChatHistory,
 			defences,
 			chatModel,
-			message,
-			sentEmails
+			message
 		);
 
 		const { chatResponse, chatHistory } = reply;
@@ -288,7 +279,6 @@ describe('OpenAI Integration Tests', () => {
 					chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 				},
 			];
-			const sentEmails: EmailInfo[] = [];
 			const chatModel: ChatModel = {
 				id: CHAT_MODELS.GPT_4,
 				configuration: {
@@ -320,8 +310,7 @@ describe('OpenAI Integration Tests', () => {
 				initChatHistory,
 				defences,
 				chatModel,
-				message,
-				sentEmails
+				message
 			);
 
 			const { chatResponse, chatHistory } = reply;
