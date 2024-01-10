@@ -24,9 +24,12 @@ describe('chat utils unit tests', () => {
 			'THEN new message is added',
 		() => {
 			const chatHistory: ChatHistoryMessage[] = [];
-			pushMessageToHistory(chatHistory, generalChatMessage);
-			expect(chatHistory.length).toBe(1);
-			expect(chatHistory[0]).toEqual(generalChatMessage);
+			const updatedChatHistory = pushMessageToHistory(
+				chatHistory,
+				generalChatMessage
+			);
+			expect(updatedChatHistory.length).toBe(1);
+			expect(updatedChatHistory[0]).toEqual(generalChatMessage);
 		}
 	);
 
@@ -36,9 +39,12 @@ describe('chat utils unit tests', () => {
 			'THEN new message is added',
 		() => {
 			const chatHistory: ChatHistoryMessage[] = [generalChatMessage];
-			pushMessageToHistory(chatHistory, generalChatMessage);
-			expect(chatHistory.length).toBe(2);
-			expect(chatHistory[1]).toEqual(generalChatMessage);
+			const updatedChatHistory = pushMessageToHistory(
+				chatHistory,
+				generalChatMessage
+			);
+			expect(updatedChatHistory.length).toBe(2);
+			expect(updatedChatHistory[1]).toEqual(generalChatMessage);
 		}
 	);
 
@@ -50,10 +56,15 @@ describe('chat utils unit tests', () => {
 			const chatHistory: ChatHistoryMessage[] = new Array<ChatHistoryMessage>(
 				maxChatHistoryLength
 			).fill(generalChatMessage);
-			pushMessageToHistory(chatHistory, generalChatMessage);
-			expect(chatHistory.length).toBe(maxChatHistoryLength);
-			expect(chatHistory[0]).toEqual(generalChatMessage);
-			expect(chatHistory[chatHistory.length - 1]).toEqual(generalChatMessage);
+			const updatedChatHistory = pushMessageToHistory(
+				chatHistory,
+				generalChatMessage
+			);
+			expect(updatedChatHistory.length).toBe(maxChatHistoryLength);
+			expect(updatedChatHistory[0]).toEqual(generalChatMessage);
+			expect(updatedChatHistory[updatedChatHistory.length - 1]).toEqual(
+				generalChatMessage
+			);
 		}
 	);
 
@@ -66,10 +77,15 @@ describe('chat utils unit tests', () => {
 				maxChatHistoryLength
 			).fill(generalChatMessage);
 			chatHistory[0] = systemRoleMessage;
-			pushMessageToHistory(chatHistory, generalChatMessage);
-			expect(chatHistory.length).toBe(maxChatHistoryLength);
-			expect(chatHistory[0]).toEqual(systemRoleMessage);
-			expect(chatHistory[chatHistory.length - 1]).toEqual(generalChatMessage);
+			const updatedChatHistory = pushMessageToHistory(
+				chatHistory,
+				generalChatMessage
+			);
+			expect(updatedChatHistory.length).toBe(maxChatHistoryLength);
+			expect(updatedChatHistory[0]).toEqual(systemRoleMessage);
+			expect(updatedChatHistory[updatedChatHistory.length - 1]).toEqual(
+				generalChatMessage
+			);
 		}
 	);
 
@@ -81,10 +97,15 @@ describe('chat utils unit tests', () => {
 			const chatHistory: ChatHistoryMessage[] = new Array<ChatHistoryMessage>(
 				maxChatHistoryLength + 1
 			).fill(generalChatMessage);
-			pushMessageToHistory(chatHistory, generalChatMessage);
-			expect(chatHistory.length).toBe(maxChatHistoryLength);
-			expect(chatHistory[0]).toEqual(generalChatMessage);
-			expect(chatHistory[chatHistory.length - 1]).toEqual(generalChatMessage);
+			const updatedChatHistory = pushMessageToHistory(
+				chatHistory,
+				generalChatMessage
+			);
+			expect(updatedChatHistory.length).toBe(maxChatHistoryLength);
+			expect(updatedChatHistory[0]).toEqual(generalChatMessage);
+			expect(updatedChatHistory[updatedChatHistory.length - 1]).toEqual(
+				generalChatMessage
+			);
 		}
 	);
 
@@ -97,10 +118,15 @@ describe('chat utils unit tests', () => {
 				maxChatHistoryLength + 1
 			).fill(generalChatMessage);
 			chatHistory[0] = systemRoleMessage;
-			pushMessageToHistory(chatHistory, generalChatMessage);
-			expect(chatHistory.length).toBe(maxChatHistoryLength);
-			expect(chatHistory[0]).toEqual(systemRoleMessage);
-			expect(chatHistory[chatHistory.length - 1]).toEqual(generalChatMessage);
+			const updatedChatHistory = pushMessageToHistory(
+				chatHistory,
+				generalChatMessage
+			);
+			expect(updatedChatHistory.length).toBe(maxChatHistoryLength);
+			expect(updatedChatHistory[0]).toEqual(systemRoleMessage);
+			expect(updatedChatHistory[updatedChatHistory.length - 1]).toEqual(
+				generalChatMessage
+			);
 		}
 	);
 });
