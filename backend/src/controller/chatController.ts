@@ -144,7 +144,7 @@ async function handleHigherLevelChat(
 	});
 
 	if (transformedMessage) {
-		chatResponse.transformedMessage = transformedMessage;
+		updatedChatResponse.transformedMessage = transformedMessage;
 	}
 
 	if (transformedMessage) {
@@ -184,7 +184,8 @@ async function handleHigherLevelChat(
 		openAiReplyPromise,
 	]);
 
-	chatResponse.openAIErrorMessage = openAiReply.chatResponse.openAIErrorMessage;
+	updatedChatResponse.openAIErrorMessage =
+		openAiReply.chatResponse.openAIErrorMessage;
 
 	const botReply = openAiReply.chatResponse.completion?.content?.toString();
 	const outputDefenceReport = botReply
@@ -199,9 +200,9 @@ async function handleHigherLevelChat(
 	if (outputDefenceReport) {
 		defenceReports.push(outputDefenceReport);
 	}
-	chatResponse.defenceReport = combineChatDefenceReports(defenceReports);
+	updatedChatResponse.defenceReport = combineChatDefenceReports(defenceReports);
 
-	if (chatResponse.defenceReport.isBlocked) {
+	if (updatedChatResponse.defenceReport.isBlocked) {
 		// restore the original chat history
 		// add user message to the chat history (not as completion)
 		updatedChatHistory = pushMessageToHistory(chatHistory, {
