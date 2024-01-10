@@ -22,11 +22,18 @@ function PromptEnclosureDefenceMechanism({
 	) => Promise<void>;
 	resetConfigurationValue: (defence: Defence, configId: string) => void;
 }) {
-	const [selectedRadio, setSelectedRadio] = useState<string>('none');
+	const [selectedRadio, setSelectedRadio] = useState<string>(
+		getActiveDefence()
+	);
 	const selectedDefence = getDefence(selectedRadio as DEFENCE_ID);
 
 	function isRadioSelected(radioValue: string) {
 		return radioValue === selectedRadio;
+	}
+
+	function getActiveDefence(): string {
+		const activeDefence = defences.find((defence) => defence.isActive);
+		return activeDefence ? activeDefence.id : 'none';
 	}
 
 	function getDefence(defenceId: DEFENCE_ID): Defence | undefined {

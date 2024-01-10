@@ -60,6 +60,7 @@ function renderComponent(defences: Defence[] = mockDefences) {
 describe('PromptEnclosureDefenceMechanism component tests', () => {
 	afterEach(() => {
 		vi.resetAllMocks();
+		mockToggleDefence.mockClear();
 	});
 
 	test('renders defence names plus None option', () => {
@@ -136,15 +137,6 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 		newMockDefences[0].isActive = true;
 
 		const { user } = renderComponent(newMockDefences);
-
-		// click different button first, as None is checked by default
-		const firstRadioButton = screen.getByRole('radio', {
-			name: 'random sequence enclosure',
-		});
-		await user.click(firstRadioButton);
-
-		mockToggleDefence.mockClear();
-
 		const radioButton = screen.getByRole('radio', { name: 'None' });
 		await user.click(radioButton);
 
@@ -155,12 +147,13 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 
 	test('when xml tagging radio button is selected, it is toggled on and others are toggled off', async () => {
 		const newMockDefences = [...mockDefences];
+		newMockDefences[0].isActive = false;
 		newMockDefences[1].isActive = true;
 
 		const { user } = renderComponent(newMockDefences);
 		const radioButton = screen.getByRole('radio', {
 			name: 'xml tagging',
-		});
+		}) as Element;
 		await user.click(radioButton);
 
 		expect(mockToggleDefence).toHaveBeenCalledWith(newMockDefences[1]);
