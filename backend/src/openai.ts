@@ -487,6 +487,7 @@ async function getFinalReplyAfterAllToolCalls(
 			openai,
 			currentLevel
 		);
+		updatedChatHistory = gptReply.chatHistory;
 	}
 	return {
 		gptReply,
@@ -519,9 +520,9 @@ async function chatGptSendMessage(
 	);
 	const finalToolCallResponse = await getFinalReplyAfterAllToolCalls(
 		updatedChatHistory,
-		[...defences],
+		defences,
 		chatModel,
-		[...sentEmails],
+		sentEmails,
 		currentLevel
 	);
 
