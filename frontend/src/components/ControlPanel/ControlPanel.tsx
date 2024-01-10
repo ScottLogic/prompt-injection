@@ -1,3 +1,4 @@
+import { MODEL_DEFENCES } from '@src/Defences';
 import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
@@ -26,25 +27,13 @@ function ControlPanel({
 	) => Promise<boolean>;
 	openDocumentViewer: () => void;
 }) {
-	function getDefencesConfigure() {
-		return defences.filter((defence) => {
-			return ![
-				DEFENCE_ID.PROMPT_EVALUATION_LLM,
-				DEFENCE_ID.QA_LLM,
-				DEFENCE_ID.SYSTEM_ROLE,
-			].some((id) => id === defence.id);
-		});
-	}
+	const configurableDefences = defences.filter(
+		(defence) => !MODEL_DEFENCES.some((id) => id === defence.id)
+	);
 
-	function getDefencesModel() {
-		return defences.filter((defence) => {
-			return [
-				DEFENCE_ID.PROMPT_EVALUATION_LLM,
-				DEFENCE_ID.QA_LLM,
-				DEFENCE_ID.SYSTEM_ROLE,
-			].some((id) => id === defence.id);
-		});
-	}
+	const modelDefences = defences.filter((defence) =>
+		MODEL_DEFENCES.some((id) => id === defence.id)
+	);
 
 	// only allow configuration in sandbox
 	const showConfigurations = currentLevel === LEVEL_NAMES.SANDBOX;
@@ -62,7 +51,7 @@ function ControlPanel({
 						</summary>
 						<DefenceBox
 							currentLevel={currentLevel}
-							defences={getDefencesConfigure()}
+							defences={configurableDefences}
 							showConfigurations={showConfigurations}
 							resetDefenceConfiguration={resetDefenceConfiguration}
 							toggleDefence={toggleDefence}
@@ -76,7 +65,7 @@ function ControlPanel({
 						</summary>
 						<DefenceBox
 							currentLevel={currentLevel}
-							defences={getDefencesModel()}
+							defences={modelDefences}
 							showConfigurations={showConfigurations}
 							toggleDefence={toggleDefence}
 							resetDefenceConfiguration={resetDefenceConfiguration}

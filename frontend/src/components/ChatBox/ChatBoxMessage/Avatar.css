@@ -1,11 +1,11 @@
 .avatar-circle {
-	border-radius: 50%;
-	width: 3.75rem;
-	height: 3.75rem;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	width: 3.75rem;
+	height: 3.75rem;
+	border-radius: 50%;
 }
 
 .avatar-circle-user {

@@ -7,17 +7,19 @@ function pushMessageToHistory(
 ) {
 	// limit the length of the chat history
 	const maxChatHistoryLength = 1000;
+	const updatedChatHistory = [...chatHistory];
 
 	// remove the oldest message, not including system role message
 	// until the length of the chat history is less than maxChatHistoryLength
-	while (chatHistory.length >= maxChatHistoryLength) {
-		if (chatHistory[0].completion?.role !== 'system') {
-			chatHistory.shift();
+	while (updatedChatHistory.length >= maxChatHistoryLength) {
+		if (updatedChatHistory[0].completion?.role !== 'system') {
+			updatedChatHistory.shift();
 		} else {
-			chatHistory.splice(1, 1);
+			updatedChatHistory.splice(1, 1);
 		}
 	}
-	chatHistory.push(newMessage);
+	updatedChatHistory.push(newMessage);
+	return updatedChatHistory;
 }
 
 export { pushMessageToHistory };

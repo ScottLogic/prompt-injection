@@ -56,7 +56,7 @@ function chatResponseAssistant(content: string) {
 describe('OpenAI Integration Tests', () => {
 	test('GIVEN OpenAI initialised WHEN sending message THEN reply is returned', async () => {
 		const message = 'Hello';
-		const chatHistory: ChatHistoryMessage[] = [];
+		const initChatHistory: ChatHistoryMessage[] = [];
 		const defences: Defence[] = defaultDefences;
 		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
@@ -74,7 +74,7 @@ describe('OpenAI Integration Tests', () => {
 
 		// send the message
 		const reply = await chatGptSendMessage(
-			chatHistory,
+			initChatHistory,
 			defences,
 			chatModel,
 			message,
@@ -82,8 +82,8 @@ describe('OpenAI Integration Tests', () => {
 		);
 
 		expect(reply).toBeDefined();
-		expect(reply.completion).toBeDefined();
-		expect(reply.completion?.content).toBe('Hi');
+		expect(reply.chatResponse.completion).toBeDefined();
+		expect(reply.chatResponse.completion?.content).toBe('Hi');
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -91,7 +91,7 @@ describe('OpenAI Integration Tests', () => {
 
 	test('GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to chat history', async () => {
 		const message = 'Hello';
-		const chatHistory: ChatHistoryMessage[] = [];
+		const initChatHistory: ChatHistoryMessage[] = [];
 		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
@@ -111,15 +111,17 @@ describe('OpenAI Integration Tests', () => {
 
 		// send the message
 		const reply = await chatGptSendMessage(
-			chatHistory,
+			initChatHistory,
 			defences,
 			chatModel,
 			message,
 			sentEmails
 		);
 
+		const { chatResponse, chatHistory } = reply;
+
 		expect(reply).toBeDefined();
-		expect(reply.completion?.content).toBe('Hi');
+		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
 		expect(chatHistory.length).toBe(1);
 		// system role is added to the start of the chat history
@@ -132,7 +134,7 @@ describe('OpenAI Integration Tests', () => {
 
 	test('GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to the start of the chat history', async () => {
 		const message = 'Hello';
-		const chatHistory: ChatHistoryMessage[] = [
+		const initChatHistory: ChatHistoryMessage[] = [
 			{
 				completion: {
 					role: 'user',
@@ -158,7 +160,6 @@ describe('OpenAI Integration Tests', () => {
 				presencePenalty: 0,
 			},
 		};
-
 		// activate the SYSTEM_ROLE defence
 		const defences = activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences);
 
@@ -167,15 +168,17 @@ describe('OpenAI Integration Tests', () => {
 
 		// send the message
 		const reply = await chatGptSendMessage(
-			chatHistory,
+			initChatHistory,
 			defences,
 			chatModel,
 			message,
 			sentEmails
 		);
 
+		const { chatResponse, chatHistory } = reply;
+
 		expect(reply).toBeDefined();
-		expect(reply.completion?.content).toBe('Hi');
+		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
 		expect(chatHistory.length).toBe(3);
 		// system role is added to the start of the chat history
@@ -193,7 +196,7 @@ describe('OpenAI Integration Tests', () => {
 
 	test('GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system role is removed from the chat history', async () => {
 		const message = 'Hello';
-		const chatHistory: ChatHistoryMessage[] = [
+		const initChatHistory: ChatHistoryMessage[] = [
 			{
 				completion: {
 					role: 'system',
@@ -233,15 +236,17 @@ describe('OpenAI Integration Tests', () => {
 
 		// send the message
 		const reply = await chatGptSendMessage(
-			chatHistory,
+			initChatHistory,
 			defences,
 			chatModel,
 			message,
 			sentEmails
 		);
 
+		const { chatResponse, chatHistory } = reply;
+
 		expect(reply).toBeDefined();
-		expect(reply.completion?.content).toBe('Hi');
+		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
 		expect(chatHistory.length).toBe(2);
 		// system role is removed from the start of the chat history
@@ -260,7 +265,7 @@ describe('OpenAI Integration Tests', () => {
 			'WHEN sending message THEN system role is replaced with default value in the chat history',
 		async () => {
 			const message = 'Hello';
-			const chatHistory: ChatHistoryMessage[] = [
+			const initChatHistory: ChatHistoryMessage[] = [
 				{
 					completion: {
 						role: 'system',
@@ -312,15 +317,17 @@ describe('OpenAI Integration Tests', () => {
 
 			// send the message
 			const reply = await chatGptSendMessage(
-				chatHistory,
+				initChatHistory,
 				defences,
 				chatModel,
 				message,
 				sentEmails
 			);
 
+			const { chatResponse, chatHistory } = reply;
+
 			expect(reply).toBeDefined();
-			expect(reply.completion?.content).toBe('Hi');
+			expect(chatResponse.completion?.content).toBe('Hi');
 			// system role is added to the start of the chat history
 			expect(chatHistory[0].completion?.role).toBe('system');
 			expect(chatHistory[0].completion?.content).toBe(

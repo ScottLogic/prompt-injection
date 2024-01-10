@@ -1,14 +1,18 @@
 .level-button {
+	position: relative;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	position: relative;
-	border: 0.125rem solid var(--level-button-border-colour);
-	padding: 1rem;
 	height: 3.125rem;
+	padding: 1rem;
+	border: 0.125rem solid var(--level-button-border-colour);
 	background-color: transparent;
 	color: var(--level-button-colour);
 	font-size: 1.875rem;
+}
+
+.level-button:focus-visible {
+	border-color: var(--main-text-colour);
 }
 
 .level-button.selected {

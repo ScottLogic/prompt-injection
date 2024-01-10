@@ -60,6 +60,18 @@ interface SingleDefenceReport {
 	status: 'alerted' | 'triggered' | 'ok';
 }
 
+interface FunctionCallResponse {
+	completion: ChatCompletionMessageParam;
+	wonLevel: boolean;
+	sentEmails: EmailInfo[];
+}
+
+interface ToolCallResponse {
+	functionCallReply?: FunctionCallResponse;
+	chatResponse?: ChatResponse;
+	chatHistory: ChatHistoryMessage[];
+}
+
 interface ChatAnswer {
 	reply: string;
 	questionAnswered: boolean;
@@ -81,6 +93,7 @@ interface TransformedChatMessage {
 	preMessage: string;
 	message: string;
 	postMessage: string;
+	transformationName: string;
 }
 
 interface ChatHttpResponse {
@@ -90,6 +103,12 @@ interface ChatHttpResponse {
 	wonLevel: boolean;
 	isError: boolean;
 	openAIErrorMessage: string | null;
+	sentEmails: EmailInfo[];
+}
+
+interface LevelHandlerResponse {
+	chatResponse: ChatHttpResponse;
+	chatHistory: ChatHistoryMessage[];
 	sentEmails: EmailInfo[];
 }
 
@@ -115,9 +134,12 @@ export type {
 	ChatDefenceReport,
 	ChatMalicious,
 	ChatResponse,
+	LevelHandlerResponse,
 	ChatHttpResponse,
 	ChatHistoryMessage,
 	TransformedChatMessage,
+	FunctionCallResponse,
+	ToolCallResponse,
 };
 export {
 	CHAT_MODELS,

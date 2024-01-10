@@ -1,6 +1,6 @@
 body {
-	height: 100%;
 	overflow: hidden;
+	height: 100%;
 	margin: 0;
 	font-family: 'Noto Sans', Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
@@ -14,6 +14,7 @@ body * {
 button {
 	cursor: pointer;
 }
+
 button[disabled],
 button[aria-disabled='true'] {
 	cursor: default;
@@ -28,4 +29,8 @@ html {
 	height: 100%;
 	background: var(--main-background);
 	color: var(--main-text-colour);
+}
+
+*:focus-visible {
+	outline: 0.25rem solid var(--accent-border-colour);
 }

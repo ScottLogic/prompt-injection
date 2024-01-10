@@ -6,7 +6,7 @@
 		"dev": "vite --open",
 		"build": "tsc && vite build",
 		"format": "prettier --write .",
-		"lint": "eslint . --fix",
+		"lint": "concurrently \"eslint . --fix\" \"stylelint **/*.css --fix\"",
 		"preview": "vite preview",
 		"pretest": "tsc --project tsconfig.test.json",
 		"test": "vitest"
@@ -43,6 +43,9 @@
 		"eslint-plugin-react-refresh": "^0.4.3",
 		"happy-dom": "^12.9.1",
 		"prettier": "^2.8.8",
+		"stylelint": "^16.1.0",
+		"stylelint-config-hudochenkov": "^10.0.0",
+		"stylelint-config-standard": "^36.0.0",
 		"typescript": "^5.0.2",
 		"vite": "^4.4.11",
 		"vitest": "^0.34.6"

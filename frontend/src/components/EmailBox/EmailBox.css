@@ -1,9 +1,9 @@
 .email-box {
 	display: flex;
 	flex-direction: column;
-	height: fit-content;
+	gap: 1rem;
 	overflow-y: auto;
+	height: fit-content;
 	padding: 1rem;
 	scrollbar-width: thin;
-	gap: 1rem;
 }

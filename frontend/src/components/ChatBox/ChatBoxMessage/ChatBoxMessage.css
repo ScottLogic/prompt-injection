@@ -1,8 +1,8 @@
 .chat-box-message {
 	display: flex;
 	flex-direction: row;
-	margin-top: 1rem;
 	gap: 1.5rem;
+	margin-top: 1rem;
 }
 
 .chat-box-message-right {
