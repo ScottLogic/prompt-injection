@@ -1,16 +1,14 @@
 .defence-mechanism-fieldset {
 	min-height: fit-content;
-	margin: 0.1em;
+	margin: 0;
 	border: 0.25rem solid var(--control-config-border);
 	border-radius: 0.5rem;
 }
 
-/* the name of the fieldset */
 .defence-mechanism-legend {
 	padding: 0.3em;
 }
 
-/* the more button to expand the details */
 .defence-mechanism-summary {
 	width: fit-content;
 	padding: 0.5rem;
@@ -22,7 +20,6 @@
 	font-size: 1rem;
 }
 
-/* remove the default triangle on the summary element */
 .defence-mechanism-fieldset details > summary {
 	list-style: none;
 }
@@ -31,12 +28,10 @@
 	display: none;
 }
 
-/* style for when details element is expanded */
 .defence-mechanism-fieldset details[open] > summary {
 	border-style: inset;
 }
 
-/* the toggle and label combined */
 .defence-mechanism-form {
 	position: absolute;
 	right: 1em;
@@ -50,7 +45,6 @@
 	margin-top: 0;
 }
 
-/* the expanded description and further controls */
 .defence-mechanism .info-box {
 	padding: 0.5em;
 	font-size: 0.875rem;
@@ -74,7 +68,6 @@
 
 /* adapted from: https://adrianroselli.com/2019/03/under-engineered-toggles.html */
 
-/* default checkbox hidden without removing it from the DOM */
 .toggles [type='checkbox'] {
 	position: absolute;
 	top: auto;
@@ -85,7 +78,6 @@
 	white-space: nowrap;
 }
 
-/* the  label */
 .toggles [type='checkbox'] + label {
 	position: relative;
 	display: block;
@@ -102,13 +94,11 @@
 	transition: all 0.25s ease;
 }
 
-/* the  label hovered or focused */
 .toggles [type='checkbox']:focus + label,
 .toggles [type='checkbox']:hover + label {
 	color: var(--main-text-accent-colour);
 }
 
-/* background oval before it's checked */
 .toggles [type='checkbox'] + label::before {
 	top: 0.1em;
 	right: 0;
@@ -118,7 +108,6 @@
 	background: var(--main-toggle-off-colour);
 }
 
-/* round toggle slider */
 .toggles [type='checkbox'] + label::after {
 	top: 0.17em;
 	right: 0.95em;
@@ -142,20 +131,17 @@
 	background-repeat: no-repeat;
 }
 
-/* round toggle slider sliding to the right */
 .toggles [type='checkbox']:checked + label::after {
 	right: 0.1em;
 	border-color: var(--main-toggle-on-border-colour);
 	color: var(--main-toggle-on-border-colour);
 }
 
-/* background oval when it's checked */
 .toggles [type='checkbox']:checked + label::before {
 	border-color: var(--main-toggle-on-border-colour);
 	background-color: var(--main-toggle-on-border-colour);
 }
 
-/* Reduced motion */
 @media screen and (prefers-reduced-motion: reduce) {
 	.toggles [type='checkbox'] + label::before,
 	.toggles [type='checkbox'] + label::after {
