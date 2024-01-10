@@ -9,6 +9,7 @@ function HandbookSystemRole({
 	numCompletedLevels: LEVEL_NAMES;
 	systemRoles: LevelSystemRole[];
 }) {
+	console.log(systemRoles.length);
 	return (
 		<article className="handbook-page">
 			<header>
@@ -20,7 +21,7 @@ function HandbookSystemRole({
 			</header>
 
 			<dl className="handbook-terms">
-				{systemRoles.map(({ level, systemRole }) => (
+				{systemRoles.length != 0 ? systemRoles.map(({ level, systemRole }) => (
 					<div className="term" key={level}>
 						<dt>{`Level ${level + 1} System Role`}</dt>
 						{level >= numCompletedLevels ? (
@@ -32,7 +33,9 @@ function HandbookSystemRole({
 							<dd> {systemRole} </dd>
 						)}
 					</div>
-				))}
+				)) : (
+				<p className="error-box-system-role">Unable to fetch system role information. Try again in a few minutes.</p>
+				)}
 			</dl>
 		</article>
 	);

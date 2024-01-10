@@ -34,3 +34,10 @@
 	background: var(--handbook-locked-section-colour);
 	text-align: center;
 }
+
+.error-box-system-role {
+	background-color: var(--error-background-colour);
+	border: 0.125rem dashed var(--error-colour);
+	border-radius: 0.625rem;
+	padding: 0.625rem;
+}
