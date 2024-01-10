@@ -120,7 +120,8 @@
 
 .toggles [type='checkbox']:focus + label::before,
 .toggles [type='checkbox']:hover + label::before {
-	box-shadow: 0 0 0.3em var(--main-text-colour);
+	outline: 0.25rem solid var(--accent-border-colour);
+	outline-offset: 0.125rem;
 }
 
 .toggles [type='checkbox']:focus + label::after,
