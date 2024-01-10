@@ -128,7 +128,7 @@ describe('HandbookSystemRole component tests', () => {
 	test('renders an error message when no system roles are passed to it', () => {
 		const numLevelsCompleted = 0;
 
-		const { container } = render(
+		render(
 			<HandbookSystemRole
 				numCompletedLevels={numLevelsCompleted}
 				systemRoles={emptySystemRoles}
@@ -149,7 +149,7 @@ describe('HandbookSystemRole component tests', () => {
 	test('renders no error message when system roles are passed to it', () => {
 		const numLevelsCompleted = 0;
 
-		const { container } = render(
+		render(
 			<HandbookSystemRole
 				numCompletedLevels={numLevelsCompleted}
 				systemRoles={systemRoles}
