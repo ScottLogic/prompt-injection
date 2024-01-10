@@ -1,5 +1,6 @@
 import { DEFENCE_ID, DefenceConfigItem, Defence } from './models/defence';
 import {
+	instructionDefencePrompt,
 	promptEvalPrompt,
 	qAPromptSecure,
 	randomSequenceEnclosurePrompt,
@@ -55,6 +56,12 @@ const defaultDefences: Defence[] = [
 		{
 			id: 'SEQUENCE_LENGTH',
 			value: String(10),
+		},
+	]),
+	createDefence(DEFENCE_ID.INSTRUCTION_PROMPT, [
+		{
+			id: 'PROMPT',
+			value: instructionDefencePrompt,
 		},
 	]),
 	createDefence(DEFENCE_ID.FILTER_USER_INPUT, [

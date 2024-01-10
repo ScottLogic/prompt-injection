@@ -13,6 +13,7 @@ import {
 } from './models/defence';
 import { LEVEL_NAMES } from './models/level';
 import {
+	instructionDefencePrompt,
 	systemRoleLevel1,
 	systemRoleLevel2,
 	systemRoleLevel3,
@@ -129,6 +130,10 @@ function getRandomSequenceEnclosureLength(defences: Defence[]) {
 	);
 }
 
+function getInstructionDefencePrePrompt(defences: Defence[]) {
+	return getConfigValue(defences, DEFENCE_ID.INSTRUCTION_PROMPT, 'PROMPT');
+}
+
 function getQAPromptFromConfig(defences: Defence[]) {
 	return getConfigValue(defences, DEFENCE_ID.QA_LLM, 'PROMPT');
 }
@@ -229,6 +234,16 @@ function transformRandomSequenceEnclosure(
 	};
 }
 
+function transformInstructionDefence(message: string, defences: Defence[]) {
+	console.debug('Instruction Defence active.');
+	return {
+		preMessage: getInstructionDefencePrePrompt(defences).concat(' {{ '),
+		message,
+		postMessage: ' }}',
+		transformationName: 'Instruction Defence',
+	};
+}
+
 function combineTransformedMessage(transformedMessage: TransformedChatMessage) {
 	return (
 		transformedMessage.preMessage +
@@ -255,6 +270,14 @@ function transformMessage(
 			message,
 			defences
 		);
+		console.debug(
+			`Defences applied. Transformed message: ${combineTransformedMessage(
+				transformedMessage
+			)}`
+		);
+		return transformedMessage;
+	} else if (isDefenceActive(DEFENCE_ID.INSTRUCTION_PROMPT, defences)) {
+		const transformedMessage = transformInstructionDefence(message, defences);
 		console.debug(
 			`Defences applied. Transformed message: ${combineTransformedMessage(
 				transformedMessage
