@@ -74,21 +74,29 @@ async function handleHigherLevelChat(
 	};
 	// transform the message according to active defences
 	const transformedMessage = transformMessage(message, defences);
+
 	if (transformedMessage) {
-		updatedChatResponse.transformedMessage = transformedMessage;
 		// if message has been transformed then add the original to chat history and send transformed to chatGPT
-		updatedChatHistory.push({
-			completion: null,
-			chatMessageType: CHAT_MESSAGE_TYPE.USER,
-			infoMessage: message,
-		});
+		updatedChatHistory = [
+			...updatedChatHistory,
+			{
+				completion: null,
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				infoMessage: message,
+			},
+		];
+
+		updatedChatResponse = {
+			...updatedChatResponse,
+			transformedMessage,
+		};
 	}
 	// detect defences on input message
 	const triggeredDefencesPromise = detectTriggeredDefences(message, defences);
 
 	// get the chatGPT reply
 	const openAiReplyPromise = chatGptSendMessage(
-		chatHistory,
+		updatedChatHistory,
 		defences,
 		chatModel,
 		transformedMessage
@@ -151,7 +159,7 @@ async function handleHigherLevelChat(
 		chatResponse: updatedChatResponse,
 		chatHistory: updatedChatHistory,
 		sentEmails: openAiReply.sentEmails,
-	} as LevelHandlerResponse;
+	};
 }
 
 async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
