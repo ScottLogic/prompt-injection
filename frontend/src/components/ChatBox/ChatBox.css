@@ -25,7 +25,6 @@
 }
 
 .chat-box .footer .messages {
-	position: relative;
 	display: flex;
 	flex-direction: row;
 	gap: 0.5rem;

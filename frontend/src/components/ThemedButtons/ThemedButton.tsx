@@ -30,13 +30,16 @@ function ThemedButton({
 	const buttonClass = clsx('themed-button', className, {
 		disabled: ariaDisabled,
 	});
+	const tooltipClass = clsx('themed-button-tooltip', {
+		show: tooltip,
+	});
 
 	const tooltipId = `themed-button-desc-${tooltip?.id
 		.replace(/\s/g, '-')
 		.toLowerCase()}`;
 
 	return (
-		<>
+		<div className="themed-button-and-tooltip">
 			<button
 				className={buttonClass}
 				onClick={onClickDisabledCheck}
@@ -46,12 +49,10 @@ function ThemedButton({
 			>
 				{children}
 			</button>
-			{tooltip && (
-				<div role="tooltip" id={tooltipId} className="themed-button-tooltip">
-					{tooltip.text}
-				</div>
-			)}
-		</>
+			<div role="tooltip" id={tooltipId} className={tooltipClass}>
+				{tooltip?.text}
+			</div>
+		</div>
 	);
 }
 

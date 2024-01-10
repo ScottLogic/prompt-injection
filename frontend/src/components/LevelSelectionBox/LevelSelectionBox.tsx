@@ -35,6 +35,7 @@ function LevelSelectionBox({
 					index > numCompletedLevels && id !== LEVEL_NAMES.SANDBOX;
 				const className = clsx('level-button', {
 					selected: id === currentLevel,
+					sandbox: id === LEVEL_NAMES.SANDBOX,
 				});
 				return (
 					<ThemedButton
