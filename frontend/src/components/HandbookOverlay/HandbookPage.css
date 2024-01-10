@@ -35,7 +35,7 @@
 	text-align: center;
 }
 
-.error-box-system-role {
+.system-role-error-message {
 	background-color: var(--error-background-colour);
 	border: 0.125rem dashed var(--error-colour);
 	border-radius: 0.625rem;

@@ -9,7 +9,6 @@ function HandbookSystemRole({
 	numCompletedLevels: LEVEL_NAMES;
 	systemRoles: LevelSystemRole[];
 }) {
-	console.log(systemRoles.length);
 	return (
 		<article className="handbook-page">
 			<header>
@@ -34,7 +33,7 @@ function HandbookSystemRole({
 						)}
 					</div>
 				)) : (
-				<p className="error-box-system-role">Unable to fetch system role information. Try again in a few minutes.</p>
+				<div system-role-error-message="error-box-system-role">Unable to fetch system role information. Try again in a few minutes.</div>
 				)}
 			</dl>
 		</article>
