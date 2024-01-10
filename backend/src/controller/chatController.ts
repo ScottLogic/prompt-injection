@@ -131,9 +131,9 @@ async function handleHigherLevelChat(
 	const updatedChatResponse = {
 		...chatResponse,
 	};
+
 	// transform the message according to active defences
 	const transformedMessage = transformMessage(message, defences);
-
 	const chatHistoryUserMessages = getChatHistoryUserMessages(
 		message,
 		transformedMessage ? combineTransformedMessage(transformedMessage) : null
@@ -141,24 +141,10 @@ async function handleHigherLevelChat(
 	chatHistoryUserMessages.forEach((message) => {
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, message);
 	});
-
 	if (transformedMessage) {
 		updatedChatResponse.transformedMessage = transformedMessage;
 	}
 
-	if (transformedMessage) {
-		// if message has been transformed then add the original to chat history and send transformed to chatGPT
-		updatedChatHistory = [
-			...updatedChatHistory,
-			{
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
-				infoMessage: message,
-			},
-		];
-
-		updatedChatResponse.transformedMessage = transformedMessage;
-	}
 	// detect defences on input message
 	const triggeredDefencesPromise = detectTriggeredInputDefences(
 		message,
