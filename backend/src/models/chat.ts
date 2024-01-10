@@ -1,4 +1,7 @@
-import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
+import {
+	ChatCompletionMessage,
+	ChatCompletionMessageParam,
+} from 'openai/resources/chat/completions';
 
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
@@ -89,6 +92,12 @@ interface ChatResponse {
 	openAIErrorMessage: string | null;
 }
 
+interface ChatGptReply {
+	chatHistory: ChatHistoryMessage[];
+	completion: ChatCompletionMessage | null;
+	openAIErrorMessage: string | null;
+}
+
 interface TransformedChatMessage {
 	preMessage: string;
 	message: string;
@@ -132,6 +141,7 @@ const defaultChatModel: ChatModel = {
 export type {
 	ChatAnswer,
 	ChatDefenceReport,
+	ChatGptReply,
 	ChatMalicious,
 	ChatResponse,
 	LevelHandlerResponse,

@@ -16,6 +16,7 @@ import { queryDocuments } from './langchain';
 import {
 	CHAT_MESSAGE_TYPE,
 	CHAT_MODELS,
+	ChatGptReply,
 	ChatHistoryMessage,
 	ChatModel,
 	ChatResponse,
@@ -257,7 +258,7 @@ async function chatGptChatCompletion(
 	openai: OpenAI,
 	// default to sandbox
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
-) {
+): Promise<ChatGptReply> {
 	const updatedChatHistory = [...chatHistory];
 
 	// check if we need to set a system role
@@ -415,48 +416,46 @@ async function getFinalReplyAfterAllToolCalls(
 	currentLevel: LEVEL_NAMES
 ) {
 	let updatedSentEmails = [...sentEmails];
+	let updatedChatHistory = [...chatHistory];
 	let wonLevel = false;
 	const openai = getOpenAI();
 
-	let gptReply = await chatGptChatCompletion(
-		[...chatHistory],
-		defences,
-		chatModel,
-		openai,
-		currentLevel
-	);
-	let updatedChatHistory = gptReply.chatHistory;
+	let gptReply: ChatGptReply | null = null;
 
-	// check if GPT wanted to call a tool
-	while (gptReply.completion?.tool_calls) {
-		// push the assistant message to the chat
-		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
-			completion: gptReply.completion,
-			chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
-		});
-
-		const toolCallReply = await performToolCalls(
-			gptReply.completion.tool_calls,
-			updatedChatHistory,
-			defences,
-			updatedSentEmails,
-			currentLevel
-		);
-
-		updatedChatHistory = toolCallReply.chatHistory;
-		updatedSentEmails =
-			toolCallReply.functionCallReply?.sentEmails ?? updatedSentEmails;
-		wonLevel = toolCallReply.functionCallReply?.wonLevel ?? false;
-
-		// get a new reply from ChatGPT now that the functions have been called
+	do {
 		gptReply = await chatGptChatCompletion(
-			updatedChatHistory,
+			[...updatedChatHistory],
 			defences,
 			chatModel,
 			openai,
 			currentLevel
 		);
-	}
+		updatedChatHistory = gptReply.chatHistory;
+
+		// check if GPT wanted to call a tool
+		if (gptReply.completion?.tool_calls) {
+			// push the function call to the chat
+			updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
+				completion: gptReply.completion,
+				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+			});
+
+			const toolCallReply = await performToolCalls(
+				gptReply.completion.tool_calls,
+				updatedChatHistory,
+				defences,
+				updatedSentEmails,
+				currentLevel
+			);
+
+			updatedChatHistory = toolCallReply.chatHistory;
+			updatedSentEmails =
+				toolCallReply.functionCallReply?.sentEmails ?? updatedSentEmails;
+			wonLevel =
+				(wonLevel || toolCallReply.functionCallReply?.wonLevel) ?? false;
+		}
+	} while (gptReply.completion?.tool_calls);
+
 	return {
 		gptReply,
 		wonLevel,
