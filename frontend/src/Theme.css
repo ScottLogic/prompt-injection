@@ -15,6 +15,7 @@
 	--main-border-colour: #666;
 	--main-text-colour: #fff;
 	--main-text-colour-inverted: #000;
+	--main-text-accent-colour: #73d1d6;
 	--error-colour: #c41565;
 
 	/* scrollbar */
@@ -48,7 +49,7 @@
 
 	/* toggle switch */
 	--main-toggle-ball-colour: #ececec;
-	--main-toggle-off-border-colour: var(--level-button-border-colour-disabled);
+	--main-toggle-off-border-colour: #aaa;
 	--main-toggle-off-colour: transparent;
 	--main-toggle-on-border-colour: var(--accent-colour);
 	--main-toggle-on-colour: var(--accent-colour);
@@ -56,6 +57,7 @@
 	/* control panel */
 	--control-header-background-colour: #313131;
 	--control-body-background-colour: #3a3a3a;
+	--control-config-border: var(--chat-info-text-colour);
 
 	/* general modal overlay */
 	--overlay-background-colour: #8ad5da;
