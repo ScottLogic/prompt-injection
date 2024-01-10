@@ -88,9 +88,8 @@ async function handleLowLevelChat(
 	defences: Defence[],
 	sentEmails: EmailInfo[]
 ): Promise<LevelHandlerResponse> {
-	const chatHistoryUserMessages = getChatHistoryUserMessages(message, null);
 	let updatedChatHistory = [...chatHistory];
-
+	const chatHistoryUserMessages = getChatHistoryUserMessages(message, null);
 	chatHistoryUserMessages.forEach((message) => {
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, message);
 	});
@@ -211,8 +210,8 @@ async function handleHigherLevelChat(
 			infoMessage: message,
 		});
 	} else {
-		chatResponse.wonLevel = openAiReply.chatResponse.wonLevel;
-		chatResponse.reply = botReply ?? '';
+		updatedChatResponse.wonLevel = openAiReply.chatResponse.wonLevel;
+		updatedChatResponse.reply = botReply ?? '';
 	}
 	return {
 		chatResponse: updatedChatResponse,
