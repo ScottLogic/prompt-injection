@@ -99,7 +99,7 @@ function DefenceMechanism({
 					setConfigKey(configKey + 1);
 				}}
 			>
-				<summary className="defence-mechanism-summary">details</summary>
+				<summary className="defence-mechanism-summary">Details</summary>
 				<div className="info-box">
 					<p>{defenceDetail.info}</p>
 
