@@ -79,7 +79,7 @@ describe('unit test getValidModelsFromOpenAI', () => {
 
 const mockSystemRolePrompt =
 	'You are a helpful chatbot that answers questions.';
-const mockDefences: Defence[] = [
+const mockDefencesSystemRoleInactive: Defence[] = [
 	{
 		id: DEFENCE_ID.SYSTEM_ROLE,
 		config: [
@@ -92,7 +92,9 @@ const mockDefences: Defence[] = [
 		isTriggered: false,
 	},
 ];
-
+const mockDefencesSystemRoleActive = [
+	{ ...mockDefencesSystemRoleInactive[0], isActive: true },
+];
 const mockChatHistoryWithoutSystemRole: ChatHistoryMessage[] = [
 	{
 		completion: { role: 'user', content: 'What is two plus two?' },
@@ -112,15 +114,19 @@ const mockChatHistoryWithSystemRole: ChatHistoryMessage[] = [
 	...mockChatHistoryWithoutSystemRole,
 ];
 
+const mockIsDefenceActive = jest.fn();
+
 jest.mock('@src/defence', () => ({
 	getSystemRole: jest.fn().mockImplementation(() => mockSystemRolePrompt),
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	isDefenceActive: jest.fn().mockImplementation(() => mockIsDefenceActive()),
 }));
 
 describe('unit test setSystemRoleInChatHistory', () => {
 	test('GIVEN level 1 AND system role is not in chat history WHEN setSystemRoleInChatHistory is called THEN it adds the system role to the chat history', () => {
 		const chatHistory = setSystemRoleInChatHistory(
 			LEVEL_NAMES.LEVEL_1,
-			mockDefences,
+			mockDefencesSystemRoleActive,
 			mockChatHistoryWithoutSystemRole
 		);
 
@@ -128,11 +134,24 @@ describe('unit test setSystemRoleInChatHistory', () => {
 	});
 
 	test('GIVEN level 1 AND system role is in chat history WHEN setSystemRoleInChatHistory is called THEN no change to the chat history', () => {
-		// TODO
+		const chatHistory = setSystemRoleInChatHistory(
+			LEVEL_NAMES.LEVEL_1,
+			mockDefencesSystemRoleActive,
+			mockChatHistoryWithSystemRole
+		);
+
+		expect(chatHistory).toEqual(mockChatHistoryWithSystemRole);
 	});
 
 	test('GIVEN Sandbox AND system role defence active AND system role is not in chat history WHEN setSystemRoleInChatHistory is called THEN it adds the system role to the chat history', () => {
-		// TODO
+		mockIsDefenceActive.mockImplementation(() => true);
+		const chatHistory = setSystemRoleInChatHistory(
+			LEVEL_NAMES.SANDBOX,
+			mockDefencesSystemRoleActive,
+			mockChatHistoryWithoutSystemRole
+		);
+
+		expect(chatHistory).toEqual(mockChatHistoryWithSystemRole);
 	});
 
 	test('GIVEN Sandbox AND system role defence active AND outdated system role in in chat history WHEN setSystemRoleInChatHistory is called THEN it updates the system role in the chat history', () => {
