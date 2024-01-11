@@ -1,6 +1,5 @@
 import { ChatHistoryMessage } from '@src/models/chat';
 
-// mutates the chat history
 function pushMessageToHistory(
 	chatHistory: ChatHistoryMessage[],
 	newMessage: ChatHistoryMessage
