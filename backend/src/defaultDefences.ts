@@ -58,7 +58,7 @@ const defaultDefences: Defence[] = [
 			value: String(10),
 		},
 	]),
-	createDefence(DEFENCE_ID.INSTRUCTION_PROMPT, [
+	createDefence(DEFENCE_ID.INSTRUCTION, [
 		{
 			id: 'PROMPT',
 			value: instructionDefencePrompt,

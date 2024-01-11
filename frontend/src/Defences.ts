@@ -65,10 +65,10 @@ const DEFENCES_SHOWN_LEVEL3: Defence[] = [
 		]
 	),
 	makeDefence(
-		DEFENCE_ID.INSTRUCTION_PROMPT,
+		DEFENCE_ID.INSTRUCTION,
 		'Instruction Defence',
 		'Adds a pre-prompt to the user input which encourages the bot to be careful about what comes next in the prompt.',
-		[makeDefenceConfigItem('PROMPT', 'prompt', 'text')]
+		[makeDefenceConfigItem('PROMPT', 'pre-prompt', 'text')]
 	),
 	makeDefence(
 		DEFENCE_ID.PROMPT_ENCLOSURE,
@@ -110,7 +110,7 @@ const MODEL_DEFENCES = [
 const PROMPT_ENCLOSURE_DEFENCES = [
 	DEFENCE_ID.XML_TAGGING,
 	DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
-	DEFENCE_ID.INSTRUCTION_PROMPT,
+	DEFENCE_ID.INSTRUCTION,
 ];
 
 export {

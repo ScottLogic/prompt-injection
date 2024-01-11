@@ -13,7 +13,6 @@ import {
 } from './models/defence';
 import { LEVEL_NAMES } from './models/level';
 import {
-	instructionDefencePrompt,
 	systemRoleLevel1,
 	systemRoleLevel2,
 	systemRoleLevel3,
@@ -131,7 +130,7 @@ function getRandomSequenceEnclosureLength(defences: Defence[]) {
 }
 
 function getInstructionDefencePrePrompt(defences: Defence[]) {
-	return getConfigValue(defences, DEFENCE_ID.INSTRUCTION_PROMPT, 'PROMPT');
+	return getConfigValue(defences, DEFENCE_ID.INSTRUCTION, 'PROMPT');
 }
 
 function getQAPromptFromConfig(defences: Defence[]) {
@@ -276,7 +275,7 @@ function transformMessage(
 			)}`
 		);
 		return transformedMessage;
-	} else if (isDefenceActive(DEFENCE_ID.INSTRUCTION_PROMPT, defences)) {
+	} else if (isDefenceActive(DEFENCE_ID.INSTRUCTION, defences)) {
 		const transformedMessage = transformInstructionDefence(message, defences);
 		console.debug(
 			`Defences applied. Transformed message: ${combineTransformedMessage(
