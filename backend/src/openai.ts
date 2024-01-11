@@ -264,15 +264,10 @@ function setSystemRoleInChatHistory(
 async function chatGptChatCompletion(
 	chatResponse: ChatResponse,
 	chatHistory: ChatHistoryMessage[],
-	defences: Defence[],
 	chatModel: ChatModel,
-	openai: OpenAI,
-	// default to sandbox
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
+	openai: OpenAI
 ) {
 	console.debug('Talking to model: ', JSON.stringify(chatModel));
-
-	chatHistory = setSystemRoleInChatHistory(currentLevel, defences, chatHistory);
 
 	// get start time
 	const startTime = new Date().getTime();
@@ -459,10 +454,8 @@ async function getFinalReplyAfterAllToolCalls(
 	let reply = await chatGptChatCompletion(
 		chatResponse,
 		chatHistory,
-		defences,
 		chatModel,
-		openai,
-		currentLevel
+		openai
 	);
 
 	// check if GPT wanted to call a tool
@@ -487,10 +480,8 @@ async function getFinalReplyAfterAllToolCalls(
 		reply = await chatGptChatCompletion(
 			chatResponse,
 			chatHistory,
-			defences,
 			chatModel,
-			openai,
-			currentLevel
+			openai
 		);
 	}
 
@@ -561,4 +552,5 @@ export {
 	chatGptSendMessage,
 	getOpenAIKey,
 	getValidModelsFromOpenAI,
+	setSystemRoleInChatHistory,
 };
