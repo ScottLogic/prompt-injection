@@ -36,8 +36,8 @@ function combineChatDefenceReports(
 			.map((report) => report.blockedReason)
 			.join('\n'),
 		isBlocked: reports.some((report) => report.isBlocked),
-		alertedDefences: reports.map((report) => report.alertedDefences).flat(),
-		triggeredDefences: reports.map((report) => report.triggeredDefences).flat(),
+		alertedDefences: reports.flatMap((report) => report.alertedDefences),
+		triggeredDefences: reports.flatMap((report) => report.triggeredDefences),
 	};
 	return combinedReport;
 }
