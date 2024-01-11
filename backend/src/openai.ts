@@ -221,8 +221,7 @@ async function chatGptCallFunction(
 function setSystemRoleInChatHistory(
 	currentLevel: LEVEL_NAMES,
 	defences: Defence[],
-	chatHistory: ChatHistoryMessage[],
-	chatModel: ChatModel
+	chatHistory: ChatHistoryMessage[]
 ) {
 	const systemRoleNeededInChatHistory =
 		currentLevel === LEVEL_NAMES.SANDBOX
@@ -235,11 +234,10 @@ function setSystemRoleInChatHistory(
 			content: getSystemRole(defences, currentLevel),
 		};
 
-		// check to see if there's already a system role
-		const systemRole = chatHistory.find(
+		const existingSystemRole = chatHistory.find(
 			(message) => message.completion?.role === 'system'
 		);
-		if (!systemRole) {
+		if (!existingSystemRole) {
 			return [
 				{
 					completion: completionConfig,
@@ -250,7 +248,7 @@ function setSystemRoleInChatHistory(
 		} else {
 			return chatHistory.map((message) => {
 				if (message.completion?.role === 'system') {
-					return { ...systemRole, completion: completionConfig };
+					return { ...existingSystemRole, completion: completionConfig };
 				} else {
 					return message;
 				}
@@ -261,7 +259,6 @@ function setSystemRoleInChatHistory(
 			(message) => message.completion?.role !== 'system'
 		);
 	}
-	console.debug('Talking to model: ', JSON.stringify(chatModel));
 }
 
 async function chatGptChatCompletion(
@@ -273,12 +270,9 @@ async function chatGptChatCompletion(
 	// default to sandbox
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-	chatHistory = setSystemRoleInChatHistory(
-		currentLevel,
-		defences,
-		chatHistory,
-		chatModel
-	);
+	console.debug('Talking to model: ', JSON.stringify(chatModel));
+
+	chatHistory = setSystemRoleInChatHistory(currentLevel, defences, chatHistory);
 
 	// get start time
 	const startTime = new Date().getTime();
