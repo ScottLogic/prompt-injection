@@ -1,4 +1,10 @@
-import { getValidModelsFromOpenAI } from '@src/openai';
+import { CHAT_MESSAGE_TYPE, ChatHistoryMessage } from '@src/models/chat';
+import { DEFENCE_ID, Defence } from '@src/models/defence';
+import { LEVEL_NAMES } from '@src/models/level';
+import {
+	getValidModelsFromOpenAI,
+	setSystemRoleInChatHistory,
+} from '@src/openai';
 
 // Define a mock implementation for the createChatCompletion method
 const mockCreateChatCompletion = jest.fn();
@@ -71,9 +77,54 @@ describe('unit test getValidModelsFromOpenAI', () => {
 	});
 });
 
+const mockSystemRolePrompt =
+	'You are a helpful chatbot that answers questions.';
+const mockDefences: Defence[] = [
+	{
+		id: DEFENCE_ID.SYSTEM_ROLE,
+		config: [
+			{
+				id: 'SYSTEM_ROLE',
+				value: mockSystemRolePrompt,
+			},
+		],
+		isActive: false,
+		isTriggered: false,
+	},
+];
+
+const mockChatHistoryWithoutSystemRole: ChatHistoryMessage[] = [
+	{
+		completion: { role: 'user', content: 'What is two plus two?' },
+		chatMessageType: CHAT_MESSAGE_TYPE.USER,
+	},
+	{
+		completion: { role: 'assistant', content: 'Two plus two equals four.' },
+		chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+	},
+];
+
+const mockChatHistoryWithSystemRole: ChatHistoryMessage[] = [
+	{
+		completion: { role: 'system', content: mockSystemRolePrompt },
+		chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+	},
+	...mockChatHistoryWithoutSystemRole,
+];
+
+jest.mock('@src/defence', () => ({
+	getSystemRole: jest.fn().mockImplementation(() => mockSystemRolePrompt),
+}));
+
 describe('unit test setSystemRoleInChatHistory', () => {
 	test('GIVEN level 1 AND system role is not in chat history WHEN setSystemRoleInChatHistory is called THEN it adds the system role to the chat history', () => {
-		// TODO
+		const chatHistory = setSystemRoleInChatHistory(
+			LEVEL_NAMES.LEVEL_1,
+			mockDefences,
+			mockChatHistoryWithoutSystemRole
+		);
+
+		expect(chatHistory).toEqual(mockChatHistoryWithSystemRole);
 	});
 
 	test('GIVEN level 1 AND system role is in chat history WHEN setSystemRoleInChatHistory is called THEN no change to the chat history', () => {
