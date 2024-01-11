@@ -67,7 +67,7 @@ describe('handleChatToGPT unit tests', () => {
 		return {
 			reply: message,
 			defenceReport: {
-				blockedReason: '',
+				blockedReason: null,
 				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],

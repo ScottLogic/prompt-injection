@@ -90,7 +90,7 @@ describe('handleChatToGPT integration tests', () => {
 		return {
 			reply: errorMsg,
 			defenceReport: {
-				blockedReason: '',
+				blockedReason: null,
 				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
