@@ -12,6 +12,7 @@ export interface ThemedButtonProps {
 		id: string;
 		text: string;
 	};
+	tooltipAnchor?: 'left' | 'center' | 'right';
 	onClick: () => void;
 }
 
@@ -21,6 +22,7 @@ function ThemedButton({
 	ariaLabel,
 	className,
 	tooltip,
+	tooltipAnchor = 'center',
 	onClick,
 }: ThemedButtonProps) {
 	function onClickDisabledCheck() {
@@ -30,16 +32,16 @@ function ThemedButton({
 	const buttonClass = clsx('themed-button', className, {
 		disabled: ariaDisabled,
 	});
-	const tooltipClass = clsx('themed-button-tooltip', {
-		show: tooltip,
+	const tooltipClass = clsx('themed-button-tooltip', tooltipAnchor, {
+		show: !!tooltip,
 	});
 
-	const tooltipId = `themed-button-desc-${tooltip?.id
+	const tooltipId = tooltip && `themed-button-${tooltip?.id
 		.replace(/\s/g, '-')
 		.toLowerCase()}`;
 
 	return (
-		<div className="themed-button-and-tooltip">
+		<div className="themed-button-wrapper">
 			<button
 				className={buttonClass}
 				onClick={onClickDisabledCheck}
@@ -49,9 +51,11 @@ function ThemedButton({
 			>
 				{children}
 			</button>
-			<div role="tooltip" id={tooltipId} className={tooltipClass}>
-				{tooltip?.text}
-			</div>
+			{tooltip && (
+				<div role="tooltip" id={tooltipId} className={tooltipClass}>
+					{tooltip?.text}
+				</div>
+			)}
 		</div>
 	);
 }

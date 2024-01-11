@@ -1,4 +1,4 @@
-.themed-button-and-tooltip {
+.themed-button-wrapper {
 	position: relative;
 }
 
@@ -27,7 +27,7 @@
 
 .themed-button-tooltip {
 	position: absolute;
-	top: 125%;
+	top: calc(100% + 0.125rem);
 	display: none;
 	padding: 0.125rem;
 	border-width: 0.0625rem;
@@ -35,7 +35,18 @@
 	border-color: var(--tooltip-border-colour);
 	background-color: var(--tooltip-background-colour);
 	color: var(--tooltip-text-colour);
-	text-wrap: nowrap;
+	min-width: 8rem;
+	z-index: 1;
+}
+.themed-button-tooltip.show.left {
+	left: 0;
+}
+.themed-button-tooltip.show.right {
+	right: 0;
+}
+.themed-button-tooltip.show.center {
+	right: 50%;
+	transform: translateX(50%);
 }
 
 .themed-button:hover + .themed-button-tooltip.show,

@@ -1,5 +1,5 @@
 .control-panel {
-	overflow-y: auto;
+	overflow-y: visible;
 	height: 100%;
 	padding: 1.875rem;
 }
