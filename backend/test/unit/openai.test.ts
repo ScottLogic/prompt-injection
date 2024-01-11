@@ -68,6 +68,16 @@ describe('openAI unit tests', () => {
 		const validModels = await getValidModelsFromOpenAI();
 		expect(validModels).toEqual(expectedValidModels);
 	});
+
+	describe('test setSystemRoleInChatHistory', () => {
+		// level 1 and no existing system role
+		// level 1 and existing system role
+		// sandbox and no existing system role and system role active
+		// sandbox and existing (different) system role and system role active
+		// sandbox and exisint system role and system role inactive
+		// sandbox and no existing system role and system role inactive
+		return;
+	});
 });
 afterEach(() => {
 	jest.clearAllMocks();
