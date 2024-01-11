@@ -218,21 +218,18 @@ async function chatGptCallFunction(
 	};
 }
 
-async function chatGptChatCompletion(
-	chatResponse: ChatResponse,
-	chatHistory: ChatHistoryMessage[],
+function setSystemRoleInChatHistory(
+	currentLevel: LEVEL_NAMES,
 	defences: Defence[],
-	chatModel: ChatModel,
-	openai: OpenAI,
-	// default to sandbox
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
+	chatHistory: ChatHistoryMessage[],
+	chatModel: ChatModel
 ) {
-	// check if we need to set a system role
-	// system role is always active on levels
-	if (
-		currentLevel !== LEVEL_NAMES.SANDBOX ||
-		isDefenceActive(DEFENCE_ID.SYSTEM_ROLE, defences)
-	) {
+	const systemRoleNeededInChatHistory =
+		currentLevel === LEVEL_NAMES.SANDBOX
+			? isDefenceActive(DEFENCE_ID.SYSTEM_ROLE, defences)
+			: true;
+
+	if (systemRoleNeededInChatHistory) {
 		const completionConfig: ChatCompletionSystemMessageParam = {
 			role: 'system',
 			content: getSystemRole(defences, currentLevel),
@@ -262,6 +259,18 @@ async function chatGptChatCompletion(
 		}
 	}
 	console.debug('Talking to model: ', JSON.stringify(chatModel));
+}
+
+async function chatGptChatCompletion(
+	chatResponse: ChatResponse,
+	chatHistory: ChatHistoryMessage[],
+	defences: Defence[],
+	chatModel: ChatModel,
+	openai: OpenAI,
+	// default to sandbox
+	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
+) {
+	setSystemRoleInChatHistory(currentLevel, defences, chatHistory, chatModel);
 
 	// get start time
 	const startTime = new Date().getTime();
