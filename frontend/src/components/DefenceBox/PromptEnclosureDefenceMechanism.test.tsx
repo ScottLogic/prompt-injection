@@ -63,7 +63,7 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 		mockToggleDefence.mockClear();
 	});
 
-	test('renders defence names plus None option', () => {
+	test('renders defence names plus Off option', () => {
 		renderComponent();
 		expect(screen.queryByText('xml tagging')).toBeInTheDocument();
 		expect(screen.queryByText('random sequence enclosure')).toBeInTheDocument();
@@ -71,16 +71,16 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 		const radioButtonsInput = screen.getAllByRole('radio');
 		expect(radioButtonsInput).toHaveLength(mockDefences.length + 1);
 
-		expect(radioButtonsInput[0]).toHaveAccessibleName('None');
+		expect(radioButtonsInput[0]).toHaveAccessibleName('Off');
 		expect(radioButtonsInput[1]).toHaveAccessibleName('xml tagging');
 		expect(radioButtonsInput[2]).toHaveAccessibleName(
 			'random sequence enclosure'
 		);
 	});
 
-	test('when none is selected, no config items are rendered', async () => {
+	test('when off is selected, no config items are rendered', async () => {
 		const { user } = renderComponent();
-		const radioButton = screen.getByRole('radio', { name: 'None' });
+		const radioButton = screen.getByRole('radio', { name: 'Off' });
 		await user.click(radioButton);
 
 		expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
@@ -132,12 +132,12 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 		expect(screen.queryByLabelText(/xml tag prompt:/i)).not.toBeInTheDocument();
 	});
 
-	test('when None radio is selected, active defences are toggled off', async () => {
+	test('when Off radio is selected, active defences are toggled off', async () => {
 		const newMockDefences = [...mockDefences];
 		newMockDefences[0].isActive = true;
 
 		const { user } = renderComponent(newMockDefences);
-		const radioButton = screen.getByRole('radio', { name: 'None' });
+		const radioButton = screen.getByRole('radio', { name: 'Off' });
 		await user.click(radioButton);
 
 		expect(mockToggleDefence).toHaveBeenCalledWith(newMockDefences[0]);

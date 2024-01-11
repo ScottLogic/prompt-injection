@@ -32,12 +32,11 @@ function PromptEnclosureDefenceMechanism({
 	}
 
 	function getActiveDefence(): string {
-		const activeDefence = defences.find((defence) => defence.isActive);
-		return activeDefence ? activeDefence.id : 'none';
+		return defences.find((defence) => defence.isActive)?.id ?? 'off';
 	}
 
 	function getDefence(defenceId: DEFENCE_ID): Defence | undefined {
-		// will be undefined if 'none' selected
+		// will be undefined if 'off' selected
 		return defences.find((defence) => defence.id === defenceId);
 	}
 
@@ -62,22 +61,20 @@ function PromptEnclosureDefenceMechanism({
 
 	function handleRadioChange(defenceId: string) {
 		setSelectedRadio(defenceId);
-		if (defenceId === 'none') {
-			deactivateAll();
-		} else {
-			activateOne(defenceId as DEFENCE_ID);
-		}
+		defenceId === 'off'
+			? deactivateAll()
+			: activateOne(defenceId as DEFENCE_ID);
 	}
 
 	return (
 		<div className="defence-mechanism">
 			<div className="defence-radio-buttons">
 				<DefenceConfigurationRadioButton
-					id="none"
-					name="None"
-					checked={isRadioSelected('none')}
+					id="off"
+					name="Off"
+					checked={isRadioSelected('off')}
 					onChange={() => {
-						handleRadioChange('none');
+						handleRadioChange('off');
 					}}
 				/>
 				{defences.map((defence) => (
