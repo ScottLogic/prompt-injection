@@ -72,11 +72,27 @@ describe('unit test getValidModelsFromOpenAI', () => {
 });
 
 describe('unit test setSystemRoleInChatHistory', () => {
-	// level 1 and no existing system role
-	// level 1 and existing system role
-	// sandbox and no existing system role and system role active
-	// sandbox and existing (different) system role and system role active
-	// sandbox and exisint system role and system role inactive
-	// sandbox and no existing system role and system role inactive
-	return;
+	test('GIVEN level 1 AND system role is not in chat history WHEN setSystemRoleInChatHistory is called THEN it adds the system role to the chat history', () => {
+		// TODO
+	});
+
+	test('GIVEN level 1 AND system role is in chat history WHEN setSystemRoleInChatHistory is called THEN no change to the chat history', () => {
+		// TODO
+	});
+
+	test('GIVEN Sandbox AND system role defence active AND system role is not in chat history WHEN setSystemRoleInChatHistory is called THEN it adds the system role to the chat history', () => {
+		// TODO
+	});
+
+	test('GIVEN Sandbox AND system role defence active AND outdated system role in in chat history WHEN setSystemRoleInChatHistory is called THEN it updates the system role in the chat history', () => {
+		// TODO
+	});
+
+	test('GIVEN Sandbox AND system role defence not active AND system role is in chat history WHEN setSystemRoleInChatHistory is called THEN it removes the system role from the chat history', () => {
+		// TODO
+	});
+
+	test('GIVEN Sandbox AND system role defence not active AND system role is not in chat history WHEN setSystemRoleInChatHistory is called THEN no change to the chat history', () => {
+		// TODO
+	});
 });
