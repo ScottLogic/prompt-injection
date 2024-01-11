@@ -46,9 +46,10 @@ beforeEach(() => {
 });
 afterEach(() => {
 	mockCreateChatCompletion.mockReset();
+	jest.clearAllMocks();
 });
 
-describe('openAI unit tests', () => {
+describe('unit test getValidModelsFromOpenAI', () => {
 	test('GIVEN the user has an openAI key WHEN getValidModelsFromOpenAI is called THEN it returns the models in CHAT_MODELS enum', async () => {
 		process.env.OPENAI_API_KEY = 'sk-12345';
 		mockModelList = [
@@ -68,17 +69,14 @@ describe('openAI unit tests', () => {
 		const validModels = await getValidModelsFromOpenAI();
 		expect(validModels).toEqual(expectedValidModels);
 	});
-
-	describe('test setSystemRoleInChatHistory', () => {
-		// level 1 and no existing system role
-		// level 1 and existing system role
-		// sandbox and no existing system role and system role active
-		// sandbox and existing (different) system role and system role active
-		// sandbox and exisint system role and system role inactive
-		// sandbox and no existing system role and system role inactive
-		return;
-	});
 });
-afterEach(() => {
-	jest.clearAllMocks();
+
+describe('unit test setSystemRoleInChatHistory', () => {
+	// level 1 and no existing system role
+	// level 1 and existing system role
+	// sandbox and no existing system role and system role active
+	// sandbox and existing (different) system role and system role active
+	// sandbox and exisint system role and system role inactive
+	// sandbox and no existing system role and system role inactive
+	return;
 });
