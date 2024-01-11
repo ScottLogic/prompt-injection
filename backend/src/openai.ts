@@ -225,7 +225,6 @@ async function chatGptChatCompletion(
 	chatModel: ChatModel,
 	openai: OpenAI,
 	// default to sandbox
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	// check if we need to set a system role
