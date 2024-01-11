@@ -17,7 +17,7 @@ import {
 	defaultChatModel,
 } from '@src/models/chat';
 import { LEVEL_NAMES } from '@src/models/level';
-import { chatGptSendMessage } from '@src/openai';
+import { chatGptSendMessage, setSystemRoleInChatHistory } from '@src/openai';
 
 import { handleChatError } from './handleError';
 
@@ -29,7 +29,6 @@ async function handleLowLevelChat(
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel
 ) {
-	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
 		req.session.levelState[currentLevel].chatHistory,
 		req.session.levelState[currentLevel].defences,
@@ -177,13 +176,19 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			? req.session.chatModel
 			: defaultChatModel;
 
+	req.session.levelState[currentLevel].chatHistory = setSystemRoleInChatHistory(
+		currentLevel,
+		req.session.levelState[currentLevel].defences,
+		req.session.levelState[currentLevel].chatHistory
+	);
+
 	// record the history before chat completion called
 	const chatHistoryBefore = [
 		...req.session.levelState[currentLevel].chatHistory,
 	];
 	try {
-		// skip defence detection / blocking for levels 1 and 2 - sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
+			// skip defence detection / blocking for levels 1 and 2 - sets chatResponse obj
 			await handleLowLevelChat(
 				req,
 				message,
