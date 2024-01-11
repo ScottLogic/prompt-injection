@@ -406,8 +406,6 @@ async function performToolCalls(
 	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES
 ): Promise<ToolCallResponse> {
-	let updatedChatHistory = [...chatHistory];
-
 	for (const toolCall of toolCalls) {
 		// only tool type supported by openai is function
 
@@ -420,14 +418,13 @@ async function performToolCalls(
 				sentEmails,
 				currentLevel
 			);
-			updatedChatHistory = pushCompletionToHistory(
-				updatedChatHistory,
-				functionCallReply.completion,
-				CHAT_MESSAGE_TYPE.FUNCTION_CALL
-			);
 			return {
 				functionCallReply,
-				chatHistory: updatedChatHistory,
+				chatHistory: pushCompletionToHistory(
+					chatHistory,
+					functionCallReply.completion,
+					CHAT_MESSAGE_TYPE.FUNCTION_CALL
+				),
 			};
 		}
 	}
@@ -449,7 +446,7 @@ async function getFinalReplyAfterAllToolCalls(
 	const openai = getOpenAI();
 
 	let gptReply = await chatGptChatCompletion(
-		[...chatHistory],
+		chatHistory,
 		defences,
 		chatModel,
 		openai,
@@ -461,7 +458,7 @@ async function getFinalReplyAfterAllToolCalls(
 	while (gptReply.completion?.tool_calls) {
 		// push the assistant message to the chat
 		updatedChatHistory = pushCompletionToHistory(
-			updatedChatHistory,
+			gptReply.chatHistory,
 			gptReply.completion,
 			CHAT_MESSAGE_TYPE.FUNCTION_CALL
 		);
@@ -509,7 +506,7 @@ async function chatGptSendMessage(
 	console.log(`User message: '${message}'`);
 	// add user message to chat
 	let updatedChatHistory = pushCompletionToHistory(
-		[...chatHistory],
+		chatHistory,
 		{
 			role: 'user',
 			content: message,
@@ -527,7 +524,6 @@ async function chatGptSendMessage(
 	);
 
 	updatedChatHistory = finalToolCallResponse.chatHistory;
-	const updatedSentEmails = finalToolCallResponse.sentEmails;
 
 	const chatResponse: ChatResponse = {
 		completion: finalToolCallResponse.gptReply.completion,
@@ -557,7 +553,7 @@ async function chatGptSendMessage(
 	return {
 		chatResponse,
 		chatHistory: updatedChatHistory,
-		sentEmails: updatedSentEmails,
+		sentEmails: finalToolCallResponse.sentEmails,
 	};
 }
 
