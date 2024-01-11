@@ -221,7 +221,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		handleChatError(
 			res,
 			initChatResponse,
-			true,
 			'Missing or empty message or level',
 			400
 		);
@@ -233,7 +232,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		handleChatError(
 			res,
 			initChatResponse,
-			true,
 			'Message exceeds character limit',
 			400
 		);
@@ -284,7 +282,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			updatedChatHistory,
 			errorMessage
 		);
-		handleChatError(res, initChatResponse, true, errorMessage, 500);
+		handleChatError(res, initChatResponse, errorMessage, 500);
 		return;
 	}
 
@@ -301,6 +299,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		defenceReport: levelResult.chatResponse.defenceReport,
 		transformedMessage: levelResult.chatResponse.transformedMessage,
 	};
+
 	if (levelResult.chatResponse.defenceReport.isBlocked) {
 		// chatReponse.reply is empty if blocked
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
@@ -309,18 +308,19 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			infoMessage: updatedChatResponse.defenceReport.blockedReason,
 		});
 	}
+
 	// more error handling
 	else if (updatedChatResponse.openAIErrorMessage) {
 		const errorMsg = simplifyOpenAIErrorMessage(
 			updatedChatResponse.openAIErrorMessage
 		);
 		updatedChatHistory = addErrorToChatHistory(updatedChatHistory, errorMsg);
-		handleChatError(res, updatedChatResponse, true, errorMsg, 500);
+		handleChatError(res, updatedChatResponse, errorMsg, 500);
 		return;
 	} else if (!levelResult.chatResponse.reply) {
 		const errorMsg = 'Failed to get chatGPT reply';
 		updatedChatHistory = addErrorToChatHistory(updatedChatHistory, errorMsg);
-		handleChatError(res, updatedChatResponse, true, errorMsg, 500);
+		handleChatError(res, updatedChatResponse, errorMsg, 500);
 		return;
 	} else {
 		// add bot message to chat history

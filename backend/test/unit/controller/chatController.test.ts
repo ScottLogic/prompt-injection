@@ -63,22 +63,16 @@ function responseMock() {
 }
 
 describe('handleChatToGPT unit tests', () => {
-	function errorResponseMock(
-		message: string,
-		{
-			transformedMessage,
-			openAIErrorMessage,
-		}: { transformedMessage?: string; openAIErrorMessage?: string }
-	) {
+	function errorResponseMock(message: string, openAIErrorMessage?: string) {
 		return {
 			reply: message,
 			defenceReport: {
-				blockedReason: message,
-				isBlocked: true,
+				blockedReason: '',
+				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
 			},
-			transformedMessage: transformedMessage ?? undefined,
+			transformedMessage: undefined,
 			wonLevel: false,
 			isError: true,
 			sentEmails: [],
@@ -132,7 +126,7 @@ describe('handleChatToGPT unit tests', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Missing or empty message or level', {})
+			errorResponseMock('Missing or empty message or level')
 		);
 	});
 
@@ -144,7 +138,7 @@ describe('handleChatToGPT unit tests', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Message exceeds character limit', {})
+			errorResponseMock('Message exceeds character limit')
 		);
 	});
 

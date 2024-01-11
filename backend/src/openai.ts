@@ -376,8 +376,6 @@ async function performToolCalls(
 	defences: Defence[],
 	currentLevel: LEVEL_NAMES
 ): Promise<ToolCallResponse> {
-	let updatedChatHistory = [...chatHistory];
-
 	for (const toolCall of toolCalls) {
 		// only tool type supported by openai is function
 
@@ -389,13 +387,12 @@ async function performToolCalls(
 				toolCall.function,
 				currentLevel
 			);
-			updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
-				completion: functionCallReply.completion,
-				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
-			});
 			return {
 				functionCallReply,
-				chatHistory: updatedChatHistory,
+				chatHistory: pushMessageToHistory(chatHistory, {
+					completion: functionCallReply.completion,
+					chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+				}),
 			};
 		}
 	}
@@ -470,7 +467,7 @@ async function chatGptSendMessage(
 	console.log(`User message: '${message}'`);
 	const finalToolCallResponse = await getFinalReplyAfterAllToolCalls(
 		chatHistory,
-		[...defences],
+		defences,
 		chatModel,
 		currentLevel
 	);

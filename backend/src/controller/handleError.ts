@@ -13,7 +13,6 @@ function sendErrorResponse(
 function handleChatError(
 	res: Response,
 	chatResponse: ChatHttpResponse,
-	blocked: boolean,
 	errorMsg: string,
 	statusCode = 500
 ) {
@@ -22,13 +21,6 @@ function handleChatError(
 		...chatResponse,
 		reply: errorMsg,
 		isError: true,
-		defenceReport: {
-			...chatResponse.defenceReport,
-			isBlocked: blocked,
-			blockedReason: blocked
-				? errorMsg
-				: chatResponse.defenceReport.blockedReason,
-		},
 	};
 	res.status(statusCode).send(updatedChatResponse);
 }

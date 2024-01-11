@@ -86,22 +86,16 @@ describe('handleChatToGPT integration tests', () => {
 		};
 	}
 
-	function errorResponseMock(
-		message: string,
-		{
-			transformedMessage,
-			openAIErrorMessage,
-		}: { transformedMessage?: string; openAIErrorMessage?: string }
-	) {
+	function errorResponseMock(errorMsg: string, openAIErrorMessage?: string) {
 		return {
-			reply: message,
+			reply: errorMsg,
 			defenceReport: {
-				blockedReason: message,
-				isBlocked: true,
+				blockedReason: '',
+				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
 			},
-			transformedMessage: transformedMessage ?? undefined,
+			transformedMessage: undefined,
 			wonLevel: false,
 			isError: true,
 			sentEmails: [],
@@ -248,9 +242,7 @@ describe('handleChatToGPT integration tests', () => {
 
 		expect(res.status).toHaveBeenCalledWith(500);
 		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Failed to get ChatGPT reply.', {
-				openAIErrorMessage: 'OpenAI error',
-			})
+			errorResponseMock('Failed to get ChatGPT reply.', 'OpenAI error')
 		);
 	});
 
@@ -271,10 +263,7 @@ describe('handleChatToGPT integration tests', () => {
 		expect(res.send).toHaveBeenCalledWith(
 			errorResponseMock(
 				"I'm receiving too many requests. Please try again in 20s. You can upgrade your open AI key to increase the rate limit.",
-				{
-					openAIErrorMessage:
-						'429 OpenAI error. yada yada. Please try again in 20s. blah blah blah.',
-				}
+				'429 OpenAI error. yada yada. Please try again in 20s. blah blah blah.'
 			)
 		);
 	});
