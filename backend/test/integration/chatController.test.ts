@@ -8,6 +8,7 @@ import { ChatHistoryMessage, ChatModel } from '@src/models/chat';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
+import * as openaiModule from '@src/openai';
 
 declare module 'express-session' {
 	interface Session {
@@ -152,12 +153,17 @@ describe('handleChatToGPT integration tests', () => {
 		const req = openAiChatRequestMock('Hello chatbot', LEVEL_NAMES.LEVEL_1);
 		const res = responseMock();
 
+		const mockedSetSystemRoleInChatHistory = jest.spyOn(
+			openaiModule,
+			'setSystemRoleInChatHistory'
+		);
 		mockCreateChatCompletion.mockResolvedValueOnce(
 			chatResponseAssistant('Howdy human!')
 		);
 
 		await handleChatToGPT(req, res);
 
+		expect(mockedSetSystemRoleInChatHistory).toHaveBeenCalled();
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Howdy human!',
 			defenceReport: {
