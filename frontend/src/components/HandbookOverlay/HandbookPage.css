@@ -24,7 +24,7 @@
 	margin: 0;
 }
 
-.role-locked {
+.handbook-terms .role-locked {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -35,7 +35,7 @@
 	text-align: center;
 }
 
-.system-role-error-message {
+.handbook-terms .system-role-error-message {
 	border: 0.125rem dashed var(--error-colour);
 	background-color: var(--error-background-colour);
 	padding: 0.625rem;

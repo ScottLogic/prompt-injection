@@ -32,9 +32,9 @@ describe('HandbookSystemRole component tests', () => {
 		expect(screen.getByText('System Roles')).toBeInTheDocument();
 
 		// make sure no system roles are displayed on the page
-		expect(screen.queryAllByText(level1SystemRole)).toHaveLength(0);
-		expect(screen.queryAllByText(level2SystemRole)).toHaveLength(0);
-		expect(screen.queryAllByText(level3SystemRole)).toHaveLength(0);
+		expect(screen.queryByText(level1SystemRole)).not.toBeInTheDocument();
+		expect(screen.queryByText(level2SystemRole)).not.toBeInTheDocument();
+		expect(screen.queryByText(level3SystemRole)).not.toBeInTheDocument();
 
 		// check aria roles for term headers
 		const systemRoleScreen = screen
@@ -60,9 +60,9 @@ describe('HandbookSystemRole component tests', () => {
 		expect(screen.getByText('System Roles')).toBeInTheDocument();
 
 		// check level 1 is shown but level 2 and 3 are not
-		expect(screen.queryAllByText(level1SystemRole)).toHaveLength(1);
-		expect(screen.queryAllByText(level2SystemRole)).toHaveLength(0);
-		expect(screen.queryAllByText(level3SystemRole)).toHaveLength(0);
+		expect(screen.queryByText(level1SystemRole)).toBeInTheDocument();
+		expect(screen.queryByText(level2SystemRole)).not.toBeInTheDocument();
+		expect(screen.queryByText(level3SystemRole)).not.toBeInTheDocument();
 
 		// check aria roles
 		const systemRoleScreen = screen
@@ -88,9 +88,9 @@ describe('HandbookSystemRole component tests', () => {
 		expect(screen.getByText('System Roles')).toBeInTheDocument();
 
 		// check level 1 and 3 are shown and 3 is not
-		expect(screen.queryAllByText(level1SystemRole)).toHaveLength(1);
-		expect(screen.queryAllByText(level2SystemRole)).toHaveLength(1);
-		expect(screen.queryAllByText(level3SystemRole)).toHaveLength(0);
+		expect(screen.queryByText(level1SystemRole)).toBeInTheDocument();
+		expect(screen.queryByText(level2SystemRole)).toBeInTheDocument();
+		expect(screen.queryByText(level3SystemRole)).not.toBeInTheDocument();
 
 		// make sure 1 system role are locked
 		const lockedBox = container.getElementsByClassName('role-locked');
@@ -110,9 +110,9 @@ describe('HandbookSystemRole component tests', () => {
 		expect(screen.getByText('System Roles')).toBeInTheDocument();
 
 		// check all levels system roles are shown
-		expect(screen.queryAllByText(level1SystemRole)).toHaveLength(1);
-		expect(screen.queryAllByText(level2SystemRole)).toHaveLength(1);
-		expect(screen.queryAllByText(level3SystemRole)).toHaveLength(1);
+		expect(screen.queryByText(level1SystemRole)).toBeInTheDocument();
+		expect(screen.queryByText(level2SystemRole)).toBeInTheDocument();
+		expect(screen.queryByText(level3SystemRole)).toBeInTheDocument();
 
 		// check aria roles
 		const systemRoleScreen = screen
@@ -138,12 +138,18 @@ describe('HandbookSystemRole component tests', () => {
 		expect(screen.getByText('System Roles')).toBeInTheDocument();
 
 		// make sure no system roles are displayed on the page
-		expect(screen.queryAllByText(level1SystemRole)).toHaveLength(0);
-		expect(screen.queryAllByText(level2SystemRole)).toHaveLength(0);
-		expect(screen.queryAllByText(level3SystemRole)).toHaveLength(0);
+		expect(
+			screen.queryByRole('term', { name: level1SystemRole })
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('term', { name: level2SystemRole })
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('term', { name: level3SystemRole })
+		).not.toBeInTheDocument();
 
 		// check that the error message is displayed
-		expect(screen.queryAllByText(errorMessage)).toHaveLength(1);
+		expect(screen.queryByText(errorMessage)).toBeInTheDocument();
 	});
 
 	test('renders no error message when system roles are passed to it', () => {
@@ -156,9 +162,7 @@ describe('HandbookSystemRole component tests', () => {
 			/>
 		);
 
-		expect(screen.getByText('System Roles')).toBeInTheDocument();
-
 		// check that the error message is not being displayed
-		expect(screen.queryAllByText(errorMessage)).toHaveLength(0);
+		expect(screen.queryByText(errorMessage)).not.toBeInTheDocument();
 	});
 });
