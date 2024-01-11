@@ -245,7 +245,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	} catch (error) {
 		const errorMessage =
 			error instanceof Error ? error.message : 'Failed to get chatGPT reply';
-		updatedChatHistory = addErrorToChatHistory(
+		req.session.levelState[currentLevel].chatHistory = addErrorToChatHistory(
 			updatedChatHistory,
 			errorMessage
 		);
@@ -281,12 +281,18 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		const errorMsg = simplifyOpenAIErrorMessage(
 			updatedChatResponse.openAIErrorMessage
 		);
-		updatedChatHistory = addErrorToChatHistory(updatedChatHistory, errorMsg);
+		req.session.levelState[currentLevel].chatHistory = addErrorToChatHistory(
+			updatedChatHistory,
+			errorMsg
+		);
 		handleChatError(res, updatedChatResponse, errorMsg, 500);
 		return;
 	} else if (!levelResult.chatResponse.reply) {
 		const errorMsg = 'Failed to get chatGPT reply';
-		updatedChatHistory = addErrorToChatHistory(updatedChatHistory, errorMsg);
+		req.session.levelState[currentLevel].chatHistory = addErrorToChatHistory(
+			updatedChatHistory,
+			errorMsg
+		);
 		handleChatError(res, updatedChatResponse, errorMsg, 500);
 		return;
 	}
