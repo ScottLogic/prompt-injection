@@ -124,9 +124,6 @@ async function handleHigherLevelChat(
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
 	let updatedChatHistory = [...chatHistory];
-	const updatedChatResponse = {
-		...chatResponse,
-	};
 
 	// transform the message according to active defences
 	const transformedMessage = transformMessage(message, defences);
@@ -137,9 +134,6 @@ async function handleHigherLevelChat(
 	chatHistoryUserMessages.forEach((message) => {
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, message);
 	});
-	if (transformedMessage) {
-		updatedChatResponse.transformedMessage = transformedMessage;
-	}
 
 	// detect defences on input message
 	const triggeredDefencesPromise = detectTriggeredInputDefences(
@@ -164,9 +158,6 @@ async function handleHigherLevelChat(
 		openAiReplyPromise,
 	]);
 
-	updatedChatResponse.openAIErrorMessage =
-		openAiReply.chatResponse.openAIErrorMessage;
-
 	const botReply = openAiReply.chatResponse.completion?.content?.toString();
 	const outputDefenceReport = botReply
 		? detectTriggeredOutputDefences(botReply, defences)
@@ -180,9 +171,9 @@ async function handleHigherLevelChat(
 	if (outputDefenceReport) {
 		defenceReports.push(outputDefenceReport);
 	}
-	updatedChatResponse.defenceReport = combineChatDefenceReports(defenceReports);
+	const combinedDefenceReport = combineChatDefenceReports(defenceReports);
 
-	if (updatedChatResponse.defenceReport.isBlocked) {
+	if (combinedDefenceReport.isBlocked) {
 		// restore the original chat history
 		// add user message to the chat history (not as completion)
 		updatedChatHistory = pushMessageToHistory(chatHistory, {
@@ -190,10 +181,17 @@ async function handleHigherLevelChat(
 			chatMessageType: CHAT_MESSAGE_TYPE.USER,
 			infoMessage: message,
 		});
-	} else {
-		updatedChatResponse.wonLevel = openAiReply.chatResponse.wonLevel;
-		updatedChatResponse.reply = botReply ?? '';
 	}
+
+	const updatedChatResponse: ChatHttpResponse = {
+		...chatResponse,
+		defenceReport: combinedDefenceReport,
+		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
+		reply: !combinedDefenceReport.isBlocked && botReply ? botReply : '',
+		transformedMessage: transformedMessage ? transformedMessage : undefined,
+		wonLevel:
+			openAiReply.chatResponse.wonLevel && !combinedDefenceReport.isBlocked,
+	};
 	return {
 		chatResponse: updatedChatResponse,
 		chatHistory: updatedChatHistory,
