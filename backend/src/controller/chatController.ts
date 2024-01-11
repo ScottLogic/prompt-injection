@@ -87,11 +87,10 @@ async function handleLowLevelChat(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	let updatedChatHistory = [...chatHistory];
-	const chatHistoryUserMessages = getChatHistoryUserMessages(message, null);
-	chatHistoryUserMessages.forEach((message) => {
-		updatedChatHistory = pushMessageToHistory(updatedChatHistory, message);
-	});
+	const updatedChatHistory = getChatHistoryUserMessages(message, null).reduce(
+		pushMessageToHistory,
+		chatHistory
+	);
 
 	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
