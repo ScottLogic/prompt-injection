@@ -139,7 +139,6 @@ async function handleHigherLevelChat(
 			...defenceReport.triggeredDefences,
 			...openAiReply.chatResponse.defenceReport.triggeredDefences,
 		];
-		// combine blocked
 
 		updatedChatResponse = {
 			...updatedChatResponse,
@@ -179,7 +178,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	};
 	const { message, currentLevel } = req.body;
 
-	// must have initialised openai
 	if (!message || currentLevel === undefined) {
 		handleChatError(
 			res,
@@ -212,7 +210,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			? req.session.chatModel
 			: defaultChatModel;
 
-	let updatedChatHistory = [
+	const currentChatHistory = [
 		...req.session.levelState[currentLevel].chatHistory,
 	];
 	const defences = [...req.session.levelState[currentLevel].defences];
@@ -226,7 +224,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				initChatResponse,
 				currentLevel,
 				chatModel,
-				updatedChatHistory,
+				currentChatHistory,
 				defences,
 				totalSentEmails
 			);
@@ -237,7 +235,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				initChatResponse,
 				currentLevel,
 				chatModel,
-				updatedChatHistory,
+				currentChatHistory,
 				defences,
 				totalSentEmails
 			);
@@ -246,14 +244,14 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		const errorMessage =
 			error instanceof Error ? error.message : 'Failed to get chatGPT reply';
 		req.session.levelState[currentLevel].chatHistory = addErrorToChatHistory(
-			updatedChatHistory,
+			currentChatHistory,
 			errorMessage
 		);
 		handleChatError(res, initChatResponse, errorMessage, 500);
 		return;
 	}
 
-	updatedChatHistory = levelResult.chatHistory;
+	const updatedChatHistory = levelResult.chatHistory;
 	totalSentEmails.push(...levelResult.sentEmails);
 
 	// update chat response
@@ -267,7 +265,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		transformedMessage: levelResult.chatResponse.transformedMessage,
 	};
 
-	if (levelResult.chatResponse.defenceReport.isBlocked) {
+	if (updatedChatResponse.defenceReport.isBlocked) {
 		// chatReponse.reply is empty if blocked
 		updatedChatHistory.push({
 			completion: null,
@@ -287,7 +285,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		);
 		handleChatError(res, updatedChatResponse, errorMsg, 500);
 		return;
-	} else if (!levelResult.chatResponse.reply) {
+	} else if (!updatedChatResponse.reply) {
 		const errorMsg = 'Failed to get chatGPT reply';
 		req.session.levelState[currentLevel].chatHistory = addErrorToChatHistory(
 			updatedChatHistory,

@@ -153,10 +153,9 @@ async function handleAskQuestionFunction(
 		const params = JSON.parse(functionCallArgs) as FunctionAskQuestionParams;
 		console.debug(`Asking question: ${params.question}`);
 		// if asking a question, call the queryDocuments
-		let configQAPrompt = '';
-		if (isDefenceActive(DEFENCE_ID.QA_LLM, defences)) {
-			configQAPrompt = getQAPromptFromConfig(defences);
-		}
+		const configQAPrompt = isDefenceActive(DEFENCE_ID.QA_LLM, defences)
+			? getQAPromptFromConfig(defences)
+			: '';
 		return {
 			reply: (
 				await queryDocuments(params.question, configQAPrompt, currentLevel)
@@ -254,8 +253,6 @@ async function chatGptChatCompletion(
 	defences: Defence[],
 	chatModel: ChatModel,
 	openai: OpenAI,
-	// default to sandbox
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	const updatedChatHistory = [...chatHistory];
@@ -418,6 +415,7 @@ async function performToolCalls(
 				sentEmails,
 				currentLevel
 			);
+			// return after getting function reply. may change when we support other tool types
 			return {
 				functionCallReply,
 				chatHistory: pushCompletionToHistory(
