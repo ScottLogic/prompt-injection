@@ -36,9 +36,8 @@ function ThemedButton({
 		show: !!tooltip,
 	});
 
-	const tooltipId = tooltip && `themed-button-${tooltip?.id
-		.replace(/\s/g, '-')
-		.toLowerCase()}`;
+	const tooltipId =
+		tooltip && `themed-button-${tooltip.id.replace(/\s/g, '-').toLowerCase()}`;
 
 	return (
 		<div className="themed-button-wrapper">
@@ -53,7 +52,7 @@ function ThemedButton({
 			</button>
 			{tooltip && (
 				<div role="tooltip" id={tooltipId} className={tooltipClass}>
-					{tooltip?.text}
+					{tooltip.text}
 				</div>
 			)}
 		</div>
