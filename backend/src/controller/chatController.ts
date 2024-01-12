@@ -129,29 +129,12 @@ async function handleHigherLevelChat(
 		};
 	} else {
 		updatedChatHistory = openAiReply.chatHistory;
-
-		// combine alerted and triggered defences
-		const combinedAlertedDefences = [
-			...defenceReport.alertedDefences,
-			...openAiReply.chatResponse.defenceReport.alertedDefences,
-		];
-		const combinedTriggeredDefences = [
-			...defenceReport.triggeredDefences,
-			...openAiReply.chatResponse.defenceReport.triggeredDefences,
-		];
-
 		updatedChatResponse = {
 			...updatedChatResponse,
 			reply: openAiReply.chatResponse.completion?.content?.toString() ?? '',
 			wonLevel: openAiReply.chatResponse.wonLevel,
 			openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
-			defenceReport: {
-				...defenceReport,
-				alertedDefences: combinedAlertedDefences,
-				triggeredDefences: combinedTriggeredDefences,
-				isBlocked: openAiReply.chatResponse.defenceReport.isBlocked,
-				blockedReason: openAiReply.chatResponse.defenceReport.blockedReason,
-			},
+			defenceReport,
 		};
 	}
 	return {

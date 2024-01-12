@@ -525,12 +525,6 @@ async function chatGptSendMessage(
 
 	const chatResponse: ChatResponse = {
 		completion: finalToolCallResponse.gptReply.completion,
-		defenceReport: {
-			blockedReason: '',
-			isBlocked: false,
-			alertedDefences: [],
-			triggeredDefences: [],
-		},
 		wonLevel: finalToolCallResponse.wonLevel,
 		openAIErrorMessage: finalToolCallResponse.gptReply.openAIErrorMessage,
 	};
@@ -543,9 +537,7 @@ async function chatGptSendMessage(
 	updatedChatHistory = pushCompletionToHistory(
 		updatedChatHistory,
 		chatResponse.completion,
-		chatResponse.defenceReport.isBlocked
-			? CHAT_MESSAGE_TYPE.BOT_BLOCKED
-			: CHAT_MESSAGE_TYPE.BOT
+		CHAT_MESSAGE_TYPE.BOT
 	);
 
 	return {
