@@ -1,4 +1,4 @@
-.loading-button.themed-button.disabled {
+.loading-button.disabled {
 	background-color: var(--action-button-background-colour);
 	color: var(--action-button-text-colour);
 }

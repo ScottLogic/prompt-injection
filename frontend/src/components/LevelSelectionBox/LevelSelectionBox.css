@@ -6,7 +6,7 @@
 	align-items: stretch;
 }
 
-.level-button.themed-button {
+.level-button {
 	height: 3.125rem;
 	padding: 1rem;
 	border: 0.125rem solid var(--level-button-border-colour);
@@ -16,15 +16,15 @@
 	font-size: 1.875rem;
 }
 
-.level-button.themed-button.sandbox {
+.level-button.sandbox {
 	font-size: 1rem;
 }
 
-.level-button.themed-button.selected {
+.level-button.selected {
 	background-color: var(--level-button-background-colour-selected);
 }
 
-.level-button.themed-button.disabled {
+.level-button.disabled {
 	border-color: var(--level-button-border-colour-disabled);
 	background-color: transparent;
 	color: var(--level-button-colour-disabled);
