@@ -155,10 +155,9 @@ async function handleAskQuestionFunction(
 		const params = JSON.parse(functionCallArgs) as FunctionAskQuestionParams;
 		console.debug(`Asking question: ${params.question}`);
 		// if asking a question, call the queryDocuments
-		let configQAPrompt = '';
-		if (isDefenceActive(DEFENCE_ID.QA_LLM, defences)) {
-			configQAPrompt = getQAPromptFromConfig(defences);
-		}
+		const configQAPrompt = isDefenceActive(DEFENCE_ID.QA_LLM, defences)
+			? getQAPromptFromConfig(defences)
+			: '';
 		return {
 			reply: (
 				await queryDocuments(params.question, configQAPrompt, currentLevel)
@@ -387,6 +386,7 @@ async function performToolCalls(
 				toolCall.function,
 				currentLevel
 			);
+			// return after getting function reply. may change when we support other tool types
 			return {
 				functionCallReply,
 				chatHistory: pushMessageToHistory(chatHistory, {
@@ -477,12 +477,6 @@ async function chatGptSendMessage(
 
 	const chatResponse: ChatResponse = {
 		completion: finalToolCallResponse.gptReply.completion,
-		defenceReport: {
-			blockedReason: null,
-			isBlocked: false,
-			alertedDefences: [],
-			triggeredDefences: [],
-		},
 		wonLevel: finalToolCallResponse.wonLevel,
 		openAIErrorMessage: finalToolCallResponse.gptReply.openAIErrorMessage,
 	};

@@ -87,7 +87,6 @@ interface ChatMalicious {
 
 interface ChatResponse {
 	completion: ChatCompletionMessageParam | null;
-	defenceReport: ChatDefenceReport;
 	wonLevel: boolean;
 	openAIErrorMessage: string | null;
 }
@@ -119,6 +118,7 @@ interface LevelHandlerResponse {
 	chatResponse: ChatHttpResponse;
 	chatHistory: ChatHistoryMessage[];
 	sentEmails: EmailInfo[];
+	defenceReport?: ChatDefenceReport;
 }
 
 interface ChatHistoryMessage {
