@@ -136,7 +136,7 @@ async function handleHigherLevelChat(
 	});
 
 	// detect defences on input message
-	const triggeredDefencesPromise = detectTriggeredInputDefences(
+	const triggeredInputDefencesPromise = detectTriggeredInputDefences(
 		message,
 		defences
 	);
@@ -154,7 +154,7 @@ async function handleHigherLevelChat(
 
 	// run defence detection and chatGPT concurrently
 	const [inputDefenceReport, openAiReply] = await Promise.all([
-		triggeredDefencesPromise,
+		triggeredInputDefencesPromise,
 		openAiReplyPromise,
 	]);
 
