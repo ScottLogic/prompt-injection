@@ -5,11 +5,11 @@
 }
 
 /* Button fills all available width */
-.document-view-button-wrapper .themed-button-and-tooltip {
+.document-view-button-wrapper .themed-button-wrapper {
 	display: flex;
 	flex-grow: 1;
 }
 
-.document-view-button-wrapper .themed-button-and-tooltip button {
+.document-view-button-wrapper .themed-button-wrapper button {
 	flex-grow: 1;
 }
