@@ -6,6 +6,26 @@
 	align-items: stretch;
 }
 
-.level-selection-box button:last-child {
+.level-button {
+	height: 3.125rem;
+	padding: 1rem;
+	border: 0.125rem solid var(--level-button-border-colour);
+	border-radius: 0;
+	background-color: transparent;
+	color: var(--level-button-colour);
+	font-size: 1.875rem;
+}
+
+.level-button.sandbox {
 	font-size: 1rem;
+}
+
+.level-button.selected {
+	background-color: var(--level-button-background-colour-selected);
+}
+
+.level-button.disabled {
+	border-color: var(--level-button-border-colour-disabled);
+	background-color: transparent;
+	color: var(--level-button-colour-disabled);
 }
