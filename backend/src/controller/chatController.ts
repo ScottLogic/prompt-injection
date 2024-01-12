@@ -42,7 +42,7 @@ function combineChatDefenceReports(
 	return combinedReport;
 }
 
-function getChatHistoryUserMessages(
+function createNewUserMessages(
 	message: string,
 	transformedMessage: string | null
 ): ChatHistoryMessage[] {
@@ -87,7 +87,7 @@ async function handleLowLevelChat(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	const updatedChatHistory = getChatHistoryUserMessages(message, null).reduce(
+	const updatedChatHistory = createNewUserMessages(message, null).reduce(
 		pushMessageToHistory,
 		chatHistory
 	);
@@ -127,7 +127,7 @@ async function handleHigherLevelChat(
 
 	// transform the message according to active defences
 	const transformedMessage = transformMessage(message, defences);
-	const chatHistoryUserMessages = getChatHistoryUserMessages(
+	const chatHistoryUserMessages = createNewUserMessages(
 		message,
 		transformedMessage ? combineTransformedMessage(transformedMessage) : null
 	);
