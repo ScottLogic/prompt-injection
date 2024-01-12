@@ -195,7 +195,7 @@ async function handleHigherLevelChat(
 	return {
 		chatResponse: updatedChatResponse,
 		chatHistory: updatedChatHistory,
-		sentEmails: openAiReply.sentEmails,
+		sentEmails: combinedDefenceReport.isBlocked ? [] : openAiReply.sentEmails,
 	};
 }
 
