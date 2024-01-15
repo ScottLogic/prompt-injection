@@ -33,42 +33,49 @@ async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 	return data;
 }
 
+function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
+	const type = chatMessageDTO.chatMessageType;
+	if (
+		type === CHAT_MESSAGE_TYPE.SYSTEM ||
+		type === CHAT_MESSAGE_TYPE.FUNCTION_CALL
+	) {
+		throw new Error(
+			'Cannot convert chatMessageDTO of type SYSTEM or FUNCTION_CALL to ChatMessage'
+		);
+	}
+	return type === CHAT_MESSAGE_TYPE.USER
+		? {
+				message:
+					chatMessageDTO.completion?.content ??
+					chatMessageDTO.infoMessage ??
+					'',
+				type: chatMessageDTO.chatMessageType,
+		  }
+		: type === CHAT_MESSAGE_TYPE.BOT ||
+		  type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+		? {
+				message: chatMessageDTO.completion?.content ?? '',
+				type: chatMessageDTO.chatMessageType,
+		  }
+		: {
+				message: chatMessageDTO.infoMessage ?? '',
+				type: chatMessageDTO.chatMessageType,
+		  };
+}
+
 async function getChatHistory(level: number): Promise<ChatMessage[]> {
 	const response = await sendRequest(`${PATH}history?level=${level}`, {
 		method: 'GET',
 	});
-	const chatHistoryFromAPI = (await response.json()) as ChatMessageDTO[];
+	const chatMessageDTOs = (await response.json()) as ChatMessageDTO[];
 	// convert to ChatMessage object
 	const chatMessages: ChatMessage[] = [];
-	chatHistoryFromAPI.forEach((message) => {
-		switch (message.chatMessageType) {
-			case CHAT_MESSAGE_TYPE.USER:
-				chatMessages.push({
-					message: message.completion?.content ?? message.infoMessage ?? '',
-					type: message.chatMessageType,
-				});
-				break;
-			case CHAT_MESSAGE_TYPE.BOT:
-			case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
-				chatMessages.push({
-					message: message.completion?.content ?? '',
-					type: message.chatMessageType,
-				});
-				break;
-			case CHAT_MESSAGE_TYPE.INFO:
-			case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
-			case CHAT_MESSAGE_TYPE.LEVEL_INFO:
-			case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
-			case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
-			case CHAT_MESSAGE_TYPE.RESET_LEVEL:
-			case CHAT_MESSAGE_TYPE.ERROR_MSG:
-				chatMessages.push({
-					message: message.infoMessage ?? '',
-					type: message.chatMessageType,
-				});
-				break;
-			default:
-				break;
+	chatMessageDTOs.forEach((message) => {
+		const chatMessageDTOIsConvertible =
+			message.chatMessageType !== CHAT_MESSAGE_TYPE.SYSTEM &&
+			message.chatMessageType !== CHAT_MESSAGE_TYPE.FUNCTION_CALL;
+		if (chatMessageDTOIsConvertible) {
+			chatMessages.push(makeChatMessageFromDTO(message));
 		}
 	});
 	return chatMessages;
