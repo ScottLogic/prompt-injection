@@ -118,7 +118,6 @@ interface LevelHandlerResponse {
 	chatResponse: ChatHttpResponse;
 	chatHistory: ChatHistoryMessage[];
 	sentEmails: EmailInfo[];
-	defenceReport?: ChatDefenceReport;
 }
 
 interface ChatHistoryMessage {

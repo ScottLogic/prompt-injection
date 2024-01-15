@@ -24,8 +24,7 @@ function ResetProgressOverlay({
 					<h1> Reset all progress </h1>
 					<p>
 						{`Warning! This will reset all your progress in the levels and sandbox mode. 
-							This includes all your conversation history and sent emails. 
-							However any configurations you have made to defences in sandbox mode will not be lost.
+							This includes all your conversation history and sent emails. Any configurations you have made to defences in sandbox mode will also be lost.
 							Are you sure you want to do this?`}
 					</p>
 				</>
