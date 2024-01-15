@@ -45,18 +45,21 @@ function MainHeader({
 					numCompletedLevels={numCompletedLevels}
 					setCurrentLevel={setCurrentLevel}
 				/>
-				<ThemedButton onClick={openResetProgressOverlay}>
+				<ThemedButton
+					onClick={openResetProgressOverlay}
+					className="header-button"
+				>
 					<img className="reset-progress-icon" src={ResetProgress} alt="" />
 					Reset Progress
 				</ThemedButton>
 			</span>
 			<span className="main-header-right">
-				<ThemedButton onClick={openWelcome}>
+				<ThemedButton onClick={openWelcome} className="header-button">
 					<img src={GettingStarted} alt="" />
 					Getting Started
 				</ThemedButton>
 
-				<ThemedButton onClick={openHandbook}>
+				<ThemedButton onClick={openHandbook} className="header-button">
 					<img src={HandbookIcon} alt="" />
 					Handbook
 				</ThemedButton>

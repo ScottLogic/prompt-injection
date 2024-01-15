@@ -45,8 +45,11 @@ function DefenceConfiguration({
 					onClick={() => {
 						resetConfigurationValue(defence, config.id);
 					}}
-					title={supportText}
 					ariaLabel={supportText}
+					tooltip={{
+						id: `reset-${config.id}`,
+						text: supportText,
+					}}
 				>
 					reset
 				</ThemedButton>

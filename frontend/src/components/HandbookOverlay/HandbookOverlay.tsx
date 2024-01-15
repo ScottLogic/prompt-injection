@@ -46,7 +46,6 @@ function HandbookOverlay({
 		<div className="handbook-overlay">
 			<button
 				className="prompt-injection-min-button close-button"
-				title="close the handbook"
 				aria-label="close the handbook"
 				onClick={closeOverlay}
 			>

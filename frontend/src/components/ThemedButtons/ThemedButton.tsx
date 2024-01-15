@@ -8,7 +8,11 @@ export interface ThemedButtonProps {
 	ariaDisabled?: boolean;
 	ariaLabel?: string;
 	className?: string;
-	title?: string;
+	tooltip?: {
+		id: string;
+		text: string;
+	};
+	tooltipAnchor?: 'left' | 'center' | 'right';
 	onClick: () => void;
 }
 
@@ -17,7 +21,8 @@ function ThemedButton({
 	ariaDisabled = false,
 	ariaLabel,
 	className,
-	title,
+	tooltip,
+	tooltipAnchor = 'center',
 	onClick,
 }: ThemedButtonProps) {
 	function onClickDisabledCheck() {
@@ -27,17 +32,30 @@ function ThemedButton({
 	const buttonClass = clsx('themed-button', className, {
 		disabled: ariaDisabled,
 	});
+	const tooltipClass = clsx('themed-button-tooltip', tooltipAnchor, {
+		show: !!tooltip,
+	});
+
+	const tooltipId =
+		tooltip && `themed-button-${tooltip.id.replace(/\s/g, '-').toLowerCase()}`;
 
 	return (
-		<button
-			className={buttonClass}
-			onClick={onClickDisabledCheck}
-			aria-disabled={ariaDisabled}
-			aria-label={ariaLabel}
-			title={title}
-		>
-			{children}
-		</button>
+		<div className="themed-button-wrapper">
+			<button
+				className={buttonClass}
+				onClick={onClickDisabledCheck}
+				aria-describedby={tooltipId}
+				aria-disabled={ariaDisabled}
+				aria-label={ariaLabel}
+			>
+				{children}
+			</button>
+			{tooltip && (
+				<div role="tooltip" id={tooltipId} className={tooltipClass}>
+					{tooltip.text}
+				</div>
+			)}
+		</div>
 	);
 }
 

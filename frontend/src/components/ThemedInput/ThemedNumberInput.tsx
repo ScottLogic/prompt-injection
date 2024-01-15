@@ -43,7 +43,7 @@ function ThemedNumberInput({
 			className={inputClass}
 			type="number"
 			value={content}
-			disabled={disabled}
+			readOnly={disabled}
 			onBlur={onBlur}
 			onChange={inputChanged}
 			onKeyUp={inputKeyUp}

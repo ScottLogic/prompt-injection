@@ -1,3 +1,5 @@
+import { jest, beforeEach, test, expect } from '@jest/globals';
+
 import { defaultDefences } from '@src/defaultDefences';
 import {
 	activateDefence,
@@ -16,6 +18,7 @@ import { TransformedChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
+	instructionDefencePrompt,
 	promptEvalPrompt,
 	qAPromptSecure,
 	systemRoleDefault,
@@ -114,6 +117,21 @@ test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
 	expect(transformedMessage).toStrictEqual(
 		getXmlTransformedMessage(escapedMessage)
 	);
+});
+
+test('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed', () => {
+	const message = 'Hello';
+	const defences = defaultDefences;
+	// activate XML_TAGGING defence
+	const updatedDefences = activateDefence(DEFENCE_ID.INSTRUCTION, defences);
+	const transformedMessage = transformMessage(message, updatedDefences);
+
+	expect(transformedMessage).toStrictEqual({
+		preMessage: `${instructionDefencePrompt} {{ `,
+		message,
+		postMessage: ' }}',
+		transformationName: 'Instruction Defence',
+	});
 });
 
 test('GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming message THEN message is transformed', () => {

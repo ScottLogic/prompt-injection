@@ -9,7 +9,7 @@
 	background-color: var(--header-background-colour);
 }
 
-.main-header .themed-button {
+.main-header .header-button {
 	display: flex;
 	gap: 0.5rem;
 	height: 3.125rem;

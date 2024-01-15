@@ -6,6 +6,7 @@
 	border: 0.5rem solid transparent;
 	background-color: var(--level-banner-background-colour);
 	color: var(--level-banner-text-colour);
+	text-align: left;
 }
 
 .level-mission-info-banner:focus-visible {
