@@ -79,7 +79,6 @@ function ChatBox({
 	}
 
 	function processChatResponse(response: ChatResponse) {
-		if (response.wonLevel) incrementNumCompletedLevels(currentLevel);
 		const transformedMessage = response.transformedMessage;
 		// add the transformed message to the chat box if it is different from the original message
 		if (transformedMessage) {
@@ -160,6 +159,7 @@ function ChatBox({
 		addSentEmails(response.sentEmails);
 
 		if (response.wonLevel && !isLevelComplete()) {
+			incrementNumCompletedLevels(currentLevel);
 			const successMessage = getSuccessMessage();
 			addChatMessage({
 				type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
