@@ -34,30 +34,23 @@ async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 }
 
 function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
-	const type = chatMessageDTO.chatMessageType;
 	if (!chatMessageDTOIsConvertible(chatMessageDTO)) {
 		throw new Error(
 			'Cannot convert chatMessageDTO of type SYSTEM or FUNCTION_CALL to ChatMessage'
 		);
 	}
-	return type === CHAT_MESSAGE_TYPE.USER
-		? {
-				message:
-					chatMessageDTO.completion?.content ??
-					chatMessageDTO.infoMessage ??
-					'',
-				type: chatMessageDTO.chatMessageType,
-		  }
-		: type === CHAT_MESSAGE_TYPE.BOT ||
-		  type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
-		? {
-				message: chatMessageDTO.completion?.content ?? '',
-				type: chatMessageDTO.chatMessageType,
-		  }
-		: {
-				message: chatMessageDTO.infoMessage ?? '',
-				type: chatMessageDTO.chatMessageType,
-		  };
+
+	const type = chatMessageDTO.chatMessageType;
+	return {
+		message:
+			type === CHAT_MESSAGE_TYPE.USER
+				? chatMessageDTO.completion?.content ?? chatMessageDTO.infoMessage ?? ''
+				: type === CHAT_MESSAGE_TYPE.BOT ||
+				  type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+				? chatMessageDTO.completion?.content ?? ''
+				: chatMessageDTO.infoMessage ?? '',
+		type,
+	};
 }
 
 function chatMessageDTOIsConvertible(chatMessageDTO: ChatMessageDTO) {
