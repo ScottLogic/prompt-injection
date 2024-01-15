@@ -153,7 +153,7 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 		const { user } = renderComponent(newMockDefences);
 		const radioButton = screen.getByRole('radio', {
 			name: 'xml tagging',
-		}) as Element;
+		});
 		await user.click(radioButton);
 
 		expect(mockToggleDefence).toHaveBeenCalledWith(newMockDefences[1]);
@@ -168,7 +168,7 @@ describe('PromptEnclosureDefenceMechanism component tests', () => {
 
 		const radioButton = screen.getByRole('radio', {
 			name: 'random sequence enclosure',
-		}) as Element;
+		});
 		await user.click(radioButton);
 
 		expect(mockToggleDefence).toHaveBeenCalledWith(newMockDefences[1]);
