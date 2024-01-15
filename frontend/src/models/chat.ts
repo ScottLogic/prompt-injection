@@ -81,7 +81,7 @@ interface ChatCompletionRequestMessage {
 	content: string;
 }
 
-interface ChatHistoryMessage {
+interface ChatMessageDTO {
 	completion: ChatCompletionRequestMessage | null;
 	chatMessageType: CHAT_MESSAGE_TYPE;
 	infoMessage: string | null | undefined;
@@ -90,7 +90,7 @@ interface ChatHistoryMessage {
 export type {
 	ChatMessage,
 	ChatResponse,
-	ChatHistoryMessage,
+	ChatMessageDTO,
 	ChatModel,
 	ChatModelConfigurations,
 	CustomChatModelConfiguration,

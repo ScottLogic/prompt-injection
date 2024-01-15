@@ -1,6 +1,6 @@
 import {
 	CHAT_MESSAGE_TYPE,
-	ChatHistoryMessage,
+	ChatMessageDTO,
 	ChatMessage,
 	ChatModel,
 	ChatResponse,
@@ -37,10 +37,10 @@ async function getChatHistory(level: number): Promise<ChatMessage[]> {
 	const response = await sendRequest(`${PATH}history?level=${level}`, {
 		method: 'GET',
 	});
-	const chatHistory = (await response.json()) as ChatHistoryMessage[];
+	const chatHistoryFromAPI = (await response.json()) as ChatMessageDTO[];
 	// convert to ChatMessage object
 	const chatMessages: ChatMessage[] = [];
-	chatHistory.forEach((message) => {
+	chatHistoryFromAPI.forEach((message) => {
 		switch (message.chatMessageType) {
 			case CHAT_MESSAGE_TYPE.USER:
 				chatMessages.push({
