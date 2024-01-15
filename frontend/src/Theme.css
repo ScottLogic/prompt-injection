@@ -36,11 +36,13 @@
 	--level-button-border-colour: var(--accent-border-colour);
 	--level-button-border-colour-disabled: #aaaaaa80;
 	--level-button-background-colour-selected: var(--accent-background-colour);
+	--level-button-hover-colour: #11484B;
 
 	/* level banner */
 	--level-banner-border-colour: #bbb;
 	--level-banner-background-colour: #ddd;
 	--level-banner-text-colour: #444;
+	--level-banner-hover-colour: #fff;
 
 	/* main input */
 	--main-input-active-background-colour: var(--header-background-colour);
@@ -103,6 +105,7 @@
 	--chat-button-background-colour: #eee;
 	--chat-button-border-colour: #ccc;
 	--chat-button-text-colour: #444;
+	--chat-button-hover-colour: #DEDEDE;
 
 	/* chat avatars */
 	--avatar-circle-user-colour: #dff4f5;
@@ -118,6 +121,12 @@
 	--tooltip-background-colour: #fff;
 	--tooltip-border-colour: #000;
 	--tooltip-text-colour: #000;
+
+	/* themed buttons */
+	--themed-button-hover-colour: #11484B;
+
+	/* Defence Mechanism */
+	--summary-hover-colour: #000;
 }
 
 /* modal backdrop */

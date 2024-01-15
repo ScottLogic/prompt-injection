@@ -29,3 +29,7 @@
 	background-color: transparent;
 	color: var(--level-button-colour-disabled);
 }
+
+.level-button[aria-disabled='false']:hover {
+	background-color: var(--level-button-hover-colour);
+}

@@ -57,3 +57,7 @@
 .themed-button:focus + .themed-button-tooltip.show {
 	display: block;
 }
+
+.themed-button[aria-disabled='false']:hover {
+	background-color: var(--themed-button-hover-colour);
+}
