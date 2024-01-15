@@ -35,10 +35,7 @@ async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 
 function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
 	const type = chatMessageDTO.chatMessageType;
-	if (
-		type === CHAT_MESSAGE_TYPE.SYSTEM ||
-		type === CHAT_MESSAGE_TYPE.FUNCTION_CALL
-	) {
+	if (!chatMessageDTOIsConvertible(chatMessageDTO)) {
 		throw new Error(
 			'Cannot convert chatMessageDTO of type SYSTEM or FUNCTION_CALL to ChatMessage'
 		);
@@ -63,22 +60,22 @@ function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
 		  };
 }
 
+function chatMessageDTOIsConvertible(chatMessageDTO: ChatMessageDTO) {
+	return (
+		chatMessageDTO.chatMessageType !== CHAT_MESSAGE_TYPE.SYSTEM &&
+		chatMessageDTO.chatMessageType !== CHAT_MESSAGE_TYPE.FUNCTION_CALL
+	);
+}
+
 async function getChatHistory(level: number): Promise<ChatMessage[]> {
 	const response = await sendRequest(`${PATH}history?level=${level}`, {
 		method: 'GET',
 	});
 	const chatMessageDTOs = (await response.json()) as ChatMessageDTO[];
-	// convert to ChatMessage object
-	const chatMessages: ChatMessage[] = [];
-	chatMessageDTOs.forEach((message) => {
-		const chatMessageDTOIsConvertible =
-			message.chatMessageType !== CHAT_MESSAGE_TYPE.SYSTEM &&
-			message.chatMessageType !== CHAT_MESSAGE_TYPE.FUNCTION_CALL;
-		if (chatMessageDTOIsConvertible) {
-			chatMessages.push(makeChatMessageFromDTO(message));
-		}
-	});
-	return chatMessages;
+
+	return chatMessageDTOs
+		.filter(chatMessageDTOIsConvertible)
+		.map(makeChatMessageFromDTO);
 }
 
 async function setGptModel(model: string): Promise<boolean> {
