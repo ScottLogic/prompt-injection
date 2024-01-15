@@ -52,15 +52,15 @@ const DEFENCES_SHOWN_LEVEL3: Defence[] = [
 	makeDefence(
 		DEFENCE_ID.XML_TAGGING,
 		'XML Tagging',
-		"Enclose user's prompt between <user_input> tags and give an instructional prompt. Escapes XML characters in raw input.",
-		[makeDefenceConfigItem('PROMPT', 'prompt', 'text')]
+		"Encloses the user's prompt between <user_input> tags and gives a pre-prompt for the bot to follow instructions. Escapes XML characters in raw input.",
+		[makeDefenceConfigItem('PROMPT', 'pre-prompt', 'text')]
 	),
 	makeDefence(
 		DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
 		'Random Sequence Enclosure',
-		"Enclose user's prompt between random sequences of characters and give an instructional prompt.",
+		"Encloses the user's prompt between random sequences of characters and gives a pre-prompt for the bot to follow instructions.",
 		[
-			makeDefenceConfigItem('PROMPT', 'prompt', 'text'),
+			makeDefenceConfigItem('PROMPT', 'pre-prompt', 'text'),
 			makeDefenceConfigItem('SEQUENCE_LENGTH', 'sequence length', 'number'),
 		]
 	),
