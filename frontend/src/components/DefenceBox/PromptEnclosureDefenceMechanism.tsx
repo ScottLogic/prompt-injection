@@ -22,48 +22,25 @@ function PromptEnclosureDefenceMechanism({
 	) => Promise<void>;
 	resetConfigurationValue: (defence: Defence, configId: string) => void;
 }) {
-	const [selectedRadio, setSelectedRadio] = useState<string>(
-		getActiveDefence()
+	// Using local state, else we'd need to wait for API response before updating
+	// selected radio. This could land us in trouble if there's a server error...
+	const [selectedRadio, setSelectedRadio] = useState<DEFENCE_ID | 'off'>(
+		defences.find((defence) => defence.isActive)?.id ?? 'off'
 	);
-	const selectedDefence = getDefence(selectedRadio as DEFENCE_ID);
 
-	function isRadioSelected(radioValue: string) {
-		return radioValue === selectedRadio;
-	}
+	const selectedDefence = defences.find(
+		(defence) => defence.id === selectedRadio
+	);
 
-	function getActiveDefence(): string {
-		return defences.find((defence) => defence.isActive)?.id ?? 'off';
-	}
+	function handleRadioChange(selectedDefenceId: DEFENCE_ID | 'off') {
+		setSelectedRadio(selectedDefenceId);
 
-	function getDefence(defenceId: DEFENCE_ID): Defence | undefined {
-		// will be undefined if 'off' selected
-		return defences.find((defence) => defence.id === defenceId);
-	}
-
-	function deactivateAll() {
 		defences.forEach((defence) => {
-			if (defence.isActive) {
+			// Activate selected (unless "off"), deactivate previously active
+			if (defence.isActive || defence.id === selectedDefenceId) {
 				toggleDefence(defence);
 			}
 		});
-	}
-
-	// activate this defence and deactivate all others
-	function activateOne(defenceId: DEFENCE_ID) {
-		defences.forEach((defence) => {
-			if (defence.id === defenceId && !defence.isActive) {
-				toggleDefence(defence);
-			} else if (defence.isActive) {
-				toggleDefence(defence);
-			}
-		});
-	}
-
-	function handleRadioChange(defenceId: string) {
-		setSelectedRadio(defenceId);
-		defenceId === 'off'
-			? deactivateAll()
-			: activateOne(defenceId as DEFENCE_ID);
 	}
 
 	return (
@@ -72,7 +49,7 @@ function PromptEnclosureDefenceMechanism({
 				<DefenceConfigurationRadioButton
 					id="off"
 					name="Off"
-					checked={isRadioSelected('off')}
+					checked={selectedRadio === 'off'}
 					onChange={() => {
 						handleRadioChange('off');
 					}}
@@ -82,7 +59,7 @@ function PromptEnclosureDefenceMechanism({
 						key={defence.id}
 						id={defence.id}
 						name={defence.name}
-						checked={isRadioSelected(defence.id)}
+						checked={selectedRadio === defence.id}
 						onChange={() => {
 							handleRadioChange(defence.id);
 						}}
@@ -93,18 +70,16 @@ function PromptEnclosureDefenceMechanism({
 				<div className="prompt-enclosure-configuration-area">
 					<p>{selectedDefence.info}</p>
 					{showConfigurations &&
-						selectedDefence.config.map((config, index) => {
-							return (
-								<DefenceConfiguration
-									key={index}
-									defence={selectedDefence}
-									isActive={selectedDefence.isActive}
-									config={config}
-									setConfigurationValue={setConfigurationValue}
-									resetConfigurationValue={resetConfigurationValue}
-								/>
-							);
-						})}
+						selectedDefence.config.map((config, index) => (
+							<DefenceConfiguration
+								key={index}
+								defence={selectedDefence}
+								isActive={selectedDefence.isActive}
+								config={config}
+								setConfigurationValue={setConfigurationValue}
+								resetConfigurationValue={resetConfigurationValue}
+							/>
+						))}
 				</div>
 			)}
 		</div>
