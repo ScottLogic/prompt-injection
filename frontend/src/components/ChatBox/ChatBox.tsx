@@ -21,7 +21,7 @@ function ChatBox({
 	messages,
 	addChatMessage,
 	addSentEmails,
-	incrementNumCompletedLevels,
+	updateNumCompletedLevels,
 	openLevelsCompleteOverlay,
 	openResetLevelOverlay,
 }: {
@@ -30,7 +30,7 @@ function ChatBox({
 	messages: ChatMessage[];
 	addChatMessage: (message: ChatMessage) => void;
 	addSentEmails: (emails: EmailInfo[]) => void;
-	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
+	updateNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openLevelsCompleteOverlay: () => void;
 	openResetLevelOverlay: () => void;
 }) {
@@ -159,7 +159,7 @@ function ChatBox({
 		addSentEmails(response.sentEmails);
 
 		if (response.wonLevel && !isLevelComplete()) {
-			incrementNumCompletedLevels(currentLevel);
+			updateNumCompletedLevels(currentLevel);
 			const successMessage = getSuccessMessage();
 			addChatMessage({
 				type: CHAT_MESSAGE_TYPE.LEVEL_INFO,

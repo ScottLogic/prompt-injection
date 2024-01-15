@@ -19,7 +19,7 @@ function MainBody({
 	resetDefenceConfiguration,
 	toggleDefence,
 	setDefenceConfiguration,
-	incrementNumCompletedLevels,
+	updateNumCompletedLevels,
 	openDocumentViewer,
 	openLevelsCompleteOverlay,
 	openResetLevelOverlay,
@@ -38,7 +38,7 @@ function MainBody({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
-	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
+	updateNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openDocumentViewer: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openResetLevelOverlay: () => void;
@@ -63,7 +63,7 @@ function MainBody({
 					messages={messages}
 					addChatMessage={addChatMessage}
 					addSentEmails={addSentEmails}
-					incrementNumCompletedLevels={incrementNumCompletedLevels}
+					updateNumCompletedLevels={updateNumCompletedLevels}
 					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 					openResetLevelOverlay={openResetLevelOverlay}
 				/>

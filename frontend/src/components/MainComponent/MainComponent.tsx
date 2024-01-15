@@ -32,7 +32,7 @@ function MainComponent({
 	currentLevel,
 	numCompletedLevels,
 	closeOverlay,
-	incrementNumCompletedLevels,
+	updateNumCompletedLevels,
 	openDocumentViewer,
 	openHandbook,
 	openInformationOverlay,
@@ -46,7 +46,7 @@ function MainComponent({
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	closeOverlay: () => void;
-	incrementNumCompletedLevels: (level: number) => void;
+	updateNumCompletedLevels: (level: number) => void;
 	openDocumentViewer: () => void;
 	openHandbook: () => void;
 	openInformationOverlay: () => void;
@@ -280,7 +280,7 @@ function MainComponent({
 				resetLevel={() => void resetLevel()}
 				toggleDefence={(defence: Defence) => void setDefenceToggle(defence)}
 				setDefenceConfiguration={setDefenceConfiguration}
-				incrementNumCompletedLevels={incrementNumCompletedLevels}
+				updateNumCompletedLevels={updateNumCompletedLevels}
 				openDocumentViewer={openDocumentViewer}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openResetLevelOverlay={openResetLevelOverlay}
