@@ -27,6 +27,7 @@
 	margin-right: 0.5rem;
 	margin-bottom: 0.25rem;
 	padding: 0 1.75rem 0.5rem;
+	overflow-y: auto;
 
 	/* firefox scrollbar styling */
 	scrollbar-color: var(--handbook-scrollbar-colour) transparent;
