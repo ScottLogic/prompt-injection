@@ -123,17 +123,17 @@ async function handleHigherLevelChat(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	let updatedChatHistory = [...chatHistory];
-
 	// transform the message according to active defences
 	const transformedMessage = transformMessage(message, defences);
-	const chatHistoryUserMessages = createNewUserMessages(
+	const newUserMessagesForChatHistory = createNewUserMessages(
 		message,
 		transformedMessage ? combineTransformedMessage(transformedMessage) : null
 	);
-	chatHistoryUserMessages.forEach((message) => {
-		updatedChatHistory = pushMessageToHistory(updatedChatHistory, message);
-	});
+
+	const chatHistoryWithNewUserMessages = newUserMessagesForChatHistory.reduce(
+		pushMessageToHistory,
+		chatHistory
+	);
 
 	// detect defences on input message
 	const triggeredInputDefencesPromise = detectTriggeredInputDefences(
@@ -143,7 +143,7 @@ async function handleHigherLevelChat(
 
 	// get the chatGPT reply
 	const openAiReplyPromise = chatGptSendMessage(
-		updatedChatHistory,
+		chatHistoryWithNewUserMessages,
 		defences,
 		chatModel,
 		transformedMessage
@@ -169,15 +169,13 @@ async function handleHigherLevelChat(
 	}
 	const combinedDefenceReport = combineChatDefenceReports(defenceReports);
 
-	if (combinedDefenceReport.isBlocked) {
-		// restore the original chat history
-		// add user message to the chat history (not as completion)
-		updatedChatHistory = pushMessageToHistory(chatHistory, {
-			completion: null,
-			chatMessageType: CHAT_MESSAGE_TYPE.USER,
-			infoMessage: message,
-		});
-	}
+	const updatedChatHistory = combinedDefenceReport.isBlocked
+		? pushMessageToHistory(chatHistory, {
+				completion: null,
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				infoMessage: message,
+		  })
+		: chatHistoryWithNewUserMessages;
 
 	const updatedChatResponse: ChatHttpResponse = {
 		...chatResponse,
