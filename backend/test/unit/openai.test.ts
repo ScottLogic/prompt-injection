@@ -1,3 +1,12 @@
+import {
+	afterEach,
+	beforeEach,
+	describe,
+	expect,
+	jest,
+	test,
+} from '@jest/globals';
+
 import { getValidModelsFromOpenAI } from '@src/openai';
 
 // Define a mock implementation for the createChatCompletion method
@@ -19,9 +28,8 @@ jest.mock('openai', () => ({
 }));
 
 jest.mock('@src/openai', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const originalModule = jest.requireActual('@src/openai');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	const originalModule =
+		jest.requireActual<typeof import('@src/openai')>('@src/openai');
 	return {
 		...originalModule,
 		initOpenAi: jest.fn(),
@@ -30,9 +38,8 @@ jest.mock('@src/openai', () => {
 });
 
 jest.mock('@src/langchain', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const originalModule = jest.requireActual('@src/langchain');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	const originalModule =
+		jest.requireActual<typeof import('@src/langchain')>('@src/langchain');
 	return {
 		...originalModule,
 		initQAModel: jest.fn(),
