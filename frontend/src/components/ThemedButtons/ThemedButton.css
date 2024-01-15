@@ -22,6 +22,7 @@
 
 .themed-button.disabled {
 	background-color: var(--action-button-disabled-background-colour);
+	border-color: var(--action-button-disabled-background-colour);
 	color: var(--action-button-disabled-text-colour);
 }
 
