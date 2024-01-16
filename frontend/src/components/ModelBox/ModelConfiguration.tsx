@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react';
 
-import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
+import {
+	ChatMessage,
+	CustomChatModelConfiguration,
+	MODEL_CONFIG,
+} from '@src/models/chat';
 import { getGptModel } from '@src/service/chatService';
 
 import ModelConfigurationSlider from './ModelConfigurationSlider';
 
 import './ModelConfiguration.css';
 
-function ModelConfiguration() {
+function ModelConfiguration({
+	addChatMessage,
+}: {
+	addChatMessage: (message: ChatMessage) => void;
+}) {
 	const [customChatModelConfigs, setCustomChatModel] = useState<
 		CustomChatModelConfiguration[]
 	>([
@@ -67,7 +75,11 @@ function ModelConfiguration() {
 	return (
 		<div className="model-config-box">
 			{customChatModelConfigs.map((config) => (
-				<ModelConfigurationSlider key={config.id} config={config} />
+				<ModelConfigurationSlider
+					key={config.id}
+					config={config}
+					addChatMessage={addChatMessage}
+				/>
 			))}
 		</div>
 	);

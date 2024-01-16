@@ -54,6 +54,7 @@ function MainBody({
 					resetDefenceConfiguration={resetDefenceConfiguration}
 					setDefenceConfiguration={setDefenceConfiguration}
 					openDocumentViewer={openDocumentViewer}
+					addChatMessage={addChatMessage}
 				/>
 			</div>
 			<div className="centre-area">

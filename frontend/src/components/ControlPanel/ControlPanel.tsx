@@ -2,6 +2,7 @@ import { MODEL_DEFENCES } from '@src/Defences';
 import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
+import { ChatMessage } from '@src/models/chat'; // Move this import statement above the import statement for '@src/models/defence'
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -15,6 +16,7 @@ function ControlPanel({
 	resetDefenceConfiguration,
 	setDefenceConfiguration,
 	openDocumentViewer,
+	addChatMessage,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
@@ -26,6 +28,7 @@ function ControlPanel({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 	openDocumentViewer: () => void;
+	addChatMessage: (message: ChatMessage) => void;
 }) {
 	const configurableDefences = defences.filter(
 		(defence) => !MODEL_DEFENCES.some((id) => id === defence.id)
@@ -74,7 +77,10 @@ function ControlPanel({
 
 						{/* only show model box in sandbox mode */}
 						{showConfigurations && (
-							<ModelBox chatModelOptions={chatModelOptions} />
+							<ModelBox
+								chatModelOptions={chatModelOptions}
+								addChatMessage={addChatMessage}
+							/>
 						)}
 					</details>
 				</>

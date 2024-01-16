@@ -2,12 +2,19 @@
 import { useEffect, useState } from 'react';
 
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
+import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 import { setGptModel, getGptModel } from '@src/service/chatService';
 
 import './ModelSelection.css';
 
 // return a drop down menu with the models
-function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
+function ModelSelection({
+	chatModelOptions,
+	addChatMessage,
+}: {
+	chatModelOptions: string[];
+	addChatMessage: (message: ChatMessage) => void;
+}) {
 	// model currently selected in the dropdown
 	const [selectedModel, setSelectedModel] = useState<string | null>(null);
 	// model in use by the app
@@ -22,6 +29,10 @@ function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
 		if (!isSettingModel && selectedModel) {
 			const currentSelectedModel = selectedModel;
 			console.log(`selected model: ${currentSelectedModel}`);
+			addChatMessage({
+				type: CHAT_MESSAGE_TYPE.INFO,
+				message: `GPT model changed to: ${currentSelectedModel}`,
+			});
 			setIsSettingModel(true);
 			const modelUpdated = await setGptModel(currentSelectedModel);
 			setIsSettingModel(false);

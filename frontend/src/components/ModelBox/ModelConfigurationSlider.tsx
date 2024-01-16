@@ -2,15 +2,21 @@ import { Slider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 
-import { CustomChatModelConfiguration } from '@src/models/chat';
+import {
+	CHAT_MESSAGE_TYPE,
+	ChatMessage,
+	CustomChatModelConfiguration,
+} from '@src/models/chat';
 import { configureGptModel } from '@src/service/chatService';
 
 import './ModelConfigurationSlider.css';
 
 function ModelConfigurationSlider({
 	config,
+	addChatMessage,
 }: {
 	config: CustomChatModelConfiguration;
+	addChatMessage: (message: ChatMessage) => void;
 }) {
 	const [value, setValue] = useState<number>(config.value);
 	const [showInfo, setShowInfo] = useState<boolean>(false);
@@ -18,6 +24,10 @@ function ModelConfigurationSlider({
 	async function handleValueChange(_: Event, value: number | number[]) {
 		const val = Array.isArray(value) ? value[0] : value;
 		setValue(val);
+		addChatMessage({
+			type: CHAT_MESSAGE_TYPE.INFO,
+			message: `${config.name} set to ${val}`,
+		});
 		await configureGptModel(config.id, val);
 	}
 
