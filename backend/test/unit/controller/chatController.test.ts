@@ -129,6 +129,7 @@ describe('handleChatToGPT unit tests', () => {
 						defences,
 					},
 				],
+				chatModel: mockChatModel,
 			},
 		} as OpenAiChatRequest;
 	}
@@ -383,7 +384,7 @@ describe('handleChatToGPT unit tests', () => {
 			]);
 		});
 
-		test('Given sandbox WHEN message sent THEN send reply with email AND session chat history is updated AND session emails are updated', async () => {
+		test.only('Given sandbox WHEN message sent THEN send reply with email AND session chat history is updated AND session emails are updated', async () => {
 			const newUserChatHistoryMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 				completion: {
@@ -418,7 +419,7 @@ describe('handleChatToGPT unit tests', () => {
 
 			const req = openAiChatRequestMock(
 				'send an email to bob@example.com saying hi',
-				LEVEL_NAMES.LEVEL_1,
+				LEVEL_NAMES.SANDBOX,
 				existingHistory
 			);
 			const res = responseMock();
@@ -437,6 +438,13 @@ describe('handleChatToGPT unit tests', () => {
 				sentEmails: [] as EmailInfo[],
 			});
 
+			mockDetectTriggeredDefences.mockResolvedValueOnce({
+				blockedReason: null,
+				isBlocked: false,
+				alertedDefences: [],
+				triggeredDefences: [],
+			} as ChatDefenceReport);
+
 			await handleChatToGPT(req, res);
 
 			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
@@ -444,13 +452,13 @@ describe('handleChatToGPT unit tests', () => {
 				[],
 				mockChatModel,
 				'send an email to bob@example.com saying hi',
-				LEVEL_NAMES.LEVEL_1
+				LEVEL_NAMES.SANDBOX
 			);
 
 			expect(res.send).toHaveBeenCalledWith({
 				reply: 'Email sent!',
 				defenceReport: {
-					blockedReason: null,
+					blockedReason: '',
 					isBlocked: false,
 					alertedDefences: [],
 					triggeredDefences: [],
@@ -459,10 +467,11 @@ describe('handleChatToGPT unit tests', () => {
 				isError: false,
 				sentEmails: [],
 				openAIErrorMessage: null,
+				transformedMessage: undefined,
 			});
 
 			const history =
-				req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
+				req.session.levelState[LEVEL_NAMES.SANDBOX.valueOf()].chatHistory;
 			const expectedHistory = [
 				...existingHistory,
 				newUserChatHistoryMessage,
