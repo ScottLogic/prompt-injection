@@ -21,6 +21,7 @@ import {
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
+import { chatGptSendMessage } from '@src/openai';
 
 declare module 'express-session' {
 	interface Session {
@@ -36,17 +37,10 @@ declare module 'express-session' {
 	}
 }
 
-// mock the api call
-const mockCreateChatCompletion = jest.fn();
-jest.mock('openai', () => ({
-	OpenAI: jest.fn().mockImplementation(() => ({
-		chat: {
-			completions: {
-				create: mockCreateChatCompletion,
-			},
-		},
-	})),
-}));
+jest.mock('@src/openai');
+const mockChatGptSendMessage = chatGptSendMessage as jest.MockedFunction<
+	typeof chatGptSendMessage
+>;
 
 jest.mock('@src/defence');
 const mockDetectTriggeredDefences =
@@ -60,6 +54,26 @@ function responseMock() {
 		status: jest.fn().mockReturnThis(),
 	} as unknown as Response;
 }
+
+const mockChatModel = {
+	id: 'test',
+	configuration: {
+		temperature: 0,
+		topP: 0,
+		frequencyPenalty: 0,
+		presencePenalty: 0,
+	},
+};
+jest.mock('@src/models/chat', () => {
+	const original =
+		jest.requireActual<typeof import('@src/models/chat')>('@src/models/chat');
+	return {
+		...original,
+		get defaultChatModel() {
+			return mockChatModel;
+		},
+	};
+});
 
 describe('handleChatToGPT unit tests', () => {
 	function errorResponseMock(message: string, openAIErrorMessage?: string) {
@@ -246,6 +260,88 @@ describe('handleChatToGPT unit tests', () => {
 					reply: '',
 				})
 			);
+		});
+	});
+
+	describe('Message sent', () => {
+		test('Given level 1 WHEN message sent THEN send reply and session history is updated', async () => {
+			const req = openAiChatRequestMock(
+				'What is the answer to life the universe and everything?',
+				LEVEL_NAMES.LEVEL_1
+			);
+			const res = responseMock();
+
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: { content: '42', role: 'assistant' },
+					wonLevel: false,
+					openAIErrorMessage: null,
+				},
+				chatHistory: [
+					{
+						completion: {
+							content:
+								'What is the answer to life the universe and everything?',
+							role: 'user',
+						},
+						chatMessageType: CHAT_MESSAGE_TYPE.USER,
+					},
+				],
+				sentEmails: [] as EmailInfo[],
+			});
+
+			await handleChatToGPT(req, res);
+
+			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
+				[
+					{
+						completion: {
+							content:
+								'What is the answer to life the universe and everything?',
+							role: 'user',
+						},
+						chatMessageType: CHAT_MESSAGE_TYPE.USER,
+					},
+				],
+				[],
+				mockChatModel,
+				'What is the answer to life the universe and everything?',
+				LEVEL_NAMES.LEVEL_1
+			);
+
+			expect(res.send).toHaveBeenCalledWith({
+				reply: '42',
+				defenceReport: {
+					blockedReason: null,
+					isBlocked: false,
+					alertedDefences: [],
+					triggeredDefences: [],
+				},
+				wonLevel: false,
+				isError: false,
+				sentEmails: [],
+				openAIErrorMessage: null,
+			});
+
+			const history =
+				req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
+			const expectedHistory = [
+				{
+					completion: {
+						content: 'What is the answer to life the universe and everything?',
+						role: 'user',
+					},
+					chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				},
+				{
+					chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+					completion: {
+						role: 'assistant',
+						content: '42',
+					},
+				},
+			];
+			expect(history).toEqual(expectedHistory);
 		});
 	});
 });
