@@ -125,15 +125,10 @@ async function handleHigherLevelChat(
 ): Promise<LevelHandlerResponse> {
 	// transform the message according to active defences
 	const transformedMessage = transformMessage(message, defences);
-	const newUserMessagesForChatHistory = createNewUserMessages(
+	const chatHistoryWithNewUserMessages = createNewUserMessages(
 		message,
 		transformedMessage ? combineTransformedMessage(transformedMessage) : null
-	);
-
-	const chatHistoryWithNewUserMessages = newUserMessagesForChatHistory.reduce(
-		pushMessageToHistory,
-		chatHistory
-	);
+	).reduce(pushMessageToHistory, chatHistory);
 
 	// detect defences on input message
 	const triggeredInputDefencesPromise = detectTriggeredInputDefences(
