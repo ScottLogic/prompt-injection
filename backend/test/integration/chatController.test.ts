@@ -147,7 +147,7 @@ describe('handleChatToGPT integration tests', () => {
 		} as OpenAiChatRequest;
 	}
 
-	test('GIVEN a valid message and level WHEN handleChatToGPT called THEN it should return a text reply', async () => {
+	test('GIVEN a valid message and level WHEN handleChatToGPT called THEN it should return a text reply AND update chat history', async () => {
 		const req = openAiChatRequestMock('Hello chatbot', LEVEL_NAMES.LEVEL_1);
 		const res = responseMock();
 
@@ -156,6 +156,8 @@ describe('handleChatToGPT integration tests', () => {
 		);
 
 		await handleChatToGPT(req, res);
+
+		// expect history to be updated!
 
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Howdy human!',
@@ -172,7 +174,7 @@ describe('handleChatToGPT integration tests', () => {
 		});
 	});
 
-	test('GIVEN a user asks to send an email WHEN an email is sent THEN the sent email is returned', async () => {
+	test('GIVEN a user asks to send an email WHEN an email is sent THEN the sent email is returned AND update chat history', async () => {
 		const req = openAiChatRequestMock(
 			'send an email to bob@example.com saying hi',
 			LEVEL_NAMES.LEVEL_1
@@ -184,6 +186,8 @@ describe('handleChatToGPT integration tests', () => {
 			.mockResolvedValueOnce(chatResponseAssistant('Email sent'));
 
 		await handleChatToGPT(req, res);
+
+		// expect history to be updated!
 
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Email sent',
