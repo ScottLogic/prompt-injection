@@ -163,6 +163,7 @@ async function handleHigherLevelChat(
 		: [inputDefenceReport];
 	const combinedDefenceReport = combineChatDefenceReports(defenceReports);
 
+	// if blocked, restore original chat history and add user message to chat history without completion
 	const updatedChatHistory = combinedDefenceReport.isBlocked
 		? pushMessageToHistory(chatHistory, {
 				completion: null,
