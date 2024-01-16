@@ -177,7 +177,7 @@ async function handleHigherLevelChat(
 		defenceReport: combinedDefenceReport,
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 		reply: !combinedDefenceReport.isBlocked && botReply ? botReply : '',
-		transformedMessage: transformedMessage ? transformedMessage : undefined,
+		transformedMessage: transformedMessage ?? undefined,
 		wonLevel:
 			openAiReply.chatResponse.wonLevel && !combinedDefenceReport.isBlocked,
 	};
