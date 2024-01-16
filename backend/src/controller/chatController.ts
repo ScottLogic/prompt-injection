@@ -163,7 +163,7 @@ async function handleHigherLevelChat(
 		? detectTriggeredOutputDefences(botReply, defences)
 		: null;
 
-	const defenceReports = [chatResponse.defenceReport, inputDefenceReport];
+	const defenceReports = [chatResponse.defenceReport, inputDefenceReport]; //Why do we need to combinethe original defenceReport? Isn't it always going to be empty?
 	if (outputDefenceReport) {
 		defenceReports.push(outputDefenceReport);
 	}
