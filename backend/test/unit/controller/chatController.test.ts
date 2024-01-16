@@ -294,11 +294,45 @@ describe('handleChatToGPT unit tests', () => {
 		});
 	});
 
-	describe('Message sent', () => {
-		test('Given level 1 WHEN message sent THEN send reply and session history is updated', async () => {
+	describe('Successful reply', () => {
+		test.only('Given level 1 WHEN message sent THEN send reply and session history is updated', async () => {
+			const existingHistory = [
+				{
+					completion: {
+						content: 'Hello',
+						role: 'user',
+					},
+					chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				},
+				{
+					completion: {
+						content: 'Hi, how can I assist you today?',
+						role: 'assistant',
+					},
+					chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				},
+			] as ChatHistoryMessage[];
+
+			const newUserChatHistoryMessage = {
+				completion: {
+					content: 'What is the answer to life the universe and everything?',
+					role: 'user',
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+			} as ChatHistoryMessage;
+
+			const expectedNewBotChatHistoryMessage = {
+				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				completion: {
+					role: 'assistant',
+					content: '42',
+				},
+			} as ChatHistoryMessage;
+
 			const req = openAiChatRequestMock(
 				'What is the answer to life the universe and everything?',
-				LEVEL_NAMES.LEVEL_1
+				LEVEL_NAMES.LEVEL_1,
+				existingHistory
 			);
 			const res = responseMock();
 
@@ -308,32 +342,14 @@ describe('handleChatToGPT unit tests', () => {
 					wonLevel: false,
 					openAIErrorMessage: null,
 				},
-				chatHistory: [
-					{
-						completion: {
-							content:
-								'What is the answer to life the universe and everything?',
-							role: 'user',
-						},
-						chatMessageType: CHAT_MESSAGE_TYPE.USER,
-					},
-				],
+				chatHistory: [...existingHistory, newUserChatHistoryMessage],
 				sentEmails: [] as EmailInfo[],
 			});
 
 			await handleChatToGPT(req, res);
 
 			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
-				[
-					{
-						completion: {
-							content:
-								'What is the answer to life the universe and everything?',
-							role: 'user',
-						},
-						chatMessageType: CHAT_MESSAGE_TYPE.USER,
-					},
-				],
+				[...existingHistory, newUserChatHistoryMessage],
 				[],
 				mockChatModel,
 				'What is the answer to life the universe and everything?',
@@ -356,23 +372,11 @@ describe('handleChatToGPT unit tests', () => {
 
 			const history =
 				req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
-			const expectedHistory = [
-				{
-					completion: {
-						content: 'What is the answer to life the universe and everything?',
-						role: 'user',
-					},
-					chatMessageType: CHAT_MESSAGE_TYPE.USER,
-				},
-				{
-					chatMessageType: CHAT_MESSAGE_TYPE.BOT,
-					completion: {
-						role: 'assistant',
-						content: '42',
-					},
-				},
-			];
-			expect(history).toEqual(expectedHistory);
+			expect(history).toEqual([
+				...existingHistory,
+				newUserChatHistoryMessage,
+				expectedNewBotChatHistoryMessage,
+			]);
 		});
 	});
 
