@@ -27,5 +27,5 @@
 }
 
 .level-mission-info-banner:hover {
-	background-color: var(--level-banner-hover-colour);
+	background-color: var(--level-banner-background-colour-hover);
 }

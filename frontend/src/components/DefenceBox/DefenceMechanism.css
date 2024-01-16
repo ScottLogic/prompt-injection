@@ -16,10 +16,6 @@
 	border-radius: 0.25rem;
 }
 
-.defence-mechanism-summary:hover {
-	background-color: var(--summary-hover-colour);
-}
-
 .defence-mechanism > summary {
 	font-size: 1rem;
 }

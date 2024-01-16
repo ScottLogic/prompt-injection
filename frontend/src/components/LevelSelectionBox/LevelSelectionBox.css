@@ -31,5 +31,5 @@
 }
 
 .level-button[aria-disabled='false']:hover {
-	background-color: var(--level-button-hover-colour);
+	background-color: var(--level-button-background-colour-hover);
 }

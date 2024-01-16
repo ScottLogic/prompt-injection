@@ -12,5 +12,5 @@
 }
 
 .chat-button:hover {
-	background-color: var(--chat-button-hover-colour);
+	background-color: var(--chat-button-background-colour-hover);
 }
