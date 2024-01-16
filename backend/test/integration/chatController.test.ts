@@ -232,6 +232,50 @@ describe('handleChatToGPT integration tests', () => {
 			sentEmails: [testSentEmail],
 			openAIErrorMessage: null,
 		});
+
+		const history =
+			req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
+		const expectedHistory = [
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+				completion: {
+					role: 'system',
+					content: systemRoleLevel1,
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				completion: {
+					role: 'user',
+					content: 'send an email to bob@example.com saying hi',
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+				completion: {
+					tool_calls: [
+						expect.objectContaining({ type: 'function', id: 'sendEmail' }),
+					],
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+				completion: {
+					role: 'tool',
+					content:
+						'Email sent to bob@example.com with subject Test subject and body Test body', // this might not be fixed? Check if it's being mocked (it should be)
+					tool_call_id: 'sendEmail',
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				completion: {
+					role: 'assistant',
+					content: 'Email sent',
+				},
+			},
+		];
+		expect(history).toEqual(expectedHistory);
 	});
 
 	test('GIVEN a user asks to send an email WHEN an email is sent AND emails have already been sent THEN only the newly sent email is returned', async () => {
