@@ -385,7 +385,7 @@ describe('OpenAI Integration Tests', () => {
 		};
 		const isOriginalMessage = true;
 		const defences = activateDefence(
-			DEFENCE_ID.FILTER_BOT_OUTPUT,
+			DEFENCE_ID.OUTPUT_FILTERING,
 			defaultDefences
 		);
 
@@ -428,7 +428,7 @@ describe('OpenAI Integration Tests', () => {
 		};
 		const isOriginalMessage = true;
 		const defences = activateDefence(
-			DEFENCE_ID.FILTER_BOT_OUTPUT,
+			DEFENCE_ID.OUTPUT_FILTERING,
 			defaultDefences
 		);
 
@@ -492,7 +492,7 @@ describe('OpenAI Integration Tests', () => {
 			expect(reply.defenceReport.isBlocked).toBe(false);
 			expect(reply.defenceReport.alertedDefences.length).toBe(1);
 			expect(reply.defenceReport.alertedDefences[0]).toBe(
-				DEFENCE_ID.FILTER_BOT_OUTPUT
+				DEFENCE_ID.OUTPUT_FILTERING
 			);
 
 			mockCreateChatCompletion.mockRestore();

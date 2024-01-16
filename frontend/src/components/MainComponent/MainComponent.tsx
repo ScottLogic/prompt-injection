@@ -184,6 +184,9 @@ function MainComponent({
 			return defence;
 		});
 		setDefencesToShow(newDefences);
+					// add info message to chat
+		const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
+		addInfoMessage(`${displayedDefenceId} defence reset`);
 	}
 
 	async function setDefenceToggle(defence: Defence) {
@@ -216,6 +219,9 @@ function MainComponent({
 				return defence;
 			});
 			setDefencesToShow(newDefences);
+			// add info message to chat
+			const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
+			addInfoMessage(`${displayedDefenceId} defence configured`);
 		}
 		return success;
 	}

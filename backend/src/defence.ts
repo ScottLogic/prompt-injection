@@ -89,9 +89,9 @@ function getFilterList(defences: Defence[], type: DEFENCE_ID) {
 	return getConfigValue(
 		defences,
 		type,
-		type === DEFENCE_ID.FILTER_USER_INPUT
-			? 'FILTER_USER_INPUT'
-			: 'FILTER_BOT_OUTPUT'
+		type === DEFENCE_ID.INPUT_FILTERING
+			? 'INPUT_FILTERING'
+			: 'OUTPUT_FILTERING'
 	);
 }
 function getSystemRole(
@@ -359,22 +359,22 @@ function detectFilterUserInput(
 ): SingleDefenceReport {
 	const detectedPhrases = detectFilterList(
 		message,
-		getFilterList(defences, DEFENCE_ID.FILTER_USER_INPUT)
+		getFilterList(defences, DEFENCE_ID.INPUT_FILTERING)
 	);
 
 	const filterWordsDetected = detectedPhrases.length > 0;
-	const defenceActive = isDefenceActive(DEFENCE_ID.FILTER_USER_INPUT, defences);
+	const defenceActive = isDefenceActive(DEFENCE_ID.INPUT_FILTERING, defences);
 
 	if (filterWordsDetected) {
 		console.debug(
-			`FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
+			`INPUT_FILTERING defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
 				', '
 			)}`
 		);
 	}
 
 	return {
-		defence: DEFENCE_ID.FILTER_USER_INPUT,
+		defence: DEFENCE_ID.INPUT_FILTERING,
 		blockedReason:
 			filterWordsDetected && defenceActive
 				? `Message Blocked: I cannot answer questions about '${detectedPhrases.join(

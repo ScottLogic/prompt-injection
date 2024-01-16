@@ -378,24 +378,24 @@ function applyOutputFilterDefence(
 ) {
 	const detectedPhrases = detectFilterList(
 		message,
-		getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
+		getFilterList(defences, DEFENCE_ID.OUTPUT_FILTERING)
 	);
 
 	if (detectedPhrases.length > 0) {
 		console.debug(
-			'FILTER_BOT_OUTPUT defence triggered. Detected phrases from blocklist:',
+			'OUTPUT_FILTERING defence triggered. Detected phrases from blocklist:',
 			detectedPhrases
 		);
-		if (isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences)) {
+		if (isDefenceActive(DEFENCE_ID.OUTPUT_FILTERING, defences)) {
 			chatResponse.defenceReport.triggeredDefences.push(
-				DEFENCE_ID.FILTER_BOT_OUTPUT
+				DEFENCE_ID.OUTPUT_FILTERING
 			);
 			chatResponse.defenceReport.isBlocked = true;
 			chatResponse.defenceReport.blockedReason =
 				'Message Blocked: My response was blocked as it contained a restricted word/phrase.';
 		} else {
 			chatResponse.defenceReport.alertedDefences.push(
-				DEFENCE_ID.FILTER_BOT_OUTPUT
+				DEFENCE_ID.OUTPUT_FILTERING
 			);
 		}
 	}
