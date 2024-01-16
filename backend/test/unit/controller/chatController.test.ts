@@ -133,6 +133,10 @@ describe('handleChatToGPT unit tests', () => {
 		} as OpenAiChatRequest;
 	}
 
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
+
 	describe('request validation', () => {
 		test('GIVEN missing message WHEN handleChatToGPT called THEN it should return 400 and error message', async () => {
 			const req = openAiChatRequestMock('', LEVEL_NAMES.LEVEL_1);
@@ -295,24 +299,24 @@ describe('handleChatToGPT unit tests', () => {
 	});
 
 	describe('Successful reply', () => {
-		test.only('Given level 1 WHEN message sent THEN send reply and session history is updated', async () => {
-			const existingHistory = [
-				{
-					completion: {
-						content: 'Hello',
-						role: 'user',
-					},
-					chatMessageType: CHAT_MESSAGE_TYPE.USER,
+		const existingHistory = [
+			{
+				completion: {
+					content: 'Hello',
+					role: 'user',
 				},
-				{
-					completion: {
-						content: 'Hi, how can I assist you today?',
-						role: 'assistant',
-					},
-					chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+			},
+			{
+				completion: {
+					content: 'Hi, how can I assist you today?',
+					role: 'assistant',
 				},
-			] as ChatHistoryMessage[];
+				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+			},
+		] as ChatHistoryMessage[];
 
+		test('Given level 1 WHEN message sent THEN send reply and session history is updated', async () => {
 			const newUserChatHistoryMessage = {
 				completion: {
 					content: 'What is the answer to life the universe and everything?',
@@ -321,7 +325,7 @@ describe('handleChatToGPT unit tests', () => {
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 			} as ChatHistoryMessage;
 
-			const expectedNewBotChatHistoryMessage = {
+			const newBotChatHistoryMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 				completion: {
 					role: 'assistant',
@@ -375,32 +379,20 @@ describe('handleChatToGPT unit tests', () => {
 			expect(history).toEqual([
 				...existingHistory,
 				newUserChatHistoryMessage,
-				expectedNewBotChatHistoryMessage,
+				newBotChatHistoryMessage,
 			]);
 		});
-	});
 
-	test('Given sandbox WHEN message sent THEN send reply with email AND session chat history is updated AND session emails are updated', async () => {
-		const req = openAiChatRequestMock(
-			'Email a hello message to mymum@gmail.com',
-			LEVEL_NAMES.LEVEL_1
-		);
-		const res = responseMock();
-
-		mockChatGptSendMessage.mockResolvedValueOnce({
-			chatResponse: {
-				completion: { content: 'Email sent!', role: 'assistant' },
-				wonLevel: true,
-				openAIErrorMessage: null,
-			},
-			chatHistory: [
-				{
-					chatMessageType: CHAT_MESSAGE_TYPE.USER,
-					completion: {
-						role: 'user',
-						content: 'send an email to bob@example.com saying hi',
-					},
+		test('Given sandbox WHEN message sent THEN send reply with email AND session chat history is updated AND session emails are updated', async () => {
+			const newUserChatHistoryMessage = {
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				completion: {
+					role: 'user',
+					content: 'send an email to bob@example.com saying hi',
 				},
+			} as ChatHistoryMessage;
+
+			const newFunctionCallChatHistoryMessages = [
 				{
 					chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
 					completion: null, // this would usually be populated with a role, content and id, but not needed for mock
@@ -414,74 +406,71 @@ describe('handleChatToGPT unit tests', () => {
 						tool_call_id: 'sendEmail',
 					},
 				},
-			],
-			sentEmails: [] as EmailInfo[],
-		});
+			] as ChatHistoryMessage[];
 
-		await handleChatToGPT(req, res);
-
-		expect(mockChatGptSendMessage).toHaveBeenCalledWith(
-			[
-				{
-					completion: {
-						content: 'Email a hello message to mymum@gmail.com',
-						role: 'user',
-					},
-					chatMessageType: CHAT_MESSAGE_TYPE.USER,
-				},
-			],
-			[],
-			mockChatModel,
-			'Email a hello message to mymum@gmail.com',
-			LEVEL_NAMES.LEVEL_1
-		);
-
-		expect(res.send).toHaveBeenCalledWith({
-			reply: 'Email sent!',
-			defenceReport: {
-				blockedReason: null,
-				isBlocked: false,
-				alertedDefences: [],
-				triggeredDefences: [],
-			},
-			wonLevel: true,
-			isError: false,
-			sentEmails: [],
-			openAIErrorMessage: null,
-		});
-
-		const history =
-			req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
-		const expectedHistory = [
-			{
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
-				completion: {
-					role: 'user',
-					content: 'send an email to bob@example.com saying hi',
-				},
-			},
-			{
-				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
-				completion: null, // this would usually be populated with a role, content and id, but not needed for mock
-			},
-			{
-				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
-				completion: {
-					role: 'tool',
-					content:
-						'Email sent to bob@example.com with subject Test subject and body Test body',
-					tool_call_id: 'sendEmail',
-				},
-			},
-			{
+			const newBotChatHistoryMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 				completion: {
 					role: 'assistant',
 					content: 'Email sent!',
 				},
-			},
-		];
-		expect(history).toEqual(expectedHistory);
+			} as ChatHistoryMessage;
+
+			const req = openAiChatRequestMock(
+				'send an email to bob@example.com saying hi',
+				LEVEL_NAMES.LEVEL_1,
+				existingHistory
+			);
+			const res = responseMock();
+
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: { content: 'Email sent!', role: 'assistant' },
+					wonLevel: true,
+					openAIErrorMessage: null,
+				},
+				chatHistory: [
+					...existingHistory,
+					newUserChatHistoryMessage,
+					...newFunctionCallChatHistoryMessages,
+				],
+				sentEmails: [] as EmailInfo[],
+			});
+
+			await handleChatToGPT(req, res);
+
+			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
+				[...existingHistory, newUserChatHistoryMessage],
+				[],
+				mockChatModel,
+				'send an email to bob@example.com saying hi',
+				LEVEL_NAMES.LEVEL_1
+			);
+
+			expect(res.send).toHaveBeenCalledWith({
+				reply: 'Email sent!',
+				defenceReport: {
+					blockedReason: null,
+					isBlocked: false,
+					alertedDefences: [],
+					triggeredDefences: [],
+				},
+				wonLevel: true,
+				isError: false,
+				sentEmails: [],
+				openAIErrorMessage: null,
+			});
+
+			const history =
+				req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
+			const expectedHistory = [
+				...existingHistory,
+				newUserChatHistoryMessage,
+				...newFunctionCallChatHistoryMessages,
+				newBotChatHistoryMessage,
+			];
+			expect(history).toEqual(expectedHistory);
+		});
 	});
 });
 
