@@ -217,8 +217,6 @@ describe('handleChatToGPT integration tests', () => {
 
 		await handleChatToGPT(req, res);
 
-		// expect history to be updated!
-
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Email sent',
 			defenceReport: {
@@ -263,7 +261,7 @@ describe('handleChatToGPT integration tests', () => {
 				completion: {
 					role: 'tool',
 					content:
-						'Email sent to bob@example.com with subject Test subject and body Test body', // this might not be fixed? Check if it's being mocked (it should be)
+						'Email sent to bob@example.com with subject Test subject and body Test body',
 					tool_call_id: 'sendEmail',
 				},
 			},
