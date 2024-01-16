@@ -3,10 +3,15 @@ import { Response } from 'express';
 
 import { handleChatToGPT } from '@src/controller/chatController';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
-import { ChatHistoryMessage, ChatModel } from '@src/models/chat';
+import {
+	CHAT_MESSAGE_TYPE,
+	ChatHistoryMessage,
+	ChatModel,
+} from '@src/models/chat';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
+import { systemRoleLevel1 } from '@src/promptTemplates';
 
 declare module 'express-session' {
 	interface Session {
@@ -157,8 +162,6 @@ describe('handleChatToGPT integration tests', () => {
 
 		await handleChatToGPT(req, res);
 
-		// expect history to be updated!
-
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Howdy human!',
 			defenceReport: {
@@ -172,6 +175,33 @@ describe('handleChatToGPT integration tests', () => {
 			sentEmails: [],
 			openAIErrorMessage: null,
 		});
+
+		const history =
+			req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
+		const expectedHistory = [
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+				completion: {
+					role: 'system',
+					content: systemRoleLevel1,
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				completion: {
+					role: 'user',
+					content: 'Hello chatbot',
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				completion: {
+					role: 'assistant',
+					content: 'Howdy human!',
+				},
+			},
+		];
+		expect(history).toEqual(expectedHistory);
 	});
 
 	test('GIVEN a user asks to send an email WHEN an email is sent THEN the sent email is returned AND update chat history', async () => {
