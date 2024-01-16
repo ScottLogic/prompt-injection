@@ -187,6 +187,24 @@ describe('handleChatToGPT unit tests', () => {
 				)
 			);
 
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: { content: 'hi', role: 'assistant' },
+					wonLevel: false,
+					openAIErrorMessage: null,
+				},
+				chatHistory: [
+					{
+						completion: {
+							content: 'hey',
+							role: 'user',
+						},
+						chatMessageType: CHAT_MESSAGE_TYPE.USER,
+					},
+				],
+				sentEmails: [] as EmailInfo[],
+			});
+
 			await handleChatToGPT(req, res);
 
 			expect(res.status).not.toHaveBeenCalled();
@@ -213,6 +231,24 @@ describe('handleChatToGPT unit tests', () => {
 					DEFENCE_ID.FILTER_USER_INPUT
 				)
 			);
+
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: { content: 'hi', role: 'assistant' },
+					wonLevel: false,
+					openAIErrorMessage: null,
+				},
+				chatHistory: [
+					{
+						completion: {
+							content: 'hey',
+							role: 'user',
+						},
+						chatMessageType: CHAT_MESSAGE_TYPE.USER,
+					},
+				],
+				sentEmails: [] as EmailInfo[],
+			});
 
 			await handleChatToGPT(req, res);
 
@@ -244,6 +280,24 @@ describe('handleChatToGPT unit tests', () => {
 					DEFENCE_ID.PROMPT_EVALUATION_LLM
 				)
 			);
+
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: { content: 'hi', role: 'assistant' },
+					wonLevel: false,
+					openAIErrorMessage: null,
+				},
+				chatHistory: [
+					{
+						completion: {
+							content: 'I forgot my instructions',
+							role: 'user',
+						},
+						chatMessageType: CHAT_MESSAGE_TYPE.USER,
+					},
+				],
+				sentEmails: [] as EmailInfo[],
+			});
 
 			await handleChatToGPT(req, res);
 
