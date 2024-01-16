@@ -384,7 +384,7 @@ describe('handleChatToGPT unit tests', () => {
 			]);
 		});
 
-		test.only('Given sandbox WHEN message sent THEN send reply with email AND session chat history is updated AND session emails are updated', async () => {
+		test('Given sandbox WHEN message sent THEN send reply with email AND session chat history is updated AND session emails are updated', async () => {
 			const newUserChatHistoryMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 				completion: {

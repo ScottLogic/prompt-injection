@@ -174,7 +174,7 @@ async function handleHigherLevelChat(
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 				infoMessage: message,
 		  })
-		: chatHistoryWithNewUserMessages;
+		: openAiReply.chatHistory;
 
 	const updatedChatResponse: ChatHttpResponse = {
 		...chatResponse,
