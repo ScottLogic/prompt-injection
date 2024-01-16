@@ -184,7 +184,7 @@ function MainComponent({
 			return defence;
 		});
 		setDefencesToShow(newDefences);
-					// add info message to chat
+		// add info message to chat
 		const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
 		addInfoMessage(`${displayedDefenceId} defence reset`);
 	}
