@@ -11,11 +11,6 @@ const mockCreateChatCompletion = jest.fn();
 let mockModelList: { id: string }[] = [];
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
-		chat: {
-			completions: {
-				create: mockCreateChatCompletion,
-			},
-		},
 		models: {
 			list: jest.fn().mockImplementation(() => ({
 				data: mockModelList,
