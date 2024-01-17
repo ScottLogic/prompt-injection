@@ -20,7 +20,7 @@ import { getSystemRole, isDefenceActive } from '@src/defence';
 jest.mock('openai');
 jest.mock('@src/defence');
 
-describe('unit test getValidModelsFromOpenAI', () => {
+describe('getValidModelsFromOpenAI', () => {
 	const mockOpenAI = OpenAI as jest.MockedClass<typeof OpenAI>;
 	mockOpenAI.prototype = {
 		models: {
@@ -59,7 +59,7 @@ describe('unit test getValidModelsFromOpenAI', () => {
 	});
 });
 
-describe('unit test setSystemRoleInChatHistory', () => {
+describe('setSystemRoleInChatHistory', () => {
 	const systemRolePrompt = 'You are a helpful chatbot that answers questions.';
 	const defencesSystemRoleInactive: Defence[] = [
 		{
