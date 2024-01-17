@@ -6,16 +6,16 @@ import {
 	jest,
 	test,
 } from '@jest/globals';
+import { OpenAI } from 'openai';
+
+import { getSystemRole, isDefenceActive } from '@src/defence';
 import { CHAT_MESSAGE_TYPE, ChatHistoryMessage } from '@src/models/chat';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
-import { OpenAI } from 'openai';
-
 import {
 	getValidModelsFromOpenAI,
 	setSystemRoleInChatHistory,
 } from '@src/openai';
-import { getSystemRole, isDefenceActive } from '@src/defence';
 
 jest.mock('openai');
 jest.mock('@src/defence');
