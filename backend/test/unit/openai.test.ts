@@ -46,16 +46,16 @@ jest.mock('@src/langchain', () => {
 	};
 });
 
-beforeEach(() => {
-	// clear environment variables
-	process.env = {};
-});
 afterEach(() => {
 	mockIsDefenceActive.mockReset();
 	jest.clearAllMocks();
 });
 
 describe('unit test getValidModelsFromOpenAI', () => {
+	beforeEach(() => {
+		process.env = {};
+	});
+
 	test('GIVEN the user has an openAI key WHEN getValidModelsFromOpenAI is called THEN it returns the models in CHAT_MODELS enum', async () => {
 		process.env.OPENAI_API_KEY = 'sk-12345';
 		mockModelList = [
@@ -118,7 +118,6 @@ const mockIsDefenceActive = jest.fn();
 
 jest.mock('@src/defence', () => ({
 	getSystemRole: jest.fn().mockImplementation(() => mockSystemRolePrompt),
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	isDefenceActive: jest.fn().mockImplementation(() => mockIsDefenceActive()),
 }));
 
