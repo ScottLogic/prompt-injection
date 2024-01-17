@@ -15,16 +15,7 @@ import {
 	setSystemRoleInChatHistory,
 } from '@src/openai';
 
-let mockModelList: { id: string }[] = [];
-jest.mock('openai', () => ({
-	OpenAI: jest.fn().mockImplementation(() => ({
-		models: {
-			list: jest.fn().mockImplementation(() => ({
-				data: mockModelList,
-			})),
-		},
-	})),
-}));
+jest.mock('openai');
 
 jest.mock('@src/openai', () => {
 	const originalModule =
@@ -46,10 +37,16 @@ jest.mock('@src/langchain', () => {
 	};
 });
 
-afterEach(() => {
-	mockIsDefenceActive.mockReset();
-	jest.clearAllMocks();
-});
+let mockModelList: { id: string }[] = [];
+jest.mock('openai', () => ({
+	OpenAI: jest.fn().mockImplementation(() => ({
+		models: {
+			list: jest.fn().mockImplementation(() => ({
+				data: mockModelList,
+			})),
+		},
+	})),
+}));
 
 describe('unit test getValidModelsFromOpenAI', () => {
 	beforeEach(() => {
@@ -122,6 +119,11 @@ jest.mock('@src/defence', () => ({
 }));
 
 describe('unit test setSystemRoleInChatHistory', () => {
+	afterEach(() => {
+		mockIsDefenceActive.mockReset();
+		jest.clearAllMocks();
+	});
+
 	test('GIVEN level 1 AND system role is not in chat history WHEN setSystemRoleInChatHistory is called THEN it adds the system role to the chat history', () => {
 		const chatHistory = setSystemRoleInChatHistory(
 			LEVEL_NAMES.LEVEL_1,
