@@ -224,9 +224,8 @@ function setSystemRoleInChatHistory(
 	chatHistory: ChatHistoryMessage[]
 ) {
 	const systemRoleNeededInChatHistory =
-		currentLevel === LEVEL_NAMES.SANDBOX
-			? isDefenceActive(DEFENCE_ID.SYSTEM_ROLE, defences)
-			: true;
+		currentLevel !== LEVEL_NAMES.SANDBOX ||
+		isDefenceActive(DEFENCE_ID.SYSTEM_ROLE, defences);
 
 	if (systemRoleNeededInChatHistory) {
 		const completionConfig: ChatCompletionSystemMessageParam = {
