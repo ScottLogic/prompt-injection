@@ -56,7 +56,7 @@ describe('unit test getValidModelsFromOpenAI', () => {
 		process.env = {};
 	});
 
-	test('GIVEN the user has an openAI key WHEN getValidModelsFromOpenAI is called THEN it returns the models in CHAT_MODELS enum', async () => {
+	test('GIVEN the user has an openAI key WHEN getValidModelsFromOpenAI is called THEN it returns only the models that are also in the CHAT_MODELS enum', async () => {
 		process.env.OPENAI_API_KEY = 'sk-12345';
 		mockModelList = [
 			{ id: 'gpt-3.5-turbo' },
