@@ -256,37 +256,25 @@ function transformMessage(
 	message: string,
 	defences: Defence[]
 ): TransformedChatMessage | null {
-	if (isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)) {
-		const transformedMessage = transformXmlTagging(message, defences);
-		console.debug(
-			`Defences applied. Transformed message: ${combineTransformedMessage(
-				transformedMessage
-			)}`
-		);
-		return transformedMessage;
-	} else if (isDefenceActive(DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE, defences)) {
-		const transformedMessage = transformRandomSequenceEnclosure(
-			message,
-			defences
-		);
-		console.debug(
-			`Defences applied. Transformed message: ${combineTransformedMessage(
-				transformedMessage
-			)}`
-		);
-		return transformedMessage;
-	} else if (isDefenceActive(DEFENCE_ID.INSTRUCTION, defences)) {
-		const transformedMessage = transformInstructionDefence(message, defences);
-		console.debug(
-			`Defences applied. Transformed message: ${combineTransformedMessage(
-				transformedMessage
-			)}`
-		);
-		return transformedMessage;
-	} else {
+	const transformedMessage = isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)
+		? transformXmlTagging(message, defences)
+		: isDefenceActive(DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE, defences)
+		? transformRandomSequenceEnclosure(message, defences)
+		: isDefenceActive(DEFENCE_ID.INSTRUCTION, defences)
+		? transformInstructionDefence(message, defences)
+		: null;
+
+	if (!transformedMessage) {
 		console.debug('No defences applied. Message unchanged.');
 		return null;
 	}
+
+	console.debug(
+		`Defences applied. Transformed message: ${combineTransformedMessage(
+			transformedMessage
+		)}`
+	);
+	return transformedMessage;
 }
 
 // detects triggered defences in original message and blocks the message if necessary
