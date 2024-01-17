@@ -99,6 +99,7 @@ interface ChatHistoryMessage {
 	chatMessageType: CHAT_MESSAGE_TYPE;
 	numTokens?: number | null;
 	infoMessage?: string | null;
+	transformedMessage?: TransformedChatMessage;
 }
 
 // default settings for chat model

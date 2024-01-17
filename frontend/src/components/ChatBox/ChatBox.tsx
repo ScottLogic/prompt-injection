@@ -82,6 +82,7 @@ function ChatBox({
 		const transformedMessage = response.transformedMessage;
 		// add the transformed message to the chat box if it is different from the original message
 		if (transformedMessage) {
+			// DELETEME: keep an eye on this, if you're going to be adding this to the history on the backend instead, then passing it forward!
 			addChatMessage({
 				message:
 					`${transformedMessage.transformationName} enabled, your message has been transformed`.toLocaleLowerCase(),
