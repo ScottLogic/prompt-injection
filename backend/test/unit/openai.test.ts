@@ -78,45 +78,45 @@ describe('unit test getValidModelsFromOpenAI', () => {
 	});
 });
 
-const systemRolePrompt = 'You are a helpful chatbot that answers questions.';
-const defencesSystemRoleInactive: Defence[] = [
-	{
-		id: DEFENCE_ID.SYSTEM_ROLE,
-		config: [
-			{
-				id: 'SYSTEM_ROLE',
-				value: systemRolePrompt,
-			},
-		],
-		isActive: false,
-		isTriggered: false,
-	},
-];
-const defencesSystemRoleActive = [
-	{ ...defencesSystemRoleInactive[0], isActive: true },
-];
-const chatHistoryWithoutSystemRole: ChatHistoryMessage[] = [
-	{
-		completion: { role: 'user', content: 'What is two plus two?' },
-		chatMessageType: CHAT_MESSAGE_TYPE.USER,
-	},
-	{
-		completion: { role: 'assistant', content: 'Two plus two equals four.' },
-		chatMessageType: CHAT_MESSAGE_TYPE.BOT,
-	},
-];
-
-const chatHistoryWithSystemRole: ChatHistoryMessage[] = [
-	{
-		completion: { role: 'system', content: systemRolePrompt },
-		chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
-	},
-	...chatHistoryWithoutSystemRole,
-];
-
 jest.mock('@src/defence');
 
 describe('unit test setSystemRoleInChatHistory', () => {
+	const systemRolePrompt = 'You are a helpful chatbot that answers questions.';
+	const defencesSystemRoleInactive: Defence[] = [
+		{
+			id: DEFENCE_ID.SYSTEM_ROLE,
+			config: [
+				{
+					id: 'SYSTEM_ROLE',
+					value: systemRolePrompt,
+				},
+			],
+			isActive: false,
+			isTriggered: false,
+		},
+	];
+	const defencesSystemRoleActive = [
+		{ ...defencesSystemRoleInactive[0], isActive: true },
+	];
+	const chatHistoryWithoutSystemRole: ChatHistoryMessage[] = [
+		{
+			completion: { role: 'user', content: 'What is two plus two?' },
+			chatMessageType: CHAT_MESSAGE_TYPE.USER,
+		},
+		{
+			completion: { role: 'assistant', content: 'Two plus two equals four.' },
+			chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+		},
+	];
+
+	const chatHistoryWithSystemRole: ChatHistoryMessage[] = [
+		{
+			completion: { role: 'system', content: systemRolePrompt },
+			chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+		},
+		...chatHistoryWithoutSystemRole,
+	];
+
 	const mockIsDefenceActive = isDefenceActive as jest.MockedFunction<
 		typeof isDefenceActive
 	>;
