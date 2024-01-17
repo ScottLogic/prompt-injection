@@ -8,8 +8,6 @@ import {
 } from '@react-pdf/renderer';
 
 import CombinedFonts from '@src/assets/fonts/CombinedFonts.ttf';
-import NotoSansSC from '@src/assets/fonts/NotoSansSC-Regular.ttf';
-import NotoSerifJP from '@src/assets/fonts/NotoSerifJP-Regular.otf';
 import { ChatMessage } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -17,11 +15,15 @@ import { LEVEL_NAMES } from '@src/models/level';
 import ExportChatBox from './ExportChatBox';
 import ExportEmailBox from './ExportEmailBox';
 
-Font.register({ family: 'CombinedFonts', src: CombinedFonts });
 
-// chinese and japanese - currently multi lang not supported
-Font.register({ family: 'NotoSerifJP', src: NotoSerifJP });
-Font.register({ family: 'NotoSansSC', src: NotoSansSC });
+/*
+Chinese and Japanese font support: currently we're using a Combined font pack,
+but these two font packs are huge so they're kept separate. Only register one
+font pack at a time, then set fontFamily to match in the stylesheet beneath.
+*/
+//Font.register({ family: 'NotoSerifJP', src: NotoSerifJP });
+//Font.register({ family: 'NotoSansSC', src: NotoSansSC });
+Font.register({ family: 'CombinedFonts', src: CombinedFonts });
 
 const styles = StyleSheet.create({
 	page: {
