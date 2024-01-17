@@ -26,6 +26,7 @@
 
 	/* action buttons */
 	--action-button-background-colour: var(--accent-background-colour);
+	--action-button-background-colour-hover: #11484b;
 	--action-button-text-colour: var(--main-text-colour);
 	--action-button-disabled-background-colour: #888;
 	--action-button-disabled-text-colour: #111;
@@ -36,10 +37,12 @@
 	--level-button-border-colour: var(--accent-border-colour);
 	--level-button-border-colour-disabled: #aaaaaa80;
 	--level-button-background-colour-selected: var(--accent-background-colour);
+	--level-button-background-colour-hover: #11484b;
 
 	/* level banner */
 	--level-banner-border-colour: #bbb;
 	--level-banner-background-colour: #ddd;
+	--level-banner-background-colour-hover: #fff;
 	--level-banner-text-colour: #444;
 
 	/* main input */
@@ -101,6 +104,7 @@
 	--chat-alerted-text-colour: teal;
 	--chat-triggered-text-colour: var(--error-colour);
 	--chat-button-background-colour: #eee;
+	--chat-button-background-colour-hover: #dedede;
 	--chat-button-border-colour: #ccc;
 	--chat-button-text-colour: #444;
 
