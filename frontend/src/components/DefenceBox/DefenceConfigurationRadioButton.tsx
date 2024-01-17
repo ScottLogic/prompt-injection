@@ -16,7 +16,7 @@ function DefenceConfigurationRadioButton({
 			<input
 				type="radio"
 				id={id}
-				name={name}
+				name="defence-option"
 				value={id}
 				checked={checked}
 				onChange={onChange}
