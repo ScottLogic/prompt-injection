@@ -9,13 +9,12 @@ import {
 import { CHAT_MESSAGE_TYPE, ChatHistoryMessage } from '@src/models/chat';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
+import { OpenAI } from 'openai';
 
 import {
 	getValidModelsFromOpenAI,
 	setSystemRoleInChatHistory,
 } from '@src/openai';
-
-jest.mock('openai');
 
 jest.mock('@src/openai', () => {
 	const originalModule =
@@ -37,25 +36,23 @@ jest.mock('@src/langchain', () => {
 	};
 });
 
-let mockModelList: { id: string }[] = [];
-jest.mock('openai', () => ({
-	OpenAI: jest.fn().mockImplementation(() => ({
-		models: {
-			list: jest.fn().mockImplementation(() => ({
-				data: mockModelList,
-			})),
-		},
-	})),
-}));
+jest.mock('openai');
 
 describe('unit test getValidModelsFromOpenAI', () => {
+	const mockOpenAI = OpenAI as jest.MockedClass<typeof OpenAI>;
+	mockOpenAI.prototype = {
+		models: {
+			list: jest.fn(),
+		},
+	} as unknown as typeof mockOpenAI.prototype;
+
 	beforeEach(() => {
 		process.env = {};
 	});
 
 	test('GIVEN the user has an openAI key WHEN getValidModelsFromOpenAI is called THEN it returns only the models that are also in the CHAT_MODELS enum', async () => {
 		process.env.OPENAI_API_KEY = 'sk-12345';
-		mockModelList = [
+		const mockModelList = [
 			{ id: 'gpt-3.5-turbo' },
 			{ id: 'gpt-3.5-turbo-0613' },
 			{ id: 'gpt-4' },
@@ -69,7 +66,13 @@ describe('unit test getValidModelsFromOpenAI', () => {
 			'gpt-4',
 			'gpt-4-0613',
 		];
+
+		mockOpenAI.prototype.models.list.mockResolvedValueOnce({
+			data: mockModelList,
+		} as OpenAI.ModelsPage);
+
 		const validModels = await getValidModelsFromOpenAI();
+
 		expect(validModels).toEqual(expectedValidModels);
 	});
 });
