@@ -2,3 +2,4 @@
 * text eol=lf
 # Apart from font files
 *.[ot]tf binary
+*.png -text
