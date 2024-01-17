@@ -6,8 +6,6 @@ import {
 	setSystemRoleInChatHistory,
 } from '@src/openai';
 
-// Define a mock implementation for the createChatCompletion method
-const mockCreateChatCompletion = jest.fn();
 let mockModelList: { id: string }[] = [];
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
@@ -46,7 +44,6 @@ beforeEach(() => {
 	process.env = {};
 });
 afterEach(() => {
-	mockCreateChatCompletion.mockReset();
 	mockIsDefenceActive.mockReset();
 	jest.clearAllMocks();
 });
