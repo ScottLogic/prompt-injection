@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { TiTick, TiTimes } from 'react-icons/ti';
 
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
-import { validateDefence } from '@src/service/defenceService';
 
 import DefenceConfiguration from './DefenceConfiguration';
 import PromptEnclosureDefenceMechanism from './PromptEnclosureDefenceMechanism';
@@ -27,22 +25,10 @@ function DefenceMechanism({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 }) {
-	const [showConfiguredText, setShowConfiguredText] = useState<boolean>(false);
-	const [configValidated, setConfigValidated] = useState<boolean>(true);
 	const [configKey, setConfigKey] = useState<number>(0);
-
-	function showDefenceConfiguredText(isValid: boolean) {
-		setShowConfiguredText(true);
-		setConfigValidated(isValid);
-		// hide the message after 3 seconds
-		setTimeout(() => {
-			setShowConfiguredText(false);
-		}, 3000);
-	}
 
 	function resetConfigurationValue(defence: Defence, configId: string) {
 		resetDefenceConfiguration(defence.id, configId);
-		showDefenceConfiguredText(true);
 	}
 
 	async function setConfigurationValue(
@@ -50,23 +36,14 @@ function DefenceMechanism({
 		configId: string,
 		value: string
 	) {
-		const configIsValid = validateDefence(defence.id, configId, value);
-		if (configIsValid) {
-			const newConfiguration = defence.config.map((config) => {
-				if (config.id === configId) {
-					config.value = value;
-				}
-				return config;
-			});
+		const newConfiguration = defence.config.map((config) => {
+			if (config.id === configId) {
+				config.value = value;
+			}
+			return config;
+		});
 
-			const configured = await setDefenceConfiguration(
-				defence.id,
-				newConfiguration
-			);
-			showDefenceConfiguredText(configured);
-		} else {
-			showDefenceConfiguredText(false);
-		}
+		await setDefenceConfiguration(defence.id, newConfiguration);
 	}
 	return (
 		<fieldset className="defence-mechanism-fieldset">
@@ -126,17 +103,6 @@ function DefenceMechanism({
 							resetConfigurationValue={resetConfigurationValue}
 						/>
 					)}
-
-					{showConfiguredText &&
-						(configValidated ? (
-							<p className="validation-text">
-								<TiTick /> defence successfully configured
-							</p>
-						) : (
-							<p className="validation-text">
-								<TiTimes /> invalid input - configuration failed
-							</p>
-						))}
 				</div>
 			</details>
 		</fieldset>
