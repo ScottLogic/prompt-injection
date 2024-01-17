@@ -15,6 +15,7 @@ import {
 	getValidModelsFromOpenAI,
 	setSystemRoleInChatHistory,
 } from '@src/openai';
+import { getSystemRole, isDefenceActive } from '@src/defence';
 
 jest.mock('@src/openai', () => {
 	const originalModule =
@@ -114,14 +115,18 @@ const mockChatHistoryWithSystemRole: ChatHistoryMessage[] = [
 	...mockChatHistoryWithoutSystemRole,
 ];
 
-const mockIsDefenceActive = jest.fn();
-
-jest.mock('@src/defence', () => ({
-	getSystemRole: jest.fn().mockImplementation(() => mockSystemRolePrompt),
-	isDefenceActive: jest.fn().mockImplementation(() => mockIsDefenceActive()),
-}));
+jest.mock('@src/defence');
 
 describe('unit test setSystemRoleInChatHistory', () => {
+	const mockIsDefenceActive = isDefenceActive as jest.MockedFunction<
+		typeof isDefenceActive
+	>;
+
+	const mockGetSystemRole = getSystemRole as jest.MockedFunction<
+		typeof getSystemRole
+	>;
+	mockGetSystemRole.mockImplementation(() => mockSystemRolePrompt);
+
 	afterEach(() => {
 		mockIsDefenceActive.mockReset();
 		jest.clearAllMocks();
