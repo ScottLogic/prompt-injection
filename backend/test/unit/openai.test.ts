@@ -17,27 +17,8 @@ import {
 } from '@src/openai';
 import { getSystemRole, isDefenceActive } from '@src/defence';
 
-jest.mock('@src/openai', () => {
-	const originalModule =
-		jest.requireActual<typeof import('@src/openai')>('@src/openai');
-	return {
-		...originalModule,
-		initOpenAi: jest.fn(),
-		getOpenAI: jest.fn(),
-	};
-});
-
-jest.mock('@src/langchain', () => {
-	const originalModule =
-		jest.requireActual<typeof import('@src/langchain')>('@src/langchain');
-	return {
-		...originalModule,
-		initQAModel: jest.fn(),
-		initDocumentVectors: jest.fn(),
-	};
-});
-
 jest.mock('openai');
+jest.mock('@src/defence');
 
 describe('unit test getValidModelsFromOpenAI', () => {
 	const mockOpenAI = OpenAI as jest.MockedClass<typeof OpenAI>;
@@ -77,8 +58,6 @@ describe('unit test getValidModelsFromOpenAI', () => {
 		expect(validModels).toEqual(expectedValidModels);
 	});
 });
-
-jest.mock('@src/defence');
 
 describe('unit test setSystemRoleInChatHistory', () => {
 	const systemRolePrompt = 'You are a helpful chatbot that answers questions.';
