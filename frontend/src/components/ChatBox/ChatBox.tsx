@@ -181,9 +181,7 @@ function ChatBox({
 	async function sendChatMessage() {
 		if (chatInput && !isSendingMessage) {
 			setIsSendingMessage(true);
-			// clear the input box
 			setChatInput('');
-			// if input has been transformed, add both messages to the list of messages. otherwise add original message only
 			addChatMessage({
 				message: chatInput,
 				type: CHAT_MESSAGE_TYPE.USER,
