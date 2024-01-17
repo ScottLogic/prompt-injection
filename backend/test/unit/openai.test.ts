@@ -1,6 +1,15 @@
+import {
+	afterEach,
+	beforeEach,
+	describe,
+	expect,
+	jest,
+	test,
+} from '@jest/globals';
 import { CHAT_MESSAGE_TYPE, ChatHistoryMessage } from '@src/models/chat';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
+
 import {
 	getValidModelsFromOpenAI,
 	setSystemRoleInChatHistory,
@@ -18,9 +27,8 @@ jest.mock('openai', () => ({
 }));
 
 jest.mock('@src/openai', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const originalModule = jest.requireActual('@src/openai');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	const originalModule =
+		jest.requireActual<typeof import('@src/openai')>('@src/openai');
 	return {
 		...originalModule,
 		initOpenAi: jest.fn(),
@@ -29,9 +37,8 @@ jest.mock('@src/openai', () => {
 });
 
 jest.mock('@src/langchain', () => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const originalModule = jest.requireActual('@src/langchain');
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	const originalModule =
+		jest.requireActual<typeof import('@src/langchain')>('@src/langchain');
 	return {
 		...originalModule,
 		initQAModel: jest.fn(),

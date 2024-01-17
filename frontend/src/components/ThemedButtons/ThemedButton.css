@@ -1,13 +1,19 @@
+.themed-button-wrapper {
+	position: relative;
+}
+
 .themed-button {
 	position: relative;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	height: 100%;
 	border: 0.125rem solid var(--action-button-background-colour);
 	border-radius: 0.625rem;
 	background-color: var(--action-button-background-colour);
 	color: var(--action-button-text-colour);
 	font-weight: 600;
+	font-size: inherit;
 }
 
 .themed-button:focus-visible {
@@ -16,5 +22,38 @@
 
 .themed-button.disabled {
 	background-color: var(--action-button-disabled-background-colour);
+	border-color: var(--action-button-disabled-background-colour);
 	color: var(--action-button-disabled-text-colour);
+}
+
+.themed-button-tooltip {
+	position: absolute;
+	top: calc(100% + 0.125rem);
+	z-index: 1;
+	display: none;
+	min-width: 8rem;
+	padding: 0.125rem;
+	border-width: 0.0625rem;
+	border-style: solid;
+	border-color: var(--tooltip-border-colour);
+	background-color: var(--tooltip-background-colour);
+	color: var(--tooltip-text-colour);
+}
+
+.themed-button-tooltip.show.left {
+	left: 0;
+}
+
+.themed-button-tooltip.show.right {
+	right: 0;
+}
+
+.themed-button-tooltip.show.center {
+	right: 50%;
+	transform: translateX(50%);
+}
+
+.themed-button:hover + .themed-button-tooltip.show,
+.themed-button:focus + .themed-button-tooltip.show {
+	display: block;
 }

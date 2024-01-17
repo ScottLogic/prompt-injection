@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/unbound-method */
+import { expect, jest, test, describe } from '@jest/globals';
 import { Response } from 'express';
 
 import { handleChatToGPT } from '@src/controller/chatController';
@@ -25,7 +24,13 @@ declare module 'express-session' {
 }
 
 // mock the api call
-const mockCreateChatCompletion = jest.fn();
+const mockCreateChatCompletion =
+	jest.fn<
+		() => Promise<
+			| ReturnType<typeof chatResponseAssistant>
+			| ReturnType<typeof chatSendEmailResponseAssistant>
+		>
+	>();
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
 		chat: {
@@ -43,50 +48,50 @@ function responseMock() {
 	} as unknown as Response;
 }
 
-describe('handleChatToGPT integration tests', () => {
-	const testSentEmail: EmailInfo = {
-		address: 'bob@example.com',
-		body: 'Test body',
-		subject: 'Test subject',
+function chatResponseAssistant(content: string) {
+	return {
+		choices: [
+			{
+				message: {
+					role: 'assistant',
+					content,
+				},
+			},
+		],
 	};
+}
 
-	function chatResponseAssistant(content: string) {
-		return {
-			choices: [
-				{
-					message: {
-						role: 'assistant',
-						content,
-					},
-				},
-			],
-		};
-	}
+const testSentEmail: EmailInfo = {
+	address: 'bob@example.com',
+	body: 'Test body',
+	subject: 'Test subject',
+};
 
-	function chatSendEmailResponseAssistant() {
-		return {
-			choices: [
-				{
-					message: {
-						tool_calls: [
-							{
-								type: 'function',
-								id: 'sendEmail',
-								function: {
-									name: 'sendEmail',
-									arguments: JSON.stringify({
-										...testSentEmail,
-										confirmed: true,
-									}),
-								},
+function chatSendEmailResponseAssistant() {
+	return {
+		choices: [
+			{
+				message: {
+					tool_calls: [
+						{
+							type: 'function',
+							id: 'sendEmail',
+							function: {
+								name: 'sendEmail',
+								arguments: JSON.stringify({
+									...testSentEmail,
+									confirmed: true,
+								}),
 							},
-						],
-					},
+						},
+					],
 				},
-			],
-		};
-	}
+			},
+		],
+	};
+}
 
+describe('handleChatToGPT integration tests', () => {
 	function errorResponseMock(
 		message: string,
 		{

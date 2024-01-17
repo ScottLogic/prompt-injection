@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/unbound-method */
+import { describe, expect, jest, test } from '@jest/globals';
 import { Response } from 'express';
 
 import {
