@@ -122,10 +122,9 @@ describe('unit test setSystemRoleInChatHistory', () => {
 		typeof isDefenceActive
 	>;
 
-	const mockGetSystemRole = getSystemRole as jest.MockedFunction<
-		typeof getSystemRole
-	>;
-	mockGetSystemRole.mockImplementation(() => mockSystemRolePrompt);
+	(getSystemRole as jest.MockedFunction<typeof getSystemRole>).mockReturnValue(
+		mockSystemRolePrompt
+	);
 
 	afterEach(() => {
 		mockIsDefenceActive.mockReset();
