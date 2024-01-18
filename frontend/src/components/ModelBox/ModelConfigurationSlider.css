@@ -6,12 +6,14 @@
 	border: 0.25rem solid var(--control-config-border);
 	border-radius: 0.5rem;
 }
+
 .model-selection-fieldset {
 	min-height: fit-content;
 	margin: 0;
 	border: 0.25rem solid var(--control-config-border);
 	border-radius: 0.5rem;
 }
+
 .model-config-slider-fieldset legend {
 	margin-right: auto;
 }
@@ -22,8 +24,8 @@
 }
 
 .model-config-slider-fieldset .info-text {
-	padding-left: 1rem;
 	padding-top: 0.5rem;
+	padding-left: 1rem;
 	font-size: 0.875rem;
 }
 

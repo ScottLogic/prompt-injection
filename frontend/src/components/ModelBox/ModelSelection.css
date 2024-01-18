@@ -1,7 +1,7 @@
 .model-selection-box {
-	padding-top: 1rem;
 	display: flex;
 	flex-direction: column;
+	padding-top: 1rem;
 }
 
 .info-model-slider {
@@ -10,10 +10,12 @@
 	border: 0.125rem outset var(--control-config-border);
 	border-radius: 0.25rem;
 }
+
 .prompt-injection-min-button > summary {
 	list-style: none;
 	font-size: 1rem;
 }
+
 .model-selection-box .model-selection-row {
 	display: flex;
 	flex-wrap: wrap;
