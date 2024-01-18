@@ -34,7 +34,6 @@ function ModelConfigurationSlider({
 			<details
 				className="info-icon prompt-injection-min-button"
 				title="more info"
-				aria-label="more info"
 				onToggle={() => {
 					toggleInfo();
 				}}
@@ -44,7 +43,6 @@ function ModelConfigurationSlider({
 			{showInfo && <div className="info-text">{config.info}</div>}
 			<div className="config-slider">
 				<Slider
-					aria-label={config.id}
 					getAriaValueText={(value) => `${value}`}
 					min={config.min}
 					max={config.max}
