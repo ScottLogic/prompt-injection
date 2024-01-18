@@ -16,6 +16,7 @@ import { queryDocuments } from './langchain';
 import {
 	CHAT_MESSAGE_TYPE,
 	CHAT_MODELS,
+	ChatGptReply,
 	ChatHistoryMessage,
 	ChatModel,
 	ChatResponse,
@@ -23,12 +24,13 @@ import {
 	ToolCallResponse,
 } from './models/chat';
 import { DEFENCE_ID, Defence } from './models/defence';
-import { EmailInfo, EmailResponse } from './models/email';
+import { EmailResponse } from './models/email';
 import { LEVEL_NAMES } from './models/level';
 import {
 	FunctionAskQuestionParams,
 	FunctionSendEmailParams,
 } from './models/openai';
+import { pushMessageToHistory } from './utils/chat';
 import {
 	chatModelMaxTokens,
 	countTotalPromptTokens,
@@ -201,14 +203,13 @@ async function chatGptCallFunction(
 	defences: Defence[],
 	toolCallId: string,
 	functionCall: ChatCompletionMessageToolCall.Function,
-	sentEmails: EmailInfo[],
 	// default to sandbox
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ): Promise<FunctionCallResponse> {
 	const functionName = functionCall.name;
 	let functionReply = '';
 	let wonLevel = false;
-	const updatedSentEmails = [...sentEmails];
+	const sentEmails = [];
 
 	// check if we know the function
 	if (isChatGptFunction(functionName)) {
@@ -222,7 +223,7 @@ async function chatGptCallFunction(
 			functionReply = emailFunctionOutput.reply;
 			wonLevel = emailFunctionOutput.wonLevel;
 			if (emailFunctionOutput.sentEmails) {
-				updatedSentEmails.push(...emailFunctionOutput.sentEmails);
+				sentEmails.push(...emailFunctionOutput.sentEmails);
 			}
 		}
 		if (functionName === 'askQuestion') {
@@ -244,7 +245,7 @@ async function chatGptCallFunction(
 			tool_call_id: toolCallId,
 		} as ChatCompletionMessageParam,
 		wonLevel,
-		sentEmails: updatedSentEmails,
+		sentEmails,
 	};
 }
 
@@ -253,8 +254,9 @@ async function chatGptChatCompletion(
 	defences: Defence[],
 	chatModel: ChatModel,
 	openai: OpenAI,
+	// default to sandbox
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
-) {
+): Promise<ChatGptReply> {
 	const updatedChatHistory = [...chatHistory];
 
 	// check if we need to set a system role
@@ -367,40 +369,10 @@ function getChatCompletionsFromHistory(
 	return reducedCompletions;
 }
 
-function pushCompletionToHistory(
-	chatHistory: ChatHistoryMessage[],
-	completion: ChatCompletionMessageParam,
-	chatMessageType: CHAT_MESSAGE_TYPE
-): ChatHistoryMessage[] {
-	// limit the length of the chat history
-	const maxChatHistoryLength = 1000;
-	const updatedChatHistory = [...chatHistory];
-
-	if (chatMessageType !== CHAT_MESSAGE_TYPE.BOT_BLOCKED) {
-		// remove the oldest message, not including system role message
-		if (chatHistory.length >= maxChatHistoryLength) {
-			if (chatHistory[0].completion?.role !== 'system') {
-				updatedChatHistory.shift();
-			} else {
-				updatedChatHistory.splice(1, 1);
-			}
-		}
-		updatedChatHistory.push({
-			completion,
-			chatMessageType,
-		});
-	} else {
-		// do not add the bots reply which was subsequently blocked
-		console.log('Skipping adding blocked message to chat history', completion);
-	}
-	return updatedChatHistory;
-}
-
 async function performToolCalls(
 	toolCalls: ChatCompletionMessageToolCall[],
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
-	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES
 ): Promise<ToolCallResponse> {
 	for (const toolCall of toolCalls) {
@@ -412,17 +384,15 @@ async function performToolCalls(
 				defences,
 				toolCall.id,
 				toolCall.function,
-				sentEmails,
 				currentLevel
 			);
 			// return after getting function reply. may change when we support other tool types
 			return {
 				functionCallReply,
-				chatHistory: pushCompletionToHistory(
-					chatHistory,
-					functionCallReply.completion,
-					CHAT_MESSAGE_TYPE.FUNCTION_CALL
-				),
+				chatHistory: pushMessageToHistory(chatHistory, {
+					completion: functionCallReply.completion,
+					chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+				}),
 			};
 		}
 	}
@@ -436,59 +406,54 @@ async function getFinalReplyAfterAllToolCalls(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
-	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES
 ) {
-	let updatedSentEmails = [...sentEmails];
+	let updatedChatHistory = [...chatHistory];
+	const sentEmails = [];
 	let wonLevel = false;
+
 	const openai = getOpenAI();
+	let gptReply: ChatGptReply | null = null;
 
-	let gptReply = await chatGptChatCompletion(
-		chatHistory,
-		defences,
-		chatModel,
-		openai,
-		currentLevel
-	);
-	let updatedChatHistory = gptReply.chatHistory;
-
-	// check if GPT wanted to call a tool
-	while (gptReply.completion?.tool_calls) {
-		// push the assistant message to the chat
-		updatedChatHistory = pushCompletionToHistory(
-			gptReply.chatHistory,
-			gptReply.completion,
-			CHAT_MESSAGE_TYPE.FUNCTION_CALL
-		);
-
-		const toolCallReply = await performToolCalls(
-			gptReply.completion.tool_calls,
-			updatedChatHistory,
-			defences,
-			updatedSentEmails,
-			currentLevel
-		);
-
-		updatedChatHistory = toolCallReply.chatHistory;
-		updatedSentEmails =
-			toolCallReply.functionCallReply?.sentEmails ?? updatedSentEmails;
-		wonLevel = toolCallReply.functionCallReply?.wonLevel ?? false;
-
-		// get a new reply from ChatGPT now that the functions have been called
+	do {
 		gptReply = await chatGptChatCompletion(
-			updatedChatHistory,
+			[...updatedChatHistory],
 			defences,
 			chatModel,
 			openai,
 			currentLevel
 		);
 		updatedChatHistory = gptReply.chatHistory;
-	}
+
+		// check if GPT wanted to call a tool
+		if (gptReply.completion?.tool_calls) {
+			// push the function call to the chat
+			updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
+				completion: gptReply.completion,
+				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+			});
+
+			const toolCallReply = await performToolCalls(
+				gptReply.completion.tool_calls,
+				updatedChatHistory,
+				defences,
+				currentLevel
+			);
+
+			updatedChatHistory = toolCallReply.chatHistory;
+			if (toolCallReply.functionCallReply?.sentEmails) {
+				sentEmails.push(...toolCallReply.functionCallReply.sentEmails);
+			}
+			wonLevel =
+				(wonLevel || toolCallReply.functionCallReply?.wonLevel) ?? false;
+		}
+	} while (gptReply.completion?.tool_calls);
+
 	return {
 		gptReply,
 		wonLevel,
 		chatHistory: updatedChatHistory,
-		sentEmails: updatedSentEmails,
+		sentEmails,
 	};
 }
 
@@ -497,31 +462,18 @@ async function chatGptSendMessage(
 	defences: Defence[],
 	chatModel: ChatModel,
 	message: string,
-	messageIsTransformed: boolean,
-	sentEmails: EmailInfo[],
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	console.log(`User message: '${message}'`);
-	// add user message to chat
-	let updatedChatHistory = pushCompletionToHistory(
-		chatHistory,
-		{
-			role: 'user',
-			content: message,
-		},
-		messageIsTransformed
-			? CHAT_MESSAGE_TYPE.USER_TRANSFORMED
-			: CHAT_MESSAGE_TYPE.USER
-	);
 	const finalToolCallResponse = await getFinalReplyAfterAllToolCalls(
-		updatedChatHistory,
+		chatHistory,
 		defences,
 		chatModel,
-		sentEmails,
 		currentLevel
 	);
 
-	updatedChatHistory = finalToolCallResponse.chatHistory;
+	const updatedChatHistory = finalToolCallResponse.chatHistory;
+	const sentEmails = finalToolCallResponse.sentEmails;
 
 	const chatResponse: ChatResponse = {
 		completion: finalToolCallResponse.gptReply.completion,
@@ -533,17 +485,10 @@ async function chatGptSendMessage(
 		return { chatResponse, chatHistory, sentEmails };
 	}
 
-	// add the ai reply to the chat history
-	updatedChatHistory = pushCompletionToHistory(
-		updatedChatHistory,
-		chatResponse.completion,
-		CHAT_MESSAGE_TYPE.BOT
-	);
-
 	return {
 		chatResponse,
 		chatHistory: updatedChatHistory,
-		sentEmails: finalToolCallResponse.sentEmails,
+		sentEmails,
 	};
 }
 

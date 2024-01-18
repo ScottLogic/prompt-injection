@@ -9,7 +9,6 @@ import {
 	ChatModel,
 } from '@src/models/chat';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
-import { EmailInfo } from '@src/models/email';
 import { chatGptSendMessage } from '@src/openai';
 import { systemRoleDefault } from '@src/promptTemplates';
 
@@ -60,7 +59,6 @@ describe('OpenAI Integration Tests', () => {
 		const message = 'Hello';
 		const initChatHistory: ChatHistoryMessage[] = [];
 		const defences: Defence[] = defaultDefences;
-		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
 			configuration: {
@@ -79,22 +77,12 @@ describe('OpenAI Integration Tests', () => {
 			initChatHistory,
 			defences,
 			chatModel,
-			message,
-			true,
-			sentEmails
+			message
 		);
 
-		const { chatResponse, chatHistory } = reply;
-
 		expect(reply).toBeDefined();
-		expect(chatResponse.completion).toBeDefined();
-		expect(chatResponse.completion?.content).toBe('Hi');
-		// check the chat history has been updated
-		expect(chatHistory.length).toBe(2);
-		expect(chatHistory[0].completion?.role).toBe('user');
-		expect(chatHistory[0].completion?.content).toBe('Hello');
-		expect(chatHistory[1].completion?.role).toBe('assistant');
-		expect(chatHistory[1].completion?.content).toBe('Hi');
+		expect(reply.chatResponse.completion).toBeDefined();
+		expect(reply.chatResponse.completion?.content).toBe('Hi');
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -103,7 +91,6 @@ describe('OpenAI Integration Tests', () => {
 	test('GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to chat history', async () => {
 		const message = 'Hello';
 		const initChatHistory: ChatHistoryMessage[] = [];
-		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
 			configuration: {
@@ -125,9 +112,7 @@ describe('OpenAI Integration Tests', () => {
 			initChatHistory,
 			defences,
 			chatModel,
-			message,
-			true,
-			sentEmails
+			message
 		);
 
 		const { chatResponse, chatHistory } = reply;
@@ -135,14 +120,10 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply).toBeDefined();
 		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
-		expect(chatHistory.length).toBe(3);
+		expect(chatHistory.length).toBe(1);
 		// system role is added to the start of the chat history
 		expect(chatHistory[0].completion?.role).toBe('system');
 		expect(chatHistory[0].completion?.content).toBe(systemRoleDefault);
-		expect(chatHistory[1].completion?.role).toBe('user');
-		expect(chatHistory[1].completion?.content).toBe('Hello');
-		expect(chatHistory[2].completion?.role).toBe('assistant');
-		expect(chatHistory[2].completion?.content).toBe('Hi');
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -150,7 +131,6 @@ describe('OpenAI Integration Tests', () => {
 
 	test('GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to the start of the chat history', async () => {
 		const message = 'Hello';
-		const isOriginalMessage = true;
 		const initChatHistory: ChatHistoryMessage[] = [
 			{
 				completion: {
@@ -167,7 +147,6 @@ describe('OpenAI Integration Tests', () => {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 			},
 		];
-		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
 			configuration: {
@@ -188,9 +167,7 @@ describe('OpenAI Integration Tests', () => {
 			initChatHistory,
 			defences,
 			chatModel,
-			message,
-			isOriginalMessage,
-			sentEmails
+			message
 		);
 
 		const { chatResponse, chatHistory } = reply;
@@ -198,7 +175,7 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply).toBeDefined();
 		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
-		expect(chatHistory.length).toBe(5);
+		expect(chatHistory.length).toBe(3);
 		// system role is added to the start of the chat history
 		expect(chatHistory[0].completion?.role).toBe('system');
 		expect(chatHistory[0].completion?.content).toBe(systemRoleDefault);
@@ -207,10 +184,6 @@ describe('OpenAI Integration Tests', () => {
 		expect(chatHistory[1].completion?.content).toBe("I'm a user");
 		expect(chatHistory[2].completion?.role).toBe('assistant');
 		expect(chatHistory[2].completion?.content).toBe("I'm an assistant");
-		expect(chatHistory[3].completion?.role).toBe('user');
-		expect(chatHistory[3].completion?.content).toBe('Hello');
-		expect(chatHistory[4].completion?.role).toBe('assistant');
-		expect(chatHistory[4].completion?.content).toBe('Hi');
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -242,7 +215,6 @@ describe('OpenAI Integration Tests', () => {
 			},
 		];
 		const defences: Defence[] = defaultDefences;
-		const sentEmails: EmailInfo[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
 			configuration: {
@@ -261,9 +233,7 @@ describe('OpenAI Integration Tests', () => {
 			initChatHistory,
 			defences,
 			chatModel,
-			message,
-			true,
-			sentEmails
+			message
 		);
 
 		const { chatResponse, chatHistory } = reply;
@@ -271,17 +241,13 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply).toBeDefined();
 		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
-		expect(chatHistory.length).toBe(4);
+		expect(chatHistory.length).toBe(2);
 		// system role is removed from the start of the chat history
 		// rest of the chat history is in order
 		expect(chatHistory[0].completion?.role).toBe('user');
 		expect(chatHistory[0].completion?.content).toBe("I'm a user");
 		expect(chatHistory[1].completion?.role).toBe('assistant');
 		expect(chatHistory[1].completion?.content).toBe("I'm an assistant");
-		expect(chatHistory[2].completion?.role).toBe('user');
-		expect(chatHistory[2].completion?.content).toBe('Hello');
-		expect(chatHistory[3].completion?.role).toBe('assistant');
-		expect(chatHistory[3].completion?.content).toBe('Hi');
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -315,7 +281,6 @@ describe('OpenAI Integration Tests', () => {
 					chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 				},
 			];
-			const sentEmails: EmailInfo[] = [];
 			const chatModel: ChatModel = {
 				id: CHAT_MODELS.GPT_4,
 				configuration: {
@@ -347,17 +312,13 @@ describe('OpenAI Integration Tests', () => {
 				initChatHistory,
 				defences,
 				chatModel,
-				message,
-				true,
-				sentEmails
+				message
 			);
 
 			const { chatResponse, chatHistory } = reply;
 
 			expect(reply).toBeDefined();
 			expect(chatResponse.completion?.content).toBe('Hi');
-			// check the chat history has been updated
-			expect(chatHistory.length).toBe(5);
 			// system role is added to the start of the chat history
 			expect(chatHistory[0].completion?.role).toBe('system');
 			expect(chatHistory[0].completion?.content).toBe(
@@ -368,10 +329,6 @@ describe('OpenAI Integration Tests', () => {
 			expect(chatHistory[1].completion?.content).toBe("I'm a user");
 			expect(chatHistory[2].completion?.role).toBe('assistant');
 			expect(chatHistory[2].completion?.content).toBe("I'm an assistant");
-			expect(chatHistory[3].completion?.role).toBe('user');
-			expect(chatHistory[3].completion?.content).toBe('Hello');
-			expect(chatHistory[4].completion?.role).toBe('assistant');
-			expect(chatHistory[4].completion?.content).toBe('Hi');
 
 			// restore the mock
 			mockCreateChatCompletion.mockRestore();
