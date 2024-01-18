@@ -1,6 +1,5 @@
 import { Slider } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { AiOutlineInfoCircle } from 'react-icons/ai';
 
 import { CustomChatModelConfiguration } from '@src/models/chat';
 import { configureGptModel } from '@src/service/chatService';
@@ -32,16 +31,16 @@ function ModelConfigurationSlider({
 	return (
 		<fieldset className="model-config-slider-fieldset">
 			<legend>{config.name}</legend>
-			<button
+			<details
 				className="info-icon prompt-injection-min-button"
 				title="more info"
 				aria-label="more info"
-				onClick={() => {
+				onToggle={() => {
 					toggleInfo();
 				}}
 			>
-				<AiOutlineInfoCircle aria-hidden />
-			</button>
+				<summary className="info-model-slider">Details</summary>
+			</details>
 			{showInfo && <div className="info-text">{config.info}</div>}
 			<div className="config-slider">
 				<Slider
@@ -54,7 +53,7 @@ function ModelConfigurationSlider({
 					value={value}
 					onChange={(event, value) => void handleValueChange(event, value)}
 					sx={{
-						color: '#1fd07b',
+						color: '#2bb3bb',
 					}}
 				/>
 			</div>
