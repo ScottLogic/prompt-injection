@@ -86,7 +86,7 @@ function DefenceMechanism({
 							checked={defenceDetail.isActive}
 						/>
 						<label htmlFor={defenceDetail.id}>
-							{defenceDetail.isActive ? 'on' : 'off'}
+							{defenceDetail.isActive ? 'On' : 'Off'}
 						</label>
 					</div>
 				</form>
@@ -130,11 +130,11 @@ function DefenceMechanism({
 					{showConfiguredText &&
 						(configValidated ? (
 							<p className="validation-text">
-								<TiTick /> defence successfully configured
+								<TiTick /> Defence successfully configured
 							</p>
 						) : (
 							<p className="validation-text">
-								<TiTimes /> invalid input - configuration failed
+								<TiTimes /> Invalid input - Configuration failed
 							</p>
 						))}
 				</div>

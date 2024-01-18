@@ -91,13 +91,13 @@ const ALL_DEFENCES: Defence[] = [
 		DEFENCE_ID.SYSTEM_ROLE,
 		'System Role',
 		'Tell the chat bot to follow a specific role.',
-		[makeDefenceConfigItem('SYSTEM_ROLE', 'System role', 'text')]
+		[makeDefenceConfigItem('SYSTEM_ROLE', 'system role', 'text')]
 	),
 	makeDefence(
 		DEFENCE_ID.QA_LLM,
 		'Q/A LLM',
 		'Currently the chatbot speaks to a separate Question/Answering LLM to retrieve information on documents. The QA LLM will reveal all information to the chatbot, who will then decide whether to reveal to the user. This defence adds an instructional prompt to the QA LLM to not reveal certain sensitive information to the chatbot.',
-		[makeDefenceConfigItem('PROMPT', 'Prompt', 'text')]
+		[makeDefenceConfigItem('PROMPT', 'prompt', 'text')]
 	),
 ];
 
