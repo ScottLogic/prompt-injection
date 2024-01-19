@@ -78,8 +78,7 @@ function createNewUserMessages(
 	}
 }
 
-// handle the chat logic for level 1 and 2 with no defences applied
-async function handleLowLevelChat(
+async function handleChatWithoutDefenceDetection(
 	message: string,
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
@@ -114,8 +113,7 @@ async function handleLowLevelChat(
 	};
 }
 
-// handle the chat logic for high levels (with defence detection)
-async function handleHigherLevelChat(
+async function handleChatWithDefenceDetection(
 	message: string,
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
@@ -245,7 +243,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	try {
 		// skip defence detection / blocking for levels 1 and 2 - sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
-			levelResult = await handleLowLevelChat(
+			levelResult = await handleChatWithoutDefenceDetection(
 				message,
 				initChatResponse,
 				currentLevel,
@@ -255,7 +253,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			);
 		} else {
 			// apply the defence detection for level 3 and sandbox
-			levelResult = await handleHigherLevelChat(
+			levelResult = await handleChatWithDefenceDetection(
 				message,
 				initChatResponse,
 				currentLevel,
