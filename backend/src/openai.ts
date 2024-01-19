@@ -225,8 +225,7 @@ async function chatGptCallFunction(
 			if (emailFunctionOutput.sentEmails) {
 				sentEmails.push(...emailFunctionOutput.sentEmails);
 			}
-		}
-		if (functionName === 'askQuestion') {
+		} else if (functionName === 'askQuestion') {
 			const askQuestionFunctionOutput = await handleAskQuestionFunction(
 				functionCall.arguments,
 				currentLevel,
