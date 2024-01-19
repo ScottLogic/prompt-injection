@@ -30,7 +30,7 @@ import { handleChatError } from './handleError';
 function combineChatDefenceReports(
 	reports: ChatDefenceReport[]
 ): ChatDefenceReport {
-	const combinedReport: ChatDefenceReport = {
+	return {
 		blockedReason: reports
 			.filter((report) => report.blockedReason !== null)
 			.map((report) => report.blockedReason)
@@ -39,7 +39,6 @@ function combineChatDefenceReports(
 		alertedDefences: reports.flatMap((report) => report.alertedDefences),
 		triggeredDefences: reports.flatMap((report) => report.triggeredDefences),
 	};
-	return combinedReport;
 }
 
 function createNewUserMessages(
