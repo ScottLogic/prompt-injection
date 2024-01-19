@@ -15,7 +15,6 @@ import { LEVEL_NAMES } from '@src/models/level';
 import ExportChatBox from './ExportChatBox';
 import ExportEmailBox from './ExportEmailBox';
 
-
 /*
 Chinese and Japanese font support: currently we're using a Combined font pack,
 but these two font packs are huge so they're kept separate. Only register one

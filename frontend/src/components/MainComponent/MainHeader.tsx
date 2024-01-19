@@ -31,9 +31,7 @@ function MainHeader({
 			<span className="main-header-left">
 				<img
 					className="title-logo"
-					src={
-						isLevelComplete ? SpyLogicLogoAffirmative : SpyLogicLogo
-					}
+					src={isLevelComplete ? SpyLogicLogoAffirmative : SpyLogicLogo}
 					alt="Spy Logic"
 				/>
 				<h1 className="visually-hidden">Spy Logic</h1>
