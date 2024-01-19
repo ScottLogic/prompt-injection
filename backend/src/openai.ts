@@ -385,7 +385,7 @@ async function performToolCalls(
 				toolCall.function,
 				currentLevel
 			);
-			// return after getting function reply. may change when we support other tool types
+			// return after getting function reply. may change when we support other tool types. We assume only one function call in toolCalls
 			return {
 				functionCallReply,
 				chatHistory: pushMessageToHistory(chatHistory, {
