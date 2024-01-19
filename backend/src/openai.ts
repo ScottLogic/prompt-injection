@@ -416,7 +416,7 @@ async function getFinalReplyAfterAllToolCalls(
 
 	do {
 		gptReply = await chatGptChatCompletion(
-			[...updatedChatHistory],
+			updatedChatHistory,
 			defences,
 			chatModel,
 			openai,
