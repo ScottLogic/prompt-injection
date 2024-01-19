@@ -117,7 +117,6 @@ interface ChatHttpResponse {
 interface LevelHandlerResponse {
 	chatResponse: ChatHttpResponse;
 	chatHistory: ChatHistoryMessage[];
-	sentEmails: EmailInfo[];
 }
 
 interface ChatHistoryMessage {

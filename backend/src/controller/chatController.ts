@@ -110,7 +110,6 @@ async function handleChatWithoutDefenceDetection(
 	return {
 		chatResponse: updatedChatResponse,
 		chatHistory: openAiReply.chatHistory,
-		sentEmails: openAiReply.sentEmails,
 	};
 }
 
@@ -180,11 +179,11 @@ async function handleChatWithDefenceDetection(
 		transformedMessage: transformedMessage ?? undefined,
 		wonLevel:
 			openAiReply.chatResponse.wonLevel && !combinedDefenceReport.isBlocked,
+		sentEmails: combinedDefenceReport.isBlocked ? [] : openAiReply.sentEmails,
 	};
 	return {
 		chatResponse: updatedChatResponse,
 		chatHistory: updatedChatHistory,
-		sentEmails: combinedDefenceReport.isBlocked ? [] : openAiReply.sentEmails,
 	};
 }
 
@@ -273,7 +272,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	}
 
 	let updatedChatHistory = levelResult.chatHistory;
-	totalSentEmails.push(...levelResult.sentEmails);
+	totalSentEmails.push(...levelResult.chatResponse.sentEmails);
 
 	// update chat response
 	const updatedChatResponse: ChatHttpResponse = {
@@ -281,7 +280,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		reply: levelResult.chatResponse.reply,
 		wonLevel: levelResult.chatResponse.wonLevel,
 		openAIErrorMessage: levelResult.chatResponse.openAIErrorMessage,
-		sentEmails: levelResult.sentEmails,
+		sentEmails: levelResult.chatResponse.sentEmails,
 		defenceReport: levelResult.chatResponse.defenceReport,
 		transformedMessage: levelResult.chatResponse.transformedMessage,
 	};
