@@ -273,15 +273,9 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	let updatedChatHistory = levelResult.chatHistory;
 	totalSentEmails.push(...levelResult.chatResponse.sentEmails);
 
-	// update chat response
 	const updatedChatResponse: ChatHttpResponse = {
 		...initChatResponse,
-		reply: levelResult.chatResponse.reply,
-		wonLevel: levelResult.chatResponse.wonLevel,
-		openAIErrorMessage: levelResult.chatResponse.openAIErrorMessage,
-		sentEmails: levelResult.chatResponse.sentEmails,
-		defenceReport: levelResult.chatResponse.defenceReport,
-		transformedMessage: levelResult.chatResponse.transformedMessage,
+		...levelResult.chatResponse,
 	};
 
 	if (updatedChatResponse.defenceReport.isBlocked) {
