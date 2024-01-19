@@ -148,7 +148,7 @@ async function handleHigherLevelChat(
 		currentLevel
 	);
 
-	// run defence detection and chatGPT concurrently
+	// run input defence detection and chatGPT concurrently
 	const [inputDefenceReport, openAiReply] = await Promise.all([
 		triggeredInputDefencesPromise,
 		openAiReplyPromise,
