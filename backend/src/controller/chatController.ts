@@ -105,6 +105,7 @@ async function handleChatWithoutDefenceDetection(
 		reply: openAiReply.chatResponse.completion?.content?.toString() ?? '',
 		wonLevel: openAiReply.chatResponse.wonLevel,
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
+		sentEmails: openAiReply.sentEmails,
 	};
 	return {
 		chatResponse: updatedChatResponse,
@@ -241,7 +242,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 
 	let levelResult = null;
 	try {
-		// skip defence detection / blocking for levels 1 and 2 - sets chatResponse obj
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
 			levelResult = await handleChatWithoutDefenceDetection(
 				message,
@@ -252,7 +252,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				defences
 			);
 		} else {
-			// apply the defence detection for level 3 and sandbox
 			levelResult = await handleChatWithDefenceDetection(
 				message,
 				initChatResponse,
