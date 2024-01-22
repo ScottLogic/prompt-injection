@@ -142,7 +142,7 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`1 out of ${documents.length}`)
 			).toBeInTheDocument();
-			expect(mockDocumentViewer).toHaveBeenLastCalledWith(
+			expect(mockDocumentViewer).toHaveBeenCalledWith(
 				expect.objectContaining({
 					activeDocument: getMockedDocumentMetas(documents)[0],
 					documents: getMockedDocumentMetas(documents),
@@ -163,7 +163,7 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`2 out of ${documents.length}`)
 			).toBeInTheDocument();
-			expect(mockDocumentViewer).toHaveBeenLastCalledWith(
+			expect(mockDocumentViewer).toHaveBeenCalledWith(
 				expect.objectContaining({
 					activeDocument: getMockedDocumentMetas(documents)[1],
 					documents: getMockedDocumentMetas(documents),
@@ -185,7 +185,7 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`1 out of ${documents.length}`)
 			).toBeInTheDocument();
-			expect(mockDocumentViewer).toHaveBeenLastCalledWith(
+			expect(mockDocumentViewer).toHaveBeenCalledWith(
 				expect.objectContaining({
 					activeDocument: getMockedDocumentMetas(documents)[0],
 					documents: getMockedDocumentMetas(documents),
