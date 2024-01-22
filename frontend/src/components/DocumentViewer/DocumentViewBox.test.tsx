@@ -69,13 +69,15 @@ describe('DocumentViewBox component tests', () => {
 		global.fetch = realFetch;
 	});
 
+	function getMockedDocumentMetas(documents: MockDocument[]) {
+		return documents.map((doc) => ({
+			filename: doc.filename,
+			uri: `${URI}/${doc.filename}`,
+		}));
+	}
+
 	function setupMocks(documents: MockDocument[]) {
-		mockGetDocumentMetas.mockResolvedValue(
-			documents.map((doc) => ({
-				filename: doc.filename,
-				uri: `${URI}/${doc.filename}`,
-			}))
-		);
+		mockGetDocumentMetas.mockResolvedValue(getMockedDocumentMetas(documents));
 		mockGlobalFetch.mockImplementation(
 			(uri: string, { method }: RequestInit) => {
 				if (uri.startsWith(URI)) {
@@ -140,7 +142,16 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`1 out of ${documents.length}`)
 			).toBeInTheDocument();
-			expect(await screen.findByText(documents[0].content)).toBeInTheDocument();
+			expect(mockDocumentViewer).toHaveBeenLastCalledWith({
+				activeDocument: getMockedDocumentMetas(documents)[0],
+				config: {
+					header: {
+						disableHeader: true,
+					},
+				},
+				pluginRenderers: vi.fn(),
+				documents: getMockedDocumentMetas(documents),
+			});
 		});
 
 		test('WHEN the next button is clicked THEN the next document is shown', async () => {
@@ -156,10 +167,16 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`2 out of ${documents.length}`)
 			).toBeInTheDocument();
-			/* This is sporadically, non_deterministically failing! See #658 for details
-			expect(
-				await screen.findByText(documents[1].content)
-			).toBeInTheDocument();*/
+			expect(mockDocumentViewer).toHaveBeenLastCalledWith({
+				activeDocument: getMockedDocumentMetas(documents)[1],
+				config: {
+					header: {
+						disableHeader: true,
+					},
+				},
+				pluginRenderers: vi.fn(),
+				documents: getMockedDocumentMetas(documents),
+			});
 		});
 
 		test('WHEN the previous button is clicked THEN the previous document is shown', async () => {
@@ -176,10 +193,16 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`1 out of ${documents.length}`)
 			).toBeInTheDocument();
-			/* This is sporadically, non_deterministically failing! See #658 for details
-			expect(
-				await screen.findByText(documents[0].content)
-			).toBeInTheDocument()*/
+			expect(mockDocumentViewer).toHaveBeenLastCalledWith({
+				activeDocument: getMockedDocumentMetas(documents)[0],
+				config: {
+					header: {
+						disableHeader: true,
+					},
+				},
+				pluginRenderers: vi.fn(),
+				documents: getMockedDocumentMetas(documents),
+			});
 		});
 
 		test('GIVEN the first document is shown THEN previous button is disabled', async () => {
