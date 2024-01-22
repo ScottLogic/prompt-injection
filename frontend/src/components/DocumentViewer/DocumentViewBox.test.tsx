@@ -1,3 +1,4 @@
+import { DocViewerProps } from '@cyntler/react-doc-viewer/dist/esm/DocViewer';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
@@ -18,7 +19,7 @@ interface MockDocument {
 	content: string;
 }
 
-describe.skip('DocumentViewBox component tests', () => {
+describe('DocumentViewBox component tests', () => {
 	const URI = 'localhost:1234';
 	const defaultDocuments: MockDocument[] = [
 		{
@@ -43,6 +44,15 @@ describe.skip('DocumentViewBox component tests', () => {
 	}));
 	vi.mock('@src/service/documentService', () => ({
 		getDocumentMetas: mockGetDocumentMetas,
+	}));
+
+	const mockDocumentViewer = vi.hoisted(() => vi.fn());
+	vi.mock('@cyntler/react-doc-viewer', () => ({
+		default: (props: DocViewerProps) => {
+			mockDocumentViewer(props);
+			return <div>DocumentViewer</div>;
+		},
+		DocViewerRenderers: vi.fn(),
 	}));
 
 	const realFetch = global.fetch;
