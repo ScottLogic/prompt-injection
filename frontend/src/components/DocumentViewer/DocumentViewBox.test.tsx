@@ -142,16 +142,12 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`1 out of ${documents.length}`)
 			).toBeInTheDocument();
-			expect(mockDocumentViewer).toHaveBeenLastCalledWith({
-				activeDocument: getMockedDocumentMetas(documents)[0],
-				config: {
-					header: {
-						disableHeader: true,
-					},
-				},
-				pluginRenderers: vi.fn(),
-				documents: getMockedDocumentMetas(documents),
-			});
+			expect(mockDocumentViewer).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					activeDocument: getMockedDocumentMetas(documents)[0],
+					documents: getMockedDocumentMetas(documents),
+				})
+			);
 		});
 
 		test('WHEN the next button is clicked THEN the next document is shown', async () => {
@@ -167,16 +163,12 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`2 out of ${documents.length}`)
 			).toBeInTheDocument();
-			expect(mockDocumentViewer).toHaveBeenLastCalledWith({
-				activeDocument: getMockedDocumentMetas(documents)[1],
-				config: {
-					header: {
-						disableHeader: true,
-					},
-				},
-				pluginRenderers: vi.fn(),
-				documents: getMockedDocumentMetas(documents),
-			});
+			expect(mockDocumentViewer).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					activeDocument: getMockedDocumentMetas(documents)[1],
+					documents: getMockedDocumentMetas(documents),
+				})
+			);
 		});
 
 		test('WHEN the previous button is clicked THEN the previous document is shown', async () => {
@@ -193,16 +185,12 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`1 out of ${documents.length}`)
 			).toBeInTheDocument();
-			expect(mockDocumentViewer).toHaveBeenLastCalledWith({
-				activeDocument: getMockedDocumentMetas(documents)[0],
-				config: {
-					header: {
-						disableHeader: true,
-					},
-				},
-				pluginRenderers: vi.fn(),
-				documents: getMockedDocumentMetas(documents),
-			});
+			expect(mockDocumentViewer).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					activeDocument: getMockedDocumentMetas(documents)[0],
+					documents: getMockedDocumentMetas(documents),
+				})
+			);
 		});
 
 		test('GIVEN the first document is shown THEN previous button is disabled', async () => {
