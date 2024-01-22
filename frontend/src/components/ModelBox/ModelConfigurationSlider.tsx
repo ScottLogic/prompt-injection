@@ -31,16 +31,6 @@ function ModelConfigurationSlider({
 	return (
 		<fieldset className="model-config-slider-fieldset">
 			<legend>{config.name}</legend>
-			<details
-				className="info-icon prompt-injection-min-button"
-				title="more info"
-				onToggle={() => {
-					toggleInfo();
-				}}
-			>
-				<summary className="info-model-slider">Details</summary>
-			</details>
-			{showInfo && <div className="info-text">{config.info}</div>}
 			<div className="config-slider">
 				<Slider
 					getAriaValueText={(value) => `${value}`}
@@ -55,6 +45,16 @@ function ModelConfigurationSlider({
 					}}
 				/>
 			</div>
+			<details
+				className="defence-mechanism"
+				title="more info"
+				onToggle={() => {
+					toggleInfo();
+				}}
+			>
+				<summary className="info-model-slider">Details</summary>
+			</details>
+			{showInfo && <div className="info-text">{config.info}</div>}
 		</fieldset>
 	);
 }
