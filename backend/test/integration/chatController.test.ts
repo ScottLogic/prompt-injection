@@ -3,11 +3,16 @@ import { Response } from 'express';
 
 import { handleChatToGPT } from '@src/controller/chatController';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
-import { ChatHistoryMessage, ChatModel } from '@src/models/chat';
+import {
+	CHAT_MESSAGE_TYPE,
+	ChatHistoryMessage,
+	ChatModel,
+} from '@src/models/chat';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
 import * as openaiModule from '@src/openai';
+import { systemRoleLevel1 } from '@src/promptTemplates';
 
 declare module 'express-session' {
 	interface Session {
@@ -44,7 +49,7 @@ jest.mock('openai', () => ({
 function responseMock() {
 	return {
 		send: jest.fn(),
-		status: jest.fn(),
+		status: jest.fn().mockReturnThis(),
 	} as unknown as Response;
 }
 
@@ -92,22 +97,16 @@ function chatSendEmailResponseAssistant() {
 }
 
 describe('handleChatToGPT integration tests', () => {
-	function errorResponseMock(
-		message: string,
-		{
-			transformedMessage,
-			openAIErrorMessage,
-		}: { transformedMessage?: string; openAIErrorMessage?: string }
-	) {
+	function errorResponseMock(errorMsg: string, openAIErrorMessage?: string) {
 		return {
-			reply: message,
+			reply: errorMsg,
 			defenceReport: {
-				blockedReason: message,
-				isBlocked: true,
+				blockedReason: null,
+				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
 			},
-			transformedMessage: transformedMessage ?? undefined,
+			transformedMessage: undefined,
 			wonLevel: false,
 			isError: true,
 			sentEmails: [],
@@ -154,7 +153,7 @@ describe('handleChatToGPT integration tests', () => {
 		} as OpenAiChatRequest;
 	}
 
-	test('GIVEN a valid message and level WHEN handleChatToGPT called THEN it should return a text reply', async () => {
+	test('GIVEN a valid message and level WHEN handleChatToGPT called THEN it should return a text reply AND update chat history', async () => {
 		const req = openAiChatRequestMock('Hello chatbot', LEVEL_NAMES.LEVEL_1);
 		const res = responseMock();
 
@@ -172,7 +171,7 @@ describe('handleChatToGPT integration tests', () => {
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Howdy human!',
 			defenceReport: {
-				blockedReason: '',
+				blockedReason: null,
 				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
@@ -182,9 +181,36 @@ describe('handleChatToGPT integration tests', () => {
 			sentEmails: [],
 			openAIErrorMessage: null,
 		});
+
+		const history =
+			req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
+		const expectedHistory = [
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+				completion: {
+					role: 'system',
+					content: systemRoleLevel1,
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				completion: {
+					role: 'user',
+					content: 'Hello chatbot',
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				completion: {
+					role: 'assistant',
+					content: 'Howdy human!',
+				},
+			},
+		];
+		expect(history).toEqual(expectedHistory);
 	});
 
-	test('GIVEN a user asks to send an email WHEN an email is sent THEN the sent email is returned', async () => {
+	test('GIVEN a user asks to send an email WHEN an email is sent THEN the sent email is returned AND update chat history', async () => {
 		const req = openAiChatRequestMock(
 			'send an email to bob@example.com saying hi',
 			LEVEL_NAMES.LEVEL_1
@@ -200,7 +226,7 @@ describe('handleChatToGPT integration tests', () => {
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Email sent',
 			defenceReport: {
-				blockedReason: '',
+				blockedReason: null,
 				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
@@ -210,6 +236,50 @@ describe('handleChatToGPT integration tests', () => {
 			sentEmails: [testSentEmail],
 			openAIErrorMessage: null,
 		});
+
+		const history =
+			req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
+		const expectedHistory = [
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+				completion: {
+					role: 'system',
+					content: systemRoleLevel1,
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				completion: {
+					role: 'user',
+					content: 'send an email to bob@example.com saying hi',
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+				completion: {
+					tool_calls: [
+						expect.objectContaining({ type: 'function', id: 'sendEmail' }),
+					],
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+				completion: {
+					role: 'tool',
+					content:
+						'Email sent to bob@example.com with subject Test subject and body Test body',
+					tool_call_id: 'sendEmail',
+				},
+			},
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				completion: {
+					role: 'assistant',
+					content: 'Email sent',
+				},
+			},
+		];
+		expect(history).toEqual(expectedHistory);
 	});
 
 	test('GIVEN a user asks to send an email WHEN an email is sent AND emails have already been sent THEN only the newly sent email is returned', async () => {
@@ -236,7 +306,7 @@ describe('handleChatToGPT integration tests', () => {
 		expect(res.send).toHaveBeenCalledWith({
 			reply: 'Email sent',
 			defenceReport: {
-				blockedReason: '',
+				blockedReason: null,
 				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
@@ -259,9 +329,7 @@ describe('handleChatToGPT integration tests', () => {
 
 		expect(res.status).toHaveBeenCalledWith(500);
 		expect(res.send).toHaveBeenCalledWith(
-			errorResponseMock('Failed to get ChatGPT reply.', {
-				openAIErrorMessage: 'OpenAI error',
-			})
+			errorResponseMock('Failed to get ChatGPT reply.', 'OpenAI error')
 		);
 	});
 
@@ -282,10 +350,7 @@ describe('handleChatToGPT integration tests', () => {
 		expect(res.send).toHaveBeenCalledWith(
 			errorResponseMock(
 				"I'm receiving too many requests. Please try again in 20s. You can upgrade your open AI key to increase the rate limit.",
-				{
-					openAIErrorMessage:
-						'429 OpenAI error. yada yada. Please try again in 20s. blah blah blah.',
-				}
+				'429 OpenAI error. yada yada. Please try again in 20s. blah blah blah.'
 			)
 		);
 	});

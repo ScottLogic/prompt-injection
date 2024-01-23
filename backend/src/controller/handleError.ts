@@ -7,26 +7,22 @@ function sendErrorResponse(
 	statusCode: number,
 	errorMessage: string
 ) {
-	res.status(statusCode);
-	res.send(errorMessage);
+	res.status(statusCode).send(errorMessage);
 }
 
 function handleChatError(
 	res: Response,
 	chatResponse: ChatHttpResponse,
-	blocked: boolean,
 	errorMsg: string,
 	statusCode = 500
 ) {
 	console.error(errorMsg);
-	chatResponse.reply = errorMsg;
-	chatResponse.defenceReport.isBlocked = blocked;
-	chatResponse.isError = true;
-	if (blocked) {
-		chatResponse.defenceReport.blockedReason = errorMsg;
-	}
-	res.status(statusCode);
-	res.send(chatResponse);
+	const updatedChatResponse = {
+		...chatResponse,
+		reply: errorMsg,
+		isError: true,
+	};
+	res.status(statusCode).send(updatedChatResponse);
 }
 
 export { sendErrorResponse, handleChatError };
