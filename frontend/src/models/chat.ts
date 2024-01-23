@@ -85,6 +85,7 @@ interface ChatMessageDTO {
 	completion: ChatCompletionRequestMessage | null;
 	chatMessageType: CHAT_MESSAGE_TYPE;
 	infoMessage: string | null | undefined;
+	transformedMessage?: TransformedChatMessage;
 }
 
 export type {

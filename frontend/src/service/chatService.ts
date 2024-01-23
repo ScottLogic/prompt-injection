@@ -42,6 +42,7 @@ function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
 
 	const type = chatMessageDTO.chatMessageType;
 	return {
+		transformedMessage: chatMessageDTO.transformedMessage ?? undefined,
 		message:
 			type === CHAT_MESSAGE_TYPE.USER
 				? chatMessageDTO.completion?.content ?? chatMessageDTO.infoMessage ?? ''
