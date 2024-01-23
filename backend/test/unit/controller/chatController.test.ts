@@ -23,7 +23,10 @@ import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
-import { setSystemRoleInChatHistory } from '@src/utils/chat';
+import {
+	pushMessageToHistory,
+	setSystemRoleInChatHistory,
+} from '@src/utils/chat';
 
 declare module 'express-session' {
 	interface Session {
@@ -44,17 +47,28 @@ const mockChatGptSendMessage = chatGptSendMessage as jest.MockedFunction<
 	typeof chatGptSendMessage
 >;
 
-(
+jest.mock('@src/utils/chat');
+const mockSetSystemRoleInChatHistory =
 	setSystemRoleInChatHistory as jest.MockedFunction<
 		typeof setSystemRoleInChatHistory
-	>
-).mockImplementation(
+	>;
+mockSetSystemRoleInChatHistory.mockImplementation(
 	(
 		_currentLevel: LEVEL_NAMES,
 		_defences: Defence[],
 		chatHistory: ChatHistoryMessage[]
 	) => chatHistory
 );
+const mockPushMessageToHistory = pushMessageToHistory as jest.MockedFunction<
+	typeof pushMessageToHistory
+>;
+mockPushMessageToHistory.mockImplementation(
+	(chatHistory: ChatHistoryMessage[], newMessage: ChatHistoryMessage) => [
+		...chatHistory,
+		newMessage,
+	]
+);
+// have a think about where the above two mocks should live. In a decsribe block?
 
 jest.mock('@src/defence');
 const mockDetectTriggeredDefences =

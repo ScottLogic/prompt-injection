@@ -22,8 +22,11 @@ import {
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-import { chatGptSendMessage, setSystemRoleInChatHistory } from '@src/openai';
-import { pushMessageToHistory } from '@src/utils/chat';
+import { chatGptSendMessage } from '@src/openai';
+import {
+	pushMessageToHistory,
+	setSystemRoleInChatHistory,
+} from '@src/utils/chat';
 
 import { handleChatError } from './handleError';
 
