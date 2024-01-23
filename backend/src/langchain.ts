@@ -195,12 +195,10 @@ async function queryPromptEvaluationModel(
 
 function formatEvaluationOutput(response: string) {
 	// remove all non-alphanumeric characters
-	try {
-		const cleanResponse = response.replace(/\W/g, '').toLowerCase();
+	const cleanResponse = response.replace(/\W/g, '').toLowerCase();
+	if (cleanResponse === 'yes' || cleanResponse === 'no') {
 		return { isMalicious: cleanResponse === 'yes' };
-	} catch (error) {
-		// in case the model does not respond in the format we have asked
-		console.error(error);
+	} else {
 		console.debug(
 			`Did not get a valid response from the prompt evaluation model. Original response: ${response}`
 		);
