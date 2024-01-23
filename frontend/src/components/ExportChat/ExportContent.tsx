@@ -16,12 +16,12 @@ import ExportChatBox from './ExportChatBox';
 import ExportEmailBox from './ExportEmailBox';
 
 /*
-Chinese and Japanese font support: currently we're using a Combined font pack,
-but these two font packs are huge so they're kept separate. Only register one
-font pack at a time, then set fontFamily to match in the stylesheet beneath.
+To use your own downloaded font(s) for chat export, do either of the following:
+- register a single font here, then change fontFamily in StyleSheet.create()
+- produce your own CombinedFonts.ttf containing all the fonts you need
+
+See the README in src/assets/fonts/
 */
-//Font.register({ family: 'NotoSerifJP', src: NotoSerifJP });
-//Font.register({ family: 'NotoSansSC', src: NotoSansSC });
 Font.register({ family: 'CombinedFonts', src: CombinedFonts });
 
 const styles = StyleSheet.create({

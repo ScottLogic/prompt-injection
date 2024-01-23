@@ -1,6 +1,6 @@
 # Export PDF Language Support
 
-To support multiple languages with special characters we need to register fonts and set the font-family -
+To support multiple languages with special characters we need to register fonts and set the font-family:
 see [ExportContent.tsx](../../components/ExportChat/ExportContent.tsx). You can download additional font families
 (ttf or otf) from https://fonts.google.com/noto and place in src/assets/fonts.
 
@@ -17,8 +17,9 @@ The current CombinedFont.ttf contains:
 - NotoSerifDevanagari-Regular.ttf
 - NotoSerifGurmukhi-Regular.ttf
 
-Japanese and Chinese font packs are not included in the CombinedFonts family as they are prohibitively large, so if you are
-running the application locally and wish to export chats in either of those fonts, you will need to modify the code in
+No [CJK](https://en.wikipedia.org/wiki/List_of_CJK_fonts) font packs are included in the CombinedFonts family, as they
+are rather large. If you are running the application locally and wish to export chats in a CJK font, you will need to
+download the font(s) you need, then either generate your own CombinedFonts.ttf or modify the code in
 [ExportContent.tsx](../../components/ExportChat/ExportContent.tsx) accordingly.
 
 ## License
