@@ -3,14 +3,9 @@ import {
 	ChatCompletionMessageParam,
 	ChatCompletionTool,
 	ChatCompletionMessageToolCall,
-	ChatCompletionSystemMessageParam,
 } from 'openai/resources/chat/completions';
 
-import {
-	isDefenceActive,
-	getSystemRole,
-	getQAPromptFromConfig,
-} from './defence';
+import { isDefenceActive, getQAPromptFromConfig } from './defence';
 import { sendEmail } from './email';
 import { queryDocuments } from './langchain';
 import {
@@ -248,48 +243,6 @@ async function chatGptCallFunction(
 	};
 }
 
-function setSystemRoleInChatHistory(
-	currentLevel: LEVEL_NAMES,
-	defences: Defence[],
-	chatHistory: ChatHistoryMessage[]
-) {
-	const systemRoleNeededInChatHistory =
-		currentLevel !== LEVEL_NAMES.SANDBOX ||
-		isDefenceActive(DEFENCE_ID.SYSTEM_ROLE, defences);
-
-	if (systemRoleNeededInChatHistory) {
-		const completionConfig: ChatCompletionSystemMessageParam = {
-			role: 'system',
-			content: getSystemRole(defences, currentLevel),
-		};
-
-		const existingSystemRole = chatHistory.find(
-			(message) => message.completion?.role === 'system'
-		);
-		if (!existingSystemRole) {
-			return [
-				{
-					completion: completionConfig,
-					chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
-				},
-				...chatHistory,
-			];
-		} else {
-			return chatHistory.map((message) => {
-				if (message.completion?.role === 'system') {
-					return { ...existingSystemRole, completion: completionConfig };
-				} else {
-					return message;
-				}
-			});
-		}
-	} else {
-		return chatHistory.filter(
-			(message) => message.completion?.role !== 'system'
-		);
-	}
-}
-
 async function chatGptChatCompletion(
 	chatHistory: ChatHistoryMessage[],
 	chatModel: ChatModel,
@@ -500,5 +453,4 @@ export {
 	chatGptSendMessage,
 	getOpenAIKey,
 	getValidModelsFromOpenAI,
-	setSystemRoleInChatHistory,
 };
