@@ -238,7 +238,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	];
 	const defences = [...req.session.levelState[currentLevel].defences];
 
-	let levelResult = null;
+	let levelResult: LevelHandlerResponse;
 	try {
 		if (currentLevel < LEVEL_NAMES.LEVEL_3) {
 			levelResult = await handleChatWithoutDefenceDetection(
