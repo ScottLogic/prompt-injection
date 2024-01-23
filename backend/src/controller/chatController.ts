@@ -236,17 +236,12 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			? req.session.chatModel
 			: defaultChatModel;
 
-	// TODO: rewrite this to stop the mutation
-	req.session.levelState[currentLevel].chatHistory = setSystemRoleInChatHistory(
+	const currentChatHistory = setSystemRoleInChatHistory(
 		currentLevel,
 		req.session.levelState[currentLevel].defences,
 		req.session.levelState[currentLevel].chatHistory
 	);
 
-	// record the history before chat completion called
-	const currentChatHistory = [
-		...req.session.levelState[currentLevel].chatHistory,
-	];
 	const defences = [...req.session.levelState[currentLevel].defences];
 
 	let levelResult: LevelHandlerResponse;
