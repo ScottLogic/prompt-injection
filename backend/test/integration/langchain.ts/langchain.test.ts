@@ -3,11 +3,7 @@ import { RetrievalQAChain } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { PromptTemplate } from 'langchain/prompts';
 
-import {
-	queryDocuments,
-	queryPromptEvaluationModel,
-	initDocumentVectors,
-} from '@src/langchain';
+import { queryDocuments, queryPromptEvaluationModel } from '@src/langchain';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
 	qAPrompt,
@@ -24,9 +20,6 @@ const mockPromptEvalChain = {
 };
 const mockFromLLM = jest.fn<() => typeof mockRetrievalQAChain>();
 const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
-const mockLoader = jest.fn();
-const mockSplitDocuments = jest.fn<() => Promise<unknown>>();
-const mockAsRetriever = jest.fn();
 
 // eslint-disable-next-line prefer-const
 let mockValidModels: string[] = [];
@@ -42,42 +35,6 @@ jest.mock('langchain/embeddings/openai', () => {
 	};
 });
 
-class MockMemoryVectorStore {
-	asRetriever() {
-		mockAsRetriever();
-	}
-}
-jest.mock('langchain/vectorstores/memory', () => {
-	return {
-		MemoryVectorStore: {
-			fromDocuments: jest.fn(() =>
-				Promise.resolve(new MockMemoryVectorStore())
-			),
-		},
-	};
-});
-
-// mock DirectoryLoader
-jest.mock('langchain/document_loaders/fs/directory', () => {
-	return {
-		DirectoryLoader: jest.fn().mockImplementation(() => {
-			return {
-				load: mockLoader,
-			};
-		}),
-	};
-});
-
-// mock RecursiveCharacterTextSplitter
-jest.mock('langchain/text_splitter', () => {
-	return {
-		RecursiveCharacterTextSplitter: jest.fn().mockImplementation(() => {
-			return {
-				splitDocuments: mockSplitDocuments,
-			};
-		}),
-	};
-});
 // mock PromptTemplate.fromTemplate static method
 jest.mock('langchain/prompts');
 PromptTemplate.fromTemplate = mockFromTemplate;
@@ -122,16 +79,6 @@ afterEach(() => {
 	mockRetrievalQAChain.call.mockRestore();
 	mockFromLLM.mockRestore();
 	mockFromTemplate.mockRestore();
-});
-
-test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {
-	const numberOfCalls = 4 + 1; // number of levels + common
-
-	mockSplitDocuments.mockResolvedValue([]);
-
-	await initDocumentVectors();
-	expect(mockLoader).toHaveBeenCalledTimes(numberOfCalls);
-	expect(mockSplitDocuments).toHaveBeenCalledTimes(numberOfCalls);
 });
 
 test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', async () => {
