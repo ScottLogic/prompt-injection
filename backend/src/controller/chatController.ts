@@ -17,6 +17,7 @@ import {
 	ChatHttpResponse,
 	ChatModel,
 	LevelHandlerResponse,
+	TransformedChatMessage,
 	defaultChatModel,
 } from '@src/models/chat';
 import { Defence } from '@src/models/defence';
@@ -43,9 +44,10 @@ function combineChatDefenceReports(
 
 function createNewUserMessages(
 	message: string,
-	transformedMessage: string | null
+	transformedMessage: TransformedChatMessage | null,
+	transformedMessageCombined: string | null
 ): ChatHistoryMessage[] {
-	if (transformedMessage) {
+	if (transformedMessageCombined && transformedMessage) {
 		// if message has been transformed
 		return [
 			// original message
@@ -58,9 +60,10 @@ function createNewUserMessages(
 			{
 				completion: {
 					role: 'user',
-					content: transformedMessage,
+					content: transformedMessageCombined,
 				},
 				chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+				transformedMessage,
 			},
 		];
 	} else {
@@ -85,7 +88,7 @@ async function handleChatWithoutDefenceDetection(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	const updatedChatHistory = createNewUserMessages(message, null).reduce(
+	const updatedChatHistory = createNewUserMessages(message, null, null).reduce(
 		pushMessageToHistory,
 		chatHistory
 	);
@@ -120,23 +123,21 @@ async function handleChatWithDefenceDetection(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	// transform the message according to active defences
 	const transformedMessage = transformMessage(message, defences);
 	const transformedMessageCombined = transformedMessage
 		? combineTransformedMessage(transformedMessage)
 		: null;
 	const chatHistoryWithNewUserMessages = createNewUserMessages(
 		message,
+		transformedMessage,
 		transformedMessageCombined ?? null
 	).reduce(pushMessageToHistory, chatHistory);
 
-	// detect defences on input message
 	const triggeredInputDefencesPromise = detectTriggeredInputDefences(
 		message,
 		defences
 	);
 
-	// get the chatGPT reply
 	const openAiReplyPromise = chatGptSendMessage(
 		chatHistoryWithNewUserMessages,
 		defences,
