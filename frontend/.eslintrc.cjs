@@ -33,8 +33,6 @@ module.exports = {
 	},
 	plugins: ['react-refresh', 'jsx-a11y', 'jest-dom'],
 	rules: {
-		'@typescript-eslint/init-declarations': 'error',
-
 		eqeqeq: 'error',
 		'func-style': ['error', 'declaration'],
 		'object-shorthand': 'error',
