@@ -21,7 +21,7 @@ module.exports = {
 	parserOptions: {
 		project: ['./tsconfig.json', './test/tsconfig.json'],
 	},
-	plugins: ['@typescript-eslint'],
+	plugins: ['@typescript-eslint', 'jest'],
 	ignorePatterns: ['build', 'coverage', 'node_modules'],
 	rules: {
 		eqeqeq: 'error',
@@ -35,7 +35,6 @@ module.exports = {
 		],
 		'prefer-template': 'error',
 
-		'@typescript-eslint/init-declarations': 'error',
 		'@typescript-eslint/no-misused-promises': [
 			'error',
 			{
@@ -67,4 +66,14 @@ module.exports = {
 		'@typescript-eslint/consistent-type-definitions': 0, // disable rule. Eventually use below rule to enforce type over interface
 		// '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
 	},
+	overrides: [
+		{
+			files: ['*.test.ts'],
+			plugins: ['jest'],
+			rules: {
+				'@typescript-eslint/unbound-method': 'off',
+				'jest/unbound-method': 'error',
+			},
+		},
+	],
 };

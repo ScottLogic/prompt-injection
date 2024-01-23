@@ -17,6 +17,7 @@
 	--main-text-colour-inverted: #000;
 	--main-text-accent-colour: #73d1d6;
 	--error-colour: #c41565;
+	--error-background-colour: #faebf2;
 
 	/* scrollbar */
 	--main-scrollbar-colour: #444;
@@ -25,6 +26,7 @@
 
 	/* action buttons */
 	--action-button-background-colour: var(--accent-background-colour);
+	--action-button-background-colour-hover: #11484b;
 	--action-button-text-colour: var(--main-text-colour);
 	--action-button-disabled-background-colour: #888;
 	--action-button-disabled-text-colour: #111;
@@ -35,10 +37,12 @@
 	--level-button-border-colour: var(--accent-border-colour);
 	--level-button-border-colour-disabled: #aaaaaa80;
 	--level-button-background-colour-selected: var(--accent-background-colour);
+	--level-button-background-colour-hover: #11484b;
 
 	/* level banner */
 	--level-banner-border-colour: #bbb;
 	--level-banner-background-colour: #ddd;
+	--level-banner-background-colour-hover: #fff;
 	--level-banner-text-colour: #444;
 
 	/* main input */
@@ -88,8 +92,8 @@
 	--chat-bot-text-colour: var(--main-text-colour-inverted);
 	--chat-user-background-colour: #008484;
 	--chat-user-border-colour: #198b92;
-	--chat-blocked-background-colour: #faebf2;
-	--chat-blocked-border-colour: #c41565;
+	--chat-blocked-background-colour: var(--error-background-colour);
+	--chat-blocked-border-colour: var(--error-colour);
 	--chat-transformed-background-colour: #fff;
 	--chat-transformed-border-colour: #999;
 	--chat-transformed-text-colour: var(--chat-info-text-colour);
@@ -100,6 +104,7 @@
 	--chat-alerted-text-colour: teal;
 	--chat-triggered-text-colour: var(--error-colour);
 	--chat-button-background-colour: #eee;
+	--chat-button-background-colour-hover: #dedede;
 	--chat-button-border-colour: #ccc;
 	--chat-button-text-colour: #444;
 

@@ -1,8 +1,9 @@
+import { describe, expect, test } from '@jest/globals';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 import { filterChatHistoryByMaxTokens } from '@src/utils/token';
 
-describe('token unit tests', () => {
+describe('token utils unit tests', () => {
 	// model will be set up with function definitions so will contribute to maxTokens
 	const FUNCTION_DEF_TOKENS = 120;
 

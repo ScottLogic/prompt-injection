@@ -1,4 +1,7 @@
-import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
+import {
+	ChatCompletionMessage,
+	ChatCompletionMessageParam,
+} from 'openai/resources/chat/completions';
 
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
@@ -60,6 +63,18 @@ interface SingleDefenceReport {
 	status: 'alerted' | 'triggered' | 'ok';
 }
 
+interface FunctionCallResponse {
+	completion: ChatCompletionMessageParam;
+	wonLevel: boolean;
+	sentEmails: EmailInfo[];
+}
+
+interface ToolCallResponse {
+	functionCallReply?: FunctionCallResponse;
+	chatResponse?: ChatResponse;
+	chatHistory: ChatHistoryMessage[];
+}
+
 interface ChatAnswer {
 	reply: string;
 	questionAnswered: boolean;
@@ -72,8 +87,13 @@ interface ChatMalicious {
 
 interface ChatResponse {
 	completion: ChatCompletionMessageParam | null;
-	defenceReport: ChatDefenceReport;
 	wonLevel: boolean;
+	openAIErrorMessage: string | null;
+}
+
+interface ChatGptReply {
+	chatHistory: ChatHistoryMessage[];
+	completion: ChatCompletionMessage | null;
 	openAIErrorMessage: string | null;
 }
 
@@ -94,10 +114,14 @@ interface ChatHttpResponse {
 	sentEmails: EmailInfo[];
 }
 
+interface LevelHandlerResponse {
+	chatResponse: ChatHttpResponse;
+	chatHistory: ChatHistoryMessage[];
+}
+
 interface ChatHistoryMessage {
 	completion: ChatCompletionMessageParam | null;
 	chatMessageType: CHAT_MESSAGE_TYPE;
-	numTokens?: number | null;
 	infoMessage?: string | null;
 	transformedMessage?: TransformedChatMessage;
 }
@@ -116,11 +140,15 @@ const defaultChatModel: ChatModel = {
 export type {
 	ChatAnswer,
 	ChatDefenceReport,
+	ChatGptReply,
 	ChatMalicious,
 	ChatResponse,
+	LevelHandlerResponse,
 	ChatHttpResponse,
 	ChatHistoryMessage,
 	TransformedChatMessage,
+	FunctionCallResponse,
+	ToolCallResponse,
 };
 export {
 	CHAT_MODELS,

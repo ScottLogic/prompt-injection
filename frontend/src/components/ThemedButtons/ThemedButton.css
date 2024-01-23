@@ -22,6 +22,7 @@
 
 .themed-button.disabled {
 	background-color: var(--action-button-disabled-background-colour);
+	border-color: var(--action-button-disabled-background-colour);
 	color: var(--action-button-disabled-text-colour);
 }
 
@@ -55,4 +56,8 @@
 .themed-button:hover + .themed-button-tooltip.show,
 .themed-button:focus + .themed-button-tooltip.show {
 	display: block;
+}
+
+.themed-button[aria-disabled='false']:hover {
+	background-color: var(--action-button-background-colour-hover);
 }

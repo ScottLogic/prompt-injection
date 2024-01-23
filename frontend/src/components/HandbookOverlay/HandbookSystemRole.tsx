@@ -20,19 +20,27 @@ function HandbookSystemRole({
 			</header>
 
 			<dl className="handbook-terms">
-				{systemRoles.map(({ level, systemRole }) => (
-					<div className="term" key={level}>
-						<dt>{`Level ${level + 1} System Role`}</dt>
-						{level >= numCompletedLevels ? (
-							<dd className="role-locked">
-								{`You must complete level ${level + 1} to unlock the system role
+				{systemRoles.length !== 0 ? (
+					systemRoles.map(({ level, systemRole }) => (
+						<div className="term" key={level}>
+							<dt>{`Level ${level + 1} System Role`}</dt>
+							{level >= numCompletedLevels ? (
+								<dd className="role-locked">
+									{`You must complete level ${
+										level + 1
+									} to unlock the system role
                   description`}
-							</dd>
-						) : (
-							<dd> {systemRole} </dd>
-						)}
+								</dd>
+							) : (
+								<dd> {systemRole} </dd>
+							)}
+						</div>
+					))
+				) : (
+					<div className="system-role-error-message">
+						Unable to fetch system role information. Try again in a few minutes.
 					</div>
-				))}
+				)}
 			</dl>
 		</article>
 	);
