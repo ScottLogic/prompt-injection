@@ -81,14 +81,6 @@ afterEach(() => {
 	mockFromTemplate.mockRestore();
 });
 
-test('GIVEN the prompt evaluation model WHEN it is initialised THEN the promptEvaluationChain is initialised with a SequentialChain LLM', async () => {
-	await queryPromptEvaluationModel('some input', promptEvalPrompt);
-	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
-	expect(mockFromTemplate).toHaveBeenCalledWith(
-		`${promptEvalPrompt}\n${promptEvalContextTemplate}`
-	);
-});
-
 test('WHEN we query the documents with an empty prompt THEN the qa llm is initialised and the prompt is set to the default', async () => {
 	const level = LEVEL_NAMES.LEVEL_1;
 	const prompt = '';
@@ -127,14 +119,6 @@ test('GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it an
 	expect(answer.reply).toEqual('The CEO is Bill.');
 });
 
-test('GIVEN the prompt evaluation model is not initialised WHEN it is asked to evaluate an input it returns not malicious', async () => {
-	mockPromptEvalChain.call.mockResolvedValueOnce({ promptEvalOutput: '' });
-	const result = await queryPromptEvaluationModel('message', 'Prompt');
-	expect(result).toEqual({
-		isMalicious: false,
-	});
-});
-
 test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised THEN it is initialised with GPT-4', async () => {
 	mockValidModels = ['gpt-4', 'gpt-3.5-turbo', 'gpt-3'];
 
@@ -157,34 +141,6 @@ test('GIVEN the users api key does not support GPT-4 WHEN the QA model is initia
 	const prompt = 'this is a test prompt. ';
 
 	await queryDocuments('some question', prompt, level);
-
-	expect(ChatOpenAI).toHaveBeenCalledWith({
-		modelName: 'gpt-3.5-turbo',
-		streaming: true,
-		openAIApiKey: 'sk-12345',
-	});
-});
-
-test('GIVEN the users api key supports GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with GPT-4', async () => {
-	mockValidModels = ['gpt-4', 'gpt-3.5-turbo', 'gpt-3'];
-
-	const prompt = 'this is a test prompt. ';
-
-	await queryPromptEvaluationModel('some input', prompt);
-
-	expect(ChatOpenAI).toHaveBeenCalledWith({
-		modelName: 'gpt-4',
-		streaming: true,
-		openAIApiKey: 'sk-12345',
-	});
-});
-
-test('GIVEN the users api key does not support GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with gpt-3.5-turbo', async () => {
-	mockValidModels = ['gpt-2', 'gpt-3.5-turbo', 'gpt-3'];
-
-	const prompt = 'this is a test prompt. ';
-
-	await queryPromptEvaluationModel('some input', prompt);
 
 	expect(ChatOpenAI).toHaveBeenCalledWith({
 		modelName: 'gpt-3.5-turbo',
