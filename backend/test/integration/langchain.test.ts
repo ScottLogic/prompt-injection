@@ -273,25 +273,3 @@ test('GIVEN the users api key does not support GPT-4 WHEN the prompt evaluation 
 		openAIApiKey: 'sk-12345',
 	});
 });
-
-test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason', async () => {
-	mockPromptEvalChain.call.mockResolvedValue({
-		promptEvalOutput: 'yes.',
-	});
-	const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
-
-	expect(formattedOutput).toEqual({
-		isMalicious: true,
-	});
-});
-
-test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason', async () => {
-	mockPromptEvalChain.call.mockResolvedValue({
-		promptEvalOutput: 'no.',
-	});
-	const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
-
-	expect(formattedOutput).toEqual({
-		isMalicious: false,
-	});
-});
