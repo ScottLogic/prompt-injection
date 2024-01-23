@@ -25,7 +25,16 @@
 	border-radius: 0.25rem;
 }
 
+.model-config-slider-fieldset details[open] summary {
+	border-style: inset;
+}
+
+.model-config-slider-fieldset details[open] .info-text {
+	display: block;
+}
+
 .model-config-slider-fieldset .info-text {
+	display: none;
 	padding: 0.5rem;
 	font-size: 0.875rem;
 }

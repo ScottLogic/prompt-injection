@@ -12,16 +12,11 @@ function ModelConfigurationSlider({
 	config: CustomChatModelConfiguration;
 }) {
 	const [value, setValue] = useState<number>(config.value);
-	const [showInfo, setShowInfo] = useState<boolean>(false);
 
 	async function handleValueChange(_: Event, value: number | number[]) {
 		const val = Array.isArray(value) ? value[0] : value;
 		setValue(val);
 		await configureGptModel(config.id, val);
-	}
-
-	function toggleInfo() {
-		setShowInfo(!showInfo);
 	}
 
 	useEffect(() => {
@@ -45,16 +40,10 @@ function ModelConfigurationSlider({
 					}}
 				/>
 			</div>
-			<details
-				className="defence-mechanism"
-				title="more info"
-				onToggle={() => {
-					toggleInfo();
-				}}
-			>
-				<summary className="info-model-slider">Details</summary>
+			<details title="more info">
+				<summary>Details</summary>
+				<div className="info-text">{config.info}</div>
 			</details>
-			{showInfo && <div className="info-text">{config.info}</div>}
 		</fieldset>
 	);
 }
