@@ -22,7 +22,8 @@ import {
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
-import { chatGptSendMessage, setSystemRoleInChatHistory } from '@src/openai';
+import { chatGptSendMessage } from '@src/openai';
+import { setSystemRoleInChatHistory } from '@src/utils/chat';
 
 declare module 'express-session' {
 	interface Session {
