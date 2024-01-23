@@ -18,25 +18,25 @@
 }
 
 .model-config-slider-fieldset details > summary {
-	list-style: none;
 	width: fit-content;
 	padding: 0.5rem;
 	border: 0.125rem outset var(--control-config-border);
 	border-radius: 0.25rem;
+	list-style: none;
 }
 
 .model-config-slider-fieldset details[open] summary {
 	border-style: inset;
 }
 
-.model-config-slider-fieldset details[open] .info-text {
-	display: block;
-}
-
 .model-config-slider-fieldset .info-text {
 	display: none;
 	padding: 0.5rem;
 	font-size: 0.875rem;
+}
+
+.model-config-slider-fieldset details[open] .info-text {
+	display: block;
 }
 
 .model-config-slider-fieldset .config-slider {
