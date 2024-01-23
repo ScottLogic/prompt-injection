@@ -26,7 +26,7 @@ RetrievalQAChain.fromLLM =
 	mockFromLLM as unknown as typeof RetrievalQAChain.fromLLM;
 
 describe('queryPromptEvaluationModel output formatter (formatEvaluationOutput)', () => {
-	test('GIVEN prompt evaluation llm responds with a correctly formatted yes decision WHEN we query the llm THEN we get an answer in the correct format', async () => {
+	test('GIVEN prompt evaluation llm responds with a correctly formatted yes decision WHEN we query the llm THEN answers with is malicious', async () => {
 		mockPromptEvalChain.call.mockResolvedValue({
 			promptEvalOutput: 'yes.',
 		});
@@ -37,7 +37,7 @@ describe('queryPromptEvaluationModel output formatter (formatEvaluationOutput)',
 		});
 	});
 
-	test('GIVEN prompt evaluation llm responds with a correctly formatted no decision WHEN we query the llm THEN we get an answer in the correct format', async () => {
+	test('GIVEN prompt evaluation llm responds with a correctly formatted no decision WHEN we query the llm THEN answers with is not malicious', async () => {
 		mockPromptEvalChain.call.mockResolvedValue({
 			promptEvalOutput: 'no.',
 		});
@@ -46,5 +46,20 @@ describe('queryPromptEvaluationModel output formatter (formatEvaluationOutput)',
 		expect(formattedOutput).toEqual({
 			isMalicious: false,
 		});
+	});
+
+	test('GIVEN prompt evaluation llm responds with an incorrectly formatted decision WHEN we query the llm THEN answers with is not malicious and logs debug message', async () => {
+		const logSpy = jest.spyOn(console, 'debug');
+
+		mockPromptEvalChain.call.mockResolvedValue({
+			promptEvalOutput: 'Sure is!',
+		});
+		const formattedOutput = await queryPromptEvaluationModel('input', 'prompt');
+
+		expect(formattedOutput).toEqual({
+			isMalicious: false,
+		});
+		expect(logSpy).toHaveBeenCalled();
+		logSpy.mockRestore();
 	});
 });
