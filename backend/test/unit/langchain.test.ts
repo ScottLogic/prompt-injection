@@ -26,7 +26,7 @@ RetrievalQAChain.fromLLM =
 	mockFromLLM as unknown as typeof RetrievalQAChain.fromLLM;
 
 describe('queryPromptEvaluationModel output formatter (formatEvaluationOutput)', () => {
-	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns true and reason', async () => {
+	test('GIVEN prompt evaluation llm responds with a correctly formatted yes decision WHEN we query the llm THEN we get an answer in the correct format', async () => {
 		mockPromptEvalChain.call.mockResolvedValue({
 			promptEvalOutput: 'yes.',
 		});
@@ -37,7 +37,7 @@ describe('queryPromptEvaluationModel output formatter (formatEvaluationOutput)',
 		});
 	});
 
-	test('GIVEN prompt evaluation llm responds with a yes decision and valid output THEN formatEvaluationOutput returns false and reason', async () => {
+	test('GIVEN prompt evaluation llm responds with a correctly formatted no decision WHEN we query the llm THEN we get an answer in the correct format', async () => {
 		mockPromptEvalChain.call.mockResolvedValue({
 			promptEvalOutput: 'no.',
 		});
