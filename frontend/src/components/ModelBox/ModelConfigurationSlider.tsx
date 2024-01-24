@@ -45,7 +45,7 @@ function ModelConfigurationSlider({
 					}}
 				/>
 			</div>
-			<details title="more info">
+			<details>
 				<summary>Details</summary>
 				<div className="info-text">{config.info}</div>
 			</details>
