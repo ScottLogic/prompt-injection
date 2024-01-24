@@ -35,7 +35,6 @@ module.exports = {
 		],
 		'prefer-template': 'error',
 
-		'@typescript-eslint/init-declarations': 'error',
 		'@typescript-eslint/no-misused-promises': [
 			'error',
 			{

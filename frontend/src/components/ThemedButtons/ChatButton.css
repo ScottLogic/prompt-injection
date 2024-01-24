@@ -10,3 +10,7 @@
 	font-weight: 700;
 	font-size: 1rem;
 }
+
+.chat-button:hover {
+	background-color: var(--chat-button-background-colour-hover);
+}
