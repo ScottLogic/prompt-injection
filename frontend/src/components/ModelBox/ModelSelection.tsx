@@ -50,51 +50,53 @@ function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
 	// return a drop down menu with the models
 	return (
 		<div className="model-selection-box">
-			<div className="model-selection-row">
-				<p>Select model: </p>
-				<div className="select-wrapper">
-					<select
-						aria-label="model-select"
-						value={selectedModel ?? 0} // default to the first model
-						onChange={(e) => {
-							setSelectedModel(e.target.value);
-						}}
-					>
-						{chatModelOptions.map((model) => (
-							<option key={model} value={model}>
-								{model}
-							</option>
-						))}
-						;
-					</select>
-					<LoadingButton
-						onClick={() => void submitSelectedModel()}
-						isLoading={isSettingModel}
-						loadingTooltip="Changing model..."
-					>
-						Choose
-					</LoadingButton>
+			<fieldset className="model-selection-fieldset">
+				<legend>Select Model</legend>
+				<div className="model-selection-row">
+					<div className="select-wrapper">
+						<select
+							aria-label="model-select"
+							value={selectedModel ?? 0} // default to the first model
+							onChange={(e) => {
+								setSelectedModel(e.target.value);
+							}}
+						>
+							{chatModelOptions.map((model) => (
+								<option key={model} value={model}>
+									{model}
+								</option>
+							))}
+							;
+						</select>
+						<LoadingButton
+							onClick={() => void submitSelectedModel()}
+							isLoading={isSettingModel}
+							loadingTooltip="Changing model..."
+						>
+							Choose
+						</LoadingButton>
+					</div>
 				</div>
-			</div>
 
-			<div className="model-selection-info">
-				{errorChangingModel ? (
-					<p className="error">
-						Could not change model. You are still chatting to:
-						<b> {modelInUse} </b>
-					</p>
-				) : (
-					<p>
-						{modelInUse ? (
-							<>
-								You are chatting to model: <b>{modelInUse}</b>
-							</>
-						) : (
-							'You are not connected to a model.'
-						)}
-					</p>
-				)}
-			</div>
+				<div className="model-selection-info">
+					{errorChangingModel ? (
+						<p className="error">
+							Could not change model. You are still chatting to:
+							<b> {modelInUse} </b>
+						</p>
+					) : (
+						<p>
+							{modelInUse ? (
+								<>
+									You are chatting to model: <b>{modelInUse}</b>
+								</>
+							) : (
+								'You are not connected to a model.'
+							)}
+						</p>
+					)}
+				</div>
+			</fieldset>
 		</div>
 	);
 }

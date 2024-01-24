@@ -2,23 +2,40 @@
 	display: flex;
 	flex-direction: column;
 	margin: 0;
-	padding: 0;
-	border: none;
+	border: 0.25rem solid var(--control-config-border);
+	border-radius: 0.5rem;
+}
+
+.model-selection-fieldset {
+	min-height: fit-content;
+	margin: 0;
+	border: 0.25rem solid var(--control-config-border);
+	border-radius: 0.5rem;
 }
 
 .model-config-slider-fieldset legend {
-	margin-right: auto;
+	padding: 0.3125rem;
 }
 
-.model-config-slider-fieldset .info-icon {
-	margin-top: -1.3rem;
-	margin-bottom: 1rem;
-	margin-left: auto;
-	font-size: 1.3rem;
+.model-config-slider-fieldset details > summary {
+	width: fit-content;
+	padding: 0.5rem;
+	border: 0.125rem outset var(--control-config-border);
+	border-radius: 0.25rem;
+	list-style: none;
+}
+
+.model-config-slider-fieldset details[open] summary {
+	border-style: inset;
 }
 
 .model-config-slider-fieldset .info-text {
+	padding: 0.5rem;
 	font-size: 0.875rem;
+}
+
+.model-config-slider-fieldset details[open] .info-text {
+	display: block;
 }
 
 .model-config-slider-fieldset .config-slider {

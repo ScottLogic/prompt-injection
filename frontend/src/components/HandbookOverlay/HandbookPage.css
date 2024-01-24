@@ -36,8 +36,8 @@
 }
 
 .handbook-terms .system-role-error-message {
-	border: 0.125rem dashed var(--error-colour);
-	background-color: var(--error-background-colour);
 	padding: 0.625rem;
+	border: 0.125rem dashed var(--error-colour);
 	border-radius: 0.625rem;
+	background-color: var(--error-background-colour);
 }
