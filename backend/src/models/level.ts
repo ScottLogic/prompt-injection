@@ -18,14 +18,16 @@ interface LevelState {
 	sentEmails: EmailInfo[];
 }
 
-const levelsInitialState = Object.values(LEVEL_NAMES)
-	.filter((value) => Number.isNaN(Number(value)))
-	.map((value) => ({
-		level: value as LEVEL_NAMES,
-		chatHistory: [],
-		defences: defaultDefences,
-		sentEmails: [],
-	}));
+function getInitialLevelStates() {
+	return Object.values(LEVEL_NAMES)
+		.filter((value) => Number.isNaN(Number(value)))
+		.map((value) => ({
+			level: value as LEVEL_NAMES,
+			chatHistory: [],
+			defences: defaultDefences,
+			sentEmails: [],
+		} as LevelState));
+}
 
-export { LEVEL_NAMES, levelsInitialState };
+export { LEVEL_NAMES, getInitialLevelStates };
 export type { LevelState };
