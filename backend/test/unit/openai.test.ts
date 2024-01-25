@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { afterEach } from 'node:test';
 import { OpenAI } from 'openai';
 
 import { getValidModelsFromOpenAI } from '@src/openai';
@@ -7,15 +8,22 @@ jest.mock('openai');
 jest.mock('@src/defence');
 
 describe('getValidModelsFromOpenAI', () => {
-	const mockOpenAI = OpenAI as jest.MockedClass<typeof OpenAI>;
-	mockOpenAI.prototype = {
-		models: {
-			list: jest.fn(),
-		},
-	} as unknown as typeof mockOpenAI.prototype;
+	const mockListFn = jest.fn<OpenAI.Models['list']>();
+	jest.mocked(OpenAI).mockImplementation(
+		() =>
+			({
+				models: {
+					list: mockListFn,
+				},
+			} as unknown as jest.MockedObject<OpenAI>)
+	);
 
 	beforeEach(() => {
 		process.env = {};
+	});
+
+	afterEach(() => {
+		mockListFn.mockReset();
 	});
 
 	test('GIVEN the user has an openAI key WHEN getValidModelsFromOpenAI is called THEN it returns only the models that are also in the CHAT_MODELS enum', async () => {
@@ -35,7 +43,7 @@ describe('getValidModelsFromOpenAI', () => {
 			'gpt-4-0613',
 		];
 
-		mockOpenAI.prototype.models.list.mockResolvedValueOnce({
+		mockListFn.mockResolvedValueOnce({
 			data: mockModelList,
 		} as OpenAI.ModelsPage);
 
