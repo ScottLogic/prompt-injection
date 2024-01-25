@@ -45,7 +45,8 @@ function combineChatDefenceReports(
 function createNewUserMessages(
 	message: string,
 	transformedMessage: TransformedChatMessage | null,
-	transformedMessageCombined: string | null
+	transformedMessageCombined: string | null,
+	transformedMessageInfo: string | null
 ): ChatHistoryMessage[] {
 	if (transformedMessageCombined && transformedMessage) {
 		return [
@@ -57,8 +58,7 @@ function createNewUserMessages(
 			{
 				completion: null,
 				chatMessageType: CHAT_MESSAGE_TYPE.INFO,
-				infoMessage:
-					`${transformedMessage.transformationName} enabled, your message has been transformed`.toLocaleLowerCase(),
+				infoMessage: transformedMessageInfo,
 			},
 			{
 				completion: {
@@ -90,10 +90,12 @@ async function handleChatWithoutDefenceDetection(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	const updatedChatHistory = createNewUserMessages(message, null, null).reduce(
-		pushMessageToHistory,
-		chatHistory
-	);
+	const updatedChatHistory = createNewUserMessages(
+		message,
+		null,
+		null,
+		null
+	).reduce(pushMessageToHistory, chatHistory);
 
 	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
@@ -129,10 +131,14 @@ async function handleChatWithDefenceDetection(
 	const transformedMessageCombined = transformedMessage
 		? combineTransformedMessage(transformedMessage)
 		: null;
+	const transformedMessageInfo = transformedMessage
+		? `${transformedMessage.transformationName} enabled, your message has been transformed`.toLocaleLowerCase()
+		: null;
 	const chatHistoryWithNewUserMessages = createNewUserMessages(
 		message,
 		transformedMessage,
-		transformedMessageCombined ?? null
+		transformedMessageCombined,
+		transformedMessageInfo
 	).reduce(pushMessageToHistory, chatHistory);
 
 	const triggeredInputDefencesPromise = detectTriggeredInputDefences(
@@ -182,6 +188,7 @@ async function handleChatWithDefenceDetection(
 		wonLevel:
 			openAiReply.chatResponse.wonLevel && !combinedDefenceReport.isBlocked,
 		sentEmails: combinedDefenceReport.isBlocked ? [] : openAiReply.sentEmails,
+		transformedMessageInfo: transformedMessageInfo ?? undefined,
 	};
 	return {
 		chatResponse: updatedChatResponse,

@@ -79,7 +79,15 @@ function ChatBox({
 	}
 
 	function processChatResponse(response: ChatResponse) {
+		const transformedMessageInfo = response.transformedMessageInfo;
 		const transformedMessage = response.transformedMessage;
+		// add transformation info message to the chat box
+		if (transformedMessageInfo) {
+			addChatMessage({
+				message: transformedMessageInfo,
+				type: CHAT_MESSAGE_TYPE.INFO,
+			});
+		}
 		// add the transformed message to the chat box if it is different from the original message
 		if (transformedMessage) {
 			addChatMessage({

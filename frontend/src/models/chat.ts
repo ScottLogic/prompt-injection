@@ -73,6 +73,7 @@ interface ChatResponse {
 	wonLevel: boolean;
 	isError: boolean;
 	sentEmails: EmailInfo[];
+	transformedMessageInfo?: string;
 }
 
 interface ChatCompletionRequestMessage {

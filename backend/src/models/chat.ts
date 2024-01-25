@@ -112,6 +112,7 @@ interface ChatHttpResponse {
 	isError: boolean;
 	openAIErrorMessage: string | null;
 	sentEmails: EmailInfo[];
+	transformedMessageInfo?: string;
 }
 
 interface LevelHandlerResponse {
