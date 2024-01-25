@@ -12,6 +12,9 @@ function ModelConfigurationSlider({
 	config: CustomChatModelConfiguration;
 }) {
 	const [value, setValue] = useState<number>(config.value);
+	const [currentConfiguredValue, setCurrentConfiguredValue] = useState<number>(
+		config.value
+	);
 
 	function handleValueChange(
 		_: Event | SyntheticEvent,
@@ -19,6 +22,14 @@ function ModelConfigurationSlider({
 	) {
 		const val = Array.isArray(value) ? value[0] : value;
 		setValue(val);
+	}
+
+	function handleValueCommitted() {
+		const valueChanged = value !== currentConfiguredValue;
+		if (valueChanged) {
+			void configureGptModel(config.id, value);
+			setCurrentConfiguredValue(value);
+		}
 	}
 
 	useEffect(() => {
@@ -37,9 +48,7 @@ function ModelConfigurationSlider({
 					valueLabelDisplay="auto"
 					value={value}
 					onChange={handleValueChange}
-					onChangeCommitted={() => {
-						void configureGptModel(config.id, value);
-					}}
+					onChangeCommitted={handleValueCommitted}
 					sx={{
 						color: '#2bb3bb',
 					}}
