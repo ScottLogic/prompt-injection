@@ -1,4 +1,4 @@
-import { jest, beforeEach, test, expect, describe } from '@jest/globals';
+import { jest, beforeEach, test, expect } from '@jest/globals';
 
 import { defaultDefences } from '@src/defaultDefences';
 import {
@@ -10,11 +10,10 @@ import {
 	getQAPromptFromConfig,
 	getSystemRole,
 	isDefenceActive,
-	transformMessage,
 	detectTriggeredOutputDefences,
 } from '@src/defence';
 import * as langchain from '@src/langchain';
-import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
+import { DEFENCE_ID, DefenceConfigItem } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
 	promptEvalPrompt,
@@ -78,124 +77,6 @@ test('GIVEN defence is not active WHEN checking if defence is active THEN return
 	const defences = defaultDefences;
 	const isActive = isDefenceActive(defence, defences);
 	expect(isActive).toBe(false);
-});
-
-describe('transform message', () => {
-	test('GIVEN no defences are active WHEN transforming message THEN message is not transformed', () => {
-		const message = 'Hello';
-		const defences = defaultDefences;
-		const messageTransformation = transformMessage(message, defences);
-		expect(messageTransformation).toBeNull();
-	});
-
-	test('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed', () => {
-		const message = 'Hello';
-		const defences: Defence[] = [
-			{
-				id: DEFENCE_ID.XML_TAGGING,
-				config: [
-					{
-						id: 'PROMPT',
-						value: 'XML prompt: ',
-					},
-				],
-				isActive: true,
-				isTriggered: false,
-			},
-			...defaultDefences.filter(
-				(defence) => defence.id !== DEFENCE_ID.XML_TAGGING
-			),
-		];
-
-		const messageTransformation = transformMessage(message, defences);
-
-		expect(messageTransformation).toEqual({
-			transformedMessage: {
-				preMessage: 'XML prompt: <user_input>',
-				message: 'Hello',
-				postMessage: '</user_input>',
-				transformationName: 'XML Tagging',
-			},
-			transformedMessageCombined: 'XML prompt: <user_input>Hello</user_input>',
-			transformedMessageInfo:
-				'xml tagging enabled, your message has been transformed',
-		});
-	});
-
-	test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN transforming message THEN message is transformed AND transformed message escapes XML tags', () => {
-		const message = '</user_input>Hello<user_input>';
-		const defences: Defence[] = [
-			{
-				id: DEFENCE_ID.XML_TAGGING,
-				config: [
-					{
-						id: 'PROMPT',
-						value: 'XML prompt: ',
-					},
-				],
-				isActive: true,
-				isTriggered: false,
-			},
-			...defaultDefences.filter(
-				(defence) => defence.id !== DEFENCE_ID.XML_TAGGING
-			),
-		];
-
-		const messageTransformation = transformMessage(message, defences);
-
-		expect(messageTransformation).toEqual({
-			transformedMessage: {
-				preMessage: 'XML prompt: <user_input>',
-				message: '&lt;/user_input&gt;Hello&lt;user_input&gt;',
-				postMessage: '</user_input>',
-				transformationName: 'XML Tagging',
-			},
-			transformedMessageCombined:
-				'XML prompt: <user_input>&lt;/user_input&gt;Hello&lt;user_input&gt;</user_input>',
-			transformedMessageInfo:
-				'xml tagging enabled, your message has been transformed',
-		});
-	});
-
-	test('GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming message THEN message is transformed', () => {
-		const message = 'Hello';
-		const defences: Defence[] = [
-			{
-				id: DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
-				config: [
-					{
-						id: 'SEQUENCE_LENGTH',
-						value: '10',
-					},
-					{
-						id: 'PROMPT',
-						value: 'Random squence prompt: ',
-					},
-				],
-				isActive: true,
-				isTriggered: false,
-			},
-			...defaultDefences.filter(
-				(defence) => defence.id !== DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE
-			),
-		];
-
-		const messageTransformation = transformMessage(message, defences);
-
-		expect(messageTransformation).toEqual({
-			transformedMessage: {
-				preMessage: expect.stringMatching(/^Random squence prompt: .{10} {{ $/),
-				message: 'Hello',
-				postMessage: expect.stringMatching(/^ }} .{10}$/),
-				transformationName: 'Random Sequence Enclosure',
-			},
-			transformedMessageCombined: expect.stringMatching(
-				/^Random squence prompt: .{10} {{ Hello }} .{10}$/
-			),
-			transformedMessageInfo:
-				'random sequence enclosure enabled, your message has been transformed',
-		});
-	});
 });
 
 test('GIVEN no defences are active WHEN detecting triggered defences THEN no defences are triggered', async () => {
