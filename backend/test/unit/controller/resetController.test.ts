@@ -10,7 +10,11 @@ import {
 } from '@src/models/chat';
 import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
-import { LEVEL_NAMES, LevelState, getInitialLevelStates } from '@src/models/level';
+import {
+	LEVEL_NAMES,
+	LevelState,
+	getInitialLevelStates,
+} from '@src/models/level';
 
 declare module 'express-session' {
 	interface Session {
