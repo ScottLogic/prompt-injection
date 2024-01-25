@@ -18,7 +18,6 @@ import { TransformedChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
-	instructionDefencePrompt,
 	promptEvalPrompt,
 	qAPromptSecure,
 	systemRoleDefault,
@@ -123,22 +122,41 @@ describe('transform message', () => {
 		);
 	});
 
-	test('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed', () => {
+	test.only('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed', () => {
 		const message = 'Hello';
-		const defences = defaultDefences;
-		// activate XML_TAGGING defence
-		const updatedDefences = activateDefence(DEFENCE_ID.INSTRUCTION, defences);
-		const transformedMessage = transformMessage(message, updatedDefences);
+		const defences: Defence[] = [
+			{
+				id: DEFENCE_ID.XML_TAGGING,
+				config: [
+					{
+						id: 'PROMPT',
+						value: 'XML prompt: ',
+					},
+				],
+				isActive: true,
+				isTriggered: false,
+			},
+			...defaultDefences.filter(
+				(defence) => defence.id !== DEFENCE_ID.XML_TAGGING
+			),
+		];
 
-		expect(transformedMessage).toStrictEqual({
-			preMessage: `${instructionDefencePrompt} {{ `,
-			message,
-			postMessage: ' }}',
-			transformationName: 'Instruction Defence',
+		const messageTransformation = transformMessage(message, defences);
+
+		expect(messageTransformation).toEqual({
+			transformedMessage: {
+				preMessage: 'XML prompt: <user_input>',
+				message: 'Hello',
+				postMessage: '</user_input>',
+				transformationName: 'XML Tagging',
+			},
+			transformedMessageCombined: 'XML prompt: <user_input>Hello</user_input>',
+			transformedMessageInfo:
+				'xml tagging enabled, your message has been transformed',
 		});
 	});
 
-	test.only('GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming message THEN message is transformed', () => {
+	test('GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming message THEN message is transformed', () => {
 		const message = 'Hello';
 		const defences: Defence[] = [
 			{
