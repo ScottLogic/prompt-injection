@@ -23,7 +23,6 @@ test('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message
 				},
 			],
 			isActive: true,
-			isTriggered: false,
 		},
 		...defaultDefences.filter(
 			(defence) => defence.id !== DEFENCE_ID.XML_TAGGING
@@ -57,7 +56,6 @@ test('GIVEN XML_TAGGING defence is active AND message contains XML tags WHEN tra
 				},
 			],
 			isActive: true,
-			isTriggered: false,
 		},
 		...defaultDefences.filter(
 			(defence) => defence.id !== DEFENCE_ID.XML_TAGGING
@@ -96,7 +94,6 @@ test('GIVEN RANDOM_SEQUENCE_ENCLOSURE defence is active WHEN transforming messag
 				},
 			],
 			isActive: true,
-			isTriggered: false,
 		},
 		...defaultDefences.filter(
 			(defence) => defence.id !== DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE

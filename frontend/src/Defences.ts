@@ -12,7 +12,7 @@ function makeDefence(
 	config: DefenceConfigItem[]
 ): Defence {
 	// each defence starts off as inactive and not triggered
-	return { id, name, info, config, isActive: false, isTriggered: false };
+	return { id, name, info, config, isActive: false };
 }
 
 function makeDefenceConfigItem(

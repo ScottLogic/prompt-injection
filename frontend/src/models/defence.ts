@@ -32,7 +32,6 @@ type Defence = {
 	info: string;
 	config: DefenceConfigItem[];
 	isActive: boolean;
-	isTriggered: boolean;
 };
 
 type DefenceResetResponse = {
