@@ -14,7 +14,6 @@ import {
 	detectTriggeredOutputDefences,
 } from '@src/defence';
 import * as langchain from '@src/langchain';
-import { TransformedChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
@@ -24,7 +23,6 @@ import {
 	systemRoleLevel1,
 	systemRoleLevel2,
 	systemRoleLevel3,
-	xmlPrompt,
 } from '@src/promptTemplates';
 
 jest.mock('@src/langchain');
@@ -37,15 +35,6 @@ beforeEach(() => {
 
 const botOutputFilterTriggeredResponse =
 	'My original response was blocked as it contained a restricted word/phrase. Ask me something else. ';
-
-function getXmlTransformedMessage(message: string): TransformedChatMessage {
-	return {
-		preMessage: `${xmlPrompt}<user_input>`,
-		message,
-		postMessage: '</user_input>',
-		transformationName: 'XML Tagging',
-	};
-}
 
 test('GIVEN defence is not active WHEN activating defence THEN defence is active', () => {
 	const defence = DEFENCE_ID.SYSTEM_ROLE;
@@ -91,14 +80,14 @@ test('GIVEN defence is not active WHEN checking if defence is active THEN return
 	expect(isActive).toBe(false);
 });
 
-test('GIVEN no defences are active WHEN transforming message THEN message is not transformed', () => {
-	const message = 'Hello';
-	const defences = defaultDefences;
-	const transformedMessage = transformMessage(message, defences);
-	expect(transformedMessage).toBeNull();
-});
-
 describe('transform message', () => {
+	test('GIVEN no defences are active WHEN transforming message THEN message is not transformed', () => {
+		const message = 'Hello';
+		const defences = defaultDefences;
+		const messageTransformation = transformMessage(message, defences);
+		expect(messageTransformation).toBeNull();
+	});
+
 	test('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed', () => {
 		const message = 'Hello';
 		const defences: Defence[] = [
