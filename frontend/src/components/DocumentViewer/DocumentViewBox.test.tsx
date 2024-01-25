@@ -1,3 +1,4 @@
+import { DocViewerProps } from '@cyntler/react-doc-viewer/dist/esm/DocViewer';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
@@ -18,7 +19,7 @@ interface MockDocument {
 	content: string;
 }
 
-describe.skip('DocumentViewBox component tests', () => {
+describe('DocumentViewBox component tests', () => {
 	const URI = 'localhost:1234';
 	const defaultDocuments: MockDocument[] = [
 		{
@@ -45,6 +46,15 @@ describe.skip('DocumentViewBox component tests', () => {
 		getDocumentMetas: mockGetDocumentMetas,
 	}));
 
+	const mockDocumentViewer = vi.hoisted(() => vi.fn());
+	vi.mock('@cyntler/react-doc-viewer', () => ({
+		default: (props: DocViewerProps) => {
+			mockDocumentViewer(props);
+			return <div>DocumentViewer</div>;
+		},
+		DocViewerRenderers: vi.fn(),
+	}));
+
 	const realFetch = global.fetch;
 
 	beforeAll(() => {
@@ -59,13 +69,15 @@ describe.skip('DocumentViewBox component tests', () => {
 		global.fetch = realFetch;
 	});
 
+	function getMockedDocumentMetas(documents: MockDocument[]) {
+		return documents.map((doc) => ({
+			filename: doc.filename,
+			uri: `${URI}/${doc.filename}`,
+		}));
+	}
+
 	function setupMocks(documents: MockDocument[]) {
-		mockGetDocumentMetas.mockResolvedValue(
-			documents.map((doc) => ({
-				filename: doc.filename,
-				uri: `${URI}/${doc.filename}`,
-			}))
-		);
+		mockGetDocumentMetas.mockResolvedValue(getMockedDocumentMetas(documents));
 		mockGlobalFetch.mockImplementation(
 			(uri: string, { method }: RequestInit) => {
 				if (uri.startsWith(URI)) {
@@ -130,7 +142,12 @@ describe.skip('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`1 out of ${documents.length}`)
 			).toBeInTheDocument();
-			expect(await screen.findByText(documents[0].content)).toBeInTheDocument();
+			expect(mockDocumentViewer).toHaveBeenCalledWith(
+				expect.objectContaining({
+					activeDocument: getMockedDocumentMetas(documents)[0],
+					documents: getMockedDocumentMetas(documents),
+				})
+			);
 		});
 
 		test('WHEN the next button is clicked THEN the next document is shown', async () => {
@@ -146,10 +163,12 @@ describe.skip('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`2 out of ${documents.length}`)
 			).toBeInTheDocument();
-			/* This is sporadically, non_deterministically failing! See #658 for details
-			expect(
-				await screen.findByText(documents[1].content)
-			).toBeInTheDocument();*/
+			expect(mockDocumentViewer).toHaveBeenCalledWith(
+				expect.objectContaining({
+					activeDocument: getMockedDocumentMetas(documents)[1],
+					documents: getMockedDocumentMetas(documents),
+				})
+			);
 		});
 
 		test('WHEN the previous button is clicked THEN the previous document is shown', async () => {
@@ -166,10 +185,12 @@ describe.skip('DocumentViewBox component tests', () => {
 			expect(
 				screen.getByText(`1 out of ${documents.length}`)
 			).toBeInTheDocument();
-			/* This is sporadically, non_deterministically failing! See #658 for details
-			expect(
-				await screen.findByText(documents[0].content)
-			).toBeInTheDocument()*/
+			expect(mockDocumentViewer).toHaveBeenCalledWith(
+				expect.objectContaining({
+					activeDocument: getMockedDocumentMetas(documents)[0],
+					documents: getMockedDocumentMetas(documents),
+				})
+			);
 		});
 
 		test('GIVEN the first document is shown THEN previous button is disabled', async () => {

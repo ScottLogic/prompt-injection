@@ -1,8 +1,8 @@
 import GettingStarted from '@src/assets/icons/GettingStarted.svg';
 import HandbookIcon from '@src/assets/icons/Handbook.svg';
 import ResetProgress from '@src/assets/icons/ResetProgressIcon.svg';
-import SpyLogicTitleLogo from '@src/assets/images/SpyLogicTitleLogo.svg';
-import SpyLogicTitleLogoAffirmative from '@src/assets/images/SpyLogicTitleLogo_Affirmative.svg';
+import SpyLogicLogo from '@src/assets/images/SpyLogicLogo.png';
+import SpyLogicLogoAffirmative from '@src/assets/images/SpyLogicLogo_Affirmative.png';
 import LevelSelectionBox from '@src/components/LevelSelectionBox/LevelSelectionBox';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -31,9 +31,7 @@ function MainHeader({
 			<span className="main-header-left">
 				<img
 					className="title-logo"
-					src={
-						isLevelComplete ? SpyLogicTitleLogoAffirmative : SpyLogicTitleLogo
-					}
+					src={isLevelComplete ? SpyLogicLogoAffirmative : SpyLogicLogo}
 					alt="Spy Logic"
 				/>
 				<h1 className="visually-hidden">Spy Logic</h1>

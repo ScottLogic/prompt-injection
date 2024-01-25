@@ -2,6 +2,14 @@
 	overflow-y: auto;
 	height: 100%;
 	padding: 1.875rem;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.control-panel::-webkit-scrollbar {
+	display: none;
+	width: 0;
+	background: transparent;
 }
 
 .control-panel .control-collapsible-section {
