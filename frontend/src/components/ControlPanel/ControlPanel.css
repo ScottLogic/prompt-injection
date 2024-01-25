@@ -6,8 +6,10 @@
 	scrollbar-width: none;
 }
 
-.control::-webkit-scrollbar {
+.control-panel::-webkit-scrollbar {
 	display: none;
+	width: 0px;
+	background: transparent;
 }
 
 .control-panel .control-collapsible-section {
