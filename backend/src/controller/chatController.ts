@@ -48,15 +48,18 @@ function createNewUserMessages(
 	transformedMessageCombined: string | null
 ): ChatHistoryMessage[] {
 	if (transformedMessageCombined && transformedMessage) {
-		// if message has been transformed
 		return [
-			// original message
 			{
 				completion: null,
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 				infoMessage: message,
 			},
-			// transformed message
+			{
+				completion: null,
+				chatMessageType: CHAT_MESSAGE_TYPE.INFO,
+				infoMessage:
+					`${transformedMessage.transformationName} enabled, your message has been transformed`.toLocaleLowerCase(),
+			},
 			{
 				completion: {
 					role: 'user',
@@ -67,7 +70,6 @@ function createNewUserMessages(
 			},
 		];
 	} else {
-		// not transformed, so just return the original message
 		return [
 			{
 				completion: {
