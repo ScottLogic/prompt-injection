@@ -163,13 +163,19 @@ describe('transform message', () => {
 
 		const messageTransformation = transformMessage(message, defences);
 
-		expect(messageTransformation?.transformedMessage.preMessage).toMatch(
-			/^Random squence prompt: .{10} {{ $/
-		);
-		expect(messageTransformation?.transformedMessage.message).toBe(message);
-		expect(messageTransformation?.transformedMessage.postMessage).toMatch(
-			/^ }} .{10}$/
-		);
+		expect(messageTransformation).toEqual({
+			transformedMessage: {
+				preMessage: expect.stringMatching(/^Random squence prompt: .{10} {{ $/),
+				message: 'Hello',
+				postMessage: expect.stringMatching(/^ }} .{10}$/),
+				transformationName: 'Random Sequence Enclosure',
+			},
+			transformedMessageCombined: expect.stringMatching(
+				/^Random squence prompt: .{10} {{ Hello }} .{10}$/
+			),
+			transformedMessageInfo:
+				'random sequence enclosure enabled, your message has been transformed',
+		});
 	});
 });
 
