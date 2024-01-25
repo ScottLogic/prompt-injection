@@ -3,7 +3,6 @@ import { Response } from 'express';
 import {
 	transformMessage,
 	detectTriggeredInputDefences,
-	combineTransformedMessage,
 	detectTriggeredOutputDefences,
 } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
@@ -17,7 +16,7 @@ import {
 	ChatHttpResponse,
 	ChatModel,
 	LevelHandlerResponse,
-	TransformedChatMessage,
+	MessageTransformation,
 	defaultChatModel,
 } from '@src/models/chat';
 import { Defence } from '@src/models/defence';
@@ -44,11 +43,9 @@ function combineChatDefenceReports(
 
 function createNewUserMessages(
 	message: string,
-	transformedMessage: TransformedChatMessage | null,
-	transformedMessageCombined: string | null,
-	transformedMessageInfo: string | null
+	messageTransformation: MessageTransformation | null
 ): ChatHistoryMessage[] {
-	if (transformedMessageCombined && transformedMessage) {
+	if (messageTransformation) {
 		return [
 			{
 				completion: null,
@@ -58,15 +55,15 @@ function createNewUserMessages(
 			{
 				completion: null,
 				chatMessageType: CHAT_MESSAGE_TYPE.INFO,
-				infoMessage: transformedMessageInfo,
+				infoMessage: messageTransformation.transformedMessageInfo,
 			},
 			{
 				completion: {
 					role: 'user',
-					content: transformedMessageCombined,
+					content: messageTransformation.transformedMessageCombined,
 				},
 				chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
-				transformedMessage,
+				transformedMessage: messageTransformation.transformedMessage,
 			},
 		];
 	} else {
@@ -90,12 +87,10 @@ async function handleChatWithoutDefenceDetection(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	const updatedChatHistory = createNewUserMessages(
-		message,
-		null,
-		null,
-		null
-	).reduce(pushMessageToHistory, chatHistory);
+	const updatedChatHistory = createNewUserMessages(message, null).reduce(
+		pushMessageToHistory,
+		chatHistory
+	);
 
 	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
@@ -127,18 +122,10 @@ async function handleChatWithDefenceDetection(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	const transformedMessage = transformMessage(message, defences);
-	const transformedMessageCombined = transformedMessage
-		? combineTransformedMessage(transformedMessage)
-		: null;
-	const transformedMessageInfo = transformedMessage
-		? `${transformedMessage.transformationName} enabled, your message has been transformed`.toLocaleLowerCase()
-		: null;
+	const messageTransformation = transformMessage(message, defences);
 	const chatHistoryWithNewUserMessages = createNewUserMessages(
 		message,
-		transformedMessage,
-		transformedMessageCombined,
-		transformedMessageInfo
+		messageTransformation
 	).reduce(pushMessageToHistory, chatHistory);
 
 	const triggeredInputDefencesPromise = detectTriggeredInputDefences(
@@ -150,7 +137,7 @@ async function handleChatWithDefenceDetection(
 		chatHistoryWithNewUserMessages,
 		defences,
 		chatModel,
-		transformedMessageCombined ?? message,
+		messageTransformation?.transformedMessageCombined ?? message,
 		currentLevel
 	);
 
@@ -184,11 +171,12 @@ async function handleChatWithDefenceDetection(
 		defenceReport: combinedDefenceReport,
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 		reply: !combinedDefenceReport.isBlocked && botReply ? botReply : '',
-		transformedMessage: transformedMessage ?? undefined,
+		transformedMessage: messageTransformation?.transformedMessage ?? undefined,
 		wonLevel:
 			openAiReply.chatResponse.wonLevel && !combinedDefenceReport.isBlocked,
 		sentEmails: combinedDefenceReport.isBlocked ? [] : openAiReply.sentEmails,
-		transformedMessageInfo: transformedMessageInfo ?? undefined,
+		transformedMessageInfo:
+			messageTransformation?.transformedMessageInfo ?? undefined,
 	};
 	return {
 		chatResponse: updatedChatResponse,

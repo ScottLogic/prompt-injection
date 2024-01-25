@@ -104,6 +104,12 @@ interface TransformedChatMessage {
 	transformationName: string;
 }
 
+interface MessageTransformation {
+	transformedMessage: TransformedChatMessage;
+	transformedMessageInfo: string;
+	transformedMessageCombined: string;
+}
+
 interface ChatHttpResponse {
 	reply: string;
 	defenceReport: ChatDefenceReport;
@@ -150,6 +156,7 @@ export type {
 	TransformedChatMessage,
 	FunctionCallResponse,
 	ToolCallResponse,
+	MessageTransformation,
 };
 export {
 	CHAT_MODELS,
