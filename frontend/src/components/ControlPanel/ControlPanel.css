@@ -8,7 +8,7 @@
 
 .control-panel::-webkit-scrollbar {
 	display: none;
-	width: 0px;
+	width: 0;
 	background: transparent;
 }
 
