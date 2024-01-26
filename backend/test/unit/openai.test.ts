@@ -1,5 +1,11 @@
-import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { afterEach } from 'node:test';
+import {
+	beforeEach,
+	afterEach,
+	describe,
+	expect,
+	jest,
+	test,
+} from '@jest/globals';
 import { OpenAI } from 'openai';
 
 import { getValidModelsFromOpenAI } from '@src/openai';
