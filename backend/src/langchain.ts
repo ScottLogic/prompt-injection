@@ -1,13 +1,10 @@
 import { RetrievalQAChain, LLMChain } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { OpenAI } from 'langchain/llms/openai';
 import { PromptTemplate } from 'langchain/prompts';
-import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
-import { getCommonDocuments, getLevelDocuments } from './document';
+import { vectorisedDocuments } from './document';
 import { CHAT_MODELS, ChatAnswer } from './models/chat';
-import { DocumentsVector } from './models/document';
 import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
 import { LEVEL_NAMES } from './models/level';
 import { getOpenAIKey, getValidOpenAIModelsList } from './openai';
@@ -17,17 +14,6 @@ import {
 	qaContextTemplate,
 	qAPrompt,
 } from './promptTemplates';
-
-// store vectorised documents for each level as array
-const vectorisedDocuments = (() => {
-	let docs: DocumentsVector[] = [];
-	return {
-		get: () => docs,
-		set: (newDocs: DocumentsVector[]) => {
-			docs = newDocs;
-		},
-	};
-})();
 
 // choose between the provided preprompt and the default preprompt and prepend it to the main prompt and return the PromptTemplate
 function makePromptTemplate(
@@ -43,36 +29,6 @@ function makePromptTemplate(
 	const fullPrompt = `${configPrompt}\n${mainPrompt}`;
 	console.debug(`${templateNameForLogging}: ${fullPrompt}`);
 	return PromptTemplate.fromTemplate(fullPrompt);
-}
-
-// create and store the document vectors for each level
-async function initDocumentVectors() {
-	const docVectors: DocumentsVector[] = [];
-	const commonDocuments = await getCommonDocuments();
-
-	const levelValues = Object.values(LEVEL_NAMES)
-		.filter((value) => !isNaN(Number(value)))
-		.map((value) => Number(value));
-
-	for (const level of levelValues) {
-		const allDocuments = commonDocuments.concat(await getLevelDocuments(level));
-
-		// embed and store the splits - will use env variable for API key
-		const embeddings = new OpenAIEmbeddings();
-		const docVector = await MemoryVectorStore.fromDocuments(
-			allDocuments,
-			embeddings
-		);
-		// store the document vectors for the level
-		docVectors.push({
-			level,
-			docVector,
-		});
-	}
-	vectorisedDocuments.set(docVectors);
-	console.debug(
-		`Initialised document vectors for each level. count=${docVectors.length}`
-	);
 }
 
 function getChatModel() {
@@ -206,4 +162,4 @@ function formatEvaluationOutput(response: string) {
 	}
 }
 
-export { queryDocuments, queryPromptEvaluationModel, initDocumentVectors };
+export { queryDocuments, queryPromptEvaluationModel };

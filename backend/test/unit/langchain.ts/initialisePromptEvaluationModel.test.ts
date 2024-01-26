@@ -25,7 +25,7 @@ jest.mock('langchain/chains', () => {
 });
 
 // eslint-disable-next-line prefer-const
-let mockValidModels: string[] = [];
+let mockValidModels: string[] = []; // can we mock this differently?
 
 jest.mock('@src/openai', () => {
 	const originalModule =
@@ -37,6 +37,8 @@ jest.mock('@src/openai', () => {
 });
 
 jest.mock('langchain/llms/openai');
+
+// need to mock getOpenAIKey from openAi.ts
 
 afterEach(() => {
 	jest.clearAllMocks();
@@ -59,7 +61,9 @@ test.skip('WHEN we query the prompt evaluation model THEN it is initialised', as
 
 test('GIVEN the prompt evaluation model is not initialised WHEN it is asked to evaluate an input it returns not malicious', async () => {
 	mockPromptEvalChain.call.mockResolvedValueOnce({ promptEvalOutput: '' });
+
 	const result = await queryPromptEvaluationModel('message', 'Prompt');
+
 	expect(result).toEqual({
 		isMalicious: false,
 	});

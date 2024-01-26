@@ -3,9 +3,11 @@ import { CSVLoader } from 'langchain/document_loaders/fs/csv';
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
-import { DocumentMeta } from './models/document';
+import { DocumentMeta, DocumentsVector } from './models/document';
 import { LEVEL_NAMES } from './models/level';
 
 async function getCommonDocuments() {
@@ -83,4 +85,51 @@ function getDocumentMetas(folder: string) {
 	return documentMetas;
 }
 
-export { getCommonDocuments, getLevelDocuments, getSandboxDocumentMetas };
+// store vectorised documents for each level as array
+const vectorisedDocuments = (() => {
+	let docs: DocumentsVector[] = [];
+	return {
+		get: () => docs,
+		set: (newDocs: DocumentsVector[]) => {
+			docs = newDocs;
+		},
+	};
+})();
+
+// create and store the document vectors for each level
+async function initDocumentVectors() {
+	const docVectors: DocumentsVector[] = [];
+	const commonDocuments = await getCommonDocuments();
+
+	const levelValues = Object.values(LEVEL_NAMES)
+		.filter((value) => !isNaN(Number(value)))
+		.map((value) => Number(value));
+
+	for (const level of levelValues) {
+		const allDocuments = commonDocuments.concat(await getLevelDocuments(level));
+
+		// embed and store the splits - will use env variable for API key
+		const embeddings = new OpenAIEmbeddings();
+		const docVector = await MemoryVectorStore.fromDocuments(
+			allDocuments,
+			embeddings
+		);
+		// store the document vectors for the level
+		docVectors.push({
+			level,
+			docVector,
+		});
+	}
+	vectorisedDocuments.set(docVectors);
+	console.debug(
+		`Initialised document vectors for each level. count=${docVectors.length}`
+	);
+}
+
+export {
+	getCommonDocuments,
+	getLevelDocuments,
+	getSandboxDocumentMetas,
+	initDocumentVectors,
+	vectorisedDocuments,
+};

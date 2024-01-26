@@ -2,7 +2,7 @@
 
 import { test, jest, expect } from '@jest/globals';
 
-import { initDocumentVectors } from '@src/langchain';
+import { initDocumentVectors } from '@src/document';
 
 const mockLoader = jest.fn();
 const mockSplitDocuments = jest.fn<() => Promise<unknown>>();

@@ -5,6 +5,7 @@ import { PromptTemplate } from 'langchain/prompts';
 
 import { queryDocuments } from '@src/langchain';
 import { LEVEL_NAMES } from '@src/models/level';
+import { getOpenAIKey } from '@src/openai';
 import { qAPrompt, qaContextTemplate } from '@src/promptTemplates';
 
 const mockRetrievalQAChain = {
@@ -45,21 +46,34 @@ jest.mock('langchain/chains', () => {
 RetrievalQAChain.fromLLM =
 	mockFromLLM as unknown as typeof RetrievalQAChain.fromLLM;
 
+jest.mock('@src/openai');
+const mockGetOpenAIKey = jest.fn<typeof getOpenAIKey>();
+mockGetOpenAIKey.mockReturnValue('sk-12345');
+
 jest.mock('@src/openai', () => {
 	const originalModule =
-		jest.requireActual<typeof import('@src/openai')>('@src/openai');
+		jest.requireActual<typeof import('@src/openai')>('@src/openai'); // can we remove this
 	return {
 		...originalModule,
 		getValidOpenAIModelsList: jest.fn(() => mockValidModels),
 	};
 });
 
-beforeEach(() => {
-	// reset environment variables
-	process.env = {
-		OPENAI_API_KEY: 'sk-12345',
-	}; // can we do this once in a beforeAll?
+const mockGetVectorisedDocuments = jest.fn();
+jest.mock('@src/langchain', () => {
+	const originalModule =
+		jest.requireActual<typeof import('@src/langchain')>('@src/langchain');
+	return {
+		...originalModule,
+		vectorisedDocuments: {
+			get: () => mockGetVectorisedDocuments(),
+			set: jest.fn(),
+		},
+	};
+});
+mockGetVectorisedDocuments.mockReturnValue([]);
 
+beforeEach(() => {
 	mockFromLLM.mockImplementation(() => mockRetrievalQAChain); // this is weird
 });
 
