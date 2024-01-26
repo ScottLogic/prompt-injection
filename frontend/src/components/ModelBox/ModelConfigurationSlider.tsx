@@ -8,10 +8,10 @@ import './ModelConfigurationSlider.css';
 
 function ModelConfigurationSlider({
 	config,
-	updateConfigValue,
+	updateStateConfigValue,
 }: {
 	config: CustomChatModelConfiguration;
-	updateConfigValue: (id: MODEL_CONFIG, newValue: number) => void;
+	updateStateConfigValue: (id: MODEL_CONFIG, newValue: number) => void;
 }) {
 	const [value, setValue] = useState<number>(config.value);
 
@@ -24,11 +24,9 @@ function ModelConfigurationSlider({
 	}
 
 	function handleValueCommitted() {
-		console.log(value, config.value);
-		const valueChanged = value !== config.value;
-		if (valueChanged) {
+		if (value !== config.value) {
 			void configureGptModel(config.id, value);
-			updateConfigValue(config.id, value);
+			updateStateConfigValue(config.id, value);
 		}
 	}
 
