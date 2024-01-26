@@ -3,14 +3,9 @@ import { RetrievalQAChain } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { PromptTemplate } from 'langchain/prompts';
 
-import { queryDocuments, queryPromptEvaluationModel } from '@src/langchain';
+import { queryDocuments } from '@src/langchain';
 import { LEVEL_NAMES } from '@src/models/level';
-import {
-	qAPrompt,
-	qaContextTemplate,
-	promptEvalContextTemplate,
-	promptEvalPrompt,
-} from '@src/promptTemplates';
+import { qAPrompt, qaContextTemplate } from '@src/promptTemplates';
 
 const mockRetrievalQAChain = {
 	call: jest.fn<() => Promise<{ text: string }>>(),

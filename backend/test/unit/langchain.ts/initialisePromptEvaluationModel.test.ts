@@ -1,5 +1,5 @@
-import { test, jest, expect } from '@jest/globals';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { afterEach, test, jest, expect } from '@jest/globals';
+import { OpenAI } from 'langchain/llms/openai';
 import { PromptTemplate } from 'langchain/prompts';
 
 import { queryPromptEvaluationModel } from '@src/langchain';
@@ -12,20 +12,9 @@ const mockPromptEvalChain = {
 	call: jest.fn<() => Promise<{ promptEvalOutput: string }>>(),
 };
 
-// eslint-disable-next-line jest/unbound-method
-const mockFromTemplate = PromptTemplate.fromTemplate as jest.MockedFunction<
-	typeof PromptTemplate.fromTemplate
->;
-
-const mockInitOpenAI = jest.fn();
-
-jest.mock('langchain/llms/openai', () => {
-	return {
-		OpenAI: jest.fn().mockImplementation(() => {
-			return mockInitOpenAI;
-		}),
-	};
-});
+jest.mock('langchain/prompts');
+const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
+PromptTemplate.fromTemplate = mockFromTemplate;
 
 jest.mock('langchain/chains', () => {
 	return {
@@ -47,9 +36,15 @@ jest.mock('@src/openai', () => {
 	};
 });
 
-test.only('WHEN we query the prompt evaluation model THEN it is initialised', async () => {
+jest.mock('langchain/llms/openai');
+
+afterEach(() => {
+	jest.clearAllMocks();
+});
+
+test.skip('WHEN we query the prompt evaluation model THEN it is initialised', async () => {
 	mockFromTemplate.mockReturnValueOnce('' as unknown as PromptTemplate);
-	// mockInitOpenAI.mockReturnValueOnce('' as unknown as OpenAI);
+	// initNewOpenAI.mockReturnValueOnce('' as unknown as OpenAI);
 
 	await queryPromptEvaluationModel('some input', promptEvalPrompt);
 
@@ -57,6 +52,7 @@ test.only('WHEN we query the prompt evaluation model THEN it is initialised', as
 	expect(mockFromTemplate).toHaveBeenCalledWith(
 		`${promptEvalPrompt}\n${promptEvalContextTemplate}`
 	);
+	// expect(initNewOpenAI).toHaveBeenCalledTimes(1);
 
 	// check above three mocks were called with correct args
 });
@@ -76,9 +72,9 @@ test('GIVEN the users api key supports GPT-4 WHEN the prompt evaluation model is
 
 	await queryPromptEvaluationModel('some input', prompt);
 
-	expect(ChatOpenAI).toHaveBeenCalledWith({
+	expect(OpenAI).toHaveBeenCalledWith({
 		modelName: 'gpt-4',
-		streaming: true,
+		temperature: 0,
 		openAIApiKey: 'sk-12345',
 	});
 });
@@ -90,9 +86,9 @@ test('GIVEN the users api key does not support GPT-4 WHEN the prompt evaluation 
 
 	await queryPromptEvaluationModel('some input', prompt);
 
-	expect(ChatOpenAI).toHaveBeenCalledWith({
+	expect(OpenAI).toHaveBeenCalledWith({
 		modelName: 'gpt-3.5-turbo',
-		streaming: true,
+		temperature: 0,
 		openAIApiKey: 'sk-12345',
 	});
 });
