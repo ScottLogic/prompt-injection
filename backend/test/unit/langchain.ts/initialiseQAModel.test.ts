@@ -74,6 +74,7 @@ test('WHEN we query the documents with an empty prompt THEN the qa llm is initia
 	const prompt = '';
 
 	await queryDocuments('some question', prompt, level);
+
 	expect(mockFromLLM).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
@@ -86,6 +87,7 @@ test('WHEN we query the documents with a prompt THEN the llm is initialised and 
 	const prompt = 'this is a test prompt. ';
 
 	await queryDocuments('some question', prompt, level);
+
 	expect(mockFromLLM).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
@@ -101,7 +103,9 @@ test('GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it an
 	mockRetrievalQAChain.call.mockResolvedValueOnce({
 		text: 'The CEO is Bill.',
 	});
+
 	const answer = await queryDocuments(question, prompt, level);
+
 	expect(mockFromLLM).toHaveBeenCalledTimes(1);
 	expect(mockRetrievalQAChain.call).toHaveBeenCalledTimes(1);
 	expect(answer.reply).toEqual('The CEO is Bill.');
