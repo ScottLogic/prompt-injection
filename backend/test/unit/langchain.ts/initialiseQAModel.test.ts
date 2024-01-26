@@ -10,9 +10,6 @@ import { qAPrompt, qaContextTemplate } from '@src/promptTemplates';
 const mockRetrievalQAChain = {
 	call: jest.fn<() => Promise<{ text: string }>>(),
 };
-const mockPromptEvalChain = {
-	call: jest.fn<() => Promise<{ promptEvalOutput: string }>>(),
-};
 const mockFromLLM = jest.fn<() => typeof mockRetrievalQAChain>();
 const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
 
@@ -43,9 +40,6 @@ jest.mock('langchain/chains', () => {
 		RetrievalQAChain: jest.fn().mockImplementation(() => {
 			return mockRetrievalQAChain;
 		}),
-		LLMChain: jest.fn().mockImplementation(() => {
-			return mockPromptEvalChain;
-		}),
 	};
 });
 RetrievalQAChain.fromLLM =
@@ -64,13 +58,12 @@ beforeEach(() => {
 	// reset environment variables
 	process.env = {
 		OPENAI_API_KEY: 'sk-12345',
-	};
+	}; // can we do this once in a beforeAll?
 
-	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
+	mockFromLLM.mockImplementation(() => mockRetrievalQAChain); // this is weird
 });
 
 afterEach(() => {
-	mockPromptEvalChain.call.mockRestore();
 	mockRetrievalQAChain.call.mockRestore();
 	mockFromLLM.mockRestore();
 	mockFromTemplate.mockRestore();
