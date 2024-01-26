@@ -1,20 +1,19 @@
 import { Slider } from '@mui/material';
 import { SyntheticEvent, useEffect, useState } from 'react';
 
-import { CustomChatModelConfiguration } from '@src/models/chat';
+import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
 import { configureGptModel } from '@src/service/chatService';
 
 import './ModelConfigurationSlider.css';
 
 function ModelConfigurationSlider({
 	config,
+	updateConfigValue,
 }: {
 	config: CustomChatModelConfiguration;
+	updateConfigValue: (id: MODEL_CONFIG, newValue: number) => void;
 }) {
 	const [value, setValue] = useState<number>(config.value);
-	const [currentConfiguredValue, setCurrentConfiguredValue] = useState<number>(
-		config.value
-	);
 
 	function handleValueChange(
 		_: Event | SyntheticEvent,
@@ -25,10 +24,11 @@ function ModelConfigurationSlider({
 	}
 
 	function handleValueCommitted() {
-		const valueChanged = value !== currentConfiguredValue;
+		console.log(value, config.value);
+		const valueChanged = value !== config.value;
 		if (valueChanged) {
 			void configureGptModel(config.id, value);
-			setCurrentConfiguredValue(value);
+			updateConfigValue(config.id, value);
 		}
 	}
 

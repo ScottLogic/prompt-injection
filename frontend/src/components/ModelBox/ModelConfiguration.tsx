@@ -45,6 +45,23 @@ function ModelConfiguration() {
 		},
 	]);
 
+	function updateConfigValue(id: MODEL_CONFIG, newValue: number) {
+		const selectedConfig = customChatModelConfigs.find(
+			(config) => config.id === id
+		);
+		if (selectedConfig) {
+			const otherConfigs = customChatModelConfigs.filter(
+				(config) => config.id !== id
+			);
+			const updatedSelectedConfig = { ...selectedConfig, value: newValue };
+			const newCustomChatModelConfigs = [
+				updatedSelectedConfig,
+				...otherConfigs,
+			];
+			setCustomChatModel(newCustomChatModelConfigs);
+		}
+	}
+
 	// get model configs on mount
 	useEffect(() => {
 		getGptModel()
@@ -67,7 +84,11 @@ function ModelConfiguration() {
 	return (
 		<div className="model-config-box">
 			{customChatModelConfigs.map((config) => (
-				<ModelConfigurationSlider key={config.id} config={config} />
+				<ModelConfigurationSlider
+					key={config.id}
+					config={config}
+					updateConfigValue={updateConfigValue}
+				/>
 			))}
 		</div>
 	);
