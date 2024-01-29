@@ -17,7 +17,7 @@ function DefenceConfigurationInput({
 	currentValue: string;
 	disabled: boolean;
 	inputType: 'text' | 'number';
-	setConfigurationValue: (value: string) => void;
+	setConfigurationValue: (value: string) => Promise<void>;
 	id: string;
 	defence: Defence;
 	config: DefenceConfigItem;
@@ -31,6 +31,24 @@ function DefenceConfigurationInput({
 		setValue(currentValue);
 	}, [currentValue]);
 
+	async function setConfigurationValueIfDifferent(value: string) {
+		if (value !== config.value) {
+			console.log(value)
+			const trimmedValue = value.trim();
+			if(configValidated){
+			await setConfigurationValue(trimmedValue);
+			console.log("set the configuration value")
+			console.log(trimmedValue)
+			setValue(trimmedValue)
+			} else {
+			setValue(currentValue)
+			setConfigValidated(true);
+			console.log("invalid configuration value")
+			console.log(currentValue)
+			}
+		}
+	}
+
 	function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
 		if (event.key === 'Enter' && !event.shiftKey) {
 			event.preventDefault();
@@ -41,7 +59,7 @@ function DefenceConfigurationInput({
 		// shift+enter shouldn't send message
 		if (event.key === 'Enter' && !event.shiftKey) {
 			// asynchronously send the message
-			setConfigurationValue(value);
+			void setConfigurationValueIfDifferent(value);
 		}
 	}
 
@@ -49,26 +67,23 @@ function DefenceConfigurationInput({
 		if(validateDefence(defence.id, config.id, value)) {
 			setConfigValidated(true);
 		}
-		else{
+		else {
 			setConfigValidated(false);
 		}
-	}
-
-	function onClick() {
-		setConfigurationValue(value);
 	}
 
 	if (inputType === 'text') {
 		return (
 			<>
 			<ThemedTextArea
+				// key={inputKey}
 				id={id}
 				content={value}
 				onContentChanged={setValue}
 				disabled={disabled}
 				maxLines={10}
 				onBlur={() => {
-					validateNewInput(value);
+					void setConfigurationValueIfDifferent(value);
 				}}
 				onKeyDown={inputKeyDown}
 				onKeyUp={inputKeyUp}
@@ -76,7 +91,6 @@ function DefenceConfigurationInput({
 				configValidated={configValidated}
 				validateInput={validateNewInput}
 			/>
-			{configValidated ?<button onClick={onClick}>ok</button> : ''}
 			<p className="invalid-text">
 				{configValidated ? '' : 'Invalid configuration value'}
 			</p>
@@ -91,10 +105,10 @@ function DefenceConfigurationInput({
 				onContentChanged={setValue}
 				disabled={disabled}
 				enterPressed={() => {
-					setConfigurationValue(value);
+					void setConfigurationValueIfDifferent(value);
 				}}
 				onBlur={() => {
-					setConfigurationValue(value);
+					void setConfigurationValueIfDifferent(value);
 				}}
 			/>
 			<p className="invalid-text">

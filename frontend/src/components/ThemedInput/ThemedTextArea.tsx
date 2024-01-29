@@ -99,8 +99,6 @@ function ThemedTextArea({
 		validateInput(event.target.value);
 	}
 
-	
-
 	const validInput = configValidated ? '' : 'invalid-input';
 
 	const textAreaClass = clsx('themed-input', 'themed-text-area', spacing, validInput, {

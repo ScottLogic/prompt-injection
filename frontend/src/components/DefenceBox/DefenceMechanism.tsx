@@ -50,8 +50,6 @@ function DefenceMechanism({
 		configId: string,
 		value: string
 	) {
-		const configIsValid = validateDefence(defence.id, configId, value);
-		if (configIsValid) {
 			const newConfiguration = defence.config.map((config) => {
 				if (config.id === configId) {
 					config.value = value;
@@ -59,15 +57,12 @@ function DefenceMechanism({
 				return config;
 			});
 
-			const configured = await setDefenceConfiguration(
+			await setDefenceConfiguration(
 				defence.id,
 				newConfiguration
 			);
-			showDefenceConfiguredText(configured);
-		} else {
-			showDefenceConfiguredText(false);
-		}
 	}
+	
 	return (
 		<fieldset className="defence-mechanism-fieldset">
 			<legend className="defence-mechanism-legend">{defenceDetail.name}</legend>
