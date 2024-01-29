@@ -2,7 +2,6 @@ import { Slider } from '@mui/material';
 import { SyntheticEvent, useEffect, useState } from 'react';
 
 import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
-import { configureGptModel } from '@src/service/chatService';
 
 import './ModelConfigurationSlider.css';
 
@@ -25,7 +24,6 @@ function ModelConfigurationSlider({
 
 	function handleValueCommitted() {
 		if (value !== config.value) {
-			void configureGptModel(config.id, value);
 			onConfigChanged(config.id, value);
 		}
 	}

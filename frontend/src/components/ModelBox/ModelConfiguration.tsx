@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
-import { getGptModel } from '@src/service/chatService';
+import { configureGptModel, getGptModel } from '@src/service/chatService';
 
 import ModelConfigurationSlider from './ModelConfigurationSlider';
 
@@ -44,16 +44,27 @@ function ModelConfiguration() {
 			max: 2,
 		},
 	]);
+	const [sliderKeyOffset, setSliderKeyOffset] = useState<number>(0);
 
 	function updateConfigValue(id: MODEL_CONFIG, newValue: number) {
-		setCustomChatModel((prev) => {
-			return prev.map((config) => {
-				if (config.id === id) {
-					return { ...config, value: newValue };
-				}
-				return config;
-			});
+		void configureGptModel(id, newValue).then((success) => {
+			if (success) {
+				setCustomChatModel((prev) => {
+					return prev.map((config) => {
+						if (config.id === id) {
+							return { ...config, value: newValue };
+						}
+						return config;
+					});
+				});
+			} else {
+				returnSliderToPreviousValue();
+			}
 		});
+	}
+
+	function returnSliderToPreviousValue() {
+		setSliderKeyOffset(sliderKeyOffset + 1);
 	}
 
 	// get model configs on mount
@@ -77,9 +88,9 @@ function ModelConfiguration() {
 
 	return (
 		<div className="model-config-box">
-			{customChatModelConfigs.map((config) => (
+			{customChatModelConfigs.map((config, index) => (
 				<ModelConfigurationSlider
-					key={config.id}
+					key={index + sliderKeyOffset}
 					config={config}
 					onConfigChanged={updateConfigValue}
 				/>
