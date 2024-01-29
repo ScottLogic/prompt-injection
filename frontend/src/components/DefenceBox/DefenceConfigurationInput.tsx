@@ -33,18 +33,18 @@ function DefenceConfigurationInput({
 
 	async function setConfigurationValueIfDifferent(value: string) {
 		if (value !== config.value) {
-			console.log(value)
+			console.log(value);
 			const trimmedValue = value.trim();
-			if(configValidated){
-			await setConfigurationValue(trimmedValue);
-			console.log("set the configuration value")
-			console.log(trimmedValue)
-			setValue(trimmedValue)
+			if (configValidated) {
+				await setConfigurationValue(trimmedValue);
+				console.log('set the configuration value');
+				console.log(trimmedValue);
+				setValue(trimmedValue);
 			} else {
-			setValue(currentValue)
-			setConfigValidated(true);
-			console.log("invalid configuration value")
-			console.log(currentValue)
+				setValue(currentValue);
+				setConfigValidated(true);
+				console.log('invalid configuration value');
+				console.log(currentValue);
 			}
 		}
 	}
@@ -64,10 +64,9 @@ function DefenceConfigurationInput({
 	}
 
 	function validateNewInput(value: string) {
-		if(validateDefence(defence.id, config.id, value)) {
+		if (validateDefence(defence.id, config.id, value)) {
 			setConfigValidated(true);
-		}
-		else {
+		} else {
 			setConfigValidated(false);
 		}
 	}
@@ -75,45 +74,44 @@ function DefenceConfigurationInput({
 	if (inputType === 'text') {
 		return (
 			<>
-			<ThemedTextArea
-				// key={inputKey}
-				id={id}
-				content={value}
-				onContentChanged={setValue}
-				disabled={disabled}
-				maxLines={10}
-				onBlur={() => {
-					void setConfigurationValueIfDifferent(value);
-				}}
-				onKeyDown={inputKeyDown}
-				onKeyUp={inputKeyUp}
-				characterLimit={CONFIG_VALUE_CHARACTER_LIMIT}
-				configValidated={configValidated}
-				validateInput={validateNewInput}
-			/>
-			<p className="invalid-text">
-				{configValidated ? '' : 'Invalid configuration value'}
-			</p>
+				<ThemedTextArea
+					id={id}
+					content={value}
+					onContentChanged={setValue}
+					disabled={disabled}
+					maxLines={10}
+					onBlur={() => {
+						void setConfigurationValueIfDifferent(value);
+					}}
+					onKeyDown={inputKeyDown}
+					onKeyUp={inputKeyUp}
+					characterLimit={CONFIG_VALUE_CHARACTER_LIMIT}
+					configValidated={configValidated}
+					validateInput={validateNewInput}
+				/>
+				<p className="invalid-text">
+					{configValidated ? '' : 'Error: Invalid configuration value'}
+				</p>
 			</>
 		);
 	} else {
 		return (
 			<>
-			<ThemedNumberInput
-				id={id}
-				content={value}
-				onContentChanged={setValue}
-				disabled={disabled}
-				enterPressed={() => {
-					void setConfigurationValueIfDifferent(value);
-				}}
-				onBlur={() => {
-					void setConfigurationValueIfDifferent(value);
-				}}
-			/>
-			<p className="invalid-text">
-				{configValidated ? '' : 'Invalid configuration value'}
-			</p>
+				<ThemedNumberInput
+					id={id}
+					content={value}
+					onContentChanged={setValue}
+					disabled={disabled}
+					enterPressed={() => {
+						void setConfigurationValueIfDifferent(value);
+					}}
+					onBlur={() => {
+						void setConfigurationValueIfDifferent(value);
+					}}
+				/>
+				<p className="invalid-text">
+					{configValidated ? '' : 'Invalid configuration value'}
+				</p>
 			</>
 		);
 	}

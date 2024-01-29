@@ -1,7 +1,5 @@
-import { useState } from 'react';
-
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
-import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
+import { Defence, DefenceConfigItem } from '@src/models/defence';
 
 import DefenceConfigurationInput from './DefenceConfigurationInput';
 
@@ -24,7 +22,6 @@ function DefenceConfiguration({
 	) => Promise<void>;
 	resetConfigurationValue: (defence: Defence, configId: string) => void;
 }) {
-
 	const uniqueInputId = `${defence.id}-${config.id}`;
 	const supportText = `reset ${config.name} to default`;
 
@@ -47,7 +44,6 @@ function DefenceConfiguration({
 			</div>
 			<DefenceConfigurationInput
 				id={uniqueInputId}
-				// key={inputKey}
 				currentValue={config.value}
 				disabled={!isActive}
 				inputType={config.inputType}

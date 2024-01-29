@@ -67,7 +67,7 @@ function ThemedTextArea({
 	characterLimit,
 	id,
 	configValidated,
-	validateInput
+	validateInput,
 }: {
 	// required
 	content: string;
@@ -101,9 +101,15 @@ function ThemedTextArea({
 
 	const validInput = configValidated ? '' : 'invalid-input';
 
-	const textAreaClass = clsx('themed-input', 'themed-text-area', spacing, validInput, {
-		disabled,
-	});
+	const textAreaClass = clsx(
+		'themed-input',
+		'themed-text-area',
+		spacing,
+		validInput,
+		{
+			disabled,
+		}
+	);
 
 	// allow scrolling even when disabled
 	const isOverflow = useIsOverflow(textareaRef);
