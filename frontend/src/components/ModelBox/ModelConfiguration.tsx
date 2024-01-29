@@ -46,20 +46,14 @@ function ModelConfiguration() {
 	]);
 
 	function updateConfigValue(id: MODEL_CONFIG, newValue: number) {
-		const selectedConfig = customChatModelConfigs.find(
-			(config) => config.id === id
-		);
-		if (selectedConfig) {
-			const otherConfigs = customChatModelConfigs.filter(
-				(config) => config.id !== id
-			);
-			const updatedSelectedConfig = { ...selectedConfig, value: newValue };
-			const newCustomChatModelConfigs = [
-				updatedSelectedConfig,
-				...otherConfigs,
-			];
-			setCustomChatModel(newCustomChatModelConfigs);
-		}
+		setCustomChatModel((prev) => {
+			return prev.map((config) => {
+				if (config.id === id) {
+					return { ...config, value: newValue };
+				}
+				return config;
+			});
+		});
 	}
 
 	// get model configs on mount
