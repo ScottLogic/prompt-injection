@@ -66,6 +66,8 @@ function ThemedTextArea({
 	onKeyUp,
 	characterLimit,
 	id,
+	configValidated,
+	validateInput
 }: {
 	// required
 	content: string;
@@ -81,6 +83,8 @@ function ThemedTextArea({
 	onBlur?: () => void;
 	characterLimit?: number;
 	id?: string;
+	configValidated: boolean;
+	validateInput: (value: string) => void;
 }) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -92,9 +96,14 @@ function ThemedTextArea({
 
 	function inputChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
 		onContentChanged(event.target.value);
+		validateInput(event.target.value);
 	}
 
-	const textAreaClass = clsx('themed-input', 'themed-text-area', spacing, {
+	
+
+	const validInput = configValidated ? '' : 'invalid-input';
+
+	const textAreaClass = clsx('themed-input', 'themed-text-area', spacing, validInput, {
 		disabled,
 	});
 
