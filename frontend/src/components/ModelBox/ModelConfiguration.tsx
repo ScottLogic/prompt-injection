@@ -87,7 +87,7 @@ function ModelConfiguration() {
 				<ModelConfigurationSlider
 					key={config.id}
 					config={config}
-					updateStateConfigValue={updateConfigValue}
+					onConfigChanged={updateConfigValue}
 				/>
 			))}
 		</div>
