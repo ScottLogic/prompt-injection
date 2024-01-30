@@ -1,5 +1,5 @@
 import {
-	ChatCompletionMessage,
+	ChatCompletionAssistantMessageParam,
 	ChatCompletionMessageParam,
 	ChatCompletionUserMessageParam,
 } from 'openai/resources/chat/completions';
@@ -94,7 +94,7 @@ interface ChatResponse {
 
 interface ChatGptReply {
 	chatHistory: ChatMessage[];
-	completion: ChatCompletionMessage | null;
+	completion: ChatCompletionAssistantMessageParam | null;
 	openAIErrorMessage: string | null;
 }
 
