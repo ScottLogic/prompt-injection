@@ -72,8 +72,6 @@ function ThemedTextArea({
 	// required
 	content: string;
 	onContentChanged: (newContent: string) => void;
-	configValidated: boolean;
-	validateInput: (value: string) => void;
 	// optional
 	autoFocus?: boolean;
 	disabled?: boolean;
@@ -85,6 +83,8 @@ function ThemedTextArea({
 	onBlur?: () => void;
 	characterLimit?: number;
 	id?: string;
+	configValidated?: boolean;
+	validateInput?: (value: string) => void;
 }) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -96,10 +96,13 @@ function ThemedTextArea({
 
 	function inputChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
 		onContentChanged(event.target.value);
-		validateInput(event.target.value);
+		if (validateInput) {
+			validateInput(event.target.value);
+		}
 	}
 
-	const validInput = configValidated ? '' : 'invalid-input';
+	// check config validated exists and is not false
+	const validInput = configValidated === false ? 'invalid-input' : '';
 
 	const textAreaClass = clsx(
 		'themed-input',
