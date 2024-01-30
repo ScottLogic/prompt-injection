@@ -19,6 +19,7 @@ import {
 	MessageTransformation,
 	defaultChatModel,
 	ChatUserTransformedMessage,
+	ChatInfoMessage,
 } from '@src/models/chat';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -54,10 +55,8 @@ function createNewUserMessages(
 				infoMessage: message,
 			},
 			{
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.INFO,
 				infoMessage: messageTransformation.transformedMessageInfo,
-			},
+			} as ChatInfoMessage,
 			{
 				completion: {
 					role: 'user',
