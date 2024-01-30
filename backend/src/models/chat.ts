@@ -1,6 +1,7 @@
 import {
 	ChatCompletionMessage,
 	ChatCompletionMessageParam,
+	ChatCompletionUserMessageParam,
 } from 'openai/resources/chat/completions';
 
 import { DEFENCE_ID } from './defence';
@@ -126,12 +127,19 @@ interface LevelHandlerResponse {
 	chatHistory: ChatMessage[];
 }
 
-type ChatMessage = {
+type ChatMessageUserTransformed = {
+	completion: ChatCompletionUserMessageParam;
+	chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED;
+	transformedMessage: TransformedChatMessage;
+};
+
+type ChatMessageGeneric = {
 	completion: ChatCompletionMessageParam | null;
 	chatMessageType: CHAT_MESSAGE_TYPE;
 	infoMessage?: string | null;
-	transformedMessage?: TransformedChatMessage;
 };
+
+type ChatMessage = ChatMessageGeneric | ChatMessageUserTransformed;
 
 // default settings for chat model
 const defaultChatModel: ChatModel = {
@@ -152,6 +160,8 @@ export type {
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
+	ChatMessageUserTransformed,
+	ChatMessageGeneric,
 	ChatMessage,
 	TransformedChatMessage,
 	FunctionCallResponse,
