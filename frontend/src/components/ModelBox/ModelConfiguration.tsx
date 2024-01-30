@@ -44,27 +44,33 @@ function ModelConfiguration() {
 			max: 2,
 		},
 	]);
-	const [sliderKeyOffset, setSliderKeyOffset] = useState<number>(0);
 
-	function updateConfigValue(id: MODEL_CONFIG, newValue: number) {
-		void configureGptModel(id, newValue).then((success) => {
-			if (success) {
-				setCustomChatModel((prev) => {
-					return prev.map((config) => {
-						if (config.id === id) {
-							return { ...config, value: newValue };
-						}
-						return config;
-					});
-				});
-			} else {
-				returnSliderToPreviousValue();
-			}
+	function setCustomChatModelByID(id: MODEL_CONFIG, value: number) {
+		setCustomChatModel((prev) => {
+			return prev.map((config) => {
+				if (config.id === id) {
+					return { ...config, value };
+				}
+				return config;
+			});
 		});
 	}
 
-	function returnSliderToPreviousValue() {
-		setSliderKeyOffset(sliderKeyOffset + 1);
+	function updateConfigValue(id: MODEL_CONFIG, newValue: number) {
+		const prevValue = customChatModelConfigs.find(
+			(config) => config.id === id
+		)?.value;
+
+		if (!prevValue)
+			throw new Error(`ModelConfiguration: No config with id: ${id}`);
+
+		setCustomChatModelByID(id, newValue);
+
+		void configureGptModel(id, newValue).then((success) => {
+			if (!success) {
+				setCustomChatModelByID(id, prevValue);
+			}
+		});
 	}
 
 	// get model configs on mount
@@ -88,9 +94,9 @@ function ModelConfiguration() {
 
 	return (
 		<div className="model-config-box">
-			{customChatModelConfigs.map((config, index) => (
+			{customChatModelConfigs.map((config) => (
 				<ModelConfigurationSlider
-					key={index + sliderKeyOffset}
+					key={config.id}
 					config={config}
 					onConfigChanged={updateConfigValue}
 				/>
