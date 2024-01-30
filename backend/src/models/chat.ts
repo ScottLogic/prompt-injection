@@ -139,6 +139,11 @@ interface LevelHandlerResponse {
 // 	ERROR_MSG,
 // 	RESET_LEVEL,
 
+type ChatInfoMessage = {
+	chatMessageType: CHAT_MESSAGE_TYPE.INFO;
+	infoMessage: string;
+};
+
 type ChatMessageUserTransformed = {
 	completion: ChatCompletionUserMessageParam;
 	chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED;
@@ -151,7 +156,10 @@ type ChatMessageGeneric = {
 	infoMessage?: string | null;
 };
 
-type ChatMessage = ChatMessageGeneric | ChatMessageUserTransformed;
+type ChatMessage =
+	| ChatMessageGeneric
+	| ChatMessageUserTransformed
+	| ChatInfoMessage;
 
 // default settings for chat model
 const defaultChatModel: ChatModel = {
@@ -173,6 +181,7 @@ export type {
 	LevelHandlerResponse,
 	ChatHttpResponse,
 	ChatMessageUserTransformed,
+	ChatInfoMessage,
 	ChatMessageGeneric,
 	ChatMessage,
 	TransformedChatMessage,
