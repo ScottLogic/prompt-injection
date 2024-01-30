@@ -271,7 +271,7 @@ async function chatGptChatCompletion(
 
 		// check to see if there's already a system role
 		const systemRole = chatHistory.find(
-			(message) => message.completion?.role === 'system'
+			(message) => message.chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM
 		);
 		if (!systemRole) {
 			// add the system role to the start of the chat history
