@@ -2,12 +2,8 @@ import { expect, jest, test, describe } from '@jest/globals';
 
 import { defaultDefences } from '@src/defaultDefences';
 import { activateDefence, configureDefence } from '@src/defence';
-import {
-	CHAT_MESSAGE_TYPE,
-	CHAT_MODELS,
-	ChatHistoryMessage,
-	ChatModel,
-} from '@src/models/chat';
+import { CHAT_MESSAGE_TYPE, CHAT_MODELS, ChatModel } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { chatGptSendMessage } from '@src/openai';
 import { systemRoleDefault } from '@src/promptTemplates';
@@ -57,7 +53,7 @@ function chatResponseAssistant(content: string) {
 describe('OpenAI Integration Tests', () => {
 	test('GIVEN OpenAI initialised WHEN sending message THEN reply is returned', async () => {
 		const message = 'Hello';
-		const initChatHistory: ChatHistoryMessage[] = [];
+		const initChatHistory: ChatMessage[] = [];
 		const defences: Defence[] = defaultDefences;
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
@@ -90,7 +86,7 @@ describe('OpenAI Integration Tests', () => {
 
 	test('GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to chat history', async () => {
 		const message = 'Hello';
-		const initChatHistory: ChatHistoryMessage[] = [];
+		const initChatHistory: ChatMessage[] = [];
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
 			configuration: {
@@ -122,8 +118,11 @@ describe('OpenAI Integration Tests', () => {
 		// check the chat history has been updated
 		expect(chatHistory.length).toBe(1);
 		// system role is added to the start of the chat history
-		expect(chatHistory[0].completion?.role).toBe('system');
-		expect(chatHistory[0].completion?.content).toBe(systemRoleDefault);
+		expect('completion' in chatHistory[0]);
+		if ('completion' in chatHistory[0]) {
+			expect(chatHistory[0].completion.role).toBe('system');
+			expect(chatHistory[0].completion.content).toBe(systemRoleDefault);
+		}
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -131,7 +130,7 @@ describe('OpenAI Integration Tests', () => {
 
 	test('GIVEN SYSTEM_ROLE defence is active WHEN sending message THEN system role is added to the start of the chat history', async () => {
 		const message = 'Hello';
-		const initChatHistory: ChatHistoryMessage[] = [
+		const initChatHistory: ChatMessage[] = [
 			{
 				completion: {
 					role: 'user',
@@ -176,14 +175,24 @@ describe('OpenAI Integration Tests', () => {
 		expect(chatResponse.completion?.content).toBe('Hi');
 		// check the chat history has been updated
 		expect(chatHistory.length).toBe(3);
-		// system role is added to the start of the chat history
-		expect(chatHistory[0].completion?.role).toBe('system');
-		expect(chatHistory[0].completion?.content).toBe(systemRoleDefault);
-		// rest of the chat history is in order
-		expect(chatHistory[1].completion?.role).toBe('user');
-		expect(chatHistory[1].completion?.content).toBe("I'm a user");
-		expect(chatHistory[2].completion?.role).toBe('assistant');
-		expect(chatHistory[2].completion?.content).toBe("I'm an assistant");
+		expect('completion' in chatHistory[0]);
+		expect('completion' in chatHistory[1]);
+		expect('completion' in chatHistory[2]);
+		if (
+			'completion' in chatHistory[0] &&
+			'completion' in chatHistory[1] &&
+			'completion' in chatHistory[2]
+		) {
+			// system role is added to the start of the chat history
+			expect(chatHistory[0].completion.role).toBe('system');
+			expect(chatHistory[0].completion.content).toBe(systemRoleDefault);
+
+			// rest of the chat history is in order
+			expect(chatHistory[1].completion.role).toBe('user');
+			expect(chatHistory[1].completion.content).toBe("I'm a user");
+			expect(chatHistory[2].completion.role).toBe('assistant');
+			expect(chatHistory[2].completion.content).toBe("I'm an assistant");
+		}
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -191,7 +200,7 @@ describe('OpenAI Integration Tests', () => {
 
 	test('GIVEN SYSTEM_ROLE defence is inactive WHEN sending message THEN system role is removed from the chat history', async () => {
 		const message = 'Hello';
-		const initChatHistory: ChatHistoryMessage[] = [
+		const initChatHistory: ChatMessage[] = [
 			{
 				completion: {
 					role: 'system',
@@ -244,10 +253,15 @@ describe('OpenAI Integration Tests', () => {
 		expect(chatHistory.length).toBe(2);
 		// system role is removed from the start of the chat history
 		// rest of the chat history is in order
-		expect(chatHistory[0].completion?.role).toBe('user');
-		expect(chatHistory[0].completion?.content).toBe("I'm a user");
-		expect(chatHistory[1].completion?.role).toBe('assistant');
-		expect(chatHistory[1].completion?.content).toBe("I'm an assistant");
+		expect('completion' in chatHistory[0]);
+		expect('completion' in chatHistory[1]);
+
+		if ('completion' in chatHistory[0] && 'completion' in chatHistory[1]) {
+			expect(chatHistory[0].completion.role).toBe('user');
+			expect(chatHistory[0].completion.content).toBe("I'm a user");
+			expect(chatHistory[1].completion.role).toBe('assistant');
+			expect(chatHistory[1].completion.content).toBe("I'm an assistant");
+		}
 
 		// restore the mock
 		mockCreateChatCompletion.mockRestore();
@@ -258,7 +272,7 @@ describe('OpenAI Integration Tests', () => {
 			'WHEN sending message THEN system role is replaced with default value in the chat history',
 		async () => {
 			const message = 'Hello';
-			const initChatHistory: ChatHistoryMessage[] = [
+			const initChatHistory: ChatMessage[] = [
 				{
 					completion: {
 						role: 'system',
@@ -319,16 +333,27 @@ describe('OpenAI Integration Tests', () => {
 
 			expect(reply).toBeDefined();
 			expect(chatResponse.completion?.content).toBe('Hi');
-			// system role is added to the start of the chat history
-			expect(chatHistory[0].completion?.role).toBe('system');
-			expect(chatHistory[0].completion?.content).toBe(
-				'You are not a helpful assistant'
-			);
-			// rest of the chat history is in order
-			expect(chatHistory[1].completion?.role).toBe('user');
-			expect(chatHistory[1].completion?.content).toBe("I'm a user");
-			expect(chatHistory[2].completion?.role).toBe('assistant');
-			expect(chatHistory[2].completion?.content).toBe("I'm an assistant");
+
+			expect('completion' in chatHistory[0]).toBe(true);
+			expect('completion' in chatHistory[1]).toBe(true);
+			expect('completion' in chatHistory[2]).toBe(true);
+
+			if (
+				'completion' in chatHistory[0] &&
+				'completion' in chatHistory[1] &&
+				'completion' in chatHistory[2]
+			) {
+				// system role is added to the start of the chat history
+				expect(chatHistory[0].completion.role).toBe('system');
+				expect(chatHistory[0].completion.content).toBe(
+					'You are not a helpful assistant'
+				);
+				// rest of the chat history is in order
+				expect(chatHistory[1].completion.role).toBe('user');
+				expect(chatHistory[1].completion.content).toBe("I'm a user");
+				expect(chatHistory[2].completion.role).toBe('assistant');
+				expect(chatHistory[2].completion.content).toBe("I'm an assistant");
+			}
 
 			// restore the mock
 			mockCreateChatCompletion.mockRestore();

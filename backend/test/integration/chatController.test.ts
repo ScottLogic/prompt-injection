@@ -3,11 +3,8 @@ import { Response } from 'express';
 
 import { handleChatToGPT } from '@src/controller/chatController';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
-import {
-	CHAT_MESSAGE_TYPE,
-	ChatHistoryMessage,
-	ChatModel,
-} from '@src/models/chat';
+import { CHAT_MESSAGE_TYPE, ChatModel } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
@@ -21,7 +18,7 @@ declare module 'express-session' {
 	}
 	interface LevelState {
 		level: LEVEL_NAMES;
-		chatHistory: ChatHistoryMessage[];
+		chatHistory: ChatMessage[];
 		defences: Defence[];
 		sentEmails: EmailInfo[];
 	}
@@ -116,7 +113,7 @@ describe('handleChatToGPT integration tests', () => {
 	function openAiChatRequestMock(
 		message?: string,
 		level?: LEVEL_NAMES,
-		chatHistory: ChatHistoryMessage[] = [],
+		chatHistory: ChatMessage[] = [],
 		sentEmails: EmailInfo[] = [],
 		defences: Defence[] = []
 	): OpenAiChatRequest {
