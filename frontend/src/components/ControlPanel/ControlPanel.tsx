@@ -76,8 +76,8 @@ function ControlPanel({
 
 						{/* only show model box in sandbox mode */}
 						{showConfigurations && (
-							<ModelBox 
-								chatModelOptions={chatModelOptions} 
+							<ModelBox
+								chatModelOptions={chatModelOptions}
 								addInfoMessage={addInfoMessage}
 							/>
 						)}

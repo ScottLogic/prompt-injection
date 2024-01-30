@@ -43,7 +43,7 @@ function DefenceConfigurationInput({
 				setConfigValidated(true);
 			}
 		} else {
-			setValue(trimmedValue)
+			setValue(trimmedValue);
 		}
 	}
 

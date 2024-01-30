@@ -3,18 +3,18 @@ import ModelSelection from './ModelSelection';
 
 import './ModelBox.css';
 
-function ModelBox({ 
+function ModelBox({
 	chatModelOptions,
 	addInfoMessage,
- }: { 
+}: {
 	chatModelOptions: string[];
 	addInfoMessage: (message: string) => void;
- }) {
+}) {
 	return (
 		<div className="model-box">
-			<ModelSelection 
+			<ModelSelection
 				chatModelOptions={chatModelOptions}
-				addInfoMessage={addInfoMessage} 
+				addInfoMessage={addInfoMessage}
 			/>
 			<ModelConfiguration />
 		</div>

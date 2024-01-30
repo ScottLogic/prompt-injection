@@ -7,12 +7,12 @@ import { setGptModel, getGptModel } from '@src/service/chatService';
 import './ModelSelection.css';
 
 // return a drop down menu with the models
-function ModelSelection({ 
+function ModelSelection({
 	chatModelOptions,
 	addInfoMessage,
- }: { 
+}: {
 	chatModelOptions: string[];
-	addInfoMessage: (message: string) => void; 
+	addInfoMessage: (message: string) => void;
 }) {
 	// model currently selected in the dropdown
 	const [selectedModel, setSelectedModel] = useState<string | null>(null);
@@ -34,7 +34,7 @@ function ModelSelection({
 			if (modelUpdated) {
 				setModelInUse(currentSelectedModel);
 				setErrorChangingModel(false);
-				addInfoMessage(`Changed model to ${currentSelectedModel}`);	
+				addInfoMessage(`Changed model to ${currentSelectedModel}`);
 			} else {
 				setErrorChangingModel(true);
 			}
