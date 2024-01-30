@@ -129,7 +129,6 @@ interface LevelHandlerResponse {
 
 // 	BOT,
 // 	BOT_BLOCKED,
-// 	INFO,
 // 	USER,
 // 	LEVEL_INFO,
 // 	DEFENCE_ALERTED,
