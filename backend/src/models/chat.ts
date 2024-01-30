@@ -127,6 +127,18 @@ interface LevelHandlerResponse {
 	chatHistory: ChatMessage[];
 }
 
+// 	BOT,
+// 	BOT_BLOCKED,
+// 	INFO,
+// 	USER,
+// 	LEVEL_INFO,
+// 	DEFENCE_ALERTED,
+// 	DEFENCE_TRIGGERED,
+// 	SYSTEM,
+// 	FUNCTION_CALL,
+// 	ERROR_MSG,
+// 	RESET_LEVEL,
+
 type ChatMessageUserTransformed = {
 	completion: ChatCompletionUserMessageParam;
 	chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED;
