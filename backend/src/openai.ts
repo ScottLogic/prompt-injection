@@ -17,7 +17,7 @@ import {
 	CHAT_MESSAGE_TYPE,
 	CHAT_MODELS,
 	ChatGptReply,
-	ChatHistoryMessage,
+	ChatMessage,
 	ChatModel,
 	ChatResponse,
 	FunctionCallResponse,
@@ -249,7 +249,7 @@ async function chatGptCallFunction(
 }
 
 async function chatGptChatCompletion(
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
 	openai: OpenAI,
@@ -337,7 +337,7 @@ async function chatGptChatCompletion(
 }
 
 function getChatCompletionsFromHistory(
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	gptModel: CHAT_MODELS
 ): ChatCompletionMessageParam[] {
 	// take only completions to send to model
@@ -370,7 +370,7 @@ function getChatCompletionsFromHistory(
 
 async function performToolCalls(
 	toolCalls: ChatCompletionMessageToolCall[],
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[],
 	currentLevel: LEVEL_NAMES
 ): Promise<ToolCallResponse> {
@@ -402,7 +402,7 @@ async function performToolCalls(
 }
 
 async function getFinalReplyAfterAllToolCalls(
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
 	currentLevel: LEVEL_NAMES
@@ -457,7 +457,7 @@ async function getFinalReplyAfterAllToolCalls(
 }
 
 async function chatGptSendMessage(
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
 	message: string,

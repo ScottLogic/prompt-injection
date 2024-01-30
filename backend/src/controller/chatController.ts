@@ -12,7 +12,7 @@ import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest
 import {
 	CHAT_MESSAGE_TYPE,
 	ChatDefenceReport,
-	ChatHistoryMessage,
+	ChatMessage,
 	ChatHttpResponse,
 	ChatModel,
 	LevelHandlerResponse,
@@ -44,7 +44,7 @@ function combineChatDefenceReports(
 function createNewUserMessages(
 	message: string,
 	messageTransformation: MessageTransformation | null
-): ChatHistoryMessage[] {
+): ChatMessage[] {
 	if (messageTransformation) {
 		return [
 			{
@@ -84,7 +84,7 @@ async function handleChatWithoutDefenceDetection(
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel,
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
 	const updatedChatHistory = createNewUserMessages(message, null).reduce(
@@ -119,7 +119,7 @@ async function handleChatWithDefenceDetection(
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel,
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
 	const messageTransformation = transformMessage(message, defences);
@@ -334,9 +334,9 @@ function simplifyOpenAIErrorMessage(openAIErrorMessage: string) {
 }
 
 function addErrorToChatHistory(
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	errorMessage: string
-): ChatHistoryMessage[] {
+): ChatMessage[] {
 	console.error(errorMessage);
 	return pushMessageToHistory(chatHistory, {
 		completion: null,

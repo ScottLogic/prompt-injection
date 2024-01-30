@@ -1,8 +1,8 @@
-import { ChatHistoryMessage } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chat';
 
 function pushMessageToHistory(
-	chatHistory: ChatHistoryMessage[],
-	newMessage: ChatHistoryMessage
+	chatHistory: ChatMessage[],
+	newMessage: ChatMessage
 ) {
 	// limit the length of the chat history
 	const maxChatHistoryLength = 1000;

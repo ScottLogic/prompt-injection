@@ -1,6 +1,6 @@
 import { defaultDefences } from '@src/defaultDefences';
 
-import { ChatHistoryMessage } from './chat';
+import { ChatMessage } from './chat';
 import { Defence } from './defence';
 import { EmailInfo } from './email';
 
@@ -13,7 +13,7 @@ enum LEVEL_NAMES {
 
 interface LevelState {
 	level: LEVEL_NAMES;
-	chatHistory: ChatHistoryMessage[];
+	chatHistory: ChatMessage[];
 	defences: Defence[];
 	sentEmails: EmailInfo[];
 }

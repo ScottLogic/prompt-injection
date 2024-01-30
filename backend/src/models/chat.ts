@@ -72,7 +72,7 @@ interface FunctionCallResponse {
 interface ToolCallResponse {
 	functionCallReply?: FunctionCallResponse;
 	chatResponse?: ChatResponse;
-	chatHistory: ChatHistoryMessage[];
+	chatHistory: ChatMessage[];
 }
 
 interface ChatAnswer {
@@ -92,7 +92,7 @@ interface ChatResponse {
 }
 
 interface ChatGptReply {
-	chatHistory: ChatHistoryMessage[];
+	chatHistory: ChatMessage[];
 	completion: ChatCompletionMessage | null;
 	openAIErrorMessage: string | null;
 }
@@ -123,15 +123,15 @@ interface ChatHttpResponse {
 
 interface LevelHandlerResponse {
 	chatResponse: ChatHttpResponse;
-	chatHistory: ChatHistoryMessage[];
+	chatHistory: ChatMessage[];
 }
 
-interface ChatHistoryMessage {
+type ChatMessage = {
 	completion: ChatCompletionMessageParam | null;
 	chatMessageType: CHAT_MESSAGE_TYPE;
 	infoMessage?: string | null;
 	transformedMessage?: TransformedChatMessage;
-}
+};
 
 // default settings for chat model
 const defaultChatModel: ChatModel = {
@@ -152,7 +152,7 @@ export type {
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
-	ChatHistoryMessage,
+	ChatMessage,
 	TransformedChatMessage,
 	FunctionCallResponse,
 	ToolCallResponse,
