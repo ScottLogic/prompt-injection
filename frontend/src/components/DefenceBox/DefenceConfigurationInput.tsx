@@ -32,20 +32,18 @@ function DefenceConfigurationInput({
 	}, [currentValue]);
 
 	async function setConfigurationValueIfDifferent(value: string) {
-		if (value !== config.value) {
-			console.log(value);
-			const trimmedValue = value.trim();
+		const trimmedValue = value.trim();
+		if (trimmedValue !== config.value) {
 			if (configValidated) {
 				await setConfigurationValue(trimmedValue);
-				console.log('set the configuration value');
-				console.log(trimmedValue);
 				setValue(trimmedValue);
+				//add chat message
 			} else {
 				setValue(currentValue);
 				setConfigValidated(true);
-				console.log('invalid configuration value');
-				console.log(currentValue);
 			}
+		} else {
+			setValue(trimmedValue)
 		}
 	}
 
@@ -78,6 +76,8 @@ function DefenceConfigurationInput({
 					id={id}
 					content={value}
 					onContentChanged={setValue}
+					configValidated={configValidated}
+					validateInput={validateNewInput}
 					disabled={disabled}
 					maxLines={10}
 					onBlur={() => {
@@ -86,10 +86,8 @@ function DefenceConfigurationInput({
 					onKeyDown={inputKeyDown}
 					onKeyUp={inputKeyUp}
 					characterLimit={CONFIG_VALUE_CHARACTER_LIMIT}
-					configValidated={configValidated}
-					validateInput={validateNewInput}
 				/>
-				<p className="invalid-text">
+				<p className="invalid-text" aria-live="polite">
 					{configValidated ? '' : 'Error: Invalid configuration value'}
 				</p>
 			</>
@@ -101,6 +99,8 @@ function DefenceConfigurationInput({
 					id={id}
 					content={value}
 					onContentChanged={setValue}
+					configValidated={configValidated}
+					validateInput={validateNewInput}
 					disabled={disabled}
 					enterPressed={() => {
 						void setConfigurationValueIfDifferent(value);
@@ -109,8 +109,8 @@ function DefenceConfigurationInput({
 						void setConfigurationValueIfDifferent(value);
 					}}
 				/>
-				<p className="invalid-text">
-					{configValidated ? '' : 'Invalid configuration value'}
+				<p className="invalid-text" aria-live="polite">
+					{configValidated ? '' : 'Error: Invalid configuration value'}
 				</p>
 			</>
 		);

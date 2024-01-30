@@ -172,6 +172,7 @@ function MainComponent({
 		configId: string
 	) {
 		const resetDefence = await resetDefenceConfig(defenceId, configId);
+		addInfoMessage(`${defenceId.toLowerCase()} reset`);
 		// update state
 		const newDefences = defencesToShow.map((defence) => {
 			if (defence.id === defenceId) {
@@ -208,6 +209,7 @@ function MainComponent({
 	) {
 		const success = await configureDefence(defenceId, config, currentLevel);
 		if (success) {
+			addInfoMessage(`${defenceId.toLowerCase()} updated`);
 			// update state
 			const newDefences = defencesToShow.map((defence) => {
 				if (defence.id === defenceId) {

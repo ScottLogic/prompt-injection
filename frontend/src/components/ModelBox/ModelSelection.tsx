@@ -80,7 +80,7 @@ function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
 
 				<div className="model-selection-info">
 					{errorChangingModel ? (
-						<p className="error">
+						<p className="error" aria-live="polite">
 							Could not change model. You are still chatting to:
 							<b> {modelInUse} </b>
 						</p>
