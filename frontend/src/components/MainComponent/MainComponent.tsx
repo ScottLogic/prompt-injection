@@ -169,7 +169,7 @@ function MainComponent({
 
 	function addConfigUpdateToChat(defenceId: DEFENCE_ID, update: string) {
 		const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
-		addInfoMessage(`${displayedDefenceId} ${update}`);
+		addInfoMessage(`${displayedDefenceId} defence ${update}`);
 	}
 
 	async function resetDefenceConfiguration(
