@@ -1,6 +1,5 @@
 import {
 	ChatCompletionAssistantMessageParam,
-	ChatCompletionMessageParam,
 	ChatCompletionSystemMessageParam,
 	ChatCompletionUserMessageParam,
 } from 'openai/resources/chat/completions';
@@ -49,14 +48,7 @@ type ChatUserTransformedMessage = {
 	transformedMessage: TransformedChatMessage;
 };
 
-type ChatGenericMessage = {
-	completion: ChatCompletionMessageParam | null;
-	chatMessageType: CHAT_MESSAGE_TYPE;
-	infoMessage?: string | null;
-};
-
 type ChatMessage =
-	| ChatGenericMessage
 	| ChatUserTransformedMessage
 	| ChatInfoMessage
 	| ChatUserMessage
