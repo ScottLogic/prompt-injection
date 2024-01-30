@@ -167,13 +167,17 @@ function MainComponent({
 		void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentLevel);
 	}
 
+	function addConfigUpdateToChat(defenceId:DEFENCE_ID, update: string) {
+		const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
+		addInfoMessage(`${displayedDefenceId} ${update}`);
+	}
+
 	async function resetDefenceConfiguration(
 		defenceId: DEFENCE_ID,
 		configId: string
 	) {
 		const resetDefence = await resetDefenceConfig(defenceId, configId);
-		const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
-		addInfoMessage(`${displayedDefenceId} reset`);
+		addConfigUpdateToChat(defenceId, 'reset');
 		// update state
 		const newDefences = defencesToShow.map((defence) => {
 			if (defence.id === defenceId) {
@@ -210,8 +214,7 @@ function MainComponent({
 	) {
 		const success = await configureDefence(defenceId, config, currentLevel);
 		if (success) {
-			const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
-			addInfoMessage(`${displayedDefenceId} updated`);
+			addConfigUpdateToChat(defenceId, 'updated');
 			// update state
 			const newDefences = defencesToShow.map((defence) => {
 				if (defence.id === defenceId) {
