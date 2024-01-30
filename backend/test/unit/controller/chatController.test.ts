@@ -335,7 +335,7 @@ describe('handleChatToGPT unit tests', () => {
 			mockDetectTriggeredDefences.mockReturnValueOnce(
 				triggeredDefencesMockReturn(
 					'Message Blocked: My response contained a restricted phrase.',
-					DEFENCE_ID.FILTER_BOT_OUTPUT
+					DEFENCE_ID.OUTPUT_FILTERING
 				)
 			);
 
@@ -353,7 +353,7 @@ describe('handleChatToGPT unit tests', () => {
 						blockedReason:
 							'Message Blocked: My response contained a restricted phrase.',
 						isBlocked: true,
-						triggeredDefences: [DEFENCE_ID.FILTER_BOT_OUTPUT],
+						triggeredDefences: [DEFENCE_ID.OUTPUT_FILTERING],
 					},
 					reply: '',
 				})
