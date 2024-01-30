@@ -15,6 +15,7 @@ function ControlPanel({
 	resetDefenceConfiguration,
 	setDefenceConfiguration,
 	openDocumentViewer,
+	addInfoMessage,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
@@ -26,6 +27,7 @@ function ControlPanel({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 	openDocumentViewer: () => void;
+	addInfoMessage: (message: string) => void;
 }) {
 	const configurableDefences = defences.filter(
 		(defence) => !MODEL_DEFENCES.some((id) => id === defence.id)
@@ -74,7 +76,10 @@ function ControlPanel({
 
 						{/* only show model box in sandbox mode */}
 						{showConfigurations && (
-							<ModelBox chatModelOptions={chatModelOptions} />
+							<ModelBox 
+								chatModelOptions={chatModelOptions} 
+								addInfoMessage={addInfoMessage}
+							/>
 						)}
 					</details>
 				</>

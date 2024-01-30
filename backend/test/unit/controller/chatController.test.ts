@@ -265,7 +265,7 @@ describe('handleChatToGPT unit tests', () => {
 			mockDetectTriggeredDefences.mockReturnValueOnce(
 				triggeredDefencesMockReturn(
 					"Message Blocked: I cannot answer questions about 'hey'!",
-					DEFENCE_ID.FILTER_USER_INPUT
+					DEFENCE_ID.INPUT_FILTERING
 				)
 			);
 
@@ -283,7 +283,7 @@ describe('handleChatToGPT unit tests', () => {
 						blockedReason:
 							"Message Blocked: I cannot answer questions about 'hey'!",
 						isBlocked: true,
-						triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
+						triggeredDefences: [DEFENCE_ID.INPUT_FILTERING],
 					},
 					reply: '',
 				})

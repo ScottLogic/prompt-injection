@@ -38,16 +38,16 @@ const DEFENCES_SHOWN_LEVEL3: Defence[] = [
 		]
 	),
 	makeDefence(
-		DEFENCE_ID.FILTER_USER_INPUT,
+		DEFENCE_ID.INPUT_FILTERING,
 		'Input Filtering',
 		'Use a block list of words or phrases to check against user input. If a match is found, the message is blocked.',
-		[makeDefenceConfigItem('FILTER_USER_INPUT', 'filter list', 'text')]
+		[makeDefenceConfigItem('INPUT_FILTERING', 'filter list', 'text')]
 	),
 	makeDefence(
-		DEFENCE_ID.FILTER_BOT_OUTPUT,
+		DEFENCE_ID.OUTPUT_FILTERING,
 		'Output Filtering',
 		'Use a block list of words or phrases to check against bot output. If a match is found, the message is blocked.',
-		[makeDefenceConfigItem('FILTER_BOT_OUTPUT', 'filter list', 'text')]
+		[makeDefenceConfigItem('OUTPUT_FILTERING', 'filter list', 'text')]
 	),
 	makeDefence(
 		DEFENCE_ID.XML_TAGGING,

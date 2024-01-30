@@ -85,8 +85,8 @@ function validateDefence(
 	switch (defenceId) {
 		case DEFENCE_ID.CHARACTER_LIMIT:
 			return validatePositiveNumberConfig(config);
-		case DEFENCE_ID.FILTER_USER_INPUT:
-		case DEFENCE_ID.FILTER_BOT_OUTPUT:
+		case DEFENCE_ID.INPUT_FILTERING:
+		case DEFENCE_ID.OUTPUT_FILTERING:
 			return validateFilterConfig(config);
 		case DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE:
 			return configId === 'SEQUENCE_LENGTH'
