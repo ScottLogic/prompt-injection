@@ -1,6 +1,7 @@
 import {
 	ChatCompletionAssistantMessageParam,
 	ChatCompletionMessageParam,
+	ChatCompletionSystemMessageParam,
 	ChatCompletionUserMessageParam,
 } from 'openai/resources/chat/completions';
 
@@ -14,6 +15,11 @@ import { CHAT_MESSAGE_TYPE, TransformedChatMessage } from './chat';
 // 	FUNCTION_CALL,
 // 	ERROR_MSG,
 // 	RESET_LEVEL,
+
+type ChatSystemMessage = {
+	completion: ChatCompletionSystemMessageParam;
+	chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM;
+};
 
 type ChatBotMessage = {
 	completion: ChatCompletionAssistantMessageParam;
@@ -54,6 +60,7 @@ type ChatMessage =
 	| ChatUserTransformedMessage
 	| ChatInfoMessage
 	| ChatUserMessage
-	| ChatBotMessage;
+	| ChatBotMessage
+	| ChatSystemMessage;
 
-export type { ChatMessage };
+export type { ChatMessage, ChatSystemMessage };

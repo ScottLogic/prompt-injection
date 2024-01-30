@@ -22,7 +22,7 @@ import {
 	FunctionCallResponse,
 	ToolCallResponse,
 } from './models/chat';
-import { ChatMessage } from './models/chatMessage';
+import { ChatMessage, ChatSystemMessage } from './models/chatMessage';
 import { DEFENCE_ID, Defence } from './models/defence';
 import { EmailResponse } from './models/email';
 import { LEVEL_NAMES } from './models/level';
@@ -272,7 +272,7 @@ async function chatGptChatCompletion(
 		// check to see if there's already a system role
 		const systemRole = chatHistory.find(
 			(message) => message.chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM
-		);
+		) as ChatSystemMessage | undefined;
 		if (!systemRole) {
 			// add the system role to the start of the chat history
 			updatedChatHistory.unshift({
@@ -287,7 +287,7 @@ async function chatGptChatCompletion(
 		// remove the system role from the chat history
 		while (
 			updatedChatHistory.length > 0 &&
-			updatedChatHistory[0].completion?.role === 'system'
+			updatedChatHistory[0].chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM
 		) {
 			updatedChatHistory.shift();
 		}
@@ -344,8 +344,12 @@ function getChatCompletionsFromHistory(
 	const completions: ChatCompletionMessageParam[] =
 		chatHistory.length > 0
 			? (chatHistory
-					.filter((message) => message.completion !== null)
-					.map((message) => message.completion) as ChatCompletionMessageParam[])
+					.filter((chatMessage) => 'completion' in chatMessage)
+					.map(
+						(
+							chatMessage // it's silly that we must check this twice
+						) => ('completion' in chatMessage ? chatMessage.completion : null)
+					) as ChatCompletionMessageParam[])
 			: [];
 
 	console.debug(
