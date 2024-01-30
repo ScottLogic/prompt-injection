@@ -7,12 +7,35 @@ import {
 
 import { CHAT_MESSAGE_TYPE, TransformedChatMessage } from './chat';
 
-// 	BOT_BLOCKED,
-// 	LEVEL_INFO,
-// 	DEFENCE_ALERTED,
-// 	DEFENCE_TRIGGERED,
-// 	ERROR_MSG,
-// 	RESET_LEVEL,
+type ChatDefenceAlertedMessage = {
+	chatMessageType: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED;
+	infoMessage: string;
+};
+
+type ChatDefenceTriggeredMessage = {
+	chatMessageType: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED;
+	infoMessage: string;
+};
+
+type ChatLevelInfoMessage = {
+	chatMessageType: CHAT_MESSAGE_TYPE.LEVEL_INFO;
+	infoMessage: string;
+};
+
+type ChatResetLevelMessage = {
+	chatMessageType: CHAT_MESSAGE_TYPE.RESET_LEVEL;
+	infoMessage: string;
+};
+
+type ChatErrorMessage = {
+	chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG;
+	infoMessage: string;
+};
+
+type ChatBotBlockedMessage = {
+	chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED;
+	infoMessage: string;
+};
 
 type ChatFunctionCallMessage = {
 	completion: ChatCompletionMessageParam;
@@ -54,10 +77,16 @@ type ChatUserTransformedMessage = {
 
 type ChatMessage =
 	| ChatUserTransformedMessage
+	| ChatErrorMessage
+	| ChatBotBlockedMessage
 	| ChatFunctionCallMessage
 	| ChatInfoMessage
 	| ChatUserMessage
+	| ChatDefenceTriggeredMessage
+	| ChatResetLevelMessage
+	| ChatDefenceAlertedMessage
 	| ChatBotMessage
+	| ChatLevelInfoMessage
 	| ChatSystemMessage;
 
 export type { ChatMessage, ChatSystemMessage };
