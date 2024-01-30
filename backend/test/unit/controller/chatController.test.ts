@@ -15,11 +15,11 @@ import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest
 import {
 	CHAT_MESSAGE_TYPE,
 	ChatDefenceReport,
-	ChatHistoryMessage,
 	ChatModel,
 	ChatResponse,
 	MessageTransformation,
 } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
@@ -33,7 +33,7 @@ declare module 'express-session' {
 	}
 	interface LevelState {
 		level: LEVEL_NAMES;
-		chatHistory: ChatHistoryMessage[];
+		chatHistory: ChatMessage[];
 		defences: Defence[];
 		sentEmails: EmailInfo[];
 	}
@@ -101,7 +101,7 @@ describe('handleChatToGPT unit tests', () => {
 	function openAiChatRequestMock(
 		message?: string,
 		level?: LEVEL_NAMES,
-		chatHistory: ChatHistoryMessage[] = [],
+		chatHistory: ChatMessage[] = [],
 		sentEmails: EmailInfo[] = [],
 		defences: Defence[] = []
 	): OpenAiChatRequest {
@@ -182,7 +182,7 @@ describe('handleChatToGPT unit tests', () => {
 					},
 					chatMessageType: CHAT_MESSAGE_TYPE.USER,
 				},
-			] as ChatHistoryMessage[],
+			] as ChatMessage[],
 			sentEmails: [] as EmailInfo[],
 		};
 
@@ -319,7 +319,7 @@ describe('handleChatToGPT unit tests', () => {
 				},
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 			},
-		] as ChatHistoryMessage[];
+		] as ChatMessage[];
 
 		test('Given level 1 WHEN message sent THEN send reply and session history is updated', async () => {
 			const newUserChatHistoryMessage = {
@@ -328,7 +328,7 @@ describe('handleChatToGPT unit tests', () => {
 					role: 'user',
 				},
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
-			} as ChatHistoryMessage;
+			} as ChatMessage;
 
 			const newBotChatHistoryMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
@@ -336,7 +336,7 @@ describe('handleChatToGPT unit tests', () => {
 					role: 'assistant',
 					content: '42',
 				},
-			} as ChatHistoryMessage;
+			} as ChatMessage;
 
 			const req = openAiChatRequestMock(
 				'What is the answer to life the universe and everything?',
@@ -395,7 +395,7 @@ describe('handleChatToGPT unit tests', () => {
 					role: 'user',
 					content: 'send an email to bob@example.com saying hi',
 				},
-			} as ChatHistoryMessage;
+			} as ChatMessage;
 
 			const newFunctionCallChatHistoryMessages = [
 				{
@@ -411,7 +411,7 @@ describe('handleChatToGPT unit tests', () => {
 						tool_call_id: 'sendEmail',
 					},
 				},
-			] as ChatHistoryMessage[];
+			] as ChatMessage[];
 
 			const newBotChatHistoryMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
@@ -419,7 +419,7 @@ describe('handleChatToGPT unit tests', () => {
 					role: 'assistant',
 					content: 'Email sent!',
 				},
-			} as ChatHistoryMessage;
+			} as ChatMessage;
 
 			const req = openAiChatRequestMock(
 				'send an email to bob@example.com saying hi',
@@ -511,7 +511,7 @@ describe('handleChatToGPT unit tests', () => {
 					chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
 					transformedMessage,
 				},
-			] as ChatHistoryMessage[];
+			] as ChatMessage[];
 
 			const newBotChatHistoryMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
@@ -519,7 +519,7 @@ describe('handleChatToGPT unit tests', () => {
 					role: 'assistant',
 					content: 'hello user',
 				},
-			} as ChatHistoryMessage;
+			} as ChatMessage;
 
 			const req = openAiChatRequestMock(
 				'hello bot',
@@ -595,10 +595,7 @@ describe('handleChatToGPT unit tests', () => {
 });
 
 describe('handleGetChatHistory', () => {
-	function getRequestMock(
-		level?: LEVEL_NAMES,
-		chatHistory?: ChatHistoryMessage[]
-	) {
+	function getRequestMock(level?: LEVEL_NAMES, chatHistory?: ChatMessage[]) {
 		return {
 			query: {
 				level: level ?? undefined,
@@ -613,7 +610,7 @@ describe('handleGetChatHistory', () => {
 		} as OpenAiGetHistoryRequest;
 	}
 
-	const chatHistory: ChatHistoryMessage[] = [
+	const chatHistory: ChatMessage[] = [
 		{
 			completion: { role: 'system', content: 'You are a helpful chatbot' },
 			chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
@@ -624,7 +621,7 @@ describe('handleGetChatHistory', () => {
 		},
 		{
 			completion: { role: 'user', content: 'How are you?' },
-			chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+			chatMessageType: CHAT_MESSAGE_TYPE.USER,
 		},
 	];
 	test('GIVEN a valid level WHEN handleGetChatHistory called THEN return chat history', () => {
@@ -650,7 +647,7 @@ describe('handleAddToChatHistory', () => {
 	function getAddHistoryRequestMock(
 		message: string,
 		level?: LEVEL_NAMES,
-		chatHistory?: ChatHistoryMessage[]
+		chatHistory?: ChatMessage[]
 	) {
 		return {
 			body: {
@@ -668,7 +665,7 @@ describe('handleAddToChatHistory', () => {
 		} as OpenAiAddHistoryRequest;
 	}
 
-	const chatHistory: ChatHistoryMessage[] = [
+	const chatHistory: ChatMessage[] = [
 		{
 			completion: { role: 'system', content: 'You are a helpful chatbot' },
 			chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
@@ -708,7 +705,7 @@ describe('handleAddToChatHistory', () => {
 describe('handleClearChatHistory', () => {
 	function openAiClearRequestMock(
 		level?: LEVEL_NAMES,
-		chatHistory?: ChatHistoryMessage[]
+		chatHistory?: ChatMessage[]
 	) {
 		return {
 			body: {
@@ -724,7 +721,7 @@ describe('handleClearChatHistory', () => {
 		} as OpenAiClearRequest;
 	}
 
-	const chatHistory: ChatHistoryMessage[] = [
+	const chatHistory: ChatMessage[] = [
 		{
 			completion: { role: 'system', content: 'You are a helpful chatbot' },
 			chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,

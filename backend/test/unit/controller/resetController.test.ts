@@ -3,11 +3,8 @@ import { Request, Response } from 'express';
 
 import { handleResetProgress } from '@src/controller/resetController';
 import { defaultDefences } from '@src/defaultDefences';
-import {
-	CHAT_MESSAGE_TYPE,
-	ChatHistoryMessage,
-	ChatModel,
-} from '@src/models/chat';
+import { CHAT_MESSAGE_TYPE, ChatModel } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState, levelsInitialState } from '@src/models/level';
@@ -20,7 +17,7 @@ declare module 'express-session' {
 	}
 	interface LevelState {
 		level: LEVEL_NAMES;
-		chatHistory: ChatHistoryMessage[];
+		chatHistory: ChatMessage[];
 		defences: Defence[];
 		sentEmails: EmailInfo[];
 	}
@@ -52,7 +49,7 @@ function createLevelObject(
 
 describe('handleResetProgress unit tests', () => {
 	test('GIVEN a chat history THEN should reset all chatHistory for all levels', () => {
-		const mockChatHistory: ChatHistoryMessage[] = [
+		const mockChatHistory: ChatMessage[] = [
 			{
 				completion: {
 					content: 'testing',
