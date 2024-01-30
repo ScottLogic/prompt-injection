@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { ChatMessage } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 
 export type OpenAiGetHistoryRequest = Request<
 	never,

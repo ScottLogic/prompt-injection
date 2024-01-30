@@ -1,6 +1,6 @@
 import { defaultDefences } from '@src/defaultDefences';
 
-import { ChatMessage } from './chat';
+import { ChatMessage } from './chatMessage';
 import { Defence } from './defence';
 import { EmailInfo } from './email';
 

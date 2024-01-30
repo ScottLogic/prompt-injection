@@ -17,12 +17,12 @@ import {
 	CHAT_MESSAGE_TYPE,
 	CHAT_MODELS,
 	ChatGptReply,
-	ChatMessage,
 	ChatModel,
 	ChatResponse,
 	FunctionCallResponse,
 	ToolCallResponse,
 } from './models/chat';
+import { ChatMessage } from './models/chatMessage';
 import { DEFENCE_ID, Defence } from './models/defence';
 import { EmailResponse } from './models/email';
 import { LEVEL_NAMES } from './models/level';
