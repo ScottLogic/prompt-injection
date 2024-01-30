@@ -20,6 +20,7 @@ import {
 	defaultChatModel,
 	ChatUserTransformedMessage,
 	ChatInfoMessage,
+	ChatUserMessage,
 } from '@src/models/chat';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -50,10 +51,8 @@ function createNewUserMessages(
 	if (messageTransformation) {
 		return [
 			{
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 				infoMessage: message,
-			},
+			} as ChatUserMessage,
 			{
 				infoMessage: messageTransformation.transformedMessageInfo,
 			} as ChatInfoMessage,
@@ -72,8 +71,7 @@ function createNewUserMessages(
 					role: 'user',
 					content: message,
 				},
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
-			},
+			} as ChatUserMessage,
 		];
 	}
 }
