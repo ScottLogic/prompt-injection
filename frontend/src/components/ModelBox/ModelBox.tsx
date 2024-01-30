@@ -16,7 +16,7 @@ function ModelBox({
 				chatModelOptions={chatModelOptions}
 				addInfoMessage={addInfoMessage}
 			/>
-			<ModelConfiguration />
+			<ModelConfiguration addInfoMessage={addInfoMessage} />
 		</div>
 	);
 }

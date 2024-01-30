@@ -167,7 +167,7 @@ function MainComponent({
 		void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentLevel);
 	}
 
-	function addConfigUpdateToChat(defenceId:DEFENCE_ID, update: string) {
+	function addConfigUpdateToChat(defenceId: DEFENCE_ID, update: string) {
 		const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
 		addInfoMessage(`${displayedDefenceId} ${update}`);
 	}

@@ -34,7 +34,7 @@ function ModelSelection({
 			if (modelUpdated) {
 				setModelInUse(currentSelectedModel);
 				setErrorChangingModel(false);
-				addInfoMessage(`Changed model to ${currentSelectedModel}`);
+				addInfoMessage(`changed model to ${currentSelectedModel}`);
 			} else {
 				setErrorChangingModel(true);
 			}
