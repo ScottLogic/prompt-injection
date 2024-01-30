@@ -137,6 +137,11 @@ interface LevelHandlerResponse {
 // 	ERROR_MSG,
 // 	RESET_LEVEL,
 
+type ChatBotMessage = {
+	completion: ChatCompletionAssistantMessageParam;
+	chatMessageType: CHAT_MESSAGE_TYPE.BOT;
+};
+
 type ChatUserMessageAsCompletion = {
 	completion: ChatCompletionUserMessageParam;
 	chatMessageType: CHAT_MESSAGE_TYPE.USER;
@@ -170,7 +175,8 @@ type ChatMessage =
 	| ChatGenericMessage
 	| ChatUserTransformedMessage
 	| ChatInfoMessage
-	| ChatUserMessage;
+	| ChatUserMessage
+	| ChatBotMessage;
 
 // default settings for chat model
 const defaultChatModel: ChatModel = {
@@ -191,6 +197,7 @@ export type {
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
+	ChatBotMessage,
 	ChatUserMessage,
 	ChatUserTransformedMessage,
 	ChatInfoMessage,

@@ -21,6 +21,7 @@ import {
 	ChatUserTransformedMessage,
 	ChatInfoMessage,
 	ChatUserMessage,
+	ChatBotMessage,
 } from '@src/models/chat';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -299,14 +300,12 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		handleChatError(res, updatedChatResponse, errorMsg, 500);
 		return;
 	} else {
-		// add bot message to chat history
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 			completion: {
 				role: 'assistant',
 				content: updatedChatResponse.reply,
 			},
-			chatMessageType: CHAT_MESSAGE_TYPE.BOT,
-		});
+		} as ChatBotMessage);
 	}
 
 	// update state
