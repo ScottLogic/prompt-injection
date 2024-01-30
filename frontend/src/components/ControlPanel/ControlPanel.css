@@ -35,3 +35,8 @@
 	border-bottom-right-radius: 0;
 	border-bottom-left-radius: 0;
 }
+
+.error-message {
+	color: var(--error-colour-light);
+	font-weight: bold;
+}

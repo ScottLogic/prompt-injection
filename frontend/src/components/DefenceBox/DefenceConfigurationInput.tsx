@@ -87,7 +87,7 @@ function DefenceConfigurationInput({
 					onKeyUp={inputKeyUp}
 					characterLimit={CONFIG_VALUE_CHARACTER_LIMIT}
 				/>
-				<p className="invalid-text" aria-live="polite">
+				<p className="error-message" aria-live="polite">
 					{configValidated ? '' : 'Error: Invalid configuration value'}
 				</p>
 			</>
@@ -109,7 +109,7 @@ function DefenceConfigurationInput({
 						void setConfigurationValueIfDifferent(value);
 					}}
 				/>
-				<p className="invalid-text" aria-live="polite">
+				<p className="error-message" aria-live="polite">
 					{configValidated ? '' : 'Error: Invalid configuration value'}
 				</p>
 			</>
