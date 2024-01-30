@@ -127,7 +127,6 @@ interface LevelHandlerResponse {
 	chatHistory: ChatMessage[];
 }
 
-// 	BOT,
 // 	BOT_BLOCKED,
 // 	LEVEL_INFO,
 // 	DEFENCE_ALERTED,
@@ -178,7 +177,6 @@ type ChatMessage =
 	| ChatUserMessage
 	| ChatBotMessage;
 
-// default settings for chat model
 const defaultChatModel: ChatModel = {
 	id: CHAT_MODELS.GPT_3_5_TURBO,
 	configuration: {
