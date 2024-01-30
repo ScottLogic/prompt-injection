@@ -18,6 +18,7 @@ import {
 	LevelHandlerResponse,
 	MessageTransformation,
 	defaultChatModel,
+	ChatMessageUserTransformed,
 } from '@src/models/chat';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -62,9 +63,8 @@ function createNewUserMessages(
 					role: 'user',
 					content: messageTransformation.transformedMessageCombined,
 				},
-				chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
 				transformedMessage: messageTransformation.transformedMessage,
-			},
+			} as ChatMessageUserTransformed,
 		];
 	} else {
 		return [
