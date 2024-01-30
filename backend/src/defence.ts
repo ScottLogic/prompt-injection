@@ -89,9 +89,7 @@ function getFilterList(defences: Defence[], type: DEFENCE_ID) {
 	return getConfigValue(
 		defences,
 		type,
-		type === DEFENCE_ID.INPUT_FILTERING
-			? 'INPUT_FILTERING'
-			: 'OUTPUT_FILTERING'
+		type === DEFENCE_ID.INPUT_FILTERING ? 'INPUT_FILTERING' : 'OUTPUT_FILTERING'
 	);
 }
 function getSystemRole(
