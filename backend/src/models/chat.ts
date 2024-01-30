@@ -144,21 +144,21 @@ type ChatInfoMessage = {
 	infoMessage: string;
 };
 
-type ChatMessageUserTransformed = {
+type ChatUserTransformedMessage = {
 	completion: ChatCompletionUserMessageParam;
 	chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED;
 	transformedMessage: TransformedChatMessage;
 };
 
-type ChatMessageGeneric = {
+type ChatGenericMessage = {
 	completion: ChatCompletionMessageParam | null;
 	chatMessageType: CHAT_MESSAGE_TYPE;
 	infoMessage?: string | null;
 };
 
 type ChatMessage =
-	| ChatMessageGeneric
-	| ChatMessageUserTransformed
+	| ChatGenericMessage
+	| ChatUserTransformedMessage
 	| ChatInfoMessage;
 
 // default settings for chat model
@@ -180,9 +180,9 @@ export type {
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
-	ChatMessageUserTransformed,
+	ChatUserTransformedMessage,
 	ChatInfoMessage,
-	ChatMessageGeneric,
+	ChatGenericMessage,
 	ChatMessage,
 	TransformedChatMessage,
 	FunctionCallResponse,
