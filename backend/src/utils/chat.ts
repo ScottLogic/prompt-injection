@@ -1,4 +1,4 @@
-import { ChatMessage } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 
 function pushMessageToHistory(
 	chatHistory: ChatMessage[],
@@ -11,7 +11,10 @@ function pushMessageToHistory(
 	// remove the oldest message, not including system role message
 	// until the length of the chat history is less than maxChatHistoryLength
 	while (updatedChatHistory.length >= maxChatHistoryLength) {
-		if (updatedChatHistory[0].completion?.role !== 'system') {
+		if (
+			'completion' in updatedChatHistory[0] &&
+			updatedChatHistory[0].completion?.role !== 'system'
+		) {
 			updatedChatHistory.shift();
 		} else {
 			updatedChatHistory.splice(1, 1);

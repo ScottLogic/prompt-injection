@@ -12,17 +12,13 @@ import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest
 import {
 	CHAT_MESSAGE_TYPE,
 	ChatDefenceReport,
-	ChatMessage,
 	ChatHttpResponse,
 	ChatModel,
 	LevelHandlerResponse,
 	MessageTransformation,
 	defaultChatModel,
-	ChatUserTransformedMessage,
-	ChatInfoMessage,
-	ChatUserMessage,
-	ChatBotMessage,
 } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -53,17 +49,20 @@ function createNewUserMessages(
 		return [
 			{
 				infoMessage: message,
-			} as ChatUserMessage,
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+			},
 			{
 				infoMessage: messageTransformation.transformedMessageInfo,
-			} as ChatInfoMessage,
+				chatMessageType: CHAT_MESSAGE_TYPE.INFO,
+			},
 			{
 				completion: {
 					role: 'user',
 					content: messageTransformation.transformedMessageCombined,
 				},
 				transformedMessage: messageTransformation.transformedMessage,
-			} as ChatUserTransformedMessage,
+				chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+			},
 		];
 	} else {
 		return [
@@ -72,7 +71,8 @@ function createNewUserMessages(
 					role: 'user',
 					content: message,
 				},
-			} as ChatUserMessage,
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+			},
 		];
 	}
 }
@@ -305,7 +305,8 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				role: 'assistant',
 				content: updatedChatResponse.reply,
 			},
-		} as ChatBotMessage);
+			chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+		});
 	}
 
 	// update state

@@ -1,9 +1,9 @@
 import {
 	ChatCompletionAssistantMessageParam,
 	ChatCompletionMessageParam,
-	ChatCompletionUserMessageParam,
 } from 'openai/resources/chat/completions';
 
+import { ChatMessage } from './chatMessage';
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
 
@@ -127,56 +127,6 @@ interface LevelHandlerResponse {
 	chatHistory: ChatMessage[];
 }
 
-// 	BOT_BLOCKED,
-// 	LEVEL_INFO,
-// 	DEFENCE_ALERTED,
-// 	DEFENCE_TRIGGERED,
-// 	SYSTEM,
-// 	FUNCTION_CALL,
-// 	ERROR_MSG,
-// 	RESET_LEVEL,
-
-type ChatBotMessage = {
-	completion: ChatCompletionAssistantMessageParam;
-	chatMessageType: CHAT_MESSAGE_TYPE.BOT;
-};
-
-type ChatUserMessageAsCompletion = {
-	completion: ChatCompletionUserMessageParam;
-	chatMessageType: CHAT_MESSAGE_TYPE.USER;
-};
-
-type ChatUserMessageAsInfo = {
-	chatMessageType: CHAT_MESSAGE_TYPE.USER;
-	infoMessage: string;
-};
-
-type ChatUserMessage = ChatUserMessageAsCompletion | ChatUserMessageAsInfo;
-
-type ChatInfoMessage = {
-	chatMessageType: CHAT_MESSAGE_TYPE.INFO;
-	infoMessage: string;
-};
-
-type ChatUserTransformedMessage = {
-	completion: ChatCompletionUserMessageParam;
-	chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED;
-	transformedMessage: TransformedChatMessage;
-};
-
-type ChatGenericMessage = {
-	completion: ChatCompletionMessageParam | null;
-	chatMessageType: CHAT_MESSAGE_TYPE;
-	infoMessage?: string | null;
-};
-
-type ChatMessage =
-	| ChatGenericMessage
-	| ChatUserTransformedMessage
-	| ChatInfoMessage
-	| ChatUserMessage
-	| ChatBotMessage;
-
 const defaultChatModel: ChatModel = {
 	id: CHAT_MODELS.GPT_3_5_TURBO,
 	configuration: {
@@ -195,12 +145,6 @@ export type {
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
-	ChatBotMessage,
-	ChatUserMessage,
-	ChatUserTransformedMessage,
-	ChatInfoMessage,
-	ChatGenericMessage,
-	ChatMessage,
 	TransformedChatMessage,
 	FunctionCallResponse,
 	ToolCallResponse,
