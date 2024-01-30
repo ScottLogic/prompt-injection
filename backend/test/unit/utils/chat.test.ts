@@ -1,18 +1,19 @@
 import { expect, test, describe } from '@jest/globals';
 
-import { CHAT_MESSAGE_TYPE, ChatHistoryMessage } from '@src/models/chat';
+import { CHAT_MESSAGE_TYPE } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { pushMessageToHistory } from '@src/utils/chat';
 
 describe('chat utils unit tests', () => {
 	const maxChatHistoryLength = 1000;
-	const systemRoleMessage: ChatHistoryMessage = {
+	const systemRoleMessage: ChatMessage = {
 		completion: {
 			role: 'system',
 			content: 'You are an AI.',
 		},
 		chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
 	};
-	const generalChatMessage: ChatHistoryMessage = {
+	const generalChatMessage: ChatMessage = {
 		completion: {
 			role: 'user',
 			content: 'hello world',
@@ -25,7 +26,7 @@ describe('chat utils unit tests', () => {
 			'WHEN adding a new chat message ' +
 			'THEN new message is added',
 		() => {
-			const chatHistory: ChatHistoryMessage[] = [];
+			const chatHistory: ChatMessage[] = [];
 			const updatedChatHistory = pushMessageToHistory(
 				chatHistory,
 				generalChatMessage
@@ -40,7 +41,7 @@ describe('chat utils unit tests', () => {
 			'WHEN adding a new chat message ' +
 			'THEN new message is added',
 		() => {
-			const chatHistory: ChatHistoryMessage[] = [generalChatMessage];
+			const chatHistory: ChatMessage[] = [generalChatMessage];
 			const updatedChatHistory = pushMessageToHistory(
 				chatHistory,
 				generalChatMessage
@@ -55,7 +56,7 @@ describe('chat utils unit tests', () => {
 			'WHEN adding a new chat message ' +
 			'THEN new message is added AND the oldest message is removed',
 		() => {
-			const chatHistory: ChatHistoryMessage[] = new Array<ChatHistoryMessage>(
+			const chatHistory: ChatMessage[] = new Array<ChatMessage>(
 				maxChatHistoryLength
 			).fill(generalChatMessage);
 			const updatedChatHistory = pushMessageToHistory(
@@ -75,7 +76,7 @@ describe('chat utils unit tests', () => {
 			'WHEN adding a new chat message ' +
 			'THEN new message is added AND the oldest non-system-role message is removed',
 		() => {
-			const chatHistory: ChatHistoryMessage[] = new Array<ChatHistoryMessage>(
+			const chatHistory: ChatMessage[] = new Array<ChatMessage>(
 				maxChatHistoryLength
 			).fill(generalChatMessage);
 			chatHistory[0] = systemRoleMessage;
@@ -96,7 +97,7 @@ describe('chat utils unit tests', () => {
 			'WHEN adding a new chat message ' +
 			'THEN new message is added AND the oldest messages are removed until the length is maxChatHistoryLength',
 		() => {
-			const chatHistory: ChatHistoryMessage[] = new Array<ChatHistoryMessage>(
+			const chatHistory: ChatMessage[] = new Array<ChatMessage>(
 				maxChatHistoryLength + 1
 			).fill(generalChatMessage);
 			const updatedChatHistory = pushMessageToHistory(
@@ -116,7 +117,7 @@ describe('chat utils unit tests', () => {
 			'WHEN adding a new chat message ' +
 			'THEN new message is added AND the oldest non-system-role messages are removed until the length is maxChatHistoryLength',
 		() => {
-			const chatHistory: ChatHistoryMessage[] = new Array<ChatHistoryMessage>(
+			const chatHistory: ChatMessage[] = new Array<ChatMessage>(
 				maxChatHistoryLength + 1
 			).fill(generalChatMessage);
 			chatHistory[0] = systemRoleMessage;

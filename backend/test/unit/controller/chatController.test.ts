@@ -494,12 +494,10 @@ describe('handleChatToGPT unit tests', () => {
 			};
 			const newTransformationChatHistoryMessages = [
 				{
-					completion: null,
 					chatMessageType: CHAT_MESSAGE_TYPE.USER,
 					infoMessage: 'hello bot',
 				},
 				{
-					completion: null,
 					chatMessageType: CHAT_MESSAGE_TYPE.INFO,
 					infoMessage: 'your message has been transformed by a defence',
 				},
