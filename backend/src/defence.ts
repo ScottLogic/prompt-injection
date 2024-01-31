@@ -256,18 +256,18 @@ function combineTransformedMessage(transformedMessage: TransformedChatMessage) {
 function transformMessage(
 	message: string,
 	defences: Defence[]
-): MessageTransformation | null {
+): MessageTransformation | undefined {
 	const transformedMessage = isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)
 		? transformXmlTagging(message, defences)
 		: isDefenceActive(DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE, defences)
 		? transformRandomSequenceEnclosure(message, defences)
 		: isDefenceActive(DEFENCE_ID.INSTRUCTION, defences)
 		? transformInstructionDefence(message, defences)
-		: null;
+		: undefined;
 
 	if (!transformedMessage) {
 		console.debug('No defences applied. Message unchanged.');
-		return null;
+		return undefined;
 	}
 
 	const transformedMessageCombined =

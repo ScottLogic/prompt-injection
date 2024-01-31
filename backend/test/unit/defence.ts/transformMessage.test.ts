@@ -8,7 +8,7 @@ test('GIVEN no defences are active WHEN transforming message THEN message is not
 	const message = 'Hello';
 	const defences = defaultDefences;
 	const messageTransformation = transformMessage(message, defences);
-	expect(messageTransformation).toBeNull();
+	expect(messageTransformation).toBeUndefined();
 });
 
 test('GIVEN XML_TAGGING defence is active WHEN transforming message THEN message is transformed', () => {
