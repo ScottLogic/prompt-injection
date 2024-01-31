@@ -43,7 +43,7 @@ function combineChatDefenceReports(
 
 function createNewUserMessages(
 	message: string,
-	messageTransformation: MessageTransformation | null
+	messageTransformation: MessageTransformation | undefined
 ): ChatHistoryMessage[] {
 	if (messageTransformation) {
 		return [
@@ -87,7 +87,7 @@ async function handleChatWithoutDefenceDetection(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	const updatedChatHistory = createNewUserMessages(message, null).reduce(
+	const updatedChatHistory = createNewUserMessages(message, undefined).reduce(
 		pushMessageToHistory,
 		chatHistory
 	);
@@ -171,12 +171,11 @@ async function handleChatWithDefenceDetection(
 		defenceReport: combinedDefenceReport,
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 		reply: !combinedDefenceReport.isBlocked && botReply ? botReply : '',
-		transformedMessage: messageTransformation?.transformedMessage ?? undefined,
+		transformedMessage: messageTransformation?.transformedMessage,
 		wonLevel:
 			openAiReply.chatResponse.wonLevel && !combinedDefenceReport.isBlocked,
 		sentEmails: combinedDefenceReport.isBlocked ? [] : openAiReply.sentEmails,
-		transformedMessageInfo:
-			messageTransformation?.transformedMessageInfo ?? undefined,
+		transformedMessageInfo: messageTransformation?.transformedMessageInfo,
 	};
 	return {
 		chatResponse: updatedChatResponse,
