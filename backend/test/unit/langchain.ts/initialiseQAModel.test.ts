@@ -32,8 +32,8 @@ jest.mock('langchain/embeddings/openai', () => {
 jest.mock('langchain/prompts');
 PromptTemplate.fromTemplate = mockFromTemplate;
 
-// mock OpenAI for ChatOpenAI class
-jest.mock('langchain/chat_models/openai');
+// // mock OpenAI for ChatOpenAI class
+// jest.mock('langchain/chat_models/openai');
 
 // mock chains
 jest.mock('langchain/chains', () => {
@@ -72,6 +72,15 @@ jest.mock('@src/langchain', () => {
 	};
 });
 mockGetVectorisedDocuments.mockReturnValue([]);
+
+jest.mock('@src/document', () => ({
+	vectorisedDocuments: {
+		get: jest
+			.fn()
+			.mockReturnValue([{ docVector: { asRetriever: () => 'retriever' } }]),
+		set: jest.fn(),
+	},
+}));
 
 beforeEach(() => {
 	mockFromLLM.mockImplementation(() => mockRetrievalQAChain); // this is weird
