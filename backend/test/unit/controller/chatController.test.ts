@@ -95,14 +95,14 @@ describe('handleChatToGPT unit tests', () => {
 		(
 			_currentLevel: LEVEL_NAMES,
 			_defences: Defence[],
-			chatHistory: ChatHistoryMessage[]
+			chatHistory: ChatMessage[]
 		) => chatHistory
 	);
 	const mockPushMessageToHistory = pushMessageToHistory as jest.MockedFunction<
 		typeof pushMessageToHistory
 	>;
 	mockPushMessageToHistory.mockImplementation(
-		(chatHistory: ChatHistoryMessage[], newMessage: ChatHistoryMessage) => [
+		(chatHistory: ChatMessage[], newMessage: ChatMessage) => [
 			...chatHistory,
 			newMessage,
 		]
@@ -384,7 +384,7 @@ describe('handleChatToGPT unit tests', () => {
 		] as ChatMessage[];
 
 		test('Given level 1 WHEN message sent THEN send reply and session history is updated', async () => {
-			const newUserChatHistoryMessage = {
+			const newUserChatMessage = {
 				completion: {
 					content: 'What is the answer to life the universe and everything?',
 					role: 'user',
@@ -392,7 +392,7 @@ describe('handleChatToGPT unit tests', () => {
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 			} as ChatMessage;
 
-			const newBotChatHistoryMessage = {
+			const newBotChatMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 				completion: {
 					role: 'assistant',
@@ -413,14 +413,14 @@ describe('handleChatToGPT unit tests', () => {
 					wonLevel: false,
 					openAIErrorMessage: null,
 				},
-				chatHistory: [...existingHistory, newUserChatHistoryMessage],
+				chatHistory: [...existingHistory, newUserChatMessage],
 				sentEmails: [] as EmailInfo[],
 			});
 
 			await handleChatToGPT(req, res);
 
 			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
-				[...existingHistory, newUserChatHistoryMessage],
+				[...existingHistory, newUserChatMessage],
 				[],
 				mockChatModel,
 				'What is the answer to life the universe and everything?',
@@ -445,13 +445,13 @@ describe('handleChatToGPT unit tests', () => {
 				req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
 			expect(history).toEqual([
 				...existingHistory,
-				newUserChatHistoryMessage,
-				newBotChatHistoryMessage,
+				newUserChatMessage,
+				newBotChatMessage,
 			]);
 		});
 
 		test('Given sandbox WHEN message sent THEN send reply with email AND session chat history is updated AND session emails are updated', async () => {
-			const newUserChatHistoryMessage = {
+			const newUserChatMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 				completion: {
 					role: 'user',
@@ -459,7 +459,7 @@ describe('handleChatToGPT unit tests', () => {
 				},
 			} as ChatMessage;
 
-			const newFunctionCallChatHistoryMessages = [
+			const newFunctionCallChatMessages = [
 				{
 					chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
 					completion: null, // this would usually be populated with a role, content and id, but not needed for mock
@@ -475,7 +475,7 @@ describe('handleChatToGPT unit tests', () => {
 				},
 			] as ChatMessage[];
 
-			const newBotChatHistoryMessage = {
+			const newBotChatMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 				completion: {
 					role: 'assistant',
@@ -498,8 +498,8 @@ describe('handleChatToGPT unit tests', () => {
 				},
 				chatHistory: [
 					...existingHistory,
-					newUserChatHistoryMessage,
-					...newFunctionCallChatHistoryMessages,
+					newUserChatMessage,
+					...newFunctionCallChatMessages,
 				],
 				sentEmails: [] as EmailInfo[],
 			});
@@ -514,7 +514,7 @@ describe('handleChatToGPT unit tests', () => {
 			await handleChatToGPT(req, res);
 
 			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
-				[...existingHistory, newUserChatHistoryMessage],
+				[...existingHistory, newUserChatMessage],
 				[],
 				mockChatModel,
 				'send an email to bob@example.com saying hi',
@@ -540,9 +540,9 @@ describe('handleChatToGPT unit tests', () => {
 				req.session.levelState[LEVEL_NAMES.SANDBOX.valueOf()].chatHistory;
 			const expectedHistory = [
 				...existingHistory,
-				newUserChatHistoryMessage,
-				...newFunctionCallChatHistoryMessages,
-				newBotChatHistoryMessage,
+				newUserChatMessage,
+				...newFunctionCallChatMessages,
+				newBotChatMessage,
 			];
 			expect(history).toEqual(expectedHistory);
 		});
@@ -554,7 +554,7 @@ describe('handleChatToGPT unit tests', () => {
 				postMessage: '[post message]',
 				transformationName: 'one of the transformation defences',
 			};
-			const newTransformationChatHistoryMessages = [
+			const newTransformationChatMessages = [
 				{
 					chatMessageType: CHAT_MESSAGE_TYPE.USER,
 					infoMessage: 'hello bot',
@@ -573,7 +573,7 @@ describe('handleChatToGPT unit tests', () => {
 				},
 			] as ChatMessage[];
 
-			const newBotChatHistoryMessage = {
+			const newBotChatMessage = {
 				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
 				completion: {
 					role: 'assistant',
@@ -594,10 +594,7 @@ describe('handleChatToGPT unit tests', () => {
 					wonLevel: true,
 					openAIErrorMessage: null,
 				},
-				chatHistory: [
-					...existingHistory,
-					...newTransformationChatHistoryMessages,
-				],
+				chatHistory: [...existingHistory, ...newTransformationChatMessages],
 				sentEmails: [] as EmailInfo[],
 			});
 
@@ -618,7 +615,7 @@ describe('handleChatToGPT unit tests', () => {
 			await handleChatToGPT(req, res);
 
 			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
-				[...existingHistory, ...newTransformationChatHistoryMessages],
+				[...existingHistory, ...newTransformationChatMessages],
 				[],
 				mockChatModel,
 				'[pre message] hello bot [post message]',
@@ -646,8 +643,8 @@ describe('handleChatToGPT unit tests', () => {
 				req.session.levelState[LEVEL_NAMES.SANDBOX.valueOf()].chatHistory;
 			const expectedHistory = [
 				...existingHistory,
-				...newTransformationChatHistoryMessages,
-				newBotChatHistoryMessage,
+				...newTransformationChatMessages,
+				newBotChatMessage,
 			];
 			expect(history).toEqual(expectedHistory);
 		});
