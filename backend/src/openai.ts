@@ -299,16 +299,15 @@ function getChatCompletionsFromHistory(
 	gptModel: CHAT_MODELS
 ): ChatCompletionMessageParam[] {
 	// take only completions to send to model
-	const completions: ChatCompletionMessageParam[] =
-		chatHistory.length > 0
-			? (chatHistory
-					.filter((chatMessage) => 'completion' in chatMessage)
-					.map(
-						(
-							chatMessage // it's silly that we must check this twice
-						) => ('completion' in chatMessage ? chatMessage.completion : null)
-					) as ChatCompletionMessageParam[])
-			: [];
+	const completions = chatHistory.reduce<ChatCompletionMessageParam[]>(
+		(result, chatMessage) => {
+			if ('completion' in chatMessage) {
+				result.push(chatMessage.completion);
+			}
+			return result;
+		},
+		[]
+	);
 
 	console.debug(
 		'Number of tokens in total chat history. prompt_tokens=',
