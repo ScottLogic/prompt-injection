@@ -61,7 +61,7 @@ function ModelConfiguration() {
 			(config) => config.id === id
 		)?.value;
 
-		if (!prevValue)
+		if (prevValue === undefined)
 			throw new Error(`ModelConfiguration: No config with id: ${id}`);
 
 		setCustomChatModelByID(id, newValue);
