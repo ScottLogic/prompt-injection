@@ -62,57 +62,53 @@ function DefenceConfigurationInput({
 	}
 
 	function validateNewInput(value: string) {
-		setConfigValidated(
-			validateDefence(defence.id, config.id, value)
-		);
+		setConfigValidated(validateDefence(defence.id, config.id, value));
 	}
 
-	if (inputType === 'text') {
-		return (
-			<>
-				<ThemedTextArea
-					id={id}
-					content={value}
-					onContentChanged={setValue}
-					configValidated={configValidated}
-					validateInput={validateNewInput}
-					disabled={disabled}
-					maxLines={10}
-					onBlur={() => {
-						void setConfigurationValueIfDifferent(value);
-					}}
-					onKeyDown={inputKeyDown}
-					onKeyUp={inputKeyUp}
-					characterLimit={CONFIG_VALUE_CHARACTER_LIMIT}
-				/>
-				<p className="error-message" aria-live="polite">
-					{configValidated ? '' : 'Error: Invalid configuration value'}
-				</p>
-			</>
+	const inputElement =
+		inputType === 'text' ? (
+			<ThemedTextArea
+				id={id}
+				content={value}
+				onContentChanged={setValue}
+				configValidated={configValidated}
+				validateInput={validateNewInput}
+				disabled={disabled}
+				maxLines={10}
+				onBlur={() => {
+					void setConfigurationValueIfDifferent(value);
+				}}
+				onKeyDown={inputKeyDown}
+				onKeyUp={inputKeyUp}
+				characterLimit={CONFIG_VALUE_CHARACTER_LIMIT}
+			/>
+		) : (
+			<ThemedNumberInput
+				id={id}
+				content={value}
+				onContentChanged={setValue}
+				configValidated={configValidated}
+				validateInput={validateNewInput}
+				disabled={disabled}
+				enterPressed={() => {
+					void setConfigurationValueIfDifferent(value);
+				}}
+				onBlur={() => {
+					void setConfigurationValueIfDifferent(value);
+				}}
+			/>
 		);
-	} else {
-		return (
-			<>
-				<ThemedNumberInput
-					id={id}
-					content={value}
-					onContentChanged={setValue}
-					configValidated={configValidated}
-					validateInput={validateNewInput}
-					disabled={disabled}
-					enterPressed={() => {
-						void setConfigurationValueIfDifferent(value);
-					}}
-					onBlur={() => {
-						void setConfigurationValueIfDifferent(value);
-					}}
-				/>
+
+	return (
+		<>
+			{inputElement}
+			{!configValidated && (
 				<p className="error-message" aria-live="polite">
-					{configValidated ? '' : 'Error: Invalid configuration value'}
+					Error: Invalid configuration value
 				</p>
-			</>
-		);
-	}
+			)}
+		</>
+	);
 }
 
 export default DefenceConfigurationInput;
