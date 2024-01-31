@@ -282,7 +282,9 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		// chatReponse.reply is empty if blocked
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-			infoMessage: updatedChatResponse.defenceReport.blockedReason ?? '',
+			infoMessage:
+				updatedChatResponse.defenceReport.blockedReason ??
+				'block reason unknown',
 		});
 	} else if (updatedChatResponse.openAIErrorMessage) {
 		const errorMsg = simplifyOpenAIErrorMessage(
