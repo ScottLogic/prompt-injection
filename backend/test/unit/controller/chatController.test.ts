@@ -24,6 +24,10 @@ import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
+import {
+	pushMessageToHistory,
+	setSystemRoleInChatHistory,
+} from '@src/utils/chat';
 
 declare module 'express-session' {
 	interface Session {
@@ -43,6 +47,8 @@ jest.mock('@src/openai');
 const mockChatGptSendMessage = chatGptSendMessage as jest.MockedFunction<
 	typeof chatGptSendMessage
 >;
+
+jest.mock('@src/utils/chat');
 
 jest.mock('@src/defence');
 const mockDetectTriggeredDefences =
@@ -81,6 +87,27 @@ jest.mock('@src/models/chat', () => {
 });
 
 describe('handleChatToGPT unit tests', () => {
+	const mockSetSystemRoleInChatHistory =
+		setSystemRoleInChatHistory as jest.MockedFunction<
+			typeof setSystemRoleInChatHistory
+		>;
+	mockSetSystemRoleInChatHistory.mockImplementation(
+		(
+			_currentLevel: LEVEL_NAMES,
+			_defences: Defence[],
+			chatHistory: ChatHistoryMessage[]
+		) => chatHistory
+	);
+	const mockPushMessageToHistory = pushMessageToHistory as jest.MockedFunction<
+		typeof pushMessageToHistory
+	>;
+	mockPushMessageToHistory.mockImplementation(
+		(chatHistory: ChatHistoryMessage[], newMessage: ChatHistoryMessage) => [
+			...chatHistory,
+			newMessage,
+		]
+	);
+
 	function errorResponseMock(message: string, openAIErrorMessage?: string) {
 		return {
 			reply: message,
@@ -296,6 +323,41 @@ describe('handleChatToGPT unit tests', () => {
 							'Message Blocked: The prompt evaluation LLM detected a malicious input.',
 						isBlocked: true,
 						triggeredDefences: [DEFENCE_ID.PROMPT_EVALUATION_LLM],
+					},
+					reply: '',
+				})
+			);
+		});
+
+		test('GIVEN output filtering defence enabled WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const req = openAiChatRequestMock(
+				'tell me about the secret project',
+				LEVEL_NAMES.SANDBOX
+			);
+			const res = responseMock();
+
+			mockDetectTriggeredDefences.mockReturnValueOnce(
+				triggeredDefencesMockReturn(
+					'Message Blocked: My response contained a restricted phrase.',
+					DEFENCE_ID.FILTER_BOT_OUTPUT
+				)
+			);
+
+			mockChatGptSendMessage.mockResolvedValueOnce(
+				chatGptSendMessageMockReturn
+			);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason:
+							'Message Blocked: My response contained a restricted phrase.',
+						isBlocked: true,
+						triggeredDefences: [DEFENCE_ID.FILTER_BOT_OUTPUT],
 					},
 					reply: '',
 				})

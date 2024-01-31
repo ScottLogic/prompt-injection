@@ -23,7 +23,10 @@ import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
-import { pushMessageToHistory } from '@src/utils/chat';
+import {
+	pushMessageToHistory,
+	setSystemRoleInChatHistory,
+} from '@src/utils/chat';
 
 import { handleChatError } from './handleError';
 
@@ -228,9 +231,12 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			? req.session.chatModel
 			: defaultChatModel;
 
-	const currentChatHistory = [
-		...req.session.levelState[currentLevel].chatHistory,
-	];
+	const currentChatHistory = setSystemRoleInChatHistory(
+		currentLevel,
+		req.session.levelState[currentLevel].defences,
+		req.session.levelState[currentLevel].chatHistory
+	);
+
 	const defences = [...req.session.levelState[currentLevel].defences];
 
 	let levelResult: LevelHandlerResponse;

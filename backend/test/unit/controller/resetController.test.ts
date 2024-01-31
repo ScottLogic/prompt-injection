@@ -7,7 +7,11 @@ import { CHAT_MESSAGE_TYPE, ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
-import { LEVEL_NAMES, LevelState, levelsInitialState } from '@src/models/level';
+import {
+	LEVEL_NAMES,
+	LevelState,
+	getInitialLevelStates,
+} from '@src/models/level';
 
 declare module 'express-session' {
 	interface Session {
@@ -66,7 +70,7 @@ describe('handleResetProgress unit tests', () => {
 
 		const res = responseMock();
 		handleResetProgress(reqWithChatHistory, res);
-		expect(res.send).toHaveBeenCalledWith(levelsInitialState);
+		expect(res.send).toHaveBeenCalledWith(getInitialLevelStates());
 	});
 
 	test('GIVEN sent emails THEN should reset emails for all levels', () => {
@@ -81,7 +85,7 @@ describe('handleResetProgress unit tests', () => {
 
 		const res = responseMock();
 		handleResetProgress(reqWithSentEmails, res);
-		expect(res.send).toHaveBeenCalledWith(levelsInitialState);
+		expect(res.send).toHaveBeenCalledWith(getInitialLevelStates());
 	});
 
 	test('GIVEN defences THEN should reset defences for levels', () => {
@@ -113,6 +117,6 @@ describe('handleResetProgress unit tests', () => {
 
 		const res = responseMock();
 		handleResetProgress(reqWithDefences, res);
-		expect(res.send).toHaveBeenCalledWith(levelsInitialState);
+		expect(res.send).toHaveBeenCalledWith(getInitialLevelStates());
 	});
 });

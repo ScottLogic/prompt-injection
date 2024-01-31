@@ -1,5 +1,10 @@
+import { ChatCompletionSystemMessageParam } from 'openai/resources/chat/completions';
+
+import { getSystemRole, isDefenceActive } from '@src/defence';
 import { CHAT_MESSAGE_TYPE } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
+import { DEFENCE_ID, Defence } from '@src/models/defence';
+import { LEVEL_NAMES } from '@src/models/level';
 
 function pushMessageToHistory(
 	chatHistory: ChatMessage[],
@@ -22,4 +27,46 @@ function pushMessageToHistory(
 	return updatedChatHistory;
 }
 
-export { pushMessageToHistory };
+function setSystemRoleInChatHistory(
+	currentLevel: LEVEL_NAMES,
+	defences: Defence[],
+	chatHistory: ChatMessage[]
+) {
+	const systemRoleNeededInChatHistory =
+		currentLevel !== LEVEL_NAMES.SANDBOX ||
+		isDefenceActive(DEFENCE_ID.SYSTEM_ROLE, defences);
+
+	if (systemRoleNeededInChatHistory) {
+		const completionConfig: ChatCompletionSystemMessageParam = {
+			role: 'system',
+			content: getSystemRole(defences, currentLevel),
+		};
+
+		const existingSystemRole = chatHistory.find(
+			(message) => message.chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM
+		);
+		if (!existingSystemRole) {
+			return [
+				{
+					completion: completionConfig,
+					chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+				},
+				...chatHistory,
+			];
+		} else {
+			return chatHistory.map((message) => {
+				if (message.chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM) {
+					return { ...existingSystemRole, completion: completionConfig };
+				} else {
+					return message;
+				}
+			});
+		}
+	} else {
+		return chatHistory.filter(
+			(message) => message.chatMessageType !== CHAT_MESSAGE_TYPE.SYSTEM
+		);
+	}
+}
+
+export { pushMessageToHistory, setSystemRoleInChatHistory };
