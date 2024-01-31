@@ -18,9 +18,9 @@ function pushMessageToHistory(
 	// until the length of the chat history is less than maxChatHistoryLength
 	while (updatedChatHistory.length >= maxChatHistoryLength) {
 		if (updatedChatHistory[0].chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM) {
-			updatedChatHistory.shift();
-		} else {
 			updatedChatHistory.splice(1, 1);
+		} else {
+			updatedChatHistory.shift();
 		}
 	}
 	updatedChatHistory.push(newMessage);
