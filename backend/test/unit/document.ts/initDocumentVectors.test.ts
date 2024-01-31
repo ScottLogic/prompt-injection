@@ -1,5 +1,3 @@
-// this file tests across langchain and document.ts
-
 import { test, jest, expect } from '@jest/globals';
 
 import { initDocumentVectors } from '@src/document';
@@ -30,11 +28,11 @@ jest.mock('langchain/text_splitter', () => {
 });
 
 test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {
-	const numberOfCalls = 4 + 1; // number of levels + common
-
 	mockSplitDocuments.mockResolvedValue([]);
 
 	await initDocumentVectors();
+
+	const numberOfCalls = 4 + 1; // number of levels + common
 	expect(mockLoader).toHaveBeenCalledTimes(numberOfCalls);
 	expect(mockSplitDocuments).toHaveBeenCalledTimes(numberOfCalls);
 });
