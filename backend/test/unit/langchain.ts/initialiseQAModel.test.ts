@@ -32,8 +32,8 @@ jest.mock('langchain/embeddings/openai', () => {
 jest.mock('langchain/prompts');
 PromptTemplate.fromTemplate = mockFromTemplate;
 
-// // mock OpenAI for ChatOpenAI class
-// jest.mock('langchain/chat_models/openai');
+// mock OpenAI for ChatOpenAI class
+jest.mock('langchain/chat_models/openai');
 
 // mock chains
 jest.mock('langchain/chains', () => {
