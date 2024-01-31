@@ -11,7 +11,6 @@ import { systemRoleDefault } from '@src/promptTemplates';
 const mockCreateChatCompletion =
 	jest.fn<() => Promise<ReturnType<typeof chatResponseAssistant>>>();
 
-// Mock the OpenAI api class
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
 		chat: {
@@ -65,10 +64,8 @@ describe('OpenAI Integration Tests', () => {
 			},
 		};
 
-		// Mock the createChatCompletion function
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
 
-		// send the message
 		const reply = await chatGptSendMessage(
 			initChatHistory,
 			defences,
@@ -80,7 +77,6 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply.chatResponse.completion).toBeDefined();
 		expect(reply.chatResponse.completion?.content).toBe('Hi');
 
-		// restore the mock
 		mockCreateChatCompletion.mockRestore();
 	});
 
@@ -97,13 +93,10 @@ describe('OpenAI Integration Tests', () => {
 			},
 		};
 
-		// set the system role prompt
 		const defences = activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences);
 
-		// Mock the createChatCompletion function
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
 
-		// send the message
 		const reply = await chatGptSendMessage(
 			initChatHistory,
 			defences,
@@ -115,16 +108,16 @@ describe('OpenAI Integration Tests', () => {
 
 		expect(reply).toBeDefined();
 		expect(chatResponse.completion?.content).toBe('Hi');
-		// check the chat history has been updated
-		expect(chatHistory.length).toBe(1);
-		// system role is added to the start of the chat history
-		expect('completion' in chatHistory[0]);
-		if ('completion' in chatHistory[0]) {
-			expect(chatHistory[0].completion.role).toBe('system');
-			expect(chatHistory[0].completion.content).toBe(systemRoleDefault);
-		}
+		expect(chatHistory).toEqual([
+			{
+				completion: {
+					role: 'system',
+					content: systemRoleDefault,
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+			},
+		]);
 
-		// restore the mock
 		mockCreateChatCompletion.mockRestore();
 	});
 
@@ -155,13 +148,11 @@ describe('OpenAI Integration Tests', () => {
 				presencePenalty: 0,
 			},
 		};
-		// activate the SYSTEM_ROLE defence
+
 		const defences = activateDefence(DEFENCE_ID.SYSTEM_ROLE, defaultDefences);
 
-		// Mock the createChatCompletion function
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
 
-		// send the message
 		const reply = await chatGptSendMessage(
 			initChatHistory,
 			defences,
@@ -173,28 +164,30 @@ describe('OpenAI Integration Tests', () => {
 
 		expect(reply).toBeDefined();
 		expect(chatResponse.completion?.content).toBe('Hi');
-		// check the chat history has been updated
-		expect(chatHistory.length).toBe(3);
-		expect('completion' in chatHistory[0]);
-		expect('completion' in chatHistory[1]);
-		expect('completion' in chatHistory[2]);
-		if (
-			'completion' in chatHistory[0] &&
-			'completion' in chatHistory[1] &&
-			'completion' in chatHistory[2]
-		) {
-			// system role is added to the start of the chat history
-			expect(chatHistory[0].completion.role).toBe('system');
-			expect(chatHistory[0].completion.content).toBe(systemRoleDefault);
+		expect(chatHistory).toEqual([
+			{
+				completion: {
+					role: 'system',
+					content: systemRoleDefault,
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+			},
+			{
+				completion: {
+					role: 'user',
+					content: "I'm a user",
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+			},
+			{
+				completion: {
+					role: 'assistant',
+					content: "I'm an assistant",
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+			},
+		]);
 
-			// rest of the chat history is in order
-			expect(chatHistory[1].completion.role).toBe('user');
-			expect(chatHistory[1].completion.content).toBe("I'm a user");
-			expect(chatHistory[2].completion.role).toBe('assistant');
-			expect(chatHistory[2].completion.content).toBe("I'm an assistant");
-		}
-
-		// restore the mock
 		mockCreateChatCompletion.mockRestore();
 	});
 
@@ -234,10 +227,8 @@ describe('OpenAI Integration Tests', () => {
 			},
 		};
 
-		// Mock the createChatCompletion function
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
 
-		// send the message
 		const reply = await chatGptSendMessage(
 			initChatHistory,
 			defences,
@@ -249,21 +240,23 @@ describe('OpenAI Integration Tests', () => {
 
 		expect(reply).toBeDefined();
 		expect(chatResponse.completion?.content).toBe('Hi');
-		// check the chat history has been updated
-		expect(chatHistory.length).toBe(2);
-		// system role is removed from the start of the chat history
-		// rest of the chat history is in order
-		expect('completion' in chatHistory[0]);
-		expect('completion' in chatHistory[1]);
+		expect(chatHistory).toEqual([
+			{
+				completion: {
+					role: 'user',
+					content: "I'm a user",
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+			},
+			{
+				completion: {
+					role: 'assistant',
+					content: "I'm an assistant",
+				},
+				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+			},
+		]);
 
-		if ('completion' in chatHistory[0] && 'completion' in chatHistory[1]) {
-			expect(chatHistory[0].completion.role).toBe('user');
-			expect(chatHistory[0].completion.content).toBe("I'm a user");
-			expect(chatHistory[1].completion.role).toBe('assistant');
-			expect(chatHistory[1].completion.content).toBe("I'm an assistant");
-		}
-
-		// restore the mock
 		mockCreateChatCompletion.mockRestore();
 	});
 
@@ -316,12 +309,10 @@ describe('OpenAI Integration Tests', () => {
 				]
 			);
 
-			// Mock the createChatCompletion function
 			mockCreateChatCompletion.mockResolvedValueOnce(
 				chatResponseAssistant('Hi')
 			);
 
-			// send the message
 			const reply = await chatGptSendMessage(
 				initChatHistory,
 				defences,
@@ -333,29 +324,30 @@ describe('OpenAI Integration Tests', () => {
 
 			expect(reply).toBeDefined();
 			expect(chatResponse.completion?.content).toBe('Hi');
+			expect(chatHistory).toEqual([
+				{
+					completion: {
+						role: 'system',
+						content: 'You are not a helpful assistant',
+					},
+					chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+				},
+				{
+					completion: {
+						role: 'user',
+						content: "I'm a user",
+					},
+					chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				},
+				{
+					completion: {
+						role: 'assistant',
+						content: "I'm an assistant",
+					},
+					chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				},
+			]);
 
-			expect('completion' in chatHistory[0]).toBe(true);
-			expect('completion' in chatHistory[1]).toBe(true);
-			expect('completion' in chatHistory[2]).toBe(true);
-
-			if (
-				'completion' in chatHistory[0] &&
-				'completion' in chatHistory[1] &&
-				'completion' in chatHistory[2]
-			) {
-				// system role is added to the start of the chat history
-				expect(chatHistory[0].completion.role).toBe('system');
-				expect(chatHistory[0].completion.content).toBe(
-					'You are not a helpful assistant'
-				);
-				// rest of the chat history is in order
-				expect(chatHistory[1].completion.role).toBe('user');
-				expect(chatHistory[1].completion.content).toBe("I'm a user");
-				expect(chatHistory[2].completion.role).toBe('assistant');
-				expect(chatHistory[2].completion.content).toBe("I'm an assistant");
-			}
-
-			// restore the mock
 			mockCreateChatCompletion.mockRestore();
 		}
 	);
