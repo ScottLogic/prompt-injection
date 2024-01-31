@@ -17,7 +17,7 @@ import {
 	FunctionCallResponse,
 	ToolCallResponse,
 } from './models/chat';
-import { ChatMessage, ChatSystemMessage } from './models/chatMessage';
+import { ChatMessage } from './models/chatMessage';
 import { DEFENCE_ID, Defence } from './models/defence';
 import { EmailResponse } from './models/email';
 import { LEVEL_NAMES } from './models/level';

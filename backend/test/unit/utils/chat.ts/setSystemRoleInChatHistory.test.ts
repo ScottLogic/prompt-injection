@@ -1,7 +1,8 @@
 import { afterEach, expect, jest, test } from '@jest/globals';
 
 import { isDefenceActive, getSystemRole } from '@src/defence';
-import { ChatHistoryMessage, CHAT_MESSAGE_TYPE } from '@src/models/chat';
+import { CHAT_MESSAGE_TYPE } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { Defence, DEFENCE_ID } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 import { setSystemRoleInChatHistory } from '@src/utils/chat';
@@ -17,13 +18,12 @@ const defencesSystemRoleInactive: Defence[] = [
 			},
 		],
 		isActive: false,
-		isTriggered: false,
 	},
 ];
 const defencesSystemRoleActive = [
 	{ ...defencesSystemRoleInactive[0], isActive: true },
 ];
-const chatHistoryWithoutSystemRole: ChatHistoryMessage[] = [
+const chatHistoryWithoutSystemRole: ChatMessage[] = [
 	{
 		completion: { role: 'user', content: 'What is two plus two?' },
 		chatMessageType: CHAT_MESSAGE_TYPE.USER,
@@ -34,7 +34,7 @@ const chatHistoryWithoutSystemRole: ChatHistoryMessage[] = [
 	},
 ];
 
-const chatHistoryWithSystemRole: ChatHistoryMessage[] = [
+const chatHistoryWithSystemRole: ChatMessage[] = [
 	{
 		completion: { role: 'system', content: systemRolePrompt },
 		chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
@@ -90,7 +90,7 @@ test('GIVEN Sandbox AND system role defence active AND system role is not in cha
 test('GIVEN Sandbox AND system role defence active AND outdated system role in in chat history WHEN setSystemRoleInChatHistory is called THEN it updates the system role in the chat history', () => {
 	mockIsDefenceActive.mockImplementation(() => true);
 
-	const mockChatHistoryWithOutdatedSystemRole: ChatHistoryMessage[] = [
+	const mockChatHistoryWithOutdatedSystemRole: ChatMessage[] = [
 		{
 			completion: { role: 'system', content: 'Yer a wizard, Harry.' },
 			chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
