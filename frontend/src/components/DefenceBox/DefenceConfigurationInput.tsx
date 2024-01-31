@@ -62,11 +62,9 @@ function DefenceConfigurationInput({
 	}
 
 	function validateNewInput(value: string) {
-		if (validateDefence(defence.id, config.id, value)) {
-			setConfigValidated(true);
-		} else {
-			setConfigValidated(false);
-		}
+		setConfigValidated(
+			validateDefence(defence.id, config.id, value)
+		);
 	}
 
 	if (inputType === 'text') {
