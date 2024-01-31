@@ -7,27 +7,27 @@
 	aspect-ratio: 7/8;
 }
 
-.handbook-overlay .close-button {
-	position: absolute;
-	top: 0.25rem;
-	right: 0.25rem;
+.handbook-overlay-header {
+	background-color: grey;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1rem 2rem;
+	position: fixed;
+	height: 4rem;
 }
 
-.handbook-overlay .close-button:hover svg rect {
-	fill: black;
-	stroke: white;
-}
-
-.handbook-overlay .close-button:hover svg path {
-	fill: white;
+.handbook .close-button {
+	margin-right: 3rem;
 }
 
 .handbook-overlay .content {
 	overflow-y: auto;
-	margin-top: 3rem;
+	margin-top: 5rem;
 	margin-right: 0.5rem;
 	margin-bottom: 0.25rem;
-	padding: 0 1.75rem 0.5rem;
+	padding: 2rem 1.75rem 0.5rem;
 
 	/* firefox scrollbar styling */
 	scrollbar-color: var(--handbook-scrollbar-colour) transparent;

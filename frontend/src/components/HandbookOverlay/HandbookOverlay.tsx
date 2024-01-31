@@ -5,7 +5,6 @@ import { HANDBOOK_PAGES } from '@src/models/handbook';
 import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
 
 import HandbookAttacks from './HandbookAttacks';
-import HandbookCloseIcon from './HandbookCloseIcon';
 import HandbookGlossary from './HandbookGlossary';
 import HandbookSpine from './HandbookSpine';
 import HandbookSystemRole from './HandbookSystemRole';
@@ -43,14 +42,19 @@ function HandbookOverlay({
 	}[selectedPage];
 
 	return (
+		<div className="handbook">
+			<div className="handbook-overlay-header">
+				<h1 >Handbook</h1>
+				<button
+					className="themed-button close-button"
+					aria-label="close the handbook"
+					onClick={closeOverlay}
+				>
+					close<span className="overlay-close-icon"aria-hidden>X</span>
+				</button>
+			</div>
 		<div className="handbook-overlay">
-			<button
-				className="prompt-injection-min-button close-button"
-				aria-label="close the handbook"
-				onClick={closeOverlay}
-			>
-				<HandbookCloseIcon />
-			</button>
+			
 			<HandbookSpine
 				currentLevel={currentLevel}
 				currentPage={selectedPage}
@@ -66,6 +70,7 @@ function HandbookOverlay({
 			>
 				{pageContent}
 			</div>
+		</div>
 		</div>
 	);
 }
