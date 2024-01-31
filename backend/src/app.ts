@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 import { importMetaUrl } from './importMetaUtils';
 import { ChatModel, defaultChatModel } from './models/chat';
-import { LevelState, levelsInitialState } from './models/level';
+import { LevelState, getInitialLevelStates } from './models/level';
 import { router } from './router';
 
 dotenv.config();
@@ -55,7 +55,7 @@ app.use((req, _res, next) => {
 	// initialise session variables first time
 	if (!req.session.initialised) {
 		req.session.chatModel = defaultChatModel;
-		req.session.levelState = levelsInitialState;
+		req.session.levelState = getInitialLevelStates();
 		req.session.initialised = true;
 	}
 	next();
