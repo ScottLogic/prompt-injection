@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
-import { getGptModel } from '@src/service/chatService';
+import { configureGptModel, getGptModel } from '@src/service/chatService';
 
 import ModelConfigurationSlider from './ModelConfigurationSlider';
 
@@ -45,6 +45,34 @@ function ModelConfiguration() {
 		},
 	]);
 
+	function setCustomChatModelByID(id: MODEL_CONFIG, value: number) {
+		setCustomChatModel((prev) => {
+			return prev.map((config) => {
+				if (config.id === id) {
+					return { ...config, value };
+				}
+				return config;
+			});
+		});
+	}
+
+	function updateConfigValue(id: MODEL_CONFIG, newValue: number) {
+		const prevValue = customChatModelConfigs.find(
+			(config) => config.id === id
+		)?.value;
+
+		if (prevValue === undefined)
+			throw new Error(`ModelConfiguration: No config with id: ${id}`);
+
+		setCustomChatModelByID(id, newValue);
+
+		void configureGptModel(id, newValue).then((success) => {
+			if (!success) {
+				setCustomChatModelByID(id, prevValue);
+			}
+		});
+	}
+
 	// get model configs on mount
 	useEffect(() => {
 		getGptModel()
@@ -67,7 +95,11 @@ function ModelConfiguration() {
 	return (
 		<div className="model-config-box">
 			{customChatModelConfigs.map((config) => (
-				<ModelConfigurationSlider key={config.id} config={config} />
+				<ModelConfigurationSlider
+					key={config.id}
+					config={config}
+					onConfigChanged={updateConfigValue}
+				/>
 			))}
 		</div>
 	);
