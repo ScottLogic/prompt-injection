@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
-import { GLOSSARY } from '@src/Glossary';
+import { GLOSSARY } from '@src/components/HandbookOverlay/Pages/Glossary';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import HandbookGlossary from './HandbookGlossary';

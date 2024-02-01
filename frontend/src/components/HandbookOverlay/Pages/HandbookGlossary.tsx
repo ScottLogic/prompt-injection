@@ -1,4 +1,4 @@
-import { GLOSSARY } from '@src/Glossary';
+import { GLOSSARY } from '@src/components/HandbookOverlay/Pages/Glossary';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './HandbookPage.css';

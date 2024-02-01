@@ -4,11 +4,11 @@ import useIsOverflow from '@src/hooks/useIsOverflow';
 import { HANDBOOK_PAGES } from '@src/models/handbook';
 import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
 
-import HandbookAttacks from './HandbookAttacks';
 import HandbookCloseIcon from './HandbookCloseIcon';
-import HandbookGlossary from './HandbookGlossary';
 import HandbookSpine from './HandbookSpine';
-import HandbookSystemRole from './HandbookSystemRole';
+import HandbookAttacks from './Pages/HandbookAttacks';
+import HandbookGlossary from './Pages/HandbookGlossary';
+import HandbookSystemRole from './Pages/HandbookSystemRole';
 
 import './HandbookOverlay.css';
 
