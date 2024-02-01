@@ -93,7 +93,6 @@ async function handleChatWithoutDefenceDetection(
 		chatHistory
 	);
 
-	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
 		updatedChatHistory,
 		defences,
@@ -286,7 +285,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	};
 
 	if (updatedChatResponse.defenceReport.isBlocked) {
-		// chatReponse.reply is empty if blocked
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 			completion: null,
 			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
