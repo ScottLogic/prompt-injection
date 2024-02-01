@@ -98,7 +98,6 @@ async function handleChatWithoutDefenceDetection(
 		updatedChatHistory,
 		defences,
 		chatModel,
-		message,
 		currentLevel
 	);
 
@@ -139,12 +138,13 @@ async function handleChatWithDefenceDetection(
 		defences
 	);
 
+	console.log(`User message: '${transformedMessageCombined ?? message}'`);
+
 	// get the chatGPT reply
 	const openAiReplyPromise = chatGptSendMessage(
 		chatHistoryWithNewUserMessages,
 		defences,
 		chatModel,
-		transformedMessageCombined ?? message,
 		currentLevel
 	);
 
