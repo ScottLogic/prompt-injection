@@ -226,9 +226,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		);
 		return;
 	}
-	const totalSentEmails: EmailInfo[] = [
-		...req.session.levelState[currentLevel].sentEmails,
-	];
 
 	// use default model for levels, allow user to select in sandbox
 	const chatModel =
@@ -277,7 +274,11 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	}
 
 	let updatedChatHistory = levelResult.chatHistory;
-	totalSentEmails.push(...levelResult.chatResponse.sentEmails);
+
+	const totalSentEmails: EmailInfo[] = [
+		...req.session.levelState[currentLevel].sentEmails,
+		...levelResult.chatResponse.sentEmails,
+	];
 
 	const updatedChatResponse: ChatHttpResponse = {
 		...initChatResponse,

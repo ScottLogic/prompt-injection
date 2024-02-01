@@ -419,7 +419,7 @@ async function chatGptSendMessage(
 	chatModel: ChatModel,
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-	// this method only calls getFinalReplyAfterAllToolCalls then reformats the output
+	// this method just calls getFinalReplyAfterAllToolCalls then reformats the output
 
 	const finalToolCallResponse = await getFinalReplyAfterAllToolCalls(
 		chatHistory,
