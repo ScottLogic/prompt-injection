@@ -1,4 +1,8 @@
-import { ATTACKS_ALL, ATTACKS_LEVEL_2, ATTACKS_LEVEL_3 } from '@src/Attacks';
+import {
+	ATTACKS_ALL,
+	ATTACKS_LEVEL_2,
+	ATTACKS_LEVEL_3,
+} from '@src/components/HandbookOverlay/Pages/Attacks';
 import { AttackInfo } from '@src/models/attack';
 import { LEVEL_NAMES } from '@src/models/level';
 
