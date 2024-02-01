@@ -427,23 +427,21 @@ async function chatGptSendMessage(
 		currentLevel
 	);
 
-	const updatedChatHistory = finalToolCallResponse.chatHistory;
-	const sentEmails = finalToolCallResponse.sentEmails;
-
 	const chatResponse: ChatResponse = {
 		completion: finalToolCallResponse.gptReply.completion,
 		wonLevel: finalToolCallResponse.wonLevel,
 		openAIErrorMessage: finalToolCallResponse.gptReply.openAIErrorMessage,
 	};
 
-	if (!chatResponse.completion?.content || chatResponse.openAIErrorMessage) {
-		return { chatResponse, chatHistory, sentEmails };
-	}
+	const successfulReply =
+		chatResponse.completion?.content && !chatResponse.openAIErrorMessage;
 
 	return {
 		chatResponse,
-		chatHistory: updatedChatHistory,
-		sentEmails,
+		chatHistory: successfulReply
+			? finalToolCallResponse.chatHistory
+			: chatHistory,
+		sentEmails: finalToolCallResponse.sentEmails,
 	};
 }
 
