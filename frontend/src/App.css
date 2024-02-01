@@ -51,7 +51,6 @@
 	border: none;
 	background-color: transparent;
 	transform: translate(-50%, -50%);
-	/* border-radius: 0.625rem; */
 }
 
 .dialog-modal:focus-visible {

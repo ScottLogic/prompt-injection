@@ -25,7 +25,7 @@ function ResetLevelOverlay({
 			}}
 			content={
 				<>
-					<h2> Do you want to start this level from scratch?</h2>
+					<h2>Do you want to reset your level progress?</h2>
 					<p>
 						{
 							'Resetting will erase all your chat history and sent emails for this level.'

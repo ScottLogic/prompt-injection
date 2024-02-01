@@ -8,10 +8,9 @@
 	max-height: 80vh;
 	padding: 0;
 	border: none;
-	/* border-radius: 0.625rem; */
+	border-radius: 0.625rem;
 	background-color: var(--overlay-background-colour);
 	color: var(--overlay-text-colour);
-	border-radius: 0.625rem;
 }
 
 .overlay * {
@@ -29,10 +28,6 @@
 	background-color: var(--overlay-header-background-colour);
 	border-top-right-radius: 0.625rem;
 	border-top-left-radius: 0.625rem;
-}
-
-.overlay h1 {
-	text-align: center;
 }
 
 .overlay p {

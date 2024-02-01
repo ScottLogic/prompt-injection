@@ -21,7 +21,7 @@ function ResetProgressOverlay({
 			}}
 			content={
 				<>
-					<h2>Are you sure you want to start from scratch?</h2>
+					<h2>Do you want to reset all progress?</h2>
 					<p>
 						{`Resetting will erase all your progress in the levels and sandbox mode. 
 							This includes all your conversation history and sent emails. 
