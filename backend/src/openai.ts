@@ -302,8 +302,8 @@ function getChatCompletionsFromHistory(
 	const completions: ChatCompletionMessageParam[] =
 		chatHistory.length > 0
 			? (chatHistory
-				.filter((message) => message.completion !== null)
-				.map((message) => message.completion) as ChatCompletionMessageParam[])
+					.filter((message) => message.completion !== null)
+					.map((message) => message.completion) as ChatCompletionMessageParam[])
 			: [];
 
 	console.debug(

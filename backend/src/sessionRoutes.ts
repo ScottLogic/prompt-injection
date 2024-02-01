@@ -1,7 +1,7 @@
+import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import memoryStoreFactory from 'memorystore';
-import 'dotenv/config';
 
 import {
 	handleChatToGPT,
@@ -40,7 +40,9 @@ declare module 'express-session' {
 
 const sessionSigningSecret = process.env.SESSION_SECRET;
 if (!sessionSigningSecret) {
-	console.error("SESSION_SECRET not found in environment vars, cannot continue!");
+	console.error(
+		'SESSION_SECRET not found in environment vars, cannot continue!'
+	);
 	process.exit(1);
 }
 

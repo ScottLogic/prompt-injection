@@ -161,9 +161,4 @@ export type {
 	ToolCallResponse,
 	MessageTransformation,
 };
-export {
-	CHAT_MODELS,
-	CHAT_MESSAGE_TYPE,
-	MODEL_CONFIG,
-	defaultChatModel,
-};
+export { CHAT_MODELS, CHAT_MESSAGE_TYPE, MODEL_CONFIG, defaultChatModel };

@@ -19,4 +19,3 @@ router.get('/health', handleHealthCheck);
 router.get('/systemRoles', handleGetSystemRoles);
 
 export default router;
-
