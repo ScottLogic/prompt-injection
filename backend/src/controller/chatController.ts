@@ -51,13 +51,11 @@ function createNewUserMessages(
 	if (transformedMessage) {
 		// if message has been transformed
 		return [
-			// original message
 			{
 				completion: null,
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 				infoMessage: message,
 			},
-			// transformed message
 			{
 				completion: {
 					role: 'user',
@@ -131,7 +129,6 @@ async function handleChatWithDefenceDetection(
 		transformedMessageCombined ?? null
 	).reduce(pushMessageToHistory, chatHistory);
 
-	// detect defences on input message
 	const triggeredInputDefencesPromise = detectTriggeredInputDefences(
 		message,
 		defences
@@ -139,7 +136,6 @@ async function handleChatWithDefenceDetection(
 
 	console.log(`User message: '${transformedMessageCombined ?? message}'`);
 
-	// get the chatGPT reply
 	const openAiReplyPromise = chatGptSendMessage(
 		chatHistoryWithNewUserMessages,
 		defences,
@@ -189,7 +185,6 @@ async function handleChatWithDefenceDetection(
 }
 
 async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
-	// set reply params
 	const initChatResponse: ChatHttpResponse = {
 		reply: '',
 		defenceReport: {
@@ -309,7 +304,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		handleChatError(res, updatedChatResponse, errorMsg, 500);
 		return;
 	} else {
-		// add bot message to chat history
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 			completion: {
 				role: 'assistant',
@@ -319,7 +313,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		});
 	}
 
-	// update state
 	req.session.levelState[currentLevel].chatHistory = updatedChatHistory;
 	req.session.levelState[currentLevel].sentEmails = totalSentEmails;
 
