@@ -344,7 +344,7 @@ async function performToolCalls(
 				currentLevel
 			);
 
-			// return after getting function reply. may change when we support other tool types. We assume only one function call in toolCalls
+			// We assume only one function call in toolCalls, and so we return after getting function reply.
 			return {
 				functionCallReply,
 				chatHistory: pushMessageToHistory(chatHistory, {
@@ -381,9 +381,7 @@ async function getFinalReplyAfterAllToolCalls(
 		);
 		updatedChatHistory = gptReply.chatHistory;
 
-		// check if GPT wanted to call a tool
 		if (gptReply.completion?.tool_calls) {
-			// push the function call to the chat
 			updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 				completion: gptReply.completion,
 				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
