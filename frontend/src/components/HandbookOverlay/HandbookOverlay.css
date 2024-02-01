@@ -9,6 +9,7 @@
 
 .handbook header {
 	background-color: var(--handbook-header-background-colour);
+	/* background-color: var(--overlay-header-background-colour); */
 	width: 100%;
 	display: flex;
 	justify-content: space-between;

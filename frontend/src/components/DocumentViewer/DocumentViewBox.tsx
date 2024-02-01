@@ -7,6 +7,7 @@ import { getDocumentMetas } from '@src/service/documentService';
 import DocumentViewBoxHeader from './DocumentViewBoxHeader';
 
 import './DocumentViewBox.css';
+import ThemedButton from '../ThemedButtons/ThemedButton';
 
 const emptyList: DocumentMeta[] = [];
 
@@ -31,14 +32,16 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 
 	return (
 		<div className="document-popup-inner">
-			<button
-				className="prompt-injection-min-button close-button"
-				onClick={closeOverlay}
-				aria-label="close document viewer"
-				title="close document viewer"
-			>
-				X
-			</button>
+			<header>
+				<h1>View Documents</h1>
+				<ThemedButton
+					className="close-button"
+					onClick={closeOverlay}
+				>
+					close<span className="overlay-close-icon"aria-hidden>X</span>
+				</ThemedButton>
+			</header>
+			<div className="view-documents-main">
 			<DocumentViewBoxHeader
 				documentIndex={documentIndex}
 				documentName={documentMetas[documentIndex]?.filename ?? ''}
@@ -69,6 +72,7 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 						},
 					}}
 				/>
+			</div>
 			</div>
 		</div>
 	);

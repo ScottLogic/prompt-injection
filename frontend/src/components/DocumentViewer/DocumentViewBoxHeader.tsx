@@ -21,9 +21,8 @@ function DocumentViewBoxHeader({
 
 	return (
 		<div className="view-documents-header">
-			<h2>View documents</h2>
 			<div className="nav">
-				<div className="button-container">
+				<nav  className="button-container">
 					<ThemedButton onClick={onPrevious} ariaDisabled={documentIndex <= 0}>
 						<i aria-hidden>◄</i>&nbsp;previous document
 					</ThemedButton>
@@ -34,7 +33,7 @@ function DocumentViewBoxHeader({
 					>
 						next document&nbsp;<i aria-hidden>►</i>
 					</ThemedButton>
-				</div>
+				</nav>
 			</div>
 			<p className="info">{documentName}</p>
 		</div>
