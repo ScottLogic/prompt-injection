@@ -20,4 +20,5 @@
 
 .invalid-input {
 	border-color: var(--error-colour-light);
+	color: var(--error-colour-light);
 }

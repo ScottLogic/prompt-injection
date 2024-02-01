@@ -20,7 +20,7 @@ function DefenceConfigurationInput({
 }) {
 	const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
 	const [value, setValue] = useState<string>(currentValue);
-	const [configValidated, setConfigValidated] = useState<boolean>(true);
+	const [configInvalid, setConfigInvalid] = useState<boolean>(false);
 
 	// update the text area value when reset/changed
 	useEffect(() => {
@@ -30,13 +30,12 @@ function DefenceConfigurationInput({
 	async function setConfigurationValueIfDifferent(value: string) {
 		const trimmedValue = value.trim();
 		if (trimmedValue !== currentValue) {
-			if (configValidated) {
+			if (!configInvalid) {
 				await setConfigurationValue(trimmedValue);
 				setValue(trimmedValue);
-				//add chat message
 			} else {
 				setValue(currentValue);
-				setConfigValidated(true);
+				setConfigInvalid(false);
 			}
 		} else {
 			setValue(trimmedValue);
@@ -63,9 +62,9 @@ function DefenceConfigurationInput({
 				id={id}
 				content={value}
 				onContentChanged={setValue}
-				configValidated={configValidated}
+				configInvalid={configInvalid}
 				validateInput={(value) => {
-					setConfigValidated(validateNewInput(value));
+					setConfigInvalid(!validateNewInput(value));
 				}}
 				disabled={disabled}
 				maxLines={10}
@@ -81,9 +80,9 @@ function DefenceConfigurationInput({
 				id={id}
 				content={value}
 				onContentChanged={setValue}
-				configValidated={configValidated}
+				configInvalid={configInvalid}
 				validateInput={(value) => {
-					setConfigValidated(validateNewInput(value));
+					setConfigInvalid(!validateNewInput(value));
 				}}
 				disabled={disabled}
 				enterPressed={() => {
@@ -98,7 +97,7 @@ function DefenceConfigurationInput({
 	return (
 		<>
 			{inputElement}
-			{!configValidated && (
+			{configInvalid && (
 				<p className="error-message" aria-live="polite">
 					Error: Invalid configuration value
 				</p>

@@ -66,7 +66,7 @@ function ThemedTextArea({
 	onKeyUp,
 	characterLimit,
 	id,
-	configValidated,
+	configInvalid,
 	validateInput,
 }: {
 	// required
@@ -83,7 +83,7 @@ function ThemedTextArea({
 	onBlur?: () => void;
 	characterLimit?: number;
 	id?: string;
-	configValidated?: boolean;
+	configInvalid?: boolean;
 	validateInput?: (value: string) => void;
 }) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -105,7 +105,7 @@ function ThemedTextArea({
 		'themed-input',
 		'themed-text-area',
 		spacing,
-		configValidated === false && 'invalid-input',
+		configInvalid && 'invalid-input',
 		{
 			disabled,
 		}
