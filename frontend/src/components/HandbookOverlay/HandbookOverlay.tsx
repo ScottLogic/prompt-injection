@@ -43,7 +43,7 @@ function HandbookOverlay({
 
 	return (
 		<div className="handbook">
-			<div className="handbook-overlay-header">
+			<header>
 				<h1 >Handbook</h1>
 				<button
 					className="themed-button close-button"
@@ -52,7 +52,7 @@ function HandbookOverlay({
 				>
 					close<span className="overlay-close-icon"aria-hidden>X</span>
 				</button>
-			</div>
+			</header>
 		<div className="handbook-overlay">
 			
 			<HandbookSpine

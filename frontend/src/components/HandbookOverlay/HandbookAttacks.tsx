@@ -22,10 +22,10 @@ function HandbookAttacks({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
 
 	return (
 		<article className="handbook-page">
-			<header>
-				<h1>Attacks</h1>
+			<div>
+				<h2>Attacks</h2>
 				<p>{getHeaderText(currentLevel)}</p>
-			</header>
+			</div>
 			{currentLevel > LEVEL_NAMES.LEVEL_1 && (
 				<dl className="handbook-terms">
 					{attacks.map((attack) => (
