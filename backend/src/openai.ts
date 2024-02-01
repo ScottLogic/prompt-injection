@@ -101,7 +101,7 @@ const getOpenAIKey = (() => {
 			openAIKey = process.env.OPENAI_API_KEY;
 			if (!openAIKey) {
 				throw new Error(
-					'OpenAI API key not found in environment vars - cannot continue!'
+					'OPENAI_API_KEY not found in environment vars, cannot continue!'
 				);
 			}
 		}
@@ -302,8 +302,8 @@ function getChatCompletionsFromHistory(
 	const completions: ChatCompletionMessageParam[] =
 		chatHistory.length > 0
 			? (chatHistory
-					.filter((message) => message.completion !== null)
-					.map((message) => message.completion) as ChatCompletionMessageParam[])
+				.filter((message) => message.completion !== null)
+				.map((message) => message.completion) as ChatCompletionMessageParam[])
 			: [];
 
 	console.debug(

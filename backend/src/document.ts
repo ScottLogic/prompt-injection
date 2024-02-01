@@ -28,6 +28,7 @@ async function getDocuments(filePath: string) {
 		'.csv': (path: string) => new CSVLoader(path),
 	});
 	const docs = await loader.load();
+	console.debug(`${docs.length} documents found`);
 
 	// split the documents into chunks
 	const textSplitter = new RecursiveCharacterTextSplitter({
