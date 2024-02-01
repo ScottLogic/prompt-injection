@@ -19,28 +19,18 @@
 }
 
 .document-popup-inner header {
+	border-radius: 0;
+	background-color: var(--accent-background-colour);
 	color: var(--main-text-colour);
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	background-color: #208187;
-
-	position: fixed;
-	width: 100%;
-	height: 5rem;
-	margin: 0;
-	padding: 0;
 }
 
-.document-popup-inner header h1 {
-	padding: 0 2rem;
-}
-
-.document-popup-inner header .close-button {
+.document-popup-inner header .overlay-close-button {
 	border: 0.0625rem solid var(--main-text-colour);
-	border-radius: 0.5rem;
 	color: var(--main-text-colour);
-	margin-right: 1rem;
+}
+
+.document-popup-inner header .overlay-close-button:hover {
+	background-color: var(--action-button-background-colour-hover);
 }
 
 .document-popup-inner header .overlay-close-icon {

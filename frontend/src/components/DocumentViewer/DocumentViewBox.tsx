@@ -5,9 +5,11 @@ import { DocumentMeta } from '@src/models/document';
 import { getDocumentMetas } from '@src/service/documentService';
 
 import DocumentViewBoxHeader from './DocumentViewBoxHeader';
+// eslint-disable-next-line no-restricted-imports
+import OverlayHeader from '../Overlay/OverlayHeader';
 
 import './DocumentViewBox.css';
-import ThemedButton from '../ThemedButtons/ThemedButton';
+
 
 const emptyList: DocumentMeta[] = [];
 
@@ -32,15 +34,7 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 
 	return (
 		<div className="document-popup-inner">
-			<header>
-				<h1>View Documents</h1>
-				<ThemedButton
-					className="close-button"
-					onClick={closeOverlay}
-				>
-					close<span className="overlay-close-icon"aria-hidden>X</span>
-				</ThemedButton>
-			</header>
+			<OverlayHeader closeOverlay={closeOverlay} heading="View Documents" />
 			<div className="view-documents-main">
 			<DocumentViewBoxHeader
 				documentIndex={documentIndex}

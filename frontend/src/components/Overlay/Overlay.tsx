@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
 
+import OverlayHeader from './OverlayHeader';
+
 import './Overlay.css';
 
 function Overlay({
@@ -13,17 +15,7 @@ function Overlay({
 }) {
 	return (
 		<div className="overlay">
-			<header className="overlay-header">
-				<h1>{heading}</h1>
-				<button
-					className="themed-button close-button"
-					onClick={closeOverlay}
-					aria-label="close overlay"
-				>
-					close<span className="overlay-close-icon"aria-hidden>X</span>
-				</button>
-			</header>
-
+			<OverlayHeader closeOverlay={closeOverlay} heading={heading} />
 			<div className="overlay-content">{children}</div>
 		</div>
 	);

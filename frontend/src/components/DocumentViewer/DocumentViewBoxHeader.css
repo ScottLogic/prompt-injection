@@ -7,14 +7,6 @@
 	color: var(--main-text-colour);
 }
 
-.view-documents-header h2 {
-	width: 100%;
-	margin: 0;
-	padding-bottom: 1rem;
-	border-bottom: solid 0.0625rem var(--main-border-colour);
-	text-align: center;
-}
-
 .view-documents-header .nav {
 	display: flex;
 	flex-direction: column;

@@ -8,6 +8,8 @@ import HandbookAttacks from './HandbookAttacks';
 import HandbookGlossary from './HandbookGlossary';
 import HandbookSpine from './HandbookSpine';
 import HandbookSystemRole from './HandbookSystemRole';
+// eslint-disable-next-line no-restricted-imports
+import OverlayHeader from '../Overlay/OverlayHeader';
 
 import './HandbookOverlay.css';
 
@@ -43,16 +45,16 @@ function HandbookOverlay({
 
 	return (
 		<div className="handbook">
-			<header>
-				<h1 >Handbook</h1>
+			<OverlayHeader closeOverlay={closeOverlay} heading="Handbook" />
+			{/* <header>
+				<h1>Handbook</h1>
 				<button
 					className="themed-button close-button"
-					aria-label="close the handbook"
 					onClick={closeOverlay}
 				>
 					close<span className="overlay-close-icon"aria-hidden>X</span>
 				</button>
-			</header>
+			</header> */}
 		<div className="handbook-overlay">
 			
 			<HandbookSpine

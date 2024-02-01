@@ -1,40 +1,23 @@
-.overlay {
-	position: relative;
-	overflow: visible;
-	overflow-y: auto;
-	box-sizing: border-box;
-	width: 50vw;
-	height: fit-content;
-	max-height: 80vh;
-	padding: 0;
-	border: none;
-	border-radius: 0.625rem;
-	background-color: var(--overlay-background-colour);
-	color: var(--overlay-text-colour);
-}
-
-.overlay * {
-	box-sizing: border-box;
-}
-
-/* .overlay header {
+.overlay-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 1rem 2rem;
+	/* padding: 1rem 2rem; */
 	position: fixed;
 	width: 100%;
 	height: 5rem;
+    margin: 0;
+    padding: 0;
 	background-color: var(--overlay-header-background-colour);
 	border-top-right-radius: 0.625rem;
-	border-top-left-radius: 0.625rem;
-} */
-
-.overlay p {
-	font-size: 1.25rem;
+	border-top-left-radius: 0.625rem;    
 }
 
-/* .close-button {
+.overlay-header h1 {
+	padding: 0 2rem;
+}
+
+.overlay-close-button {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
@@ -44,13 +27,15 @@
 	background-color: inherit;
 	color: var(--main-text-colour-inverted);
 	font-weight: bold;
-} */
+    margin-right: 1rem;
+    font-size: 1.125rem;
+}
 
-/* .close-button:hover {
+.overlay-close-button:hover {
 	background-color: var(--overlay-tab-colour);
-} */
+}
 
-/* .overlay-close-icon {
+.overlay-close-icon {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -60,12 +45,4 @@
 	height: 1.5rem;
 	border-radius: 50%;
 	font-weight: bold;
-} */
-
-.overlay-content {
-	display: flex;
-	overflow: hidden;
-	height: 100%;
-	padding: 1.5rem;
-	padding-top: 5rem;
 }
