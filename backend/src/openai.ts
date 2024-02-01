@@ -252,7 +252,6 @@ async function chatGptChatCompletion(
 
 	console.debug('Talking to model: ', JSON.stringify(chatModel));
 
-	// get start time
 	const startTime = new Date().getTime();
 	console.debug('Calling OpenAI chat completion...');
 
@@ -263,7 +262,10 @@ async function chatGptChatCompletion(
 			top_p: chatModel.configuration.topP,
 			frequency_penalty: chatModel.configuration.frequencyPenalty,
 			presence_penalty: chatModel.configuration.presencePenalty,
-			messages: getChatCompletionsFromHistory(updatedChatHistory, chatModel.id),
+			messages: getChatCompletionsInLimitedContextWindow(
+				updatedChatHistory,
+				chatModel.id
+			),
 			tools: chatGptTools,
 		});
 		console.debug(
@@ -294,11 +296,10 @@ async function chatGptChatCompletion(
 	}
 }
 
-function getChatCompletionsFromHistory(
+function getChatCompletionsInLimitedContextWindow(
 	chatHistory: ChatHistoryMessage[],
 	gptModel: CHAT_MODELS
 ): ChatCompletionMessageParam[] {
-	// take only completions to send to model
 	const completions: ChatCompletionMessageParam[] =
 		chatHistory.length > 0
 			? (chatHistory
@@ -310,7 +311,7 @@ function getChatCompletionsFromHistory(
 		'Number of tokens in total chat history. prompt_tokens=',
 		countTotalPromptTokens(completions)
 	);
-	// limit the number of tokens sent to GPT to fit inside context window
+
 	const maxTokens = chatModelMaxTokens[gptModel] * 0.95; // 95% of max tokens to allow for response tokens
 	const reducedCompletions = filterChatHistoryByMaxTokens(
 		completions,
