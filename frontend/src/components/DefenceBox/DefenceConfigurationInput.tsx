@@ -2,8 +2,6 @@ import { KeyboardEvent, useEffect, useState } from 'react';
 
 import ThemedNumberInput from '@src/components/ThemedInput/ThemedNumberInput';
 import ThemedTextArea from '@src/components/ThemedInput/ThemedTextArea';
-import { Defence, DefenceConfigItem } from '@src/models/defence';
-import { validateDefence } from '@src/service/defenceService';
 
 function DefenceConfigurationInput({
 	currentValue,
@@ -11,16 +9,14 @@ function DefenceConfigurationInput({
 	inputType,
 	setConfigurationValue,
 	id,
-	defence,
-	config,
+	validateNewInput,
 }: {
 	currentValue: string;
 	disabled: boolean;
 	inputType: 'text' | 'number';
 	setConfigurationValue: (value: string) => Promise<void>;
 	id: string;
-	defence: Defence;
-	config: DefenceConfigItem;
+	validateNewInput: (value: string) => boolean;
 }) {
 	const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
 	const [value, setValue] = useState<string>(currentValue);
@@ -33,7 +29,7 @@ function DefenceConfigurationInput({
 
 	async function setConfigurationValueIfDifferent(value: string) {
 		const trimmedValue = value.trim();
-		if (trimmedValue !== config.value) {
+		if (trimmedValue !== currentValue) {
 			if (configValidated) {
 				await setConfigurationValue(trimmedValue);
 				setValue(trimmedValue);
@@ -61,10 +57,6 @@ function DefenceConfigurationInput({
 		}
 	}
 
-	function validateNewInput(value: string) {
-		setConfigValidated(validateDefence(defence.id, config.id, value));
-	}
-
 	const inputElement =
 		inputType === 'text' ? (
 			<ThemedTextArea
@@ -72,7 +64,9 @@ function DefenceConfigurationInput({
 				content={value}
 				onContentChanged={setValue}
 				configValidated={configValidated}
-				validateInput={validateNewInput}
+				validateInput={(value) => {
+					setConfigValidated(validateNewInput(value));
+				}}
 				disabled={disabled}
 				maxLines={10}
 				onBlur={() => {
@@ -88,7 +82,9 @@ function DefenceConfigurationInput({
 				content={value}
 				onContentChanged={setValue}
 				configValidated={configValidated}
-				validateInput={validateNewInput}
+				validateInput={(value) => {
+					setConfigValidated(validateNewInput(value));
+				}}
 				disabled={disabled}
 				enterPressed={() => {
 					void setConfigurationValueIfDifferent(value);

@@ -38,11 +38,14 @@ function ThemedNumberInput({
 		}
 	}
 
-	const validInput = configValidated ? '' : 'invalid-input';
-
-	const inputClass = clsx('themed-input', 'themed-number-input', validInput, {
-		disabled,
-	});
+	const inputClass = clsx(
+		'themed-input',
+		'themed-number-input',
+		!configValidated && 'invalid-input',
+		{
+			disabled,
+		}
+	);
 
 	return (
 		<input

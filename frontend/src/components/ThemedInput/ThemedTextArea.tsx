@@ -101,14 +101,11 @@ function ThemedTextArea({
 		}
 	}
 
-	// check config validated exists and is not false
-	const validInput = configValidated === false ? 'invalid-input' : '';
-
 	const textAreaClass = clsx(
 		'themed-input',
 		'themed-text-area',
 		spacing,
-		validInput,
+		configValidated === false && 'invalid-input',
 		{
 			disabled,
 		}
