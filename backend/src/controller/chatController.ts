@@ -46,7 +46,7 @@ function combineChatDefenceReports(
 
 function createNewUserMessages(
 	message: string,
-	messageTransformation: MessageTransformation | undefined
+	messageTransformation?: MessageTransformation
 ): ChatHistoryMessage[] {
 	if (messageTransformation) {
 		return [
@@ -90,7 +90,7 @@ async function handleChatWithoutDefenceDetection(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	const updatedChatHistory = createNewUserMessages(message, undefined).reduce(
+	const updatedChatHistory = createNewUserMessages(message).reduce(
 		pushMessageToHistory,
 		chatHistory
 	);
