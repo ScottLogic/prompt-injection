@@ -15,6 +15,7 @@ function MainBody({
 	messages,
 	chatModels,
 	addChatMessage,
+	addInfoMessage,
 	addSentEmails,
 	resetDefenceConfiguration,
 	toggleDefence,
@@ -30,6 +31,7 @@ function MainBody({
 	messages: ChatMessage[];
 	chatModels: string[];
 	addChatMessage: (message: ChatMessage) => void;
+	addInfoMessage: (message: string) => void;
 	addSentEmails: (emails: EmailInfo[]) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	resetLevel: () => void;
@@ -54,6 +56,7 @@ function MainBody({
 					resetDefenceConfiguration={resetDefenceConfiguration}
 					setDefenceConfiguration={setDefenceConfiguration}
 					openDocumentViewer={openDocumentViewer}
+					addInfoMessage={addInfoMessage}
 				/>
 			</div>
 			<div className="centre-area">

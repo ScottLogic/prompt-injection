@@ -66,6 +66,7 @@ function ThemedTextArea({
 	onKeyUp,
 	characterLimit,
 	id,
+	contentInvalid,
 }: {
 	// required
 	content: string;
@@ -81,6 +82,7 @@ function ThemedTextArea({
 	onBlur?: () => void;
 	characterLimit?: number;
 	id?: string;
+	contentInvalid?: boolean;
 }) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -94,9 +96,15 @@ function ThemedTextArea({
 		onContentChanged(event.target.value);
 	}
 
-	const textAreaClass = clsx('themed-input', 'themed-text-area', spacing, {
-		disabled,
-	});
+	const textAreaClass = clsx(
+		'themed-input',
+		'themed-text-area',
+		spacing,
+		contentInvalid && 'invalid-input',
+		{
+			disabled,
+		}
+	);
 
 	// allow scrolling even when disabled
 	const isOverflow = useIsOverflow(textareaRef);

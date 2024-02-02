@@ -11,9 +11,10 @@
 
 .defence-mechanism-summary {
 	width: fit-content;
-	padding: 0.5rem;
-	border: 0.125rem outset var(--control-config-border);
+	padding: 0.3125rem;
+	border: 0.25rem outset var(--control-config-border);
 	border-radius: 0.25rem;
+	background-color: var(--main-scrollbar-colour);
 }
 
 .defence-mechanism > summary {
@@ -30,6 +31,7 @@
 
 .defence-mechanism-fieldset details[open] > summary {
 	border-style: inset;
+	background-color: var(--control-body-background-colour);
 }
 
 .defence-mechanism-form {
