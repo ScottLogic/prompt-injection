@@ -20,7 +20,7 @@ function DefenceConfigurationInput({
 }) {
 	const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
 	const [value, setValue] = useState<string>(currentValue);
-	const [inputInvalid, setInputInvalid] = useState<boolean>(false);
+	const [isConfigValid, setIsConfigValid] = useState<boolean>(true);
 
 	// update the text area value when reset/changed
 	useEffect(() => {
@@ -30,13 +30,12 @@ function DefenceConfigurationInput({
 	async function setConfigurationValueIfDifferent(value: string) {
 		const trimmedValue = value.trim();
 		if (trimmedValue !== currentValue) {
-			if (!inputInvalid) {
+			if (isConfigValid) {
 				await setConfigurationValue(trimmedValue);
 				setValue(trimmedValue);
 			} else {
 				setValue(currentValue);
-				// after resetting to last valid value, remove the error message
-				setInputInvalid(false);
+				setIsConfigValid(true);
 			}
 		} else {
 			setValue(trimmedValue);
@@ -57,8 +56,8 @@ function DefenceConfigurationInput({
 		}
 	}
 
-	function isInputInvalid(value: string) {
-		setInputInvalid(!validateNewInput(value));
+	function validateConfigValue(value: string) {
+		setIsConfigValid(validateNewInput(value));
 	}
 
 	const inputElement =
@@ -67,8 +66,8 @@ function DefenceConfigurationInput({
 				id={id}
 				content={value}
 				onContentChanged={setValue}
-				inputInvalid={inputInvalid}
-				validateInput={isInputInvalid}
+				valueInvalid={!isConfigValid}
+				validateInput={validateConfigValue}
 				disabled={disabled}
 				maxLines={10}
 				onBlur={() => {
@@ -83,8 +82,8 @@ function DefenceConfigurationInput({
 				id={id}
 				content={value}
 				onContentChanged={setValue}
-				inputInvalid={inputInvalid}
-				validateInput={isInputInvalid}
+				valueInvalid={!isConfigValid}
+				validateInput={validateConfigValue}
 				disabled={disabled}
 				enterPressed={() => {
 					void setConfigurationValueIfDifferent(value);
@@ -98,7 +97,7 @@ function DefenceConfigurationInput({
 	return (
 		<>
 			{inputElement}
-			{inputInvalid && (
+			{!isConfigValid && (
 				<p className="error-message" aria-live="polite">
 					Error: Invalid configuration value
 				</p>

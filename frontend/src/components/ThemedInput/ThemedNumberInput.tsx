@@ -9,7 +9,7 @@ function ThemedNumberInput({
 	content,
 	onContentChanged,
 	id,
-	inputInvalid,
+	valueInvalid,
 	validateInput,
 	// optional
 	disabled = false,
@@ -20,7 +20,7 @@ function ThemedNumberInput({
 	content: string;
 	onContentChanged: (newContent: string) => void;
 	id: string;
-	inputInvalid: boolean;
+	valueInvalid: boolean;
 	validateInput: (value: string) => void;
 	// optional
 	disabled?: boolean;
@@ -41,7 +41,7 @@ function ThemedNumberInput({
 	const inputClass = clsx(
 		'themed-input',
 		'themed-number-input',
-		inputInvalid && 'invalid-input',
+		valueInvalid && 'invalid-input',
 		{
 			disabled,
 		}
