@@ -13,25 +13,14 @@ function pushMessageToHistory(
 	// limit the length of the chat history
 	const maxChatHistoryLength = 1000;
 
-	const existingSystemRole =
-		chatHistory[0]?.chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM
-			? chatHistory[0]
-			: null;
+	const updatedChatHistory = [...chatHistory, newMessage];
+	const messagesToRemove = updatedChatHistory.length - maxChatHistoryLength;
+	if (messagesToRemove < 1) return updatedChatHistory;
 
-	const limitedHistoryStartIndex = Math.max(
-		chatHistory.length - maxChatHistoryLength + 1,
-		0
-	);
-	const updatedChatHistory = chatHistory.slice(
-		limitedHistoryStartIndex,
-		chatHistory.length
-	);
-
-	if (existingSystemRole) {
-		updatedChatHistory[0] = existingSystemRole;
-	}
-
-	return updatedChatHistory.concat(newMessage);
+	const spliceFrom =
+		updatedChatHistory[0].chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM ? 1 : 0;
+	updatedChatHistory.splice(spliceFrom, messagesToRemove);
+	return updatedChatHistory;
 }
 
 function setSystemRoleInChatHistory(
