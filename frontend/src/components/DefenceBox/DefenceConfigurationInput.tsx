@@ -67,7 +67,7 @@ function DefenceConfigurationInput({
 				id={id}
 				content={value}
 				onContentChanged={handleChange}
-				valueInvalid={!isConfigValid}
+				contentInvalid={!isConfigValid}
 				disabled={disabled}
 				maxLines={10}
 				onBlur={() => {
@@ -82,7 +82,7 @@ function DefenceConfigurationInput({
 				id={id}
 				content={value}
 				onContentChanged={handleChange}
-				valueInvalid={!isConfigValid}
+				contentInvalid={!isConfigValid}
 				disabled={disabled}
 				enterPressed={() => {
 					void setConfigurationValueIfDifferent(value);
