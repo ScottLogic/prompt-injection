@@ -30,7 +30,7 @@
 	box-sizing: border-box;
 	padding: 2rem;
 	margin-top: 5rem;
-	border: 0.1875rem solid #444;
+	border: 0.1875rem solid var(--main-border-colour);
 	background: var(--main-background);
 	height: 75vh;
 	aspect-ratio: 7/8;
