@@ -3,6 +3,7 @@ import { RetrievalQAChain } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { PromptTemplate } from 'langchain/prompts';
 
+import { getDocumentVectors } from '@src/document';
 import { queryDocuments } from '@src/langchain';
 import { LEVEL_NAMES } from '@src/models/level';
 import { getOpenAIKey } from '@src/openai';
@@ -59,28 +60,13 @@ jest.mock('@src/openai', () => {
 	};
 });
 
-const mockGetVectorisedDocuments = jest.fn();
-jest.mock('@src/langchain', () => {
-	const originalModule =
-		jest.requireActual<typeof import('@src/langchain')>('@src/langchain');
-	return {
-		...originalModule,
-		vectorisedDocuments: {
-			get: () => mockGetVectorisedDocuments(),
-			set: jest.fn(),
-		},
-	};
-});
-mockGetVectorisedDocuments.mockReturnValue([]);
-
-jest.mock('@src/document', () => ({
-	vectorisedDocuments: {
-		get: jest
-			.fn()
-			.mockReturnValue([{ docVector: { asRetriever: () => 'retriever' } }]),
-		set: jest.fn(),
-	},
-}));
+jest.mock('@src/document');
+const mockGetDocumentVectors = getDocumentVectors as unknown as jest.Mock<
+	() => { docVector: { asRetriever: () => string } }[]
+>;
+mockGetDocumentVectors.mockReturnValue([
+	{ docVector: { asRetriever: () => 'retriever' } },
+]);
 
 beforeEach(() => {
 	mockFromLLM.mockImplementation(() => mockRetrievalQAChain); // this is weird

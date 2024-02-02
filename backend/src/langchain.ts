@@ -3,7 +3,7 @@ import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { OpenAI } from 'langchain/llms/openai';
 import { PromptTemplate } from 'langchain/prompts';
 
-import { vectorisedDocuments } from './document';
+import { getDocumentVectors } from './document';
 import { CHAT_MODELS, ChatAnswer } from './models/chat';
 import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
 import { LEVEL_NAMES } from './models/level';
@@ -39,7 +39,7 @@ function getChatModel() {
 
 function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 	const openAIApiKey = getOpenAIKey();
-	const documentVectors = vectorisedDocuments.get()[level].docVector;
+	const documentVectors = getDocumentVectors()[level].docVector;
 	// use gpt-4 if avaliable to apiKey
 	const modelName = getChatModel();
 

@@ -86,7 +86,7 @@ function getDocumentMetas(folder: string) {
 }
 
 // store vectorised documents for each level as array
-const vectorisedDocuments = (() => {
+const documentVectors = (() => {
 	let docs: DocumentsVector[] = [];
 	return {
 		get: () => docs,
@@ -95,6 +95,7 @@ const vectorisedDocuments = (() => {
 		},
 	};
 })();
+const getDocumentVectors = documentVectors.get;
 
 // create and store the document vectors for each level
 async function initDocumentVectors() {
@@ -120,7 +121,7 @@ async function initDocumentVectors() {
 			docVector,
 		});
 	}
-	vectorisedDocuments.set(docVectors);
+	documentVectors.set(docVectors);
 	console.debug(
 		`Initialised document vectors for each level. count=${docVectors.length}`
 	);
@@ -131,5 +132,5 @@ export {
 	getLevelDocuments,
 	getSandboxDocumentMetas,
 	initDocumentVectors,
-	vectorisedDocuments,
+	getDocumentVectors,
 };
