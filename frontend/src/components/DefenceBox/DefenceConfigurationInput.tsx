@@ -56,7 +56,8 @@ function DefenceConfigurationInput({
 		}
 	}
 
-	function validateConfigValue(value: string) {
+	function handleChange(value: string) {
+		setValue(value);
 		setIsConfigValid(validateNewInput(value));
 	}
 
@@ -65,9 +66,8 @@ function DefenceConfigurationInput({
 			<ThemedTextArea
 				id={id}
 				content={value}
-				onContentChanged={setValue}
+				onContentChanged={handleChange}
 				valueInvalid={!isConfigValid}
-				validateInput={validateConfigValue}
 				disabled={disabled}
 				maxLines={10}
 				onBlur={() => {
@@ -81,9 +81,8 @@ function DefenceConfigurationInput({
 			<ThemedNumberInput
 				id={id}
 				content={value}
-				onContentChanged={setValue}
+				onContentChanged={handleChange}
 				valueInvalid={!isConfigValid}
-				validateInput={validateConfigValue}
 				disabled={disabled}
 				enterPressed={() => {
 					void setConfigurationValueIfDifferent(value);

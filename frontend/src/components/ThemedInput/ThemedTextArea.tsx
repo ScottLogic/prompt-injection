@@ -67,7 +67,6 @@ function ThemedTextArea({
 	characterLimit,
 	id,
 	valueInvalid,
-	validateInput,
 }: {
 	// required
 	content: string;
@@ -84,7 +83,6 @@ function ThemedTextArea({
 	characterLimit?: number;
 	id?: string;
 	valueInvalid?: boolean;
-	validateInput?: (value: string) => void;
 }) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -96,9 +94,6 @@ function ThemedTextArea({
 
 	function inputChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
 		onContentChanged(event.target.value);
-		if (validateInput) {
-			validateInput(event.target.value);
-		}
 	}
 
 	const textAreaClass = clsx(

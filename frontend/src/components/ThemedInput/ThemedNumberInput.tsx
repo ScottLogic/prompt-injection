@@ -10,7 +10,6 @@ function ThemedNumberInput({
 	onContentChanged,
 	id,
 	valueInvalid,
-	validateInput,
 	// optional
 	disabled = false,
 	enterPressed,
@@ -21,7 +20,6 @@ function ThemedNumberInput({
 	onContentChanged: (newContent: string) => void;
 	id: string;
 	valueInvalid: boolean;
-	validateInput: (value: string) => void;
 	// optional
 	disabled?: boolean;
 	enterPressed?: () => void;
@@ -29,7 +27,6 @@ function ThemedNumberInput({
 }) {
 	function inputChanged(event: React.ChangeEvent<HTMLInputElement>) {
 		onContentChanged(event.target.value);
-		validateInput(event.target.value);
 	}
 
 	function inputKeyUp(event: KeyboardEvent<HTMLInputElement>) {
