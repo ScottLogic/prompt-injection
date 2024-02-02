@@ -117,14 +117,13 @@ function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 		openAIApiKey,
 	});
 
-	const chain = new LLMChain({
+	console.debug(`Prompt evaluation model initialised with model: ${modelName}`);
+
+	return new LLMChain({
 		llm,
 		prompt: promptEvalTemplate,
 		outputKey: 'promptEvalOutput',
 	});
-
-	console.debug(`Prompt evaluation model initialised with model: ${modelName}`);
-	return chain;
 }
 
 async function queryDocuments(
