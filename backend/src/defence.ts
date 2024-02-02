@@ -267,7 +267,7 @@ function transformMessage(
 
 	if (!transformedMessage) {
 		console.debug('No defences applied. Message unchanged.');
-		return undefined;
+		return;
 	}
 
 	const transformedMessageCombined =
