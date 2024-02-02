@@ -190,7 +190,7 @@ describe('langchain integration tests ', () => {
 
 		expect(mockFromLLM).toHaveBeenCalledTimes(1);
 		expect(mockRetrievalQAChain.call).toHaveBeenCalledTimes(1);
-		expect(answer.reply).toEqual('The CEO is Bill.');
+		expect(answer).toEqual('The CEO is Bill.');
 	});
 
 	test('GIVEN the prompt evaluation model is not initialised WHEN it is asked to evaluate an input it returns an empty response', async () => {

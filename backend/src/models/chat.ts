@@ -75,11 +75,6 @@ interface ToolCallResponse {
 	chatHistory: ChatHistoryMessage[];
 }
 
-interface ChatAnswer {
-	reply: string;
-	questionAnswered: boolean;
-}
-
 interface ChatMalicious {
 	isMalicious: boolean;
 	reason: string;
@@ -137,7 +132,6 @@ const defaultChatModel: ChatModel = {
 };
 
 export type {
-	ChatAnswer,
 	ChatDefenceReport,
 	ChatGptReply,
 	ChatMalicious,

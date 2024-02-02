@@ -154,9 +154,11 @@ async function handleAskQuestionFunction(
 			? getQAPromptFromConfig(defences)
 			: '';
 		return {
-			reply: (
-				await queryDocuments(params.question, configQAPrompt, currentLevel)
-			).reply,
+			reply: await queryDocuments(
+				params.question,
+				configQAPrompt,
+				currentLevel
+			),
 		};
 	} else {
 		console.error('No arguments provided to askQuestion function');

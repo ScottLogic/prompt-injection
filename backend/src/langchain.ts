@@ -6,7 +6,7 @@ import { PromptTemplate } from 'langchain/prompts';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
 import { getCommonDocuments, getLevelDocuments } from './document';
-import { CHAT_MODELS, ChatAnswer } from './models/chat';
+import { CHAT_MODELS } from './models/chat';
 import { DocumentsVector } from './models/document';
 import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
 import { LEVEL_NAMES } from './models/level';
@@ -131,7 +131,7 @@ async function queryDocuments(
 	question: string,
 	Prompt: string,
 	currentLevel: LEVEL_NAMES
-): Promise<ChatAnswer> {
+): Promise<string> {
 	try {
 		const qaChain = initQAModel(currentLevel, Prompt);
 
@@ -144,16 +144,10 @@ async function queryDocuments(
 		console.debug(`QA model call took ${Date.now() - startTime}ms`);
 		console.debug(`QA model response: ${response.text}`);
 
-		return {
-			reply: response.text,
-			questionAnswered: true,
-		};
+		return response.text;
 	} catch (error) {
 		console.error('Error calling QA model: ', error);
-		return {
-			reply: 'I cannot answer that question right now.',
-			questionAnswered: false,
-		};
+		return 'I cannot answer that question right now.';
 	}
 }
 
