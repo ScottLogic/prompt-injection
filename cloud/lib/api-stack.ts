@@ -20,13 +20,14 @@ type ApiStackProps = StackProps & {
 	// userPool: UserPool;
 	// userPoolClient: UserPoolClient;
 	// userPoolDomain: UserPoolDomain;
+	webappUrl: string;
 };
 
 export class ApiStack extends Stack {
 	constructor(scope: Construct, id: string, props: ApiStackProps) {
 		super(scope, id, props);
 		// TODO Enable cognito auth
-		//const { userPool, userPoolClient, userPoolDomain } = props;
+		const { /*userPool, userPoolClient, userPoolDomain,*/ webappUrl } = props;
 
 		const generateResourceName = resourceName(scope);
 
@@ -68,6 +69,7 @@ export class ApiStack extends Stack {
 					environment: {
 						NODE_ENV: 'production',
 						PORT: `${containerPort}`,
+						CORS_ALLOW_ORIGIN: webappUrl,
 					},
 					secrets: {
 						OPENAI_API_KEY: EnvSecret.fromSecretsManager(
