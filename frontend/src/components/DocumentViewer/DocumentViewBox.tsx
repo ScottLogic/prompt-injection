@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { DocumentMeta } from '@src/models/document';
 import { getDocumentMetas } from '@src/service/documentService';
 
-import DocumentViewBoxHeader from './DocumentViewBoxHeader';
+import DocumentViewBoxNav from './DocumentViewBoxNav';
 // eslint-disable-next-line no-restricted-imports
 import OverlayHeader from '../Overlay/OverlayHeader';
 
@@ -36,7 +36,7 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 		<div className="document-popup-inner">
 			<OverlayHeader closeOverlay={closeOverlay} heading="View Documents" />
 			<div className="view-documents-main">
-			<DocumentViewBoxHeader
+			<DocumentViewBoxNav
 				documentIndex={documentIndex}
 				documentName={documentMetas[documentIndex]?.filename ?? ''}
 				numberOfDocuments={documentMetas.length}

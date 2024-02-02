@@ -126,7 +126,7 @@ describe('DocumentViewBox component tests', () => {
 			const { user } = renderDocumentViewBox();
 
 			const closeButton = screen.getByRole('button', {
-				name: 'close document viewer',
+				name: 'close',
 			});
 			await user.click(closeButton);
 

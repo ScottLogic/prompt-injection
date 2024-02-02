@@ -18,6 +18,10 @@
 	background-color: var(--action-button-background-colour-hover);
 }
 
+.document-popup-inner header .overlay-close-button:focus-visible {
+	background-color: var(--action-button-background-colour-hover);
+}
+
 .document-popup-inner {
 	display: flex;
 	flex-direction: column;

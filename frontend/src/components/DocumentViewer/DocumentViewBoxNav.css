@@ -44,7 +44,3 @@
 	background-color: var(--action-button-disabled-background-colour);
 	cursor: not-allowed;
 }
-
-.view-documents-nav .button-container button[aria-disabled='true']:focus-visible {
-	background-color: var(--action-button-disabled-background-colour);
-}

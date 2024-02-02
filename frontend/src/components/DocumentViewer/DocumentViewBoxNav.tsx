@@ -41,4 +41,4 @@ function DocumentViewBoxNav({
 }
 
 export default DocumentViewBoxNav;
-export type { DocumentViewBoxNavProps };
+export type { DocumentViewBoxNavProps};
