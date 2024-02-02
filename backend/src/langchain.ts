@@ -151,10 +151,7 @@ async function queryDocuments(
 	}
 }
 
-async function promptDeemedMaliciousByEvaluationLLM(
-	input: string,
-	promptEvalPrompt: string
-) {
+async function evaluatePrompt(input: string, promptEvalPrompt: string) {
 	try {
 		console.debug(`Checking '${input}' for malicious prompts`);
 		const promptEvaluationChain = initPromptEvaluationModel(promptEvalPrompt);
@@ -193,8 +190,4 @@ function interpretEvaluationOutput(response: string) {
 	}
 }
 
-export {
-	queryDocuments,
-	promptDeemedMaliciousByEvaluationLLM,
-	initDocumentVectors,
-};
+export { queryDocuments, evaluatePrompt, initDocumentVectors };
