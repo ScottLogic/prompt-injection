@@ -37,6 +37,7 @@
 	padding: 0;
 }
 
-.model-selection-box .model-selection-info .error {
-	color: var(--error-colour);
+.model-selection-box .model-selection-info .error-message {
+	color: var(--error-colour-light);
+	font-weight: bold;
 }

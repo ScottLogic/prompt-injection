@@ -9,20 +9,38 @@ function DefenceConfigurationInput({
 	inputType,
 	setConfigurationValue,
 	id,
+	validateNewInput,
 }: {
 	currentValue: string;
 	disabled: boolean;
 	inputType: 'text' | 'number';
-	setConfigurationValue: (value: string) => void;
+	setConfigurationValue: (value: string) => Promise<void>;
 	id: string;
+	validateNewInput: (value: string) => boolean;
 }) {
 	const CONFIG_VALUE_CHARACTER_LIMIT = 5000;
 	const [value, setValue] = useState<string>(currentValue);
+	const [isConfigValid, setIsConfigValid] = useState<boolean>(true);
 
 	// update the text area value when reset/changed
 	useEffect(() => {
 		setValue(currentValue);
 	}, [currentValue]);
+
+	async function setConfigurationValueIfDifferent(value: string) {
+		const trimmedValue = value.trim();
+		if (trimmedValue !== currentValue) {
+			if (isConfigValid) {
+				await setConfigurationValue(trimmedValue);
+				setValue(trimmedValue);
+			} else {
+				setValue(currentValue);
+				setIsConfigValid(true);
+			}
+		} else {
+			setValue(trimmedValue);
+		}
+	}
 
 	function inputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
 		if (event.key === 'Enter' && !event.shiftKey) {
@@ -34,42 +52,57 @@ function DefenceConfigurationInput({
 		// shift+enter shouldn't send message
 		if (event.key === 'Enter' && !event.shiftKey) {
 			// asynchronously send the message
-			setConfigurationValue(value);
+			void setConfigurationValueIfDifferent(value);
 		}
 	}
 
-	if (inputType === 'text') {
-		return (
+	function handleChange(value: string) {
+		setValue(value);
+		setIsConfigValid(validateNewInput(value));
+	}
+
+	const inputElement =
+		inputType === 'text' ? (
 			<ThemedTextArea
 				id={id}
 				content={value}
-				onContentChanged={setValue}
+				onContentChanged={handleChange}
+				contentInvalid={!isConfigValid}
 				disabled={disabled}
 				maxLines={10}
 				onBlur={() => {
-					setConfigurationValue(value);
+					void setConfigurationValueIfDifferent(value);
 				}}
 				onKeyDown={inputKeyDown}
 				onKeyUp={inputKeyUp}
 				characterLimit={CONFIG_VALUE_CHARACTER_LIMIT}
 			/>
-		);
-	} else {
-		return (
+		) : (
 			<ThemedNumberInput
 				id={id}
 				content={value}
-				onContentChanged={setValue}
+				onContentChanged={handleChange}
+				contentInvalid={!isConfigValid}
 				disabled={disabled}
 				enterPressed={() => {
-					setConfigurationValue(value);
+					void setConfigurationValueIfDifferent(value);
 				}}
 				onBlur={() => {
-					setConfigurationValue(value);
+					void setConfigurationValueIfDifferent(value);
 				}}
 			/>
 		);
-	}
+
+	return (
+		<>
+			{inputElement}
+			{!isConfigValid && (
+				<p className="error-message" aria-live="polite">
+					Error: Invalid configuration value
+				</p>
+			)}
+		</>
+	);
 }
 
 export default DefenceConfigurationInput;
