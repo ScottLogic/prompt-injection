@@ -71,7 +71,6 @@ interface FunctionCallResponse {
 
 interface ToolCallResponse {
 	functionCallReply?: FunctionCallResponse;
-	chatResponse?: ChatResponse;
 	chatHistory: ChatHistoryMessage[];
 }
 
