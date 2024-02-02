@@ -7,35 +7,15 @@
 	aspect-ratio: 7/8;
 }
 
-/* .handbook header {
-	background-color: var(--handbook-header-background-colour);
-	background-color: var(--overlay-header-background-colour);
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 1rem 2rem;
-	position: fixed;
-	height: 3.125rem;
-	border-radius: 0;
-} */
-
 .handbook header {
 	border-radius: 0;
+	border-bottom: 0.0625rem solid var(--handbook-spine-separator-colour);
 }
 
-/* .handbook header .close-button {
-	margin-right: 3rem;
-	background-color: inherit;
+.handbook header .overlay-close-button:focus-visible {
+	background-color: var(--overlay-tab-colour);
+	outline-color: var(--main-text-colour);
 }
-
-.handbook header .close-button:hover {
-	background-color: var(--handbook-tab-hover-colour);
-}
-
-.handbook header .close-button:focus-visible {
-	background-color: var(--handbook-tab-hover-colour);
-} */
 
 .handbook-overlay .content {
 	overflow-y: auto;

@@ -17,6 +17,11 @@
 	box-sizing: border-box;
 }
 
+.overlay *:focus-visible {
+	background-color: var(--overlay-tab-colour);
+	outline-color: var(--main-text-colour);
+}
+
 /* .overlay header {
 	display: flex;
 	align-items: center;

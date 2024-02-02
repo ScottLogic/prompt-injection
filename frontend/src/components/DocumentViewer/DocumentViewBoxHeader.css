@@ -34,3 +34,13 @@
 	flex: 0 0 30%;
 	white-space: nowrap;
 }
+
+.view-documents-header .button-container button:focus-visible {
+	background-color: var(--action-button-background-colour-hover);
+	outline-color: var(--main-text-colour);
+}
+
+.view-documents-header .button-container button[aria-disabled='true']:hover {
+	background-color: var(--action-button-disabled-background-colour);
+	cursor: not-allowed;
+}
