@@ -153,16 +153,10 @@ async function handleAskQuestionFunction(
 		const configQAPrompt = isDefenceActive(DEFENCE_ID.QA_LLM, defences)
 			? getQAPromptFromConfig(defences)
 			: '';
-		return {
-			reply: await queryDocuments(
-				params.question,
-				configQAPrompt,
-				currentLevel
-			),
-		};
+		return await queryDocuments(params.question, configQAPrompt, currentLevel);
 	} else {
 		console.error('No arguments provided to askQuestion function');
-		return { reply: "Reply with 'I don't know what to ask'" };
+		return "Reply with 'I don't know what to ask'";
 	}
 }
 
@@ -223,12 +217,11 @@ async function chatGptCallFunction(
 				sentEmails.push(...emailFunctionOutput.sentEmails);
 			}
 		} else if (functionName === 'askQuestion') {
-			const askQuestionFunctionOutput = await handleAskQuestionFunction(
+			functionReply = await handleAskQuestionFunction(
 				functionCall.arguments,
 				currentLevel,
 				defences
 			);
-			functionReply = askQuestionFunctionOutput.reply;
 		}
 	} else {
 		console.error(`Unknown function: ${functionName}`);
