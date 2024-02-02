@@ -37,7 +37,6 @@ function makePromptTemplate(
 	templateNameForLogging: string
 ): PromptTemplate {
 	if (!configPrompt) {
-		// use the default Prompt
 		configPrompt = defaultPrompt;
 	}
 	const fullPrompt = `${configPrompt}\n${mainPrompt}`;
@@ -45,7 +44,6 @@ function makePromptTemplate(
 	return PromptTemplate.fromTemplate(fullPrompt);
 }
 
-// create and store the document vectors for each level
 async function initDocumentVectors() {
 	const docVectors: DocumentsVector[] = [];
 	const commonDocuments = await getCommonDocuments();
@@ -58,12 +56,11 @@ async function initDocumentVectors() {
 		const allDocuments = commonDocuments.concat(await getLevelDocuments(level));
 
 		// embed and store the splits - will use env variable for API key
-		const embeddings = new OpenAIEmbeddings();
 		const docVector = await MemoryVectorStore.fromDocuments(
 			allDocuments,
-			embeddings
+			new OpenAIEmbeddings()
 		);
-		// store the document vectors for the level
+
 		docVectors.push({
 			level,
 			docVector,
@@ -84,10 +81,8 @@ function getChatModel() {
 function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 	const openAIApiKey = getOpenAIKey();
 	const documentVectors = vectorisedDocuments.get()[level].docVector;
-	// use gpt-4 if avaliable to apiKey
 	const modelName = getChatModel();
 
-	// initialise model
 	const model = new ChatOpenAI({
 		modelName,
 		streaming: true,
@@ -107,7 +102,6 @@ function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 
 function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 	const openAIApiKey = getOpenAIKey();
-	// use gpt-4 if avaliable to apiKey
 	const modelName = getChatModel();
 
 	const promptEvalTemplate = makePromptTemplate(
@@ -133,30 +127,27 @@ function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {
 	return chain;
 }
 
-// ask the question and return models answer
 async function queryDocuments(
 	question: string,
 	Prompt: string,
 	currentLevel: LEVEL_NAMES
-) {
+): Promise<ChatAnswer> {
 	try {
 		const qaChain = initQAModel(currentLevel, Prompt);
 
-		// get start time
 		const startTime = Date.now();
 		console.debug('Calling QA model...');
 		const response = (await qaChain.call({
 			query: question,
 		})) as QaChainReply;
-		// log the time taken
-		console.debug(`QA model call took ${Date.now() - startTime}ms`);
 
+		console.debug(`QA model call took ${Date.now() - startTime}ms`);
 		console.debug(`QA model response: ${response.text}`);
-		const result: ChatAnswer = {
+
+		return {
 			reply: response.text,
 			questionAnswered: true,
 		};
-		return result;
 	} catch (error) {
 		console.error('Error calling QA model: ', error);
 		return {
@@ -166,46 +157,50 @@ async function queryDocuments(
 	}
 }
 
-// ask LLM whether the prompt is malicious
-async function queryPromptEvaluationModel(
+async function promptDeemedMaliciousByEvaluationLLM(
 	input: string,
 	promptEvalPrompt: string
 ) {
 	try {
 		console.debug(`Checking '${input}' for malicious prompts`);
 		const promptEvaluationChain = initPromptEvaluationModel(promptEvalPrompt);
-		// get start time
 		const startTime = Date.now();
 		console.debug('Calling prompt evaluation model...');
+
 		const response = (await promptEvaluationChain.call({
 			prompt: input,
 		})) as PromptEvaluationChainReply;
-		// log the time taken
+
 		console.debug(
 			`Prompt evaluation model call took ${Date.now() - startTime}ms`
 		);
-		const promptEvaluation = formatEvaluationOutput(response.promptEvalOutput);
+		const promptEvaluation = interpretEvaluationOutput(
+			response.promptEvalOutput
+		);
 		console.debug(`Prompt evaluation: ${JSON.stringify(promptEvaluation)}`);
 		return promptEvaluation;
 	} catch (error) {
 		console.error('Error calling prompt evaluation model: ', error);
-		return { isMalicious: false };
+		return false;
 	}
 }
 
-function formatEvaluationOutput(response: string) {
-	// remove all non-alphanumeric characters
+function interpretEvaluationOutput(response: string) {
 	try {
+		// cleaned response is lowercase and without any non-word characters
 		const cleanResponse = response.replace(/\W/g, '').toLowerCase();
-		return { isMalicious: cleanResponse === 'yes' };
+		return cleanResponse === 'yes';
 	} catch (error) {
-		// in case the model does not respond in the format we have asked
 		console.error(error);
 		console.debug(
 			`Did not get a valid response from the prompt evaluation model. Original response: ${response}`
 		);
-		return { isMalicious: false };
+		return false;
 	}
 }
 
-export { queryDocuments, queryPromptEvaluationModel, initDocumentVectors };
+export {
+	queryDocuments,
+	promptDeemedMaliciousByEvaluationLLM,
+	initDocumentVectors,
+};

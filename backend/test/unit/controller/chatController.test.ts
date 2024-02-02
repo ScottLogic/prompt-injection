@@ -419,7 +419,6 @@ describe('handleChatToGPT unit tests', () => {
 				[...existingHistory, newUserChatHistoryMessage],
 				[],
 				mockChatModel,
-				'What is the answer to life the universe and everything?',
 				LEVEL_NAMES.LEVEL_1
 			);
 
@@ -513,7 +512,6 @@ describe('handleChatToGPT unit tests', () => {
 				[...existingHistory, newUserChatHistoryMessage],
 				[],
 				mockChatModel,
-				'send an email to bob@example.com saying hi',
 				LEVEL_NAMES.SANDBOX
 			);
 

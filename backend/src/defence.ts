@@ -1,5 +1,5 @@
 import { defaultDefences } from './defaultDefences';
-import { queryPromptEvaluationModel } from './langchain';
+import { promptDeemedMaliciousByEvaluationLLM } from './langchain';
 import {
 	ChatDefenceReport,
 	SingleDefenceReport,
@@ -447,12 +447,12 @@ async function detectEvaluationLLM(
 	if (isDefenceActive(DEFENCE_ID.PROMPT_EVALUATION_LLM, defences)) {
 		const promptEvalLLMPrompt = getPromptEvalPromptFromConfig(defences);
 
-		const evaluationResult = await queryPromptEvaluationModel(
+		const promptIsMalicious = await promptDeemedMaliciousByEvaluationLLM(
 			message,
 			promptEvalLLMPrompt
 		);
 
-		if (evaluationResult.isMalicious) {
+		if (promptIsMalicious) {
 			console.debug('LLM evaluation defence active and prompt is malicious.');
 
 			return {

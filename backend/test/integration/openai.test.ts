@@ -1,7 +1,12 @@
 import { expect, jest, test, describe } from '@jest/globals';
 
 import { defaultDefences } from '@src/defaultDefences';
-import { CHAT_MODELS, ChatHistoryMessage, ChatModel } from '@src/models/chat';
+import {
+	CHAT_MESSAGE_TYPE,
+	CHAT_MODELS,
+	ChatHistoryMessage,
+	ChatModel,
+} from '@src/models/chat';
 import { Defence } from '@src/models/defence';
 import { chatGptSendMessage } from '@src/openai';
 
@@ -49,8 +54,15 @@ function chatResponseAssistant(content: string) {
 
 describe('OpenAI Integration Tests', () => {
 	test('GIVEN OpenAI initialised WHEN sending message THEN reply is returned', async () => {
-		const message = 'Hello';
-		const initChatHistory: ChatHistoryMessage[] = [];
+		const chatHistoryWithMessage: ChatHistoryMessage[] = [
+			{
+				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				completion: {
+					role: 'user',
+					content: 'Hi',
+				},
+			},
+		];
 		const defences: Defence[] = defaultDefences;
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
@@ -67,10 +79,9 @@ describe('OpenAI Integration Tests', () => {
 
 		// send the message
 		const reply = await chatGptSendMessage(
-			initChatHistory,
+			chatHistoryWithMessage,
 			defences,
-			chatModel,
-			message
+			chatModel
 		);
 
 		expect(reply).toBeDefined();

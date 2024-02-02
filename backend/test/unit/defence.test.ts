@@ -32,8 +32,8 @@ jest.mock('@src/langchain');
 
 beforeEach(() => {
 	jest
-		.mocked(langchain.queryPromptEvaluationModel)
-		.mockResolvedValue({ isMalicious: false });
+		.mocked(langchain.promptDeemedMaliciousByEvaluationLLM)
+		.mockResolvedValue(false);
 });
 
 const botOutputFilterTriggeredResponse =
@@ -373,7 +373,7 @@ test('GIVEN the prompt evaluation LLM prompt has not been configured WHEN detect
 	);
 	await detectTriggeredInputDefences(message, defences);
 
-	expect(langchain.queryPromptEvaluationModel).toHaveBeenCalledWith(
+	expect(langchain.promptDeemedMaliciousByEvaluationLLM).toHaveBeenCalledWith(
 		message,
 		promptEvalPrompt
 	);
@@ -394,7 +394,7 @@ test('GIVEN the prompt evaluation LLM prompt has been configured WHEN detecting 
 	);
 	await detectTriggeredInputDefences(message, defences);
 
-	expect(langchain.queryPromptEvaluationModel).toHaveBeenCalledWith(
+	expect(langchain.promptDeemedMaliciousByEvaluationLLM).toHaveBeenCalledWith(
 		message,
 		newPromptEvalPrompt
 	);
