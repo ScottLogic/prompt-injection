@@ -1,5 +1,6 @@
 import {
 	afterEach,
+	beforeAll,
 	beforeEach,
 	describe,
 	test,
@@ -117,22 +118,24 @@ jest.mock('@src/openai', () => {
 });
 
 describe('langchain integration tests ', () => {
+	beforeAll(() => {
+		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
+		mockLoader.mockResolvedValue([]);
+	});
+
 	beforeEach(() => {
 		// reset environment variables
 		process.env = {
 			OPENAI_API_KEY: 'sk-12345',
 		};
-
-		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-		mockLoader.mockResolvedValue([]);
 	});
 
 	afterEach(() => {
 		mockPromptEvalChain.call.mockReset();
 		mockRetrievalQAChain.call.mockReset();
-		mockFromLLM.mockReset();
-		mockFromTemplate.mockReset();
-		mockLoader.mockReset();
+		mockFromLLM.mockClear();
+		mockFromTemplate.mockClear();
+		mockLoader.mockClear();
 	});
 
 	test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {
