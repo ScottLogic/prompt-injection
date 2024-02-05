@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 
+import OverlayHeader from '@src/components/Overlay/OverlayHeader';
 import useIsOverflow from '@src/hooks/useIsOverflow';
 import { HANDBOOK_PAGES } from '@src/models/handbook';
 import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
@@ -8,8 +9,6 @@ import HandbookAttacks from './HandbookAttacks';
 import HandbookGlossary from './HandbookGlossary';
 import HandbookSpine from './HandbookSpine';
 import HandbookSystemRole from './HandbookSystemRole';
-// eslint-disable-next-line no-restricted-imports
-import OverlayHeader from '../Overlay/OverlayHeader';
 
 import './HandbookOverlay.css';
 

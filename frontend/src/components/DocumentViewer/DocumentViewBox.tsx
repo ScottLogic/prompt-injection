@@ -1,12 +1,12 @@
 import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer';
 import { useEffect, useState } from 'react';
 
+import OverlayHeader from '@src/components/Overlay/OverlayHeader';
 import { DocumentMeta } from '@src/models/document';
 import { getDocumentMetas } from '@src/service/documentService';
 
 import DocumentViewBoxNav from './DocumentViewBoxNav';
-// eslint-disable-next-line no-restricted-imports
-import OverlayHeader from '../Overlay/OverlayHeader';
+
 
 import './DocumentViewBox.css';
 
