@@ -8,7 +8,7 @@ export type OpenAiAddHistoryRequest = Request<
 	never,
 	{
 		chatMessageType?: CHAT_MESSAGE_TYPE;
-		message?: string;
+		infoMessage?: string;
 		level?: LEVEL_NAMES;
 	},
 	never,

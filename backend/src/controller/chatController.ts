@@ -357,7 +357,7 @@ function handleGetChatHistory(req: OpenAiGetHistoryRequest, res: Response) {
 }
 
 function handleAddToChatHistory(req: OpenAiAddHistoryRequest, res: Response) {
-	const infoMessage = req.body.message;
+	const infoMessage = req.body.infoMessage;
 	const chatMessageType = req.body.chatMessageType;
 	const level = req.body.level;
 	if (
