@@ -1,21 +1,21 @@
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+name: Cloud Code Checks
 
-name: K6 load-testing Code Checks
 on:
   workflow_dispatch:
   pull_request:
     branches:
       - main
       - dev
+      - 'feature/+'
     paths:
-      - 'k6/**'
+      - 'cloud/**'
 
 defaults:
   run:
-    working-directory: ./k6
+    working-directory: ./cloud
 
 jobs:
-  lint-format:
+  code-checks:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,17 +24,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          sparse-checkout: k6
+          sparse-checkout: |
+            .prettierrc
+            cloud
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: './k6/package-lock.json'
+          cache-dependency-path: './cloud/package-lock.json'
       - name: Install dependencies
         run: |
           npm ci
       - name: Run job
         run: |
-          npx eslint .
-          npx prettier . --check
+          npm run lint
+          npm run format
