@@ -44,10 +44,9 @@ function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
 	return {
 		transformedMessage: chatMessageDTO.transformedMessage ?? undefined,
 		message:
-			type === CHAT_MESSAGE_TYPE.USER
+			type === 'USER'
 				? chatMessageDTO.completion?.content ?? chatMessageDTO.infoMessage ?? ''
-				: type === CHAT_MESSAGE_TYPE.BOT ||
-				  type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+				: type === 'BOT' || type === 'USER_TRANSFORMED'
 				? chatMessageDTO.completion?.content ?? ''
 				: chatMessageDTO.infoMessage ?? '',
 		type,
@@ -56,8 +55,8 @@ function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
 
 function chatMessageDTOIsConvertible(chatMessageDTO: ChatMessageDTO) {
 	return (
-		chatMessageDTO.chatMessageType !== CHAT_MESSAGE_TYPE.SYSTEM &&
-		chatMessageDTO.chatMessageType !== CHAT_MESSAGE_TYPE.FUNCTION_CALL
+		chatMessageDTO.chatMessageType !== 'SYSTEM' &&
+		chatMessageDTO.chatMessageType !== 'FUNCTION_CALL'
 	);
 }
 

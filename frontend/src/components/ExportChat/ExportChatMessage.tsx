@@ -43,20 +43,20 @@ const styles = StyleSheet.create({
 
 function getFullPrefix(message: ChatMessage) {
 	switch (message.type) {
-		case CHAT_MESSAGE_TYPE.INFO:
-		case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
-		case CHAT_MESSAGE_TYPE.RESET_LEVEL:
-		case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
+		case 'INFO':
+		case 'DEFENCE_ALERTED':
+		case 'RESET_LEVEL':
+		case 'DEFENCE_TRIGGERED':
 			return `Info: ${message.message}`;
-		case CHAT_MESSAGE_TYPE.USER:
+		case 'USER':
 			return `You: ${message.message}`;
-		case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
+		case 'USER_TRANSFORMED':
 			return `You (transformed): ${message.message}`;
-		case CHAT_MESSAGE_TYPE.ERROR_MSG:
+		case 'ERROR_MSG':
 			return `Error: ${message.message}`;
-		case CHAT_MESSAGE_TYPE.BOT:
+		case 'BOT':
 			return `Bot: ${message.message}`;
-		case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
+		case 'BOT_BLOCKED':
 			return `Bot (blocked): ${message.message}`;
 		default:
 			return message.message;
@@ -65,17 +65,17 @@ function getFullPrefix(message: ChatMessage) {
 
 function getMessageStyle(type: CHAT_MESSAGE_TYPE) {
 	switch (type) {
-		case CHAT_MESSAGE_TYPE.INFO:
-		case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
-		case CHAT_MESSAGE_TYPE.RESET_LEVEL:
-		case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
+		case 'INFO':
+		case 'DEFENCE_ALERTED':
+		case 'RESET_LEVEL':
+		case 'DEFENCE_TRIGGERED':
 			return styles.chatBoxInfo;
-		case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
-		case CHAT_MESSAGE_TYPE.BOT:
-		case CHAT_MESSAGE_TYPE.LEVEL_INFO:
-		case CHAT_MESSAGE_TYPE.ERROR_MSG:
+		case 'BOT_BLOCKED':
+		case 'BOT':
+		case 'LEVEL_INFO':
+		case 'ERROR_MSG':
 			return styles.chatBoxMessageBot;
-		case CHAT_MESSAGE_TYPE.USER:
+		case 'USER':
 		default:
 			return styles.chatBoxMessage;
 	}
