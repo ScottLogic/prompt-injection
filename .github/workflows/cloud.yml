@@ -1,0 +1,38 @@
+name: Cloud code checks
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - dev
+      - 'feature/+'
+    paths:
+      - 'cloud/**'
+
+defaults:
+  run:
+    working-directory: cloud
+
+jobs:
+  code-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          sparse-checkout: |
+            .prettierrc
+            cloud
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+      - name: Install Deps
+        run: |
+          npm ci
+      - name: Run Checks
+        run: |
+          npm run lint
+          npm run format
