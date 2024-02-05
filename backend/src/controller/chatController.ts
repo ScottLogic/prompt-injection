@@ -17,7 +17,11 @@ import {
 	MessageTransformation,
 	defaultChatModel,
 } from '@src/models/chat';
-import { ChatMessage, ChatMessageAsInfo } from '@src/models/chatMessage';
+import {
+	ChatMessage,
+	ChatMessageAsInfo,
+	chatMessageTypesAsInfo,
+} from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -362,6 +366,7 @@ function handleAddToChatHistoryAsInfo(
 	if (
 		infoMessage &&
 		chatMessageType &&
+		chatMessageTypesAsInfo.includes(chatMessageType) &&
 		level !== undefined &&
 		level >= LEVEL_NAMES.LEVEL_1
 	) {
