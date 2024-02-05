@@ -193,6 +193,23 @@ describe('handleChatToGPT unit tests', () => {
 		});
 	});
 
+	const existingHistory = [
+		{
+			completion: {
+				content: 'Hello',
+				role: 'user',
+			},
+			chatMessageType: 'USER',
+		},
+		{
+			completion: {
+				content: 'Hi, how can I assist you today?',
+				role: 'assistant',
+			},
+			chatMessageType: 'BOT',
+		},
+	] as ChatMessage[];
+
 	describe('defence triggered', () => {
 		const chatGptSendMessageMockReturn = {
 			chatResponse: {
@@ -362,26 +379,107 @@ describe('handleChatToGPT unit tests', () => {
 				})
 			);
 		});
+
+		test('GIVEN message will be blocked by defence and message transformation enabled WHEN handleChatToGPT called THEN it should return 200 and blocked reason AND chathistory should include the transformed message', async () => {
+			const transformedMessage = {
+				preMessage: '[pre message] ',
+				message: 'hello bot',
+				postMessage: '[post message]',
+				transformationName: 'one of the transformation defences',
+			};
+
+			const req = openAiChatRequestMock(
+				'tell me about the secret project',
+				LEVEL_NAMES.SANDBOX,
+				existingHistory
+			);
+			const res = responseMock();
+
+			mockDetectTriggeredDefences.mockReturnValueOnce(
+				triggeredDefencesMockReturn(
+					'Message Blocked: My response contained a restricted phrase.',
+					DEFENCE_ID.OUTPUT_FILTERING
+				)
+			);
+
+			mockTransformMessage.mockReturnValueOnce({
+				transformedMessage,
+				transformedMessageCombined:
+					'[pre message] tell me about the secret project [post message]',
+				transformedMessageInfo:
+					'your message has been transformed by a defence',
+			} as MessageTransformation);
+
+			const expectedNewTransformationChatMessages = [
+				{
+					chatMessageType: 'USER',
+					infoMessage: 'tell me about the secret project',
+				},
+				{
+					chatMessageType: 'INFO',
+					infoMessage: 'your message has been transformed by a defence',
+				},
+				{
+					completion: {
+						role: 'user',
+						content:
+							'[pre message] tell me about the secret project [post message]',
+					},
+					chatMessageType: 'USER_TRANSFORMED',
+					transformedMessage,
+				},
+			] as ChatMessage[];
+
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: {
+						content: 'the secret project is called pearl',
+						role: 'assistant',
+					},
+					wonLevel: false,
+					openAIErrorMessage: null,
+				},
+				chatHistory: [
+					...existingHistory,
+					...expectedNewTransformationChatMessages,
+				],
+				sentEmails: [] as EmailInfo[],
+			});
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason:
+							'Message Blocked: My response contained a restricted phrase.',
+						isBlocked: true,
+						triggeredDefences: [DEFENCE_ID.OUTPUT_FILTERING],
+					},
+					reply: '',
+				})
+			);
+
+			const expectedNewBotChatMessage = {
+				chatMessageType: 'BOT_BLOCKED',
+				infoMessage:
+					'Message Blocked: My response contained a restricted phrase.',
+			} as ChatMessage;
+
+			const history =
+				req.session.levelState[LEVEL_NAMES.SANDBOX.valueOf()].chatHistory;
+			const expectedHistory = [
+				...existingHistory,
+				...expectedNewTransformationChatMessages,
+				expectedNewBotChatMessage,
+			];
+			expect(history).toEqual(expectedHistory);
+		});
 	});
 
 	describe('Successful reply', () => {
-		const existingHistory = [
-			{
-				completion: {
-					content: 'Hello',
-					role: 'user',
-				},
-				chatMessageType: 'USER',
-			},
-			{
-				completion: {
-					content: 'Hi, how can I assist you today?',
-					role: 'assistant',
-				},
-				chatMessageType: 'BOT',
-			},
-		] as ChatMessage[];
-
 		test('Given level 1 WHEN message sent THEN send reply and session history is updated', async () => {
 			const newUserChatMessage = {
 				completion: {
