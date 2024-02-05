@@ -20,7 +20,6 @@ const mockDefences: Defence[] = [
 			},
 		],
 		isActive: false,
-		isTriggered: false,
 	},
 	{
 		id: DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
@@ -35,7 +34,6 @@ const mockDefences: Defence[] = [
 			},
 		],
 		isActive: false,
-		isTriggered: false,
 	},
 ];
 

@@ -21,7 +21,7 @@ function ChatBox({
 	messages,
 	addChatMessage,
 	addSentEmails,
-	incrementNumCompletedLevels,
+	updateNumCompletedLevels,
 	openLevelsCompleteOverlay,
 	openResetLevelOverlay,
 }: {
@@ -30,7 +30,7 @@ function ChatBox({
 	messages: ChatMessage[];
 	addChatMessage: (message: ChatMessage) => void;
 	addSentEmails: (emails: EmailInfo[]) => void;
-	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
+	updateNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openLevelsCompleteOverlay: () => void;
 	openResetLevelOverlay: () => void;
 }) {
@@ -79,15 +79,17 @@ function ChatBox({
 	}
 
 	function processChatResponse(response: ChatResponse) {
-		if (response.wonLevel) incrementNumCompletedLevels(currentLevel);
+		const transformedMessageInfo = response.transformedMessageInfo;
 		const transformedMessage = response.transformedMessage;
-		// add the transformed message to the chat box if it is different from the original message
-		if (transformedMessage) {
+		// add transformation info message to the chat box
+		if (transformedMessageInfo) {
 			addChatMessage({
-				message:
-					`${transformedMessage.transformationName} enabled, your message has been transformed`.toLocaleLowerCase(),
+				message: transformedMessageInfo,
 				type: CHAT_MESSAGE_TYPE.INFO,
 			});
+		}
+		// add the transformed message to the chat box if it is different from the original message
+		if (transformedMessage) {
 			addChatMessage({
 				message:
 					transformedMessage.preMessage +
@@ -160,6 +162,7 @@ function ChatBox({
 		addSentEmails(response.sentEmails);
 
 		if (response.wonLevel && !isLevelComplete()) {
+			updateNumCompletedLevels(currentLevel);
 			const successMessage = getSuccessMessage();
 			addChatMessage({
 				type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
@@ -181,9 +184,7 @@ function ChatBox({
 	async function sendChatMessage() {
 		if (chatInput && !isSendingMessage) {
 			setIsSendingMessage(true);
-			// clear the input box
 			setChatInput('');
-			// if input has been transformed, add both messages to the list of messages. otherwise add original message only
 			addChatMessage({
 				message: chatInput,
 				type: CHAT_MESSAGE_TYPE.USER,

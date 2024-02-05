@@ -17,7 +17,6 @@ const defencesSystemRoleInactive: Defence[] = [
 			},
 		],
 		isActive: false,
-		isTriggered: false,
 	},
 ];
 const defencesSystemRoleActive = [

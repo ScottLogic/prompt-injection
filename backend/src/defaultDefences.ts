@@ -13,7 +13,6 @@ function createDefence(id: DEFENCE_ID, config: DefenceConfigItem[]): Defence {
 		id,
 		config,
 		isActive: false,
-		isTriggered: false,
 	};
 }
 
