@@ -8,14 +8,18 @@
 		"cdk:synth": "cdk synth -q \"*\"",
 		"cdk:deploy": "cdk deploy --all",
 		"cdk:destroy": "cdk destroy --all",
+		"codecheck": "concurrently \"npm run lint:check\" \"npm run format:check\"",
 		"format": "prettier . --write",
-		"lint": "eslint . --ext .ts --fix"
+		"format:check": "prettier . --check",
+		"lint": "eslint . --ext .ts --fix",
+		"lint:check": "eslint . --ext .ts"
 	},
 	"devDependencies": {
 		"@types/node": "^20.8.9",
 		"@types/source-map-support": "^0.5.9",
 		"@typescript-eslint/eslint-plugin": "^6.9.0",
 		"@typescript-eslint/parser": "^6.9.0",
+		"concurrently": "^8.2.2",
 		"eslint": "^8.52.0",
 		"aws-cdk": "^2.104.0",
 		"prettier": "^3.0.3",
