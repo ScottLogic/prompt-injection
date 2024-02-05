@@ -51,20 +51,20 @@ function createNewUserMessages(
 	if (messageTransformation) {
 		return [
 			{
-				infoMessage: message,
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				infoMessage: message,
 			},
 			{
-				infoMessage: messageTransformation.transformedMessageInfo,
 				chatMessageType: CHAT_MESSAGE_TYPE.INFO,
+				infoMessage: messageTransformation.transformedMessageInfo,
 			},
 			{
 				completion: {
 					role: 'user',
 					content: messageTransformation.transformedMessageCombined,
 				},
-				transformedMessage: messageTransformation.transformedMessage,
 				chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+				transformedMessage: messageTransformation.transformedMessage,
 			},
 		];
 	} else {
@@ -371,7 +371,7 @@ function handleAddToChatHistory(req: OpenAiAddHistoryRequest, res: Response) {
 			{
 				chatMessageType,
 				infoMessage,
-			} as ChatMessage
+			} as ChatMessage // now I think about it, this method is not type safe anymore
 		);
 		res.send();
 	} else {

@@ -23,6 +23,10 @@ function pushMessageToHistory(
 	return updatedChatHistory;
 }
 
+function isSystemMessage(message: ChatMessage) {
+	return message.chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM;
+}
+
 function setSystemRoleInChatHistory(
 	currentLevel: LEVEL_NAMES,
 	defences: Defence[],
@@ -38,9 +42,7 @@ function setSystemRoleInChatHistory(
 			content: getSystemRole(defences, currentLevel),
 		};
 
-		const existingSystemRole = chatHistory.find(
-			(message) => message.chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM
-		);
+		const existingSystemRole = chatHistory.find(isSystemMessage);
 		if (!existingSystemRole) {
 			return [
 				{
@@ -51,18 +53,16 @@ function setSystemRoleInChatHistory(
 			];
 		} else {
 			return chatHistory.map((message) =>
-				message.chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM
+				isSystemMessage(message)
 					? ({
 							...existingSystemRole,
 							completion: completionConfig,
 					  } as ChatMessage)
-					: (message as ChatMessage)
+					: message
 			);
 		}
 	} else {
-		return chatHistory.filter(
-			(message) => message.chatMessageType !== CHAT_MESSAGE_TYPE.SYSTEM
-		);
+		return chatHistory.filter((message) => !isSystemMessage(message));
 	}
 }
 
