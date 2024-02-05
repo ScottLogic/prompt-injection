@@ -700,7 +700,7 @@ describe('handleGetChatHistory', () => {
 });
 
 describe('handleAddToChatHistoryAsInfo', () => {
-	function getAddHistoryRequestMock(
+	function getAddToHistoryAsInfoRequestMock(
 		infoMessage: string,
 		level?: LEVEL_NAMES,
 		chatHistory?: ChatMessage[]
@@ -708,7 +708,7 @@ describe('handleAddToChatHistoryAsInfo', () => {
 		return {
 			body: {
 				infoMessage,
-				chatMessageType: 'USER',
+				chatMessageType: 'INFO',
 				level: level ?? undefined,
 			},
 			session: {
@@ -731,9 +731,10 @@ describe('handleAddToChatHistoryAsInfo', () => {
 			chatMessageType: 'BOT',
 		},
 	];
-	test.only('GIVEN a valid message WHEN handleAddToChatHistoryAsInfo called THEN message is added to chat history', () => {
-		const req = getAddHistoryRequestMock(
-			'tell me a story',
+
+	test('GIVEN a valid message WHEN handleAddToChatHistoryAsInfo called THEN message is added to chat history', () => {
+		const req = getAddToHistoryAsInfoRequestMock(
+			'my new message',
 			LEVEL_NAMES.LEVEL_1,
 			chatHistory
 		);
@@ -744,15 +745,15 @@ describe('handleAddToChatHistoryAsInfo', () => {
 		expect(req.session.levelState[0].chatHistory).toEqual([
 			...chatHistory,
 			{
-				completion: { role: 'user', content: 'tell me a story' },
-				chatMessageType: 'USER',
+				infoMessage: 'my new message',
+				chatMessageType: 'INFO',
 			},
 		]);
 	});
 
 	test('GIVEN invalid level WHEN handleAddToChatHistoryAsInfo called THEN returns 400', () => {
-		const req = getAddHistoryRequestMock(
-			'tell me a story',
+		const req = getAddToHistoryAsInfoRequestMock(
+			'my new message',
 			undefined,
 			chatHistory
 		);
@@ -761,6 +762,7 @@ describe('handleAddToChatHistoryAsInfo', () => {
 		handleAddToChatHistoryAsInfo(req, res);
 
 		expect(res.status).toHaveBeenCalledWith(400);
+		expect(req.session.levelState[0].chatHistory).toEqual(chatHistory);
 	});
 });
 
