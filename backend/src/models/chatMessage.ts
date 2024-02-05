@@ -20,12 +20,7 @@ const chatMessageTypesAsInfo = [
 
 type CHAT_MESSAGE_TYPE_AS_INFO = (typeof chatMessageTypesAsInfo)[number];
 
-type CHAT_MESSAGE_TYPE =
-	| CHAT_MESSAGE_TYPE_AS_INFO
-	| 'BOT'
-	| 'USER_TRANSFORMED'
-	| 'SYSTEM'
-	| 'FUNCTION_CALL';
+type CHAT_MESSAGE_TYPE = CHAT_MESSAGE_TYPE_AS_INFO;
 
 type ChatMessageAsInfo = {
 	chatMessageType: CHAT_MESSAGE_TYPE_AS_INFO;
