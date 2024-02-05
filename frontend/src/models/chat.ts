@@ -73,6 +73,7 @@ interface ChatResponse {
 	wonLevel: boolean;
 	isError: boolean;
 	sentEmails: EmailInfo[];
+	transformedMessageInfo?: string;
 }
 
 interface ChatCompletionRequestMessage {
@@ -81,16 +82,17 @@ interface ChatCompletionRequestMessage {
 	content: string;
 }
 
-interface ChatHistoryMessage {
+interface ChatMessageDTO {
 	completion: ChatCompletionRequestMessage | null;
 	chatMessageType: CHAT_MESSAGE_TYPE;
 	infoMessage: string | null | undefined;
+	transformedMessage?: TransformedChatMessage;
 }
 
 export type {
 	ChatMessage,
 	ChatResponse,
-	ChatHistoryMessage,
+	ChatMessageDTO,
 	ChatModel,
 	ChatModelConfigurations,
 	CustomChatModelConfiguration,

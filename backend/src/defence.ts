@@ -2,6 +2,7 @@ import { defaultDefences } from './defaultDefences';
 import { queryPromptEvaluationModel } from './langchain';
 import {
 	ChatDefenceReport,
+	MessageTransformation,
 	SingleDefenceReport,
 	TransformedChatMessage,
 } from './models/chat';
@@ -253,26 +254,34 @@ function combineTransformedMessage(transformedMessage: TransformedChatMessage) {
 function transformMessage(
 	message: string,
 	defences: Defence[]
-): TransformedChatMessage | null {
+): MessageTransformation | undefined {
 	const transformedMessage = isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)
 		? transformXmlTagging(message, defences)
 		: isDefenceActive(DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE, defences)
 		? transformRandomSequenceEnclosure(message, defences)
 		: isDefenceActive(DEFENCE_ID.INSTRUCTION, defences)
 		? transformInstructionDefence(message, defences)
-		: null;
+		: undefined;
 
 	if (!transformedMessage) {
 		console.debug('No defences applied. Message unchanged.');
-		return null;
+		return;
 	}
 
+	const transformedMessageCombined =
+		combineTransformedMessage(transformedMessage);
+
+	const transformedMessageInfo =
+		`${transformedMessage.transformationName} enabled, your message has been transformed`.toLocaleLowerCase();
+
 	console.debug(
-		`Defences applied. Transformed message: ${combineTransformedMessage(
-			transformedMessage
-		)}`
+		`Defences applied. Transformed message: ${transformedMessageCombined}`
 	);
-	return transformedMessage;
+	return {
+		transformedMessage,
+		transformedMessageCombined,
+		transformedMessageInfo,
+	};
 }
 
 // detects triggered defences in original message and blocks the message if necessary

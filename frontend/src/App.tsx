@@ -70,7 +70,7 @@ function App() {
 		}
 	}
 
-	function incrementNumCompletedLevels(completedLevel: LEVEL_NAMES) {
+	function updateNumCompletedLevels(completedLevel: LEVEL_NAMES) {
 		setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
 	}
 
@@ -274,7 +274,7 @@ function App() {
 				numCompletedLevels={numCompletedLevels}
 				chatModels={chatModels}
 				closeOverlay={closeOverlay}
-				incrementNumCompletedLevels={incrementNumCompletedLevels}
+				updateNumCompletedLevels={updateNumCompletedLevels}
 				openDocumentViewer={openDocumentViewer}
 				openHandbook={openHandbook}
 				openOverlay={openOverlay}

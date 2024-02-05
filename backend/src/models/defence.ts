@@ -27,7 +27,6 @@ type Defence = {
 	id: DEFENCE_ID;
 	config: DefenceConfigItem[];
 	isActive: boolean;
-	isTriggered: boolean;
 };
 
 export { DEFENCE_ID };
