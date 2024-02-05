@@ -5,12 +5,11 @@ import {
 	detectTriggeredInputDefences,
 	detectTriggeredOutputDefences,
 } from '@src/defence';
-import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
+import { OpenAiAddHistoryRequest as OpenAiAddHistoryAsInfoRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
-	CHAT_MESSAGE_TYPE,
 	ChatDefenceReport,
 	ChatHttpResponse,
 	ChatModel,
@@ -51,11 +50,11 @@ function createNewUserMessages(
 	if (messageTransformation) {
 		return [
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				chatMessageType: 'USER',
 				infoMessage: message,
 			},
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.INFO,
+				chatMessageType: 'INFO',
 				infoMessage: messageTransformation.transformedMessageInfo,
 			},
 			{
@@ -63,7 +62,7 @@ function createNewUserMessages(
 					role: 'user',
 					content: messageTransformation.transformedMessageCombined,
 				},
-				chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+				chatMessageType: 'USER_TRANSFORMED',
 				transformedMessage: messageTransformation.transformedMessage,
 			},
 		];
@@ -74,7 +73,7 @@ function createNewUserMessages(
 					role: 'user',
 					content: message,
 				},
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				chatMessageType: 'USER',
 			},
 		];
 	}
@@ -161,7 +160,7 @@ async function handleChatWithDefenceDetection(
 	// if blocked, restore original chat history and add user message to chat history without completion
 	const updatedChatHistory = combinedDefenceReport.isBlocked
 		? pushMessageToHistory(chatHistory, {
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				chatMessageType: 'USER',
 				infoMessage: message,
 		  })
 		: openAiReply.chatHistory;
@@ -281,7 +280,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	if (updatedChatResponse.defenceReport.isBlocked) {
 		// chatReponse.reply is empty if blocked
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
-			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+			chatMessageType: 'BOT_BLOCKED',
 			infoMessage:
 				updatedChatResponse.defenceReport.blockedReason ??
 				'block reason unknown',
@@ -310,7 +309,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				role: 'assistant',
 				content: updatedChatResponse.reply,
 			},
-			chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+			chatMessageType: 'BOT',
 		});
 	}
 
@@ -341,7 +340,7 @@ function addErrorToChatHistory(
 ): ChatMessage[] {
 	console.error(errorMessage);
 	return pushMessageToHistory(chatHistory, {
-		chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+		chatMessageType: 'ERROR_MSG',
 		infoMessage: errorMessage,
 	});
 }
@@ -356,7 +355,10 @@ function handleGetChatHistory(req: OpenAiGetHistoryRequest, res: Response) {
 	}
 }
 
-function handleAddToChatHistory(req: OpenAiAddHistoryRequest, res: Response) {
+function handleAddToChatHistoryAsInfo(
+	req: OpenAiAddHistoryAsInfoRequest,
+	res: Response
+) {
 	const infoMessage = req.body.infoMessage;
 	const chatMessageType = req.body.chatMessageType;
 	const level = req.body.level;
@@ -395,6 +397,6 @@ function handleClearChatHistory(req: OpenAiClearRequest, res: Response) {
 export {
 	handleChatToGPT,
 	handleGetChatHistory,
-	handleAddToChatHistory,
+	handleAddToChatHistoryAsInfo,
 	handleClearChatHistory,
 };

@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals';
 
-import { CHAT_MESSAGE_TYPE } from '@src/models/chat';
+import {} from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { pushMessageToHistory } from '@src/utils/chat';
 
@@ -10,14 +10,14 @@ const systemRoleMessage: ChatMessage = {
 		role: 'system',
 		content: 'You are an AI.',
 	},
-	chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+	chatMessageType: 'SYSTEM',
 };
 const generalChatMessage: ChatMessage = {
 	completion: {
 		role: 'user',
 		content: 'hello world',
 	},
-	chatMessageType: CHAT_MESSAGE_TYPE.USER,
+	chatMessageType: 'USER',
 };
 
 test('GIVEN no chat history WHEN adding a new chat message THEN new message is added', () => {

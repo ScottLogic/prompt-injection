@@ -9,7 +9,6 @@ import { isDefenceActive, getQAPromptFromConfig } from './defence';
 import { sendEmail } from './email';
 import { queryDocuments } from './langchain';
 import {
-	CHAT_MESSAGE_TYPE,
 	CHAT_MODELS,
 	ChatGptReply,
 	ChatModel,
@@ -351,7 +350,7 @@ async function performToolCalls(
 				functionCallReply,
 				chatHistory: pushMessageToHistory(chatHistory, {
 					completion: functionCallReply.completion,
-					chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+					chatMessageType: 'FUNCTION_CALL',
 				}),
 			};
 		}
@@ -388,7 +387,7 @@ async function getFinalReplyAfterAllToolCalls(
 			// push the function call to the chat
 			updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 				completion: gptReply.completion,
-				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+				chatMessageType: 'FUNCTION_CALL',
 			});
 
 			const toolCallReply = await performToolCalls(

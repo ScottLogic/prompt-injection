@@ -5,73 +5,87 @@ import {
 	ChatCompletionUserMessageParam,
 } from 'openai/resources/chat/completions';
 
-import { CHAT_MESSAGE_TYPE, TransformedChatMessage } from './chat';
+import { TransformedChatMessage } from './chat';
+
+type CHAT_MESSAGE_TYPE =
+	| 'BOT'
+	| 'BOT_BLOCKED'
+	| 'INFO'
+	| 'USER'
+	| 'USER_TRANSFORMED'
+	| 'LEVEL_INFO'
+	| 'DEFENCE_ALERTED'
+	| 'DEFENCE_TRIGGERED'
+	| 'SYSTEM'
+	| 'FUNCTION_CALL'
+	| 'ERROR_MSG'
+	| 'RESET_LEVEL';
 
 type ChatDefenceAlertedMessage = {
-	chatMessageType: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED;
+	chatMessageType: 'DEFENCE_ALERTED';
 	infoMessage: string;
 };
 
 type ChatDefenceTriggeredMessage = {
-	chatMessageType: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED;
+	chatMessageType: 'DEFENCE_TRIGGERED';
 	infoMessage: string;
 };
 
 type ChatLevelInfoMessage = {
-	chatMessageType: CHAT_MESSAGE_TYPE.LEVEL_INFO;
+	chatMessageType: 'LEVEL_INFO';
 	infoMessage: string;
 };
 
 type ChatResetLevelMessage = {
-	chatMessageType: CHAT_MESSAGE_TYPE.RESET_LEVEL;
+	chatMessageType: 'RESET_LEVEL';
 	infoMessage: string;
 };
 
 type ChatErrorMessage = {
-	chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG;
+	chatMessageType: 'ERROR_MSG';
 	infoMessage: string;
 };
 
 type ChatBotBlockedMessage = {
-	chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED;
+	chatMessageType: 'BOT_BLOCKED';
 	infoMessage: string;
 };
 
 type ChatFunctionCallMessage = {
 	completion: ChatCompletionMessageParam;
-	chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL;
+	chatMessageType: 'FUNCTION_CALL';
 };
 
 type ChatSystemMessage = {
 	completion: ChatCompletionSystemMessageParam;
-	chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM;
+	chatMessageType: 'SYSTEM';
 };
 
 type ChatBotMessage = {
 	completion: ChatCompletionAssistantMessageParam;
-	chatMessageType: CHAT_MESSAGE_TYPE.BOT;
+	chatMessageType: 'BOT';
 };
 
 type ChatUserMessageAsCompletion = {
 	completion: ChatCompletionUserMessageParam;
-	chatMessageType: CHAT_MESSAGE_TYPE.USER;
+	chatMessageType: 'USER';
 };
 
 type ChatUserMessageAsInfo = {
-	chatMessageType: CHAT_MESSAGE_TYPE.USER;
+	chatMessageType: 'USER';
 	infoMessage: string;
 };
 
 type ChatUserMessage = ChatUserMessageAsCompletion | ChatUserMessageAsInfo;
 
 type ChatInfoMessage = {
-	chatMessageType: CHAT_MESSAGE_TYPE.INFO;
+	chatMessageType: 'INFO';
 	infoMessage: string;
 };
 
 type ChatUserTransformedMessage = {
 	completion: ChatCompletionUserMessageParam;
-	chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED;
+	chatMessageType: 'USER_TRANSFORMED';
 	transformedMessage: TransformedChatMessage;
 };
 
@@ -89,4 +103,4 @@ type ChatMessage =
 	| ChatLevelInfoMessage
 	| ChatSystemMessage;
 
-export type { ChatMessage, ChatSystemMessage };
+export type { ChatMessage, ChatSystemMessage, CHAT_MESSAGE_TYPE };

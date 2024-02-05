@@ -1,7 +1,6 @@
 import { afterEach, expect, jest, test } from '@jest/globals';
 
 import { isDefenceActive, getSystemRole } from '@src/defence';
-import { CHAT_MESSAGE_TYPE } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { Defence, DEFENCE_ID } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -26,18 +25,18 @@ const defencesSystemRoleActive = [
 const chatHistoryWithoutSystemRole: ChatMessage[] = [
 	{
 		completion: { role: 'user', content: 'What is two plus two?' },
-		chatMessageType: CHAT_MESSAGE_TYPE.USER,
+		chatMessageType: 'USER',
 	},
 	{
 		completion: { role: 'assistant', content: 'Two plus two equals four.' },
-		chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+		chatMessageType: 'BOT',
 	},
 ];
 
 const chatHistoryWithSystemRole: ChatMessage[] = [
 	{
 		completion: { role: 'system', content: systemRolePrompt },
-		chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+		chatMessageType: 'SYSTEM',
 	},
 	...chatHistoryWithoutSystemRole,
 ];
@@ -93,7 +92,7 @@ test('GIVEN Sandbox AND system role defence active AND outdated system role in i
 	const mockChatHistoryWithOutdatedSystemRole: ChatMessage[] = [
 		{
 			completion: { role: 'system', content: 'Yer a wizard, Harry.' },
-			chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+			chatMessageType: 'SYSTEM',
 		},
 		...chatHistoryWithoutSystemRole,
 	];

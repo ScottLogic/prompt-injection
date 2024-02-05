@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { CHAT_MESSAGE_TYPE } from '@src/models/chat';
+import { CHAT_MESSAGE_TYPE } from '@src/models/chatMessage';
 import { LEVEL_NAMES } from '@src/models/level';
 
 export type OpenAiAddHistoryRequest = Request<

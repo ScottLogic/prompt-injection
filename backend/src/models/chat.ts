@@ -17,21 +17,6 @@ enum CHAT_MODELS {
 	GPT_3_5_TURBO_16K_0613 = 'gpt-3.5-turbo-16k-0613',
 }
 
-enum CHAT_MESSAGE_TYPE {
-	BOT,
-	BOT_BLOCKED,
-	INFO,
-	USER,
-	USER_TRANSFORMED,
-	LEVEL_INFO,
-	DEFENCE_ALERTED,
-	DEFENCE_TRIGGERED,
-	SYSTEM,
-	FUNCTION_CALL,
-	ERROR_MSG,
-	RESET_LEVEL,
-}
-
 enum MODEL_CONFIG {
 	TEMPERATURE = 'temperature',
 	TOP_P = 'topP',
@@ -152,7 +137,6 @@ export type {
 };
 export {
 	CHAT_MODELS,
-	CHAT_MESSAGE_TYPE,
 	MODEL_CONFIG,
 	ChatModel,
 	ChatModelConfiguration,

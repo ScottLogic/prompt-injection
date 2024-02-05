@@ -1,7 +1,6 @@
 import { ChatCompletionSystemMessageParam } from 'openai/resources/chat/completions';
 
 import { getSystemRole, isDefenceActive } from '@src/defence';
-import { CHAT_MESSAGE_TYPE } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -17,14 +16,13 @@ function pushMessageToHistory(
 	const messagesToRemove = updatedChatHistory.length - maxChatHistoryLength;
 	if (messagesToRemove < 1) return updatedChatHistory;
 
-	const spliceFrom =
-		updatedChatHistory[0].chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM ? 1 : 0;
+	const spliceFrom = updatedChatHistory[0].chatMessageType === 'SYSTEM' ? 1 : 0;
 	updatedChatHistory.splice(spliceFrom, messagesToRemove);
 	return updatedChatHistory;
 }
 
 function isSystemMessage(message: ChatMessage) {
-	return message.chatMessageType === CHAT_MESSAGE_TYPE.SYSTEM;
+	return message.chatMessageType === 'SYSTEM';
 }
 
 function setSystemRoleInChatHistory(
@@ -47,7 +45,7 @@ function setSystemRoleInChatHistory(
 			return [
 				{
 					completion: completionConfig,
-					chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+					chatMessageType: 'SYSTEM',
 				},
 				...chatHistory,
 			];

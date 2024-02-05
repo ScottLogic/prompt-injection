@@ -3,7 +3,7 @@ import express from 'express';
 import {
 	handleChatToGPT,
 	handleGetChatHistory,
-	handleAddToChatHistory,
+	handleAddToChatHistoryAsInfo,
 	handleClearChatHistory,
 } from './controller/chatController';
 import {
@@ -47,7 +47,7 @@ router.post('/email/clear', handleClearEmails);
 // chat
 router.post('/openai/chat', handleChatToGPT);
 router.get('/openai/history', handleGetChatHistory);
-router.post('/openai/addHistory', handleAddToChatHistory);
+router.post('/openai/addHistory', handleAddToChatHistoryAsInfo);
 router.post('/openai/clear', handleClearChatHistory);
 
 // model configurations

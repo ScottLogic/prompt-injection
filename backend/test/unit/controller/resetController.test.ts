@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 import { handleResetProgress } from '@src/controller/resetController';
 import { defaultDefences } from '@src/defaultDefences';
-import { CHAT_MESSAGE_TYPE, ChatModel } from '@src/models/chat';
+import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -59,7 +59,7 @@ describe('handleResetProgress unit tests', () => {
 					content: 'testing',
 					role: 'assistant',
 				},
-				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				chatMessageType: 'BOT',
 			},
 		];
 		const reqWithChatHistory = {
