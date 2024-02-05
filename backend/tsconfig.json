@@ -8,12 +8,12 @@
 		"strict": true,
 		"noImplicitAny": true,
 		"esModuleInterop": true,
+		"isolatedModules": true,
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"sourceMap": true,
-
 		"paths": {
 			"@src/*": ["./src/*"]
 		}
