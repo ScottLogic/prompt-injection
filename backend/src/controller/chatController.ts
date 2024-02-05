@@ -17,7 +17,7 @@ import {
 	MessageTransformation,
 	defaultChatModel,
 } from '@src/models/chat';
-import { ChatMessage } from '@src/models/chatMessage';
+import { ChatMessage, ChatMessageAsInfo } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -370,7 +370,7 @@ function handleAddToChatHistoryAsInfo(
 			{
 				chatMessageType,
 				infoMessage,
-			} as ChatMessage
+			} as ChatMessageAsInfo
 		);
 		res.send();
 	} else {

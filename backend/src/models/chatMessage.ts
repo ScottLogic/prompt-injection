@@ -7,47 +7,25 @@ import {
 
 import { TransformedChatMessage } from './chat';
 
-type CHAT_MESSAGE_TYPE =
-	| 'BOT'
-	| 'BOT_BLOCKED'
-	| 'INFO'
-	| 'USER'
-	| 'USER_TRANSFORMED'
-	| 'LEVEL_INFO'
+type CHAT_MESSAGE_TYPE_AS_INFO =
 	| 'DEFENCE_ALERTED'
 	| 'DEFENCE_TRIGGERED'
-	| 'SYSTEM'
-	| 'FUNCTION_CALL'
+	| 'LEVEL_INFO'
+	| 'RESET_LEVEL'
 	| 'ERROR_MSG'
-	| 'RESET_LEVEL';
+	| 'BOT_BLOCKED'
+	| 'USER'
+	| 'INFO';
 
-type ChatDefenceAlertedMessage = {
-	chatMessageType: 'DEFENCE_ALERTED';
-	infoMessage: string;
-};
+type CHAT_MESSAGE_TYPE =
+	| CHAT_MESSAGE_TYPE_AS_INFO
+	| 'BOT'
+	| 'USER_TRANSFORMED'
+	| 'SYSTEM'
+	| 'FUNCTION_CALL';
 
-type ChatDefenceTriggeredMessage = {
-	chatMessageType: 'DEFENCE_TRIGGERED';
-	infoMessage: string;
-};
-
-type ChatLevelInfoMessage = {
-	chatMessageType: 'LEVEL_INFO';
-	infoMessage: string;
-};
-
-type ChatResetLevelMessage = {
-	chatMessageType: 'RESET_LEVEL';
-	infoMessage: string;
-};
-
-type ChatErrorMessage = {
-	chatMessageType: 'ERROR_MSG';
-	infoMessage: string;
-};
-
-type ChatBotBlockedMessage = {
-	chatMessageType: 'BOT_BLOCKED';
+type ChatMessageAsInfo = {
+	chatMessageType: CHAT_MESSAGE_TYPE_AS_INFO;
 	infoMessage: string;
 };
 
@@ -71,18 +49,6 @@ type ChatUserMessageAsCompletion = {
 	chatMessageType: 'USER';
 };
 
-type ChatUserMessageAsInfo = {
-	chatMessageType: 'USER';
-	infoMessage: string;
-};
-
-type ChatUserMessage = ChatUserMessageAsCompletion | ChatUserMessageAsInfo;
-
-type ChatInfoMessage = {
-	chatMessageType: 'INFO';
-	infoMessage: string;
-};
-
 type ChatUserTransformedMessage = {
 	completion: ChatCompletionUserMessageParam;
 	chatMessageType: 'USER_TRANSFORMED';
@@ -90,17 +56,17 @@ type ChatUserTransformedMessage = {
 };
 
 type ChatMessage =
+	| ChatMessageAsInfo
 	| ChatUserTransformedMessage
-	| ChatErrorMessage
-	| ChatBotBlockedMessage
 	| ChatFunctionCallMessage
-	| ChatInfoMessage
-	| ChatUserMessage
-	| ChatDefenceTriggeredMessage
-	| ChatResetLevelMessage
-	| ChatDefenceAlertedMessage
 	| ChatBotMessage
-	| ChatLevelInfoMessage
-	| ChatSystemMessage;
+	| ChatSystemMessage
+	| ChatUserMessageAsCompletion;
 
-export type { ChatMessage, ChatSystemMessage, CHAT_MESSAGE_TYPE };
+export type {
+	ChatMessage,
+	ChatSystemMessage,
+	ChatMessageAsInfo,
+	CHAT_MESSAGE_TYPE,
+	CHAT_MESSAGE_TYPE_AS_INFO,
+};
