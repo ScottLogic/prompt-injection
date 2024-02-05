@@ -7,15 +7,18 @@ import {
 
 import { TransformedChatMessage } from './chat';
 
-type CHAT_MESSAGE_TYPE_AS_INFO =
-	| 'DEFENCE_ALERTED'
-	| 'DEFENCE_TRIGGERED'
-	| 'LEVEL_INFO'
-	| 'RESET_LEVEL'
-	| 'ERROR_MSG'
-	| 'BOT_BLOCKED'
-	| 'USER'
-	| 'INFO';
+const chatMessageTypesAsInfo = [
+	'DEFENCE_ALERTED',
+	'DEFENCE_TRIGGERED',
+	'LEVEL_INFO',
+	'RESET_LEVEL',
+	'ERROR_MSG',
+	'BOT_BLOCKED',
+	'USER',
+	'INFO',
+] as const;
+
+type CHAT_MESSAGE_TYPE_AS_INFO = (typeof chatMessageTypesAsInfo)[number];
 
 type CHAT_MESSAGE_TYPE =
 	| CHAT_MESSAGE_TYPE_AS_INFO
@@ -70,3 +73,5 @@ export type {
 	CHAT_MESSAGE_TYPE,
 	CHAT_MESSAGE_TYPE_AS_INFO,
 };
+
+export { chatMessageTypesAsInfo };
