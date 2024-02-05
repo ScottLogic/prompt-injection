@@ -159,10 +159,7 @@ async function handleChatWithDefenceDetection(
 
 	// if blocked, restore original chat history and add user message to chat history without completion
 	const updatedChatHistory = combinedDefenceReport.isBlocked
-		? pushMessageToHistory(chatHistory, {
-				chatMessageType: 'USER',
-				infoMessage: message,
-		  })
+		? chatHistoryWithNewUserMessages
 		: openAiReply.chatHistory;
 
 	const updatedChatResponse: ChatHttpResponse = {
