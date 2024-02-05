@@ -1,5 +1,6 @@
 import {
 	afterEach,
+	beforeAll,
 	beforeEach,
 	describe,
 	test,
@@ -8,6 +9,7 @@ import {
 } from '@jest/globals';
 import { RetrievalQAChain } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { Document } from 'langchain/document';
 import { PromptTemplate } from 'langchain/prompts';
 
 import {
@@ -31,9 +33,10 @@ const mockPromptEvalChain = {
 };
 const mockFromLLM = jest.fn<() => typeof mockRetrievalQAChain>();
 const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
-const mockLoader = jest.fn();
-const mockSplitDocuments = jest.fn<() => Promise<unknown>>();
 const mockAsRetriever = jest.fn();
+const mockLoader =
+	jest.fn<() => Promise<Document<Record<string, unknown>>[]>>();
+const mockSplitDocuments = jest.fn<() => Promise<unknown>>();
 
 // eslint-disable-next-line prefer-const
 let mockValidModels: string[] = [];
@@ -49,16 +52,15 @@ jest.mock('langchain/embeddings/openai', () => {
 	};
 });
 
-class MockMemoryVectorStore {
-	asRetriever() {
-		mockAsRetriever();
-	}
-}
 jest.mock('langchain/vectorstores/memory', () => {
 	return {
 		MemoryVectorStore: {
 			fromDocuments: jest.fn(() =>
-				Promise.resolve(new MockMemoryVectorStore())
+				Promise.resolve({
+					asRetriever() {
+						mockAsRetriever();
+					},
+				})
 			),
 		},
 	};
@@ -115,27 +117,29 @@ jest.mock('@src/openai', () => {
 	};
 });
 
-beforeEach(() => {
-	// reset environment variables
-	process.env = {
-		OPENAI_API_KEY: 'sk-12345',
-	};
-
-	mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
-});
-
-afterEach(() => {
-	mockPromptEvalChain.call.mockRestore();
-	mockRetrievalQAChain.call.mockRestore();
-	mockFromLLM.mockRestore();
-	mockFromTemplate.mockRestore();
-});
-
 describe('langchain integration tests ', () => {
+	beforeAll(() => {
+		mockFromLLM.mockImplementation(() => mockRetrievalQAChain);
+		mockLoader.mockResolvedValue([]);
+	});
+
+	beforeEach(() => {
+		// reset environment variables
+		process.env = {
+			OPENAI_API_KEY: 'sk-12345',
+		};
+	});
+
+	afterEach(() => {
+		mockPromptEvalChain.call.mockReset();
+		mockRetrievalQAChain.call.mockReset();
+		mockFromLLM.mockClear();
+		mockFromTemplate.mockClear();
+		mockLoader.mockClear();
+	});
+
 	test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {
 		const numberOfCalls = 4 + 1; // number of levels + common
-
-		mockSplitDocuments.mockResolvedValue([]);
 
 		await initDocumentVectors();
 		expect(mockLoader).toHaveBeenCalledTimes(numberOfCalls);

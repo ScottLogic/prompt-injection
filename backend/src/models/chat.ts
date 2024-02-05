@@ -149,21 +149,16 @@ export type {
 	ChatDefenceReport,
 	ChatGptReply,
 	ChatMalicious,
+	ChatModel,
+	ChatModelConfiguration,
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
 	ChatHistoryMessage,
+	SingleDefenceReport,
 	TransformedChatMessage,
 	FunctionCallResponse,
 	ToolCallResponse,
 	MessageTransformation,
 };
-export {
-	CHAT_MODELS,
-	CHAT_MESSAGE_TYPE,
-	MODEL_CONFIG,
-	ChatModel,
-	ChatModelConfiguration,
-	defaultChatModel,
-	SingleDefenceReport,
-};
+export { CHAT_MODELS, CHAT_MESSAGE_TYPE, MODEL_CONFIG, defaultChatModel };
