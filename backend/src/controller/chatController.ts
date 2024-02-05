@@ -371,7 +371,7 @@ function handleAddToChatHistory(req: OpenAiAddHistoryRequest, res: Response) {
 			{
 				chatMessageType,
 				infoMessage,
-			} as ChatMessage // now I think about it, this method is not type safe anymore
+			} as ChatMessage
 		);
 		res.send();
 	} else {
