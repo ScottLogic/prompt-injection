@@ -269,7 +269,7 @@ describe('handleChatToGPT unit tests', () => {
 			mockDetectTriggeredDefences.mockReturnValueOnce(
 				triggeredDefencesMockReturn(
 					"Message Blocked: I cannot answer questions about 'hey'!",
-					DEFENCE_ID.FILTER_USER_INPUT
+					DEFENCE_ID.INPUT_FILTERING
 				)
 			);
 
@@ -287,7 +287,7 @@ describe('handleChatToGPT unit tests', () => {
 						blockedReason:
 							"Message Blocked: I cannot answer questions about 'hey'!",
 						isBlocked: true,
-						triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
+						triggeredDefences: [DEFENCE_ID.INPUT_FILTERING],
 					},
 					reply: '',
 				})
@@ -339,7 +339,7 @@ describe('handleChatToGPT unit tests', () => {
 			mockDetectTriggeredDefences.mockReturnValueOnce(
 				triggeredDefencesMockReturn(
 					'Message Blocked: My response contained a restricted phrase.',
-					DEFENCE_ID.FILTER_BOT_OUTPUT
+					DEFENCE_ID.OUTPUT_FILTERING
 				)
 			);
 
@@ -357,7 +357,7 @@ describe('handleChatToGPT unit tests', () => {
 						blockedReason:
 							'Message Blocked: My response contained a restricted phrase.',
 						isBlocked: true,
-						triggeredDefences: [DEFENCE_ID.FILTER_BOT_OUTPUT],
+						triggeredDefences: [DEFENCE_ID.OUTPUT_FILTERING],
 					},
 					reply: '',
 				})

@@ -7,7 +7,13 @@ import { setGptModel, getGptModel } from '@src/service/chatService';
 import './ModelSelection.css';
 
 // return a drop down menu with the models
-function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
+function ModelSelection({
+	chatModelOptions,
+	addInfoMessage,
+}: {
+	chatModelOptions: string[];
+	addInfoMessage: (message: string) => void;
+}) {
 	// model currently selected in the dropdown
 	const [selectedModel, setSelectedModel] = useState<string | null>(null);
 	// model in use by the app
@@ -28,6 +34,7 @@ function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
 			if (modelUpdated) {
 				setModelInUse(currentSelectedModel);
 				setErrorChangingModel(false);
+				addInfoMessage(`changed model to ${currentSelectedModel}`);
 			} else {
 				setErrorChangingModel(true);
 			}
@@ -80,8 +87,8 @@ function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
 
 				<div className="model-selection-info">
 					{errorChangingModel ? (
-						<p className="error">
-							Could not change model. You are still chatting to:
+						<p className="error-message" aria-live="polite">
+							Error: Could not change model. You are still chatting to:
 							<b> {modelInUse} </b>
 						</p>
 					) : (

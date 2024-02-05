@@ -7,7 +7,11 @@ import ModelConfigurationSlider from './ModelConfigurationSlider';
 
 import './ModelConfiguration.css';
 
-function ModelConfiguration() {
+function ModelConfiguration({
+	addInfoMessage,
+}: {
+	addInfoMessage: (message: string) => void;
+}) {
 	const [customChatModelConfigs, setCustomChatModel] = useState<
 		CustomChatModelConfiguration[]
 	>([
@@ -67,7 +71,9 @@ function ModelConfiguration() {
 		setCustomChatModelByID(id, newValue);
 
 		void configureGptModel(id, newValue).then((success) => {
-			if (!success) {
+			if (success) {
+				addInfoMessage(`changed ${id} to ${newValue}`);
+			} else {
 				setCustomChatModelByID(id, prevValue);
 			}
 		});
