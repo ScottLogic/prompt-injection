@@ -8,3 +8,8 @@
 	align-items: center;
 	margin-bottom: 0.25rem;
 }
+
+.defence-configuration .error-message {
+	color: var(--error-colour-light);
+	font-weight: bold;
+}

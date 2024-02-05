@@ -269,7 +269,7 @@ describe('handleChatToGPT unit tests', () => {
 			mockDetectTriggeredDefences.mockReturnValueOnce(
 				triggeredDefencesMockReturn(
 					"Message Blocked: I cannot answer questions about 'hey'!",
-					DEFENCE_ID.FILTER_USER_INPUT
+					DEFENCE_ID.INPUT_FILTERING
 				)
 			);
 
@@ -287,7 +287,7 @@ describe('handleChatToGPT unit tests', () => {
 						blockedReason:
 							"Message Blocked: I cannot answer questions about 'hey'!",
 						isBlocked: true,
-						triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
+						triggeredDefences: [DEFENCE_ID.INPUT_FILTERING],
 					},
 					reply: '',
 				})
@@ -339,7 +339,7 @@ describe('handleChatToGPT unit tests', () => {
 			mockDetectTriggeredDefences.mockReturnValueOnce(
 				triggeredDefencesMockReturn(
 					'Message Blocked: My response contained a restricted phrase.',
-					DEFENCE_ID.FILTER_BOT_OUTPUT
+					DEFENCE_ID.OUTPUT_FILTERING
 				)
 			);
 
@@ -357,7 +357,7 @@ describe('handleChatToGPT unit tests', () => {
 						blockedReason:
 							'Message Blocked: My response contained a restricted phrase.',
 						isBlocked: true,
-						triggeredDefences: [DEFENCE_ID.FILTER_BOT_OUTPUT],
+						triggeredDefences: [DEFENCE_ID.OUTPUT_FILTERING],
 					},
 					reply: '',
 				})
@@ -645,6 +645,113 @@ describe('handleChatToGPT unit tests', () => {
 				...existingHistory,
 				...newTransformationChatMessages,
 				newBotChatMessage,
+			];
+			expect(history).toEqual(expectedHistory);
+		});
+
+		test('Given sandbox AND message transformation defence active WHEN message sent THEN send reply AND session chat history is updated', async () => {
+			const transformedMessage = {
+				preMessage: '[pre message] ',
+				message: 'hello bot',
+				postMessage: '[post message]',
+				transformationName: 'one of the transformation defences',
+			};
+			const newTransformationChatHistoryMessages = [
+				{
+					completion: null,
+					chatMessageType: CHAT_MESSAGE_TYPE.USER,
+					infoMessage: 'hello bot',
+				},
+				{
+					completion: null,
+					chatMessageType: CHAT_MESSAGE_TYPE.INFO,
+					infoMessage: 'your message has been transformed by a defence',
+				},
+				{
+					completion: {
+						role: 'user',
+						content: '[pre message] hello bot [post message]',
+					},
+					chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+					transformedMessage,
+				},
+			] as ChatHistoryMessage[];
+
+			const newBotChatHistoryMessage = {
+				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				completion: {
+					role: 'assistant',
+					content: 'hello user',
+				},
+			} as ChatHistoryMessage;
+
+			const req = openAiChatRequestMock(
+				'hello bot',
+				LEVEL_NAMES.SANDBOX,
+				existingHistory
+			);
+			const res = responseMock();
+
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: { content: 'hello user', role: 'assistant' },
+					wonLevel: true,
+					openAIErrorMessage: null,
+				},
+				chatHistory: [
+					...existingHistory,
+					...newTransformationChatHistoryMessages,
+				],
+				sentEmails: [] as EmailInfo[],
+			});
+
+			mockTransformMessage.mockReturnValueOnce({
+				transformedMessage,
+				transformedMessageCombined: '[pre message] hello bot [post message]',
+				transformedMessageInfo:
+					'your message has been transformed by a defence',
+			} as MessageTransformation);
+
+			mockDetectTriggeredDefences.mockResolvedValueOnce({
+				blockedReason: null,
+				isBlocked: false,
+				alertedDefences: [],
+				triggeredDefences: [], // do these get updated when the message is transformed?
+			} as ChatDefenceReport);
+
+			await handleChatToGPT(req, res);
+
+			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
+				[...existingHistory, ...newTransformationChatHistoryMessages],
+				[],
+				mockChatModel,
+				'[pre message] hello bot [post message]',
+				LEVEL_NAMES.SANDBOX
+			);
+
+			expect(res.send).toHaveBeenCalledWith({
+				reply: 'hello user',
+				defenceReport: {
+					blockedReason: '',
+					isBlocked: false,
+					alertedDefences: [],
+					triggeredDefences: [],
+				},
+				wonLevel: true,
+				isError: false,
+				sentEmails: [],
+				openAIErrorMessage: null,
+				transformedMessage,
+				transformedMessageInfo:
+					'your message has been transformed by a defence',
+			});
+
+			const history =
+				req.session.levelState[LEVEL_NAMES.SANDBOX.valueOf()].chatHistory;
+			const expectedHistory = [
+				...existingHistory,
+				...newTransformationChatHistoryMessages,
+				newBotChatHistoryMessage,
 			];
 			expect(history).toEqual(expectedHistory);
 		});
