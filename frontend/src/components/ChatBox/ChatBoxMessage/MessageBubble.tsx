@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
 
-import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chat';
 
 import './MessageBubble.css';
 
@@ -14,15 +14,15 @@ function MessageBubble({
 	const baseClassName = 'message-bubble';
 
 	const messageTypeClassName =
-		message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
+		message.type === 'LEVEL_INFO'
 			? 'level-info'
-			: message.type === CHAT_MESSAGE_TYPE.USER
+			: message.type === 'USER'
 			? 'user'
-			: message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+			: message.type === 'USER_TRANSFORMED'
 			? 'user transformed'
-			: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
+			: message.type === 'ERROR_MSG'
 			? 'error'
-			: message.type === CHAT_MESSAGE_TYPE.BOT
+			: message.type === 'BOT'
 			? 'bot'
 			: 'bot blocked';
 
@@ -35,20 +35,20 @@ function MessageBubble({
 	);
 
 	const messageAuthor =
-		message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
+		message.type === 'LEVEL_INFO'
 			? ''
-			: message.type === CHAT_MESSAGE_TYPE.USER
+			: message.type === 'USER'
 			? 'You said:'
-			: message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+			: message.type === 'USER_TRANSFORMED'
 			? 'Your message transformed by XML tagging: '
-			: message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
+			: message.type === 'ERROR_MSG'
 			? 'Error message:'
 			: 'ScottBrewBot said:';
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
 		<section className={className} lang="en" tabIndex={0}>
-			{message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO && (
+			{message.type === 'LEVEL_INFO' && (
 				<>
 					<p className="header">Information</p>
 					<span className="visually-hidden"> message: </span>

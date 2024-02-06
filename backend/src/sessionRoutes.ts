@@ -6,7 +6,7 @@ import memoryStoreFactory from 'memorystore';
 import {
 	handleChatToGPT,
 	handleGetChatHistory,
-	handleAddToChatHistory,
+	handleAddInfoToChatHistory,
 	handleClearChatHistory,
 } from './controller/chatController';
 import {
@@ -107,7 +107,7 @@ router.post('/email/clear', handleClearEmails);
 // chat
 router.get('/openai/history', handleGetChatHistory);
 router.post('/openai/chat', handleChatToGPT);
-router.post('/openai/addHistory', handleAddToChatHistory);
+router.post('/openai/addInfoToHistory', handleAddInfoToChatHistory);
 router.post('/openai/clear', handleClearChatHistory);
 
 // model configurations
