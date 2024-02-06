@@ -2,21 +2,13 @@ import { CSVLoader } from 'langchain/document_loaders/fs/csv';
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 import * as fs from 'node:fs';
 
-import { DocumentMeta } from './models/document';
+import { DocumentMeta, DocumentsVector } from './models/document';
 import { LEVEL_NAMES } from './models/level';
-
-async function getCommonDocuments() {
-	const commonDocsFilePath = getFilepath('common');
-	return await getDocuments(commonDocsFilePath);
-}
-
-async function getLevelDocuments(level: LEVEL_NAMES) {
-	const levelDocsFilePath = getFilepath(level);
-	return await getDocuments(levelDocsFilePath);
-}
 
 // load the documents from filesystem
 async function getDocuments(filePath: string) {
@@ -84,4 +76,48 @@ function getDocumentMetas(folder: string) {
 	return documentMetas;
 }
 
-export { getCommonDocuments, getLevelDocuments, getSandboxDocumentMetas };
+// store vectorised documents for each level as array
+const documentVectors = (() => {
+	let docs: DocumentsVector[] = [];
+	return {
+		get: () => docs,
+		set: (newDocs: DocumentsVector[]) => {
+			docs = newDocs;
+		},
+	};
+})();
+const getDocumentVectors = documentVectors.get;
+
+// create and store the document vectors for each level
+async function initDocumentVectors() {
+	const docVectors: DocumentsVector[] = [];
+	const commonDocuments = await getDocuments(getFilepath('common'));
+
+	const levelValues = Object.values(LEVEL_NAMES)
+		.filter((value) => !isNaN(Number(value)))
+		.map((value) => Number(value));
+
+	for (const level of levelValues) {
+		const commonAndLevelDocuments = commonDocuments.concat(
+			await getDocuments(getFilepath(level))
+		);
+
+		// embed and store the splits - will use env variable for API key
+		const embeddings = new OpenAIEmbeddings();
+		const docVector = await MemoryVectorStore.fromDocuments(
+			commonAndLevelDocuments,
+			embeddings
+		);
+		// store the document vectors for the level
+		docVectors.push({
+			level,
+			docVector,
+		});
+	}
+	documentVectors.set(docVectors);
+	console.debug(
+		`Initialised document vectors for each level. count=${docVectors.length}`
+	);
+}
+
+export { getSandboxDocumentMetas, initDocumentVectors, getDocumentVectors };
