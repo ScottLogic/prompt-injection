@@ -3,7 +3,7 @@ import { Request } from 'express';
 import { CHAT_MESSAGE_TYPE_AS_INFO } from '@src/models/chatMessage';
 import { LEVEL_NAMES } from '@src/models/level';
 
-export type OpenAiAddHistoryRequest = Request<
+export type OpenAiAddHistoryAsInfoRequest = Request<
 	never,
 	never,
 	{

@@ -5,7 +5,7 @@ import {
 	detectTriggeredInputDefences,
 	detectTriggeredOutputDefences,
 } from '@src/defence';
-import { OpenAiAddHistoryRequest as OpenAiAddHistoryAsInfoRequest } from '@src/models/api/OpenAiAddHistoryRequest';
+import { OpenAiAddHistoryAsInfoRequest } from '@src/models/api/OpenAiAddHistoryAsInfoRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
