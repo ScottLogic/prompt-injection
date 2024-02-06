@@ -1,8 +1,10 @@
-import { test, jest, expect } from '@jest/globals';
+import { test, jest, expect, beforeAll, afterEach } from '@jest/globals';
+import { Document } from 'langchain/document';
 
 import { initDocumentVectors } from '@src/document';
 
-const mockLoader = jest.fn();
+const mockLoader =
+	jest.fn<() => Promise<Document<Record<string, unknown>>[]>>();
 const mockSplitDocuments = jest.fn<() => Promise<unknown>>();
 
 // mock DirectoryLoader
@@ -27,9 +29,15 @@ jest.mock('langchain/text_splitter', () => {
 	};
 });
 
-test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {
-	mockSplitDocuments.mockResolvedValue([]);
+beforeAll(() => {
+	mockLoader.mockResolvedValue([]);
+});
 
+afterEach(() => {
+	mockLoader.mockClear();
+});
+
+test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {
 	await initDocumentVectors();
 
 	const numberOfCalls = 4 + 1; // number of levels + common
