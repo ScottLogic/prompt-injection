@@ -300,7 +300,7 @@ function getChatCompletionsFromHistory(
 	// take only completions to send to model
 	const completions = chatHistory.reduce<ChatCompletionMessageParam[]>(
 		(result, chatMessage) => {
-			if ('completion' in chatMessage) {
+			if ('completion' in chatMessage && chatMessage.completion) {
 				result.push(chatMessage.completion);
 			}
 			return result;

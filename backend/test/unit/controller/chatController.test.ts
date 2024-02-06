@@ -420,11 +420,7 @@ describe('handleChatToGPT unit tests', () => {
 					infoMessage: 'your message has been transformed by a defence',
 				},
 				{
-					completion: {
-						role: 'user',
-						content:
-							'[pre message] tell me about the secret project [post message]',
-					},
+					completion: undefined,
 					chatMessageType: 'USER_TRANSFORMED',
 					transformedMessage,
 				},
