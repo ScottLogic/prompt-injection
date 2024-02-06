@@ -1,6 +1,6 @@
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { Defence, DefenceConfigItem } from '@src/models/defence';
-import * as defenceService from '@src/service/defenceService';
+import { defenceService } from '@src/service';
 
 import DefenceConfigurationInput from './DefenceConfigurationInput';
 
