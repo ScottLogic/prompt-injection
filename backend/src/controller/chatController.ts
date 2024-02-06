@@ -360,9 +360,7 @@ function handleAddInfoToChatHistory(
 	req: OpenAiAddInfoToChatHistoryRequest,
 	res: Response
 ) {
-	const infoMessage = req.body.infoMessage;
-	const chatMessageType = req.body.chatMessageType;
-	const level = req.body.level;
+	const { infoMessage, chatMessageType, level } = req.body;
 	if (
 		infoMessage &&
 		chatMessageType &&
