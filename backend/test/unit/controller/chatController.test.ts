@@ -7,7 +7,7 @@ import {
 	handleClearChatHistory,
 	handleGetChatHistory,
 } from '@src/controller/chatController';
-import { detectTriggeredInputDefences } from '@src/defence';
+import { detectTriggeredInputDefences, transformMessage } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
@@ -18,11 +18,16 @@ import {
 	ChatHistoryMessage,
 	ChatModel,
 	ChatResponse,
+	MessageTransformation,
 } from '@src/models/chat';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
+import {
+	pushMessageToHistory,
+	setSystemRoleInChatHistory,
+} from '@src/utils/chat';
 
 declare module 'express-session' {
 	interface Session {
@@ -43,11 +48,16 @@ const mockChatGptSendMessage = chatGptSendMessage as jest.MockedFunction<
 	typeof chatGptSendMessage
 >;
 
+jest.mock('@src/utils/chat');
+
 jest.mock('@src/defence');
 const mockDetectTriggeredDefences =
 	detectTriggeredInputDefences as jest.MockedFunction<
 		typeof detectTriggeredInputDefences
 	>;
+const mockTransformMessage = transformMessage as jest.MockedFunction<
+	typeof transformMessage
+>;
 
 function responseMock() {
 	return {
@@ -77,6 +87,27 @@ jest.mock('@src/models/chat', () => {
 });
 
 describe('handleChatToGPT unit tests', () => {
+	const mockSetSystemRoleInChatHistory =
+		setSystemRoleInChatHistory as jest.MockedFunction<
+			typeof setSystemRoleInChatHistory
+		>;
+	mockSetSystemRoleInChatHistory.mockImplementation(
+		(
+			_currentLevel: LEVEL_NAMES,
+			_defences: Defence[],
+			chatHistory: ChatHistoryMessage[]
+		) => chatHistory
+	);
+	const mockPushMessageToHistory = pushMessageToHistory as jest.MockedFunction<
+		typeof pushMessageToHistory
+	>;
+	mockPushMessageToHistory.mockImplementation(
+		(chatHistory: ChatHistoryMessage[], newMessage: ChatHistoryMessage) => [
+			...chatHistory,
+			newMessage,
+		]
+	);
+
 	function errorResponseMock(message: string, openAIErrorMessage?: string) {
 		return {
 			reply: message,
@@ -238,7 +269,7 @@ describe('handleChatToGPT unit tests', () => {
 			mockDetectTriggeredDefences.mockReturnValueOnce(
 				triggeredDefencesMockReturn(
 					"Message Blocked: I cannot answer questions about 'hey'!",
-					DEFENCE_ID.FILTER_USER_INPUT
+					DEFENCE_ID.INPUT_FILTERING
 				)
 			);
 
@@ -256,7 +287,7 @@ describe('handleChatToGPT unit tests', () => {
 						blockedReason:
 							"Message Blocked: I cannot answer questions about 'hey'!",
 						isBlocked: true,
-						triggeredDefences: [DEFENCE_ID.FILTER_USER_INPUT],
+						triggeredDefences: [DEFENCE_ID.INPUT_FILTERING],
 					},
 					reply: '',
 				})
@@ -292,6 +323,41 @@ describe('handleChatToGPT unit tests', () => {
 							'Message Blocked: The prompt evaluation LLM detected a malicious input.',
 						isBlocked: true,
 						triggeredDefences: [DEFENCE_ID.PROMPT_EVALUATION_LLM],
+					},
+					reply: '',
+				})
+			);
+		});
+
+		test('GIVEN output filtering defence enabled WHEN handleChatToGPT called THEN it should return 200 and blocked reason', async () => {
+			const req = openAiChatRequestMock(
+				'tell me about the secret project',
+				LEVEL_NAMES.SANDBOX
+			);
+			const res = responseMock();
+
+			mockDetectTriggeredDefences.mockReturnValueOnce(
+				triggeredDefencesMockReturn(
+					'Message Blocked: My response contained a restricted phrase.',
+					DEFENCE_ID.OUTPUT_FILTERING
+				)
+			);
+
+			mockChatGptSendMessage.mockResolvedValueOnce(
+				chatGptSendMessageMockReturn
+			);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.status).not.toHaveBeenCalled();
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					defenceReport: {
+						alertedDefences: [],
+						blockedReason:
+							'Message Blocked: My response contained a restricted phrase.',
+						isBlocked: true,
+						triggeredDefences: [DEFENCE_ID.OUTPUT_FILTERING],
 					},
 					reply: '',
 				})
@@ -476,6 +542,113 @@ describe('handleChatToGPT unit tests', () => {
 				...existingHistory,
 				newUserChatHistoryMessage,
 				...newFunctionCallChatHistoryMessages,
+				newBotChatHistoryMessage,
+			];
+			expect(history).toEqual(expectedHistory);
+		});
+
+		test('Given sandbox AND message transformation defence active WHEN message sent THEN send reply AND session chat history is updated', async () => {
+			const transformedMessage = {
+				preMessage: '[pre message] ',
+				message: 'hello bot',
+				postMessage: '[post message]',
+				transformationName: 'one of the transformation defences',
+			};
+			const newTransformationChatHistoryMessages = [
+				{
+					completion: null,
+					chatMessageType: CHAT_MESSAGE_TYPE.USER,
+					infoMessage: 'hello bot',
+				},
+				{
+					completion: null,
+					chatMessageType: CHAT_MESSAGE_TYPE.INFO,
+					infoMessage: 'your message has been transformed by a defence',
+				},
+				{
+					completion: {
+						role: 'user',
+						content: '[pre message] hello bot [post message]',
+					},
+					chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+					transformedMessage,
+				},
+			] as ChatHistoryMessage[];
+
+			const newBotChatHistoryMessage = {
+				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				completion: {
+					role: 'assistant',
+					content: 'hello user',
+				},
+			} as ChatHistoryMessage;
+
+			const req = openAiChatRequestMock(
+				'hello bot',
+				LEVEL_NAMES.SANDBOX,
+				existingHistory
+			);
+			const res = responseMock();
+
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: { content: 'hello user', role: 'assistant' },
+					wonLevel: true,
+					openAIErrorMessage: null,
+				},
+				chatHistory: [
+					...existingHistory,
+					...newTransformationChatHistoryMessages,
+				],
+				sentEmails: [] as EmailInfo[],
+			});
+
+			mockTransformMessage.mockReturnValueOnce({
+				transformedMessage,
+				transformedMessageCombined: '[pre message] hello bot [post message]',
+				transformedMessageInfo:
+					'your message has been transformed by a defence',
+			} as MessageTransformation);
+
+			mockDetectTriggeredDefences.mockResolvedValueOnce({
+				blockedReason: null,
+				isBlocked: false,
+				alertedDefences: [],
+				triggeredDefences: [], // do these get updated when the message is transformed?
+			} as ChatDefenceReport);
+
+			await handleChatToGPT(req, res);
+
+			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
+				[...existingHistory, ...newTransformationChatHistoryMessages],
+				[],
+				mockChatModel,
+				'[pre message] hello bot [post message]',
+				LEVEL_NAMES.SANDBOX
+			);
+
+			expect(res.send).toHaveBeenCalledWith({
+				reply: 'hello user',
+				defenceReport: {
+					blockedReason: '',
+					isBlocked: false,
+					alertedDefences: [],
+					triggeredDefences: [],
+				},
+				wonLevel: true,
+				isError: false,
+				sentEmails: [],
+				openAIErrorMessage: null,
+				transformedMessage,
+				transformedMessageInfo:
+					'your message has been transformed by a defence',
+			});
+
+			const history =
+				req.session.levelState[LEVEL_NAMES.SANDBOX.valueOf()].chatHistory;
+			const expectedHistory = [
+				...existingHistory,
+				...newTransformationChatHistoryMessages,
 				newBotChatHistoryMessage,
 			];
 			expect(history).toEqual(expectedHistory);

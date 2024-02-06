@@ -15,11 +15,12 @@ function MainBody({
 	messages,
 	chatModels,
 	addChatMessage,
+	addInfoMessage,
 	addSentEmails,
 	resetDefenceConfiguration,
 	toggleDefence,
 	setDefenceConfiguration,
-	incrementNumCompletedLevels,
+	updateNumCompletedLevels,
 	openDocumentViewer,
 	openLevelsCompleteOverlay,
 	openResetLevelOverlay,
@@ -30,6 +31,7 @@ function MainBody({
 	messages: ChatMessage[];
 	chatModels: string[];
 	addChatMessage: (message: ChatMessage) => void;
+	addInfoMessage: (message: string) => void;
 	addSentEmails: (emails: EmailInfo[]) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
 	resetLevel: () => void;
@@ -38,7 +40,7 @@ function MainBody({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
-	incrementNumCompletedLevels: (level: LEVEL_NAMES) => void;
+	updateNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openDocumentViewer: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openResetLevelOverlay: () => void;
@@ -54,6 +56,7 @@ function MainBody({
 					resetDefenceConfiguration={resetDefenceConfiguration}
 					setDefenceConfiguration={setDefenceConfiguration}
 					openDocumentViewer={openDocumentViewer}
+					addInfoMessage={addInfoMessage}
 				/>
 			</div>
 			<div className="centre-area">
@@ -63,7 +66,7 @@ function MainBody({
 					messages={messages}
 					addChatMessage={addChatMessage}
 					addSentEmails={addSentEmails}
-					incrementNumCompletedLevels={incrementNumCompletedLevels}
+					updateNumCompletedLevels={updateNumCompletedLevels}
 					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 					openResetLevelOverlay={openResetLevelOverlay}
 				/>

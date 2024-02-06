@@ -17,3 +17,8 @@
 	background-color: var(--chat-button-background-colour);
 	color: var(--main-input-inactive-text-colour);
 }
+
+.invalid-input {
+	border-color: var(--error-colour-light);
+	color: var(--error-colour-light);
+}

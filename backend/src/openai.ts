@@ -3,14 +3,9 @@ import {
 	ChatCompletionMessageParam,
 	ChatCompletionTool,
 	ChatCompletionMessageToolCall,
-	ChatCompletionSystemMessageParam,
 } from 'openai/resources/chat/completions';
 
-import {
-	isDefenceActive,
-	getSystemRole,
-	getQAPromptFromConfig,
-} from './defence';
+import { isDefenceActive, getQAPromptFromConfig } from './defence';
 import { sendEmail } from './email';
 import { queryDocuments } from './langchain';
 import {
@@ -106,7 +101,7 @@ const getOpenAIKey = (() => {
 			openAIKey = process.env.OPENAI_API_KEY;
 			if (!openAIKey) {
 				throw new Error(
-					'OpenAI API key not found in environment vars - cannot continue!'
+					'OPENAI_API_KEY not found in environment vars, cannot continue!'
 				);
 			}
 		}
@@ -250,48 +245,11 @@ async function chatGptCallFunction(
 
 async function chatGptChatCompletion(
 	chatHistory: ChatHistoryMessage[],
-	defences: Defence[],
 	chatModel: ChatModel,
-	openai: OpenAI,
-	// default to sandbox
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
-): Promise<ChatGptReply> {
+	openai: OpenAI
+) {
 	const updatedChatHistory = [...chatHistory];
 
-	// check if we need to set a system role
-	// system role is always active on levels
-	if (
-		currentLevel !== LEVEL_NAMES.SANDBOX ||
-		isDefenceActive(DEFENCE_ID.SYSTEM_ROLE, defences)
-	) {
-		const completionConfig: ChatCompletionSystemMessageParam = {
-			role: 'system',
-			content: getSystemRole(defences, currentLevel),
-		};
-
-		// check to see if there's already a system role
-		const systemRole = chatHistory.find(
-			(message) => message.completion?.role === 'system'
-		);
-		if (!systemRole) {
-			// add the system role to the start of the chat history
-			updatedChatHistory.unshift({
-				completion: completionConfig,
-				chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
-			});
-		} else {
-			// replace with the latest system role
-			systemRole.completion = completionConfig;
-		}
-	} else {
-		// remove the system role from the chat history
-		while (
-			updatedChatHistory.length > 0 &&
-			updatedChatHistory[0].completion?.role === 'system'
-		) {
-			updatedChatHistory.shift();
-		}
-	}
 	console.debug('Talking to model: ', JSON.stringify(chatModel));
 
 	// get start time
@@ -376,7 +334,6 @@ async function performToolCalls(
 ): Promise<ToolCallResponse> {
 	for (const toolCall of toolCalls) {
 		// only tool type supported by openai is function
-
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (toolCall.type === 'function') {
 			const functionCallReply = await chatGptCallFunction(
@@ -385,6 +342,7 @@ async function performToolCalls(
 				toolCall.function,
 				currentLevel
 			);
+
 			// return after getting function reply. may change when we support other tool types. We assume only one function call in toolCalls
 			return {
 				functionCallReply,
@@ -417,10 +375,8 @@ async function getFinalReplyAfterAllToolCalls(
 	do {
 		gptReply = await chatGptChatCompletion(
 			updatedChatHistory,
-			defences,
 			chatModel,
-			openai,
-			currentLevel
+			openai
 		);
 		updatedChatHistory = gptReply.chatHistory;
 

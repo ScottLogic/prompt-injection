@@ -104,6 +104,12 @@ interface TransformedChatMessage {
 	transformationName: string;
 }
 
+interface MessageTransformation {
+	transformedMessage: TransformedChatMessage;
+	transformedMessageInfo: string;
+	transformedMessageCombined: string;
+}
+
 interface ChatHttpResponse {
 	reply: string;
 	defenceReport: ChatDefenceReport;
@@ -112,6 +118,7 @@ interface ChatHttpResponse {
 	isError: boolean;
 	openAIErrorMessage: string | null;
 	sentEmails: EmailInfo[];
+	transformedMessageInfo?: string;
 }
 
 interface LevelHandlerResponse {
@@ -123,6 +130,7 @@ interface ChatHistoryMessage {
 	completion: ChatCompletionMessageParam | null;
 	chatMessageType: CHAT_MESSAGE_TYPE;
 	infoMessage?: string | null;
+	transformedMessage?: TransformedChatMessage;
 }
 
 // default settings for chat model
@@ -141,20 +149,16 @@ export type {
 	ChatDefenceReport,
 	ChatGptReply,
 	ChatMalicious,
+	ChatModel,
+	ChatModelConfiguration,
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
 	ChatHistoryMessage,
+	SingleDefenceReport,
 	TransformedChatMessage,
 	FunctionCallResponse,
 	ToolCallResponse,
+	MessageTransformation,
 };
-export {
-	CHAT_MODELS,
-	CHAT_MESSAGE_TYPE,
-	MODEL_CONFIG,
-	ChatModel,
-	ChatModelConfiguration,
-	defaultChatModel,
-	SingleDefenceReport,
-};
+export { CHAT_MODELS, CHAT_MESSAGE_TYPE, MODEL_CONFIG, defaultChatModel };

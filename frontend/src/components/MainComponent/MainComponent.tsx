@@ -32,7 +32,7 @@ function MainComponent({
 	currentLevel,
 	numCompletedLevels,
 	closeOverlay,
-	incrementNumCompletedLevels,
+	updateNumCompletedLevels,
 	openDocumentViewer,
 	openHandbook,
 	openInformationOverlay,
@@ -46,7 +46,7 @@ function MainComponent({
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	closeOverlay: () => void;
-	incrementNumCompletedLevels: (level: number) => void;
+	updateNumCompletedLevels: (level: number) => void;
 	openDocumentViewer: () => void;
 	openHandbook: () => void;
 	openInformationOverlay: () => void;
@@ -167,11 +167,17 @@ function MainComponent({
 		void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentLevel);
 	}
 
+	function addConfigUpdateToChat(defenceId: DEFENCE_ID, update: string) {
+		const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
+		addInfoMessage(`${displayedDefenceId} defence ${update}`);
+	}
+
 	async function resetDefenceConfiguration(
 		defenceId: DEFENCE_ID,
 		configId: string
 	) {
 		const resetDefence = await resetDefenceConfig(defenceId, configId);
+		addConfigUpdateToChat(defenceId, 'reset');
 		// update state
 		const newDefences = defencesToShow.map((defence) => {
 			if (defence.id === defenceId) {
@@ -208,6 +214,7 @@ function MainComponent({
 	) {
 		const success = await configureDefence(defenceId, config, currentLevel);
 		if (success) {
+			addConfigUpdateToChat(defenceId, 'updated');
 			// update state
 			const newDefences = defencesToShow.map((defence) => {
 				if (defence.id === defenceId) {
@@ -273,6 +280,7 @@ function MainComponent({
 				emails={emails}
 				messages={messages}
 				addChatMessage={addChatMessage}
+				addInfoMessage={addInfoMessage}
 				addSentEmails={addSentEmails}
 				resetDefenceConfiguration={(defenceId: DEFENCE_ID, configId: string) =>
 					void resetDefenceConfiguration(defenceId, configId)
@@ -280,7 +288,7 @@ function MainComponent({
 				resetLevel={() => void resetLevel()}
 				toggleDefence={(defence: Defence) => void setDefenceToggle(defence)}
 				setDefenceConfiguration={setDefenceConfiguration}
-				incrementNumCompletedLevels={incrementNumCompletedLevels}
+				updateNumCompletedLevels={updateNumCompletedLevels}
 				openDocumentViewer={openDocumentViewer}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openResetLevelOverlay={openResetLevelOverlay}

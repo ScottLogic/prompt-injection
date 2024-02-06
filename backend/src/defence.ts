@@ -2,6 +2,7 @@ import { defaultDefences } from './defaultDefences';
 import { queryPromptEvaluationModel } from './langchain';
 import {
 	ChatDefenceReport,
+	MessageTransformation,
 	SingleDefenceReport,
 	TransformedChatMessage,
 } from './models/chat';
@@ -89,9 +90,7 @@ function getFilterList(defences: Defence[], type: DEFENCE_ID) {
 	return getConfigValue(
 		defences,
 		type,
-		type === DEFENCE_ID.FILTER_USER_INPUT
-			? 'FILTER_USER_INPUT'
-			: 'FILTER_BOT_OUTPUT'
+		type === DEFENCE_ID.INPUT_FILTERING ? 'INPUT_FILTERING' : 'OUTPUT_FILTERING'
 	);
 }
 function getSystemRole(
@@ -255,26 +254,34 @@ function combineTransformedMessage(transformedMessage: TransformedChatMessage) {
 function transformMessage(
 	message: string,
 	defences: Defence[]
-): TransformedChatMessage | null {
+): MessageTransformation | undefined {
 	const transformedMessage = isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)
 		? transformXmlTagging(message, defences)
 		: isDefenceActive(DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE, defences)
 		? transformRandomSequenceEnclosure(message, defences)
 		: isDefenceActive(DEFENCE_ID.INSTRUCTION, defences)
 		? transformInstructionDefence(message, defences)
-		: null;
+		: undefined;
 
 	if (!transformedMessage) {
 		console.debug('No defences applied. Message unchanged.');
-		return null;
+		return;
 	}
 
+	const transformedMessageCombined =
+		combineTransformedMessage(transformedMessage);
+
+	const transformedMessageInfo =
+		`${transformedMessage.transformationName} enabled, your message has been transformed`.toLocaleLowerCase();
+
 	console.debug(
-		`Defences applied. Transformed message: ${combineTransformedMessage(
-			transformedMessage
-		)}`
+		`Defences applied. Transformed message: ${transformedMessageCombined}`
 	);
-	return transformedMessage;
+	return {
+		transformedMessage,
+		transformedMessageCombined,
+		transformedMessageInfo,
+	};
 }
 
 // detects triggered defences in original message and blocks the message if necessary
@@ -356,22 +363,22 @@ function detectFilterUserInput(
 ): SingleDefenceReport {
 	const detectedPhrases = detectFilterList(
 		message,
-		getFilterList(defences, DEFENCE_ID.FILTER_USER_INPUT)
+		getFilterList(defences, DEFENCE_ID.INPUT_FILTERING)
 	);
 
 	const filterWordsDetected = detectedPhrases.length > 0;
-	const defenceActive = isDefenceActive(DEFENCE_ID.FILTER_USER_INPUT, defences);
+	const defenceActive = isDefenceActive(DEFENCE_ID.INPUT_FILTERING, defences);
 
 	if (filterWordsDetected) {
 		console.debug(
-			`FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
+			`INPUT_FILTERING defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
 				', '
 			)}`
 		);
 	}
 
 	return {
-		defence: DEFENCE_ID.FILTER_USER_INPUT,
+		defence: DEFENCE_ID.INPUT_FILTERING,
 		blockedReason:
 			filterWordsDetected && defenceActive
 				? `Message Blocked: I cannot answer questions about '${detectedPhrases.join(
@@ -392,22 +399,22 @@ function detectFilterBotOutput(
 ): SingleDefenceReport {
 	const detectedPhrases = detectFilterList(
 		message,
-		getFilterList(defences, DEFENCE_ID.FILTER_BOT_OUTPUT)
+		getFilterList(defences, DEFENCE_ID.OUTPUT_FILTERING)
 	);
 
 	const filterWordsDetected = detectedPhrases.length > 0;
-	const defenceActive = isDefenceActive(DEFENCE_ID.FILTER_BOT_OUTPUT, defences);
+	const defenceActive = isDefenceActive(DEFENCE_ID.OUTPUT_FILTERING, defences);
 
 	if (filterWordsDetected) {
 		console.debug(
-			`FILTER_BOT_OUTPUT defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
+			`OUTPUT_FILTERING defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
 				', '
 			)}`
 		);
 	}
 
 	return {
-		defence: DEFENCE_ID.FILTER_BOT_OUTPUT,
+		defence: DEFENCE_ID.OUTPUT_FILTERING,
 		blockedReason:
 			filterWordsDetected && defenceActive
 				? 'My original response was blocked as it contained a restricted word/phrase. Ask me something else. '

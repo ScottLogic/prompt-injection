@@ -3,7 +3,6 @@ import { Response } from 'express';
 import {
 	transformMessage,
 	detectTriggeredInputDefences,
-	combineTransformedMessage,
 	detectTriggeredOutputDefences,
 } from '@src/defence';
 import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
@@ -17,13 +16,17 @@ import {
 	ChatHttpResponse,
 	ChatModel,
 	LevelHandlerResponse,
+	MessageTransformation,
 	defaultChatModel,
 } from '@src/models/chat';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
-import { pushMessageToHistory } from '@src/utils/chat';
+import {
+	pushMessageToHistory,
+	setSystemRoleInChatHistory,
+} from '@src/utils/chat';
 
 import { handleChatError } from './handleError';
 
@@ -43,28 +46,30 @@ function combineChatDefenceReports(
 
 function createNewUserMessages(
 	message: string,
-	transformedMessage: string | null
+	messageTransformation?: MessageTransformation
 ): ChatHistoryMessage[] {
-	if (transformedMessage) {
-		// if message has been transformed
+	if (messageTransformation) {
 		return [
-			// original message
 			{
 				completion: null,
 				chatMessageType: CHAT_MESSAGE_TYPE.USER,
 				infoMessage: message,
 			},
-			// transformed message
+			{
+				completion: null,
+				chatMessageType: CHAT_MESSAGE_TYPE.INFO,
+				infoMessage: messageTransformation.transformedMessageInfo,
+			},
 			{
 				completion: {
 					role: 'user',
-					content: transformedMessage,
+					content: messageTransformation.transformedMessageCombined,
 				},
 				chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+				transformedMessage: messageTransformation.transformedMessage,
 			},
 		];
 	} else {
-		// not transformed, so just return the original message
 		return [
 			{
 				completion: {
@@ -85,7 +90,7 @@ async function handleChatWithoutDefenceDetection(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	const updatedChatHistory = createNewUserMessages(message, null).reduce(
+	const updatedChatHistory = createNewUserMessages(message).reduce(
 		pushMessageToHistory,
 		chatHistory
 	);
@@ -120,28 +125,22 @@ async function handleChatWithDefenceDetection(
 	chatHistory: ChatHistoryMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
-	// transform the message according to active defences
-	const transformedMessage = transformMessage(message, defences);
-	const transformedMessageCombined = transformedMessage
-		? combineTransformedMessage(transformedMessage)
-		: null;
+	const messageTransformation = transformMessage(message, defences);
 	const chatHistoryWithNewUserMessages = createNewUserMessages(
 		message,
-		transformedMessageCombined ?? null
+		messageTransformation
 	).reduce(pushMessageToHistory, chatHistory);
 
-	// detect defences on input message
 	const triggeredInputDefencesPromise = detectTriggeredInputDefences(
 		message,
 		defences
 	);
 
-	// get the chatGPT reply
 	const openAiReplyPromise = chatGptSendMessage(
 		chatHistoryWithNewUserMessages,
 		defences,
 		chatModel,
-		transformedMessageCombined ?? message,
+		messageTransformation?.transformedMessageCombined ?? message,
 		currentLevel
 	);
 
@@ -175,10 +174,11 @@ async function handleChatWithDefenceDetection(
 		defenceReport: combinedDefenceReport,
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 		reply: !combinedDefenceReport.isBlocked && botReply ? botReply : '',
-		transformedMessage: transformedMessage ?? undefined,
+		transformedMessage: messageTransformation?.transformedMessage,
 		wonLevel:
 			openAiReply.chatResponse.wonLevel && !combinedDefenceReport.isBlocked,
 		sentEmails: combinedDefenceReport.isBlocked ? [] : openAiReply.sentEmails,
+		transformedMessageInfo: messageTransformation?.transformedMessageInfo,
 	};
 	return {
 		chatResponse: updatedChatResponse,
@@ -233,9 +233,12 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			? req.session.chatModel
 			: defaultChatModel;
 
-	const currentChatHistory = [
-		...req.session.levelState[currentLevel].chatHistory,
-	];
+	const currentChatHistory = setSystemRoleInChatHistory(
+		currentLevel,
+		req.session.levelState[currentLevel].defences,
+		req.session.levelState[currentLevel].chatHistory
+	);
+
 	const defences = [...req.session.levelState[currentLevel].defences];
 
 	let levelResult: LevelHandlerResponse;
