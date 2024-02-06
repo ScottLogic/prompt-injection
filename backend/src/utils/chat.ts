@@ -16,7 +16,7 @@ function pushMessageToHistory(
 	const messagesToRemove = updatedChatHistory.length - maxChatHistoryLength;
 	if (messagesToRemove < 1) return updatedChatHistory;
 
-	const spliceFrom = updatedChatHistory[0].chatMessageType === 'SYSTEM' ? 1 : 0;
+	const spliceFrom = isSystemMessage(updatedChatHistory[0]) ? 1 : 0;
 	updatedChatHistory.splice(spliceFrom, messagesToRemove);
 	return updatedChatHistory;
 }
