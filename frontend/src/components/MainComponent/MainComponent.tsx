@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react';
 import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
-import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
-	addMessageToChatHistory,
+	addInfoMessageToChatHistory,
 	clearChat,
 	getChatHistory,
 } from '@src/service/chatService';
@@ -69,7 +69,7 @@ function MainComponent({
 			setMessages([
 				{
 					message: 'Failed to reach the server. Please try again later.',
-					type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+					type: 'ERROR_MSG',
 				},
 			]);
 		});
@@ -161,10 +161,10 @@ function MainComponent({
 	function addInfoMessage(message: string) {
 		addChatMessage({
 			message,
-			type: CHAT_MESSAGE_TYPE.INFO,
+			type: 'GENERIC_INFO',
 		});
 		// asynchronously add message to chat history
-		void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentLevel);
+		void addInfoMessageToChatHistory(message, 'GENERIC_INFO', currentLevel);
 	}
 
 	function addConfigUpdateToChat(defenceId: DEFENCE_ID, update: string) {
@@ -230,12 +230,12 @@ function MainComponent({
 	function setMessagesWithWelcome(retrievedMessages: ChatMessage[]) {
 		const welcomeMessage: ChatMessage = {
 			message: `Hello! I'm ScottBrewBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
-			type: CHAT_MESSAGE_TYPE.BOT,
+			type: 'BOT',
 		};
 		// if reset level add welcome into second position, otherwise add to first
 		if (retrievedMessages.length === 0) {
 			setMessages([welcomeMessage]);
-		} else if (retrievedMessages[0].type === CHAT_MESSAGE_TYPE.RESET_LEVEL) {
+		} else if (retrievedMessages[0].type === 'RESET_LEVEL') {
 			retrievedMessages.splice(1, 0, welcomeMessage);
 			setMessages(retrievedMessages);
 		} else {
@@ -246,9 +246,9 @@ function MainComponent({
 	function addResetMessage() {
 		const resetMessage: ChatMessage = {
 			message: `Level progress reset`,
-			type: CHAT_MESSAGE_TYPE.RESET_LEVEL,
+			type: 'RESET_LEVEL',
 		};
-		void addMessageToChatHistory(
+		void addInfoMessageToChatHistory(
 			resetMessage.message,
 			resetMessage.type,
 			currentLevel

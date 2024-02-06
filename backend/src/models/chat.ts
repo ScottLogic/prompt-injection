@@ -1,8 +1,9 @@
 import {
-	ChatCompletionMessage,
+	ChatCompletionAssistantMessageParam,
 	ChatCompletionMessageParam,
 } from 'openai/resources/chat/completions';
 
+import { ChatMessage } from './chatMessage';
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
 
@@ -14,21 +15,6 @@ enum CHAT_MODELS {
 	GPT_3_5_TURBO_0613 = 'gpt-3.5-turbo-0613',
 	GPT_3_5_TURBO_16K = 'gpt-3.5-turbo-16k',
 	GPT_3_5_TURBO_16K_0613 = 'gpt-3.5-turbo-16k-0613',
-}
-
-enum CHAT_MESSAGE_TYPE {
-	BOT,
-	BOT_BLOCKED,
-	INFO,
-	USER,
-	USER_TRANSFORMED,
-	LEVEL_INFO,
-	DEFENCE_ALERTED,
-	DEFENCE_TRIGGERED,
-	SYSTEM,
-	FUNCTION_CALL,
-	ERROR_MSG,
-	RESET_LEVEL,
 }
 
 enum MODEL_CONFIG {
@@ -72,7 +58,7 @@ interface FunctionCallResponse {
 interface ToolCallResponse {
 	functionCallReply?: FunctionCallResponse;
 	chatResponse?: ChatResponse;
-	chatHistory: ChatHistoryMessage[];
+	chatHistory: ChatMessage[];
 }
 
 interface ChatAnswer {
@@ -92,8 +78,8 @@ interface ChatResponse {
 }
 
 interface ChatGptReply {
-	chatHistory: ChatHistoryMessage[];
-	completion: ChatCompletionMessage | null;
+	chatHistory: ChatMessage[];
+	completion: ChatCompletionAssistantMessageParam | null;
 	openAIErrorMessage: string | null;
 }
 
@@ -123,17 +109,9 @@ interface ChatHttpResponse {
 
 interface LevelHandlerResponse {
 	chatResponse: ChatHttpResponse;
-	chatHistory: ChatHistoryMessage[];
+	chatHistory: ChatMessage[];
 }
 
-interface ChatHistoryMessage {
-	completion: ChatCompletionMessageParam | null;
-	chatMessageType: CHAT_MESSAGE_TYPE;
-	infoMessage?: string | null;
-	transformedMessage?: TransformedChatMessage;
-}
-
-// default settings for chat model
 const defaultChatModel: ChatModel = {
 	id: CHAT_MODELS.GPT_3_5_TURBO,
 	configuration: {
@@ -154,11 +132,10 @@ export type {
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
-	ChatHistoryMessage,
-	SingleDefenceReport,
 	TransformedChatMessage,
 	FunctionCallResponse,
 	ToolCallResponse,
 	MessageTransformation,
+	SingleDefenceReport,
 };
-export { CHAT_MODELS, CHAT_MESSAGE_TYPE, MODEL_CONFIG, defaultChatModel };
+export { CHAT_MODELS, MODEL_CONFIG, defaultChatModel };
