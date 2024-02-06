@@ -8,7 +8,7 @@ import useUnitStepper from '@src/hooks/useUnitStepper';
 import { CHAT_MESSAGE_TYPE, ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-import { addMessageToChatHistory, sendMessage } from '@src/service/chatService';
+import * as chatService from '@src/service/chatService';
 
 import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';
@@ -130,7 +130,7 @@ function ChatBox({
 					message: alertMsg,
 				});
 				// asynchronously add the message to the chat history
-				void addMessageToChatHistory(
+				void chatService.addMessageToChatHistory(
 					alertMsg,
 					CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
 					currentLevel
@@ -150,7 +150,7 @@ function ChatBox({
 					message: triggerMsg,
 				});
 				// asynchronously add the message to the chat history
-				void addMessageToChatHistory(
+				void chatService.addMessageToChatHistory(
 					triggerMsg,
 					CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
 					currentLevel
@@ -169,7 +169,7 @@ function ChatBox({
 				message: successMessage,
 			});
 			// asynchronously add the message to the chat history
-			void addMessageToChatHistory(
+			void chatService.addMessageToChatHistory(
 				successMessage,
 				CHAT_MESSAGE_TYPE.LEVEL_INFO,
 				currentLevel
@@ -191,7 +191,7 @@ function ChatBox({
 			});
 
 			try {
-				const response: ChatResponse = await sendMessage(
+				const response: ChatResponse = await chatService.sendMessage(
 					chatInput,
 					currentLevel
 				);
