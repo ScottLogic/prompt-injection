@@ -7,19 +7,10 @@ import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-import {
-	addMessageToChatHistory,
-	clearChat,
-	getChatHistory,
-} from '@src/service/chatService';
-import {
-	toggleDefence,
-	configureDefence,
-	getDefences,
-	resetDefenceConfig,
-} from '@src/service/defenceService';
-import { clearEmails, getSentEmails } from '@src/service/emailService';
-import { healthCheck } from '@src/service/healthService';
+import * as chatService from '@src/service/chatService';
+import * as defenceService from '@src/service/defenceService';
+import * as emailService from '@src/service/emailService';
+import * as healthService from '@src/service/healthService';
 
 import MainBody from './MainBody';
 import MainFooter from './MainFooter';
@@ -64,7 +55,7 @@ function MainComponent({
 	// called on mount
 	useEffect(() => {
 		// perform backend health check
-		healthCheck().catch(() => {
+		healthService.healthCheck().catch(() => {
 			// addErrorMessage('Failed to reach the server. Please try again later.');
 			setMessages([
 				{
@@ -112,7 +103,10 @@ function MainComponent({
 	// for clearing single level progress
 	async function resetLevel() {
 		// reset on the backend
-		await Promise.all([clearChat(currentLevel), clearEmails(currentLevel)]);
+		await Promise.all([
+			chatService.clearChat(currentLevel),
+			emailService.clearEmails(currentLevel),
+		]);
 
 		resetFrontendState();
 		addResetMessage();
@@ -121,10 +115,10 @@ function MainComponent({
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
 		// get emails for new level from the backend
-		setEmails(await getSentEmails(newLevel));
+		setEmails(await emailService.getSentEmails(newLevel));
 
 		// get chat history for new level from the backend
-		const retrievedMessages = await getChatHistory(newLevel);
+		const retrievedMessages = await chatService.getChatHistory(newLevel);
 
 		// add welcome message for levels only
 		newLevel !== LEVEL_NAMES.SANDBOX
@@ -134,7 +128,7 @@ function MainComponent({
 		const defences =
 			newLevel === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
 		// fetch defences from backend
-		const remoteDefences = await getDefences(newLevel);
+		const remoteDefences = await defenceService.getDefences(newLevel);
 		defences.map((localDefence) => {
 			const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
 				return localDefence.id === remoteDefence.id;
@@ -164,7 +158,11 @@ function MainComponent({
 			type: CHAT_MESSAGE_TYPE.INFO,
 		});
 		// asynchronously add message to chat history
-		void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentLevel);
+		void chatService.addMessageToChatHistory(
+			message,
+			CHAT_MESSAGE_TYPE.INFO,
+			currentLevel
+		);
 	}
 
 	function addConfigUpdateToChat(defenceId: DEFENCE_ID, update: string) {
@@ -176,7 +174,10 @@ function MainComponent({
 		defenceId: DEFENCE_ID,
 		configId: string
 	) {
-		const resetDefence = await resetDefenceConfig(defenceId, configId);
+		const resetDefence = await defenceService.resetDefenceConfig(
+			defenceId,
+			configId
+		);
 		addConfigUpdateToChat(defenceId, 'reset');
 		// update state
 		const newDefences = defencesToShow.map((defence) => {
@@ -193,7 +194,11 @@ function MainComponent({
 	}
 
 	async function setDefenceToggle(defence: Defence) {
-		await toggleDefence(defence.id, defence.isActive, currentLevel);
+		await defenceService.toggleDefence(
+			defence.id,
+			defence.isActive,
+			currentLevel
+		);
 
 		const newDefenceDetails = defencesToShow.map((defenceDetail) => {
 			if (defenceDetail.id === defence.id) {
@@ -212,7 +217,11 @@ function MainComponent({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) {
-		const success = await configureDefence(defenceId, config, currentLevel);
+		const success = await defenceService.configureDefence(
+			defenceId,
+			config,
+			currentLevel
+		);
 		if (success) {
 			addConfigUpdateToChat(defenceId, 'updated');
 			// update state
@@ -248,7 +257,7 @@ function MainComponent({
 			message: `Level progress reset`,
 			type: CHAT_MESSAGE_TYPE.RESET_LEVEL,
 		};
-		void addMessageToChatHistory(
+		void chatService.addMessageToChatHistory(
 			resetMessage.message,
 			resetMessage.type,
 			currentLevel

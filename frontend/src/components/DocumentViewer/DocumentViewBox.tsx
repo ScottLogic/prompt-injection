@@ -2,7 +2,7 @@ import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer';
 import { useEffect, useState } from 'react';
 
 import { DocumentMeta } from '@src/models/document';
-import { getDocumentMetas } from '@src/service/documentService';
+import * as documentService from '@src/service/documentService';
 
 import DocumentViewBoxHeader from './DocumentViewBoxHeader';
 
@@ -17,7 +17,8 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 	// on mount get document uris
 	useEffect(() => {
 		const abortController = new AbortController();
-		void getDocumentMetas(abortController.signal)
+		void documentService
+			.getDocumentMetas(abortController.signal)
 			.then((uris) => {
 				setDocumentMetas(uris);
 			})
