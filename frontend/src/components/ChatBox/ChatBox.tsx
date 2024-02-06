@@ -79,7 +79,7 @@ function ChatBox({
 		if (transformedMessageInfo) {
 			addChatMessage({
 				message: transformedMessageInfo,
-				type: 'INFO',
+				type: 'GENERIC_INFO',
 			});
 		}
 		// add the transformed message to the chat box if it is different from the original message

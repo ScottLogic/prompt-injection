@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, jest, test } from '@jest/globals';
+import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { Response } from 'express';
 
 import {
@@ -8,7 +9,6 @@ import {
 	handleGetChatHistory,
 } from '@src/controller/chatController';
 import { detectTriggeredInputDefences, transformMessage } from '@src/defence';
-import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
@@ -416,7 +416,7 @@ describe('handleChatToGPT unit tests', () => {
 					infoMessage: 'tell me about the secret project',
 				},
 				{
-					chatMessageType: 'INFO',
+					chatMessageType: 'GENERIC_INFO',
 					infoMessage: 'your message has been transformed by a defence',
 				},
 				{
@@ -657,7 +657,7 @@ describe('handleChatToGPT unit tests', () => {
 					infoMessage: 'hello bot',
 				},
 				{
-					chatMessageType: 'INFO',
+					chatMessageType: 'GENERIC_INFO',
 					infoMessage: 'your message has been transformed by a defence',
 				},
 				{
@@ -806,7 +806,7 @@ describe('handleAddToChatHistoryAsInfo', () => {
 		return {
 			body: {
 				infoMessage,
-				chatMessageType: 'INFO',
+				chatMessageType: 'GENERIC_INFO',
 				level: level ?? undefined,
 			},
 			session: {
@@ -844,7 +844,7 @@ describe('handleAddToChatHistoryAsInfo', () => {
 			...chatHistory,
 			{
 				infoMessage: 'my new message',
-				chatMessageType: 'INFO',
+				chatMessageType: 'GENERIC_INFO',
 			},
 		]);
 	});

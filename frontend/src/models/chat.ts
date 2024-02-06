@@ -4,7 +4,7 @@ import { EmailInfo } from './email';
 type CHAT_MESSAGE_TYPE =
 	| 'BOT'
 	| 'BOT_BLOCKED'
-	| 'INFO'
+	| 'GENERIC_INFO'
 	| 'USER'
 	| 'USER_TRANSFORMED'
 	| 'LEVEL_INFO'

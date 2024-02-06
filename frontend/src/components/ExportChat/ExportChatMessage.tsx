@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
 
 function getFullPrefix(message: ChatMessage) {
 	switch (message.type) {
-		case 'INFO':
+		case 'GENERIC_INFO':
 		case 'DEFENCE_ALERTED':
 		case 'RESET_LEVEL':
 		case 'DEFENCE_TRIGGERED':
@@ -65,7 +65,7 @@ function getFullPrefix(message: ChatMessage) {
 
 function getMessageStyle(type: CHAT_MESSAGE_TYPE) {
 	switch (type) {
-		case 'INFO':
+		case 'GENERIC_INFO':
 		case 'DEFENCE_ALERTED':
 		case 'RESET_LEVEL':
 		case 'DEFENCE_TRIGGERED':

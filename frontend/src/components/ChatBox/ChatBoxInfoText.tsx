@@ -13,7 +13,7 @@ function ChatBoxInfoText({
 	type: CHAT_MESSAGE_TYPE;
 }) {
 	const messageType =
-		type === 'INFO' ||
+		type === 'GENERIC_INFO' ||
 		type === 'RESET_LEVEL' ||
 		type === 'DEFENCE_ALERTED' ||
 		type === 'DEFENCE_TRIGGERED'

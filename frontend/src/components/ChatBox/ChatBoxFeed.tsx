@@ -25,7 +25,7 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
 		>
 			{[...messages].map((message, index) => {
 				if (
-					message.type === 'INFO' ||
+					message.type === 'GENERIC_INFO' ||
 					message.type === 'DEFENCE_ALERTED' ||
 					message.type === 'DEFENCE_TRIGGERED' ||
 					message.type === 'RESET_LEVEL'

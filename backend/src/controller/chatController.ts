@@ -58,7 +58,7 @@ function createNewUserMessages(
 				infoMessage: message,
 			},
 			{
-				chatMessageType: 'INFO',
+				chatMessageType: 'GENERIC_INFO',
 				infoMessage: messageTransformation.transformedMessageInfo,
 			},
 			{

@@ -15,7 +15,7 @@ const chatMessageTypesAsInfo = [
 	'ERROR_MSG',
 	'BOT_BLOCKED',
 	'USER',
-	'INFO',
+	'GENERIC_INFO',
 ] as const;
 
 type CHAT_MESSAGE_TYPE_AS_INFO = (typeof chatMessageTypesAsInfo)[number];

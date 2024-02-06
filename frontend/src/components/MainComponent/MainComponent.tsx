@@ -161,10 +161,10 @@ function MainComponent({
 	function addInfoMessage(message: string) {
 		addChatMessage({
 			message,
-			type: 'INFO',
+			type: 'GENERIC_INFO',
 		});
 		// asynchronously add message to chat history
-		void addMessageToChatHistory(message, 'INFO', currentLevel);
+		void addMessageToChatHistory(message, 'GENERIC_INFO', currentLevel);
 	}
 
 	function addConfigUpdateToChat(defenceId: DEFENCE_ID, update: string) {
