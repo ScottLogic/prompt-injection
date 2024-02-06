@@ -49,7 +49,8 @@ function combineChatDefenceReports(
 
 function createNewUserMessages(
 	message: string,
-	messageTransformation?: MessageTransformation
+	messageTransformation?: MessageTransformation,
+	createAs: 'completion' | 'info' = 'completion'
 ): ChatMessage[] {
 	if (messageTransformation) {
 		return [
@@ -62,23 +63,31 @@ function createNewUserMessages(
 				infoMessage: messageTransformation.transformedMessageInfo,
 			},
 			{
-				completion: {
-					role: 'user',
-					content: messageTransformation.transformedMessageCombined,
-				},
+				completion:
+					createAs === 'completion'
+						? {
+								role: 'user',
+								content: messageTransformation.transformedMessageCombined,
+						  }
+						: undefined,
 				chatMessageType: 'USER_TRANSFORMED',
 				transformedMessage: messageTransformation.transformedMessage,
 			},
 		];
 	} else {
 		return [
-			{
-				completion: {
-					role: 'user',
-					content: message,
-				},
-				chatMessageType: 'USER',
-			},
+			createAs === 'completion'
+				? {
+						completion: {
+							role: 'user',
+							content: message,
+						},
+						chatMessageType: 'USER',
+				  }
+				: {
+						chatMessageType: 'USER',
+						infoMessage: message,
+				  },
 		];
 	}
 }
@@ -163,7 +172,10 @@ async function handleChatWithDefenceDetection(
 
 	// if blocked, restore original chat history and add user message to chat history without completion
 	const updatedChatHistory = combinedDefenceReport.isBlocked
-		? chatHistoryWithNewUserMessages
+		? createNewUserMessages(message, messageTransformation, 'info').reduce(
+				pushMessageToHistory,
+				chatHistory
+		  )
 		: openAiReply.chatHistory;
 
 	const updatedChatResponse: ChatHttpResponse = {

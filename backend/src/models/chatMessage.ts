@@ -46,7 +46,7 @@ type ChatUserMessageAsCompletion = {
 };
 
 type ChatUserTransformedMessage = {
-	completion: ChatCompletionUserMessageParam;
+	completion?: ChatCompletionUserMessageParam;
 	chatMessageType: 'USER_TRANSFORMED';
 	transformedMessage: TransformedChatMessage;
 };
