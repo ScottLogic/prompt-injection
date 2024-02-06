@@ -8,7 +8,7 @@ import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
-	addMessageToChatHistory,
+	addInfoMessageToChatHistory,
 	clearChat,
 	getChatHistory,
 } from '@src/service/chatService';
@@ -164,7 +164,7 @@ function MainComponent({
 			type: 'GENERIC_INFO',
 		});
 		// asynchronously add message to chat history
-		void addMessageToChatHistory(message, 'GENERIC_INFO', currentLevel);
+		void addInfoMessageToChatHistory(message, 'GENERIC_INFO', currentLevel);
 	}
 
 	function addConfigUpdateToChat(defenceId: DEFENCE_ID, update: string) {
@@ -248,7 +248,7 @@ function MainComponent({
 			message: `Level progress reset`,
 			type: 'RESET_LEVEL',
 		};
-		void addMessageToChatHistory(
+		void addInfoMessageToChatHistory(
 			resetMessage.message,
 			resetMessage.type,
 			currentLevel

@@ -5,7 +5,7 @@ import {
 	detectTriggeredInputDefences,
 	detectTriggeredOutputDefences,
 } from '@src/defence';
-import { OpenAiAddHistoryAsInfoRequest } from '@src/models/api/OpenAiAddHistoryAsInfoRequest';
+import { OpenAiAddInfoToChatHistoryRequest } from '@src/models/api/OpenAiAddInfoToChatHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
@@ -19,8 +19,8 @@ import {
 } from '@src/models/chat';
 import {
 	ChatMessage,
-	ChatMessageAsInfo,
-	chatMessageTypesAsInfo,
+	ChatInfoMessage,
+	chatInfoMessageType,
 } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -356,8 +356,8 @@ function handleGetChatHistory(req: OpenAiGetHistoryRequest, res: Response) {
 	}
 }
 
-function handleAddToChatHistoryAsInfo(
-	req: OpenAiAddHistoryAsInfoRequest,
+function handleAddInfoToChatHistory(
+	req: OpenAiAddInfoToChatHistoryRequest,
 	res: Response
 ) {
 	const infoMessage = req.body.infoMessage;
@@ -366,7 +366,7 @@ function handleAddToChatHistoryAsInfo(
 	if (
 		infoMessage &&
 		chatMessageType &&
-		chatMessageTypesAsInfo.includes(chatMessageType) &&
+		chatInfoMessageType.includes(chatMessageType) &&
 		level !== undefined &&
 		level >= LEVEL_NAMES.LEVEL_1
 	) {
@@ -375,7 +375,7 @@ function handleAddToChatHistoryAsInfo(
 			{
 				chatMessageType,
 				infoMessage,
-			} as ChatMessageAsInfo
+			} as ChatInfoMessage
 		);
 		res.send();
 	} else {
@@ -399,6 +399,6 @@ function handleClearChatHistory(req: OpenAiClearRequest, res: Response) {
 export {
 	handleChatToGPT,
 	handleGetChatHistory,
-	handleAddToChatHistoryAsInfo,
+	handleAddInfoToChatHistory as handleAddInfoToChatHistory,
 	handleClearChatHistory,
 };

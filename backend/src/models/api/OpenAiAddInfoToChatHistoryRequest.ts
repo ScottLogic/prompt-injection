@@ -1,13 +1,13 @@
 import { Request } from 'express';
 
-import { CHAT_MESSAGE_TYPE_AS_INFO } from '@src/models/chatMessage';
+import { CHAT_INFO_MESSAGE_TYPE } from '@src/models/chatMessage';
 import { LEVEL_NAMES } from '@src/models/level';
 
-export type OpenAiAddHistoryAsInfoRequest = Request<
+export type OpenAiAddInfoToChatHistoryRequest = Request<
 	never,
 	never,
 	{
-		chatMessageType?: CHAT_MESSAGE_TYPE_AS_INFO;
+		chatMessageType?: CHAT_INFO_MESSAGE_TYPE;
 		infoMessage?: string;
 		level?: LEVEL_NAMES;
 	},

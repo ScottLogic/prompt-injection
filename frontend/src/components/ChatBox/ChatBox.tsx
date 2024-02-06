@@ -8,7 +8,10 @@ import useUnitStepper from '@src/hooks/useUnitStepper';
 import { ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-import { addMessageToChatHistory, sendMessage } from '@src/service/chatService';
+import {
+	addInfoMessageToChatHistory,
+	sendMessage,
+} from '@src/service/chatService';
 
 import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';
@@ -124,7 +127,11 @@ function ChatBox({
 					message: alertMsg,
 				});
 				// asynchronously add the message to the chat history
-				void addMessageToChatHistory(alertMsg, 'DEFENCE_ALERTED', currentLevel);
+				void addInfoMessageToChatHistory(
+					alertMsg,
+					'DEFENCE_ALERTED',
+					currentLevel
+				);
 			}
 		});
 		// add triggered defences to the chat
@@ -140,7 +147,7 @@ function ChatBox({
 					message: triggerMsg,
 				});
 				// asynchronously add the message to the chat history
-				void addMessageToChatHistory(
+				void addInfoMessageToChatHistory(
 					triggerMsg,
 					'DEFENCE_TRIGGERED',
 					currentLevel
@@ -159,7 +166,11 @@ function ChatBox({
 				message: successMessage,
 			});
 			// asynchronously add the message to the chat history
-			void addMessageToChatHistory(successMessage, 'LEVEL_INFO', currentLevel);
+			void addInfoMessageToChatHistory(
+				successMessage,
+				'LEVEL_INFO',
+				currentLevel
+			);
 			// if this is the last level, show the level complete overlay
 			if (currentLevel === LEVEL_NAMES.LEVEL_3) {
 				openLevelsCompleteOverlay();

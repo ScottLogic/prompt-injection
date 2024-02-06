@@ -105,12 +105,12 @@ async function getValidModels(): Promise<string[]> {
 	return data.models;
 }
 
-async function addMessageToChatHistory(
+async function addInfoMessageToChatHistory(
 	message: string,
 	chatMessageType: CHAT_MESSAGE_TYPE,
 	level: number
 ) {
-	const response = await sendRequest(`${PATH}addHistory`, {
+	const response = await sendRequest(`${PATH}addInfoToHistory`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
@@ -130,5 +130,5 @@ export {
 	setGptModel,
 	getValidModels,
 	getChatHistory,
-	addMessageToChatHistory,
+	addInfoMessageToChatHistory,
 };

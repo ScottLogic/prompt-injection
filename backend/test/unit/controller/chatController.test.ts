@@ -1,14 +1,14 @@
 import { afterEach, describe, expect, jest, test } from '@jest/globals';
-import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
 import { Response } from 'express';
 
 import {
-	handleAddToChatHistoryAsInfo,
+	handleAddInfoToChatHistory,
 	handleChatToGPT,
 	handleClearChatHistory,
 	handleGetChatHistory,
 } from '@src/controller/chatController';
 import { detectTriggeredInputDefences, transformMessage } from '@src/defence';
+import { OpenAiAddInfoToChatHistoryRequest } from '@src/models/api/OpenAiAddInfoToChatHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
@@ -797,8 +797,8 @@ describe('handleGetChatHistory', () => {
 	});
 });
 
-describe('handleAddToChatHistoryAsInfo', () => {
-	function getAddToHistoryAsInfoRequestMock(
+describe('handleAddInfoToChatHistory', () => {
+	function getAddInfoToChatHistoryRequestMock(
 		infoMessage: string,
 		level?: LEVEL_NAMES,
 		chatHistory?: ChatMessage[]
@@ -816,7 +816,7 @@ describe('handleAddToChatHistoryAsInfo', () => {
 					},
 				],
 			},
-		} as unknown as OpenAiAddHistoryRequest;
+		} as unknown as OpenAiAddInfoToChatHistoryRequest;
 	}
 
 	const chatHistory: ChatMessage[] = [
@@ -830,15 +830,15 @@ describe('handleAddToChatHistoryAsInfo', () => {
 		},
 	];
 
-	test('GIVEN a valid message WHEN handleAddToChatHistoryAsInfo called THEN message is added to chat history', () => {
-		const req = getAddToHistoryAsInfoRequestMock(
+	test('GIVEN a valid message WHEN handleAddInfoToChatHistory called THEN message is added to chat history', () => {
+		const req = getAddInfoToChatHistoryRequestMock(
 			'my new message',
 			LEVEL_NAMES.LEVEL_1,
 			chatHistory
 		);
 		const res = responseMock();
 
-		handleAddToChatHistoryAsInfo(req, res);
+		handleAddInfoToChatHistory(req, res);
 
 		expect(req.session.levelState[0].chatHistory).toEqual([
 			...chatHistory,
@@ -849,15 +849,15 @@ describe('handleAddToChatHistoryAsInfo', () => {
 		]);
 	});
 
-	test('GIVEN invalid level WHEN handleAddToChatHistoryAsInfo called THEN returns 400', () => {
-		const req = getAddToHistoryAsInfoRequestMock(
+	test('GIVEN invalid level WHEN handleAddInfoToChatHistory called THEN returns 400', () => {
+		const req = getAddInfoToChatHistoryRequestMock(
 			'my new message',
 			undefined,
 			chatHistory
 		);
 		const res = responseMock();
 
-		handleAddToChatHistoryAsInfo(req, res);
+		handleAddInfoToChatHistory(req, res);
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(req.session.levelState[0].chatHistory).toEqual(chatHistory);
