@@ -8,9 +8,7 @@ import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
-import * as chatService from './service/chatService';
-import * as levelService from './service/levelService';
-import * as systemRoleService from './service/systemRoleService';
+import { chatService, levelService, systemRoleService } from './service';
 
 import './App.css';
 import './Theme.css';

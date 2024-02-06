@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
-import * as chatService from '@src/service/chatService';
+import { chatService } from '@src/service';
 
 import './ModelSelection.css';
 

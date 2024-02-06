@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
-import * as chatService from '@src/service/chatService';
+import { chatService } from '@src/service';
 
 import ModelConfigurationSlider from './ModelConfigurationSlider';
 

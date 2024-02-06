@@ -2,7 +2,7 @@ import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer';
 import { useEffect, useState } from 'react';
 
 import { DocumentMeta } from '@src/models/document';
-import * as documentService from '@src/service/documentService';
+import { documentService } from '@src/service';
 
 import DocumentViewBoxHeader from './DocumentViewBoxHeader';
 

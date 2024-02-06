@@ -8,7 +8,7 @@ import useUnitStepper from '@src/hooks/useUnitStepper';
 import { CHAT_MESSAGE_TYPE, ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-import * as chatService from '@src/service/chatService';
+import { chatService } from '@src/service';
 
 import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';

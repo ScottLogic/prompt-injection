@@ -7,10 +7,12 @@ import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-import * as chatService from '@src/service/chatService';
-import * as defenceService from '@src/service/defenceService';
-import * as emailService from '@src/service/emailService';
-import * as healthService from '@src/service/healthService';
+import {
+	chatService,
+	defenceService,
+	emailService,
+	healthService,
+} from '@src/service';
 
 import MainBody from './MainBody';
 import MainFooter from './MainFooter';
