@@ -1,6 +1,5 @@
 import http from 'k6/http';
-import { expect } from "https://jslib.k6.io/k6chaijs/4.3.4.3/index.js";
-import { sleep } from 'k6';
+import { check, sleep } from 'k6';
 
 export const options = {
   vus: 3, // Key for Smoke test. Keep it at 2, 3, max 5 VUs
@@ -14,6 +13,8 @@ export default () => {
   let response = http.post(url, JSON.stringify(data), {
     headers: { 'Content-Type': 'application/json' },
   });
-  expect(response.status).to.equal(200);
+  check(response, {
+    'response code was 200': (response) => response.status == 200,
+  });
   sleep(1);
 };
