@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
-import { setGptModel, getGptModel } from '@src/service/chatService';
+import { chatService } from '@src/service';
 
 import './ModelSelection.css';
 
@@ -29,7 +29,7 @@ function ModelSelection({
 			const currentSelectedModel = selectedModel;
 			console.log(`selected model: ${currentSelectedModel}`);
 			setIsSettingModel(true);
-			const modelUpdated = await setGptModel(currentSelectedModel);
+			const modelUpdated = await chatService.setGptModel(currentSelectedModel);
 			setIsSettingModel(false);
 			if (modelUpdated) {
 				setModelInUse(currentSelectedModel);
@@ -43,7 +43,8 @@ function ModelSelection({
 
 	// get the model
 	useEffect(() => {
-		getGptModel()
+		chatService
+			.getGptModel()
 			.then((model) => {
 				setModelInUse(model.id);
 				// default the dropdown selection to the model in use
