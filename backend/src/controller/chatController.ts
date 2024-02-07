@@ -5,20 +5,23 @@ import {
 	detectTriggeredInputDefences,
 	detectTriggeredOutputDefences,
 } from '@src/defence';
-import { OpenAiAddHistoryRequest } from '@src/models/api/OpenAiAddHistoryRequest';
+import { OpenAiAddInfoToChatHistoryRequest } from '@src/models/api/OpenAiAddInfoToChatHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
-	CHAT_MESSAGE_TYPE,
 	ChatDefenceReport,
-	ChatHistoryMessage,
 	ChatHttpResponse,
 	ChatModel,
 	LevelHandlerResponse,
 	MessageTransformation,
 	defaultChatModel,
 } from '@src/models/chat';
+import {
+	ChatMessage,
+	ChatInfoMessage,
+	chatInfoMessageType,
+} from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -46,38 +49,45 @@ function combineChatDefenceReports(
 
 function createNewUserMessages(
 	message: string,
-	messageTransformation?: MessageTransformation
-): ChatHistoryMessage[] {
+	messageTransformation?: MessageTransformation,
+	createAs: 'completion' | 'info' = 'completion'
+): ChatMessage[] {
 	if (messageTransformation) {
 		return [
 			{
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				chatMessageType: 'USER',
 				infoMessage: message,
 			},
 			{
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.INFO,
+				chatMessageType: 'GENERIC_INFO',
 				infoMessage: messageTransformation.transformedMessageInfo,
 			},
 			{
-				completion: {
-					role: 'user',
-					content: messageTransformation.transformedMessageCombined,
-				},
-				chatMessageType: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+				completion:
+					createAs === 'completion'
+						? {
+								role: 'user',
+								content: messageTransformation.transformedMessageCombined,
+						  }
+						: undefined,
+				chatMessageType: 'USER_TRANSFORMED',
 				transformedMessage: messageTransformation.transformedMessage,
 			},
 		];
 	} else {
 		return [
-			{
-				completion: {
-					role: 'user',
-					content: message,
-				},
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
-			},
+			createAs === 'completion'
+				? {
+						completion: {
+							role: 'user',
+							content: message,
+						},
+						chatMessageType: 'USER',
+				  }
+				: {
+						chatMessageType: 'USER',
+						infoMessage: message,
+				  },
 		];
 	}
 }
@@ -87,7 +97,7 @@ async function handleChatWithoutDefenceDetection(
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel,
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
 	const updatedChatHistory = createNewUserMessages(message).reduce(
@@ -122,7 +132,7 @@ async function handleChatWithDefenceDetection(
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel,
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
 	const messageTransformation = transformMessage(message, defences);
@@ -162,11 +172,10 @@ async function handleChatWithDefenceDetection(
 
 	// if blocked, restore original chat history and add user message to chat history without completion
 	const updatedChatHistory = combinedDefenceReport.isBlocked
-		? pushMessageToHistory(chatHistory, {
-				completion: null,
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
-				infoMessage: message,
-		  })
+		? createNewUserMessages(message, messageTransformation, 'info').reduce(
+				pushMessageToHistory,
+				chatHistory
+		  )
 		: openAiReply.chatHistory;
 
 	const updatedChatResponse: ChatHttpResponse = {
@@ -284,9 +293,10 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	if (updatedChatResponse.defenceReport.isBlocked) {
 		// chatReponse.reply is empty if blocked
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
-			completion: null,
-			chatMessageType: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-			infoMessage: updatedChatResponse.defenceReport.blockedReason,
+			chatMessageType: 'BOT_BLOCKED',
+			infoMessage:
+				updatedChatResponse.defenceReport.blockedReason ??
+				'block reason unknown',
 		});
 	} else if (updatedChatResponse.openAIErrorMessage) {
 		const errorMsg = simplifyOpenAIErrorMessage(
@@ -307,13 +317,12 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		handleChatError(res, updatedChatResponse, errorMsg, 500);
 		return;
 	} else {
-		// add bot message to chat history
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 			completion: {
 				role: 'assistant',
 				content: updatedChatResponse.reply,
 			},
-			chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+			chatMessageType: 'BOT',
 		});
 	}
 
@@ -339,13 +348,12 @@ function simplifyOpenAIErrorMessage(openAIErrorMessage: string) {
 }
 
 function addErrorToChatHistory(
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	errorMessage: string
-): ChatHistoryMessage[] {
+): ChatMessage[] {
 	console.error(errorMessage);
 	return pushMessageToHistory(chatHistory, {
-		completion: null,
-		chatMessageType: CHAT_MESSAGE_TYPE.ERROR_MSG,
+		chatMessageType: 'ERROR_MSG',
 		infoMessage: errorMessage,
 	});
 }
@@ -360,23 +368,24 @@ function handleGetChatHistory(req: OpenAiGetHistoryRequest, res: Response) {
 	}
 }
 
-function handleAddToChatHistory(req: OpenAiAddHistoryRequest, res: Response) {
-	const infoMessage = req.body.message;
-	const chatMessageType = req.body.chatMessageType;
-	const level = req.body.level;
+function handleAddInfoToChatHistory(
+	req: OpenAiAddInfoToChatHistoryRequest,
+	res: Response
+) {
+	const { infoMessage, chatMessageType, level } = req.body;
 	if (
 		infoMessage &&
 		chatMessageType &&
+		chatInfoMessageType.includes(chatMessageType) &&
 		level !== undefined &&
 		level >= LEVEL_NAMES.LEVEL_1
 	) {
 		req.session.levelState[level].chatHistory = pushMessageToHistory(
 			req.session.levelState[level].chatHistory,
 			{
-				completion: null,
 				chatMessageType,
 				infoMessage,
-			}
+			} as ChatInfoMessage
 		);
 		res.send();
 	} else {
@@ -400,6 +409,6 @@ function handleClearChatHistory(req: OpenAiClearRequest, res: Response) {
 export {
 	handleChatToGPT,
 	handleGetChatHistory,
-	handleAddToChatHistory,
+	handleAddInfoToChatHistory as handleAddInfoToChatHistory,
 	handleClearChatHistory,
 };

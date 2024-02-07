@@ -4,7 +4,8 @@ import { Response } from 'express';
 import { handleConfigureDefence } from '@src/controller/defenceController';
 import { configureDefence } from '@src/defence';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
-import { ChatHistoryMessage, ChatModel } from '@src/models/chat';
+import { ChatModel } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -17,7 +18,7 @@ declare module 'express-session' {
 	}
 	interface LevelState {
 		level: LEVEL_NAMES;
-		chatHistory: ChatHistoryMessage[];
+		chatHistory: ChatMessage[];
 		defences: Defence[];
 		sentEmails: EmailInfo[];
 	}
@@ -52,7 +53,7 @@ describe('handleConfigureDefence', () => {
 				levelState: [
 					{
 						level: LEVEL_NAMES.LEVEL_1,
-						chatHistory: [] as ChatHistoryMessage[],
+						chatHistory: [] as ChatMessage[],
 						sentEmails: [] as EmailInfo[],
 						defences: [] as Defence[],
 					},

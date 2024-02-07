@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chat';
 
 import ChatBoxInfoText from './ChatBoxInfoText';
 import ChatBoxMessage from './ChatBoxMessage/ChatBoxMessage';
@@ -25,10 +25,10 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
 		>
 			{[...messages].map((message, index) => {
 				if (
-					message.type === CHAT_MESSAGE_TYPE.INFO ||
-					message.type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED ||
-					message.type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED ||
-					message.type === CHAT_MESSAGE_TYPE.RESET_LEVEL
+					message.type === 'GENERIC_INFO' ||
+					message.type === 'DEFENCE_ALERTED' ||
+					message.type === 'DEFENCE_TRIGGERED' ||
+					message.type === 'RESET_LEVEL'
 				) {
 					return (
 						<ChatBoxInfoText
