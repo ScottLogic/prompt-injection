@@ -40,7 +40,8 @@
 	outline-color: var(--main-text-colour);
 }
 
-.view-documents-nav .button-container button[aria-disabled='true']:hover {
+.view-documents-nav
+	.button-container
+	button[aria-disabled='true']:focus-visible {
 	background-color: var(--action-button-disabled-background-colour);
-	cursor: not-allowed;
 }
