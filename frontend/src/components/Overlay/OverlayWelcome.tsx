@@ -16,10 +16,7 @@ function OverlayWelcome({
 	closeOverlay: () => void;
 }) {
 	return (
-		<Overlay 
-			closeOverlay={closeOverlay}
-			heading="Getting Started"
-		>
+		<Overlay closeOverlay={closeOverlay} heading="Getting Started">
 			<div className="welcome">
 				<div className="project-icon">
 					<ProjectIconDark />

@@ -45,33 +45,23 @@ function HandbookOverlay({
 	return (
 		<div className="handbook">
 			<OverlayHeader closeOverlay={closeOverlay} heading="Handbook" />
-			{/* <header>
-				<h1>Handbook</h1>
-				<button
-					className="themed-button close-button"
-					onClick={closeOverlay}
+			<div className="handbook-overlay">
+				<HandbookSpine
+					currentLevel={currentLevel}
+					currentPage={selectedPage}
+					selectPage={setSelectedPage}
+				/>
+				<div
+					id={`handbook-page-${selectedPage}`}
+					className="content"
+					role="tabpanel"
+					ref={handBookPageContainer}
+					tabIndex={isOverflow ? 0 : undefined}
+					aria-labelledby={`handbook-tab-${selectedPage}`}
 				>
-					close<span className="overlay-close-icon"aria-hidden>X</span>
-				</button>
-			</header> */}
-		<div className="handbook-overlay">
-			
-			<HandbookSpine
-				currentLevel={currentLevel}
-				currentPage={selectedPage}
-				selectPage={setSelectedPage}
-			/>
-			<div
-				id={`handbook-page-${selectedPage}`}
-				className="content"
-				role="tabpanel"
-				ref={handBookPageContainer}
-				tabIndex={isOverflow ? 0 : undefined}
-				aria-labelledby={`handbook-tab-${selectedPage}`}
-			>
-				{pageContent}
+					{pageContent}
+				</div>
 			</div>
-		</div>
 		</div>
 	);
 }

@@ -3,8 +3,6 @@ import LevelsCompleteButtons from '@src/components/ThemedButtons/LevelsCompleteB
 import MissionDialogue from './MissionDialogue';
 import Overlay from './Overlay';
 
-import './LevelsComplete.css';
-
 function LevelsComplete({
 	goToSandbox,
 	closeOverlay,
@@ -22,27 +20,24 @@ function LevelsComplete({
 	];
 
 	return (
-		<Overlay closeOverlay={closeOverlay}>
-			<article className="levels-complete-overlay">
-				<h1>Congratulations!</h1>
-				<div className="content">
-					<MissionDialogue dialogueLines={managerDialogue} />
-					<hr />
-					<p>
-						You&apos;ve completed the story mode! You can stay here and continue
-						to play with the levels, or you can move onto Sandbox mode where you
-						can configure your own defence set up and try to break it.
-					</p>
-					<p>
-						You can always switch modes by clicking on the button in the left
-						panel.
-					</p>
-					<LevelsCompleteButtons
-						closeOverlay={closeOverlay}
-						goToSandbox={goToSandbox}
-					/>
-				</div>
-			</article>
+		<Overlay closeOverlay={closeOverlay} heading="Congratulations!">
+			<div className="content">
+				<MissionDialogue dialogueLines={managerDialogue} />
+				<hr />
+				<p>
+					You&apos;ve completed the story mode! You can stay here and continue
+					to play with the levels, or you can move onto Sandbox mode where you
+					can configure your own defence set up and try to break it.
+				</p>
+				<p>
+					You can always switch modes by clicking on the button in the left
+					panel.
+				</p>
+				<LevelsCompleteButtons
+					closeOverlay={closeOverlay}
+					goToSandbox={goToSandbox}
+				/>
+			</div>
 		</Overlay>
 	);
 }

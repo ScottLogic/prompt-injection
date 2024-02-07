@@ -14,8 +14,7 @@ function MissionInformation({
 	currentLevel: LEVEL_NAMES;
 	closeOverlay: () => void;
 }) {
-
-	const heading = `${LEVELS[currentLevel].name} Mission Information`
+	const heading = `${LEVELS[currentLevel].name} Mission Information`;
 
 	return (
 		<Overlay closeOverlay={closeOverlay} heading={heading}>

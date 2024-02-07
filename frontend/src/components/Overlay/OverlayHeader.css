@@ -1,14 +1,14 @@
 .overlay-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
 	position: fixed;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	width: 100%;
 	height: 5rem;
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
+	border-top-left-radius: 0.625rem;
 	border-top-right-radius: 0.625rem;
-	border-top-left-radius: 0.625rem;    
 	background-color: var(--overlay-header-background-colour);
 }
 
@@ -16,37 +16,37 @@
 	padding: 0 2rem;
 }
 
-.overlay-close-button {
+.overlay-header button {
 	display: flex;
-	align-items: center;
 	gap: 0.5rem;
+	align-items: center;
+	margin-right: 1rem;
 	padding: 0.5rem;
 	border: 0.0625rem solid var(--main-text-colour-inverted);
 	border-radius: 0.5rem;
 	background-color: inherit;
 	color: var(--main-text-colour-inverted);
 	font-weight: bold;
-    margin-right: 1rem;
-    font-size: 1rem;
+	font-size: 1rem;
 }
 
-.overlay-close-button:hover {
+.overlay-header button:hover {
 	background-color: var(--overlay-tab-colour);
 }
 
-.overlay-close-button:focus-visible {
+.overlay-header button:focus-visible {
 	background-color: var(--overlay-tab-colour);
 	outline-color: var(--main-text-colour);
 }
 
 .overlay-close-icon {
 	display: flex;
-	align-items: center;
 	justify-content: center;
-	border: 0.125rem solid var(--main-text-colour-inverted);
-	color: var(--main-text-colour-inverted);
+	align-items: center;
 	width: 1.5rem;
 	height: 1.5rem;
+	border: 0.125rem solid var(--main-text-colour-inverted);
 	border-radius: 50%;
+	color: var(--main-text-colour-inverted);
 	font-weight: bold;
 }

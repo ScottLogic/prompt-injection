@@ -7,9 +7,7 @@ import { getDocumentMetas } from '@src/service/documentService';
 
 import DocumentViewBoxNav from './DocumentViewBoxNav';
 
-
 import './DocumentViewBox.css';
-
 
 const emptyList: DocumentMeta[] = [];
 
@@ -36,37 +34,37 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 		<div className="document-popup-inner">
 			<OverlayHeader closeOverlay={closeOverlay} heading="View Documents" />
 			<div className="view-documents-main">
-			<DocumentViewBoxNav
-				documentIndex={documentIndex}
-				documentName={documentMetas[documentIndex]?.filename ?? ''}
-				numberOfDocuments={documentMetas.length}
-				onPrevious={() => {
-					if (documentIndex > 0) {
-						setDocumentIndex(documentIndex - 1);
-					}
-				}}
-				onNext={() => {
-					if (documentIndex < documentMetas.length - 1) {
-						setDocumentIndex(documentIndex + 1);
-					}
-				}}
-			/>
-			<div
-				className="document-viewer-container"
-				// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-				tabIndex={0}
-			>
-				<DocViewer
-					documents={documentMetas}
-					activeDocument={documentMetas[documentIndex]}
-					pluginRenderers={DocViewerRenderers}
-					config={{
-						header: {
-							disableHeader: true,
-						},
+				<DocumentViewBoxNav
+					documentIndex={documentIndex}
+					documentName={documentMetas[documentIndex]?.filename ?? ''}
+					numberOfDocuments={documentMetas.length}
+					onPrevious={() => {
+						if (documentIndex > 0) {
+							setDocumentIndex(documentIndex - 1);
+						}
+					}}
+					onNext={() => {
+						if (documentIndex < documentMetas.length - 1) {
+							setDocumentIndex(documentIndex + 1);
+						}
 					}}
 				/>
-			</div>
+				<div
+					className="document-viewer-container"
+					// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+					tabIndex={0}
+				>
+					<DocViewer
+						documents={documentMetas}
+						activeDocument={documentMetas[documentIndex]}
+						pluginRenderers={DocViewerRenderers}
+						config={{
+							header: {
+								disableHeader: true,
+							},
+						}}
+					/>
+				</div>
 			</div>
 		</div>
 	);

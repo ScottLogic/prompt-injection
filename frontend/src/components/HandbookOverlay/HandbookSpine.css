@@ -3,8 +3,8 @@
 	flex-direction: column;
 	min-width: 6rem;
 	max-width: 6rem;
-	padding-top: 3rem;
 	margin-top: 3.125rem;
+	padding-top: 3rem;
 	border-right: 0.0625rem solid var(--handbook-spine-separator-colour);
 	background-color: var(--overlay-header-background-colour);
 	font-size: 1.125rem;
@@ -13,16 +13,17 @@
 .handbook-spine button {
 	padding: 0.75rem 1.31rem;
 	border: none;
-	font-size: 1rem;
+
 	/* remove default button styling */
 	background: none;
+	font-size: 1rem;
 	text-align: left;
 }
 
 .handbook-spine button:focus-visible {
-	outline-offset: -0.25rem;
 	background-color: var(--overlay-tab-colour);
 	outline-color: var(--main-text-colour);
+	outline-offset: -0.25rem;
 }
 
 .handbook-spine button:hover {

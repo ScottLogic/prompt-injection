@@ -5,13 +5,13 @@
 }
 
 .document-popup-inner header .overlay-close-button {
-	border: 0.0625rem solid var(--main-text-colour);
+	border-color: var(--main-text-colour);
 	color: var(--main-text-colour);
 }
 
 .document-popup-inner header .overlay-close-icon {
-	color: var(--main-text-colour);
 	border-color: var(--main-text-colour);
+	color: var(--main-text-colour);
 }
 
 .document-popup-inner header .overlay-close-button:hover {
@@ -32,11 +32,11 @@
 	display: flex;
 	flex-direction: column;
 	box-sizing: border-box;
-	padding: 2rem;
+	height: 75vh;
 	margin-top: 5rem;
+	padding: 2rem;
 	border: 0.1875rem solid var(--main-border-colour);
 	background: var(--main-background);
-	height: 75vh;
 	aspect-ratio: 7/8;
 }
 

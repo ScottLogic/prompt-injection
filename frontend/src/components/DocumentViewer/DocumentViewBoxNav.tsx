@@ -22,7 +22,7 @@ function DocumentViewBoxNav({
 	return (
 		<div className="view-documents-nav">
 			<div className="nav">
-				<nav  className="button-container">
+				<nav className="button-container">
 					<ThemedButton onClick={onPrevious} ariaDisabled={documentIndex <= 0}>
 						<i aria-hidden>◄</i>&nbsp;previous document
 					</ThemedButton>
@@ -41,4 +41,4 @@ function DocumentViewBoxNav({
 }
 
 export default DocumentViewBoxNav;
-export type { DocumentViewBoxNavProps};
+export type { DocumentViewBoxNavProps };
