@@ -40,13 +40,6 @@
 }
 
 .overlay-close-icon {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 1.5rem;
-	height: 1.5rem;
-	border: 0.125rem solid var(--main-text-colour-inverted);
-	border-radius: 50%;
-	color: var(--main-text-colour-inverted);
-	font-weight: bold;
+	width: 1.2rem;
+	height: 1.2rem;
 }

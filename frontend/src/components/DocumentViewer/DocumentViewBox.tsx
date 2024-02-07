@@ -32,7 +32,11 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 
 	return (
 		<div className="document-popup-inner">
-			<OverlayHeader closeOverlay={closeOverlay} heading="View Documents" />
+			<OverlayHeader
+				closeOverlay={closeOverlay}
+				heading="View Documents"
+				iconColor="#FFF"
+			/>
 			<div className="view-documents-main">
 				<DocumentViewBoxNav
 					documentIndex={documentIndex}
