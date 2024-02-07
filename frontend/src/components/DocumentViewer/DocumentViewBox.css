@@ -20,6 +20,7 @@
 
 .document-popup-inner header .overlay-close-button:focus-visible {
 	background-color: var(--action-button-background-colour-hover);
+	outline-color: var(--main-text-colour);
 }
 
 .document-popup-inner {

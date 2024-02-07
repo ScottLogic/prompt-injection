@@ -3,11 +3,6 @@
 	border-radius: 0;
 }
 
-/* .handbook header .overlay-close-button:focus-visible {
-	background-color: var(--overlay-tab-colour);
-	outline-color: var(--main-text-colour);
-} */
-
 .handbook-overlay {
 	display: flex;
 	flex-direction: row;

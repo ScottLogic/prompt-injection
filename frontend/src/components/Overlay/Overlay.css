@@ -22,50 +22,9 @@
 	outline-color: var(--main-text-colour);
 }
 
-/* .overlay header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 1rem 2rem;
-	position: fixed;
-	width: 100%;
-	height: 5rem;
-	background-color: var(--overlay-header-background-colour);
-	border-top-right-radius: 0.625rem;
-	border-top-left-radius: 0.625rem;
-} */
-
 .overlay p {
 	font-size: 1.25rem;
 }
-
-/* .close-button {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	padding: 0.5rem;
-	border: 0.0625rem solid var(--main-text-colour-inverted);
-	border-radius: 0.5rem;
-	background-color: inherit;
-	color: var(--main-text-colour-inverted);
-	font-weight: bold;
-} */
-
-/* .close-button:hover {
-	background-color: var(--overlay-tab-colour);
-} */
-
-/* .overlay-close-icon {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border: 0.125rem solid var(--main-text-colour-inverted);
-	color: var(--main-text-colour-inverted);
-	width: 1.5rem;
-	height: 1.5rem;
-	border-radius: 50%;
-	font-weight: bold;
-} */
 
 .overlay-content {
 	display: flex;
