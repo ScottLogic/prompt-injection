@@ -1,13 +1,10 @@
 import { RetrievalQAChain, LLMChain } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { OpenAI } from 'langchain/llms/openai';
 import { PromptTemplate } from 'langchain/prompts';
-import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
-import { getCommonDocuments, getLevelDocuments } from './document';
+import { getDocumentVectors } from './document';
 import { CHAT_MODELS, ChatAnswer } from './models/chat';
-import { DocumentsVector } from './models/document';
 import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
 import { LEVEL_NAMES } from './models/level';
 import { getOpenAIKey, getValidOpenAIModelsList } from './openai';
@@ -17,17 +14,6 @@ import {
 	qaContextTemplate,
 	qAPrompt,
 } from './promptTemplates';
-
-// store vectorised documents for each level as array
-const vectorisedDocuments = (() => {
-	let docs: DocumentsVector[] = [];
-	return {
-		get: () => docs,
-		set: (newDocs: DocumentsVector[]) => {
-			docs = newDocs;
-		},
-	};
-})();
 
 // choose between the provided preprompt and the default preprompt and prepend it to the main prompt and return the PromptTemplate
 function makePromptTemplate(
@@ -45,36 +31,6 @@ function makePromptTemplate(
 	return PromptTemplate.fromTemplate(fullPrompt);
 }
 
-// create and store the document vectors for each level
-async function initDocumentVectors() {
-	const docVectors: DocumentsVector[] = [];
-	const commonDocuments = await getCommonDocuments();
-
-	const levelValues = Object.values(LEVEL_NAMES)
-		.filter((value) => !isNaN(Number(value)))
-		.map((value) => Number(value));
-
-	for (const level of levelValues) {
-		const allDocuments = commonDocuments.concat(await getLevelDocuments(level));
-
-		// embed and store the splits - will use env variable for API key
-		const embeddings = new OpenAIEmbeddings();
-		const docVector = await MemoryVectorStore.fromDocuments(
-			allDocuments,
-			embeddings
-		);
-		// store the document vectors for the level
-		docVectors.push({
-			level,
-			docVector,
-		});
-	}
-	vectorisedDocuments.set(docVectors);
-	console.debug(
-		`Initialised document vectors for each level. count=${docVectors.length}`
-	);
-}
-
 function getChatModel() {
 	return getValidOpenAIModelsList().includes(CHAT_MODELS.GPT_4)
 		? CHAT_MODELS.GPT_4
@@ -83,7 +39,7 @@ function getChatModel() {
 
 function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 	const openAIApiKey = getOpenAIKey();
-	const documentVectors = vectorisedDocuments.get()[level].docVector;
+	const documentVectors = getDocumentVectors()[level].docVector;
 	// use gpt-4 if avaliable to apiKey
 	const modelName = getChatModel();
 
@@ -195,12 +151,10 @@ async function queryPromptEvaluationModel(
 
 function formatEvaluationOutput(response: string) {
 	// remove all non-alphanumeric characters
-	try {
-		const cleanResponse = response.replace(/\W/g, '').toLowerCase();
+	const cleanResponse = response.replace(/\W/g, '').toLowerCase();
+	if (cleanResponse === 'yes' || cleanResponse === 'no') {
 		return { isMalicious: cleanResponse === 'yes' };
-	} catch (error) {
-		// in case the model does not respond in the format we have asked
-		console.error(error);
+	} else {
 		console.debug(
 			`Did not get a valid response from the prompt evaluation model. Original response: ${response}`
 		);
@@ -208,4 +162,4 @@ function formatEvaluationOutput(response: string) {
 	}
 }
 
-export { queryDocuments, queryPromptEvaluationModel, initDocumentVectors };
+export { queryDocuments, queryPromptEvaluationModel };

@@ -1,14 +1,14 @@
 import { expect, jest, test, describe } from '@jest/globals';
 
 import { defaultDefences } from '@src/defaultDefences';
-import { CHAT_MODELS, ChatHistoryMessage, ChatModel } from '@src/models/chat';
+import { CHAT_MODELS, ChatModel } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { chatGptSendMessage } from '@src/openai';
 
 const mockCreateChatCompletion =
 	jest.fn<() => Promise<ReturnType<typeof chatResponseAssistant>>>();
 
-// Mock the OpenAI api class
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
 		chat: {
@@ -50,7 +50,7 @@ function chatResponseAssistant(content: string) {
 describe('OpenAI Integration Tests', () => {
 	test('GIVEN OpenAI initialised WHEN sending message THEN reply is returned', async () => {
 		const message = 'Hello';
-		const initChatHistory: ChatHistoryMessage[] = [];
+		const initChatHistory: ChatMessage[] = [];
 		const defences: Defence[] = defaultDefences;
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
@@ -62,10 +62,8 @@ describe('OpenAI Integration Tests', () => {
 			},
 		};
 
-		// Mock the createChatCompletion function
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
 
-		// send the message
 		const reply = await chatGptSendMessage(
 			initChatHistory,
 			defences,
@@ -77,7 +75,6 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply.chatResponse.completion).toBeDefined();
 		expect(reply.chatResponse.completion?.content).toBe('Hi');
 
-		// restore the mock
 		mockCreateChatCompletion.mockRestore();
 	});
 });

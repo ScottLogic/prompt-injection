@@ -1,6 +1,6 @@
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { Defence, DefenceConfigItem } from '@src/models/defence';
-import { validateDefence } from '@src/service/defenceService';
+import { defenceService } from '@src/service';
 
 import DefenceConfigurationInput from './DefenceConfigurationInput';
 
@@ -27,7 +27,7 @@ function DefenceConfiguration({
 	const supportText = `reset ${config.name} to default`;
 
 	function validateNewInput(value: string) {
-		return validateDefence(defence.id, config.id, value);
+		return defenceService.validateDefence(defence.id, config.id, value);
 	}
 
 	return (

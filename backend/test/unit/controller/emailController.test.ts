@@ -7,7 +7,8 @@ import {
 } from '@src/controller/emailController';
 import { EmailClearRequest } from '@src/models/api/EmailClearRequest';
 import { EmailGetRequest } from '@src/models/api/EmailGetRequest';
-import { ChatHistoryMessage, ChatModel } from '@src/models/chat';
+import { ChatModel } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
@@ -20,7 +21,7 @@ declare module 'express-session' {
 	}
 	interface LevelState {
 		level: LEVEL_NAMES;
-		chatHistory: ChatHistoryMessage[];
+		chatHistory: ChatMessage[];
 		defences: Defence[];
 		sentEmails: EmailInfo[];
 	}

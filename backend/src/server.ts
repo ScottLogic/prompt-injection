@@ -1,7 +1,7 @@
 import { env, exit } from 'node:process';
 
 import app from './app';
-import { initDocumentVectors } from './langchain';
+import { initDocumentVectors } from './document';
 import { getValidModelsFromOpenAI } from './openai';
 // by default runs on port 3001
 const port = env.PORT ?? String(3001);

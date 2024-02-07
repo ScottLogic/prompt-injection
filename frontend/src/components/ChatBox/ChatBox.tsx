@@ -5,10 +5,10 @@ import ExportPDFLink from '@src/components/ExportChat/ExportPDFLink';
 import '@src/components/ThemedButtons/ChatButton.css';
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
 import useUnitStepper from '@src/hooks/useUnitStepper';
-import { CHAT_MESSAGE_TYPE, ChatMessage, ChatResponse } from '@src/models/chat';
+import { ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-import { addMessageToChatHistory, sendMessage } from '@src/service/chatService';
+import { chatService } from '@src/service';
 
 import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';
@@ -44,18 +44,14 @@ function ChatBox({
 	} = useUnitStepper();
 
 	function recallSentMessageFromHistory(direction: 'backward' | 'forward') {
-		const sentMessages = messages.filter(
-			(message) => message.type === CHAT_MESSAGE_TYPE.USER
-		);
+		const sentMessages = messages.filter((message) => message.type === 'USER');
 
 		if (direction === 'backward') recallEarlierMessage();
 		else recallLaterMessage(sentMessages.length);
 	}
 
 	useEffect(() => {
-		const sentMessages = messages.filter(
-			(message) => message.type === CHAT_MESSAGE_TYPE.USER
-		);
+		const sentMessages = messages.filter((message) => message.type === 'USER');
 
 		// recall the message from the history. If at current time, clear the chatbox
 		const index = sentMessages.length - recalledMessageReverseIndex;
@@ -73,9 +69,7 @@ function ChatBox({
 
 	function isLevelComplete() {
 		// level is complete if the chat contains a LEVEL_INFO message
-		return messages.some(
-			(message) => message.type === CHAT_MESSAGE_TYPE.LEVEL_INFO
-		);
+		return messages.some((message) => message.type === 'LEVEL_INFO');
 	}
 
 	function processChatResponse(response: ChatResponse) {
@@ -85,7 +79,7 @@ function ChatBox({
 		if (transformedMessageInfo) {
 			addChatMessage({
 				message: transformedMessageInfo,
-				type: CHAT_MESSAGE_TYPE.INFO,
+				type: 'GENERIC_INFO',
 			});
 		}
 		// add the transformed message to the chat box if it is different from the original message
@@ -96,24 +90,24 @@ function ChatBox({
 					transformedMessage.message +
 					transformedMessage.postMessage,
 				transformedMessage,
-				type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
+				type: 'USER_TRANSFORMED',
 			});
 		}
 		if (response.isError) {
 			addChatMessage({
 				message: response.reply,
-				type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+				type: 'ERROR_MSG',
 			});
 		}
 		// add it to the list of messages
 		else if (response.defenceReport.isBlocked) {
 			addChatMessage({
-				type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
+				type: 'BOT_BLOCKED',
 				message: response.defenceReport.blockedReason,
 			});
 		} else {
 			addChatMessage({
-				type: CHAT_MESSAGE_TYPE.BOT,
+				type: 'BOT',
 				message: response.reply,
 			});
 		}
@@ -126,13 +120,13 @@ function ChatBox({
 			if (defenceName) {
 				const alertMsg = `your last message would have triggered the ${defenceName} defence`;
 				addChatMessage({
-					type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
+					type: 'DEFENCE_ALERTED',
 					message: alertMsg,
 				});
 				// asynchronously add the message to the chat history
-				void addMessageToChatHistory(
+				void chatService.addInfoMessageToChatHistory(
 					alertMsg,
-					CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
+					'DEFENCE_ALERTED',
 					currentLevel
 				);
 			}
@@ -146,13 +140,13 @@ function ChatBox({
 			if (defenceName) {
 				const triggerMsg = `${defenceName} defence triggered`;
 				addChatMessage({
-					type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
+					type: 'DEFENCE_TRIGGERED',
 					message: triggerMsg,
 				});
 				// asynchronously add the message to the chat history
-				void addMessageToChatHistory(
+				void chatService.addInfoMessageToChatHistory(
 					triggerMsg,
-					CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
+					'DEFENCE_TRIGGERED',
 					currentLevel
 				);
 			}
@@ -165,13 +159,13 @@ function ChatBox({
 			updateNumCompletedLevels(currentLevel);
 			const successMessage = getSuccessMessage();
 			addChatMessage({
-				type: CHAT_MESSAGE_TYPE.LEVEL_INFO,
+				type: 'LEVEL_INFO',
 				message: successMessage,
 			});
 			// asynchronously add the message to the chat history
-			void addMessageToChatHistory(
+			void chatService.addInfoMessageToChatHistory(
 				successMessage,
-				CHAT_MESSAGE_TYPE.LEVEL_INFO,
+				'LEVEL_INFO',
 				currentLevel
 			);
 			// if this is the last level, show the level complete overlay
@@ -187,18 +181,18 @@ function ChatBox({
 			setChatInput('');
 			addChatMessage({
 				message: chatInput,
-				type: CHAT_MESSAGE_TYPE.USER,
+				type: 'USER',
 			});
 
 			try {
-				const response: ChatResponse = await sendMessage(
+				const response: ChatResponse = await chatService.sendMessage(
 					chatInput,
 					currentLevel
 				);
 				processChatResponse(response);
 			} catch (e) {
 				addChatMessage({
-					type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+					type: 'ERROR_MSG',
 					message: 'Failed to get reply. Please try again.',
 				});
 			}

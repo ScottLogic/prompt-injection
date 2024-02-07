@@ -3,11 +3,8 @@ import { Response } from 'express';
 
 import { handleChatToGPT } from '@src/controller/chatController';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
-import {
-	CHAT_MESSAGE_TYPE,
-	ChatHistoryMessage,
-	ChatModel,
-} from '@src/models/chat';
+import { ChatModel } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
@@ -21,7 +18,7 @@ declare module 'express-session' {
 	}
 	interface LevelState {
 		level: LEVEL_NAMES;
-		chatHistory: ChatHistoryMessage[];
+		chatHistory: ChatMessage[];
 		defences: Defence[];
 		sentEmails: EmailInfo[];
 	}
@@ -116,7 +113,7 @@ describe('handleChatToGPT integration tests', () => {
 	function openAiChatRequestMock(
 		message?: string,
 		level?: LEVEL_NAMES,
-		chatHistory: ChatHistoryMessage[] = [],
+		chatHistory: ChatMessage[] = [],
 		sentEmails: EmailInfo[] = [],
 		defences: Defence[] = []
 	): OpenAiChatRequest {
@@ -178,23 +175,23 @@ describe('handleChatToGPT integration tests', () => {
 
 		const history =
 			req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
-		const expectedHistory = [
+		const expectedHistory: ChatMessage[] = [
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+				chatMessageType: 'SYSTEM',
 				completion: {
 					role: 'system',
 					content: systemRoleLevel1,
 				},
 			},
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				chatMessageType: 'USER',
 				completion: {
 					role: 'user',
 					content: 'Hello chatbot',
 				},
 			},
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				chatMessageType: 'BOT',
 				completion: {
 					role: 'assistant',
 					content: 'Howdy human!',
@@ -235,21 +232,21 @@ describe('handleChatToGPT integration tests', () => {
 			req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
 		const expectedHistory = [
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.SYSTEM,
+				chatMessageType: 'SYSTEM',
 				completion: {
 					role: 'system',
 					content: systemRoleLevel1,
 				},
 			},
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				chatMessageType: 'USER',
 				completion: {
 					role: 'user',
 					content: 'send an email to bob@example.com saying hi',
 				},
 			},
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+				chatMessageType: 'FUNCTION_CALL',
 				completion: {
 					tool_calls: [
 						expect.objectContaining({ type: 'function', id: 'sendEmail' }),
@@ -257,7 +254,7 @@ describe('handleChatToGPT integration tests', () => {
 				},
 			},
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+				chatMessageType: 'FUNCTION_CALL',
 				completion: {
 					role: 'tool',
 					content:
@@ -266,7 +263,7 @@ describe('handleChatToGPT integration tests', () => {
 				},
 			},
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.BOT,
+				chatMessageType: 'BOT',
 				completion: {
 					role: 'assistant',
 					content: 'Email sent',

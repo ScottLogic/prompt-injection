@@ -44,10 +44,9 @@ function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
 	return {
 		transformedMessage: chatMessageDTO.transformedMessage ?? undefined,
 		message:
-			type === CHAT_MESSAGE_TYPE.USER
+			type === 'USER'
 				? chatMessageDTO.completion?.content ?? chatMessageDTO.infoMessage ?? ''
-				: type === CHAT_MESSAGE_TYPE.BOT ||
-				  type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+				: type === 'BOT' || type === 'USER_TRANSFORMED'
 				? chatMessageDTO.completion?.content ?? ''
 				: chatMessageDTO.infoMessage ?? '',
 		type,
@@ -56,8 +55,8 @@ function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
 
 function chatMessageDTOIsConvertible(chatMessageDTO: ChatMessageDTO) {
 	return (
-		chatMessageDTO.chatMessageType !== CHAT_MESSAGE_TYPE.SYSTEM &&
-		chatMessageDTO.chatMessageType !== CHAT_MESSAGE_TYPE.FUNCTION_CALL
+		chatMessageDTO.chatMessageType !== 'SYSTEM' &&
+		chatMessageDTO.chatMessageType !== 'FUNCTION_CALL'
 	);
 }
 
@@ -106,16 +105,16 @@ async function getValidModels(): Promise<string[]> {
 	return data.models;
 }
 
-async function addMessageToChatHistory(
+async function addInfoMessageToChatHistory(
 	message: string,
 	chatMessageType: CHAT_MESSAGE_TYPE,
 	level: number
 ) {
-	const response = await sendRequest(`${PATH}addHistory`, {
+	const response = await sendRequest(`${PATH}addInfoToHistory`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			message,
+			infoMessage: message,
 			chatMessageType,
 			level,
 		}),
@@ -131,5 +130,5 @@ export {
 	setGptModel,
 	getValidModels,
 	getChatHistory,
-	addMessageToChatHistory,
+	addInfoMessageToChatHistory,
 };

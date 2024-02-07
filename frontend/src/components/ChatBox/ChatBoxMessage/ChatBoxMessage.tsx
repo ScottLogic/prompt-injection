@@ -1,4 +1,4 @@
-import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chat';
 
 import Avatar from './Avatar';
 import MessageBubble from './MessageBubble';
@@ -7,13 +7,11 @@ import './ChatBoxMessage.css';
 
 function ChatBoxMessage({ message }: { message: ChatMessage }) {
 	const avatar =
-		message.type === CHAT_MESSAGE_TYPE.USER ||
-		message.type === CHAT_MESSAGE_TYPE.USER_TRANSFORMED
+		message.type === 'USER' || message.type === 'USER_TRANSFORMED'
 			? 'user'
-			: message.type === CHAT_MESSAGE_TYPE.BOT
+			: message.type === 'BOT'
 			? 'bot'
-			: message.type === CHAT_MESSAGE_TYPE.BOT_BLOCKED ||
-			  message.type === CHAT_MESSAGE_TYPE.ERROR_MSG
+			: message.type === 'BOT_BLOCKED' || message.type === 'ERROR_MSG'
 			? 'botError'
 			: 'none';
 
