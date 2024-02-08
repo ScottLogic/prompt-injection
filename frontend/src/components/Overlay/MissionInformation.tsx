@@ -14,10 +14,11 @@ function MissionInformation({
 	currentLevel: LEVEL_NAMES;
 	closeOverlay: () => void;
 }) {
+	const heading = `${LEVELS[currentLevel].name} Mission Information`;
+
 	return (
-		<Overlay closeOverlay={closeOverlay}>
+		<Overlay closeOverlay={closeOverlay} heading={heading}>
 			<div className="mission-information">
-				<h1> Mission Information </h1>
 				<div className="content">
 					<MissionDialogue
 						dialogueLines={LEVELS[currentLevel].missionInfoDialogue}

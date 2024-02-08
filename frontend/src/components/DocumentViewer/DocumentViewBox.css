@@ -1,29 +1,43 @@
+.document-popup-inner header {
+	border-radius: 0;
+	background-color: var(--accent-background-colour);
+	color: var(--main-text-colour);
+}
+
+.document-popup-inner header .overlay-close-button {
+	border-color: var(--main-text-colour);
+	color: var(--main-text-colour);
+}
+
+.document-popup-inner header .overlay-close-icon {
+	border-color: var(--main-text-colour);
+	color: var(--main-text-colour);
+}
+
+.document-popup-inner header .overlay-close-button:hover {
+	background-color: var(--action-button-background-colour-hover);
+}
+
+.document-popup-inner header .overlay-close-button:focus-visible {
+	background-color: var(--action-button-background-colour-hover);
+	outline-color: var(--main-text-colour);
+}
+
 .document-popup-inner {
+	display: flex;
+	flex-direction: column;
+}
+
+.view-documents-main {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	box-sizing: border-box;
-	height: 85vh;
+	height: 75vh;
 	padding: 2rem;
 	border: 0.1875rem solid var(--main-border-colour);
 	background: var(--main-background);
 	aspect-ratio: 7/8;
-}
-
-.document-popup-inner .close-button {
-	position: absolute;
-	top: 1rem;
-	right: 1rem;
-	padding: 0.25rem 0.75rem;
-	color: var(--main-text-colour);
-	font-weight: bold;
-	font-size: 1.75rem;
-	text-decoration: none;
-}
-
-.document-popup-inner .close-button:hover {
-	border-color: var(--accent-border-colour);
-	color: var(--accent-border-colour);
 }
 
 .document-viewer-container {

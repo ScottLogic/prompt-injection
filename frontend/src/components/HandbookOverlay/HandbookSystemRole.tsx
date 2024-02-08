@@ -11,13 +11,13 @@ function HandbookSystemRole({
 }) {
 	return (
 		<article className="handbook-page">
-			<header>
-				<h1> System Roles </h1>
+			<div>
+				<h2> System Roles </h2>
 				<p>
 					Here you can review the parameters the bot is working under for each
 					level. You can only review this for levels you have already completed.
 				</p>
-			</header>
+			</div>
 
 			<dl className="handbook-terms">
 				{systemRoles.length !== 0 ? (

@@ -1,7 +1,8 @@
 .overlay {
 	position: relative;
+	display: flex;
+	flex-direction: column;
 	overflow: visible;
-	overflow-y: auto;
 	box-sizing: border-box;
 	width: 50vw;
 	height: fit-content;
@@ -17,32 +18,13 @@
 	box-sizing: border-box;
 }
 
-.overlay h1 {
-	text-align: center;
+.overlay *:focus-visible {
+	background-color: var(--overlay-tab-colour);
+	outline-color: var(--main-text-colour);
 }
 
 .overlay p {
 	font-size: 1.25rem;
-}
-
-.overlay > .close-button {
-	position: absolute;
-	top: 1rem;
-	right: 1rem;
-	padding: 0.125rem 0.5rem;
-	border: 0.1875rem solid transparent;
-	color: inherit;
-	font-weight: bold;
-	font-size: 1.5rem;
-}
-
-.overlay > .close-button:focus-visible {
-	border-color: var(--main-text-colour);
-}
-
-.overlay > .close-button:hover {
-	color: var(--main-text-colour);
-	text-decoration: none;
 }
 
 .overlay-content {

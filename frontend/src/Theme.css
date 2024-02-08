@@ -66,12 +66,14 @@
 
 	/* general modal overlay */
 	--overlay-background-colour: #8ad5da;
+	--overlay-header-background-colour: #61b5ba;
 	--overlay-tab-colour: #c7e8f4;
 	--overlay-attack-background-colour: #d6d6ff;
 	--overlay-text-colour: #313131;
 
 	/* handbook modal */
 	--handbook-background-colour: #fff;
+	--handbook-header-background-colour: #a7a7a7;
 	--handbook-spine-background-colour: #d3d3d3;
 	--handbook-spine-separator-colour: var(--main-text-colour-inverted);
 	--handbook-tab-selected-colour: #313131;
