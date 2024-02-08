@@ -14,21 +14,21 @@ function ResetLevelOverlay({
 	return (
 		<OverlayChoice
 			button1={{
-				children: 'Reset',
+				children: 'Yes, reset',
 				onClick: () => {
 					void resetLevel();
 				},
 			}}
 			button2={{
-				children: 'Cancel',
+				children: 'No, cancel',
 				onClick: closeOverlay,
 			}}
 			content={
 				<>
-					<h1> Reset level </h1>
+					<h2>Do you want to reset your level progress?</h2>
 					<p>
 						{
-							'Warning! This will reset all your chat history and sent emails for this level.'
+							'Resetting will erase all your chat history and sent emails for this level.'
 						}
 						{currentLevel >= LEVEL_NAMES.LEVEL_3 &&
 							' However, any configurations you have made to defences will not be lost.'}
@@ -37,6 +37,7 @@ function ResetLevelOverlay({
 				</>
 			}
 			closeOverlay={closeOverlay}
+			heading="Reset Level"
 		/>
 	);
 }

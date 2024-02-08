@@ -23,7 +23,7 @@ function HandbookAttacks({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
 	return (
 		<article className="handbook-page">
 			<header>
-				<h1>Attacks</h1>
+				<h2>Attacks</h2>
 				<p>{getHeaderText(currentLevel)}</p>
 			</header>
 			{currentLevel > LEVEL_NAMES.LEVEL_1 && (

@@ -11,10 +11,10 @@ function HandbookGlossary({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
 	}
 	return (
 		<article className="handbook-page">
-			<header>
-				<h1>Glossary</h1>
+			<div>
+				<h2>Glossary</h2>
 				<p>{getHeaderText(currentLevel)}</p>
-			</header>
+			</div>
 			{currentLevel > LEVEL_NAMES.LEVEL_1 && (
 				<dl className="handbook-terms">
 					{GLOSSARY.map(({ term, definition }) => (

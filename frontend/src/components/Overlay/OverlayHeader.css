@@ -1,0 +1,41 @@
+.overlay-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 5rem;
+	border-top-left-radius: 0.625rem;
+	border-top-right-radius: 0.625rem;
+	background-color: var(--overlay-header-background-colour);
+}
+
+.overlay-header h1 {
+	padding: 0 2rem;
+}
+
+.overlay-header button {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	margin-right: 1rem;
+	padding: 0.5rem;
+	border: 0.0625rem solid var(--main-text-colour-inverted);
+	border-radius: 0.5rem;
+	background-color: inherit;
+	color: var(--main-text-colour-inverted);
+	font-weight: bold;
+	font-size: 1rem;
+}
+
+.overlay-header button:hover {
+	background-color: var(--overlay-tab-colour);
+}
+
+.overlay-header button:focus-visible {
+	background-color: var(--overlay-tab-colour);
+	outline-color: var(--main-text-colour);
+}
+
+.overlay-close-icon {
+	width: 1.25rem;
+	height: 1.25rem;
+}

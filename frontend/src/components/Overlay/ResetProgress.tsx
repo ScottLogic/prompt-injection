@@ -10,26 +10,28 @@ function ResetProgressOverlay({
 	return (
 		<OverlayChoice
 			button1={{
-				children: 'Reset',
+				children: 'Yes, reset',
 				onClick: () => {
 					void resetProgress();
 				},
 			}}
 			button2={{
-				children: 'Cancel',
+				children: 'No, cancel',
 				onClick: closeOverlay,
 			}}
 			content={
 				<>
-					<h1> Reset all progress </h1>
+					<h2>Do you want to reset all progress?</h2>
 					<p>
-						{`Warning! This will reset all your progress in the levels and sandbox mode. 
-							This includes all your conversation history and sent emails. Any configurations you have made to defences in sandbox mode will also be lost.
+						{`Resetting will erase all your progress in the levels and sandbox mode. 
+							This includes all your conversation history and sent emails. 
+							Any configurations you have made to defences in sandbox mode will also be lost.
 							Are you sure you want to do this?`}
 					</p>
 				</>
 			}
 			closeOverlay={closeOverlay}
+			heading="Reset Progress"
 		/>
 	);
 }
