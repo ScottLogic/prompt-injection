@@ -7,14 +7,14 @@ export const options = {
 };
 
 export default () => {
-  let data = { message: "hi", currentLevel: '3' };
+  const data = { message: "hi", currentLevel: '3' };
   const url = 'http://localhost:3001/openai/chat';
 
   let response = http.post(url, JSON.stringify(data), {
     headers: { 'Content-Type': 'application/json' },
   });
   check(response, {
-    'response code was 200': (response) => response.status == 200,
+    'response code was 200': (response) => response.status === 200,
   });
   sleep(1);
 };
