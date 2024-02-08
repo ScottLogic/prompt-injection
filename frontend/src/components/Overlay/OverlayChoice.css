@@ -1,8 +1,8 @@
 .overlay-choice {
 	display: flex;
 	flex-direction: column;
-	overflow: auto;
 	gap: 0.5rem;
+	overflow: auto;
 	padding: 1rem;
 }
 

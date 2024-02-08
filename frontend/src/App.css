@@ -46,12 +46,12 @@
 	position: fixed;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%, -50%);
+	overflow: hidden;
 	margin: 0;
 	padding: 0;
 	border: none;
 	background-color: transparent;
-	overflow: hidden;
+	transform: translate(-50%, -50%);
 }
 
 .dialog-modal:focus-visible {

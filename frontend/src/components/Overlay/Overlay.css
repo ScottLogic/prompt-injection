@@ -1,8 +1,8 @@
 .overlay {
 	position: relative;
-	overflow: visible;
 	display: flex;
 	flex-direction: column;
+	overflow: visible;
 	box-sizing: border-box;
 	width: 50vw;
 	height: fit-content;

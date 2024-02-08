@@ -1,8 +1,8 @@
 .handbook-overlay {
-	height: 85vh;
-	aspect-ratio: 7/8;
 	display: flex;
 	flex-direction: column;
+	height: 85vh;
+	aspect-ratio: 7/8;
 }
 
 .handbook-overlay header {
