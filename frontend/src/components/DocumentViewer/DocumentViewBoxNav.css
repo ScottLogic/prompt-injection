@@ -7,15 +7,6 @@
 	color: var(--main-text-colour);
 }
 
-.view-documents-nav .nav {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-}
-
 .view-documents-nav .info {
 	margin: 0;
 	padding: 0;

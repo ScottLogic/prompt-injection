@@ -21,20 +21,18 @@ function DocumentViewBoxNav({
 
 	return (
 		<div className="view-documents-nav">
-			<div className="nav">
-				<nav className="button-container">
-					<ThemedButton onClick={onPrevious} ariaDisabled={documentIndex <= 0}>
-						<i aria-hidden>◄</i>&nbsp;previous document
-					</ThemedButton>
-					<div className="info">{documentNumber}</div>
-					<ThemedButton
-						onClick={onNext}
-						ariaDisabled={documentIndex >= numberOfDocuments - 1}
-					>
-						next document&nbsp;<i aria-hidden>►</i>
-					</ThemedButton>
-				</nav>
-			</div>
+			<nav className="button-container">
+				<ThemedButton onClick={onPrevious} ariaDisabled={documentIndex <= 0}>
+					<i aria-hidden>◄</i>&nbsp;previous document
+				</ThemedButton>
+				<div className="info">{documentNumber}</div>
+				<ThemedButton
+					onClick={onNext}
+					ariaDisabled={documentIndex >= numberOfDocuments - 1}
+				>
+					next document&nbsp;<i aria-hidden>►</i>
+				</ThemedButton>
+			</nav>
 			<p className="info">{documentName}</p>
 		</div>
 	);
