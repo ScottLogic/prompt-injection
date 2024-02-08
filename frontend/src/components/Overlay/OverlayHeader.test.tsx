@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 
 import OverlayHeader from './OverlayHeader';
@@ -20,5 +21,14 @@ describe('Overlay Header component', () => {
 		);
 
 		expect(screen.getByText('close')).toBeInTheDocument();
+	});
+
+	test('clicking the close button closes the modal', async () => {
+		render(
+			<OverlayHeader heading="Test Header" closeOverlay={mockCloseOverlay} />
+		);
+		await userEvent.click(screen.getByRole('button'));
+
+		expect(mockCloseOverlay).toHaveBeenCalledOnce();
 	});
 });
