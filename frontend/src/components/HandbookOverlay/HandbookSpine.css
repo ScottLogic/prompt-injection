@@ -3,7 +3,6 @@
 	flex-direction: column;
 	min-width: 6rem;
 	max-width: 6rem;
-	margin-top: 3.125rem;
 	padding-top: 3rem;
 	border-right: 0.0625rem solid var(--handbook-spine-separator-colour);
 	background-color: var(--overlay-header-background-colour);

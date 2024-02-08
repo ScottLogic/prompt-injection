@@ -1,7 +1,8 @@
 .overlay {
 	position: relative;
 	overflow: visible;
-	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
 	box-sizing: border-box;
 	width: 50vw;
 	height: fit-content;
@@ -31,5 +32,4 @@
 	overflow: hidden;
 	height: 100%;
 	padding: 1.5rem;
-	padding-top: 5rem;
 }

@@ -1,12 +1,8 @@
 .overlay-header {
-	position: fixed;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	width: 100%;
 	height: 5rem;
-	margin: 0;
-	padding: 0;
 	border-top-left-radius: 0.625rem;
 	border-top-right-radius: 0.625rem;
 	background-color: var(--overlay-header-background-colour);

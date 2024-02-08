@@ -43,9 +43,9 @@ function HandbookOverlay({
 	}[selectedPage];
 
 	return (
-		<div className="handbook">
+		<div className="handbook-overlay">
 			<OverlayHeader closeOverlay={closeOverlay} heading="Handbook" />
-			<div className="handbook-overlay">
+			<div className="handbook">
 				<HandbookSpine
 					currentLevel={currentLevel}
 					currentPage={selectedPage}
@@ -53,7 +53,7 @@ function HandbookOverlay({
 				/>
 				<div
 					id={`handbook-page-${selectedPage}`}
-					className="content"
+					className="handbook-page"
 					role="tabpanel"
 					ref={handBookPageContainer}
 					tabIndex={isOverflow ? 0 : undefined}

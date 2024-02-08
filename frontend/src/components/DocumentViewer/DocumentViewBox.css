@@ -34,7 +34,6 @@
 	flex-direction: column;
 	box-sizing: border-box;
 	height: 75vh;
-	margin-top: 5rem;
 	padding: 2rem;
 	border: 0.1875rem solid var(--main-border-colour);
 	background: var(--main-background);
