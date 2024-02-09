@@ -33,11 +33,11 @@
 	--action-button-disabled-text-colour: #111;
 
 	/* level buttons */
-	--level-button-colour: var(--main-text-colour);
+	--level-button-colour: var(--accent-background-colour);
 	--level-button-colour-disabled: #777;
 	--level-button-border-colour: var(--accent-border-colour);
 	--level-button-border-colour-disabled: #aaaaaa80;
-	--level-button-background-colour-selected: var(--accent-background-colour);
+	--level-button-background-colour-selected: var(--main-text-colour);
 	--level-button-background-colour-hover: #11484b;
 
 	/* level banner */
