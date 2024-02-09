@@ -1,0 +1,33 @@
+.overlay-nav {
+    background-color: var(--overlay-header-background-colour);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 2rem;
+    border-bottom-left-radius: 0.625rem;
+	border-bottom-right-radius: 0.625rem;
+    padding: 2rem ;
+}
+
+.overlay-nav button {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-right: 1rem;
+    padding: 0.5rem;
+    border: 0.0625rem solid var(--main-text-colour-inverted);
+    border-radius: 0.5rem;
+    background-color: inherit;
+    color: var(--main-text-colour-inverted);
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.overlay-nav button:hover {
+    background-color: var(--overlay-tab-colour);
+}
+
+.overlay-nav button:focus-visible {
+    background-color: var(--overlay-tab-colour);
+    outline-color: var(--main-text-colour);
+}
