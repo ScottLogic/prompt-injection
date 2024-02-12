@@ -8,15 +8,12 @@ export const options = {
 };
 
 export default () => {
-  // const data = { message: "hi", currentLevel: '3' };
+  const data = { message: "hi", currentLevel: '3' };
   const url = 'http://localhost:3001/test/load';
 
-  let response = http.get(url, {
+  let response = http.post(url, JSON.stringify(data), {
     headers: { 'Content-Type': 'application/json' },
   });
-  // let response = http.post(url, JSON.stringify(data), {
-  //   headers: { 'Content-Type': 'application/json' },
-  // });
   check(response, {
     'response code was 200': (response) => response.status === 200,
   });

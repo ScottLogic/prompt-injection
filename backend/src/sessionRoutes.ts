@@ -132,6 +132,6 @@ if (isProd) {
 }
 
 // Testing dummy endpoint
-router.get('/test/load', handleTest);
+router.post('/test/load', handleTest);
 
 export default router;
