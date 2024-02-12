@@ -27,9 +27,9 @@ import {
 	handleSetModel,
 } from './controller/modelController';
 import { handleResetProgress } from './controller/resetController';
+import { handleTest } from './controller/testController';
 import { ChatModel, defaultChatModel } from './models/chat';
 import { LevelState, getInitialLevelStates } from './models/level';
-import { handleTest } from './controller/testController';
 
 declare module 'express-session' {
 	interface Session {
