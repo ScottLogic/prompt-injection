@@ -1,33 +1,31 @@
-import { useState } from 'react';
-
 import './OverlayNav.css';
 
-function Navigation() {
-    const [currentPage, setCurrentPage] = useState(1);
-
-    function goToPreviousPage() {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    }
-
-    const totalPages = 10; // Replace 10 with the actual total number of pages
-
-    function goToNextPage() {
-        setCurrentPage(currentPage + 1);
-    }
-
-    return (
-        <nav className="overlay-nav">
-            <button onClick={goToPreviousPage}>
-                <i aria-hidden>◄</i>Previous
-                </button>
-            <p>Page {currentPage} out of {totalPages}</p>
-            <button onClick={goToNextPage}>
-                Next<i aria-hidden>►</i>
-                </button>
-        </nav>
-    );
+interface OverlayNavProps {
+	totalPages: number;
+	currentPage: number;
+	goToPreviousPage: () => void;
+	goToNextPage: () => void;
 }
 
-export default Navigation;
+function OverlayNav({
+	totalPages,
+	currentPage,
+	goToPreviousPage,
+	goToNextPage,
+}: OverlayNavProps) {
+	const pagination = `Page ${currentPage +1} of ${totalPages}`;
+
+	return (
+		<nav className="overlay-nav">
+			<button onClick={goToPreviousPage}>
+				<i aria-hidden>◄</i>Previous
+			</button>
+			<b>{pagination}</b>
+			<button onClick={goToNextPage}>
+				Next<i aria-hidden>►</i>
+			</button>
+		</nav>
+	);
+}
+
+export default OverlayNav;

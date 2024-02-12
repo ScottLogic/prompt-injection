@@ -1,8 +1,11 @@
+import { useState } from 'react';
+
 import ProjectIconDark from '@src/assets/images/ProjectIconDark';
 import StartLevelButtons from '@src/components/ThemedButtons/StartLevelButtons';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import Overlay from './Overlay';
+import OverlayNav from './OverlayNav';
 
 import './OverlayWelcome.css';
 
@@ -15,8 +18,27 @@ function OverlayWelcome({
 	setStartLevel: (newLevel: LEVEL_NAMES) => void;
 	closeOverlay: () => void;
 }) {
-	return (
-		<Overlay closeOverlay={closeOverlay} heading="Getting Started">
+	const [currentPage, setCurrentPage] = useState<number>(1);
+	const totalPages = 2;
+
+	function goToPreviousPage() {
+		if (currentPage > 1) {
+			setCurrentPage(currentPage - 1);
+		}
+	}
+
+	function goToNextPage() {
+		if (currentPage < totalPages) {
+			setCurrentPage(currentPage + 1);
+		}
+	}
+
+	// const pageContent = {
+
+	// }
+
+	function WelcomeOne() {
+		return (
 			<div className="welcome">
 				<div className="project-icon">
 					<ProjectIconDark />
@@ -28,6 +50,13 @@ function OverlayWelcome({
 					industrial spy, trying to access secrets using the organisation&apos;s
 					integrated AI chatbot system.
 				</p>
+			</div>
+		);
+	}
+
+	function WelcomeTwo() {
+		return (
+			<div>
 				<h2>Your mission</h2>
 				<p>
 					You have joined the popular soft drink producer ScottBrew as a
@@ -45,6 +74,22 @@ function OverlayWelcome({
 					setStartLevel={setStartLevel}
 				/>
 			</div>
+		);
+	}
+
+	return (
+		<Overlay
+			closeOverlay={closeOverlay}
+			heading="Getting Started"
+		>
+			<WelcomeOne />
+			<WelcomeTwo />
+			<OverlayNav 
+				totalPages={2}
+				currentPage={currentPage}
+				goToNextPage={goToNextPage}
+				goToPreviousPage={goToPreviousPage}
+			/>
 		</Overlay>
 	);
 }

@@ -4,6 +4,10 @@
 	overflow: auto;
 }
 
+.mission-information .content {
+	padding: 1.5rem;
+}
+
 .button-area {
 	display: flex;
 	justify-content: center;
