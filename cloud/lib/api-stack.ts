@@ -3,13 +3,24 @@ import { HttpAlbIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 //import { UserPool, UserPoolClient, UserPoolDomain } from 'aws-cdk-lib/aws-cognito';
 import { Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
-import { Cluster, ContainerImage, PropagatedTagSource, Secret as EnvSecret, } from 'aws-cdk-lib/aws-ecs';
+import {
+	Cluster,
+	ContainerImage,
+	PropagatedTagSource,
+	Secret as EnvSecret,
+} from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
 //import { ListenerAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 //import { AuthenticateCognitoAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
-import { CfnOutput, RemovalPolicy, Stack, StackProps, Tags } from 'aws-cdk-lib/core';
+import {
+	CfnOutput,
+	RemovalPolicy,
+	Stack,
+	StackProps,
+	Tags,
+} from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { join } from 'node:path';
 
@@ -129,8 +140,15 @@ export class ApiStack extends Stack {
 			securityGroupName,
 			allowAllOutbound: false,
 		});
-		vpcLinkSecurityGroup.connections.allowFromAnyIpv4(Port.tcp(80), 'APIGW to VPCLink');
-		vpcLinkSecurityGroup.connections.allowTo(fargateService.loadBalancer, Port.tcp(80), 'VPCLink to ALB');
+		vpcLinkSecurityGroup.connections.allowFromAnyIpv4(
+			Port.tcp(80),
+			'APIGW to VPCLink'
+		);
+		vpcLinkSecurityGroup.connections.allowTo(
+			fargateService.loadBalancer,
+			Port.tcp(80),
+			'VPCLink to ALB'
+		);
 
 		const vpcLinkName = generateResourceName('vpclink');
 		const vpcLink = new VpcLink(this, vpcLinkName, {
@@ -158,12 +176,14 @@ export class ApiStack extends Stack {
 			integration: new HttpAlbIntegration(
 				generateResourceName('api-integration'),
 				fargateService.loadBalancer.listeners[0],
-				{ vpcLink },
+				{ vpcLink }
 			),
 		});
 
 		new CfnOutput(this, 'APIGatewayURL', {
-			value: api.defaultStage?.url ?? 'FATAL ERROR: Gateway does not have a default stage',
+			value:
+				api.defaultStage?.url ??
+				'FATAL ERROR: Gateway does not have a default stage',
 		});
 	}
 }

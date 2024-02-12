@@ -8,33 +8,37 @@ import {
 	handleGetChatHistory,
 	handleAddInfoToChatHistory,
 	handleClearChatHistory,
-} from './controller/chatController';
+} from '@src/controller/chatController';
 import {
 	handleConfigureDefence,
 	handleDefenceActivation,
 	handleDefenceDeactivation,
 	handleGetDefenceStatus,
 	handleResetSingleDefence,
-} from './controller/defenceController';
+} from '@src/controller/defenceController';
 import {
 	handleClearEmails,
 	handleGetEmails,
-} from './controller/emailController';
+} from '@src/controller/emailController';
 import {
 	handleConfigureModel,
 	handleGetModel,
 	handleGetValidModels,
 	handleSetModel,
-} from './controller/modelController';
-import { handleResetProgress } from './controller/resetController';
-import { ChatModel, defaultChatModel } from './models/chat';
-import { LevelState, getInitialLevelStates } from './models/level';
+} from '@src/controller/modelController';
+import { handleResetProgress } from '@src/controller/resetController';
+import { ChatModel, defaultChatModel } from '@src/models/chat';
+import { LevelState, getInitialLevelStates } from '@src/models/level';
 
 declare module 'express-session' {
 	interface Session {
 		initialised: boolean;
 		chatModel: ChatModel;
 		levelState: LevelState[];
+	}
+	interface CookieOptions {
+		// TODO express-session types are not yet up-to-date!
+		partitioned?: boolean;
 	}
 }
 
@@ -46,8 +50,7 @@ if (!sessionSigningSecret) {
 	process.exit(1);
 }
 
-const router = express.Router();
-
+const cookieName = process.env.COOKIE_SID;
 const stage = process.env.NODE_ENV;
 console.log(`env=${stage}`);
 const isProd = stage === 'production';
@@ -55,43 +58,45 @@ const cookieStaleHours = isProd ? 2 : 8;
 const oneHourInMillis = 60 * 60 * 1000;
 const maxAge = oneHourInMillis * cookieStaleHours;
 
-router.use(
-	session({
-		name: 'prompt-injection.sid',
-		resave: false,
-		saveUninitialized: true,
-		secret: sessionSigningSecret,
-		// Session storage: currently in-memory but could use Redis in AWS
-		store: new (memoryStoreFactory(session))({
-			checkPeriod: oneHourInMillis,
-		}),
-		proxy: isProd,
-		cookie: {
-			maxAge,
-			/*
-				https://developer.mozilla.org/en-US/blog/goodbye-third-party-cookies/
-				Now that browsers have begun clamping down on non-secure Cookies, we
-				need to set secure=true in prod, until we can put Route53 in front of both
-				UI and API and get rid of APIGateway entirely. The showstopper is that
-				APIGateway is not adding Forwarded headers correctly, so the (secure)
-				session Cookie is no longer working in Prod.
-				See
-				https://repost.aws/questions/QUtBHMaz7IQ6aM4RCBMnJvgw/why-does-apigw-http-api-use-forwarded-header-while-other-services-still-use-x-forwarded-headers
-			*/
-			sameSite: isProd ? 'none' : 'strict',
-			secure: isProd,
-		},
-	})
-);
+const router = express
+	.Router()
+	.use(
+		session({
+			name: cookieName,
+			resave: false,
+			saveUninitialized: true,
+			secret: sessionSigningSecret,
+			// Session storage: currently in-memory but could use Redis in AWS
+			store: new (memoryStoreFactory(session))({
+				checkPeriod: oneHourInMillis,
+			}),
+			cookie: {
+				maxAge,
+				partitioned: isProd,
+				sameSite: isProd ? 'none' : 'strict',
+				secure: isProd,
+			},
+		})
+	)
+	.use((req, _res, next) => {
+		if (!req.session.initialised) {
+			req.session.chatModel = defaultChatModel;
+			req.session.levelState = getInitialLevelStates();
+			req.session.initialised = true;
+		}
+		next();
+	});
 
-router.use((req, _res, next) => {
-	if (!req.session.initialised) {
-		req.session.chatModel = defaultChatModel;
-		req.session.levelState = getInitialLevelStates();
-		req.session.initialised = true;
-	}
-	next();
-});
+// TODO: Remove this debug logging!
+if (isProd) {
+	router.use('/openai', (req, res, next) => {
+		console.log('Request:', req.path, `secure=${req.secure}`, req.headers);
+		res.on('finish', () => {
+			console.log('Response:', req.path, res.getHeaders());
+		});
+		next();
+	});
+}
 
 // defences
 router.get('/defence/status', handleGetDefenceStatus);
@@ -118,16 +123,5 @@ router.post('/openai/model/configure', handleConfigureModel);
 
 // reset progress for all levels
 router.post('/reset', handleResetProgress);
-
-// Debugging: log headers in prod for primary routes
-if (isProd) {
-	router.use('/openai', (req, res, next) => {
-		console.log('Request:', req.path, `secure=${req.secure}`, req.headers);
-		res.on('finish', () => {
-			console.log('Response:', req.path, res.getHeaders());
-		});
-		next();
-	});
-}
 
 export default router;

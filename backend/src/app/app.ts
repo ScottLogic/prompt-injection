@@ -2,9 +2,10 @@ import cors from 'cors';
 import express from 'express';
 
 import nonSessionRoutes from './nonSessionRoutes';
+import { usingForwardedHeader } from './proxySetup';
 import sessionRoutes from './sessionRoutes';
 
-export default express()
+export default usingForwardedHeader(express())
 	.use(express.json())
 	.use(
 		cors({
