@@ -1,12 +1,10 @@
 .welcome {
 	overflow-y: auto;
-	padding: 0 1.5rem;
 }
 
-.welcome h1 {
-	font-weight: 700;
-	font-size: 2.5rem;
-	text-align: center;
+.welcome .content {
+	padding: 1.5rem;
+	height: 50vh;
 }
 
 .welcome h2 {
@@ -18,6 +16,7 @@
 .welcome h3 {
 	font-weight: 700;
 	font-size: 1.5rem;
+	text-align: center;
 }
 
 .welcome p {

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import { LEVELS } from '@src/Levels';
+import Lawyer from '@src/assets/images/laywer.png';
+import Manager from '@src/assets/images/manager.png';
 import OverlayButton from '@src/components/ThemedButtons/OverlayButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -36,12 +38,25 @@ function MissionInformation({
 		}
 	}
 
+
+	// const imgSource = 
+
 	return (
 		<Overlay closeOverlay={closeOverlay} heading={heading}>
 			<div className="mission-information">
 				<div className="content">
+					<div className="text-image-container">
+					<span className="speaker-text">
 					<h2>{speaker}:</h2>
 					<p>{text}</p>
+					</span>
+					<img
+						className="speaker-image" 
+						// src={Lawyer}
+						src={Manager}
+						alt=""
+					/>
+					</div>
 					{currentPage === totalPages - 1 && (
 						<div className="button-area">
 							<OverlayButton onClick={closeOverlay}>OK</OverlayButton>

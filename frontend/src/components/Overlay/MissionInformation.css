@@ -1,11 +1,32 @@
 .mission-information {
 	display: flex;
-	flex-direction: column;
 	overflow: auto;
 }
 
 .mission-information .content {
 	padding: 1.5rem;
+	height: 60vh;
+}
+
+.mission-information .text-image-container {
+	display: flex;
+	justify-content: space-between;
+	width: fit-content;
+	height: 50vh;
+}
+
+.mission-information .content .speaker-text {
+	max-width: 60%;
+}
+
+.speaker-image{
+	object-fit: contain;
+	height: 90%;
+}
+
+.mission-information p {
+	font-weight: 500;
+	font-size: 1.25rem;
 }
 
 .button-area {

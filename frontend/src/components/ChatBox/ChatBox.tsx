@@ -208,6 +208,7 @@ function ChatBox({
 			<ChatBoxFeed messages={messages} />
 			<div className="footer">
 				<div className="messages">
+					<button onClick={openLevelsCompleteOverlay}>Open Levels complete</button>
 					<ChatBoxInput
 						content={chatInput}
 						onContentChanged={setChatInput}

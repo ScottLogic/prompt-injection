@@ -1,0 +1,9 @@
+.content {
+    padding: 1.5rem;
+    height: 40vh;
+}
+
+.content p {
+    font-weight: 500;
+	font-size: 1.25rem;
+}
