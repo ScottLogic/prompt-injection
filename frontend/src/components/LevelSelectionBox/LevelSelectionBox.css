@@ -21,6 +21,7 @@
 
 .level-button.selected {
 	background-color: var(--level-button-background-colour-selected);
+	cursor: default;
 	color: var(--level-button-colour);
 }
 
