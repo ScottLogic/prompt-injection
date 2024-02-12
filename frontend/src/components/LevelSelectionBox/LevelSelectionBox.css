@@ -11,8 +11,7 @@
 	padding: 1rem;
 	border: 0.125rem solid var(--level-button-border-colour);
 	border-radius: 0;
-	background-color: transparent;
-	color: var(--level-button-colour);
+	background-color: var(--level-button-colour);
 	font-size: 1.875rem;
 }
 
@@ -22,6 +21,8 @@
 
 .level-button.selected {
 	background-color: var(--level-button-background-colour-selected);
+	cursor: default;
+	color: var(--level-button-colour);
 }
 
 .level-button.disabled {
@@ -32,4 +33,9 @@
 
 .level-button[aria-disabled='false']:hover {
 	background-color: var(--level-button-background-colour-hover);
+}
+
+.level-button.selected:hover {
+	background-color: var(--level-button-background-colour-selected);
+	color: var(--level-button-colour);
 }
