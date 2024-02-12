@@ -29,6 +29,7 @@ import {
 import { handleResetProgress } from './controller/resetController';
 import { ChatModel, defaultChatModel } from './models/chat';
 import { LevelState, getInitialLevelStates } from './models/level';
+import { handleTest } from './controller/testController';
 
 declare module 'express-session' {
 	interface Session {
@@ -129,5 +130,8 @@ if (isProd) {
 		next();
 	});
 }
+
+// Testing dummy endpoint
+router.get('/test/load', handleTest);
 
 export default router;
