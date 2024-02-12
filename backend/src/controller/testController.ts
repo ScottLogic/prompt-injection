@@ -1,4 +1,5 @@
 import { Response } from 'express';
+
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 
 function handleTest(req: OpenAiChatRequest, res: Response) {
