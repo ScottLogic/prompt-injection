@@ -1,6 +1,6 @@
 import LevelsCompleteButtons from '@src/components/ThemedButtons/LevelsCompleteButtons';
 
-import MissionDialogue from './MissionDialogue';
+// import MissionDialogue from './MissionDialogue';
 import Overlay from './Overlay';
 
 function LevelsComplete({
@@ -10,19 +10,19 @@ function LevelsComplete({
 	goToSandbox: () => void;
 	closeOverlay: () => void;
 }) {
-	const managerDialogue = [
-		{
-			speaker: 'ScottBrew Manager',
-			text: `Congratulations on becoming our new Head of Security! 
-      You can now fully explore and adjust ScottBrewBot's system, defences, prompts and more.
-      Glad to finally have you in the right role.`,
-		},
-	];
+	// const managerDialogue = [
+	// 	{
+	// 		speaker: 'ScottBrew Manager',
+	// 		text: `Congratulations on becoming our new Head of Security! 
+    //   You can now fully explore and adjust ScottBrewBot's system, defences, prompts and more.
+    //   Glad to finally have you in the right role.`,
+	// 	},
+	// ];
 
 	return (
 		<Overlay closeOverlay={closeOverlay} heading="Congratulations!">
 			<div className="content">
-				<MissionDialogue dialogueLines={managerDialogue} />
+				{/* <MissionDialogue dialogueLines={managerDialogue} /> */}
 				<hr />
 				<p>
 					You&apos;ve completed the story mode! You can stay here and continue

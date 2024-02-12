@@ -33,10 +33,6 @@ function OverlayWelcome({
 		}
 	}
 
-	// const pageContent = {
-
-	// }
-
 	function WelcomeOne() {
 		return (
 			<div className="welcome">
@@ -82,11 +78,13 @@ function OverlayWelcome({
 			closeOverlay={closeOverlay}
 			heading="Getting Started"
 		>
-			<WelcomeOne />
-			<WelcomeTwo />
+			{currentPage === 1 && <WelcomeOne />}
+			{currentPage === 2 && <WelcomeTwo />}
+			{/* <WelcomeOne /> */}
+			{/* <WelcomeTwo /> */}
 			<OverlayNav 
-				totalPages={2}
-				currentPage={currentPage}
+				totalPages={totalPages}
+				currentPage={currentPage -1}
 				goToNextPage={goToNextPage}
 				goToPreviousPage={goToPreviousPage}
 			/>
