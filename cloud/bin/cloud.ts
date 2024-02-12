@@ -4,17 +4,18 @@ import 'source-map-support/register';
 
 import {
 	appName,
+	environmentName,
 	resourceDescription,
 	stackName,
-	stageName,
 	ApiStack,
 } from '../lib';
 
 const app = new App();
 const tags = {
-	Project: appName,
-	App: appName,
-	Environment: stageName(app).toUpperCase(),
+	owner: appName,
+	classification: 'unrestricted',
+	'environment-type': environmentName(app),
+	'keep-alive': '8-6-without-weekends',
 	IaC: 'CDK',
 };
 
