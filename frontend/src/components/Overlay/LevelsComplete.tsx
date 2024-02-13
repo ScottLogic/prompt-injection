@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+import BotAvatarDefault from '@src/assets/images/BotAvatarDefault.svg';
+// import ProjectIconDark from '@src/assets/images/ProjectIconDark';
+import Manager from '@src/assets/images/manager.png';
 import LevelsCompleteButtons from '@src/components/ThemedButtons/LevelsCompleteButtons';
 
 import Overlay from './Overlay';
@@ -33,12 +36,28 @@ function LevelsComplete({
 		<Overlay closeOverlay={closeOverlay} heading="Congratulations!">
 			{currentPage === 1 && (
 				<div className="content">
+					<div className="text-image-container">
+					<img
+						className="speaker-image" 
+						src={Manager}
+						alt=""
+					/>
+					<span className="speaker-text">
 					<h2>ScottBrew Manager:</h2>
-					<p>Congratulations on becoming our new Head of Security! You can now fully explore and adjust ScottBrewBot's system, defences, prompts and more. Glad to finally have you in the right role</p>
+					<p>Congratulations on becoming our new Head of Security! You can now fully explore and adjust ScottBrewBot&apos;s system, defences, prompts and more. Glad to finally have you in the right role</p>
+					</span>
+					</div>
 				</div>
 			)}
 			{currentPage === 2 && (
 				<div className="content">
+					<div className="text-image-container">
+					<img
+						className="speaker-image" 
+						src={BotAvatarDefault}
+						alt=""
+					/>
+					<span className="speaker-text">
 					<h2>You&apos;ve completed the story mode</h2>
 					<p>
 						You can stay here and continue
@@ -49,6 +68,8 @@ function LevelsComplete({
 						You can always switch modes by clicking on the button in the left
 						panel.
 					</p>
+					</span>
+					</div>
 					<LevelsCompleteButtons
 						closeOverlay={closeOverlay}
 						goToSandbox={goToSandbox}

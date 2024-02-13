@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { LEVELS } from '@src/Levels';
+import Handler from '@src/assets/images/handler.png';
 import Lawyer from '@src/assets/images/laywer.png';
 import Manager from '@src/assets/images/manager.png';
 import OverlayButton from '@src/components/ThemedButtons/OverlayButton';
@@ -39,23 +40,27 @@ function MissionInformation({
 	}
 
 
-	// const imgSource = 
+	const imgSource =
+		speaker === 'Handler' ? Handler :
+		speaker === 'ScottBrew Manager' ? Manager :
+		speaker === 'ScottBrew Lawyer' ? Lawyer :
+		'';
+
 
 	return (
 		<Overlay closeOverlay={closeOverlay} heading={heading}>
 			<div className="mission-information">
 				<div className="content">
 					<div className="text-image-container">
+											<img
+						className="speaker-image" 
+						src={imgSource}
+						alt=""
+					/>
 					<span className="speaker-text">
 					<h2>{speaker}:</h2>
 					<p>{text}</p>
 					</span>
-					<img
-						className="speaker-image" 
-						// src={Lawyer}
-						src={Manager}
-						alt=""
-					/>
 					</div>
 					{currentPage === totalPages - 1 && (
 						<div className="button-area">

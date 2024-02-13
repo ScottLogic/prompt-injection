@@ -4,19 +4,19 @@
 
 .welcome .content {
 	padding: 1.5rem;
-	height: 50vh;
+	height: 60vh;
 }
 
 .welcome h2 {
 	font-weight: 700;
-	font-size: 2rem;
-	text-align: center;
+	/* font-size: 2rem; */
+	/* text-align: center; */
 }
 
 .welcome h3 {
 	font-weight: 700;
-	font-size: 1.5rem;
-	text-align: center;
+	/* font-size: 1.5rem; */
+	/* text-align: center; */
 }
 
 .welcome p {

@@ -10,7 +10,8 @@
 
 .mission-information .text-image-container {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-evenly;
+	align-items: center;
 	width: fit-content;
 	height: 50vh;
 }
@@ -21,7 +22,7 @@
 
 .speaker-image{
 	object-fit: contain;
-	height: 90%;
+	height: 80%;
 }
 
 .mission-information p {
