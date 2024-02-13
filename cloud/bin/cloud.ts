@@ -8,6 +8,7 @@ import {
 	resourceDescription,
 	stackName,
 	ApiStack,
+	UiStack,
 } from '../lib';
 
 const app = new App();
@@ -22,11 +23,17 @@ const tags = {
 const generateStackName = stackName(app);
 const generateDescription = resourceDescription(app);
 
-// Don't need this stack, yet... Or ever? Will ask Pete C.
+const uiStack = new UiStack(app, generateStackName('ui'), {
+	tags,
+	description: generateDescription('UI stack'),
+});
+
+// Don't need this stack yet.
 /*
 const authStack = new AuthStack(app, generateStackName('auth'), {
 	tags,
 	description: generateDescription('Auth stack'),
+	webappUrl: uiStack.cloudfrontUrl,
 });
 */
 
@@ -36,4 +43,5 @@ new ApiStack(app, generateStackName('api'), {
 	// userPool: authStack.userPool,
 	// userPoolClient: authStack.userPoolClient,
 	// userPoolDomain: authStack.userPoolDomain,
+	webappUrl: uiStack.cloudfrontUrl,
 });
