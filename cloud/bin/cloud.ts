@@ -22,7 +22,18 @@ const tags = {
 const generateStackName = stackName(app);
 const generateDescription = resourceDescription(app);
 
+// Don't need this stack, yet... Or ever? Will ask Pete C.
+/*
+const authStack = new AuthStack(app, generateStackName('auth'), {
+	tags,
+	description: generateDescription('Auth stack'),
+});
+*/
+
 new ApiStack(app, generateStackName('api'), {
 	tags,
 	description: generateDescription('API stack'),
+	// userPool: authStack.userPool,
+	// userPoolClient: authStack.userPoolClient,
+	// userPoolDomain: authStack.userPoolDomain,
 });
