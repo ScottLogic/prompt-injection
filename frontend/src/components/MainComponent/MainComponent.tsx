@@ -127,7 +127,6 @@ function MainComponent({
 		chatHistory: ChatMessage[];
 		remoteDefences: Defence[];
 	}) {
-		// get emails for new level from the backend
 		setEmails(emails);
 
 		// add welcome message for levels only
@@ -137,7 +136,6 @@ function MainComponent({
 
 		const defences =
 			level === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
-		// fetch defences from backend
 		defences.map((localDefence) => {
 			const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
 				return localDefence.id === remoteDefence.id;
