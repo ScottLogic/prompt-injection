@@ -64,7 +64,7 @@ function OverlayWelcome({
 									developer, but have actually been hired by their largest
 									competitor to steal the ScottBrew recipe.
 								</p>
-								<h3>But first:</h3>
+								<h2>But first:</h2>
 								<p>
 									Are you a beginner spy, and wish to play through the levels
 									from the beginning, or are you an expert spy, and would prefer
