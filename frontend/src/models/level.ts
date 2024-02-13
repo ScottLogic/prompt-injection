@@ -35,7 +35,7 @@ type startReponse = {
 	emails: EmailInfo[];
 	history: ChatMessage[];
 	defences: Defence[];
-	models: string[];
+	availableModels: string[];
 	systemRoles: LevelSystemRole[];
 };
 

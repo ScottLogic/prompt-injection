@@ -77,7 +77,7 @@ function App() {
 		try {
 			console.log('Loading backend data on level', currentLevel);
 			const startResponse = await startService.start(currentLevel);
-			setChatModels(startResponse.models);
+			setChatModels(startResponse.availableModels);
 			setSystemRoles(startResponse.systemRoles);
 		} catch (err) {
 			console.log(err);
