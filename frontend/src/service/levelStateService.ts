@@ -5,7 +5,7 @@ import { sendRequest } from './backendService';
 const PATH = 'reset';
 
 async function getLevelState(level: number): Promise<LevelState> {
-	const response = await sendRequest(`${PATH}history?level=${level}`, {
+	const response = await sendRequest(`${PATH}levelState?level=${level}`, {
 		method: 'GET',
 	});
 	const levelState = (await response.json()) as LevelState;
