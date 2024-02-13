@@ -7,12 +7,7 @@ import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-import {
-	chatService,
-	defenceService,
-	emailService,
-	healthService,
-} from '@src/service';
+import { chatService, defenceService, emailService } from '@src/service';
 
 import MainBody from './MainBody';
 import MainFooter from './MainFooter';
@@ -34,6 +29,8 @@ function MainComponent({
 	openResetProgressOverlay,
 	openWelcomeOverlay,
 	setCurrentLevel,
+	setMessages,
+	messages,
 }: {
 	chatModels: string[];
 	currentLevel: LEVEL_NAMES;
@@ -48,25 +45,12 @@ function MainComponent({
 	openResetProgressOverlay: () => void;
 	openWelcomeOverlay: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
+	setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+	messages: ChatMessage[];
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
-	const [messages, setMessages] = useState<ChatMessage[]>([]);
-
-	// called on mount
-	useEffect(() => {
-		// perform backend health check
-		healthService.healthCheck().catch(() => {
-			// addErrorMessage('Failed to reach the server. Please try again later.');
-			setMessages([
-				{
-					message: 'Failed to reach the server. Please try again later.',
-					type: 'ERROR_MSG',
-				},
-			]);
-		});
-	}, []);
 
 	useEffect(() => {
 		void setNewLevel(currentLevel);

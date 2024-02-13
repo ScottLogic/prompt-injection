@@ -7,6 +7,7 @@ import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
+import { ChatMessage } from './models/chat';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
 import { levelService, startService } from './service';
 
@@ -31,6 +32,8 @@ function App() {
 	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
+
+	const [messages, setMessages] = useState<ChatMessage[]>([]);
 
 	function loadIsNewUser() {
 		// get isNewUser from local storage
@@ -75,8 +78,18 @@ function App() {
 	// fetch constants from the backend on app mount
 	async function loadBackendData() {
 		try {
-			console.log('Loading backend data on level', currentLevel);
-			const startResponse = await startService.start(currentLevel);
+			console.log('Loading backend data for level', currentLevel);
+			const startResponse = await startService.start(currentLevel).catch(() => {
+				setMessages([
+					{
+						message: 'Failed to reach the server. Please try again later.',
+						type: 'ERROR_MSG',
+					},
+				]);
+			});
+
+			if (!startResponse) return;
+
 			setChatModels(startResponse.availableModels);
 			setSystemRoles(startResponse.systemRoles);
 		} catch (err) {
@@ -278,6 +291,8 @@ function App() {
 				openResetProgressOverlay={openResetProgressOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
+				setMessages={setMessages}
+				messages={messages}
 			/>
 		</div>
 	);
