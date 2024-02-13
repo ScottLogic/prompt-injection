@@ -7,13 +7,13 @@ function handleTest(req: OpenAiChatRequest, res: Response) {
 
     if (!message || currentLevel === undefined) {
 		console.log('Missing or empty message or level');
-        res.status(400);	
+        res.send(400);	
 		return;
 	}
     else{
+        console.log('Dummy test endpoint');
         res.send(200);
     }
-	
-}
 
+}
 export { handleTest };
