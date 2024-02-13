@@ -20,7 +20,7 @@ function OverlayNav({
 			<button onClick={goToPreviousPage}>
 				<i aria-hidden>◄</i>Previous
 			</button>
-			<b>{pagination}</b>
+			<p className="pagination">{pagination}</p>
 			<button onClick={goToNextPage}>
 				Next<i aria-hidden>►</i>
 			</button>

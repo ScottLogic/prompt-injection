@@ -31,3 +31,7 @@
 	background-color: var(--overlay-tab-colour);
 	outline-color: var(--main-text-colour);
 }
+
+.overlay-nav .pagination {
+	font-weight: 700;
+}
