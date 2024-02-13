@@ -20,6 +20,7 @@ import {
 	handleClearEmails,
 	handleGetEmails,
 } from './controller/emailController';
+import { handleGetLevelState } from './controller/levelStateController';
 import {
 	handleConfigureModel,
 	handleGetModel,
@@ -93,6 +94,9 @@ router.use((req, _res, next) => {
 	}
 	next();
 });
+
+// levelState
+router.get('/levelState', handleGetLevelState);
 
 // defences
 router.get('/defence/status', handleGetDefenceStatus);
