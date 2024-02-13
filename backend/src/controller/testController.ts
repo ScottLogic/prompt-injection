@@ -1,17 +1,14 @@
 import { Response } from 'express';
 
-import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
+import { handleAddInfoToChatHistory } from '@src/controller/chatController';
+import { OpenAiAddInfoToChatHistoryRequest } from '@src/models/api/OpenAiAddInfoToChatHistoryRequest';
 
-function handleTest(req: OpenAiChatRequest, res: Response) {
-	const { message, currentLevel } = req.body;
-
-	if (!message || currentLevel === undefined) {
-		console.log('Missing or empty message or level');
-		res.send(400);
-		return;
-	} else {
-		console.log('Dummy test endpoint');
-		res.send(200);
-	}
+function handleTest(req: OpenAiAddInfoToChatHistoryRequest, res: Response) {
+    let num = 0
+    for(let x=0; x<= 1000000; x++)
+    {
+        num++;
+    }
+    handleAddInfoToChatHistory(req, res);
 }
 export { handleTest };
