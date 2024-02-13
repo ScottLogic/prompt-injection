@@ -6,7 +6,7 @@ on:
     branches:
       - main
       - dev
-      - 'feature/+'
+      - 'feature/**'
     paths:
       - 'cloud/**'
 
@@ -34,5 +34,4 @@ jobs:
           npm ci
       - name: Run Checks
         run: |
-          npm run lint
-          npm run format
+          npm run codecheck
