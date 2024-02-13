@@ -5,7 +5,6 @@ import * as emailService from './emailService';
 import * as healthService from './healthService';
 import * as levelService from './levelService';
 import * as startService from './startService';
-import * as systemRoleService from './systemRoleService';
 
 export {
 	chatService,
@@ -14,6 +13,5 @@ export {
 	emailService,
 	healthService,
 	levelService,
-	systemRoleService,
 	startService,
 };
