@@ -5,13 +5,13 @@ import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 
-export type LevelStateRequest = Request<
+export type GetStartRequest = Request<
 	never,
 	{
 		emails: EmailInfo[];
 		history: ChatMessage[];
 		defences: Defence[];
-		models: string[];
+		availableModels: string[];
 		systemRoles: string[];
 	},
 	never,

@@ -1,6 +1,6 @@
 import { Response } from 'express';
 
-import { LevelStateRequest } from '@src/models/api/LevelStateRequest';
+import { GetStartRequest } from '@src/models/api/getStartRequest';
 import { LEVEL_NAMES } from '@src/models/level';
 import { getValidOpenAIModelsList } from '@src/openai';
 import {
@@ -9,7 +9,7 @@ import {
 	systemRoleLevel3,
 } from '@src/promptTemplates';
 
-function handleStart(req: LevelStateRequest, res: Response) {
+function handleStart(req: GetStartRequest, res: Response) {
 	const level = req.query.level;
 
 	// put level into the URL to ensure type safety
@@ -24,7 +24,7 @@ function handleStart(req: LevelStateRequest, res: Response) {
 		emails: req.session.levelState[level].sentEmails,
 		history: req.session.levelState[level].chatHistory,
 		defences: req.session.levelState[level].defences,
-		models: getValidOpenAIModelsList(),
+		availableModels: getValidOpenAIModelsList(),
 		systemRoles,
 	});
 }
