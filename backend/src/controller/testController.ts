@@ -7,7 +7,7 @@ function handleTest(req: OpenAiAddInfoToChatHistoryRequest, res: Response) {
     let num = 0
     for(let x=0; x<= 1000000; x++)
     {
-        num++;
+        num = num++;
     }
     handleAddInfoToChatHistory(req, res);
 }
