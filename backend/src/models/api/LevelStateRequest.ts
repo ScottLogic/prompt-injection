@@ -11,6 +11,8 @@ export type LevelStateRequest = Request<
 		emails: EmailInfo[];
 		history: ChatMessage[];
 		defences: Defence[];
+		models: string[];
+		systemRoles: string[];
 	},
 	never,
 	{
