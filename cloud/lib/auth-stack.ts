@@ -14,12 +14,16 @@ import { Construct } from 'constructs';
 
 import { resourceName } from './resourceNamingUtils';
 
+type AuthStackProps = StackProps & {
+	webappUrl: string;
+};
+
 export class AuthStack extends Stack {
 	userPool: UserPool;
 	userPoolClient: UserPoolClient;
 	userPoolDomain: UserPoolDomain;
 
-	constructor(scope: Construct, id: string, props: StackProps) {
+	constructor(scope: Construct, id: string, props: AuthStackProps) {
 		super(scope, id, props);
 
 		const azureTenantId = process.env.AZURE_TENANT_ID;
@@ -83,6 +87,7 @@ export class AuthStack extends Stack {
 			},
 		});
 
+		const callbackUrls = [`${props.webappUrl}/`];
 		const userPoolClientName = generateResourceName('userpool-client');
 		this.userPoolClient = this.userPool.addClient(userPoolClientName, {
 			userPoolClientName,
@@ -98,8 +103,8 @@ export class AuthStack extends Stack {
 					authorizationCodeGrant: true,
 				},
 				scopes: [OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE],
-				//callbackUrls,
-				//logoutUrls: callbackUrls,
+				callbackUrls,
+				logoutUrls: callbackUrls,
 			},
 			accessTokenValidity: Duration.minutes(60),
 			idTokenValidity: Duration.minutes(60),
