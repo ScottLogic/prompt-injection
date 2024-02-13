@@ -17,3 +17,5 @@ function handleGetSystemRoles(_: Request, res: Response) {
 }
 
 export { handleGetSystemRoles };
+
+// we can probably ditch this endpoint later
