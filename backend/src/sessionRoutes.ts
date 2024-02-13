@@ -23,7 +23,6 @@ import {
 import {
 	handleConfigureModel,
 	handleGetModel,
-	handleGetValidModels,
 	handleSetModel,
 } from './controller/modelController';
 import { handleResetProgress } from './controller/resetController';
@@ -116,7 +115,6 @@ router.post('/openai/addInfoToHistory', handleAddInfoToChatHistory);
 router.post('/openai/clear', handleClearChatHistory);
 
 // model configurations
-router.get('/openai/validModels', handleGetValidModels);
 router.get('/openai/model', handleGetModel);
 router.post('/openai/model', handleSetModel);
 router.post('/openai/model/configure', handleConfigureModel);

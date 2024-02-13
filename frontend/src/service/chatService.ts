@@ -97,14 +97,6 @@ async function getGptModel(): Promise<ChatModel> {
 	return (await response.json()) as ChatModel;
 }
 
-async function getValidModels(): Promise<string[]> {
-	const response = await sendRequest(`${PATH}validModels`, { method: 'GET' });
-	const data = (await response.json()) as {
-		models: string[];
-	};
-	return data.models;
-}
-
 async function addInfoMessageToChatHistory(
 	message: string,
 	chatMessageType: CHAT_MESSAGE_TYPE,
@@ -128,7 +120,6 @@ export {
 	configureGptModel,
 	getGptModel,
 	setGptModel,
-	getValidModels,
 	getChatHistory,
 	addInfoMessageToChatHistory,
 };

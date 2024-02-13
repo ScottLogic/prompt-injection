@@ -1,10 +1,9 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 import { OpenAIGetModelRequest } from '@src/models/api/OpenAIGetModelRequest';
 import { OpenAiConfigureModelRequest } from '@src/models/api/OpenAiConfigureModelRequest';
 import { OpenAiSetModelRequest } from '@src/models/api/OpenAiSetModelRequest';
 import { MODEL_CONFIG } from '@src/models/chat';
-import { getValidOpenAIModelsList } from '@src/openai';
 
 function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 	const { model } = req.body;
@@ -37,14 +36,4 @@ function handleGetModel(req: OpenAIGetModelRequest, res: Response) {
 	res.send(req.session.chatModel);
 }
 
-function handleGetValidModels(_: Request, res: Response) {
-	const models = getValidOpenAIModelsList();
-	res.send({ models });
-}
-
-export {
-	handleSetModel,
-	handleConfigureModel,
-	handleGetModel,
-	handleGetValidModels,
-};
+export { handleSetModel, handleConfigureModel, handleGetModel };
