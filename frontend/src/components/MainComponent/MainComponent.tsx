@@ -105,21 +105,39 @@ function MainComponent({
 
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
-		// get emails for new level from the backend
-		setEmails(await emailService.getSentEmails(newLevel));
+		const emails = await emailService.getSentEmails(newLevel);
+		const chatHistory = await chatService.getChatHistory(newLevel);
+		const defences = await defenceService.getDefences(newLevel);
+		processBackendLevelData({
+			level: newLevel,
+			emails,
+			chatHistory,
+			remoteDefences: defences,
+		});
+	}
 
-		// get chat history for new level from the backend
-		const retrievedMessages = await chatService.getChatHistory(newLevel);
+	function processBackendLevelData({
+		level,
+		emails,
+		chatHistory,
+		remoteDefences,
+	}: {
+		level: LEVEL_NAMES;
+		emails: EmailInfo[];
+		chatHistory: ChatMessage[];
+		remoteDefences: Defence[];
+	}) {
+		// get emails for new level from the backend
+		setEmails(emails);
 
 		// add welcome message for levels only
-		newLevel !== LEVEL_NAMES.SANDBOX
-			? setMessagesWithWelcome(retrievedMessages)
-			: setMessages(retrievedMessages);
+		level !== LEVEL_NAMES.SANDBOX
+			? setMessagesWithWelcome(chatHistory)
+			: setMessages(chatHistory);
 
 		const defences =
-			newLevel === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
+			level === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
 		// fetch defences from backend
-		const remoteDefences = await defenceService.getDefences(newLevel);
 		defences.map((localDefence) => {
 			const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
 				return localDefence.id === remoteDefence.id;
