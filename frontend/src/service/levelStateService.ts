@@ -10,7 +10,7 @@ async function getLevelState(level: number): Promise<LevelState> {
 	});
 	const levelState = (await response.json()) as LevelState;
 
-	// add stuff here to deal ith failure cases
+	// add stuff here to deal with failure cases
 
 	return levelState;
 }
