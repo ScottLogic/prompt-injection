@@ -13,7 +13,7 @@ function OverlayNav({
 	goToPreviousPage,
 	goToNextPage,
 }: OverlayNavProps) {
-	const pagination = `Page ${currentPage +1} of ${totalPages}`;
+	const pagination = `Page ${currentPage + 1} of ${totalPages}`;
 
 	return (
 		<nav className="overlay-nav">

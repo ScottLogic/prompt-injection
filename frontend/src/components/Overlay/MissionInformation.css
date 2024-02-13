@@ -4,8 +4,8 @@
 }
 
 .mission-information .content {
-	padding: 1.5rem;
 	height: 60vh;
+	padding: 1.5rem;
 }
 
 .mission-information .text-image-container {
@@ -20,7 +20,7 @@
 	max-width: 60%;
 }
 
-.speaker-image{
+.speaker-image {
 	object-fit: contain;
 	height: 80%;
 }

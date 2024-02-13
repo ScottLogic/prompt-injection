@@ -47,7 +47,7 @@ const LEVELS: Level[] = [
 		Spy Handbook. I hope this will help you circumvent the additional security.
         Open it by clicking the Handbook icon in the top right corner. 
         I'm counting on you!`,
-			}
+			},
 		],
 	},
 	{

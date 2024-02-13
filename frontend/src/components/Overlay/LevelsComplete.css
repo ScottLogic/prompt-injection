@@ -1,24 +1,24 @@
 .content {
-    padding: 1.5rem;
-    height: 60vh;	
-    display: flex;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	overflow: auto;
-    flex-direction: column;
-    justify-content: center;
+	height: 60vh;
+	padding: 1.5rem;
 }
 
 .text-image-container {
-    display: flex;
+	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
 	width: fit-content;
 	max-height: 100%;
 }
 
-.speaker-image{
+.speaker-image {
 	object-fit: contain;
+	max-width: 20%;
 	height: 80%;
-    max-width: 20%;
 }
 
 .project-icon {
@@ -32,6 +32,6 @@
 }
 
 .content p {
-    font-weight: 500;
+	font-weight: 500;
 	font-size: 1.25rem;
 }

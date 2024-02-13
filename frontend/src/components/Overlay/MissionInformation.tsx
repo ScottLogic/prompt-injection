@@ -26,7 +26,7 @@ function MissionInformation({
 
 	const speaker = LEVELS[currentLevel].missionInfoDialogue[currentPage].speaker;
 	const text = LEVELS[currentLevel].missionInfoDialogue[currentPage].text;
-	
+
 	function goToPreviousPage() {
 		if (currentPage > 0) {
 			setCurrentPage(currentPage - 1);
@@ -39,28 +39,25 @@ function MissionInformation({
 		}
 	}
 
-
 	const imgSource =
-		speaker === 'Handler' ? Handler :
-		speaker === 'ScottBrew Manager' ? Manager :
-		speaker === 'ScottBrew Lawyer' ? Lawyer :
-		'';
-
+		speaker === 'Handler'
+			? Handler
+			: speaker === 'ScottBrew Manager'
+			? Manager
+			: speaker === 'ScottBrew Lawyer'
+			? Lawyer
+			: '';
 
 	return (
 		<Overlay closeOverlay={closeOverlay} heading={heading}>
 			<div className="mission-information">
 				<div className="content">
 					<div className="text-image-container">
-											<img
-						className="speaker-image" 
-						src={imgSource}
-						alt=""
-					/>
-					<span className="speaker-text">
-					<h2>{speaker}:</h2>
-					<p>{text}</p>
-					</span>
+						<img className="speaker-image" src={imgSource} alt="" />
+						<span className="speaker-text">
+							<h2>{speaker}:</h2>
+							<p>{text}</p>
+						</span>
 					</div>
 					{currentPage === totalPages - 1 && (
 						<div className="button-area">
@@ -70,7 +67,7 @@ function MissionInformation({
 				</div>
 			</div>
 			{totalPages > 1 && (
-				<OverlayNav 
+				<OverlayNav
 					totalPages={totalPages}
 					currentPage={currentPage}
 					goToNextPage={goToNextPage}
