@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { LEVELS } from '@src/Levels';
 import Handler from '@src/assets/images/handler.png';
-import Lawyer from '@src/assets/images/laywer.png';
+import Lawyer from '@src/assets/images/lawyer.png';
 import Manager from '@src/assets/images/manager.png';
 import OverlayButton from '@src/components/ThemedButtons/OverlayButton';
 import { LEVEL_NAMES } from '@src/models/level';
