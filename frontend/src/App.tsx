@@ -8,7 +8,7 @@ import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
-import { chatService, levelService, systemRoleService } from './service';
+import { levelService, startService } from './service';
 
 import './App.css';
 import './Theme.css';
@@ -75,13 +75,10 @@ function App() {
 	// fetch constants from the backend on app mount
 	async function loadBackendData() {
 		try {
-			console.log("Initializing app's backend data");
-			const [models, roles] = await Promise.all([
-				chatService.getValidModels(),
-				systemRoleService.getSystemRoles(),
-			]);
-			setChatModels(models);
-			setSystemRoles(roles);
+			console.log('Loading backend data on level', currentLevel);
+			const startResponse = await startService.start(currentLevel);
+			setChatModels(startResponse.models);
+			setSystemRoles(startResponse.systemRoles);
 		} catch (err) {
 			console.log(err);
 		}

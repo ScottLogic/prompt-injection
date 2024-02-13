@@ -2,7 +2,7 @@ import { startReponse } from '@src/models/level';
 
 import { sendRequest } from './backendService';
 
-const PATH = 'levelState/';
+const PATH = 'start/';
 
 async function start(level: number): Promise<startReponse> {
 	const response = await sendRequest(`${PATH}?level=${level}`, {
