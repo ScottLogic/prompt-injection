@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import { LevelStateRequest } from '@src/models/api/LevelStateRequest';
 
-function handleGetLevelState(req: LevelStateRequest, res: Response) {
+function handleStart(req: LevelStateRequest, res: Response) {
 	const level = req.query.level;
 
 	// put level into the URL to ensure type safety
@@ -14,4 +14,4 @@ function handleGetLevelState(req: LevelStateRequest, res: Response) {
 	});
 }
 
-export { handleGetLevelState };
+export { handleStart };

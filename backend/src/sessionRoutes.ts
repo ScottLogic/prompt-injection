@@ -20,7 +20,6 @@ import {
 	handleClearEmails,
 	handleGetEmails,
 } from './controller/emailController';
-import { handleGetLevelState } from './controller/levelStateController';
 import {
 	handleConfigureModel,
 	handleGetModel,
@@ -28,6 +27,7 @@ import {
 	handleSetModel,
 } from './controller/modelController';
 import { handleResetProgress } from './controller/resetController';
+import { handleStart } from './controller/startController';
 import { handleTest } from './controller/testController';
 import { ChatModel, defaultChatModel } from './models/chat';
 import { LevelState, getInitialLevelStates } from './models/level';
@@ -95,8 +95,8 @@ router.use((req, _res, next) => {
 	next();
 });
 
-// levelState
-router.get('/levelState', handleGetLevelState);
+// handshake
+router.get('/start', handleStart);
 
 // defences
 router.get('/defence/status', handleGetDefenceStatus);
