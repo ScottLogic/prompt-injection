@@ -15,7 +15,6 @@
 	width: 100%;
 	padding: 0.5rem 2rem 1.5rem;
 	padding: 2rem;
-	font-size: 0.75rem;
 }
 
 .chat-box .footer label {
@@ -66,4 +65,17 @@
 
 .chat-box .footer .control-buttons > :focus-visible {
 	outline-offset: 0.1rem;
+}
+
+@media only screen and (min-resolution: 150dpi) {
+	.chat-box .footer {
+		padding: 1rem;
+		gap: 0.5rem;
+	}
+	.chat-box .footer .control-buttons {
+		gap: 0.5rem;
+	}
+	.chat-box .footer .messages textarea {
+		padding: 0.5rem;
+	}
 }
