@@ -2,10 +2,10 @@ import { LevelState } from '@src/models/level';
 
 import { sendRequest } from './backendService';
 
-const PATH = 'reset';
+const PATH = 'levelState/';
 
 async function getLevelState(level: number): Promise<LevelState> {
-	const response = await sendRequest(`${PATH}levelState?level=${level}`, {
+	const response = await sendRequest(`${PATH}?level=${level}`, {
 		method: 'GET',
 	});
 	const levelState = (await response.json()) as LevelState;
