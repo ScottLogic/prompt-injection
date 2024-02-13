@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
+import UseIsFirstRender from '@src/hooks/useIsFirstRender';
 import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -51,9 +52,13 @@ function MainComponent({
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
+	const isFirstRender = UseIsFirstRender();
 
 	useEffect(() => {
-		void setNewLevel(currentLevel);
+		if (!isFirstRender) {
+			console.log('Loading backend data for level', currentLevel);
+			void setNewLevel(currentLevel);
+		}
 	}, [currentLevel]);
 
 	function openResetLevelOverlay() {

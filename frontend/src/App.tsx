@@ -78,7 +78,10 @@ function App() {
 	// fetch constants from the backend on app mount
 	async function loadBackendData() {
 		try {
-			console.log('Loading backend data for level', currentLevel);
+			console.log(
+				'Loading initial backend data plus data for level',
+				currentLevel
+			);
 			const startResponse = await startService.start(currentLevel).catch(() => {
 				setMessages([
 					{
