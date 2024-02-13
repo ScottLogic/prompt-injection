@@ -1,3 +1,7 @@
+import { ChatMessage } from './chat';
+import { Defence } from './defence';
+import { EmailInfo } from './email';
+
 enum LEVEL_NAMES {
 	LEVEL_1 = 0,
 	LEVEL_2,
@@ -27,5 +31,17 @@ interface LevelSystemRole {
 	systemRole: string;
 }
 
+type LevelState = {
+	emails: EmailInfo[];
+	history: ChatMessage[];
+	defences: Defence[];
+};
+
 export { LEVEL_NAMES };
-export type { DialogueLine, Level, ModeSelectButton, LevelSystemRole };
+export type {
+	DialogueLine,
+	Level,
+	ModeSelectButton,
+	LevelSystemRole,
+	LevelState,
+};
