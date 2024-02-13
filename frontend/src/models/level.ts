@@ -31,10 +31,12 @@ interface LevelSystemRole {
 	systemRole: string;
 }
 
-type LevelState = {
+type startReponse = {
 	emails: EmailInfo[];
 	history: ChatMessage[];
 	defences: Defence[];
+	models: string[];
+	systemRoles: LevelSystemRole[];
 };
 
 export { LEVEL_NAMES };
@@ -43,5 +45,5 @@ export type {
 	Level,
 	ModeSelectButton,
 	LevelSystemRole,
-	LevelState,
+	startReponse,
 };
