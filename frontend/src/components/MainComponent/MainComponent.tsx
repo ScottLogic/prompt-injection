@@ -58,6 +58,10 @@ function MainComponent({
 
 	// facilitate refresh / first render
 	useEffect(() => {
+		console.log(
+			'Loading initial backend data plus data for level',
+			currentLevel
+		);
 		void loadBackendData();
 	}, []);
 
@@ -69,35 +73,26 @@ function MainComponent({
 		}
 	}, [currentLevel]);
 
-	// fetch constants from the backend on app mount
 	async function loadBackendData() {
-		try {
-			console.log(
-				'Loading initial backend data plus data for level',
-				currentLevel
-			);
-			const startResponse = await startService.start(currentLevel).catch(() => {
-				setMessages([
-					{
-						message: 'Failed to reach the server. Please try again later.',
-						type: 'ERROR_MSG',
-					},
-				]);
-			});
+		const startResponse = await startService.start(currentLevel).catch(() => {
+			setMessages([
+				{
+					message: 'Failed to reach the server. Please try again later.',
+					type: 'ERROR_MSG',
+				},
+			]);
+		});
 
-			if (!startResponse) return;
+		if (!startResponse) return;
 
-			setChatModels(startResponse.availableModels);
-			setSystemRoles(startResponse.systemRoles);
-			processBackendLevelData(
-				currentLevel,
-				startResponse.emails,
-				startResponse.history,
-				startResponse.defences
-			);
-		} catch (err) {
-			console.log(err);
-		}
+		setChatModels(startResponse.availableModels);
+		setSystemRoles(startResponse.systemRoles);
+		processBackendLevelData(
+			currentLevel,
+			startResponse.emails,
+			startResponse.history,
+			startResponse.defences
+		);
 	}
 
 	function openResetLevelOverlay() {
