@@ -34,8 +34,6 @@ function MainComponent({
 	openResetProgressOverlay,
 	openWelcomeOverlay,
 	setCurrentLevel,
-	setMessages,
-	messages,
 	setSystemRoles,
 }: {
 	currentLevel: LEVEL_NAMES;
@@ -50,12 +48,11 @@ function MainComponent({
 	openResetProgressOverlay: () => void;
 	openWelcomeOverlay: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
-	setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>; // you can move message state back into this component
-	messages: ChatMessage[]; // you can move message state back into this component
 	setSystemRoles: React.Dispatch<React.SetStateAction<LevelSystemRole[]>>; // you can move system role state back into this component
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
+	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [chatModels, setChatModels] = useState<string[]>([]);
 	const isFirstRender = UseIsFirstRender();

@@ -7,7 +7,6 @@ import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
-import { ChatMessage } from './models/chat';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
 import { levelService } from './service';
 
@@ -31,8 +30,6 @@ function App() {
 
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
-
-	const [messages, setMessages] = useState<ChatMessage[]>([]);
 
 	function loadIsNewUser() {
 		// get isNewUser from local storage
@@ -262,8 +259,6 @@ function App() {
 				openResetProgressOverlay={openResetProgressOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
-				setMessages={setMessages}
-				messages={messages}
 				setSystemRoles={setSystemRoles}
 			/>
 		</div>
