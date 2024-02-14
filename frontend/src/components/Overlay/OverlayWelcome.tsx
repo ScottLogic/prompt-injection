@@ -83,6 +83,8 @@ function OverlayWelcome({
 					currentPage={currentPage - 1}
 					goToNextPage={goToNextPage}
 					goToPreviousPage={goToPreviousPage}
+					previousDisabled={currentPage === 1}
+					nextDisabled={currentPage === totalPages}
 				/>
 			</div>
 		</Overlay>

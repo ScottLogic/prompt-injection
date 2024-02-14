@@ -18,9 +18,13 @@
 
 .mission-information .content .speaker-text {
 	max-width: 60%;
+	margin-left: 10rem;
 }
 
 .speaker-image {
+	position: absolute;
+	top: 5rem;
+	left: 3rem;
 	object-fit: contain;
 	height: 80%;
 }
@@ -34,4 +38,10 @@
 	display: flex;
 	justify-content: center;
 	padding-bottom: 0.25rem;
+}
+
+@media (width <= 670px) {
+	h2 {
+		background-color: yellow;
+	}
 }

@@ -7,6 +7,11 @@
 	padding: 1.5rem;
 }
 
+.speaker-text {
+	max-width: 60%;
+	margin-left: 10rem;
+}
+
 .welcome h2 {
 	font-weight: 700;
 }

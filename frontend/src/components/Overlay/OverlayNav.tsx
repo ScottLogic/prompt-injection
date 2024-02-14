@@ -5,6 +5,8 @@ interface OverlayNavProps {
 	currentPage: number;
 	goToPreviousPage: () => void;
 	goToNextPage: () => void;
+	previousDisabled: boolean;
+	nextDisabled: boolean;
 }
 
 function OverlayNav({
@@ -12,18 +14,38 @@ function OverlayNav({
 	currentPage,
 	goToPreviousPage,
 	goToNextPage,
+	previousDisabled,
+	nextDisabled,
 }: OverlayNavProps) {
 	const pagination = `Page ${currentPage + 1} of ${totalPages}`;
 
 	return (
 		<nav className="overlay-nav">
-			<button onClick={goToPreviousPage}>
-				<i aria-hidden>◄</i>Previous
-			</button>
-			<p className="pagination">{pagination}</p>
-			<button onClick={goToNextPage}>
-				Next<i aria-hidden>►</i>
-			</button>
+			<div className="previous-container">
+				{!previousDisabled && (
+					<button onClick={goToPreviousPage} className="nav-buttons">
+						<span aria-hidden className="button-icon">
+							◄
+						</span>
+						Previous
+					</button>
+				)}
+			</div>
+			<p className="pagination-two">{pagination}</p>
+			<div className="next-container">
+				{!nextDisabled && (
+					<button
+						onClick={goToNextPage}
+						aria-disabled={nextDisabled}
+						className="nav-buttons next"
+					>
+						Next
+						<span aria-hidden className="button-icon">
+							►
+						</span>
+					</button>
+				)}
+			</div>
 		</nav>
 	);
 }

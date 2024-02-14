@@ -72,6 +72,8 @@ function MissionInformation({
 					currentPage={currentPage}
 					goToNextPage={goToNextPage}
 					goToPreviousPage={goToPreviousPage}
+					previousDisabled={currentPage === 0}
+					nextDisabled={currentPage === totalPages - 1}
 				/>
 			)}
 		</Overlay>
