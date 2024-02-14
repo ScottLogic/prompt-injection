@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
+import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
 import UseIsFirstRender from '@src/hooks/useIsFirstRender';
@@ -27,34 +28,32 @@ function MainComponent({
 	closeOverlay,
 	updateNumCompletedLevels,
 	openDocumentViewer,
-	openHandbook,
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
 	openOverlay,
 	openResetProgressOverlay,
 	openWelcomeOverlay,
 	setCurrentLevel,
-	setSystemRoles,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	closeOverlay: () => void;
 	updateNumCompletedLevels: (level: number) => void;
 	openDocumentViewer: () => void;
-	openHandbook: () => void;
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openOverlay: (overlayComponent: JSX.Element) => void;
 	openResetProgressOverlay: () => void;
 	openWelcomeOverlay: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
-	setSystemRoles: React.Dispatch<React.SetStateAction<LevelSystemRole[]>>; // you can move system role state back into this component
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [chatModels, setChatModels] = useState<string[]>([]);
+	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
+
 	const isFirstRender = UseIsFirstRender();
 
 	// facilitate refresh / first render
@@ -109,6 +108,17 @@ function MainComponent({
 					await resetLevel();
 					closeOverlay();
 				}}
+				closeOverlay={closeOverlay}
+			/>
+		);
+	}
+
+	function openHandbook() {
+		openOverlay(
+			<HandbookOverlay
+				currentLevel={currentLevel}
+				numCompletedLevels={numCompletedLevels}
+				systemRoles={systemRoles}
 				closeOverlay={closeOverlay}
 			/>
 		);

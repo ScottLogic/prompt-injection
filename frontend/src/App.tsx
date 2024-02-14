@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import DocumentViewBox from './components/DocumentViewer/DocumentViewBox';
-import HandbookOverlay from './components/HandbookOverlay/HandbookOverlay';
 import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
-import { LEVEL_NAMES, LevelSystemRole } from './models/level';
+import { LEVEL_NAMES } from './models/level';
 import { levelService } from './service';
 
 import './App.css';
@@ -28,7 +27,6 @@ function App() {
 		null
 	);
 
-	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
 
 	function loadIsNewUser() {
@@ -156,16 +154,7 @@ function App() {
 			/>
 		);
 	}
-	function openHandbook() {
-		openOverlay(
-			<HandbookOverlay
-				currentLevel={currentLevel}
-				numCompletedLevels={numCompletedLevels}
-				systemRoles={systemRoles}
-				closeOverlay={closeOverlay}
-			/>
-		);
-	}
+
 	function openInformationOverlay() {
 		openOverlay(
 			<MissionInformation
@@ -252,14 +241,12 @@ function App() {
 				closeOverlay={closeOverlay}
 				updateNumCompletedLevels={updateNumCompletedLevels}
 				openDocumentViewer={openDocumentViewer}
-				openHandbook={openHandbook}
 				openOverlay={openOverlay}
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openResetProgressOverlay={openResetProgressOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
-				setSystemRoles={setSystemRoles}
 			/>
 		</div>
 	);
