@@ -145,25 +145,15 @@ function MainComponent({
 		const emails = await emailService.getSentEmails(newLevel);
 		const chatHistory = await chatService.getChatHistory(newLevel);
 		const defences = await defenceService.getDefences(newLevel);
-		processBackendLevelData({
-			level: newLevel,
-			emails,
-			chatHistory,
-			remoteDefences: defences,
-		});
+		processBackendLevelData(newLevel, emails, chatHistory, defences);
 	}
 
-	function processBackendLevelData({
-		level,
-		emails,
-		chatHistory,
-		remoteDefences,
-	}: {
-		level: LEVEL_NAMES;
-		emails: EmailInfo[];
-		chatHistory: ChatMessage[];
-		remoteDefences: Defence[];
-	}) {
+	function processBackendLevelData(
+		level: LEVEL_NAMES,
+		emails: EmailInfo[],
+		chatHistory: ChatMessage[],
+		remoteDefences: Defence[]
+	) {
 		setEmails(emails);
 
 		// add welcome message for levels only
