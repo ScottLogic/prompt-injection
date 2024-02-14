@@ -32,8 +32,6 @@ function MainComponent({
 	setCurrentLevel,
 	setMessages,
 	messages,
-	mainBodyKey,
-	setMainBodyKey,
 }: {
 	chatModels: string[];
 	currentLevel: LEVEL_NAMES;
@@ -50,9 +48,8 @@ function MainComponent({
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 	setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 	messages: ChatMessage[];
-	mainBodyKey: number;
-	setMainBodyKey: (key: number) => void;
 }) {
+	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const isFirstRender = UseIsFirstRender();
@@ -159,7 +156,7 @@ function MainComponent({
 			return localDefence;
 		});
 		setDefencesToShow(defences);
-		setMainBodyKey(mainBodyKey + 1);
+		setMainBodyKey(MainBodyKey + 1);
 	}
 
 	function addInfoMessage(message: string) {
@@ -292,7 +289,7 @@ function MainComponent({
 				/>
 			)}
 			<MainBody
-				key={mainBodyKey}
+				key={MainBodyKey}
 				currentLevel={currentLevel}
 				defences={defencesToShow}
 				chatModels={chatModels}

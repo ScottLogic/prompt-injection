@@ -32,7 +32,6 @@ function App() {
 	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
-	const [mainBodyKey, setMainBodyKey] = useState<number>(0); // instead of rerendering mainBody, we could just rerender mainComponent
 
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 
@@ -297,8 +296,6 @@ function App() {
 				setCurrentLevel={setCurrentLevel}
 				setMessages={setMessages}
 				messages={messages}
-				mainBodyKey={mainBodyKey}
-				setMainBodyKey={setMainBodyKey}
 			/>
 		</div>
 	);
