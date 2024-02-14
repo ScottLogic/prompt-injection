@@ -31,7 +31,7 @@ function OverlayNav({
 					</button>
 				)}
 			</div>
-			<p className="pagination-two">{pagination}</p>
+			<p >{pagination}</p>
 			<div className="next-container">
 				{!nextDisabled && (
 					<button

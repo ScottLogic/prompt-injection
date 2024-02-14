@@ -43,9 +43,25 @@
 }
 
 @media (width <= 670px) {
+	.overlay-header {
+		max-height: fit-content;
+				margin: 0;	
+				padding: 0;
+				display: inline- block;
+		background-color: yellow;
+	}
+
+	.overlay-header h1 {
+		background-color: green;
+		margin: 0;	
+		display: flex;
+	}
+	
 	.overlay-header button {
 		gap: 0;
 		padding: 0.125rem;
+		background-color: blue;
+		margin: 0;
 	}
 
 	.overlay-close-icon {

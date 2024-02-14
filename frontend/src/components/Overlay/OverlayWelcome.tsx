@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
 import BotAvatarDefault from '@src/assets/images/BotAvatarDefault.svg';
-// import ProjectIconDark from '@src/assets/images/ProjectIconDark';
 import StartLevelButtons from '@src/components/ThemedButtons/StartLevelButtons';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import Overlay from './Overlay';
 import OverlayNav from './OverlayNav';
 
+import './Overlay.css';
 import './OverlayWelcome.css';
 
 function OverlayWelcome({
@@ -36,12 +36,16 @@ function OverlayWelcome({
 
 	return (
 		<Overlay closeOverlay={closeOverlay} heading="Getting Started">
-			<div className="welcome">
-				{currentPage === 1 && (
-					<div className="content">
-						<div className="text-image-container">
-							<img className="speaker-image" src={BotAvatarDefault} alt="" />
-							<span className="speaker-text">
+			{currentPage === 1 && (
+				<div className="multi-page-container">
+					<div className="multi-page-content">
+						<div className="multi-page-text-image-container">
+							<img
+								className="multi-page-speaker-image"
+								src={BotAvatarDefault}
+								alt=""
+							/>
+							<span className="multi-page-speaker-text">
 								<h2>Welcome to Spy Logic!</h2>
 								<p>
 									This is an app we developed to teach you about AI chat system
@@ -52,12 +56,18 @@ function OverlayWelcome({
 							</span>
 						</div>
 					</div>
-				)}
-				{currentPage === 2 && (
-					<div className="content">
-						<div className="text-image-container">
-							<img className="speaker-image" src={BotAvatarDefault} alt="" />
-							<span className="speaker-text">
+				</div>
+			)}
+			{currentPage === 2 && (
+				<div className="multi-page-container">
+					<div className="multi-page-content">
+						<div className="multi-page-text-image-container">
+							<img
+								className="multi-page-speaker-image"
+								src={BotAvatarDefault}
+								alt=""
+							/>
+							<span className="multi-page-speaker-text">
 								<h2>Your mission</h2>
 								<p>
 									You have joined the popular soft drink producer ScottBrew as a
@@ -70,23 +80,23 @@ function OverlayWelcome({
 									from the beginning, or are you an expert spy, and would prefer
 									to jump straight in at the sandbox?
 								</p>
+								<StartLevelButtons
+									currentLevel={currentLevel}
+									setStartLevel={setStartLevel}
+								/>
 							</span>
 						</div>
-						<StartLevelButtons
-							currentLevel={currentLevel}
-							setStartLevel={setStartLevel}
-						/>
 					</div>
-				)}
-				<OverlayNav
-					totalPages={totalPages}
-					currentPage={currentPage - 1}
-					goToNextPage={goToNextPage}
-					goToPreviousPage={goToPreviousPage}
-					previousDisabled={currentPage === 1}
-					nextDisabled={currentPage === totalPages}
-				/>
-			</div>
+				</div>
+			)}
+			<OverlayNav
+				totalPages={totalPages}
+				currentPage={currentPage - 1}
+				goToNextPage={goToNextPage}
+				goToPreviousPage={goToPreviousPage}
+				previousDisabled={currentPage === 1}
+				nextDisabled={currentPage === totalPages}
+			/>
 		</Overlay>
 	);
 }

@@ -1,17 +1,3 @@
-.welcome {
-	overflow-y: auto;
-}
-
-.welcome .content {
-	height: 60vh;
-	padding: 1.5rem;
-}
-
-.speaker-text {
-	max-width: 60%;
-	margin-left: 10rem;
-}
-
 .welcome h2 {
 	font-weight: 700;
 }
@@ -23,10 +9,4 @@
 .welcome p {
 	font-weight: 500;
 	font-size: 1.25rem;
-}
-
-.welcome .project-icon {
-	display: flex;
-	justify-content: center;
-	height: 6rem;
 }

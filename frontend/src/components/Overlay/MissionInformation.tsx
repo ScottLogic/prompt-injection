@@ -11,6 +11,7 @@ import Overlay from './Overlay';
 import OverlayNav from './OverlayNav';
 
 import './MissionInformation.css';
+import './Overlay.css';
 
 function MissionInformation({
 	currentLevel,
@@ -19,7 +20,7 @@ function MissionInformation({
 	currentLevel: LEVEL_NAMES;
 	closeOverlay: () => void;
 }) {
-	const heading = `${LEVELS[currentLevel].name} Mission Information`;
+	const heading = `${LEVELS[currentLevel].name} Mission Info`;
 
 	const [currentPage, setCurrentPage] = useState<number>(0);
 	const totalPages = LEVELS[currentLevel].missionInfoDialogue.length;
@@ -50,20 +51,20 @@ function MissionInformation({
 
 	return (
 		<Overlay closeOverlay={closeOverlay} heading={heading}>
-			<div className="mission-information">
-				<div className="content">
-					<div className="text-image-container">
-						<img className="speaker-image" src={imgSource} alt="" />
-						<span className="speaker-text">
+			<div className="multi-page-container">
+				<div className="multi-page-content">
+					<div className="multi-page-text-image-container">
+						<img className="multi-page-speaker-image" src={imgSource} alt="" />
+						<span className="multi-page-speaker-text">
 							<h2>{speaker}:</h2>
 							<p>{text}</p>
+							{currentPage === totalPages - 1 && (
+								<div className="button-area">
+									<OverlayButton onClick={closeOverlay}>OK</OverlayButton>
+								</div>
+							)}
 						</span>
 					</div>
-					{currentPage === totalPages - 1 && (
-						<div className="button-area">
-							<OverlayButton onClick={closeOverlay}>OK</OverlayButton>
-						</div>
-					)}
 				</div>
 			</div>
 			{totalPages > 1 && (
