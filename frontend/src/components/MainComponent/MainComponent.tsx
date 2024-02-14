@@ -7,8 +7,13 @@ import UseIsFirstRender from '@src/hooks/useIsFirstRender';
 import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
-import { LEVEL_NAMES } from '@src/models/level';
-import { chatService, defenceService, emailService } from '@src/service';
+import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
+import {
+	chatService,
+	defenceService,
+	emailService,
+	startService,
+} from '@src/service';
 
 import MainBody from './MainBody';
 import MainFooter from './MainFooter';
@@ -17,7 +22,6 @@ import MainHeader from './MainHeader';
 import './MainComponent.css';
 
 function MainComponent({
-	chatModels,
 	currentLevel,
 	numCompletedLevels,
 	closeOverlay,
@@ -32,8 +36,8 @@ function MainComponent({
 	setCurrentLevel,
 	setMessages,
 	messages,
+	setSystemRoles,
 }: {
-	chatModels: string[];
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	closeOverlay: () => void;
@@ -46,20 +50,53 @@ function MainComponent({
 	openResetProgressOverlay: () => void;
 	openWelcomeOverlay: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
-	setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
-	messages: ChatMessage[];
+	setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>; // you can move message state back into this component
+	messages: ChatMessage[]; // you can move message state back into this component
+	setSystemRoles: React.Dispatch<React.SetStateAction<LevelSystemRole[]>>; // you can move system role state back into this component
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
+	const [chatModels, setChatModels] = useState<string[]>([]);
 	const isFirstRender = UseIsFirstRender();
 
+	// facilitate refresh / first render
+	useEffect(() => {
+		void loadBackendData();
+	}, []);
+
+	// facilitate level change
 	useEffect(() => {
 		if (!isFirstRender) {
 			console.log('Loading backend data for level', currentLevel);
 			void setNewLevel(currentLevel);
 		}
 	}, [currentLevel]);
+
+	// fetch constants from the backend on app mount
+	async function loadBackendData() {
+		try {
+			console.log(
+				'Loading initial backend data plus data for level',
+				currentLevel
+			);
+			const startResponse = await startService.start(currentLevel).catch(() => {
+				setMessages([
+					{
+						message: 'Failed to reach the server. Please try again later.',
+						type: 'ERROR_MSG',
+					},
+				]);
+			});
+
+			if (!startResponse) return;
+
+			setChatModels(startResponse.availableModels);
+			setSystemRoles(startResponse.systemRoles);
+		} catch (err) {
+			console.log(err);
+		}
+	}
 
 	function openResetLevelOverlay() {
 		openOverlay(

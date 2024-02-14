@@ -9,7 +9,7 @@ import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { ChatMessage } from './models/chat';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
-import { levelService, startService } from './service';
+import { levelService } from './service';
 
 import './App.css';
 import './Theme.css';
@@ -29,7 +29,6 @@ function App() {
 		null
 	);
 
-	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
 
@@ -75,31 +74,6 @@ function App() {
 		setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
 	}
 
-	// fetch constants from the backend on app mount
-	async function loadBackendData() {
-		try {
-			console.log(
-				'Loading initial backend data plus data for level',
-				currentLevel
-			);
-			const startResponse = await startService.start(currentLevel).catch(() => {
-				setMessages([
-					{
-						message: 'Failed to reach the server. Please try again later.',
-						type: 'ERROR_MSG',
-					},
-				]);
-			});
-
-			if (!startResponse) return;
-
-			setChatModels(startResponse.availableModels);
-			setSystemRoles(startResponse.systemRoles);
-		} catch (err) {
-			console.log(err);
-		}
-	}
-
 	useEffect(() => {
 		// save number of completed levels to local storage
 		localStorage.setItem('numCompletedLevels', numCompletedLevels.toString());
@@ -128,11 +102,6 @@ function App() {
 			openWelcomeOverlay();
 		}
 	}, [isNewUser]);
-
-	// load the system constants from backend on app mount
-	useEffect(() => {
-		void loadBackendData();
-	}, []);
 
 	useEffect(() => {
 		// must re-bind event listener after changing overlay type
@@ -283,7 +252,6 @@ function App() {
 				key={mainComponentKey}
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
-				chatModels={chatModels}
 				closeOverlay={closeOverlay}
 				updateNumCompletedLevels={updateNumCompletedLevels}
 				openDocumentViewer={openDocumentViewer}
@@ -296,6 +264,7 @@ function App() {
 				setCurrentLevel={setCurrentLevel}
 				setMessages={setMessages}
 				messages={messages}
+				setSystemRoles={setSystemRoles}
 			/>
 		</div>
 	);
