@@ -11,8 +11,6 @@ async function start(level: number) {
 	});
 	const startResponse = (await response.json()) as StartReponse;
 
-	// add stuff here to deal with failure cases
-
 	return {
 		emails: startResponse.emails,
 		history: getChatMessagesFromDTOResponse(startResponse.history),
