@@ -1,7 +1,3 @@
-import { ChatMessageDTO } from './chat';
-import { Defence } from './defence';
-import { EmailInfo } from './email';
-
 enum LEVEL_NAMES {
 	LEVEL_1 = 0,
 	LEVEL_2,
@@ -31,20 +27,5 @@ interface LevelSystemRole {
 	systemRole: string;
 }
 
-// this should live somewhere else
-type startReponse = {
-	emails: EmailInfo[];
-	history: ChatMessageDTO[];
-	defences: Defence[];
-	availableModels: string[];
-	systemRoles: LevelSystemRole[];
-};
-
 export { LEVEL_NAMES };
-export type {
-	DialogueLine,
-	Level,
-	ModeSelectButton,
-	LevelSystemRole,
-	startReponse as StartReponse,
-};
+export type { DialogueLine, Level, ModeSelectButton, LevelSystemRole };

@@ -1,4 +1,4 @@
-import { StartReponse } from '@src/models/level';
+import { StartReponse } from '@src/models/combined';
 
 import { sendRequest } from './backendService';
 import { getChatMessagesFromDTOResponse } from './chatService';

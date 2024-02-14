@@ -12,8 +12,6 @@ import {
 function handleStart(req: GetStartRequest, res: Response) {
 	const level = req.query.level;
 
-	// put level into the URL to ensure type safety
-
 	const systemRoles = [
 		{ level: LEVEL_NAMES.LEVEL_1, systemRole: systemRoleLevel1 },
 		{ level: LEVEL_NAMES.LEVEL_2, systemRole: systemRoleLevel2 },
