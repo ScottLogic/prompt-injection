@@ -67,14 +67,16 @@
 	outline-offset: 0.1rem;
 }
 
-@media only screen and (min-resolution: 150dpi) {
+@media only screen and (resolution >= 150dpi) {
 	.chat-box .footer {
-		padding: 1rem;
 		gap: 0.5rem;
+		padding: 1rem;
 	}
+
 	.chat-box .footer .control-buttons {
 		gap: 0.5rem;
 	}
+
 	.chat-box .footer .messages textarea {
 		padding: 0.5rem;
 	}

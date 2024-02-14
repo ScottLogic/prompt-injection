@@ -41,10 +41,11 @@
 	padding: 0 0.75rem;
 }
 
-@media only screen and (min-resolution: 150dpi) {
+@media only screen and (resolution >= 150dpi) {
 	.main-footer {
 		height: 2rem;
 	}
+
 	.main-footer a svg {
 		height: 1.75rem;
 	}
