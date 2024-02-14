@@ -66,6 +66,10 @@ async function getChatHistory(level: number): Promise<ChatMessage[]> {
 	});
 	const chatMessageDTOs = (await response.json()) as ChatMessageDTO[];
 
+	return getChatMessagesFromDTOResponse(chatMessageDTOs);
+}
+
+function getChatMessagesFromDTOResponse(chatMessageDTOs: ChatMessageDTO[]) {
 	return chatMessageDTOs
 		.filter(chatMessageDTOIsConvertible)
 		.map(makeChatMessageFromDTO);
@@ -122,4 +126,5 @@ export {
 	setGptModel,
 	getChatHistory,
 	addInfoMessageToChatHistory,
+	getChatMessagesFromDTOResponse,
 };

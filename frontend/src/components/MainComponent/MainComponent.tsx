@@ -93,6 +93,12 @@ function MainComponent({
 
 			setChatModels(startResponse.availableModels);
 			setSystemRoles(startResponse.systemRoles);
+			processBackendLevelData(
+				currentLevel,
+				startResponse.emails,
+				startResponse.history,
+				startResponse.defences
+			);
 		} catch (err) {
 			console.log(err);
 		}

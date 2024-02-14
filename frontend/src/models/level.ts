@@ -1,4 +1,4 @@
-import { ChatMessage } from './chat';
+import { ChatMessageDTO } from './chat';
 import { Defence } from './defence';
 import { EmailInfo } from './email';
 
@@ -31,9 +31,10 @@ interface LevelSystemRole {
 	systemRole: string;
 }
 
+// this should live somewhere else
 type startReponse = {
 	emails: EmailInfo[];
-	history: ChatMessage[];
+	history: ChatMessageDTO[];
 	defences: Defence[];
 	availableModels: string[];
 	systemRoles: LevelSystemRole[];
@@ -45,5 +46,5 @@ export type {
 	Level,
 	ModeSelectButton,
 	LevelSystemRole,
-	startReponse,
+	startReponse as StartReponse,
 };
