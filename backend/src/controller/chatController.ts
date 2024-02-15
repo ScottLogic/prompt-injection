@@ -100,6 +100,8 @@ async function handleChatWithoutDefenceDetection(
 	chatHistory: ChatMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
+	console.log(`User message: '${message}'`);
+
 	const updatedChatHistory = createNewUserMessages(message).reduce(
 		pushMessageToHistory,
 		chatHistory
