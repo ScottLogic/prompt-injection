@@ -7,11 +7,19 @@
 	border-radius: 0.5rem;
 	background-color: var(--overlay-background-colour);
 	font-weight: 700;
-	font-size: 1.25rem;
-	line-height: 1;
+	/* font-size: 1.25rem; */
 	transition: ease 0.1s;
 }
 
 .overlay-button:hover {
 	background-color: var(--overlay-tab-colour);
+}
+
+@media (width <= 700px) {
+.overlay-button {
+		gap: 0;
+		padding: 0.5rem;
+		background-color: antiquewhite;
+		/* height: fit-content; */
+	}
 }

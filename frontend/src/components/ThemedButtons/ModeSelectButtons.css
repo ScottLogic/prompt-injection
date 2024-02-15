@@ -1,8 +1,8 @@
 .mode-selection-buttons {
 	display: flex;
-	gap: 5rem;
-	justify-content: center;
+	justify-content: space-evenly;
 	padding: 0;
+	margin-top: 0.5rem;
 	list-style: none;
 }
 
@@ -10,7 +10,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 1rem 3rem;
+	padding: 1rem 2rem;
 	border: 0.0625rem solid var(--overlay-tab-colour);
 	border-radius: 0.5rem;
 	background-color: var(--overlay-background-colour);
@@ -18,6 +18,8 @@
 	font-size: 1.25rem;
 	line-height: 1;
 	transition: ease 0.1s;
+	white-space: nowrap;
+	margin: 0;
 }
 
 .mode-selection-buttons .mode-button.selected {
@@ -30,4 +32,10 @@
 
 .mode-selection-buttons button:focus-visible {
 	background-color: var(--overlay-tab-colour);
+}
+
+@media (width < 1400px) {
+	.mode-selection-buttons .mode-button {
+		padding: 0.5rem;
+	}
 }

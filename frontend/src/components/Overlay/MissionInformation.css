@@ -3,9 +3,3 @@
 	justify-content: center;
 	padding-bottom: 0.25rem;
 }
-
-@media (width <= 670px) {
-	h2 {
-		background-color: yellow;
-	}
-}

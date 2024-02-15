@@ -68,3 +68,9 @@ hr {
 	border-top: 0.0625rem solid black;
 	border-bottom: transparent;
 }
+
+@media (width <= 1000px) {
+	.dialog-modal {
+		max-height: 95%;
+	}
+}

@@ -57,7 +57,11 @@ function LevelsComplete({
 				<div className="multi-page-container">
 					<div className="multi-page-content">
 						<div className="multi-page-text-image-container">
-							<img className="multi-page-speaker-image" src={BotAvatarDefault} alt="" />
+							<img
+								className="multi-page-speaker-image"
+								src={BotAvatarDefault}
+								alt=""
+							/>
 							<span className="multi-page-speaker-text">
 								<h2>You&apos;ve completed the story mode</h2>
 								<p>

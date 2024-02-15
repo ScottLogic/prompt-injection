@@ -8,6 +8,12 @@
 
 .overlay-choice p {
 	margin-top: 0;
-	font-weight: 500;
-	font-size: 1.25rem;
+	
+}
+
+@media (width <= 700px) {
+.overlay-choice {
+		gap: 0;
+		padding: 0;
+	}
 }
