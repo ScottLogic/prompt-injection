@@ -113,8 +113,7 @@ const getOpenAIKey = (() => {
  */
 async function getValidModelsFromOpenAI() {
 	try {
-		const openAI = getOpenAI();
-		const models: OpenAI.ModelsPage = await openAI.models.list();
+		const models: OpenAI.ModelsPage = await getOpenAI().models.list();
 
 		// get the model ids that are supported by our app
 		const validModels = models.data
@@ -132,8 +131,7 @@ async function getValidModelsFromOpenAI() {
 }
 
 function getOpenAI() {
-	const apiKey = getOpenAIKey();
-	return new OpenAI({ apiKey });
+	return new OpenAI({ apiKey: getOpenAIKey() });
 }
 
 function isChatGptFunction(functionName: string) {
@@ -239,8 +237,7 @@ async function chatGptCallFunction(
 
 async function chatGptChatCompletion(
 	chatHistory: ChatMessage[],
-	chatModel: ChatModel,
-	openai: OpenAI
+	chatModel: ChatModel
 ) {
 	const updatedChatHistory = [...chatHistory];
 
@@ -250,7 +247,7 @@ async function chatGptChatCompletion(
 	console.debug('Calling OpenAI chat completion...');
 
 	try {
-		const chat_completion = await openai.chat.completions.create({
+		const chat_completion = await getOpenAI().chat.completions.create({
 			model: chatModel.id,
 			temperature: chatModel.configuration.temperature,
 			top_p: chatModel.configuration.topP,
@@ -367,15 +364,10 @@ async function getFinalReplyAfterAllToolCalls(
 	const sentEmails = [];
 	let wonLevel = false;
 
-	const openai = getOpenAI();
 	let gptReply: ChatGptReply | null = null;
 
 	do {
-		gptReply = await chatGptChatCompletion(
-			updatedChatHistory,
-			chatModel,
-			openai
-		);
+		gptReply = await chatGptChatCompletion(updatedChatHistory, chatModel);
 		updatedChatHistory = gptReply.chatHistory;
 
 		if (gptReply.completion?.tool_calls) {
