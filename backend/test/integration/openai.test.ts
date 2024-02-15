@@ -19,17 +19,14 @@ jest.mock('openai', () => ({
 	})),
 }));
 
-// mock the queryPromptEvaluationModel function
+// mock the evaluatePrompt function
 jest.mock('@src/langchain', () => {
 	const originalModule =
 		jest.requireActual<typeof import('@src/langchain')>('@src/langchain');
 	return {
 		...originalModule,
-		queryPromptEvaluationModel: () => {
-			return {
-				isMalicious: false,
-				reason: '',
-			};
+		evaluatePrompt: () => {
+			return false;
 		},
 	};
 });

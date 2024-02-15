@@ -709,7 +709,6 @@ describe('handleChatToGPT unit tests', () => {
 				[...existingHistory, ...newTransformationChatMessages],
 				[],
 				mockChatModel,
-				'[pre message] hello bot [post message]',
 				LEVEL_NAMES.SANDBOX
 			);
 
