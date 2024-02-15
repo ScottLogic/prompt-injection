@@ -1,6 +1,6 @@
 import {
 	CHAT_MESSAGE_TYPE,
-	ChatHistoryMessage,
+	ChatMessageDTO,
 	ChatMessage,
 	ChatModel,
 	ChatResponse,
@@ -33,45 +33,42 @@ async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 	return data;
 }
 
+function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
+	if (!chatMessageDTOIsConvertible(chatMessageDTO)) {
+		throw new Error(
+			'Cannot convert chatMessageDTO of type SYSTEM or FUNCTION_CALL to ChatMessage'
+		);
+	}
+
+	const type = chatMessageDTO.chatMessageType;
+	return {
+		transformedMessage: chatMessageDTO.transformedMessage ?? undefined,
+		message:
+			type === 'USER'
+				? chatMessageDTO.completion?.content ?? chatMessageDTO.infoMessage ?? ''
+				: type === 'BOT' || type === 'USER_TRANSFORMED'
+				? chatMessageDTO.completion?.content ?? ''
+				: chatMessageDTO.infoMessage ?? '',
+		type,
+	};
+}
+
+function chatMessageDTOIsConvertible(chatMessageDTO: ChatMessageDTO) {
+	return (
+		chatMessageDTO.chatMessageType !== 'SYSTEM' &&
+		chatMessageDTO.chatMessageType !== 'FUNCTION_CALL'
+	);
+}
+
 async function getChatHistory(level: number): Promise<ChatMessage[]> {
 	const response = await sendRequest(`${PATH}history?level=${level}`, {
 		method: 'GET',
 	});
-	const chatHistory = (await response.json()) as ChatHistoryMessage[];
-	// convert to ChatMessage object
-	const chatMessages: ChatMessage[] = [];
-	chatHistory.forEach((message) => {
-		switch (message.chatMessageType) {
-			case CHAT_MESSAGE_TYPE.USER:
-				chatMessages.push({
-					message: message.completion?.content ?? message.infoMessage ?? '',
-					type: message.chatMessageType,
-				});
-				break;
-			case CHAT_MESSAGE_TYPE.BOT:
-			case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
-				chatMessages.push({
-					message: message.completion?.content ?? '',
-					type: message.chatMessageType,
-				});
-				break;
-			case CHAT_MESSAGE_TYPE.INFO:
-			case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
-			case CHAT_MESSAGE_TYPE.LEVEL_INFO:
-			case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
-			case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
-			case CHAT_MESSAGE_TYPE.RESET_LEVEL:
-			case CHAT_MESSAGE_TYPE.ERROR_MSG:
-				chatMessages.push({
-					message: message.infoMessage ?? '',
-					type: message.chatMessageType,
-				});
-				break;
-			default:
-				break;
-		}
-	});
-	return chatMessages;
+	const chatMessageDTOs = (await response.json()) as ChatMessageDTO[];
+
+	return chatMessageDTOs
+		.filter(chatMessageDTOIsConvertible)
+		.map(makeChatMessageFromDTO);
 }
 
 async function setGptModel(model: string): Promise<boolean> {
@@ -108,16 +105,16 @@ async function getValidModels(): Promise<string[]> {
 	return data.models;
 }
 
-async function addMessageToChatHistory(
+async function addInfoMessageToChatHistory(
 	message: string,
 	chatMessageType: CHAT_MESSAGE_TYPE,
 	level: number
 ) {
-	const response = await sendRequest(`${PATH}addHistory`, {
+	const response = await sendRequest(`${PATH}addInfoToHistory`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			message,
+			infoMessage: message,
 			chatMessageType,
 			level,
 		}),
@@ -133,5 +130,5 @@ export {
 	setGptModel,
 	getValidModels,
 	getChatHistory,
-	addMessageToChatHistory,
+	addInfoMessageToChatHistory,
 };

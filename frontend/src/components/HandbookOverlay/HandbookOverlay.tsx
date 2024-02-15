@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react';
 
+import OverlayHeader from '@src/components/Overlay/OverlayHeader';
 import useIsOverflow from '@src/hooks/useIsOverflow';
 import { HANDBOOK_PAGES } from '@src/models/handbook';
 import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
 
-import HandbookCloseIcon from './HandbookCloseIcon';
 import HandbookSpine from './HandbookSpine';
 import HandbookAttacks from './Pages/HandbookAttacks';
 import HandbookGlossary from './Pages/HandbookGlossary';
@@ -44,27 +44,23 @@ function HandbookOverlay({
 
 	return (
 		<div className="handbook-overlay">
-			<button
-				className="prompt-injection-min-button close-button"
-				aria-label="close the handbook"
-				onClick={closeOverlay}
-			>
-				<HandbookCloseIcon />
-			</button>
-			<HandbookSpine
-				currentLevel={currentLevel}
-				currentPage={selectedPage}
-				selectPage={setSelectedPage}
-			/>
-			<div
-				id={`handbook-page-${selectedPage}`}
-				className="content"
-				role="tabpanel"
-				ref={handBookPageContainer}
-				tabIndex={isOverflow ? 0 : undefined}
-				aria-labelledby={`handbook-tab-${selectedPage}`}
-			>
-				{pageContent}
+			<OverlayHeader closeOverlay={closeOverlay} heading="Handbook" />
+			<div className="handbook">
+				<HandbookSpine
+					currentLevel={currentLevel}
+					currentPage={selectedPage}
+					selectPage={setSelectedPage}
+				/>
+				<div
+					id={`handbook-page-${selectedPage}`}
+					className="handbook-page"
+					role="tabpanel"
+					ref={handBookPageContainer}
+					tabIndex={isOverflow ? 0 : undefined}
+					aria-labelledby={`handbook-tab-${selectedPage}`}
+				>
+					{pageContent}
+				</div>
 			</div>
 		</div>
 	);

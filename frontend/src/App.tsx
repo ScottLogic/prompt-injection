@@ -8,9 +8,7 @@ import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { LEVEL_NAMES, LevelSystemRole } from './models/level';
-import { getValidModels } from './service/chatService';
-import { resetAllLevelProgress } from './service/levelService';
-import { getSystemRoles } from './service/systemRoleService';
+import { chatService, levelService, systemRoleService } from './service';
 
 import './App.css';
 import './Theme.css';
@@ -70,7 +68,7 @@ function App() {
 		}
 	}
 
-	function incrementNumCompletedLevels(completedLevel: LEVEL_NAMES) {
+	function updateNumCompletedLevels(completedLevel: LEVEL_NAMES) {
 		setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
 	}
 
@@ -79,8 +77,8 @@ function App() {
 		try {
 			console.log("Initializing app's backend data");
 			const [models, roles] = await Promise.all([
-				getValidModels(),
-				getSystemRoles(),
+				chatService.getValidModels(),
+				systemRoleService.getSystemRoles(),
 			]);
 			setChatModels(models);
 			setSystemRoles(roles);
@@ -239,7 +237,7 @@ function App() {
 		console.log('resetting progress for all levels');
 
 		// reset on the backend
-		await resetAllLevelProgress();
+		await levelService.resetAllLevelProgress();
 
 		localStorage.setItem('numCompletedLevels', '0');
 		setNumCompletedLevels(0);
@@ -274,7 +272,7 @@ function App() {
 				numCompletedLevels={numCompletedLevels}
 				chatModels={chatModels}
 				closeOverlay={closeOverlay}
-				incrementNumCompletedLevels={incrementNumCompletedLevels}
+				updateNumCompletedLevels={updateNumCompletedLevels}
 				openDocumentViewer={openDocumentViewer}
 				openHandbook={openHandbook}
 				openOverlay={openOverlay}

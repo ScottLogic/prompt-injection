@@ -18,7 +18,7 @@ function ModeSelectButtons({
 	}
 
 	return (
-		<ul className="mode-selection-buttons" aria-label="mode selector">
+		<ul className="mode-selection-buttons">
 			{modeButtons.map((modeButton) => (
 				<li
 					key={modeButton.targetLevel}

@@ -1,19 +1,14 @@
 import { expect, jest, test, describe } from '@jest/globals';
 
 import { defaultDefences } from '@src/defaultDefences';
-import {
-	CHAT_MESSAGE_TYPE,
-	CHAT_MODELS,
-	ChatHistoryMessage,
-	ChatModel,
-} from '@src/models/chat';
+import { CHAT_MODELS, ChatModel } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { chatGptSendMessage } from '@src/openai';
 
 const mockCreateChatCompletion =
 	jest.fn<() => Promise<ReturnType<typeof chatResponseAssistant>>>();
 
-// Mock the OpenAI api class
 jest.mock('openai', () => ({
 	OpenAI: jest.fn().mockImplementation(() => ({
 		chat: {
@@ -54,9 +49,9 @@ function chatResponseAssistant(content: string) {
 
 describe('OpenAI Integration Tests', () => {
 	test('GIVEN OpenAI initialised WHEN sending message THEN reply is returned', async () => {
-		const chatHistoryWithMessage: ChatHistoryMessage[] = [
+		const chatHistoryWithMessage: ChatMessage[] = [
 			{
-				chatMessageType: CHAT_MESSAGE_TYPE.USER,
+				chatMessageType: 'USER',
 				completion: {
 					role: 'user',
 					content: 'Hi',
@@ -74,10 +69,8 @@ describe('OpenAI Integration Tests', () => {
 			},
 		};
 
-		// Mock the createChatCompletion function
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
 
-		// send the message
 		const reply = await chatGptSendMessage(
 			chatHistoryWithMessage,
 			defences,
@@ -88,7 +81,6 @@ describe('OpenAI Integration Tests', () => {
 		expect(reply.chatResponse.completion).toBeDefined();
 		expect(reply.chatResponse.completion?.content).toBe('Hi');
 
-		// restore the mock
 		mockCreateChatCompletion.mockRestore();
 	});
 });

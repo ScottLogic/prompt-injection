@@ -9,15 +9,14 @@ import { isDefenceActive, getQAPromptFromConfig } from './defence';
 import { sendEmail } from './email';
 import { queryDocuments } from './langchain';
 import {
-	CHAT_MESSAGE_TYPE,
 	CHAT_MODELS,
 	ChatGptReply,
-	ChatHistoryMessage,
 	ChatModel,
 	ChatResponse,
 	FunctionCallResponse,
 	ToolCallResponse,
 } from './models/chat';
+import { ChatMessage } from './models/chatMessage';
 import { DEFENCE_ID, Defence } from './models/defence';
 import { EmailResponse } from './models/email';
 import { LEVEL_NAMES } from './models/level';
@@ -101,7 +100,7 @@ const getOpenAIKey = (() => {
 			openAIKey = process.env.OPENAI_API_KEY;
 			if (!openAIKey) {
 				throw new Error(
-					'OpenAI API key not found in environment vars - cannot continue!'
+					'OPENAI_API_KEY not found in environment vars, cannot continue!'
 				);
 			}
 		}
@@ -239,7 +238,7 @@ async function chatGptCallFunction(
 }
 
 async function chatGptChatCompletion(
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	chatModel: ChatModel,
 	openai: OpenAI
 ) {
@@ -292,15 +291,18 @@ async function chatGptChatCompletion(
 }
 
 function getChatCompletionsInLimitedContextWindow(
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	gptModel: CHAT_MODELS
 ): ChatCompletionMessageParam[] {
-	const completions: ChatCompletionMessageParam[] =
-		chatHistory.length > 0
-			? (chatHistory
-					.filter((message) => message.completion !== null)
-					.map((message) => message.completion) as ChatCompletionMessageParam[])
-			: [];
+	const completions = chatHistory.reduce<ChatCompletionMessageParam[]>(
+		(result, chatMessage) => {
+			if ('completion' in chatMessage && chatMessage.completion) {
+				result.push(chatMessage.completion);
+			}
+			return result;
+		},
+		[]
+	);
 
 	console.debug(
 		'Number of tokens in total chat history. prompt_tokens=',
@@ -324,7 +326,7 @@ function getChatCompletionsInLimitedContextWindow(
 
 async function performToolCalls(
 	toolCalls: ChatCompletionMessageToolCall[],
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[],
 	currentLevel: LEVEL_NAMES
 ): Promise<ToolCallResponse> {
@@ -344,7 +346,7 @@ async function performToolCalls(
 				functionCallReply,
 				chatHistory: pushMessageToHistory(chatHistory, {
 					completion: functionCallReply.completion,
-					chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+					chatMessageType: 'FUNCTION_CALL',
 				}),
 			};
 		}
@@ -356,7 +358,7 @@ async function performToolCalls(
 }
 
 async function getFinalReplyAfterAllToolCalls(
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
 	currentLevel: LEVEL_NAMES
@@ -379,7 +381,7 @@ async function getFinalReplyAfterAllToolCalls(
 		if (gptReply.completion?.tool_calls) {
 			updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 				completion: gptReply.completion,
-				chatMessageType: CHAT_MESSAGE_TYPE.FUNCTION_CALL,
+				chatMessageType: 'FUNCTION_CALL',
 			});
 
 			const toolCallReply = await performToolCalls(
@@ -407,7 +409,7 @@ async function getFinalReplyAfterAllToolCalls(
 }
 
 async function chatGptSendMessage(
-	chatHistory: ChatHistoryMessage[],
+	chatHistory: ChatMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX

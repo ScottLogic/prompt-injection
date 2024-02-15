@@ -10,14 +10,16 @@ function OverlayChoice({
 	button2,
 	content,
 	closeOverlay,
+	heading,
 }: {
 	button1: OverlayButtonProps;
 	button2: OverlayButtonProps;
 	content: React.ReactNode;
 	closeOverlay: () => void;
+	heading: string;
 }) {
 	return (
-		<Overlay closeOverlay={closeOverlay}>
+		<Overlay closeOverlay={closeOverlay} heading={heading}>
 			<div className="overlay-choice">
 				{content}
 				<OverlayChoiceButtons button1={button1} button2={button2} />

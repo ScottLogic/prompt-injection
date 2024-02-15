@@ -1,24 +1,21 @@
 import { ReactNode } from 'react';
 
+import OverlayHeader from './OverlayHeader';
+
 import './Overlay.css';
 
 function Overlay({
 	children,
 	closeOverlay,
+	heading,
 }: {
 	children: ReactNode;
 	closeOverlay: () => void;
+	heading: string;
 }) {
 	return (
 		<div className="overlay">
-			<button
-				className="prompt-injection-min-button close-button"
-				onClick={closeOverlay}
-				aria-label="close overlay"
-			>
-				X
-			</button>
-
+			<OverlayHeader closeOverlay={closeOverlay} heading={heading} />
 			<div className="overlay-content">{children}</div>
 		</div>
 	);

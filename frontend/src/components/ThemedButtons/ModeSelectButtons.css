@@ -27,3 +27,7 @@
 .mode-selection-buttons button:hover {
 	background-color: var(--overlay-tab-colour);
 }
+
+.mode-selection-buttons button:focus-visible {
+	background-color: var(--overlay-tab-colour);
+}

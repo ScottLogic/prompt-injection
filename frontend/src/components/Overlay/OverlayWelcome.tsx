@@ -16,12 +16,12 @@ function OverlayWelcome({
 	closeOverlay: () => void;
 }) {
 	return (
-		<Overlay closeOverlay={closeOverlay}>
+		<Overlay closeOverlay={closeOverlay} heading="Getting Started">
 			<div className="welcome">
 				<div className="project-icon">
 					<ProjectIconDark />
 				</div>
-				<h1>Welcome to Spy Logic!</h1>
+				<h2>Welcome to Spy Logic!</h2>
 				<p>
 					This is an app we developed to teach you about AI chat system security
 					in a playful way. In this game you are playing the role of an

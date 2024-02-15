@@ -1,8 +1,0 @@
-.levels-complete-overlay {
-	display: flex;
-	flex-direction: column;
-}
-
-.levels-complete-overlay .content {
-	overflow-y: auto;
-}

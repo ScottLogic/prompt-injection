@@ -1,10 +1,7 @@
 .mission-information {
 	display: flex;
 	flex-direction: column;
-}
-
-.mission-information .content {
-	overflow-y: auto;
+	overflow: auto;
 }
 
 .button-area {

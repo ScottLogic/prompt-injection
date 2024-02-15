@@ -13,10 +13,10 @@ function ChatBoxInfoText({
 	type: CHAT_MESSAGE_TYPE;
 }) {
 	const messageType =
-		type === CHAT_MESSAGE_TYPE.INFO ||
-		type === CHAT_MESSAGE_TYPE.RESET_LEVEL ||
-		type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED ||
-		type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
+		type === 'GENERIC_INFO' ||
+		type === 'RESET_LEVEL' ||
+		type === 'DEFENCE_ALERTED' ||
+		type === 'DEFENCE_TRIGGERED'
 			? 'Information message '
 			: 'unknown message type';
 	return (
@@ -24,17 +24,17 @@ function ChatBoxInfoText({
 			tabIndex={0}
 			className={clsx(
 				'chat-box-info',
-				type === CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED
+				type === 'DEFENCE_TRIGGERED'
 					? 'defence-triggered-text'
-					: type === CHAT_MESSAGE_TYPE.DEFENCE_ALERTED
+					: type === 'DEFENCE_ALERTED'
 					? 'defence-alerted-text'
-					: type === CHAT_MESSAGE_TYPE.RESET_LEVEL
+					: type === 'RESET_LEVEL'
 					? 'reset-level-text'
 					: 'info-text'
 			)}
 		>
 			<span className="visually-hidden">{messageType}</span>
-			{type === CHAT_MESSAGE_TYPE.RESET_LEVEL ? <span>{text}</span> : text}
+			{type === 'RESET_LEVEL' ? <span>{text}</span> : text}
 		</section>
 	);
 }

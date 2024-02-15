@@ -18,6 +18,7 @@
 	--main-text-accent-colour: #73d1d6;
 	--error-colour: #c41565;
 	--error-background-colour: #faebf2;
+	--error-colour-light: #ff75af;
 
 	/* scrollbar */
 	--main-scrollbar-colour: #444;
@@ -32,11 +33,11 @@
 	--action-button-disabled-text-colour: #111;
 
 	/* level buttons */
-	--level-button-colour: var(--main-text-colour);
+	--level-button-colour: var(--accent-background-colour);
 	--level-button-colour-disabled: #777;
 	--level-button-border-colour: var(--accent-border-colour);
 	--level-button-border-colour-disabled: #aaaaaa80;
-	--level-button-background-colour-selected: var(--accent-background-colour);
+	--level-button-background-colour-selected: var(--main-text-colour);
 	--level-button-background-colour-hover: #11484b;
 
 	/* level banner */
@@ -65,12 +66,14 @@
 
 	/* general modal overlay */
 	--overlay-background-colour: #8ad5da;
+	--overlay-header-background-colour: #61b5ba;
 	--overlay-tab-colour: #c7e8f4;
 	--overlay-attack-background-colour: #d6d6ff;
 	--overlay-text-colour: #313131;
 
 	/* handbook modal */
 	--handbook-background-colour: #fff;
+	--handbook-header-background-colour: #a7a7a7;
 	--handbook-spine-background-colour: #d3d3d3;
 	--handbook-spine-separator-colour: var(--main-text-colour-inverted);
 	--handbook-tab-selected-colour: #313131;

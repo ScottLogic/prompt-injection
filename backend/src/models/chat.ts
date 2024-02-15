@@ -1,8 +1,9 @@
 import {
-	ChatCompletionMessage,
+	ChatCompletionAssistantMessageParam,
 	ChatCompletionMessageParam,
 } from 'openai/resources/chat/completions';
 
+import { ChatMessage } from './chatMessage';
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
 
@@ -14,21 +15,6 @@ enum CHAT_MODELS {
 	GPT_3_5_TURBO_0613 = 'gpt-3.5-turbo-0613',
 	GPT_3_5_TURBO_16K = 'gpt-3.5-turbo-16k',
 	GPT_3_5_TURBO_16K_0613 = 'gpt-3.5-turbo-16k-0613',
-}
-
-enum CHAT_MESSAGE_TYPE {
-	BOT,
-	BOT_BLOCKED,
-	INFO,
-	USER,
-	USER_TRANSFORMED,
-	LEVEL_INFO,
-	DEFENCE_ALERTED,
-	DEFENCE_TRIGGERED,
-	SYSTEM,
-	FUNCTION_CALL,
-	ERROR_MSG,
-	RESET_LEVEL,
 }
 
 enum MODEL_CONFIG {
@@ -71,7 +57,8 @@ interface FunctionCallResponse {
 
 interface ToolCallResponse {
 	functionCallReply?: FunctionCallResponse;
-	chatHistory: ChatHistoryMessage[];
+	chatResponse?: ChatResponse;
+	chatHistory: ChatMessage[];
 }
 
 interface ChatMalicious {
@@ -86,8 +73,8 @@ interface ChatResponse {
 }
 
 interface ChatGptReply {
-	chatHistory: ChatHistoryMessage[];
-	completion: ChatCompletionMessage | null;
+	chatHistory: ChatMessage[];
+	completion: ChatCompletionAssistantMessageParam | null;
 	openAIErrorMessage: string | null;
 }
 
@@ -98,6 +85,12 @@ interface TransformedChatMessage {
 	transformationName: string;
 }
 
+interface MessageTransformation {
+	transformedMessage: TransformedChatMessage;
+	transformedMessageInfo: string;
+	transformedMessageCombined: string;
+}
+
 interface ChatHttpResponse {
 	reply: string;
 	defenceReport: ChatDefenceReport;
@@ -106,20 +99,14 @@ interface ChatHttpResponse {
 	isError: boolean;
 	openAIErrorMessage: string | null;
 	sentEmails: EmailInfo[];
+	transformedMessageInfo?: string;
 }
 
 interface LevelHandlerResponse {
 	chatResponse: ChatHttpResponse;
-	chatHistory: ChatHistoryMessage[];
+	chatHistory: ChatMessage[];
 }
 
-interface ChatHistoryMessage {
-	completion: ChatCompletionMessageParam | null;
-	chatMessageType: CHAT_MESSAGE_TYPE;
-	infoMessage?: string | null;
-}
-
-// default settings for chat model
 const defaultChatModel: ChatModel = {
 	id: CHAT_MODELS.GPT_3_5_TURBO,
 	configuration: {
@@ -134,20 +121,15 @@ export type {
 	ChatDefenceReport,
 	ChatGptReply,
 	ChatMalicious,
+	ChatModel,
+	ChatModelConfiguration,
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
-	ChatHistoryMessage,
 	TransformedChatMessage,
 	FunctionCallResponse,
 	ToolCallResponse,
-};
-export {
-	CHAT_MODELS,
-	CHAT_MESSAGE_TYPE,
-	MODEL_CONFIG,
-	ChatModel,
-	ChatModelConfiguration,
-	defaultChatModel,
+	MessageTransformation,
 	SingleDefenceReport,
 };
+export { CHAT_MODELS, MODEL_CONFIG, defaultChatModel };

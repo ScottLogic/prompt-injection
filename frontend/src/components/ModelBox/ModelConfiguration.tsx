@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 
 import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
-import { configureGptModel, getGptModel } from '@src/service/chatService';
+import { chatService } from '@src/service';
 
 import ModelConfigurationSlider from './ModelConfigurationSlider';
 
 import './ModelConfiguration.css';
 
-function ModelConfiguration() {
+function ModelConfiguration({
+	addInfoMessage,
+}: {
+	addInfoMessage: (message: string) => void;
+}) {
 	const [customChatModelConfigs, setCustomChatModel] = useState<
 		CustomChatModelConfiguration[]
 	>([
@@ -66,8 +70,10 @@ function ModelConfiguration() {
 
 		setCustomChatModelByID(id, newValue);
 
-		void configureGptModel(id, newValue).then((success) => {
-			if (!success) {
+		void chatService.configureGptModel(id, newValue).then((success) => {
+			if (success) {
+				addInfoMessage(`changed ${id} to ${newValue}`);
+			} else {
 				setCustomChatModelByID(id, prevValue);
 			}
 		});
@@ -75,7 +81,8 @@ function ModelConfiguration() {
 
 	// get model configs on mount
 	useEffect(() => {
-		getGptModel()
+		chatService
+			.getGptModel()
 			.then((model) => {
 				// apply the currently set values
 				const newCustomChatModelConfigs = customChatModelConfigs.map(

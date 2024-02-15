@@ -13,7 +13,6 @@ function createDefence(id: DEFENCE_ID, config: DefenceConfigItem[]): Defence {
 		id,
 		config,
 		isActive: false,
-		isTriggered: false,
 	};
 }
 
@@ -64,15 +63,15 @@ const defaultDefences: Defence[] = [
 			value: instructionDefencePrompt,
 		},
 	]),
-	createDefence(DEFENCE_ID.FILTER_USER_INPUT, [
+	createDefence(DEFENCE_ID.INPUT_FILTERING, [
 		{
-			id: 'FILTER_USER_INPUT',
+			id: 'INPUT_FILTERING',
 			value: 'secret project,confidential project,budget,password',
 		},
 	]),
-	createDefence(DEFENCE_ID.FILTER_BOT_OUTPUT, [
+	createDefence(DEFENCE_ID.OUTPUT_FILTERING, [
 		{
-			id: 'FILTER_BOT_OUTPUT',
+			id: 'OUTPUT_FILTERING',
 			value: 'secret project',
 		},
 	]),

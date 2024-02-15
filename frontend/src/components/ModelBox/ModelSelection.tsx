@@ -2,12 +2,18 @@
 import { useEffect, useState } from 'react';
 
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
-import { setGptModel, getGptModel } from '@src/service/chatService';
+import { chatService } from '@src/service';
 
 import './ModelSelection.css';
 
 // return a drop down menu with the models
-function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
+function ModelSelection({
+	chatModelOptions,
+	addInfoMessage,
+}: {
+	chatModelOptions: string[];
+	addInfoMessage: (message: string) => void;
+}) {
 	// model currently selected in the dropdown
 	const [selectedModel, setSelectedModel] = useState<string | null>(null);
 	// model in use by the app
@@ -23,11 +29,12 @@ function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
 			const currentSelectedModel = selectedModel;
 			console.log(`selected model: ${currentSelectedModel}`);
 			setIsSettingModel(true);
-			const modelUpdated = await setGptModel(currentSelectedModel);
+			const modelUpdated = await chatService.setGptModel(currentSelectedModel);
 			setIsSettingModel(false);
 			if (modelUpdated) {
 				setModelInUse(currentSelectedModel);
 				setErrorChangingModel(false);
+				addInfoMessage(`changed model to ${currentSelectedModel}`);
 			} else {
 				setErrorChangingModel(true);
 			}
@@ -36,7 +43,8 @@ function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
 
 	// get the model
 	useEffect(() => {
-		getGptModel()
+		chatService
+			.getGptModel()
 			.then((model) => {
 				setModelInUse(model.id);
 				// default the dropdown selection to the model in use
@@ -80,8 +88,8 @@ function ModelSelection({ chatModelOptions }: { chatModelOptions: string[] }) {
 
 				<div className="model-selection-info">
 					{errorChangingModel ? (
-						<p className="error">
-							Could not change model. You are still chatting to:
+						<p className="error-message" aria-live="polite">
+							Error: Could not change model. You are still chatting to:
 							<b> {modelInUse} </b>
 						</p>
 					) : (

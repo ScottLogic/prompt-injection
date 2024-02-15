@@ -3,23 +3,16 @@ import { useEffect, useState } from 'react';
 import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
-import { CHAT_MESSAGE_TYPE, ChatMessage } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import {
-	addMessageToChatHistory,
-	clearChat,
-	getChatHistory,
-} from '@src/service/chatService';
-import {
-	toggleDefence,
-	configureDefence,
-	getDefences,
-	resetDefenceConfig,
-} from '@src/service/defenceService';
-import { clearEmails, getSentEmails } from '@src/service/emailService';
-import { healthCheck } from '@src/service/healthService';
+	chatService,
+	defenceService,
+	emailService,
+	healthService,
+} from '@src/service';
 
 import MainBody from './MainBody';
 import MainFooter from './MainFooter';
@@ -32,7 +25,7 @@ function MainComponent({
 	currentLevel,
 	numCompletedLevels,
 	closeOverlay,
-	incrementNumCompletedLevels,
+	updateNumCompletedLevels,
 	openDocumentViewer,
 	openHandbook,
 	openInformationOverlay,
@@ -46,7 +39,7 @@ function MainComponent({
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	closeOverlay: () => void;
-	incrementNumCompletedLevels: (level: number) => void;
+	updateNumCompletedLevels: (level: number) => void;
 	openDocumentViewer: () => void;
 	openHandbook: () => void;
 	openInformationOverlay: () => void;
@@ -64,12 +57,12 @@ function MainComponent({
 	// called on mount
 	useEffect(() => {
 		// perform backend health check
-		healthCheck().catch(() => {
+		healthService.healthCheck().catch(() => {
 			// addErrorMessage('Failed to reach the server. Please try again later.');
 			setMessages([
 				{
 					message: 'Failed to reach the server. Please try again later.',
-					type: CHAT_MESSAGE_TYPE.ERROR_MSG,
+					type: 'ERROR_MSG',
 				},
 			]);
 		});
@@ -112,7 +105,10 @@ function MainComponent({
 	// for clearing single level progress
 	async function resetLevel() {
 		// reset on the backend
-		await Promise.all([clearChat(currentLevel), clearEmails(currentLevel)]);
+		await Promise.all([
+			chatService.clearChat(currentLevel),
+			emailService.clearEmails(currentLevel),
+		]);
 
 		resetFrontendState();
 		addResetMessage();
@@ -121,10 +117,10 @@ function MainComponent({
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
 		// get emails for new level from the backend
-		setEmails(await getSentEmails(newLevel));
+		setEmails(await emailService.getSentEmails(newLevel));
 
 		// get chat history for new level from the backend
-		const retrievedMessages = await getChatHistory(newLevel);
+		const retrievedMessages = await chatService.getChatHistory(newLevel);
 
 		// add welcome message for levels only
 		newLevel !== LEVEL_NAMES.SANDBOX
@@ -134,7 +130,7 @@ function MainComponent({
 		const defences =
 			newLevel === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
 		// fetch defences from backend
-		const remoteDefences = await getDefences(newLevel);
+		const remoteDefences = await defenceService.getDefences(newLevel);
 		defences.map((localDefence) => {
 			const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
 				return localDefence.id === remoteDefence.id;
@@ -161,17 +157,30 @@ function MainComponent({
 	function addInfoMessage(message: string) {
 		addChatMessage({
 			message,
-			type: CHAT_MESSAGE_TYPE.INFO,
+			type: 'GENERIC_INFO',
 		});
 		// asynchronously add message to chat history
-		void addMessageToChatHistory(message, CHAT_MESSAGE_TYPE.INFO, currentLevel);
+		void chatService.addInfoMessageToChatHistory(
+			message,
+			'GENERIC_INFO',
+			currentLevel
+		);
+	}
+
+	function addConfigUpdateToChat(defenceId: DEFENCE_ID, update: string) {
+		const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
+		addInfoMessage(`${displayedDefenceId} defence ${update}`);
 	}
 
 	async function resetDefenceConfiguration(
 		defenceId: DEFENCE_ID,
 		configId: string
 	) {
-		const resetDefence = await resetDefenceConfig(defenceId, configId);
+		const resetDefence = await defenceService.resetDefenceConfig(
+			defenceId,
+			configId
+		);
+		addConfigUpdateToChat(defenceId, 'reset');
 		// update state
 		const newDefences = defencesToShow.map((defence) => {
 			if (defence.id === defenceId) {
@@ -187,7 +196,11 @@ function MainComponent({
 	}
 
 	async function setDefenceToggle(defence: Defence) {
-		await toggleDefence(defence.id, defence.isActive, currentLevel);
+		await defenceService.toggleDefence(
+			defence.id,
+			defence.isActive,
+			currentLevel
+		);
 
 		const newDefenceDetails = defencesToShow.map((defenceDetail) => {
 			if (defenceDetail.id === defence.id) {
@@ -206,8 +219,13 @@ function MainComponent({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) {
-		const success = await configureDefence(defenceId, config, currentLevel);
+		const success = await defenceService.configureDefence(
+			defenceId,
+			config,
+			currentLevel
+		);
 		if (success) {
+			addConfigUpdateToChat(defenceId, 'updated');
 			// update state
 			const newDefences = defencesToShow.map((defence) => {
 				if (defence.id === defenceId) {
@@ -223,12 +241,12 @@ function MainComponent({
 	function setMessagesWithWelcome(retrievedMessages: ChatMessage[]) {
 		const welcomeMessage: ChatMessage = {
 			message: `Hello! I'm ScottBrewBot, your personal AI work assistant. You can ask me for information or to help you send emails. What can I do for you?`,
-			type: CHAT_MESSAGE_TYPE.BOT,
+			type: 'BOT',
 		};
 		// if reset level add welcome into second position, otherwise add to first
 		if (retrievedMessages.length === 0) {
 			setMessages([welcomeMessage]);
-		} else if (retrievedMessages[0].type === CHAT_MESSAGE_TYPE.RESET_LEVEL) {
+		} else if (retrievedMessages[0].type === 'RESET_LEVEL') {
 			retrievedMessages.splice(1, 0, welcomeMessage);
 			setMessages(retrievedMessages);
 		} else {
@@ -239,9 +257,9 @@ function MainComponent({
 	function addResetMessage() {
 		const resetMessage: ChatMessage = {
 			message: `Level progress reset`,
-			type: CHAT_MESSAGE_TYPE.RESET_LEVEL,
+			type: 'RESET_LEVEL',
 		};
-		void addMessageToChatHistory(
+		void chatService.addInfoMessageToChatHistory(
 			resetMessage.message,
 			resetMessage.type,
 			currentLevel
@@ -273,6 +291,7 @@ function MainComponent({
 				emails={emails}
 				messages={messages}
 				addChatMessage={addChatMessage}
+				addInfoMessage={addInfoMessage}
 				addSentEmails={addSentEmails}
 				resetDefenceConfiguration={(defenceId: DEFENCE_ID, configId: string) =>
 					void resetDefenceConfiguration(defenceId, configId)
@@ -280,7 +299,7 @@ function MainComponent({
 				resetLevel={() => void resetLevel()}
 				toggleDefence={(defence: Defence) => void setDefenceToggle(defence)}
 				setDefenceConfiguration={setDefenceConfiguration}
-				incrementNumCompletedLevels={incrementNumCompletedLevels}
+				updateNumCompletedLevels={updateNumCompletedLevels}
 				openDocumentViewer={openDocumentViewer}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
 				openResetLevelOverlay={openResetLevelOverlay}
