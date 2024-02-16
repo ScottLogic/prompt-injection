@@ -152,7 +152,10 @@ async function handleAskQuestionFunction(
 			: '';
 		return await queryDocuments(params.question, configQAPrompt, currentLevel);
 	} else {
-		console.error('No arguments provided to askQuestion function');
+		console.error(
+			'Incorrect arguments provided to askQuestion function:',
+			functionCallArgs
+		);
 		return "Reply with 'I don't know what to ask'";
 	}
 }
