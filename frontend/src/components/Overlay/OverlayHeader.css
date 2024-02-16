@@ -42,19 +42,19 @@
 	height: 1.25rem;
 }
 
-@media (width < 1500px) {
+@media (width < 93.75rem) {
 	.overlay-header {
 		height: 4rem;
 	}
 }
 
-@media (width < 1400px) {
+@media (width < 87.5rem) {
 	.overlay-header {
 		height: 3rem;
 	}
 }
 
-@media (width < 1000px) {
+@media (width < 62.5rem) {
 	.overlay-header {
 		height: auto;
 		padding: 0 0.125rem;
@@ -69,28 +69,28 @@
 	}
 }
 
-@media (width < 700px) {
+@media (width < 43.75rem) {
 	.overlay-close-icon {
 		display: none;
 	}
 }
 
-/* @media (width < 1500px) {
+/* @media (width < 93.75rem) {
 	h1 {
 		background-color: blueviolet;
 	}
 }
-@media (width < 1400px) {
+@media (width < 87.5rem) {
 	h1 {
 		background-color: red;
 	}
 }
-@media (width < 1000px) {
+@media (width < 62.5rem) {
 	h1 {
 		background-color: orange;
 	}
 }
-@media (width < 700px) {
+@media (width < 43.75rem) {
 	h1 {
 		background-color: yellow;
 	}

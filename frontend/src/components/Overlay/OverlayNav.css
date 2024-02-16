@@ -51,19 +51,19 @@
 	font-weight: 700;
 }
 
-@media (width < 1500px) {
+@media (width < 93.75rem) {
 	.overlay-nav {
 		height: 4rem;
 	}
 }
 
-@media (width <= 1400px) {
+@media (width <= 87.5rem) {
 	.overlay-nav {
 		height: 3rem;
 	}
 }
 
-@media (width <= 1000px) {
+@media (width <= 62.5rem) {
 	.overlay-nav {
 		height: fit-content;
 		margin: 0;
@@ -81,7 +81,7 @@
 	}
 }
 
-@media (width <= 700px) {
+@media (width <= 43.75rem) {
 	.overlay-nav {
 		gap: 0;
 	}
@@ -91,22 +91,22 @@
 	}
 }
 
-/* @media (width < 1500px) {
+/* @media (width < 93.75rem) {
 	.overlay-nav p {
 		background-color: blueviolet;
 	}
 }
-@media (width < 1400px) {
+@media (width < 87.5rem) {
 	.overlay-nav p {
 		background-color: red;
 	}
 }
-@media (width < 1000px) {
+@media (width < 62.5rem) {
 	.overlay-nav p {
 		background-color: orange;
 	}
 }
-@media (width < 700px) {
+@media (width < 43.75rem) {
 	.overlay-nav p {
 		background-color: yellow;
 	}

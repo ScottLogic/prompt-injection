@@ -32,7 +32,7 @@
 	padding: 0 4rem;
 }
 
-@media (width <= 1500px) {
+@media (width < 93.75rem) {
 	.overlay {
 		width: 55vw;
 	}
@@ -50,7 +50,7 @@
 	}
 }
 
-@media (width <= 1400px) {
+@media (width < 87.5rem) {
 	.overlay {
 		width: 60vw;
 	}
@@ -73,7 +73,7 @@
 	}
 }
 
-@media (width <= 1000px) {
+@media (width < 62.5rem) {
 	.overlay {
 		width: 65vw;
 	}
@@ -87,7 +87,7 @@
 	}
 }
 
-@media (width <= 700px) {
+@media (width < 43.75rem) {
 	.overlay {
 		width: 80vw;
 	}
@@ -97,22 +97,22 @@
 	}
 }
 
-/* @media (width < 1500px) {
+/* @media (width < 93.75rem) {
 	.overlay p {
 		background-color: blueviolet;
 	}
 }
-@media (width < 1400px) {
+@media (width < 87.5rem) {
 	.overlay p {
 		background-color: red;
 	}
 }
-@media (width < 1000px) {
+@media (width < 62.5rem) {
 	.overlay p {
 		background-color: orange;
 	}
 }
-@media (width < 700px) {
+@media (width < 43.75rem) {
 	.overlay p {
 		background-color: yellow;
 	}
