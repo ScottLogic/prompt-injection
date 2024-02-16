@@ -44,12 +44,12 @@
 	gap: 1.5rem;
 	justify-content: flex-end;
 	align-items: center;
-	padding-left: 0.5rem;
 	width: 100%;
 	height: 100%;
+	padding-left: 0.5rem;
 }
 
-@media only screen and (min-width: 37.5rem) {
+@media only screen and (width >= 37.5rem) {
 	.main-header-left > .title-logo {
 		height: 80%;
 	}
@@ -92,9 +92,11 @@
 		padding: 0.5rem;
 		white-space: normal;
 	}
+
 	.main-header .main-header-middle .header-button {
 		white-space: nowrap;
 	}
+
 	.themed-button > img {
 		display: none;
 	}

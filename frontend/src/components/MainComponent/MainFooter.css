@@ -41,7 +41,7 @@
 	padding: 0 0.75rem;
 }
 
-@media only screen and (min-width: 37.5rem) {
+@media only screen and (width >= 37.5rem) {
 	.main-footer {
 		height: 2rem;
 	}
