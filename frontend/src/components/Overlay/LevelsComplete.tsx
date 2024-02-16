@@ -39,7 +39,7 @@ function LevelsComplete({
 	return (
 		<MultipageOverlay
 			closeOverlay={closeOverlay}
-			heading={'Getting Started'}
+			heading={'Congratulations'}
 			imgSource={speakerArray}
 			pages={pages}
 		/>
