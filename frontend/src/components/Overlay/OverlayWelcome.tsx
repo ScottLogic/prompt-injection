@@ -3,8 +3,6 @@ import { LEVEL_NAMES } from '@src/models/level';
 
 import MultipageOverlay from './MultipageOverlay';
 
-import './OverlayWelcome.css';
-
 function OverlayWelcome({
 	currentLevel,
 	setStartLevel,
@@ -51,7 +49,6 @@ function OverlayWelcome({
 			closeOverlay={closeOverlay}
 			heading={'Getting Started'}
 			imgSource={speakerArray}
-			totalPages={2}
 			pages={pages}
 		/>
 	);

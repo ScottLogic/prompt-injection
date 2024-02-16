@@ -15,15 +15,14 @@ function MultipageOverlay({
 	closeOverlay,
 	heading,
 	imgSource,
-	totalPages,
 }: {
 	pages: ReactNode;
 	closeOverlay: () => void;
 	heading: string;
 	imgSource: string[];
-	totalPages: number;
 }) {
 	const [currentPage, setCurrentPage] = useState<number>(0);
+	const totalPages = Array.isArray(pages) ? pages.length : 0;
 
 	function goToPreviousPage() {
 		if (currentPage > 0) {

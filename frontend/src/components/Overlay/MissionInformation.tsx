@@ -14,7 +14,6 @@ function MissionInformation({
 	closeOverlay: () => void;
 }) {
 	const heading = `${LEVELS[currentLevel].name} Mission Info`;
-	const totalPages = LEVELS[currentLevel].missionInfoDialogue.length;
 
 	const speakerArray: string[] = [];
 
@@ -38,7 +37,6 @@ function MissionInformation({
 			closeOverlay={closeOverlay}
 			heading={heading}
 			imgSource={speakerArray}
-			totalPages={totalPages}
 			pages={pages}
 		/>
 	);
