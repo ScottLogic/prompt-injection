@@ -10,7 +10,7 @@
 	margin-top: 0;
 }
 
-@media (width <= 700px) {
+@media (width < 43.75rem) {
 	.overlay-choice {
 		gap: 0;
 		padding: 0;

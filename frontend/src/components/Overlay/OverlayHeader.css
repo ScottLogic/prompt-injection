@@ -74,24 +74,3 @@
 		display: none;
 	}
 }
-
-/* @media (width < 93.75rem) {
-	h1 {
-		background-color: blueviolet;
-	}
-}
-@media (width < 87.5rem) {
-	h1 {
-		background-color: red;
-	}
-}
-@media (width < 62.5rem) {
-	h1 {
-		background-color: orange;
-	}
-}
-@media (width < 43.75rem) {
-	h1 {
-		background-color: yellow;
-	}
-} */

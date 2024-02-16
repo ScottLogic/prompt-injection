@@ -4,13 +4,12 @@
 	justify-content: center;
 }
 
-@media (width <= 700px) {
+@media (width < 43.75rem) {
 	.overlay-choice-buttons {
 		gap: 0;
 		justify-content: space-evenly;
 		margin: 0;
 		padding: 0;
-		background-color: yellow;
 		line-height: auto;
 	}
 }

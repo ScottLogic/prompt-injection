@@ -90,24 +90,3 @@
 		display: none;
 	}
 }
-
-/* @media (width < 93.75rem) {
-	.overlay-nav p {
-		background-color: blueviolet;
-	}
-}
-@media (width < 87.5rem) {
-	.overlay-nav p {
-		background-color: red;
-	}
-}
-@media (width < 62.5rem) {
-	.overlay-nav p {
-		background-color: orange;
-	}
-}
-@media (width < 43.75rem) {
-	.overlay-nav p {
-		background-color: yellow;
-	}
-} */
