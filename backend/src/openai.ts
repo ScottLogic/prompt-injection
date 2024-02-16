@@ -115,7 +115,7 @@ async function getValidModelsFromOpenAI() {
 	try {
 		const models: OpenAI.ModelsPage = await getOpenAI().models.list();
 
-		// get the model ids that are supported by our app
+		// get the model ids that are supported by our app. Non-chat models like Dall-e and whisper are not supported.
 		const validModels = models.data
 			.map((model) => model.id)
 			.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS))
