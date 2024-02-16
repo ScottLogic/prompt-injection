@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
 
+import BotAvatarDefault from '@src/assets/images/BotAvatarDefault.svg';
 import Handler from '@src/assets/images/handler.png';
 import Lawyer from '@src/assets/images/lawyer.png';
 import Manager from '@src/assets/images/manager.png';
@@ -45,9 +46,10 @@ function MultipageOverlay({
 		speakerImage = Manager;
 	} else if (imgSource[currentPage] === 'ScottBrew Lawyer') {
 		speakerImage = Lawyer;
+	} else if (imgSource[currentPage] === 'SpyLogic') {
+		speakerImage = BotAvatarDefault;
 	} else {
-		// Handle the case when imgSource[currentPage] doesn't match any of the conditions
-		speakerImage = ''; // Set a default value or handle the error accordingly
+		speakerImage = '';
 	}
 
 	return (
