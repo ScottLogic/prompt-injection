@@ -67,7 +67,7 @@
 	outline-offset: 0.1rem;
 }
 
-@media only screen and (resolution >= 150dpi) {
+@media only screen and (min-width: 37.5rem) {
 	.chat-box .footer {
 		gap: 0.5rem;
 		padding: 1rem;
