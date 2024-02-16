@@ -1,8 +1,8 @@
 .mode-selection-buttons {
 	display: flex;
 	justify-content: space-evenly;
-	padding: 0;
 	margin-top: 0.5rem;
+	padding: 0;
 	list-style: none;
 }
 
@@ -10,6 +10,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin: 0;
 	padding: 1rem 2rem;
 	border: 0.0625rem solid var(--overlay-tab-colour);
 	border-radius: 0.5rem;
@@ -17,9 +18,8 @@
 	font-weight: 700;
 	font-size: 1.25rem;
 	line-height: 1;
-	transition: ease 0.1s;
 	white-space: nowrap;
-	margin: 0;
+	transition: ease 0.1s;
 }
 
 .mode-selection-buttons .mode-button.selected {

@@ -42,29 +42,33 @@
 	height: 1.25rem;
 }
 
-
 @media (width < 1500px) {
-.overlay-header {
+	.overlay-header {
 		height: 4rem;
 	}
 }
+
 @media (width < 1400px) {
-.overlay-header {
+	.overlay-header {
 		height: 3rem;
 	}
 }
+
 @media (width < 1000px) {
 	.overlay-header {
-		padding: 0 0.125rem;
 		height: auto;
+		padding: 0 0.125rem;
 	}
+
 	.overlay-header h1 {
 		border-top-left-radius: 0.625rem;
 	}
+
 	.overlay-header button {
 		padding: 0.125rem;
 	}
 }
+
 @media (width < 700px) {
 	.overlay-close-icon {
 		display: none;

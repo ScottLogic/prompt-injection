@@ -8,11 +8,10 @@
 
 .overlay-choice p {
 	margin-top: 0;
-	
 }
 
 @media (width <= 700px) {
-.overlay-choice {
+	.overlay-choice {
 		gap: 0;
 		padding: 0;
 	}

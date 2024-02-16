@@ -5,13 +5,12 @@
 }
 
 @media (width <= 700px) {
-.overlay-choice-buttons {
+	.overlay-choice-buttons {
 		gap: 0;
 		justify-content: space-evenly;
-		padding: 0;
-		background-color: yellow;
 		margin: 0;
 		padding: 0;
-			line-height: auto;
+		background-color: yellow;
+		line-height: auto;
 	}
 }

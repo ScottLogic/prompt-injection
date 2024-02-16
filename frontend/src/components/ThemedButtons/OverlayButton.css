@@ -2,6 +2,8 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	align-self: center;
+	width: fit-content;
 	padding: 1rem 3rem;
 	border: 0.0625rem solid var(--overlay-tab-colour);
 	border-radius: 0.5rem;

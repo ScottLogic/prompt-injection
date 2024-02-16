@@ -1,17 +1,10 @@
-import { useState } from 'react';
-
 import { LEVELS } from '@src/Levels';
-import Handler from '@src/assets/images/handler.png';
-import Lawyer from '@src/assets/images/lawyer.png';
-import Manager from '@src/assets/images/manager.png';
 import OverlayButton from '@src/components/ThemedButtons/OverlayButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
-import Overlay from './Overlay';
-import OverlayNav from './OverlayNav';
+import MultipageOverlay from './MultipageOverlay';
 
 import './MissionInformation.css';
-import './Overlay.css';
 
 function MissionInformation({
 	currentLevel,
@@ -21,63 +14,33 @@ function MissionInformation({
 	closeOverlay: () => void;
 }) {
 	const heading = `${LEVELS[currentLevel].name} Mission Info`;
-
-	const [currentPage, setCurrentPage] = useState<number>(0);
 	const totalPages = LEVELS[currentLevel].missionInfoDialogue.length;
 
-	const speaker = LEVELS[currentLevel].missionInfoDialogue[currentPage].speaker;
-	const text = LEVELS[currentLevel].missionInfoDialogue[currentPage].text;
+	const speakerArray: string[] = [];
 
-	function goToPreviousPage() {
-		if (currentPage > 0) {
-			setCurrentPage(currentPage - 1);
+	const pages = LEVELS[currentLevel].missionInfoDialogue.map(
+		({ speaker, text }, index, source) => {
+			speakerArray.push(speaker);
+			return (
+				<>
+					<h2>{speaker}:</h2>
+					<p>{text}</p>
+					{index === source.length - 1 && (
+						<OverlayButton onClick={closeOverlay}>OK</OverlayButton>
+					)}
+				</>
+			);
 		}
-	}
-
-	function goToNextPage() {
-		if (currentPage < totalPages - 1) {
-			setCurrentPage(currentPage + 1);
-		}
-	}
-
-	const imgSource =
-		speaker === 'Handler'
-			? Handler
-			: speaker === 'ScottBrew Manager'
-			? Manager
-			: speaker === 'ScottBrew Lawyer'
-			? Lawyer
-			: '';
+	);
 
 	return (
-		<Overlay closeOverlay={closeOverlay} heading={heading}>
-			<div className="multi-page-container">
-				<div className="multi-page-content">
-					<div className="multi-page-text-image-container">
-						<img className="multi-page-speaker-image" src={imgSource} alt="" />
-						<span className="multi-page-speaker-text">
-							<h2>{speaker}:</h2>
-							<p>{text}</p>
-							{currentPage === totalPages - 1 && (
-								<div className="button-area">
-									<OverlayButton onClick={closeOverlay}>OK</OverlayButton>
-								</div>
-							)}
-						</span>
-					</div>
-				</div>
-			</div>
-			{totalPages > 1 && (
-				<OverlayNav
-					totalPages={totalPages}
-					currentPage={currentPage}
-					goToNextPage={goToNextPage}
-					goToPreviousPage={goToPreviousPage}
-					previousDisabled={currentPage === 0}
-					nextDisabled={currentPage === totalPages - 1}
-				/>
-			)}
-		</Overlay>
+		<MultipageOverlay
+			closeOverlay={closeOverlay}
+			heading={heading}
+			imgSource={speakerArray}
+			totalPages={totalPages}
+			pages={pages}
+		/>
 	);
 }
 

@@ -1,9 +1,9 @@
 .overlay-nav {
-	padding: 0;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	gap: 1rem;
 	height: 5rem;
+	padding: 0;
 	border-bottom-right-radius: 0.625rem;
 	border-bottom-left-radius: 0.625rem;
 	background-color: var(--overlay-header-background-colour);
@@ -18,8 +18,8 @@
 .overlay-nav .nav-buttons {
 	display: flex;
 	gap: 0.5rem;
-	align-items: center;
 	justify-content: center;
+	align-items: center;
 	margin: 0;
 	padding: 0.5rem;
 	border: 0.0625rem solid var(--main-text-colour-inverted);
@@ -46,45 +46,50 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	font-weight: 700;
 	margin: 0;
 	padding: 0;
+	font-weight: 700;
 }
 
 @media (width < 1500px) {
-.overlay-nav {
+	.overlay-nav {
 		height: 4rem;
 	}
 }
+
 @media (width <= 1400px) {
 	.overlay-nav {
 		height: 3rem;
 	}
 }
+
 @media (width <= 1000px) {
 	.overlay-nav {
 		height: fit-content;
-		padding: 0.125rem;
 		margin: 0;
+		padding: 0.125rem;
 	}
+
 	.overlay-nav .nav-buttons {
+		margin: 0;
 		padding: 0.125rem;
-		margin: 0;
 	}
+
 	.overlay-nav p {
-		padding: 0;
 		margin: 0;
+		padding: 0;
 	}
 }
+
 @media (width <= 700px) {
 	.overlay-nav {
 		gap: 0;
 	}
+
 	.button-icon {
 		display: none;
 	}
 }
-
 
 /* @media (width < 1500px) {
 	.overlay-nav p {
