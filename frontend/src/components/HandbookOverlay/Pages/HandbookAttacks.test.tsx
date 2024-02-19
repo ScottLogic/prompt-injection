@@ -1,13 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
-import {
-	ATTACKS_LEVEL_2,
-	ATTACKS_LEVEL_3,
-	ATTACKS_ALL,
-} from '@src/components/HandbookOverlay/Pages/Attacks';
 import { LEVEL_NAMES } from '@src/models/level';
 
+import { ATTACKS_LEVEL_2, ATTACKS_LEVEL_3, ATTACKS_ALL } from './Attacks';
 import HandbookAttacks from './HandbookAttacks';
 
 describe('HandbookAttacks component tests', () => {
