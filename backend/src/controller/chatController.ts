@@ -20,7 +20,7 @@ import {
 import {
 	ChatMessage,
 	ChatInfoMessage,
-	chatInfoMessageType,
+	chatInfoMessageTypes,
 } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -379,7 +379,7 @@ function handleAddInfoToChatHistory(
 	if (
 		infoMessage &&
 		chatMessageType &&
-		chatInfoMessageType.includes(chatMessageType) &&
+		chatInfoMessageTypes.includes(chatMessageType) &&
 		level !== undefined &&
 		level >= LEVEL_NAMES.LEVEL_1
 	) {

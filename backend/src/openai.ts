@@ -294,15 +294,13 @@ function getChatCompletionsInContextWindow(
 	chatHistory: ChatMessage[],
 	gptModel: CHAT_MODELS
 ): ChatCompletionMessageParam[] {
-	const completions = chatHistory.reduce<ChatCompletionMessageParam[]>(
-		(result, chatMessage) => {
-			if ('completion' in chatMessage && chatMessage.completion) {
-				result.push(chatMessage.completion);
-			}
-			return result;
-		},
-		[]
-	);
+	const completions = chatHistory
+		.map((chatMessage) =>
+			'completion' in chatMessage ? chatMessage.completion : null
+		)
+		.filter(
+			(completion) => completion !== null
+		) as ChatCompletionMessageParam[];
 
 	console.debug(
 		'Number of tokens in total chat history. prompt_tokens=',
