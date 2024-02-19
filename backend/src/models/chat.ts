@@ -36,7 +36,7 @@ interface ChatModelConfiguration {
 	presencePenalty: number;
 }
 
-interface ChatDefenceReport {
+interface DefenceReport {
 	blockedReason: string | null;
 	isBlocked: boolean;
 	alertedDefences: DEFENCE_ID[];
@@ -93,7 +93,7 @@ interface MessageTransformation {
 
 interface ChatHttpResponse {
 	reply: string;
-	defenceReport: ChatDefenceReport;
+	defenceReport: DefenceReport;
 	transformedMessage?: TransformedChatMessage;
 	wonLevel: boolean;
 	isError: boolean;
@@ -118,7 +118,7 @@ const defaultChatModel: ChatModel = {
 };
 
 export type {
-	ChatDefenceReport,
+	DefenceReport,
 	ChatGptReply,
 	ChatMalicious,
 	ChatModel,

@@ -1,7 +1,7 @@
 import { defaultDefences } from './defaultDefences';
 import { evaluatePrompt } from './langchain';
 import {
-	ChatDefenceReport,
+	DefenceReport,
 	MessageTransformation,
 	SingleDefenceReport,
 	TransformedChatMessage,
@@ -297,7 +297,7 @@ function detectTriggeredOutputDefences(message: string, defences: Defence[]) {
 
 function combineDefenceReports(
 	defenceReports: SingleDefenceReport[]
-): ChatDefenceReport {
+): DefenceReport {
 	const isBlocked = defenceReports.some((report) => report.blockedReason);
 	const blockedReason = isBlocked
 		? defenceReports

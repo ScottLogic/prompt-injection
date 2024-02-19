@@ -10,7 +10,7 @@ import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
-	ChatDefenceReport,
+	DefenceReport,
 	ChatHttpResponse,
 	ChatModel,
 	LevelHandlerResponse,
@@ -33,9 +33,7 @@ import {
 
 import { handleChatError } from './handleError';
 
-function combineChatDefenceReports(
-	reports: ChatDefenceReport[]
-): ChatDefenceReport {
+function combineDefenceReports(reports: DefenceReport[]): DefenceReport {
 	return {
 		blockedReason: reports
 			.filter((report) => report.blockedReason !== null)
@@ -173,7 +171,7 @@ async function handleChatWithDefenceDetection(
 	const defenceReports = outputDefenceReport
 		? [inputDefenceReport, outputDefenceReport]
 		: [inputDefenceReport];
-	const combinedDefenceReport = combineChatDefenceReports(defenceReports);
+	const combinedDefenceReport = combineDefenceReports(defenceReports);
 
 	// if blocked, restore original chat history and add user message to chat history without completion
 	const updatedChatHistory = combinedDefenceReport.isBlocked

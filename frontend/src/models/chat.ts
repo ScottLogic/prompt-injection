@@ -43,7 +43,7 @@ interface CustomChatModelConfiguration {
 	max: number;
 }
 
-interface ChatDefenceReport {
+interface DefenceReport {
 	blockedReason: string;
 	isBlocked: boolean;
 	alertedDefences: DEFENCE_ID[];
@@ -65,7 +65,7 @@ interface TransformedChatMessage {
 
 interface ChatResponse {
 	reply: string;
-	defenceReport: ChatDefenceReport;
+	defenceReport: DefenceReport;
 	transformedMessage?: TransformedChatMessage;
 	wonLevel: boolean;
 	isError: boolean;

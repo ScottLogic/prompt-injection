@@ -13,7 +13,7 @@ import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
-	ChatDefenceReport,
+	DefenceReport,
 	ChatModel,
 	ChatResponse,
 	MessageTransformation,
@@ -232,7 +232,7 @@ describe('handleChatToGPT unit tests', () => {
 		function triggeredDefencesMockReturn(
 			blockedReason: string,
 			triggeredDefence: DEFENCE_ID
-		): Promise<ChatDefenceReport> {
+		): Promise<DefenceReport> {
 			return new Promise((resolve, reject) => {
 				try {
 					resolve({
@@ -240,7 +240,7 @@ describe('handleChatToGPT unit tests', () => {
 						isBlocked: true,
 						alertedDefences: [],
 						triggeredDefences: [triggeredDefence],
-					} as ChatDefenceReport);
+					} as DefenceReport);
 				} catch (err) {
 					reject(err);
 				}
@@ -601,7 +601,7 @@ describe('handleChatToGPT unit tests', () => {
 				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
-			} as ChatDefenceReport);
+			} as DefenceReport);
 
 			await handleChatToGPT(req, res);
 
@@ -701,7 +701,7 @@ describe('handleChatToGPT unit tests', () => {
 				isBlocked: false,
 				alertedDefences: [],
 				triggeredDefences: [],
-			} as ChatDefenceReport);
+			} as DefenceReport);
 
 			await handleChatToGPT(req, res);
 
