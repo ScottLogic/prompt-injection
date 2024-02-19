@@ -256,7 +256,7 @@ async function chatGptChatCompletion(
 			top_p: chatModel.configuration.topP,
 			frequency_penalty: chatModel.configuration.frequencyPenalty,
 			presence_penalty: chatModel.configuration.presencePenalty,
-			messages: getChatCompletionsInLimitedContextWindow(
+			messages: getChatCompletionsInContextWindow(
 				updatedChatHistory,
 				chatModel.id
 			),
@@ -290,7 +290,7 @@ async function chatGptChatCompletion(
 	}
 }
 
-function getChatCompletionsInLimitedContextWindow(
+function getChatCompletionsInContextWindow(
 	chatHistory: ChatMessage[],
 	gptModel: CHAT_MODELS
 ): ChatCompletionMessageParam[] {
