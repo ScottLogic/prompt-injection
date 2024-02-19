@@ -240,7 +240,8 @@ async function chatGptCallFunction(
 
 async function chatGptChatCompletion(
 	chatHistory: ChatMessage[],
-	chatModel: ChatModel
+	chatModel: ChatModel,
+	openAI: OpenAI
 ) {
 	const updatedChatHistory = [...chatHistory];
 
@@ -250,7 +251,7 @@ async function chatGptChatCompletion(
 	console.debug('Calling OpenAI chat completion...');
 
 	try {
-		const chat_completion = await getOpenAI().chat.completions.create({
+		const chat_completion = await openAI.chat.completions.create({
 			model: chatModel.id,
 			temperature: chatModel.configuration.temperature,
 			top_p: chatModel.configuration.topP,
@@ -366,9 +367,13 @@ async function getFinalReplyAfterAllToolCalls(
 	let wonLevel = false;
 
 	let gptReply: ChatGptReply | null = null;
-
+	const openAI = getOpenAI();
 	do {
-		gptReply = await chatGptChatCompletion(updatedChatHistory, chatModel);
+		gptReply = await chatGptChatCompletion(
+			updatedChatHistory,
+			chatModel,
+			openAI
+		);
 		updatedChatHistory = gptReply.chatHistory;
 
 		if (gptReply.completion?.tool_calls) {
