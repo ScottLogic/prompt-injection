@@ -10,7 +10,7 @@ import {
 } from '@src/promptTemplates';
 
 function handleStart(req: GetStartRequest, res: Response) {
-	const level = req.query.level;
+	const { level } = req.query;
 
 	const systemRoles = [
 		{ level: LEVEL_NAMES.LEVEL_1, systemRole: systemRoleLevel1 },
