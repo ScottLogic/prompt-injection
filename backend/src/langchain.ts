@@ -7,7 +7,7 @@ import { getDocumentVectors } from './document';
 import { CHAT_MODELS, ChatAnswer } from './models/chat';
 import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
 import { LEVEL_NAMES } from './models/level';
-import { getOpenAIKey, getValidOpenAIModelsList } from './openai';
+import { getOpenAIKey, getValidOpenAIModels } from './openai';
 import {
 	promptEvalPrompt,
 	promptEvalContextTemplate,
@@ -32,7 +32,7 @@ function makePromptTemplate(
 }
 
 function getChatModel() {
-	return getValidOpenAIModelsList().includes(CHAT_MODELS.GPT_4)
+	return getValidOpenAIModels().includes(CHAT_MODELS.GPT_4)
 		? CHAT_MODELS.GPT_4
 		: CHAT_MODELS.GPT_3_5_TURBO;
 }

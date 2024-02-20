@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import { GetStartRequest } from '@src/models/api/getStartRequest';
 import { LEVEL_NAMES } from '@src/models/level';
-import { getValidOpenAIModelsList } from '@src/openai';
+import { getValidOpenAIModels } from '@src/openai';
 import {
 	systemRoleLevel1,
 	systemRoleLevel2,
@@ -22,7 +22,7 @@ function handleStart(req: GetStartRequest, res: Response) {
 		emails: req.session.levelState[level].sentEmails,
 		history: req.session.levelState[level].chatHistory,
 		defences: req.session.levelState[level].defences,
-		availableModels: getValidOpenAIModelsList(),
+		availableModels: getValidOpenAIModels(),
 		systemRoles,
 	});
 }
