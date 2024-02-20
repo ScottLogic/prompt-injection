@@ -23,7 +23,7 @@ import {
 } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
-import { resourceName } from './resourceNamingUtils';
+import { appName, resourceName } from './resourceNamingUtils';
 
 export class UiStack extends Stack {
 	public readonly cloudfrontUrl: string;
@@ -83,9 +83,7 @@ export class UiStack extends Stack {
 					}),
 					cachePolicy: new CachePolicy(this, cachePolicyName, {
 						cachePolicyName,
-						cookieBehavior: CacheCookieBehavior.allowList(
-							'prompt-injection.sid'
-						),
+						cookieBehavior: CacheCookieBehavior.allowList(`${appName}.sid`),
 					}),
 					compress: true,
 					allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
