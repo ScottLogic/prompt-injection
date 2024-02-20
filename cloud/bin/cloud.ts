@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { App } from 'aws-cdk-lib';
+import { App, Environment } from 'aws-cdk-lib';
 import 'source-map-support/register';
 
 import {
@@ -12,6 +12,12 @@ import {
 } from '../lib';
 
 const app = new App();
+
+const env: Environment = {
+	account: process.env.CDK_DEFAULT_ACCOUNT,
+	region: process.env.CDK_DEFAULT_REGION,
+};
+
 const tags = {
 	owner: appName,
 	classification: 'unrestricted',
@@ -24,22 +30,25 @@ const generateStackName = stackName(app);
 const generateDescription = resourceDescription(app);
 
 const uiStack = new UiStack(app, generateStackName('ui'), {
-	tags,
 	description: generateDescription('UI stack'),
+	env,
+	tags,
 });
 
 // Don't need this stack yet.
 /*
 const authStack = new AuthStack(app, generateStackName('auth'), {
-	tags,
 	description: generateDescription('Auth stack'),
+	env,
+	tags,
 	webappUrl: uiStack.cloudfrontUrl,
 });
 */
 
 new ApiStack(app, generateStackName('api'), {
-	tags,
 	description: generateDescription('API stack'),
+	env,
+	tags,
 	// userPool: authStack.userPool,
 	// userPoolClient: authStack.userPoolClient,
 	// userPoolDomain: authStack.userPoolDomain,
