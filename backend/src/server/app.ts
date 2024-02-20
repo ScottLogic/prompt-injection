@@ -7,10 +7,13 @@ import queryTypes from 'query-types';
 
 import { importMetaUrl } from './importMetaUtils';
 import nonSessionRoutes from './nonSessionRoutes';
+import { usingForwardedHeader } from './proxySetup';
 import sessionRoutes from './sessionRoutes';
 import uiRoutes from './uiRoutes';
 
-const app = express().use(express.json()).use(queryTypes.middleware());
+const app = usingForwardedHeader(express())
+	.use(express.json())
+	.use(queryTypes.middleware());
 
 const isDevelopment = env.NODE_ENV === 'development';
 const isServingUI = env.NODE_ENV === 'prodlite';
