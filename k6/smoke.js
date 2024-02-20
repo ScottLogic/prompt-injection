@@ -1,5 +1,4 @@
 import http from 'k6/http';
-// import exec from 'k6/execution';
 import { check, sleep } from 'k6';
 
 export const options = {
@@ -8,10 +7,9 @@ export const options = {
 };
 
 export default () => {
-  const data = { message: "hi", currentLevel: '3' };
+  const data = { infoMessage: "Hi", chatMessageType: 'LEVEL_INFO' , level: 3};
   const url = 'http://localhost:3001/test/load';
 
-  // console.log('VU ID:' + exec.vu.idInTest);
   let response = http.post(url, JSON.stringify(data), {
     headers: { 'Content-Type': 'application/json' },
   });
