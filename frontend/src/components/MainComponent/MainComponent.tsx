@@ -74,25 +74,21 @@ function MainComponent({
 	}, [currentLevel]);
 
 	async function loadBackendData() {
-		const startResponse = await startService.start(currentLevel).catch(() => {
+		try {
+			const { availableModels, defences, emails, history, systemRoles } =
+				await startService.start(currentLevel);
+			setChatModels(availableModels);
+			setSystemRoles(systemRoles);
+			processBackendLevelData(currentLevel, emails, history, defences);
+		} catch (err) {
+			console.warn(err);
 			setMessages([
 				{
 					message: 'Failed to reach the server. Please try again later.',
 					type: 'ERROR_MSG',
 				},
 			]);
-		});
-
-		if (!startResponse) return;
-
-		setChatModels(startResponse.availableModels);
-		setSystemRoles(startResponse.systemRoles);
-		processBackendLevelData(
-			currentLevel,
-			startResponse.emails,
-			startResponse.history,
-			startResponse.defences
-		);
+		}
 	}
 
 	function openResetLevelOverlay() {
