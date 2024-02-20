@@ -86,7 +86,7 @@ export class ApiStack extends Stack {
 						NODE_ENV: 'production',
 						PORT: `${containerPort}`,
 						CORS_ALLOW_ORIGIN: webappUrl,
-						COOKIE_SID: `${appName}.sid`,
+						COOKIE_NAME: `${appName}.sid`,
 					},
 					secrets: {
 						OPENAI_API_KEY: EnvSecret.fromSecretsManager(

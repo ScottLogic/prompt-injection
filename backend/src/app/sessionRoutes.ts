@@ -50,7 +50,7 @@ if (!sessionSigningSecret) {
 	process.exit(1);
 }
 
-const cookieName = process.env.COOKIE_SID;
+const cookieName = process.env.COOKIE_NAME;
 const stage = process.env.NODE_ENV;
 console.log(`env=${stage}`);
 const isProd = stage === 'production';
