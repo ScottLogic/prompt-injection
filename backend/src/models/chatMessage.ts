@@ -67,4 +67,4 @@ export type {
 	CHAT_INFO_MESSAGE_TYPES,
 };
 
-export { chatInfoMessageTypes as chatInfoMessageType };
+export { chatInfoMessageTypes };

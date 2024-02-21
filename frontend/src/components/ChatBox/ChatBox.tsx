@@ -98,9 +98,7 @@ function ChatBox({
 				message: response.reply,
 				type: 'ERROR_MSG',
 			});
-		}
-		// add it to the list of messages
-		else if (response.defenceReport.isBlocked) {
+		} else if (response.defenceReport.isBlocked) {
 			addChatMessage({
 				type: 'BOT_BLOCKED',
 				message: response.defenceReport.blockedReason,
@@ -111,7 +109,6 @@ function ChatBox({
 				message: response.reply,
 			});
 		}
-		// add altered defences to the chat
 		response.defenceReport.alertedDefences.forEach((triggeredDefence) => {
 			// get user-friendly defence name
 			const defenceName = DEFAULT_DEFENCES.find((defence) => {
