@@ -56,7 +56,7 @@ jest.mock('@src/openai', () => {
 		jest.requireActual<typeof import('@src/openai')>('@src/openai'); // can we remove this
 	return {
 		...originalModule,
-		getValidOpenAIModelsList: jest.fn(() => mockValidModels),
+		getValidOpenAIModels: jest.fn(() => mockValidModels),
 	};
 });
 
