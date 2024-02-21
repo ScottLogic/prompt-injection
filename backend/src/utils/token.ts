@@ -7,7 +7,7 @@ import { promptTokensEstimate, stringTokens } from 'openai-chat-tokens';
 import { CHAT_MODELS } from '@src/models/chat';
 import { chatGptTools } from '@src/openai';
 
-// The size of each model's context window in muber of tokens. https://platform.openai.com/docs/models
+// The size of each model's context window in number of tokens. https://platform.openai.com/docs/models
 const chatModelMaxTokens = {
 	[CHAT_MODELS.GPT_4_TURBO]: 128000,
 	[CHAT_MODELS.GPT_4]: 8192,
