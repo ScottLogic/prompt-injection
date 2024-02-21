@@ -2,6 +2,7 @@ import { StartReponse } from '@src/models/combined';
 
 import { sendRequest } from './backendService';
 import { getChatMessagesFromDTOResponse } from './chatService';
+import { getDefencesFromDTOs } from './defenceService';
 
 const PATH = 'start/';
 
@@ -14,7 +15,7 @@ async function start(level: number) {
 	return {
 		emails: startResponse.emails,
 		history: getChatMessagesFromDTOResponse(startResponse.history),
-		defences: startResponse.defences,
+		defences: getDefencesFromDTOs(startResponse.defences),
 		availableModels: startResponse.availableModels,
 		systemRoles: startResponse.systemRoles,
 	};

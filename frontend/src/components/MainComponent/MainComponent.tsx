@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
+import { ALL_DEFENCES } from '@src/Defences';
 import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
@@ -156,7 +156,7 @@ function MainComponent({
 		level: LEVEL_NAMES,
 		emails: EmailInfo[],
 		chatHistory: ChatMessage[],
-		remoteDefences: Defence[]
+		defences: Defence[]
 	) {
 		setEmails(emails);
 
@@ -165,27 +165,6 @@ function MainComponent({
 			? setMessagesWithWelcome(chatHistory)
 			: setMessages(chatHistory);
 
-		const defences =
-			level === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
-		defences.map((localDefence) => {
-			const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
-				return localDefence.id === remoteDefence.id;
-			});
-			if (matchingRemoteDefence) {
-				localDefence.isActive = matchingRemoteDefence.isActive;
-				// set each config value
-				matchingRemoteDefence.config.forEach((configEntry) => {
-					// get the matching config in the local defence
-					const matchingConfig = localDefence.config.find((config) => {
-						return config.id === configEntry.id;
-					});
-					if (matchingConfig) {
-						matchingConfig.value = configEntry.value;
-					}
-				});
-			}
-			return localDefence;
-		});
 		setDefencesToShow(defences);
 		setMainBodyKey(MainBodyKey + 1);
 	}

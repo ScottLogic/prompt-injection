@@ -34,6 +34,17 @@ type Defence = {
 	isActive: boolean;
 };
 
+type DefenceDTO = {
+	id: DEFENCE_ID;
+	config: DefenceConfigItemDTO[];
+	isActive: boolean;
+};
+
+type DefenceConfigItemDTO = {
+	id: DEFENCE_CONFIG_ITEM_ID;
+	value: string;
+};
+
 type DefenceResetResponse = {
 	id: string;
 	value: string;
@@ -45,4 +56,6 @@ export type {
 	DEFENCE_CONFIG_ITEM_ID,
 	DefenceConfigItem,
 	Defence,
+	DefenceDTO,
+	DefenceConfigItemDTO,
 };
