@@ -2,7 +2,7 @@ import { afterEach, test, jest, expect } from '@jest/globals';
 import { OpenAI } from 'langchain/llms/openai';
 import { PromptTemplate } from 'langchain/prompts';
 
-import { queryPromptEvaluationModel } from '@src/langchain';
+import { evaluatePrompt } from '@src/langchain';
 import {
 	promptEvalContextTemplate,
 	promptEvalPrompt,
@@ -43,7 +43,7 @@ afterEach(() => {
 });
 
 test('WHEN we query the prompt evaluation model THEN it is initialised', async () => {
-	await queryPromptEvaluationModel('some input', promptEvalPrompt);
+	await evaluatePrompt('some input', promptEvalPrompt);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
 		`${promptEvalPrompt}\n${promptEvalContextTemplate}`
@@ -53,11 +53,9 @@ test('WHEN we query the prompt evaluation model THEN it is initialised', async (
 test('GIVEN the prompt evaluation model is not initialised WHEN it is asked to evaluate an input it returns not malicious', async () => {
 	mockPromptEvalChain.call.mockResolvedValueOnce({ promptEvalOutput: '' });
 
-	const result = await queryPromptEvaluationModel('message', 'Prompt');
+	const result = await evaluatePrompt('message', 'Prompt');
 
-	expect(result).toEqual({
-		isMalicious: false,
-	});
+	expect(result).toEqual(false);
 });
 
 test('GIVEN the users api key supports GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with GPT-4', async () => {
@@ -65,7 +63,7 @@ test('GIVEN the users api key supports GPT-4 WHEN the prompt evaluation model is
 
 	const prompt = 'this is a test prompt. ';
 
-	await queryPromptEvaluationModel('some input', prompt);
+	await evaluatePrompt('some input', prompt);
 
 	expect(OpenAI).toHaveBeenCalledWith({
 		modelName: 'gpt-4',
@@ -79,7 +77,7 @@ test('GIVEN the users api key does not support GPT-4 WHEN the prompt evaluation 
 
 	const prompt = 'this is a test prompt. ';
 
-	await queryPromptEvaluationModel('some input', prompt);
+	await evaluatePrompt('some input', prompt);
 
 	expect(OpenAI).toHaveBeenCalledWith({
 		modelName: 'gpt-3.5-turbo',

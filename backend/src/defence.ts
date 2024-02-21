@@ -1,7 +1,7 @@
 import { defaultDefences } from './defaultDefences';
-import { queryPromptEvaluationModel } from './langchain';
+import { evaluatePrompt } from './langchain';
 import {
-	ChatDefenceReport,
+	DefenceReport,
 	MessageTransformation,
 	SingleDefenceReport,
 	TransformedChatMessage,
@@ -20,14 +20,12 @@ import {
 } from './promptTemplates';
 
 function activateDefence(id: DEFENCE_ID, defences: Defence[]) {
-	// return the updated list of defences
 	return defences.map((defence) =>
 		defence.id === id ? { ...defence, isActive: true } : defence
 	);
 }
 
 function deactivateDefence(id: DEFENCE_ID, defences: Defence[]) {
-	// return the updated list of defences
 	return defences.map((defence) =>
 		defence.id === id ? { ...defence, isActive: false } : defence
 	);
@@ -38,7 +36,6 @@ function configureDefence(
 	defences: Defence[],
 	config: DefenceConfigItem[]
 ): Defence[] {
-	// return the updated list of defences
 	return defences.map((defence) =>
 		defence.id === id ? { ...defence, config } : defence
 	);
@@ -95,7 +92,6 @@ function getFilterList(defences: Defence[], type: DEFENCE_ID) {
 }
 function getSystemRole(
 	defences: Defence[],
-	// by default, use sandbox
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
 	switch (currentLevel) {
@@ -183,14 +179,12 @@ function escapeXml(unsafe: string) {
 	});
 }
 
-// function to detect any XML tags in user input
 function containsXMLTags(input: string) {
 	const tagRegex = /<\/?[a-zA-Z][\w-]*(?:\b[^>]*\/\s*|[^>]*>|[?]>)/g;
 	const foundTags: string[] = input.match(tagRegex) ?? [];
 	return foundTags.length > 0;
 }
 
-// apply XML tagging defence to input message
 function transformXmlTagging(
 	message: string,
 	defences: Defence[]
@@ -213,7 +207,6 @@ function generateRandomString(length: number) {
 	).join('');
 }
 
-// apply random sequence enclosure defence to input message
 function transformRandomSequenceEnclosure(
 	message: string,
 	defences: Defence[]
@@ -250,7 +243,6 @@ function combineTransformedMessage(transformedMessage: TransformedChatMessage) {
 	);
 }
 
-//apply defence string transformations to original message
 function transformMessage(
 	message: string,
 	defences: Defence[]
@@ -284,7 +276,6 @@ function transformMessage(
 	};
 }
 
-// detects triggered defences in original message and blocks the message if necessary
 async function detectTriggeredInputDefences(
 	message: string,
 	defences: Defence[]
@@ -299,7 +290,6 @@ async function detectTriggeredInputDefences(
 	return combineDefenceReports(singleDefenceReports);
 }
 
-// detects triggered defences in bot output and blocks the message if necessary
 function detectTriggeredOutputDefences(message: string, defences: Defence[]) {
 	const singleDefenceReports = [detectFilterBotOutput(message, defences)];
 	return combineDefenceReports(singleDefenceReports);
@@ -307,7 +297,7 @@ function detectTriggeredOutputDefences(message: string, defences: Defence[]) {
 
 function combineDefenceReports(
 	defenceReports: SingleDefenceReport[]
-): ChatDefenceReport {
+): DefenceReport {
 	const isBlocked = defenceReports.some((report) => report.blockedReason);
 	const blockedReason = isBlocked
 		? defenceReports
@@ -451,15 +441,16 @@ async function detectEvaluationLLM(
 ): Promise<SingleDefenceReport> {
 	const defence = DEFENCE_ID.PROMPT_EVALUATION_LLM;
 	// to save money and processing time, and to reduce risk of rate limiting, we only run if defence is active
+	// this means that, contrary to the other defences, the user won't get alerts when the defence is not active, i.e. "your last prompt would have been blocked by the prompt evaluation LLM"
 	if (isDefenceActive(DEFENCE_ID.PROMPT_EVALUATION_LLM, defences)) {
 		const promptEvalLLMPrompt = getPromptEvalPromptFromConfig(defences);
 
-		const evaluationResult = await queryPromptEvaluationModel(
+		const promptIsMalicious = await evaluatePrompt(
 			message,
 			promptEvalLLMPrompt
 		);
 
-		if (evaluationResult.isMalicious) {
+		if (promptIsMalicious) {
 			console.debug('LLM evaluation defence active and prompt is malicious.');
 
 			return {

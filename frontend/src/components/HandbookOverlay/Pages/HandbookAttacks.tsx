@@ -1,6 +1,7 @@
-import { ATTACKS_ALL, ATTACKS_LEVEL_2, ATTACKS_LEVEL_3 } from '@src/Attacks';
 import { AttackInfo } from '@src/models/attack';
 import { LEVEL_NAMES } from '@src/models/level';
+
+import { ATTACKS_ALL, ATTACKS_LEVEL_2, ATTACKS_LEVEL_3 } from './Attacks';
 
 import './HandbookPage.css';
 
