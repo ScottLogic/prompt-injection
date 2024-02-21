@@ -29,7 +29,7 @@ function ControlPanel({
 	openDocumentViewer: () => void;
 	addInfoMessage: (message: string) => void;
 }) {
-	const configurableDefences = defences.filter(
+	const nonModelDefences = defences.filter(
 		(defence) => !MODEL_DEFENCES.some((id) => id === defence.id)
 	);
 
@@ -53,7 +53,7 @@ function ControlPanel({
 						</summary>
 						<DefenceBox
 							currentLevel={currentLevel}
-							defences={configurableDefences}
+							defences={nonModelDefences}
 							showConfigurations={showConfigurations}
 							resetDefenceConfiguration={resetDefenceConfiguration}
 							toggleDefence={toggleDefence}
