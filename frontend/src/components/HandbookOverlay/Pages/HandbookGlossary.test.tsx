@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
-import { GLOSSARY } from '@src/Glossary';
 import { LEVEL_NAMES } from '@src/models/level';
 
+import { GLOSSARY } from './Glossary';
 import HandbookGlossary from './HandbookGlossary';
 
 describe('HandbookGlossary component tests', () => {

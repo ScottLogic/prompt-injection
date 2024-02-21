@@ -10,7 +10,7 @@ import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
-	ChatDefenceReport,
+	DefenceReport,
 	ChatHttpResponse,
 	ChatModel,
 	LevelHandlerResponse,
@@ -20,7 +20,7 @@ import {
 import {
 	ChatMessage,
 	ChatInfoMessage,
-	chatInfoMessageType,
+	chatInfoMessageTypes,
 } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -33,9 +33,7 @@ import {
 
 import { handleChatError } from './handleError';
 
-function combineChatDefenceReports(
-	reports: ChatDefenceReport[]
-): ChatDefenceReport {
+function combineDefenceReports(reports: DefenceReport[]): DefenceReport {
 	return {
 		blockedReason: reports
 			.filter((report) => report.blockedReason !== null)
@@ -100,17 +98,17 @@ async function handleChatWithoutDefenceDetection(
 	chatHistory: ChatMessage[],
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
+	console.log(`User message: '${message}'`);
+
 	const updatedChatHistory = createNewUserMessages(message).reduce(
 		pushMessageToHistory,
 		chatHistory
 	);
 
-	// get the chatGPT reply
 	const openAiReply = await chatGptSendMessage(
 		updatedChatHistory,
 		defences,
 		chatModel,
-		message,
 		currentLevel
 	);
 
@@ -146,11 +144,16 @@ async function handleChatWithDefenceDetection(
 		defences
 	);
 
+	console.log(
+		`User message: '${
+			messageTransformation?.transformedMessageCombined ?? message
+		}'`
+	);
+
 	const openAiReplyPromise = chatGptSendMessage(
 		chatHistoryWithNewUserMessages,
 		defences,
 		chatModel,
-		messageTransformation?.transformedMessageCombined ?? message,
 		currentLevel
 	);
 
@@ -168,7 +171,7 @@ async function handleChatWithDefenceDetection(
 	const defenceReports = outputDefenceReport
 		? [inputDefenceReport, outputDefenceReport]
 		: [inputDefenceReport];
-	const combinedDefenceReport = combineChatDefenceReports(defenceReports);
+	const combinedDefenceReport = combineDefenceReports(defenceReports);
 
 	// if blocked, restore original chat history and add user message to chat history without completion
 	const updatedChatHistory = combinedDefenceReport.isBlocked
@@ -196,7 +199,6 @@ async function handleChatWithDefenceDetection(
 }
 
 async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
-	// set reply params
 	const initChatResponse: ChatHttpResponse = {
 		reply: '',
 		defenceReport: {
@@ -232,9 +234,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		);
 		return;
 	}
-	const totalSentEmails: EmailInfo[] = [
-		...req.session.levelState[currentLevel].sentEmails,
-	];
 
 	// use default model for levels, allow user to select in sandbox
 	const chatModel =
@@ -283,7 +282,11 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	}
 
 	let updatedChatHistory = levelResult.chatHistory;
-	totalSentEmails.push(...levelResult.chatResponse.sentEmails);
+
+	const totalSentEmails: EmailInfo[] = [
+		...req.session.levelState[currentLevel].sentEmails,
+		...levelResult.chatResponse.sentEmails,
+	];
 
 	const updatedChatResponse: ChatHttpResponse = {
 		...initChatResponse,
@@ -291,7 +294,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	};
 
 	if (updatedChatResponse.defenceReport.isBlocked) {
-		// chatReponse.reply is empty if blocked
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 			chatMessageType: 'BOT_BLOCKED',
 			infoMessage:
@@ -326,7 +328,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		});
 	}
 
-	// update state
 	req.session.levelState[currentLevel].chatHistory = updatedChatHistory;
 	req.session.levelState[currentLevel].sentEmails = totalSentEmails;
 
@@ -376,7 +377,7 @@ function handleAddInfoToChatHistory(
 	if (
 		infoMessage &&
 		chatMessageType &&
-		chatInfoMessageType.includes(chatMessageType) &&
+		chatInfoMessageTypes.includes(chatMessageType) &&
 		level !== undefined &&
 		level >= LEVEL_NAMES.LEVEL_1
 	) {
