@@ -67,7 +67,7 @@
 	outline-offset: 0.1rem;
 }
 
-@media only screen and (width >= 37.5rem) {
+@media only screen and (width <= 70.5rem) {
 	.chat-box .footer {
 		gap: 0.5rem;
 		padding: 1rem;

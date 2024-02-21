@@ -2,7 +2,7 @@
 	display: flex;
 	flex-shrink: 0;
 	flex-direction: row;
-	justify-content: space-between;
+	justify-content: space-around;
 	align-items: center;
 	height: 6.25rem;
 	padding: 0 2rem;
@@ -20,12 +20,17 @@
 .main-header-left {
 	display: flex;
 	align-items: center;
-	width: 100%;
+	width: 20%;
 	height: 100%;
 }
 
 .main-header-left > .title-logo {
-	height: 80%;
+	width: -webkit-fill-available;
+	width: fill-available;
+	width: -moz-available;
+}
+.main-header-left .title-logo-small {
+	display: none;
 }
 
 .main-header-middle {
@@ -41,19 +46,15 @@
 
 .main-header-right {
 	display: flex;
-	gap: 1.5rem;
+	gap: 1rem;
 	justify-content: flex-end;
 	align-items: center;
-	width: 100%;
+	width: fit-content;
 	height: 100%;
 	padding-left: 0.5rem;
 }
 
-@media only screen and (width >= 37.5rem) {
-	.main-header-left > .title-logo {
-		height: 80%;
-	}
-
+@media only screen and (width <= 70.5rem) {
 	.main-header {
 		gap: 0.5rem;
 		height: 3.5rem;
@@ -93,11 +94,28 @@
 		white-space: normal;
 	}
 
-	.main-header .main-header-middle .header-button {
-		white-space: nowrap;
-	}
-
 	.themed-button > img {
 		display: none;
+	}
+}
+@media only screen and (width <= 50.5rem) {
+	.main-header .header-button {
+		padding: 0.25rem;
+	}
+	.main-header {
+		gap: 0.25rem;
+	}
+	.main-header .title-logo {
+		display: none;
+	}
+	.main-header .main-header-left {
+		width: 10%;
+	}
+	.main-header .title-logo-small {
+		display: block;
+		padding: 0.2rem;
+		width: -webkit-fill-available;
+		width: fill-available;
+		width: -moz-available;
 	}
 }
