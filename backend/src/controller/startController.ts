@@ -20,7 +20,7 @@ function handleStart(req: GetStartRequest, res: Response) {
 
 	res.send({
 		emails: req.session.levelState[level].sentEmails,
-		history: req.session.levelState[level].chatHistory,
+		chatHistory: req.session.levelState[level].chatHistory,
 		defences: req.session.levelState[level].defences,
 		availableModels: getValidOpenAIModels(),
 		systemRoles,

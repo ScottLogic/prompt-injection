@@ -9,7 +9,7 @@ export type GetStartRequest = Request<
 	never,
 	{
 		emails: EmailInfo[];
-		history: ChatMessage[];
+		chatHistory: ChatMessage[];
 		defences: Defence[];
 		availableModels: string[];
 		systemRoles: string[];

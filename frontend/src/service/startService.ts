@@ -10,13 +10,8 @@ async function start(level: number) {
 	const response = await sendRequest(`${PATH}?level=${level}`, {
 		method: 'GET',
 	});
-	const {
-		availableModels,
-		defences,
-		emails,
-		history: chatHistory,
-		systemRoles,
-	} = (await response.json()) as StartReponse;
+	const { availableModels, defences, emails, chatHistory, systemRoles } =
+		(await response.json()) as StartReponse;
 
 	return {
 		emails,
