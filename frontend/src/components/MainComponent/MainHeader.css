@@ -25,10 +25,9 @@
 }
 
 .main-header-left > .title-logo {
-	width: -webkit-fill-available;
-	width: fill-available;
-	width: -moz-available;
+	width: 100%;
 }
+
 .main-header-left .title-logo-small {
 	display: none;
 }
@@ -58,7 +57,7 @@
 	.main-header {
 		gap: 0.5rem;
 		height: 3.5rem;
-		padding: 0 0.5rem;
+		padding: 0.25rem 0.5rem;
 	}
 
 	.main-header .main-header-middle {
@@ -98,24 +97,27 @@
 		display: none;
 	}
 }
+
 @media only screen and (width <= 50.5rem) {
 	.main-header .header-button {
 		padding: 0.25rem;
 	}
+
 	.main-header {
 		gap: 0.25rem;
 	}
+
 	.main-header .title-logo {
 		display: none;
 	}
+
 	.main-header .main-header-left {
 		width: 10%;
 	}
+
 	.main-header .title-logo-small {
 		display: block;
+		width: 4rem;
 		padding: 0.2rem;
-		width: -webkit-fill-available;
-		width: fill-available;
-		width: -moz-available;
 	}
 }
