@@ -1,4 +1,4 @@
-import { MODEL_DEFENCES } from '@src/Defences';
+import { DEFENCES_HIDDEN_LEVEL3_IDS, MODEL_DEFENCES } from '@src/Defences';
 import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
@@ -29,12 +29,21 @@ function ControlPanel({
 	openDocumentViewer: () => void;
 	addInfoMessage: (message: string) => void;
 }) {
-	const nonModelDefences = defences.filter(
-		(defence) => !MODEL_DEFENCES.some((id) => id === defence.id)
+	const configurableDefences =
+		currentLevel === LEVEL_NAMES.SANDBOX
+			? defences
+			: currentLevel === LEVEL_NAMES.LEVEL_3
+			? defences.filter(
+					(defence) => !DEFENCES_HIDDEN_LEVEL3_IDS.includes(defence.id)
+			  )
+			: [];
+
+	const nonModelDefences = configurableDefences.filter(
+		(defence) => !MODEL_DEFENCES.includes(defence.id)
 	);
 
-	const modelDefences = defences.filter((defence) =>
-		MODEL_DEFENCES.some((id) => id === defence.id)
+	const modelDefences = configurableDefences.filter((defence) =>
+		MODEL_DEFENCES.includes(defence.id)
 	);
 
 	// only allow configuration in sandbox
