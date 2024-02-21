@@ -24,7 +24,7 @@ function makeDefenceConfigItem(
 	return { id, name, inputType, value: '' };
 }
 
-const DEFENCES_SHOWN_LEVEL3: Defence[] = [
+const ALL_DEFENCES: Defence[] = [
 	makeDefence(
 		DEFENCE_ID.CHARACTER_LIMIT,
 		'Character Limit',
@@ -83,10 +83,6 @@ const DEFENCES_SHOWN_LEVEL3: Defence[] = [
 		'Use an LLM to evaluate the user input for malicious content and prompt injection attacks.',
 		[makeDefenceConfigItem('PROMPT', 'prompt', 'text')]
 	),
-];
-
-const ALL_DEFENCES: Defence[] = [
-	...DEFENCES_SHOWN_LEVEL3,
 	makeDefence(
 		DEFENCE_ID.SYSTEM_ROLE,
 		'System Role',
@@ -101,6 +97,8 @@ const ALL_DEFENCES: Defence[] = [
 	),
 ];
 
+const DEFENCES_HIDDEN_LEVEL3_IDS = [DEFENCE_ID.SYSTEM_ROLE, DEFENCE_ID.QA_LLM];
+
 const MODEL_DEFENCES = [
 	DEFENCE_ID.PROMPT_EVALUATION_LLM,
 	DEFENCE_ID.QA_LLM,
@@ -114,8 +112,8 @@ const PROMPT_ENCLOSURE_DEFENCES = [
 ];
 
 export {
-	DEFENCES_SHOWN_LEVEL3,
 	ALL_DEFENCES,
 	MODEL_DEFENCES,
 	PROMPT_ENCLOSURE_DEFENCES,
+	DEFENCES_HIDDEN_LEVEL3_IDS,
 };
