@@ -24,7 +24,7 @@ function makeDefenceConfigItem(
 	return { id, name, inputType, value: '' };
 }
 
-const ALL_DEFENCES: Defence[] = [
+const DEFAULT_DEFENCES: Defence[] = [
 	makeDefence(
 		DEFENCE_ID.CHARACTER_LIMIT,
 		'Character Limit',
@@ -112,7 +112,7 @@ const PROMPT_ENCLOSURE_DEFENCES = [
 ];
 
 export {
-	ALL_DEFENCES,
+	DEFAULT_DEFENCES,
 	MODEL_DEFENCES,
 	PROMPT_ENCLOSURE_DEFENCES,
 	DEFENCES_HIDDEN_LEVEL3_IDS,

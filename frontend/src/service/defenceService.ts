@@ -1,4 +1,4 @@
-import { ALL_DEFENCES } from '@src/Defences';
+import { DEFAULT_DEFENCES } from '@src/Defences';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -19,7 +19,7 @@ async function getDefences(level: number) {
 }
 
 function getDefencesFromDTOs(defenceDTOs: DefenceDTO[]) {
-	return ALL_DEFENCES.map((defence) => {
+	return DEFAULT_DEFENCES.map((defence) => {
 		const defenceDTO = defenceDTOs.find(
 			(defenceDTO) => defence.id === defenceDTO.id
 		);

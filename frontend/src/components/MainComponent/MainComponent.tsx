@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { ALL_DEFENCES } from '@src/Defences';
+import { DEFAULT_DEFENCES } from '@src/Defences';
 import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
@@ -48,7 +48,7 @@ function MainComponent({
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
-	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
+	const [defences, setDefences] = useState<Defence[]>(DEFAULT_DEFENCES);
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [chatModels, setChatModels] = useState<string[]>([]);
@@ -165,7 +165,7 @@ function MainComponent({
 			? setMessagesWithWelcome(chatHistory)
 			: setMessages(chatHistory);
 
-		setDefencesToShow(defences);
+		setDefences(defences);
 		setMainBodyKey(MainBodyKey + 1);
 	}
 
@@ -197,7 +197,7 @@ function MainComponent({
 		);
 		addConfigUpdateToChat(defenceId, 'reset');
 		// update state
-		const newDefences = defencesToShow.map((defence) => {
+		const newDefences = defences.map((defence) => {
 			if (defence.id === defenceId) {
 				defence.config.forEach((config) => {
 					if (config.id === configId) {
@@ -207,7 +207,7 @@ function MainComponent({
 			}
 			return defence;
 		});
-		setDefencesToShow(newDefences);
+		setDefences(newDefences);
 	}
 
 	async function setDefenceToggle(defence: Defence) {
@@ -217,7 +217,7 @@ function MainComponent({
 			currentLevel
 		);
 
-		const newDefenceDetails = defencesToShow.map((defenceDetail) => {
+		const newDefenceDetails = defences.map((defenceDetail) => {
 			if (defenceDetail.id === defence.id) {
 				defenceDetail.isActive = !defence.isActive;
 				const action = defenceDetail.isActive ? 'activated' : 'deactivated';
@@ -227,7 +227,7 @@ function MainComponent({
 			return defenceDetail;
 		});
 
-		setDefencesToShow(newDefenceDetails);
+		setDefences(newDefenceDetails);
 	}
 
 	async function setDefenceConfiguration(
@@ -242,13 +242,13 @@ function MainComponent({
 		if (success) {
 			addConfigUpdateToChat(defenceId, 'updated');
 			// update state
-			const newDefences = defencesToShow.map((defence) => {
+			const newDefences = defences.map((defence) => {
 				if (defence.id === defenceId) {
 					defence.config = config;
 				}
 				return defence;
 			});
-			setDefencesToShow(newDefences);
+			setDefences(newDefences);
 		}
 		return success;
 	}
@@ -301,7 +301,7 @@ function MainComponent({
 			<MainBody
 				key={MainBodyKey}
 				currentLevel={currentLevel}
-				defences={defencesToShow}
+				defences={defences}
 				chatModels={chatModels}
 				emails={emails}
 				messages={messages}
