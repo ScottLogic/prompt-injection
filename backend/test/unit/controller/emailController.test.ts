@@ -1,12 +1,8 @@
 import { expect, test, jest, describe } from '@jest/globals';
 import { Response } from 'express';
 
-import {
-	handleClearEmails,
-	handleGetEmails,
-} from '@src/controller/emailController';
+import { handleClearEmails } from '@src/controller/emailController';
 import { EmailClearRequest } from '@src/models/api/EmailClearRequest';
-import { EmailGetRequest } from '@src/models/api/EmailGetRequest';
 import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
@@ -46,41 +42,6 @@ const emails: EmailInfo[] = [
 		body: 'Hi Jane, welcome to Scott Logic!',
 	},
 ];
-
-describe('handleGetEmails', () => {
-	test('GIVEN valid level WHEN handleGetEmails called THEN returns sent emails', () => {
-		const req = {
-			query: {
-				level: 0,
-			},
-			session: {
-				levelState: [
-					{
-						sentEmails: emails,
-					},
-				],
-			},
-		} as EmailGetRequest;
-
-		const res = responseMock();
-
-		handleGetEmails(req, res);
-
-		expect(res.send).toHaveBeenCalledWith(emails);
-	});
-
-	test('GIVEN missing level WHEN handleGetEmails called THEN returns 400 ', () => {
-		const req = {
-			query: {},
-		} as EmailGetRequest;
-
-		const res = responseMock();
-		handleGetEmails(req, res);
-
-		expect(res.status).toHaveBeenCalledWith(400);
-		expect(res.send).toHaveBeenCalledWith('Missing level');
-	});
-});
 
 describe('handleClearEmails', () => {
 	test('GIVEN valid level WHEN handleClearEmails called THEN sets emails to empty', () => {
