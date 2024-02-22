@@ -66,6 +66,10 @@ async function getChatHistory(level: number): Promise<ChatMessage[]> {
 	});
 	const chatMessageDTOs = (await response.json()) as ChatMessageDTO[];
 
+	return getChatMessagesFromDTOResponse(chatMessageDTOs);
+}
+
+function getChatMessagesFromDTOResponse(chatMessageDTOs: ChatMessageDTO[]) {
 	return chatMessageDTOs
 		.filter(chatMessageDTOIsConvertible)
 		.map(makeChatMessageFromDTO);
@@ -97,14 +101,6 @@ async function getGptModel(): Promise<ChatModel> {
 	return (await response.json()) as ChatModel;
 }
 
-async function getValidModels(): Promise<string[]> {
-	const response = await sendRequest(`${PATH}validModels`, { method: 'GET' });
-	const data = (await response.json()) as {
-		models: string[];
-	};
-	return data.models;
-}
-
 async function addInfoMessageToChatHistory(
 	message: string,
 	chatMessageType: CHAT_MESSAGE_TYPE,
@@ -128,7 +124,7 @@ export {
 	configureGptModel,
 	getGptModel,
 	setGptModel,
-	getValidModels,
 	getChatHistory,
 	addInfoMessageToChatHistory,
+	getChatMessagesFromDTOResponse,
 };

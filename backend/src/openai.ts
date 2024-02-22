@@ -439,7 +439,7 @@ async function chatGptSendMessage(
 	};
 }
 
-export const getValidOpenAIModelsList = validOpenAiModels.get;
+export const getValidOpenAIModels = validOpenAiModels.get;
 export {
 	chatGptTools,
 	chatGptSendMessage,

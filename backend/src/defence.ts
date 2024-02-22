@@ -256,7 +256,7 @@ function transformMessage(
 		: undefined;
 
 	if (!transformedMessage) {
-		console.debug('No defences applied. Message unchanged.');
+		console.debug('No transformation applied. Message unchanged.');
 		return;
 	}
 

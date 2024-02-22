@@ -32,7 +32,7 @@ jest.mock('@src/openai', () => {
 		jest.requireActual<typeof import('@src/openai')>('@src/openai');
 	return {
 		...originalModule,
-		getValidOpenAIModelsList: jest.fn(() => mockValidModels),
+		getValidOpenAIModels: jest.fn(() => mockValidModels),
 	};
 });
 

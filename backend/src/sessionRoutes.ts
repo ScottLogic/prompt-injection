@@ -23,10 +23,10 @@ import {
 import {
 	handleConfigureModel,
 	handleGetModel,
-	handleGetValidModels,
 	handleSetModel,
 } from './controller/modelController';
 import { handleResetProgress } from './controller/resetController';
+import { handleStart } from './controller/startController';
 import { handleTest } from './controller/testController';
 import { ChatModel, defaultChatModel } from './models/chat';
 import { LevelState, getInitialLevelStates } from './models/level';
@@ -94,6 +94,9 @@ router.use((req, _res, next) => {
 	next();
 });
 
+// handshake
+router.get('/start', handleStart);
+
 // defences
 router.get('/defence/status', handleGetDefenceStatus);
 router.post('/defence/activate', handleDefenceActivation);
@@ -112,7 +115,6 @@ router.post('/openai/addInfoToHistory', handleAddInfoToChatHistory);
 router.post('/openai/clear', handleClearChatHistory);
 
 // model configurations
-router.get('/openai/validModels', handleGetValidModels);
 router.get('/openai/model', handleGetModel);
 router.post('/openai/model', handleSetModel);
 router.post('/openai/model/configure', handleConfigureModel);

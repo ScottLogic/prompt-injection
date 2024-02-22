@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import DocumentViewBox from './components/DocumentViewer/DocumentViewBox';
-import HandbookOverlay from './components/HandbookOverlay/HandbookOverlay';
 import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
-import { LEVEL_NAMES, LevelSystemRole } from './models/level';
-import { chatService, levelService, systemRoleService } from './service';
+import { LEVEL_NAMES } from './models/level';
+import { levelService } from './service';
 
 import './App.css';
 import './Theme.css';
@@ -28,8 +27,6 @@ function App() {
 		null
 	);
 
-	const [chatModels, setChatModels] = useState<string[]>([]);
-	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
 
 	function loadIsNewUser() {
@@ -72,21 +69,6 @@ function App() {
 		setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
 	}
 
-	// fetch constants from the backend on app mount
-	async function loadBackendData() {
-		try {
-			console.log("Initializing app's backend data");
-			const [models, roles] = await Promise.all([
-				chatService.getValidModels(),
-				systemRoleService.getSystemRoles(),
-			]);
-			setChatModels(models);
-			setSystemRoles(roles);
-		} catch (err) {
-			console.log(err);
-		}
-	}
-
 	useEffect(() => {
 		// save number of completed levels to local storage
 		localStorage.setItem('numCompletedLevels', numCompletedLevels.toString());
@@ -115,11 +97,6 @@ function App() {
 			openWelcomeOverlay();
 		}
 	}, [isNewUser]);
-
-	// load the system constants from backend on app mount
-	useEffect(() => {
-		void loadBackendData();
-	}, []);
 
 	useEffect(() => {
 		// must re-bind event listener after changing overlay type
@@ -177,16 +154,7 @@ function App() {
 			/>
 		);
 	}
-	function openHandbook() {
-		openOverlay(
-			<HandbookOverlay
-				currentLevel={currentLevel}
-				numCompletedLevels={numCompletedLevels}
-				systemRoles={systemRoles}
-				closeOverlay={closeOverlay}
-			/>
-		);
-	}
+
 	function openInformationOverlay() {
 		openOverlay(
 			<MissionInformation
@@ -270,11 +238,9 @@ function App() {
 				key={mainComponentKey}
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
-				chatModels={chatModels}
 				closeOverlay={closeOverlay}
 				updateNumCompletedLevels={updateNumCompletedLevels}
 				openDocumentViewer={openDocumentViewer}
-				openHandbook={openHandbook}
 				openOverlay={openOverlay}
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
