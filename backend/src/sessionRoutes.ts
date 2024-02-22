@@ -14,10 +14,7 @@ import {
 	handleDefenceDeactivation,
 	handleResetSingleDefence,
 } from './controller/defenceController';
-import {
-	handleClearEmails,
-	handleGetEmails,
-} from './controller/emailController';
+import { handleClearEmails } from './controller/emailController';
 import { handleLoadLevel } from './controller/levelController';
 import {
 	handleConfigureModel,
@@ -105,7 +102,6 @@ router.post('/defence/configure', handleConfigureDefence);
 router.post('/defence/resetConfig', handleResetSingleDefence);
 
 // emails
-router.get('/email/get', handleGetEmails);
 router.post('/email/clear', handleClearEmails);
 
 // chat
