@@ -7,7 +7,7 @@ import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import { LEVEL_NAMES } from './models/level';
-import { levelService } from './service';
+import { resetService } from './service';
 
 import './App.css';
 import './Theme.css';
@@ -205,7 +205,7 @@ function App() {
 		console.log('resetting progress for all levels');
 
 		// reset on the backend
-		await levelService.resetAllLevelProgress();
+		await resetService.resetAllLevelProgress();
 
 		localStorage.setItem('numCompletedLevels', '0');
 		setNumCompletedLevels(0);
