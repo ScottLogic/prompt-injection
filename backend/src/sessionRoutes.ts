@@ -20,6 +20,7 @@ import {
 	handleClearEmails,
 	handleGetEmails,
 } from './controller/emailController';
+import { handleLoadLevel } from './controller/levelController';
 import {
 	handleConfigureModel,
 	handleGetModel,
@@ -96,6 +97,8 @@ router.use((req, _res, next) => {
 
 // handshake
 router.get('/start', handleStart);
+
+router.get('/level', handleLoadLevel);
 
 // defences
 router.get('/defence/status', handleGetDefenceStatus);

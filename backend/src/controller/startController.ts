@@ -1,6 +1,6 @@
 import { Response } from 'express';
 
-import { GetStartRequest } from '@src/models/api/getStartRequest';
+import { StartGetRequest } from '@src/models/api/StartGetRequest';
 import { LEVEL_NAMES } from '@src/models/level';
 import { getValidOpenAIModels } from '@src/openai';
 import {
@@ -9,7 +9,7 @@ import {
 	systemRoleLevel3,
 } from '@src/promptTemplates';
 
-function handleStart(req: GetStartRequest, res: Response) {
+function handleStart(req: StartGetRequest, res: Response) {
 	const { level } = req.query;
 
 	const systemRoles = [

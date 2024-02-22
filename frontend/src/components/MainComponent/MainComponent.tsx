@@ -149,6 +149,7 @@ function MainComponent({
 		const emails = await emailService.getSentEmails(newLevel);
 		const chatHistory = await chatService.getChatHistory(newLevel);
 		const defences = await defenceService.getDefences(newLevel);
+		// replace above three with one call
 		processBackendLevelData(newLevel, emails, chatHistory, defences);
 	}
 
