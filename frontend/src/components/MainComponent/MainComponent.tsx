@@ -66,10 +66,6 @@ function MainComponent({
 
 	// facilitate level change
 	useEffect(() => {
-		console.log(
-			'useEffect currentLevel. isFirstRender.current:',
-			isFirstRender.current
-		);
 		if (!isFirstRender.current) {
 			console.log('Loading backend data for level', currentLevel);
 			void setNewLevel(currentLevel);
