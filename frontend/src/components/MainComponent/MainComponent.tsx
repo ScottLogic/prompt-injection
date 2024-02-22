@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { DEFAULT_DEFENCES } from '@src/Defences';
 import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
-import UseIsFirstRender from '@src/hooks/useIsFirstRender';
 import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -54,7 +53,7 @@ function MainComponent({
 	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 
-	const isFirstRender = UseIsFirstRender();
+	const isFirstRender = useRef(true);
 
 	// facilitate refresh / first render
 	useEffect(() => {
@@ -67,7 +66,7 @@ function MainComponent({
 
 	// facilitate level change
 	useEffect(() => {
-		if (!isFirstRender) {
+		if (!isFirstRender.current) {
 			console.log('Loading backend data for level', currentLevel);
 			void setNewLevel(currentLevel);
 		}
