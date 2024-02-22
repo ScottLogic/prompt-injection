@@ -3,15 +3,13 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 export const options = {
-	// Key configurations for avg load test in this section
-	// stages: [
-	//   { duration: '5m', target: 100 }, // traffic ramp-up from 1 to 100 users over 5 minutes.
-	//   { duration: '5m', target: 100 }, // stay at 100 users for 30 minutes
-	//   { duration: '5m', target: 0 }, // ramp-down to 0 users
-	// ],
-	vus: 2, // Key for Smoke test. Keep it at 2, 3, max 5 VUs
-	// duration: '10s', // This can be shorter or just a few iterations
-	iterations: 4
+	scenarios: {
+    	contacts: {
+      	executor: 'constant-vus',
+      	vus: 100,
+      	duration: '30m',
+    	},
+  	},
 };
 
 const baseUrl = 'http://localhost:3001';
@@ -33,7 +31,6 @@ export default () => {
 		vuCookieJar.set(vuID, jar);
 	}
 	let originalCookie = (jar.cookiesForURL(baseUrl)[cookieName] || [])[0];
-	console.log(`Cookie was (${vuID}): ${originalCookie}`); //TODO Can remove this
 
 	const data = { infoMessage: "Hi", chatMessageType: 'LEVEL_INFO', level: 3 };
 	const response = http.post(`${baseUrl}/test/load`, JSON.stringify(data), {
@@ -48,8 +45,6 @@ export default () => {
 			response.cookies[cookieName].length === 1 &&
 			response.cookies[cookieName][0].value === expectedCookie,
 	});
-
-	console.log(`Cookie now (${vuID}): ${jar.cookiesForURL(baseUrl)[cookieName][0]}`); //TODO Can remove this
 
 	sleep(1);
 };
