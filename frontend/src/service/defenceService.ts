@@ -1,8 +1,9 @@
+import { DEFAULT_DEFENCES } from '@src/Defences';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
-	Defence,
 	DefenceResetResponse,
+	DefenceDTO,
 } from '@src/models/defence';
 
 import { sendRequest } from './backendService';
@@ -13,7 +14,30 @@ async function getDefences(level: number) {
 	const response = await sendRequest(`${PATH}status?level=${level}`, {
 		method: 'GET',
 	});
-	return (await response.json()) as Defence[];
+	const defenceDTOs = (await response.json()) as DefenceDTO[];
+	return getDefencesFromDTOs(defenceDTOs);
+}
+
+function getDefencesFromDTOs(defenceDTOs: DefenceDTO[]) {
+	return DEFAULT_DEFENCES.map((defence) => {
+		const defenceDTO = defenceDTOs.find(
+			(defenceDTO) => defence.id === defenceDTO.id
+		);
+		return defenceDTO
+			? {
+					...defence,
+					isActive: defenceDTO.isActive,
+					config: defence.config.map((config) => {
+						const matchingConfigItemDTO = defenceDTO.config.find(
+							(configItemDTO) => config.id === configItemDTO.id
+						);
+						return matchingConfigItemDTO
+							? { ...config, value: matchingConfigItemDTO.value }
+							: config;
+					}),
+			  }
+			: defence;
+	});
 }
 
 async function toggleDefence(
@@ -103,4 +127,5 @@ export {
 	configureDefence,
 	resetDefenceConfig,
 	validateDefence,
+	getDefencesFromDTOs,
 };
