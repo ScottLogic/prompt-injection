@@ -1,15 +1,12 @@
 import {
+	AdvancedSecurityMode,
 	Mfa,
 	OAuthScope,
-	ProviderAttribute,
 	UserPool,
 	UserPoolClient,
-	UserPoolClientIdentityProvider,
 	UserPoolDomain,
-	UserPoolIdentityProviderSaml,
-	UserPoolIdentityProviderSamlMetadata,
 } from 'aws-cdk-lib/aws-cognito';
-import { CfnOutput, Duration, Stack, StackProps, Tags } from 'aws-cdk-lib/core';
+import { CfnOutput, Duration, RemovalPolicy, Stack, StackProps, Tags } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
 import { resourceName } from './resourceNamingUtils';
@@ -26,14 +23,6 @@ export class AuthStack extends Stack {
 	constructor(scope: Construct, id: string, props: AuthStackProps) {
 		super(scope, id, props);
 
-		const azureTenantId = process.env.AZURE_TENANT_ID;
-		const azureApplicationId = process.env.AZURE_APPLICATION_ID;
-		if (!azureTenantId || !azureApplicationId) {
-			throw new Error(
-				'Need AZURE_TENANT_ID and AZURE_APPLICATION_ID environment vars!'
-			);
-		}
-
 		const generateResourceName = resourceName(scope);
 
 		// Cognito UserPool
@@ -42,7 +31,6 @@ export class AuthStack extends Stack {
 			userPoolName,
 			enableSmsRole: false,
 			mfa: Mfa.OFF,
-			//email // not configured, we're not going to send email from here
 			signInCaseSensitive: false,
 			autoVerify: { email: false }, // will be sending email invite anyway
 			selfSignUpEnabled: false, // only users we explicity allow
@@ -52,7 +40,16 @@ export class AuthStack extends Stack {
 				email: { required: true },
 			},
 			signInAliases: { email: true },
+			advancedSecurityMode: AdvancedSecurityMode.AUDIT,
+			passwordPolicy: {
+				minLength: 16,
+				requireSymbols: false,
+				requireLowercase: true,
+				requireUppercase: true,
+				requireDigits: true,
+			},
 			deletionProtection: false,
+			removalPolicy: RemovalPolicy.DESTROY,
 		});
 		// Tags not correctly assigned from parent stack: https://github.com/aws/aws-cdk/issues/14127
 		Object.entries(props.tags ?? {}).forEach(([key, value]) => {
@@ -62,30 +59,6 @@ export class AuthStack extends Stack {
 		new CfnOutput(this, 'UserPool.Identifier', {
 			value: `urn:amazon:cognito:sp:${this.userPool.userPoolId}`,
 		});
-		new CfnOutput(this, 'UserPool.ReplyUrl', {
-			value: `https://${userPoolName}.auth.${this.region}.amazoncognito.com/saml2/idpresponse`,
-		});
-
-		const idpName = generateResourceName('userpool-idp');
-		const identityProvider = new UserPoolIdentityProviderSaml(this, idpName, {
-			name: idpName,
-			idpSignout: true,
-			metadata: UserPoolIdentityProviderSamlMetadata.url(
-				`https://login.microsoftonline.com/${azureTenantId}/federationmetadata/2007-06/federationmetadata.xml?appid=${azureApplicationId}`
-			),
-			userPool: this.userPool,
-			attributeMapping: {
-				email: ProviderAttribute.other(
-					'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
-				),
-				familyName: ProviderAttribute.other(
-					'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'
-				),
-				givenName: ProviderAttribute.other(
-					'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'
-				),
-			},
-		});
 
 		const callbackUrls = [`${props.webappUrl}/`];
 		const userPoolClientName = generateResourceName('userpool-client');
@@ -94,9 +67,6 @@ export class AuthStack extends Stack {
 			authFlows: {
 				userSrp: true,
 			},
-			supportedIdentityProviders: [
-				UserPoolClientIdentityProvider.custom(identityProvider.providerName),
-			],
 			generateSecret: true,
 			oAuth: {
 				flows: {
@@ -108,8 +78,7 @@ export class AuthStack extends Stack {
 			},
 			accessTokenValidity: Duration.minutes(60),
 			idTokenValidity: Duration.minutes(60),
-			refreshTokenValidity: Duration.days(30),
-			authSessionValidity: Duration.minutes(3),
+			refreshTokenValidity: Duration.days(14),
 			enableTokenRevocation: true,
 			preventUserExistenceErrors: true,
 		});

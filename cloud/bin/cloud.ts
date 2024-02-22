@@ -8,6 +8,7 @@ import {
 	resourceDescription,
 	stackName,
 	ApiStack,
+	AuthStack,
 	UiStack,
 } from '../lib';
 
@@ -23,7 +24,6 @@ const tags = {
 	classification: 'unrestricted',
 	'environment-type': environmentName(app),
 	'keep-alive': '8-6-without-weekends',
-	IaC: 'CDK',
 };
 
 const generateStackName = stackName(app);
@@ -35,15 +35,12 @@ const uiStack = new UiStack(app, generateStackName('ui'), {
 	tags,
 });
 
-// Don't need this stack yet.
-/*
-const authStack = new AuthStack(app, generateStackName('auth'), {
+/*const authStack = */ new AuthStack(app, generateStackName('auth'), {
 	description: generateDescription('Auth stack'),
 	env,
 	tags,
 	webappUrl: uiStack.cloudfrontUrl,
 });
-*/
 
 new ApiStack(app, generateStackName('api'), {
 	description: generateDescription('API stack'),
