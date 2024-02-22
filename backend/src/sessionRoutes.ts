@@ -12,7 +12,6 @@ import {
 	handleConfigureDefence,
 	handleDefenceActivation,
 	handleDefenceDeactivation,
-	handleGetDefenceStatus,
 	handleResetSingleDefence,
 } from './controller/defenceController';
 import {
@@ -100,7 +99,6 @@ router.get('/start', handleStart);
 router.get('/level', handleLoadLevel);
 
 // defences
-router.get('/defence/status', handleGetDefenceStatus);
 router.post('/defence/activate', handleDefenceActivation);
 router.post('/defence/deactivate', handleDefenceDeactivation);
 router.post('/defence/configure', handleConfigureDefence);
