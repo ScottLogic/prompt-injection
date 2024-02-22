@@ -396,8 +396,4 @@ function handleClearChatHistory(req: OpenAiClearRequest, res: Response) {
 	}
 }
 
-export {
-	handleChatToGPT,
-	handleAddInfoToChatHistory as handleAddInfoToChatHistory,
-	handleClearChatHistory,
-};
+export { handleChatToGPT, handleAddInfoToChatHistory, handleClearChatHistory };
