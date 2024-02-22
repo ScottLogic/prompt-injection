@@ -60,15 +60,6 @@ function chatMessageDTOIsConvertible(chatMessageDTO: ChatMessageDTO) {
 	);
 }
 
-async function getChatHistory(level: number): Promise<ChatMessage[]> {
-	const response = await sendRequest(`${PATH}history?level=${level}`, {
-		method: 'GET',
-	});
-	const chatMessageDTOs = (await response.json()) as ChatMessageDTO[];
-
-	return getChatMessagesFromDTOResponse(chatMessageDTOs);
-}
-
 function getChatMessagesFromDTOResponse(chatMessageDTOs: ChatMessageDTO[]) {
 	return chatMessageDTOs
 		.filter(chatMessageDTOIsConvertible)
@@ -124,7 +115,6 @@ export {
 	configureGptModel,
 	getGptModel,
 	setGptModel,
-	getChatHistory,
 	addInfoMessageToChatHistory,
 	getChatMessagesFromDTOResponse,
 };
