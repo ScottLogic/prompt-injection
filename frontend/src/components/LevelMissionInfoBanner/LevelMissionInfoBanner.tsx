@@ -1,9 +1,8 @@
 import { LEVELS } from '@src/Levels';
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './LevelMissionInfoBanner.css';
-
-import ThemedButton from '../ThemedButtons/ThemedButton';
 
 function LevelMissionInfoBanner({
 	currentLevel,
