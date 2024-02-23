@@ -14,7 +14,7 @@ enum LEVEL_NAMES {
 interface LevelState {
 	level: LEVEL_NAMES;
 	chatHistory: ChatMessage[];
-	defences: Defence[];
+	defences?: Defence[];
 	sentEmails: EmailInfo[];
 }
 
@@ -26,7 +26,10 @@ function getInitialLevelStates() {
 				({
 					level: value as LEVEL_NAMES,
 					chatHistory: [],
-					defences: defaultDefences,
+					defences:
+						value === LEVEL_NAMES.LEVEL_1 || value === LEVEL_NAMES.LEVEL_2
+							? undefined
+							: defaultDefences,
 					sentEmails: [],
 				} as LevelState)
 		);
