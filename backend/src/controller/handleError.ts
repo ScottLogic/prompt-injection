@@ -22,7 +22,8 @@ function handleChatError(
 		reply: errorMsg,
 		isError: true,
 	};
-	res.status(statusCode).send(updatedChatResponse);
+	res.status(statusCode);
+	res.send(updatedChatResponse);
 }
 
 export { sendErrorResponse, handleChatError };

@@ -1,4 +1,4 @@
-import { expect, test, jest } from '@jest/globals';
+import { expect, test, jest, afterEach } from '@jest/globals';
 import { Response } from 'express';
 
 import { handleStart } from '@src/controller/startController';
@@ -29,14 +29,20 @@ jest.mock('@src/promptTemplates', () => ({
 	systemRoleLevel3: 'systemRoleLevel3',
 }));
 
+const mockSend = jest.fn();
+
 function responseMock() {
 	return {
-		send: jest.fn(),
-		status: jest.fn(),
+		send: mockSend,
+		status: jest.fn().mockReturnValue({ send: mockSend }),
 	} as unknown as Response;
 }
 
-test('dummy test', () => {
+afterEach(() => {
+	mockSend.mockClear();
+});
+
+test('WHEN user starts the frontend THEN the backend sends the initial information', () => {
 	const req = {
 		query: {
 			level: 0,
@@ -56,7 +62,7 @@ test('dummy test', () => {
 
 	handleStart(req, res);
 
-	expect(res.send).toHaveBeenCalledWith({
+	expect(mockSend).toHaveBeenCalledWith({
 		emails: [],
 		chatHistory: [],
 		defences: [],
@@ -67,4 +73,26 @@ test('dummy test', () => {
 			{ level: 2, systemRole: 'systemRoleLevel3' },
 		],
 	});
+});
+
+test('WHEN user starts the frontend THEN the backend sends the initial information', () => {
+	const req = {
+		query: {},
+		session: {
+			levelState: [
+				{
+					sentEmails: [],
+					chatHistory: [],
+					defences: [],
+				},
+			],
+			systemRoles: [],
+		},
+	} as unknown as StartGetRequest;
+	const res = responseMock();
+
+	handleStart(req, res);
+
+	expect(res.status).toHaveBeenCalledWith(400);
+	expect(mockSend).toHaveBeenCalledWith('Level not provided');
 });

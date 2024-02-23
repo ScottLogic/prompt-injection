@@ -9,11 +9,13 @@ import {
 	systemRoleLevel3,
 } from '@src/promptTemplates';
 
+import { sendErrorResponse } from './handleError';
+
 function handleStart(req: StartGetRequest, res: Response) {
 	const { level } = req.query;
 
 	if (level === undefined) {
-		res.status(400).send('Level not provided');
+		sendErrorResponse(res, 400, 'Level not provided');
 		return;
 	}
 
