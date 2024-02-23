@@ -93,9 +93,7 @@ async function initDocumentVectors() {
 	const docVectors: DocumentsVector[] = [];
 	const commonDocuments = await getDocuments(getFilepath('common'));
 
-	const levelValues = Object.values(LEVEL_NAMES)
-		.filter((value) => !isNaN(Number(value)))
-		.map((value) => Number(value));
+	const levelValues = Object.values(LEVEL_NAMES);
 
 	for (const level of levelValues) {
 		const commonAndLevelDocuments = commonDocuments.concat(
