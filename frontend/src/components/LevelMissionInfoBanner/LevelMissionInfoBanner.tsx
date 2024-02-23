@@ -15,6 +15,7 @@ function LevelMissionInfoBanner({
 		<span className="level-mission-info-banner">
 			<h2 className="level-title-area">{`Level ${currentLevel + 1}`}</h2>
 			<p
+				data-testid="banner-info"
 				dangerouslySetInnerHTML={{
 					__html: LEVELS[currentLevel].missionInfoShort ?? '',
 				}}

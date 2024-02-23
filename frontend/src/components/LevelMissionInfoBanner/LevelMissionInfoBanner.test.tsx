@@ -16,9 +16,9 @@ describe('LevelMissionInfoBanner component tests', () => {
 			/>
 		);
 
-		const button = screen.getByRole('button');
+		const banner = screen.getByTestId('banner-info');
 		const expectedContent = LEVELS[currentLevel].missionInfoShort ?? '';
-		expect(button).toContainHTML(expectedContent);
+		expect(banner).toContainHTML(expectedContent);
 	});
 
 	test('fires the openOverlay callback on button click', () => {
