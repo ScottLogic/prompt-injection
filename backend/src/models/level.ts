@@ -21,18 +21,17 @@ interface LevelState {
 function getInitialLevelStates() {
 	return Object.values(LEVEL_NAMES)
 		.filter((value) => Number.isNaN(Number(value)))
-		.map(
-			(value) =>
-				({
-					level: value as LEVEL_NAMES,
-					chatHistory: [],
-					defences:
-						value === LEVEL_NAMES.LEVEL_1 || value === LEVEL_NAMES.LEVEL_2
-							? undefined
-							: defaultDefences,
-					sentEmails: [],
-				} as LevelState)
-		);
+		.map((value) => {
+			return {
+				level: value as LEVEL_NAMES,
+				chatHistory: [],
+				defences:
+					value === 'LEVEL_1' || value === 'LEVEL_2'
+						? undefined
+						: defaultDefences,
+				sentEmails: [],
+			} as LevelState;
+		});
 }
 
 export { LEVEL_NAMES, getInitialLevelStates };

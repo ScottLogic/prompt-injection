@@ -28,33 +28,74 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 	const defenceId = req.body.defenceId;
 	const level = req.body.level;
 
-	if (defenceId && level !== undefined) {
-		// activate the defence
-		req.session.levelState[level].defences = activateDefence(
-			defenceId,
-			req.session.levelState[level].defences
-		);
-		res.status(200).send();
-	} else {
-		res.status(400).send();
+	if (!defenceId) {
+		sendErrorResponse(res, 400, 'Missing defenceId');
+		return;
 	}
+
+	if (level === undefined) {
+		sendErrorResponse(res, 400, 'Missing level');
+		return;
+	}
+
+	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+		sendErrorResponse(res, 400, 'Invalid level');
+		return;
+	}
+
+	if (req.session.levelState[level].defences === undefined) {
+		sendErrorResponse(
+			res,
+			400,
+			'You cannot activate defences on this level, because it uses the default defences'
+		);
+		return;
+	}
+
+	if (req.session.levelState[3].defences === undefined) return; // this dumb type guard is needed, because we are accessing the array via enum, and so typescript doesn't account for the above type guards. This will be solved with #842. The below array indices won't need to be hardcoded either.
+
+	req.session.levelState[3].defences = activateDefence(
+		defenceId,
+		req.session.levelState[3].defences
+	);
+	res.status(200).send();
 }
 
 function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
-	// id of the defence
 	const defenceId = req.body.defenceId;
 	const level = req.body.level;
-	if (defenceId && level !== undefined) {
-		// deactivate the defence
-		req.session.levelState[level].defences = deactivateDefence(
-			defenceId,
-			req.session.levelState[level].defences
-		);
-		res.send();
-	} else {
-		res.status(400);
-		res.send();
+
+	if (!defenceId) {
+		sendErrorResponse(res, 400, 'Missing defenceId');
+		return;
 	}
+
+	if (level === undefined) {
+		sendErrorResponse(res, 400, 'Missing level');
+		return;
+	}
+
+	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+		sendErrorResponse(res, 400, 'Invalid level');
+		return;
+	}
+
+	if (req.session.levelState[level].defences === undefined) {
+		sendErrorResponse(
+			res,
+			400,
+			'You cannot deactivate defences on this level, because it uses the default defences'
+		);
+		return;
+	}
+
+	if (req.session.levelState[3].defences === undefined) return; // this dumb type guard is needed, because we are accessing the array via enum, and so typescript doesn't account for the above type guards. This will be solved with #842. The below array indices won't need to be hardcoded either.
+
+	req.session.levelState[3].defences = deactivateDefence(
+		defenceId,
+		req.session.levelState[3].defences
+	);
+	res.status(200).send();
 }
 
 function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
@@ -73,10 +114,20 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 		return;
 	}
 
-	// configure the defence
-	req.session.levelState[level].defences = configureDefence(
+	if (req.session.levelState[level].defences === undefined) {
+		sendErrorResponse(
+			res,
+			400,
+			'You cannot configure defences on this level, because it uses the default defences'
+		);
+		return;
+	}
+
+	if (req.session.levelState[3].defences === undefined) return; // this dumb type guard is needed, because we are accessing the array via enum, and so typescript doesn't account for the above type guards. This will be solved with #842. The below array indices won't need to be hardcoded either.
+
+	req.session.levelState[3].defences = configureDefence(
 		defenceId,
-		req.session.levelState[level].defences,
+		req.session.levelState[3].defences,
 		config
 	);
 	res.send();
@@ -88,27 +139,44 @@ function handleResetSingleDefence(
 ) {
 	const defenceId = req.body.defenceId;
 	const configId = req.body.configId;
-	const level = LEVEL_NAMES.SANDBOX; //configuration only available in sandbox
-	if (defenceId && configId) {
-		req.session.levelState[level].defences = resetDefenceConfig(
-			defenceId,
-			configId,
-			req.session.levelState[level].defences
-		);
-		const updatedDefenceConfig: DefenceConfigItem | undefined =
-			req.session.levelState[level].defences
-				.find((defence) => defence.id === defenceId)
-				?.config.find((config) => config.id === configId);
+	const level = LEVEL_NAMES.SANDBOX; //configuration only available in sandbox (interesting that we force that here, but not in the above endpoints)
 
-		if (updatedDefenceConfig) {
-			res.send(updatedDefenceConfig);
-		} else {
-			res.status(400);
-			res.send();
-		}
+	if (!defenceId) {
+		sendErrorResponse(res, 400, 'Missing defenceId');
+		return;
+	}
+
+	if (!configId) {
+		sendErrorResponse(res, 400, 'Missing configId');
+		return;
+	}
+
+	if (req.session.levelState[level].defences === undefined) {
+		sendErrorResponse(
+			res,
+			400,
+			'You cannot reset defences on this level, because it uses the default defences'
+		);
+		return;
+	}
+
+	req.session.levelState[level].defences = resetDefenceConfig(
+		defenceId,
+		configId,
+		req.session.levelState[level].defences
+	);
+	const updatedDefenceConfig: DefenceConfigItem | undefined =
+		req.session.levelState[level].defences
+			.find((defence) => defence.id === defenceId)
+			?.config.find((config) => config.id === configId);
+
+	if (updatedDefenceConfig) {
+		res.send(updatedDefenceConfig);
 	} else {
 		res.status(400);
-		res.send();
+		res.send(
+			"something went wrong while resetting the defence's config. Check the defenceId and configId."
+		);
 	}
 }
 
