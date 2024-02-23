@@ -1,5 +1,6 @@
 import { Response } from 'express';
 
+import { defaultDefences } from '@src/defaultDefences';
 import {
 	transformMessage,
 	detectTriggeredInputDefences,
@@ -241,13 +242,14 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			? req.session.chatModel
 			: defaultChatModel;
 
+	const defences =
+		req.session.levelState[currentLevel].defences ?? defaultDefences;
+
 	const currentChatHistory = setSystemRoleInChatHistory(
 		currentLevel,
-		req.session.levelState[currentLevel].defences,
+		defences,
 		req.session.levelState[currentLevel].chatHistory
 	);
-
-	const defences = [...req.session.levelState[currentLevel].defences];
 
 	let levelResult: LevelHandlerResponse;
 	try {
@@ -410,6 +412,6 @@ function handleClearChatHistory(req: OpenAiClearRequest, res: Response) {
 export {
 	handleChatToGPT,
 	handleGetChatHistory,
-	handleAddInfoToChatHistory as handleAddInfoToChatHistory,
+	handleAddInfoToChatHistory,
 	handleClearChatHistory,
 };
