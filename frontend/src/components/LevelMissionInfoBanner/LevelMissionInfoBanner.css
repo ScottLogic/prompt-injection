@@ -26,6 +26,20 @@
 	font-size: 1rem;
 }
 
-.level-mission-info-banner:hover {
-	background-color: var(--level-banner-background-colour-hover);
+.level-mission-info-banner .themed-button {
+	height: auto;
+	white-space: nowrap;
+}
+
+.info-icon {
+	margin-right: 0.25rem;
+	padding: 0 0.4rem;
+	border: 0.2rem;
+	border-style: solid;
+	border-color: var(--action-button-text-colour);
+	border-radius: 50%;
+	background-color: var(--action-button-text-colour);
+	color: var(--action-button-background-colour);
+	font: 1rem serif;
+	font-weight: bold;
 }
