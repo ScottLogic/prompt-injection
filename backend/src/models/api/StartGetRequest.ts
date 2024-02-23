@@ -16,6 +16,6 @@ export type StartGetRequest = Request<
 	},
 	never,
 	{
-		level: LEVEL_NAMES;
+		level?: LEVEL_NAMES;
 	}
 >;

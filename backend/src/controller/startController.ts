@@ -12,6 +12,11 @@ import {
 function handleStart(req: StartGetRequest, res: Response) {
 	const { level } = req.query;
 
+	if (level === undefined) {
+		res.status(400).send('Level not provided');
+		return;
+	}
+
 	const systemRoles = [
 		{ level: LEVEL_NAMES.LEVEL_1, systemRole: systemRoleLevel1 },
 		{ level: LEVEL_NAMES.LEVEL_2, systemRole: systemRoleLevel2 },
