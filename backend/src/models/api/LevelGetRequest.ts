@@ -14,6 +14,6 @@ export type LevelGetRequest = Request<
 	},
 	never,
 	{
-		level: LEVEL_NAMES;
+		level?: LEVEL_NAMES;
 	}
 >;

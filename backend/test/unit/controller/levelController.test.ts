@@ -1,8 +1,8 @@
 import { expect, test, jest, afterEach } from '@jest/globals';
 import { Response } from 'express';
 
-import { handleStart } from '@src/controller/startController';
-import { StartGetRequest } from '@src/models/api/StartGetRequest';
+import { handleLoadLevel } from '@src/controller/levelController';
+import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
 import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
@@ -42,7 +42,7 @@ afterEach(() => {
 	mockSend.mockClear();
 });
 
-test('GIVEN level 1 provided WHEN user starts the frontend THEN the backend sends the initial information', () => {
+test('WHEN client asks to load level 1 THEN the backend sends the level information for the given level', () => {
 	const req = {
 		query: {
 			level: 1,
@@ -56,43 +56,36 @@ test('GIVEN level 1 provided WHEN user starts the frontend THEN the backend send
 					defences: [],
 				},
 			],
-			systemRoles: [],
 		},
-	} as unknown as StartGetRequest;
+	} as unknown as LevelGetRequest;
 	const res = responseMock();
 
-	handleStart(req, res);
+	handleLoadLevel(req, res);
 
 	expect(mockSend).toHaveBeenCalledWith({
 		emails: [],
 		chatHistory: [],
 		defences: [],
-		availableModels: [],
-		systemRoles: [
-			{ level: 0, systemRole: 'systemRoleLevel1' },
-			{ level: 1, systemRole: 'systemRoleLevel2' },
-			{ level: 2, systemRole: 'systemRoleLevel3' },
-		],
 	});
 });
 
-test('GIVEN no level provided WHEN user starts the frontend THEN the backend responds with error message', () => {
+test('WHEN client does not provide a level THEN the backend sends the level information for the given level', () => {
 	const req = {
 		query: {},
 		session: {
 			levelState: [
+				{},
 				{
 					sentEmails: [],
 					chatHistory: [],
 					defences: [],
 				},
 			],
-			systemRoles: [],
 		},
-	} as unknown as StartGetRequest;
+	} as unknown as LevelGetRequest;
 	const res = responseMock();
 
-	handleStart(req, res);
+	handleLoadLevel(req, res);
 
 	expect(res.status).toHaveBeenCalledWith(400);
 	expect(mockSend).toHaveBeenCalledWith('Level not provided');
