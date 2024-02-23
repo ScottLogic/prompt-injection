@@ -19,7 +19,7 @@ declare module 'express-session' {
 	interface LevelState {
 		level: LEVEL_NAMES;
 		chatHistory: ChatMessage[];
-		defences: Defence[];
+		defences?: Defence[];
 		sentEmails: EmailInfo[];
 	}
 }
