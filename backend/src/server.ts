@@ -24,7 +24,8 @@ app.listen(port, () => {
 			console.debug('Document vector store initialized');
 		})
 		.catch((err) => {
-			throw new Error(`Error initializing document vectors: ${err}`);
+			//throw new Error(`Error initializing document vectors: ${err}`);
+			console.log('ERROR SWALLOWED :D', err);
 		});
 
 	Promise.all([modelsPromise, vectorsPromise])

@@ -41,7 +41,7 @@ describe('handleConfigureDefence', () => {
 		const req: DefenceConfigureRequest = {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-				level: LEVEL_NAMES.LEVEL_1,
+				level: LEVEL_NAMES.SANDBOX,
 				config: [
 					{
 						id: 'PROMPT',
@@ -51,8 +51,11 @@ describe('handleConfigureDefence', () => {
 			},
 			session: {
 				levelState: [
+					{},
+					{},
+					{},
 					{
-						level: LEVEL_NAMES.LEVEL_1,
+						level: LEVEL_NAMES.SANDBOX,
 						chatHistory: [] as ChatMessage[],
 						sentEmails: [] as EmailInfo[],
 						defences: [] as Defence[],
@@ -84,7 +87,7 @@ describe('handleConfigureDefence', () => {
 				},
 			]
 		);
-		expect(req.session.levelState[LEVEL_NAMES.LEVEL_1].defences).toEqual(
+		expect(req.session.levelState[LEVEL_NAMES.SANDBOX].defences).toEqual(
 			configuredDefences
 		);
 	});
