@@ -1,5 +1,6 @@
 import { defaultDefences } from '@src/defaultDefences';
 
+import { ChatModel, defaultChatModel } from './chat';
 import { ChatMessage } from './chatMessage';
 import { Defence } from './defence';
 import { EmailInfo } from './email';
@@ -16,6 +17,7 @@ interface LevelState {
 	chatHistory: ChatMessage[];
 	defences?: Defence[];
 	sentEmails: EmailInfo[];
+	chatModel?: ChatModel;
 }
 
 function getInitialLevelStates() {
@@ -30,6 +32,7 @@ function getInitialLevelStates() {
 						? undefined
 						: defaultDefences,
 				sentEmails: [],
+				chatModel: value === 'SANDBOX' ? defaultChatModel : undefined,
 			} as LevelState;
 		});
 }

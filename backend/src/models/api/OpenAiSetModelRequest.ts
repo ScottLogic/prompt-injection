@@ -1,6 +1,7 @@
 import { Request } from 'express';
 
 import { CHAT_MODELS, ChatModelConfiguration } from '@src/models/chat';
+import { LEVEL_NAMES } from '@src/models/level';
 
 export type OpenAiSetModelRequest = Request<
 	never,
@@ -9,5 +10,7 @@ export type OpenAiSetModelRequest = Request<
 		model?: CHAT_MODELS;
 		configuration?: ChatModelConfiguration;
 	},
-	never
+	{
+		level?: LEVEL_NAMES;
+	}
 >;

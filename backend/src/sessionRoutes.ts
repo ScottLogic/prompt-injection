@@ -28,13 +28,11 @@ import {
 import { handleResetProgress } from './controller/resetController';
 import { handleStart } from './controller/startController';
 import { handleTest } from './controller/testController';
-import { ChatModel, defaultChatModel } from './models/chat';
 import { LevelState, getInitialLevelStates } from './models/level';
 
 declare module 'express-session' {
 	interface Session {
 		initialised: boolean;
-		chatModel: ChatModel;
 		levelState: LevelState[];
 	}
 }
@@ -87,7 +85,6 @@ router.use(
 
 router.use((req, _res, next) => {
 	if (!req.session.initialised) {
-		req.session.chatModel = defaultChatModel;
 		req.session.levelState = getInitialLevelStates();
 		req.session.initialised = true;
 	}
