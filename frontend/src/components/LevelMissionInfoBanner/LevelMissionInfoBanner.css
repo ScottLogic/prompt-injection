@@ -3,7 +3,6 @@
 	gap: 0.5rem;
 	align-items: center;
 	padding: 0.5rem 1.5rem;
-	border: 0.5rem solid transparent;
 	background-color: var(--level-banner-background-colour);
 	color: var(--level-banner-text-colour);
 	text-align: left;
