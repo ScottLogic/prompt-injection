@@ -23,7 +23,9 @@ function OverlayNav({
 		<nav className="overlay-nav">
 			<div className="previous-container">
 				{!previousDisabled && (
-					<button onClick={goToPreviousPage} className="nav-buttons">
+					<button 
+					onClick={goToPreviousPage} 
+					className="nav-buttons">
 						<span aria-hidden className="button-icon">
 							◄
 						</span>
@@ -36,8 +38,7 @@ function OverlayNav({
 				{!nextDisabled && (
 					<button
 						onClick={goToNextPage}
-						aria-disabled={nextDisabled}
-						className="nav-buttons next"
+						className="nav-buttons"
 					>
 						Next
 						<span aria-hidden className="button-icon">
