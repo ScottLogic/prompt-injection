@@ -3,6 +3,7 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 export const options = {
+	//vus and duration can be changed depending on what simulation needed running
 	scenarios: {
     	contacts: {
       	executor: 'constant-vus',
