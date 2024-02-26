@@ -1,4 +1,4 @@
-import { ATTACK_TYPES, AttackInfo } from './models/attack';
+import { ATTACK_TYPES, AttackInfo } from '@src/models/attack';
 
 const ATTACKS_LEVEL_2: AttackInfo[] = [
 	{

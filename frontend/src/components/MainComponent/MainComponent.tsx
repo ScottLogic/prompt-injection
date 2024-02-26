@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { ALL_DEFENCES, DEFENCES_SHOWN_LEVEL3 } from '@src/Defences';
+import { DEFAULT_DEFENCES } from '@src/Defences';
+import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
 import { ChatMessage } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
-import { LEVEL_NAMES } from '@src/models/level';
+import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
 import {
 	chatService,
 	defenceService,
 	emailService,
-	healthService,
+	startService,
 } from '@src/service';
 
 import MainBody from './MainBody';
@@ -21,13 +22,11 @@ import MainHeader from './MainHeader';
 import './MainComponent.css';
 
 function MainComponent({
-	chatModels,
 	currentLevel,
 	numCompletedLevels,
 	closeOverlay,
 	updateNumCompletedLevels,
 	openDocumentViewer,
-	openHandbook,
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
 	openOverlay,
@@ -35,13 +34,11 @@ function MainComponent({
 	openWelcomeOverlay,
 	setCurrentLevel,
 }: {
-	chatModels: string[];
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	closeOverlay: () => void;
 	updateNumCompletedLevels: (level: number) => void;
 	openDocumentViewer: () => void;
-	openHandbook: () => void;
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openOverlay: (overlayComponent: JSX.Element) => void;
@@ -50,27 +47,53 @@ function MainComponent({
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
-	const [defencesToShow, setDefencesToShow] = useState<Defence[]>(ALL_DEFENCES);
-	const [emails, setEmails] = useState<EmailInfo[]>([]);
+	const [defences, setDefences] = useState<Defence[]>(DEFAULT_DEFENCES);
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
+	const [emails, setEmails] = useState<EmailInfo[]>([]);
+	const [chatModels, setChatModels] = useState<string[]>([]);
+	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
 
-	// called on mount
+	const isFirstRender = useRef(true);
+
+	// facilitate refresh / first render
 	useEffect(() => {
-		// perform backend health check
-		healthService.healthCheck().catch(() => {
-			// addErrorMessage('Failed to reach the server. Please try again later.');
+		console.log(
+			'Loading initial backend data plus data for level',
+			currentLevel
+		);
+		void loadBackendData();
+	}, []);
+
+	// facilitate level change
+	useEffect(() => {
+		console.log(
+			'useEffect currentLevel. isFirstRender.current:',
+			isFirstRender.current
+		);
+		if (!isFirstRender.current) {
+			console.log('Loading backend data for level', currentLevel);
+			void setNewLevel(currentLevel);
+		}
+		isFirstRender.current = false;
+	}, [currentLevel]);
+
+	async function loadBackendData() {
+		try {
+			const { availableModels, defences, emails, history, systemRoles } =
+				await startService.start(currentLevel);
+			setChatModels(availableModels);
+			setSystemRoles(systemRoles);
+			processBackendLevelData(currentLevel, emails, history, defences);
+		} catch (err) {
+			console.warn(err);
 			setMessages([
 				{
 					message: 'Failed to reach the server. Please try again later.',
 					type: 'ERROR_MSG',
 				},
 			]);
-		});
-	}, []);
-
-	useEffect(() => {
-		void setNewLevel(currentLevel);
-	}, [currentLevel]);
+		}
+	}
 
 	function openResetLevelOverlay() {
 		openOverlay(
@@ -80,6 +103,17 @@ function MainComponent({
 					await resetLevel();
 					closeOverlay();
 				}}
+				closeOverlay={closeOverlay}
+			/>
+		);
+	}
+
+	function openHandbook() {
+		openOverlay(
+			<HandbookOverlay
+				currentLevel={currentLevel}
+				numCompletedLevels={numCompletedLevels}
+				systemRoles={systemRoles}
 				closeOverlay={closeOverlay}
 			/>
 		);
@@ -116,41 +150,26 @@ function MainComponent({
 
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
-		// get emails for new level from the backend
-		setEmails(await emailService.getSentEmails(newLevel));
+		const emails = await emailService.getSentEmails(newLevel);
+		const chatHistory = await chatService.getChatHistory(newLevel);
+		const defences = await defenceService.getDefences(newLevel);
+		processBackendLevelData(newLevel, emails, chatHistory, defences);
+	}
 
-		// get chat history for new level from the backend
-		const retrievedMessages = await chatService.getChatHistory(newLevel);
+	function processBackendLevelData(
+		level: LEVEL_NAMES,
+		emails: EmailInfo[],
+		chatHistory: ChatMessage[],
+		defences: Defence[]
+	) {
+		setEmails(emails);
 
 		// add welcome message for levels only
-		newLevel !== LEVEL_NAMES.SANDBOX
-			? setMessagesWithWelcome(retrievedMessages)
-			: setMessages(retrievedMessages);
+		level !== LEVEL_NAMES.SANDBOX
+			? setMessagesWithWelcome(chatHistory)
+			: setMessages(chatHistory);
 
-		const defences =
-			newLevel === LEVEL_NAMES.LEVEL_3 ? DEFENCES_SHOWN_LEVEL3 : ALL_DEFENCES;
-		// fetch defences from backend
-		const remoteDefences = await defenceService.getDefences(newLevel);
-		defences.map((localDefence) => {
-			const matchingRemoteDefence = remoteDefences.find((remoteDefence) => {
-				return localDefence.id === remoteDefence.id;
-			});
-			if (matchingRemoteDefence) {
-				localDefence.isActive = matchingRemoteDefence.isActive;
-				// set each config value
-				matchingRemoteDefence.config.forEach((configEntry) => {
-					// get the matching config in the local defence
-					const matchingConfig = localDefence.config.find((config) => {
-						return config.id === configEntry.id;
-					});
-					if (matchingConfig) {
-						matchingConfig.value = configEntry.value;
-					}
-				});
-			}
-			return localDefence;
-		});
-		setDefencesToShow(defences);
+		setDefences(defences);
 		setMainBodyKey(MainBodyKey + 1);
 	}
 
@@ -182,7 +201,7 @@ function MainComponent({
 		);
 		addConfigUpdateToChat(defenceId, 'reset');
 		// update state
-		const newDefences = defencesToShow.map((defence) => {
+		const newDefences = defences.map((defence) => {
 			if (defence.id === defenceId) {
 				defence.config.forEach((config) => {
 					if (config.id === configId) {
@@ -192,7 +211,7 @@ function MainComponent({
 			}
 			return defence;
 		});
-		setDefencesToShow(newDefences);
+		setDefences(newDefences);
 	}
 
 	async function setDefenceToggle(defence: Defence) {
@@ -202,7 +221,7 @@ function MainComponent({
 			currentLevel
 		);
 
-		const newDefenceDetails = defencesToShow.map((defenceDetail) => {
+		const newDefenceDetails = defences.map((defenceDetail) => {
 			if (defenceDetail.id === defence.id) {
 				defenceDetail.isActive = !defence.isActive;
 				const action = defenceDetail.isActive ? 'activated' : 'deactivated';
@@ -212,7 +231,7 @@ function MainComponent({
 			return defenceDetail;
 		});
 
-		setDefencesToShow(newDefenceDetails);
+		setDefences(newDefenceDetails);
 	}
 
 	async function setDefenceConfiguration(
@@ -227,13 +246,13 @@ function MainComponent({
 		if (success) {
 			addConfigUpdateToChat(defenceId, 'updated');
 			// update state
-			const newDefences = defencesToShow.map((defence) => {
+			const newDefences = defences.map((defence) => {
 				if (defence.id === defenceId) {
 					defence.config = config;
 				}
 				return defence;
 			});
-			setDefencesToShow(newDefences);
+			setDefences(newDefences);
 		}
 		return success;
 	}
@@ -286,7 +305,7 @@ function MainComponent({
 			<MainBody
 				key={MainBodyKey}
 				currentLevel={currentLevel}
-				defences={defencesToShow}
+				defences={defences}
 				chatModels={chatModels}
 				emails={emails}
 				messages={messages}

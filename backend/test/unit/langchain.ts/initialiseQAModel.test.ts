@@ -56,7 +56,7 @@ jest.mock('@src/openai', () => {
 		jest.requireActual<typeof import('@src/openai')>('@src/openai'); // can we remove this
 	return {
 		...originalModule,
-		getValidOpenAIModelsList: jest.fn(() => mockValidModels),
+		getValidOpenAIModels: jest.fn(() => mockValidModels),
 	};
 });
 
@@ -117,7 +117,7 @@ test('GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it an
 
 	expect(mockFromLLM).toHaveBeenCalledTimes(1);
 	expect(mockRetrievalQAChain.call).toHaveBeenCalledTimes(1);
-	expect(answer.reply).toEqual('The CEO is Bill.');
+	expect(answer).toEqual('The CEO is Bill.');
 });
 
 test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised THEN it is initialised with GPT-4', async () => {

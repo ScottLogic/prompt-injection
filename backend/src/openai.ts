@@ -113,10 +113,9 @@ const getOpenAIKey = (() => {
  */
 async function getValidModelsFromOpenAI() {
 	try {
-		const openAI = getOpenAI();
-		const models: OpenAI.ModelsPage = await openAI.models.list();
+		const models: OpenAI.ModelsPage = await getOpenAI().models.list();
 
-		// get the model ids that are supported by our app
+		// get the model ids that are supported by our app. Non-chat models like Dall-e and whisper are not supported.
 		const validModels = models.data
 			.map((model) => model.id)
 			.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS))
@@ -132,8 +131,7 @@ async function getValidModelsFromOpenAI() {
 }
 
 function getOpenAI() {
-	const apiKey = getOpenAIKey();
-	return new OpenAI({ apiKey });
+	return new OpenAI({ apiKey: getOpenAIKey() });
 }
 
 function isChatGptFunction(functionName: string) {
@@ -152,14 +150,13 @@ async function handleAskQuestionFunction(
 		const configQAPrompt = isDefenceActive(DEFENCE_ID.QA_LLM, defences)
 			? getQAPromptFromConfig(defences)
 			: '';
-		return {
-			reply: (
-				await queryDocuments(params.question, configQAPrompt, currentLevel)
-			).reply,
-		};
+		return await queryDocuments(params.question, configQAPrompt, currentLevel);
 	} else {
-		console.error('No arguments provided to askQuestion function');
-		return { reply: "Reply with 'I don't know what to ask'" };
+		console.error(
+			'Incorrect arguments provided to askQuestion function:',
+			functionCallArgs
+		);
+		return "Reply with 'I don't know what to ask'";
 	}
 }
 
@@ -220,12 +217,11 @@ async function chatGptCallFunction(
 				sentEmails.push(...emailFunctionOutput.sentEmails);
 			}
 		} else if (functionName === 'askQuestion') {
-			const askQuestionFunctionOutput = await handleAskQuestionFunction(
+			functionReply = await handleAskQuestionFunction(
 				functionCall.arguments,
 				currentLevel,
 				defences
 			);
-			functionReply = askQuestionFunctionOutput.reply;
 		}
 	} else {
 		console.error(`Unknown function: ${functionName}`);
@@ -245,24 +241,26 @@ async function chatGptCallFunction(
 async function chatGptChatCompletion(
 	chatHistory: ChatMessage[],
 	chatModel: ChatModel,
-	openai: OpenAI
+	openAI: OpenAI
 ) {
 	const updatedChatHistory = [...chatHistory];
 
 	console.debug('Talking to model: ', JSON.stringify(chatModel));
 
-	// get start time
 	const startTime = new Date().getTime();
 	console.debug('Calling OpenAI chat completion...');
 
 	try {
-		const chat_completion = await openai.chat.completions.create({
+		const chat_completion = await openAI.chat.completions.create({
 			model: chatModel.id,
 			temperature: chatModel.configuration.temperature,
 			top_p: chatModel.configuration.topP,
 			frequency_penalty: chatModel.configuration.frequencyPenalty,
 			presence_penalty: chatModel.configuration.presencePenalty,
-			messages: getChatCompletionsFromHistory(updatedChatHistory, chatModel.id),
+			messages: getChatCompletionsInContextWindow(
+				updatedChatHistory,
+				chatModel.id
+			),
 			tools: chatGptTools,
 		});
 		console.debug(
@@ -293,26 +291,23 @@ async function chatGptChatCompletion(
 	}
 }
 
-function getChatCompletionsFromHistory(
+function getChatCompletionsInContextWindow(
 	chatHistory: ChatMessage[],
 	gptModel: CHAT_MODELS
 ): ChatCompletionMessageParam[] {
-	// take only completions to send to model
-	const completions = chatHistory.reduce<ChatCompletionMessageParam[]>(
-		(result, chatMessage) => {
-			if ('completion' in chatMessage && chatMessage.completion) {
-				result.push(chatMessage.completion);
-			}
-			return result;
-		},
-		[]
-	);
+	const completions = chatHistory
+		.map((chatMessage) =>
+			'completion' in chatMessage ? chatMessage.completion : null
+		)
+		.filter(
+			(completion) => completion !== null
+		) as ChatCompletionMessageParam[];
 
 	console.debug(
 		'Number of tokens in total chat history. prompt_tokens=',
 		countTotalPromptTokens(completions)
 	);
-	// limit the number of tokens sent to GPT to fit inside context window
+
 	const maxTokens = chatModelMaxTokens[gptModel] * 0.95; // 95% of max tokens to allow for response tokens
 	const reducedCompletions = filterChatHistoryByMaxTokens(
 		completions,
@@ -345,7 +340,7 @@ async function performToolCalls(
 				currentLevel
 			);
 
-			// return after getting function reply. may change when we support other tool types. We assume only one function call in toolCalls
+			// We assume only one function call in toolCalls, and so we return after getting function reply.
 			return {
 				functionCallReply,
 				chatHistory: pushMessageToHistory(chatHistory, {
@@ -371,20 +366,17 @@ async function getFinalReplyAfterAllToolCalls(
 	const sentEmails = [];
 	let wonLevel = false;
 
-	const openai = getOpenAI();
 	let gptReply: ChatGptReply | null = null;
-
+	const openAI = getOpenAI();
 	do {
 		gptReply = await chatGptChatCompletion(
 			updatedChatHistory,
 			chatModel,
-			openai
+			openAI
 		);
 		updatedChatHistory = gptReply.chatHistory;
 
-		// check if GPT wanted to call a tool
 		if (gptReply.completion?.tool_calls) {
-			// push the function call to the chat
 			updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 				completion: gptReply.completion,
 				chatMessageType: 'FUNCTION_CALL',
@@ -418,10 +410,10 @@ async function chatGptSendMessage(
 	chatHistory: ChatMessage[],
 	defences: Defence[],
 	chatModel: ChatModel,
-	message: string,
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-	console.log(`User message: '${message}'`);
+	// this method just calls getFinalReplyAfterAllToolCalls then reformats the output. Does it need to exist?
+
 	const finalToolCallResponse = await getFinalReplyAfterAllToolCalls(
 		chatHistory,
 		defences,
@@ -429,27 +421,25 @@ async function chatGptSendMessage(
 		currentLevel
 	);
 
-	const updatedChatHistory = finalToolCallResponse.chatHistory;
-	const sentEmails = finalToolCallResponse.sentEmails;
-
 	const chatResponse: ChatResponse = {
 		completion: finalToolCallResponse.gptReply.completion,
 		wonLevel: finalToolCallResponse.wonLevel,
 		openAIErrorMessage: finalToolCallResponse.gptReply.openAIErrorMessage,
 	};
 
-	if (!chatResponse.completion?.content || chatResponse.openAIErrorMessage) {
-		return { chatResponse, chatHistory, sentEmails };
-	}
+	const successfulReply =
+		chatResponse.completion?.content && !chatResponse.openAIErrorMessage;
 
 	return {
 		chatResponse,
-		chatHistory: updatedChatHistory,
-		sentEmails,
+		chatHistory: successfulReply
+			? finalToolCallResponse.chatHistory
+			: chatHistory,
+		sentEmails: finalToolCallResponse.sentEmails,
 	};
 }
 
-export const getValidOpenAIModelsList = validOpenAiModels.get;
+export const getValidOpenAIModels = validOpenAiModels.get;
 export {
 	chatGptTools,
 	chatGptSendMessage,

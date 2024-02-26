@@ -19,17 +19,14 @@ jest.mock('openai', () => ({
 	})),
 }));
 
-// mock the queryPromptEvaluationModel function
+// mock the evaluatePrompt function
 jest.mock('@src/langchain', () => {
 	const originalModule =
 		jest.requireActual<typeof import('@src/langchain')>('@src/langchain');
 	return {
 		...originalModule,
-		queryPromptEvaluationModel: () => {
-			return {
-				isMalicious: false,
-				reason: '',
-			};
+		evaluatePrompt: () => {
+			return false;
 		},
 	};
 });
@@ -49,8 +46,15 @@ function chatResponseAssistant(content: string) {
 
 describe('OpenAI Integration Tests', () => {
 	test('GIVEN OpenAI initialised WHEN sending message THEN reply is returned', async () => {
-		const message = 'Hello';
-		const initChatHistory: ChatMessage[] = [];
+		const chatHistoryWithMessage: ChatMessage[] = [
+			{
+				chatMessageType: 'USER',
+				completion: {
+					role: 'user',
+					content: 'Hi',
+				},
+			},
+		];
 		const defences: Defence[] = defaultDefences;
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
@@ -65,10 +69,9 @@ describe('OpenAI Integration Tests', () => {
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
 
 		const reply = await chatGptSendMessage(
-			initChatHistory,
+			chatHistoryWithMessage,
 			defences,
-			chatModel,
-			message
+			chatModel
 		);
 
 		expect(reply).toBeDefined();

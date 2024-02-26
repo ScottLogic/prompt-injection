@@ -40,3 +40,19 @@
 	display: inline-block;
 	padding: 0 0.75rem;
 }
+
+@media only screen and (width <= 70.5rem) {
+	.main-footer {
+		height: 2rem;
+	}
+
+	.main-footer a svg {
+		height: 1.75rem;
+	}
+
+	.main-footer a svg,
+	.main-footer .links,
+	.main-footer .links a:not(:last-child)::after {
+		padding: 0 0.5rem;
+	}
+}
