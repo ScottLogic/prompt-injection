@@ -37,7 +37,7 @@ function MainComponent({
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	closeOverlay: () => void;
-	updateNumCompletedLevels: (level: LEVEL_NAMES) => void;
+	updateNumCompletedLevels: (level: number) => void;
 	openDocumentViewer: () => void;
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
