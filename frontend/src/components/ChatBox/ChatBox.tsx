@@ -200,9 +200,21 @@ function ChatBox({
 		resetRecallToLatest();
 	}
 
+	// function focusOnSkipToBottom() {
+	// 	document.getElementById('skip-to-bottom')?.focus();
+	// }
+
+	// function focusOnSkipToTop() {
+	// 	document.getElementById('skip-to-top')?.focus();
+	// }
+
 	return (
-		<div className="chat-box">
+		<div className="chat-box" id="chat-box">
+			<a href="#chat-box-input" className="skip-to-bottom" id="skip-to-bottom">skip to chat input</a>
+			{/* <button className="skip-to-bottom" id="skip-to-bottom" onClick={focusOnSkipToTop}>skip to chat input</button> */}
 			<ChatBoxFeed messages={messages} />
+			<a href="#skip-to-bottom" className="skip-top-top" id="skip-to-top">skip to top of chat</a>
+			{/* <button className="skip-top-top" onClick={focusOnSkipToBottom}>skip to top of chat</button> */}
 			<div className="footer">
 				<div className="messages">
 					<ChatBoxInput

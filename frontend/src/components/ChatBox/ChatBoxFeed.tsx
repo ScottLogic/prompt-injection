@@ -22,6 +22,7 @@ function ChatBoxFeed({ messages }: { messages: ChatMessage[] }) {
 			className="chat-box-feed"
 			ref={chatboxFeedContainer}
 			aria-live="polite"
+			id="chat-box-feed"
 		>
 			{[...messages].map((message, index) => {
 				if (
