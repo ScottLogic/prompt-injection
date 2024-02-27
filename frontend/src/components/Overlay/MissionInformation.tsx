@@ -4,8 +4,6 @@ import { LEVEL_NAMES } from '@src/models/level';
 
 import MultipageOverlay from './MultipageOverlay';
 
-import './MissionInformation.css';
-
 function MissionInformation({
 	currentLevel,
 	closeOverlay,
@@ -15,20 +13,20 @@ function MissionInformation({
 }) {
 	const heading = `${LEVELS[currentLevel].name} Mission Info`;
 
-	const speakerArray: string[] = [];
-
 	const pages = LEVELS[currentLevel].missionInfoDialogue.map(
 		({ speaker, text }, index, source) => {
-			speakerArray.push(speaker);
-			return (
-				<>
-					<h2>{speaker}:</h2>
-					<p>{text}</p>
-					{index === source.length - 1 && (
-						<OverlayButton onClick={closeOverlay}>OK</OverlayButton>
-					)}
-				</>
-			);
+			return {
+				content: (
+					<>
+						<h2>{speaker}:</h2>
+						<p>{text}</p>
+						{index === source.length - 1 && (
+							<OverlayButton onClick={closeOverlay}>OK</OverlayButton>
+						)}
+					</>
+				),
+				imageName: speaker,
+			};
 		}
 	);
 
@@ -36,7 +34,6 @@ function MissionInformation({
 		<MultipageOverlay
 			closeOverlay={closeOverlay}
 			heading={heading}
-			imgSource={speakerArray}
 			pages={pages}
 		/>
 	);

@@ -14,12 +14,13 @@ function MultipageOverlay({
 	pages,
 	closeOverlay,
 	heading,
-	imgSource,
 }: {
-	pages: ReactNode;
+	pages: {
+		content: ReactNode;
+		imageName?: string;
+	}[];
 	closeOverlay: () => void;
 	heading: string;
-	imgSource: string[];
 }) {
 	const [currentPage, setCurrentPage] = useState<number>(0);
 	const totalPages = Array.isArray(pages) ? pages.length : 0;
@@ -28,7 +29,6 @@ function MultipageOverlay({
 		if (currentPage > 0) {
 			setCurrentPage(currentPage - 1);
 		}
-		console.log(imgSource);
 	}
 
 	function goToNextPage() {
@@ -39,16 +39,14 @@ function MultipageOverlay({
 
 	let speakerImage;
 
-	if (imgSource[currentPage] === 'Handler') {
+	if (pages[currentPage].imageName === 'Handler') {
 		speakerImage = Handler;
-	} else if (imgSource[currentPage] === 'ScottBrew Manager') {
+	} else if (pages[currentPage].imageName === 'ScottBrew Manager') {
 		speakerImage = Manager;
-	} else if (imgSource[currentPage] === 'ScottBrew Lawyer') {
+	} else if (pages[currentPage].imageName === 'ScottBrew Lawyer') {
 		speakerImage = Lawyer;
-	} else if (imgSource[currentPage] === 'SpyLogic') {
-		speakerImage = BotAvatarDefault;
 	} else {
-		speakerImage = '';
+		speakerImage = BotAvatarDefault;
 	}
 
 	return (
@@ -62,7 +60,7 @@ function MultipageOverlay({
 							alt=""
 						/>
 						<span className="multi-page-speaker-text">
-							{pages && (pages as ReactNode[])[currentPage]}
+							{pages[currentPage].content}
 						</span>
 					</div>
 				</div>

@@ -23,9 +23,7 @@ function OverlayNav({
 		<nav className="overlay-nav">
 			<div className="previous-container">
 				{!previousDisabled && (
-					<button 
-					onClick={goToPreviousPage} 
-					className="nav-buttons">
+					<button onClick={goToPreviousPage} className="nav-buttons">
 						<span aria-hidden className="button-icon">
 							◄
 						</span>
@@ -36,10 +34,7 @@ function OverlayNav({
 			<p>{pagination}</p>
 			<div className="next-container">
 				{!nextDisabled && (
-					<button
-						onClick={goToNextPage}
-						className="nav-buttons"
-					>
+					<button onClick={goToNextPage} className="nav-buttons">
 						Next
 						<span aria-hidden className="button-icon">
 							►

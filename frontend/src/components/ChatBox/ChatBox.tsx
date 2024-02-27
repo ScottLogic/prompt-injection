@@ -214,6 +214,9 @@ function ChatBox({
 						recallSentMessageFromHistory={recallSentMessageFromHistory}
 						sendChatMessage={() => void sendChatMessage()}
 					/>
+					<button onClick={openLevelsCompleteOverlay}>
+						Open Levels complete
+					</button>
 					<span className="send-button-wrapper">
 						<LoadingButton
 							onClick={() => void sendChatMessage()}
