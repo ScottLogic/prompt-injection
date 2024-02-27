@@ -41,12 +41,6 @@
 	height: 1.25rem;
 }
 
-@media (width < 93.75rem) {
-	.overlay-header {
-		height: 4rem;
-	}
-}
-
 @media (width < 87.5rem) {
 	.overlay-header {
 		height: 3rem;

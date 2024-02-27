@@ -32,24 +32,6 @@
 	padding: 0 4rem;
 }
 
-@media (width < 93.75rem) {
-	.overlay {
-		width: 55vw;
-	}
-
-	.multi-page-text-image-container {
-		grid-template-columns: 15% 85%;
-	}
-
-	.multi-page-content {
-		padding: 1rem;
-	}
-
-	.multi-page-speaker-text {
-		padding: 0 3rem;
-	}
-}
-
 @media (width < 87.5rem) {
 	.overlay {
 		width: 60vw;
@@ -61,6 +43,10 @@
 
 	.multi-page-content {
 		padding: 0.5rem;
+	}
+
+	.multi-page-text-image-container {
+		grid-template-columns: 15% 85%;
 	}
 
 	.multi-page-speaker-text {

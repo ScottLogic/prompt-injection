@@ -21,27 +21,23 @@ function OverlayNav({
 
 	return (
 		<nav className="overlay-nav">
-			<div className="previous-container">
-				{!previousDisabled && (
-					<button onClick={goToPreviousPage} className="nav-buttons">
-						<span aria-hidden className="button-icon">
-							◄
-						</span>
-						Previous
-					</button>
-				)}
-			</div>
+			{!previousDisabled && (
+				<button onClick={goToPreviousPage} className="nav-buttons previous">
+					<span aria-hidden className="button-icon">
+						◄
+					</span>
+					Previous
+				</button>
+			)}
 			<p>{pagination}</p>
-			<div className="next-container">
-				{!nextDisabled && (
-					<button onClick={goToNextPage} className="nav-buttons">
-						Next
-						<span aria-hidden className="button-icon">
-							►
-						</span>
-					</button>
-				)}
-			</div>
+			{!nextDisabled && (
+				<button onClick={goToNextPage} className="nav-buttons next">
+					Next
+					<span aria-hidden className="button-icon">
+						►
+					</span>
+				</button>
+			)}
 		</nav>
 	);
 }

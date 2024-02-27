@@ -33,9 +33,3 @@
 .mode-selection-buttons button:focus-visible {
 	background-color: var(--overlay-tab-colour);
 }
-
-@media (width < 87.5rem) {
-	.mode-selection-buttons .mode-button {
-		padding: 0.5rem;
-	}
-}

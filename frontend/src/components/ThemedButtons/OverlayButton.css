@@ -4,7 +4,8 @@
 	align-items: center;
 	align-self: center;
 	width: fit-content;
-	padding: 1rem 3rem;
+	margin: 0.5rem;
+	padding: 0.5rem 3rem;
 	border: 0.0625rem solid var(--overlay-tab-colour);
 	border-radius: 0.5rem;
 	background-color: var(--overlay-background-colour);
