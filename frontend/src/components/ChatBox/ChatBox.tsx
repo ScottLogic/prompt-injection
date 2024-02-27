@@ -210,12 +210,22 @@ function ChatBox({
 
 	return (
 		<div className="chat-box" id="chat-box">
-			<a href="#chat-box-input" className="skip-to-bottom" id="skip-to-bottom">skip to chat input</a>
-			{/* <button className="skip-to-bottom" id="skip-to-bottom" onClick={focusOnSkipToTop}>skip to chat input</button> */}
+			<a
+				className="skip-to-bottom skip-link "
+				id="skip-to-bottom"
+				href="#chat-box-input"
+			>
+				<span aria-hidden>&#129035;&nbsp;</span>skip to chat input
+			</a>
 			<ChatBoxFeed messages={messages} />
-			<a href="#skip-to-bottom" className="skip-top-top" id="skip-to-top">skip to top of chat</a>
-			{/* <button className="skip-top-top" onClick={focusOnSkipToBottom}>skip to top of chat</button> */}
 			<div className="footer">
+				<a
+					className="skip-to-top skip-link "
+					id="skip-to-top"
+					href="#skip-to-bottom"
+				>
+					<span aria-hidden>&#129033;&nbsp;</span>skip to top of chat
+				</a>
 				<div className="messages">
 					<ChatBoxInput
 						content={chatInput}

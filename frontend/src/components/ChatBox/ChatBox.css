@@ -1,21 +1,21 @@
 .chat-box {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
 	justify-content: flex-end;
 	width: 100%;
 	height: 100%;
-	/* background-color: yellow; */
 }
 
 .chat-box .footer {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	gap: 1.25rem;
 	box-sizing: border-box;
 	width: 100%;
-	padding: 0.5rem 2rem 1.5rem;
-	padding: 2rem;
+	padding: 1rem 2rem;
 }
 
 .chat-box .footer label {
@@ -68,8 +68,40 @@
 	outline-offset: 0.1rem;
 }
 
+.skip-link {
+	position: absolute;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	width: 1px;
+	padding: 0;
+	border: 0;
+	white-space: nowrap;
+	clip-path: inset(50%);
+}
+
+.skip-to-top:focus {
+	top: -1.5rem;
+	left: 0;
+}
+
 .skip-to-bottom:focus {
-	outline: 0.25rem solid var(--accent-border-colour);
+	top: 0.125rem;
+	top: 0;
+}
+
+.skip-link:focus {
+	position: absolute;
+	clip: auto;
+	width: 100%;
+	height: auto;
+	padding: 0.5rem 0;
+	background-color: var(--accent-background-colour);
+	color: var(--main-text-colour);
+	outline-offset: -0.25rem;
+	font-weight: 600;
+	text-align: center;
+	text-decoration: none;
+	clip-path: none;
 }
 
 @media only screen and (width <= 70.5rem) {
