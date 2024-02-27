@@ -1,10 +1,7 @@
 /* eslint-env node */
 module.exports = {
 	root: true,
-	extends: [
-		'eslint:recommended',
-		'plugin:import/recommended',
-	],
+	extends: ['eslint:recommended', 'plugin:import/recommended'],
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint'],
 	ignorePatterns: ['node_modules'],
@@ -19,11 +16,11 @@ module.exports = {
 			},
 		],
 		'prefer-template': 'error',
-		'import/no-unresolved': [ 
+		'import/no-unresolved': [
 			'error',
 			{
-				ignore: ['k6/*']
-			}
+				ignore: ['k6/*'],
+			},
 		],
 		'import/order': [
 			'error',
