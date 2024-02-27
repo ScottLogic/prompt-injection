@@ -21,9 +21,9 @@ function LevelMissionInfoBanner({
 				}}
 			></p>
 			<ThemedButton onClick={openOverlay}>
-				<p className="info-icon" aria-hidden="true">
+				<span className="info-icon" aria-hidden="true">
 					i
-				</p>
+				</span>
 				Mission Info
 			</ThemedButton>
 		</span>
