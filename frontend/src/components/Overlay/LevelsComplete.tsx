@@ -1,3 +1,5 @@
+import BotAvatarDefault from '@src/assets/images/BotAvatarDefault.svg';
+import Manager from '@src/assets/images/manager.png';
 import LevelsCompleteButtons from '@src/components/ThemedButtons/LevelsCompleteButtons';
 
 import MultipageOverlay from './MultipageOverlay';
@@ -21,7 +23,7 @@ function LevelsComplete({
 					</p>
 				</>
 			),
-			imageName: 'ScottBrew Manager',
+			imageName: Manager,
 		},
 		{
 			content: (
@@ -38,7 +40,7 @@ function LevelsComplete({
 					/>
 				</>
 			),
-			imageName: 'SpyLogic',
+			imageName: BotAvatarDefault,
 		},
 	];
 

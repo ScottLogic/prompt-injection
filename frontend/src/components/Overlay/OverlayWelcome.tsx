@@ -1,3 +1,4 @@
+import BotAvatarDefault from '@src/assets/images/BotAvatarDefault.svg';
 import StartLevelButtons from '@src/components/ThemedButtons/StartLevelButtons';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -25,7 +26,7 @@ function OverlayWelcome({
 					</p>
 				</>
 			),
-			imageName: 'SpyLogic',
+			imageName: BotAvatarDefault,
 		},
 		{
 			content: (
@@ -48,7 +49,7 @@ function OverlayWelcome({
 					/>
 				</>
 			),
-			imageName: 'SpyLogic',
+			imageName: BotAvatarDefault,
 		},
 	];
 

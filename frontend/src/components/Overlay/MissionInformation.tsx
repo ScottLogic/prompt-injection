@@ -1,4 +1,7 @@
 import { LEVELS } from '@src/Levels';
+import Handler from '@src/assets/images/handler.png';
+import Lawyer from '@src/assets/images/lawyer.png';
+import Manager from '@src/assets/images/manager.png';
 import OverlayButton from '@src/components/ThemedButtons/OverlayButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -25,7 +28,14 @@ function MissionInformation({
 						)}
 					</>
 				),
-				imageName: speaker,
+				imageName:
+					speaker === 'ScottBrew Manager'
+						? Manager
+						: speaker === 'ScottBrew Lawyer'
+						? Lawyer
+						: speaker === 'Handler'
+						? Handler
+						: '',
 			};
 		}
 	);
