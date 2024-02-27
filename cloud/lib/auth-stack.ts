@@ -67,7 +67,6 @@ export class AuthStack extends Stack {
 			authFlows: {
 				userSrp: true,
 			},
-			generateSecret: true,
 			oAuth: {
 				flows: {
 					authorizationCodeGrant: true,
