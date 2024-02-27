@@ -2,7 +2,7 @@
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	gap: 1rem;
-	padding: 1.25rem;
+	padding: 1.125rem;
 	border-bottom-right-radius: 0.625rem;
 	border-bottom-left-radius: 0.625rem;
 	background-color: var(--overlay-header-background-colour);
@@ -60,7 +60,6 @@
 	}
 
 	.overlay-nav .nav-buttons {
-		margin: 0;
 		padding: 0.125rem;
 	}
 
