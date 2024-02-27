@@ -5,12 +5,12 @@ import http from 'k6/http';
 export const options = {
 	//vus and duration can be changed depending on what simulation needed running
 	scenarios: {
-    	contacts: {
-      	executor: 'constant-vus',
-      	vus: 100,
-      	duration: '30m',
-    	},
-  	},
+		contacts: {
+			executor: 'constant-vus',
+			vus: 100,
+			duration: '30m',
+		},
+	},
 };
 
 const baseUrl = 'http://localhost:3001';
@@ -19,7 +19,7 @@ const vuCookieJar = (() => {
 	const cookieJars = {};
 	return {
 		get: (id) => cookieJars[id],
-		set: (id, jar) => cookieJars[id] = jar,
+		set: (id, jar) => (cookieJars[id] = jar),
 	};
 })();
 
@@ -33,13 +33,14 @@ export default () => {
 	}
 	let originalCookie = (jar.cookiesForURL(baseUrl)[cookieName] || [])[0];
 
-	const data = { infoMessage: "Hi", chatMessageType: 'LEVEL_INFO', level: 3 };
+	const data = { infoMessage: 'Hi', chatMessageType: 'LEVEL_INFO', level: 3 };
 	const response = http.post(`${baseUrl}/test/load`, JSON.stringify(data), {
 		headers: { 'Content-Type': 'application/json' },
-		jar
+		jar,
 	});
 	// Expecting cookie to match original, OR first-time be added to the jar
-	const expectedCookie = originalCookie || jar.cookiesForURL(baseUrl)[cookieName][0];
+	const expectedCookie =
+		originalCookie || jar.cookiesForURL(baseUrl)[cookieName][0];
 	check(response, {
 		'response code was 200': (response) => response.status === 200,
 		'cookie was preserved': (response) =>
