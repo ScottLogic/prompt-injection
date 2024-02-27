@@ -1,14 +1,6 @@
 /* eslint-env node */
 module.exports = {
 	root: true,
-	settings: {
-		'import/resolver': {
-			alias: {
-				map: [['@src', './src']],
-				extensions: ['.ts', '.js', '.json'],
-			},
-		},
-	},
 	extends: [
 		'eslint:recommended',
 		'plugin:import/recommended',
