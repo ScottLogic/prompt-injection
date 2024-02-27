@@ -200,14 +200,6 @@ function ChatBox({
 		resetRecallToLatest();
 	}
 
-	// function focusOnSkipToBottom() {
-	// 	document.getElementById('skip-to-bottom')?.focus();
-	// }
-
-	// function focusOnSkipToTop() {
-	// 	document.getElementById('skip-to-top')?.focus();
-	// }
-
 	return (
 		<div className="chat-box" id="chat-box">
 			<a
@@ -219,11 +211,7 @@ function ChatBox({
 			</a>
 			<ChatBoxFeed messages={messages} />
 			<div className="footer">
-				<a
-					className="skip-to-top skip-link "
-					id="skip-to-top"
-					href="#skip-to-bottom"
-				>
+				<a className="skip-to-top skip-link " href="#skip-to-bottom">
 					<span aria-hidden>&#129033;&nbsp;</span>skip to top of chat
 				</a>
 				<div className="messages">
