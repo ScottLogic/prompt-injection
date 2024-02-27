@@ -32,12 +32,6 @@ declare module 'express-session' {
 		chatModel: ChatModel;
 		levelState: LevelState[];
 	}
-	interface LevelState {
-		level: LEVEL_NAMES;
-		chatHistory: ChatMessage[];
-		defences: Defence[];
-		sentEmails: EmailInfo[];
-	}
 }
 
 jest.mock('@src/openai');

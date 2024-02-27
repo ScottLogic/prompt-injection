@@ -8,19 +8,13 @@ import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
-import { LEVEL_NAMES } from '@src/models/level';
+import { LEVEL_NAMES, LevelState } from '@src/models/level';
 
 declare module 'express-session' {
 	interface Session {
 		initialised: boolean;
 		chatModel: ChatModel;
 		levelState: LevelState[];
-	}
-	interface LevelState {
-		level: LEVEL_NAMES;
-		chatHistory: ChatMessage[];
-		defences: Defence[];
-		sentEmails: EmailInfo[];
 	}
 }
 

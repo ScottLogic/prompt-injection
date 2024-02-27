@@ -3,25 +3,6 @@ import { Response } from 'express';
 
 import { handleLoadLevel } from '@src/controller/levelController';
 import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
-import { ChatModel } from '@src/models/chat';
-import { ChatMessage } from '@src/models/chatMessage';
-import { Defence } from '@src/models/defence';
-import { EmailInfo } from '@src/models/email';
-import { LEVEL_NAMES } from '@src/models/level';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-	interface LevelState {
-		level: LEVEL_NAMES;
-		chatHistory: ChatMessage[];
-		defences: Defence[];
-		sentEmails: EmailInfo[];
-	}
-}
 
 jest.mock('@src/promptTemplates', () => ({
 	systemRoleLevel1: 'systemRoleLevel1',
