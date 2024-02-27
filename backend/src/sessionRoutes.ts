@@ -122,6 +122,9 @@ router.post('/openai/model/configure', handleConfigureModel);
 // reset progress for all levels
 router.post('/reset', handleResetProgress);
 
+// Testing endpoints
+router.post('/test/load', handleTest);
+
 // Debugging: log headers in prod for primary routes
 if (isProd) {
 	router.use('/openai', (req, res, next) => {
@@ -132,8 +135,5 @@ if (isProd) {
 		next();
 	});
 }
-
-// Testing dummy endpoint
-router.post('/test/load', handleTest);
 
 export default router;

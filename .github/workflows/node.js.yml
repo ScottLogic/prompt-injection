@@ -64,3 +64,26 @@ jobs:
       - run: npx prettier . --check
       - run: npm run build
       - run: npm test
+
+  build-test-k6:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    defaults:
+      run:
+        working-directory: ./k6
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "./frontend/package-lock.json"
+      - run: npm ci
+      - run: npx eslint .
+      - run: npx prettier . --check

@@ -11,4 +11,5 @@ Grafana k6 is an open-source load testing tool that makes performance testing ea
 ## Running locally
 
 1. Make sure local backend is running, [refer to the backend README](../backend/README.md)
-1. in a separate terminal cd into the K6 folder and run `k6 run script.js` (Where 'script' is the name of the script you want to run)
+1. in a separate terminal cd into the K6 folder and run `npm test script.js` (Where 'script' is the name of the script you want to run)
+1. If you want a dashboard to view track trends in real time run `K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_OPEN=true k6 run script.js` (Where 'script' is the name of the script you want to run). Note: When running this refresh the dashboard at the end of the run for the test to finish in the terminal
