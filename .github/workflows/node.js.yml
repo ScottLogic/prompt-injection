@@ -64,3 +64,15 @@ jobs:
       - run: npx prettier . --check
       - run: npm run build
       - run: npm test
+
+  build-test-k6:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./k6
+    steps:
+      - uses: actions/checkout@v3
+      - run: npx eslint .
+      - run: npx stylelint '**/*.css'
+      - run: npx prettier . --check
