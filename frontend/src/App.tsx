@@ -45,7 +45,14 @@ function App() {
 		const currentLevelStr = localStorage.getItem('currentLevel');
 		if (currentLevelStr && !isNewUser) {
 			// start the user from where they last left off
-			return parseInt(currentLevelStr);
+			const level = parseInt(currentLevelStr);
+			if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+				console.error(
+					`Invalid level ${level} in local storage, defaulting to level 1`
+				);
+				return LEVEL_NAMES.LEVEL_1;
+			}
+			return parseInt(currentLevelStr) as LEVEL_NAMES;
 		} else {
 			// by default, start on level 1
 			return LEVEL_NAMES.LEVEL_1;
