@@ -70,27 +70,7 @@
 
 .skip-link {
 	position: absolute;
-	overflow: hidden;
-	clip: rect(0 0 0 0);
-	width: 1px;
-	padding: 0;
-	border: 0;
-	white-space: nowrap;
-	clip-path: inset(50%);
-}
-
-.skip-to-top:focus {
-	top: -1.5rem;
 	left: 0;
-}
-
-.skip-to-bottom:focus {
-	top: 0.125rem;
-	top: 0;
-}
-
-.skip-link:focus {
-	position: absolute;
 	clip: auto;
 	width: 100%;
 	height: auto;
@@ -102,6 +82,23 @@
 	text-align: center;
 	text-decoration: none;
 	clip-path: none;
+}
+
+.skip-to-top {
+	top: -1.5rem;
+}
+
+.skip-to-bottom {
+	top: 0.125rem;
+}
+
+.skip-link:not(:focus, :active) {
+	position: absolute;
+	overflow: hidden;
+	width: 1px;
+	height: 1px;
+	white-space: nowrap;
+	clip-path: inset(50%);
 }
 
 @media only screen and (width <= 70.5rem) {
