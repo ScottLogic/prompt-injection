@@ -4,6 +4,7 @@ import { LEVEL_NAMES } from '@src/models/level';
 
 export default function useLocalStorage() {
 	const [isNewUser, setNewUser] = useState(loadIsNewUser);
+
 	const setIsNewUser = useCallback((isNew: boolean) => {
 		setNewUser(isNew);
 		localStorage.setItem('isNewUser', isNew.toString());
@@ -12,6 +13,7 @@ export default function useLocalStorage() {
 	const [currentLevel, setLevel] = useState<LEVEL_NAMES>(
 		loadCurrentLevel(isNewUser)
 	);
+
 	const setCurrentLevel = useCallback((level: LEVEL_NAMES) => {
 		setLevel(level);
 		localStorage.setItem('currentLevel', level.toString());
@@ -20,10 +22,15 @@ export default function useLocalStorage() {
 	const [numCompletedLevels, setNumCompletedLevels] = useState(
 		loadNumCompletedLevels(isNewUser)
 	);
+
 	const setCompletedLevels = useCallback((levels: number) => {
-		setNumCompletedLevels((prev) => Math.max(prev, levels));
-		localStorage.setItem('numCompletedLevels', levels.toString());
+		setNumCompletedLevels((prev) => {
+			const completed = Math.max(prev, levels);
+			localStorage.setItem('numCompletedLevels', `${completed}`);
+			return completed;
+		});
 	}, []);
+
 	const resetCompletedLevels = useCallback(() => {
 		setNumCompletedLevels(0);
 		localStorage.setItem('numCompletedLevels', '0');
@@ -47,11 +54,16 @@ function loadIsNewUser() {
 
 function loadCurrentLevel(isNewUser: boolean) {
 	const levelInStorage = localStorage.getItem('currentLevel');
-	const level = (levelInStorage && !isNewUser)
-		? parseInt(levelInStorage)
-		: LEVEL_NAMES.LEVEL_1
+	const level =
+		levelInStorage && !isNewUser
+			? parseInt(levelInStorage)
+			: LEVEL_NAMES.LEVEL_1;
 
-	if (Number.isNaN(level) || level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+	if (
+		Number.isNaN(level) ||
+		level < LEVEL_NAMES.LEVEL_1 ||
+		level > LEVEL_NAMES.SANDBOX
+	) {
 		console.error(
 			`Invalid level ${level} in local storage, defaulting to level 1`
 		);
