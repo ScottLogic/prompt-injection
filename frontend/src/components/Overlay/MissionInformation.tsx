@@ -28,7 +28,7 @@ function MissionInformation({
 						)}
 					</>
 				),
-				imageName:
+				imageUrl:
 					speaker === 'ScottBrew Manager'
 						? Manager
 						: speaker === 'ScottBrew Lawyer'

@@ -23,7 +23,7 @@ function LevelsComplete({
 					</p>
 				</>
 			),
-			imageName: Manager,
+			imageUrl: Manager,
 		},
 		{
 			content: (
@@ -40,7 +40,7 @@ function LevelsComplete({
 					/>
 				</>
 			),
-			imageName: BotAvatarDefault,
+			imageUrl: BotAvatarDefault,
 		},
 	];
 

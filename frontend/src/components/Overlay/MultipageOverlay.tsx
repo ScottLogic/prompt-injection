@@ -12,7 +12,7 @@ function MultipageOverlay({
 }: {
 	pages: {
 		content: ReactNode;
-		imageName?: string;
+		imageUrl?: string;
 	}[];
 	closeOverlay: () => void;
 	heading: string;
@@ -39,8 +39,7 @@ function MultipageOverlay({
 					<div className="multi-page-text-image-container">
 						<img
 							className="multi-page-speaker-image"
-							// src={speakerImage}
-							src={pages[currentPage].imageName}
+							src={pages[currentPage].imageUrl}
 							alt=""
 						/>
 						<span className="multi-page-speaker-text">

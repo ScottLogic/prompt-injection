@@ -26,7 +26,7 @@ function OverlayWelcome({
 					</p>
 				</>
 			),
-			imageName: BotAvatarDefault,
+			imageUrl: BotAvatarDefault,
 		},
 		{
 			content: (
@@ -49,7 +49,7 @@ function OverlayWelcome({
 					/>
 				</>
 			),
-			imageName: BotAvatarDefault,
+			imageUrl: BotAvatarDefault,
 		},
 	];
 
