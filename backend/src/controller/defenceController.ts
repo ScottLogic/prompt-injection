@@ -132,8 +132,7 @@ function handleResetSingleDefence(
 	req: DefenceConfigResetRequest,
 	res: Response
 ) {
-	const defenceId = req.body.defenceId;
-	const configId = req.body.configId;
+	const { defenceId, configId } = req.body;
 	const level = LEVEL_NAMES.SANDBOX; //configuration only available in sandbox (interesting that we force that here, but not in the above endpoints)
 
 	if (!defenceId) {
