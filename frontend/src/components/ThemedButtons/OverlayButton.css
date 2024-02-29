@@ -2,13 +2,15 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 1rem 3rem;
+	align-self: center;
+	width: fit-content;
+	margin: 0.5rem;
+	padding: 0.5rem 3rem;
 	border: 0.0625rem solid var(--overlay-tab-colour);
 	border-radius: 0.5rem;
 	background-color: var(--overlay-background-colour);
 	font-weight: 700;
 	font-size: 1.25rem;
-	line-height: 1;
 	transition: ease 0.1s;
 }
 

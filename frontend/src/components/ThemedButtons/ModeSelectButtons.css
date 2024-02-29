@@ -1,7 +1,7 @@
 .mode-selection-buttons {
 	display: flex;
-	gap: 5rem;
-	justify-content: center;
+	justify-content: space-evenly;
+	margin-top: 0.5rem;
 	padding: 0;
 	list-style: none;
 }
@@ -10,13 +10,15 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 1rem 3rem;
+	margin: 0;
+	padding: 1rem 2rem;
 	border: 0.0625rem solid var(--overlay-tab-colour);
 	border-radius: 0.5rem;
 	background-color: var(--overlay-background-colour);
 	font-weight: 700;
 	font-size: 1.25rem;
 	line-height: 1;
+	white-space: nowrap;
 	transition: ease 0.1s;
 }
 

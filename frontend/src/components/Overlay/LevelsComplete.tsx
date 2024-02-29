@@ -1,7 +1,8 @@
+import BotAvatarDefault from '@src/assets/images/BotAvatarDefault.svg';
+import Manager from '@src/assets/images/manager.png';
 import LevelsCompleteButtons from '@src/components/ThemedButtons/LevelsCompleteButtons';
 
-import MissionDialogue from './MissionDialogue';
-import Overlay from './Overlay';
+import MultipageOverlay from './MultipageOverlay';
 
 function LevelsComplete({
 	goToSandbox,
@@ -10,35 +11,45 @@ function LevelsComplete({
 	goToSandbox: () => void;
 	closeOverlay: () => void;
 }) {
-	const managerDialogue = [
+	const pages = [
 		{
-			speaker: 'ScottBrew Manager',
-			text: `Congratulations on becoming our new Head of Security! 
-      You can now fully explore and adjust ScottBrewBot's system, defences, prompts and more.
-      Glad to finally have you in the right role.`,
+			content: (
+				<>
+					<h2>ScottBrew Manager:</h2>
+					<p>
+						Congratulations on becoming our new Head of Security! You can now
+						fully explore and adjust ScottBrewBot&apos;s system, defences,
+						prompts and more. Glad to finally have you in the right role.
+					</p>
+				</>
+			),
+			imageUrl: Manager,
+		},
+		{
+			content: (
+				<>
+					<h2>You&apos;ve completed the story mode</h2>
+					<p>
+						You can stay here and continue to play with the levels, or you can
+						move onto Sandbox mode where you can configure your own defence set
+						up and try to break it.
+					</p>
+					<LevelsCompleteButtons
+						closeOverlay={closeOverlay}
+						goToSandbox={goToSandbox}
+					/>
+				</>
+			),
+			imageUrl: BotAvatarDefault,
 		},
 	];
 
 	return (
-		<Overlay closeOverlay={closeOverlay} heading="Congratulations!">
-			<div className="content">
-				<MissionDialogue dialogueLines={managerDialogue} />
-				<hr />
-				<p>
-					You&apos;ve completed the story mode! You can stay here and continue
-					to play with the levels, or you can move onto Sandbox mode where you
-					can configure your own defence set up and try to break it.
-				</p>
-				<p>
-					You can always switch modes by clicking on the button in the left
-					panel.
-				</p>
-				<LevelsCompleteButtons
-					closeOverlay={closeOverlay}
-					goToSandbox={goToSandbox}
-				/>
-			</div>
-		</Overlay>
+		<MultipageOverlay
+			closeOverlay={closeOverlay}
+			heading={'Congratulations'}
+			pages={pages}
+		/>
 	);
 }
 

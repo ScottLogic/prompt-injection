@@ -20,7 +20,7 @@ describe('Overlay Header component', () => {
 			<OverlayHeader heading="Test Header" closeOverlay={mockCloseOverlay} />
 		);
 
-		expect(screen.getByText('close')).toBeInTheDocument();
+		expect(screen.getByText('Close')).toBeInTheDocument();
 	});
 
 	test('clicking the close button closes the modal', async () => {
