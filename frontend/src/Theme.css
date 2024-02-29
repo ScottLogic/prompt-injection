@@ -34,7 +34,7 @@
 
 	/* level buttons */
 	--level-button-colour: var(--accent-background-colour);
-	--level-button-colour-disabled: #777;
+	--level-button-colour-disabled: #8c8c8c;
 	--level-button-border-colour: var(--accent-border-colour);
 	--level-button-border-colour-disabled: #aaaaaa80;
 	--level-button-background-colour-selected: var(--main-text-colour);
@@ -50,7 +50,7 @@
 	--main-input-active-background-colour: var(--header-background-colour);
 	--main-input-active-text-colour: var(--main-text-colour);
 	--main-input-inactive-background-colour: #b3b3b3;
-	--main-input-inactive-text-colour: #464646;
+	--main-input-inactive-text-colour: #6b6b6b;
 
 	/* toggle switch */
 	--main-toggle-ball-colour: #ececec;
