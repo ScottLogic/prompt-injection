@@ -168,8 +168,7 @@ function handleResetSingleDefence(
 	req: DefenceConfigResetRequest,
 	res: Response
 ) {
-	const { defenceId, configId } = req.body;
-	const level = LEVEL_NAMES.SANDBOX; //configuration only available in sandbox (interesting that we force that here, but not in the above endpoints)
+	const { defenceId, configId, level } = req.body;
 
 	if (!defenceId) {
 		sendErrorResponse(res, 400, 'Missing defenceId');
@@ -178,6 +177,16 @@ function handleResetSingleDefence(
 
 	if (!configId) {
 		sendErrorResponse(res, 400, 'Missing configId');
+		return;
+	}
+
+	if (level === undefined) {
+		sendErrorResponse(res, 400, 'Missing level');
+		return;
+	}
+
+	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+		sendErrorResponse(res, 400, 'Invalid level');
 		return;
 	}
 
@@ -218,17 +227,11 @@ function handleResetSingleDefence(
 		currentDefences
 	);
 
-	const updatedDefenceConfig: DefenceConfigItem | undefined =
-		req.session.levelState[level].defences
-			.find((defence) => defence.id === defenceId)
-			?.config.find((config) => config.id === configId);
+	const updatedDefenceConfig: DefenceConfigItem | undefined = currentDefences
+		.find((defence) => defence.id === defenceId)
+		?.config.find((config) => config.id === configId);
 
-	if (updatedDefenceConfig) {
-		res.send(updatedDefenceConfig);
-	} else {
-		res.status(500);
-		res.send("something went wrong while resetting the defence's config.");
-	}
+	res.send(updatedDefenceConfig);
 }
 
 function handleGetDefenceStatus(req: DefenceStatusRequest, res: Response) {
