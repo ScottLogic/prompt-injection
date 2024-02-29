@@ -211,7 +211,7 @@ describe('handleConfigureDefence', () => {
 		);
 	});
 
-	test('WHEN level is does not have configurable defences THEN does not configure defences', () => {
+	test('WHEN level does not have configurable defences THEN does not configure defences', () => {
 		const req: DefenceConfigureRequest = {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
@@ -251,7 +251,7 @@ describe('handleConfigureDefence', () => {
 	test('WHEN defence does not exist THEN does not configure defences', () => {
 		const req: DefenceConfigureRequest = {
 			body: {
-				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				defenceId: 'badDefenceID' as DEFENCE_ID,
 				config: [
 					{
 						id: 'PROMPT',
@@ -281,7 +281,7 @@ describe('handleConfigureDefence', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
-			`Defence with id ${DEFENCE_ID.PROMPT_EVALUATION_LLM} not found`
+			`Defence with id badDefenceID not found`
 		);
 	});
 });

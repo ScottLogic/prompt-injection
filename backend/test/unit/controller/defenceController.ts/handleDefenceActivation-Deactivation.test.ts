@@ -37,7 +37,7 @@ function responseMock() {
 }
 
 describe('handleConfigureDefence', () => {
-	test('WHEN passed a sensible config value THEN configures defences', () => {
+	test('WHEN passed a sensible config value THEN configures defence', () => {
 		const req = {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
@@ -90,6 +90,188 @@ describe('handleConfigureDefence', () => {
 		);
 		expect(req.session.levelState[LEVEL_NAMES.SANDBOX].defences).toEqual(
 			configuredDefences
+		);
+	});
+
+	test('WHEN missing defenceId THEN does not configure defence', () => {
+		const req = {
+			body: {
+				level: LEVEL_NAMES.SANDBOX,
+			},
+			session: {
+				levelState: [
+					{},
+					{},
+					{},
+					{
+						level: LEVEL_NAMES.SANDBOX,
+						chatHistory: [] as ChatMessage[],
+						sentEmails: [] as EmailInfo[],
+						defences: [
+							{
+								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+								isActive: true,
+								config: [],
+							},
+						] as Defence[],
+					},
+				],
+			},
+		} as DefenceActivateRequest;
+
+		const res = responseMock();
+
+		handleDefenceActivation(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith('Missing defenceId');
+	});
+
+	test('WHEN missing level THEN does not configure defence', () => {
+		const req = {
+			body: {
+				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+			},
+			session: {
+				levelState: [
+					{},
+					{},
+					{},
+					{
+						level: LEVEL_NAMES.SANDBOX,
+						chatHistory: [] as ChatMessage[],
+						sentEmails: [] as EmailInfo[],
+						defences: [
+							{
+								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+								isActive: true,
+								config: [],
+							},
+						] as Defence[],
+					},
+				],
+			},
+		} as DefenceActivateRequest;
+
+		const res = responseMock();
+
+		handleDefenceActivation(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith('Missing level');
+	});
+
+	test('WHEN level is invalid THEN does not configure defence', () => {
+		const req = {
+			body: {
+				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				level: 5 as LEVEL_NAMES,
+			},
+			session: {
+				levelState: [
+					{},
+					{},
+					{},
+					{
+						level: LEVEL_NAMES.SANDBOX,
+						chatHistory: [] as ChatMessage[],
+						sentEmails: [] as EmailInfo[],
+						defences: [
+							{
+								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+								isActive: true,
+								config: [],
+							},
+						] as Defence[],
+					},
+				],
+			},
+		} as DefenceActivateRequest;
+
+		const res = responseMock();
+
+		handleDefenceActivation(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith('Invalid level');
+	});
+
+	test('WHEN level does not have configurable defences THEN does not configure defence', () => {
+		const req = {
+			body: {
+				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				level: LEVEL_NAMES.LEVEL_1,
+			},
+			session: {
+				levelState: [
+					{
+						level: LEVEL_NAMES.LEVEL_1,
+						chatHistory: [] as ChatMessage[],
+						sentEmails: [] as EmailInfo[],
+						defences: undefined,
+					},
+					{},
+					{},
+					{
+						level: LEVEL_NAMES.SANDBOX,
+						chatHistory: [] as ChatMessage[],
+						sentEmails: [] as EmailInfo[],
+						defences: [
+							{
+								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+								isActive: true,
+								config: [],
+							},
+						] as Defence[],
+					},
+				],
+			},
+		} as DefenceActivateRequest;
+
+		const res = responseMock();
+
+		handleDefenceActivation(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith(
+			'You cannot activate defences on this level, because it uses the default defences'
+		);
+	});
+
+	test('WHEN defence does not exist THEN does not configure defence', () => {
+		const req = {
+			body: {
+				defenceId: 'badDefenceID' as DEFENCE_ID,
+				level: LEVEL_NAMES.SANDBOX,
+			},
+			session: {
+				levelState: [
+					{},
+					{},
+					{},
+					{
+						level: LEVEL_NAMES.SANDBOX,
+						chatHistory: [] as ChatMessage[],
+						sentEmails: [] as EmailInfo[],
+						defences: [
+							{
+								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+								isActive: true,
+								config: [],
+							},
+						] as Defence[],
+					},
+				],
+			},
+		} as DefenceActivateRequest;
+
+		const res = responseMock();
+
+		handleDefenceActivation(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith(
+			'Defence with id badDefenceID not found'
 		);
 	});
 });
