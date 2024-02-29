@@ -99,8 +99,23 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 	const { defenceId, level, config } = req.body;
 
-	if (!defenceId || !config || level === undefined) {
-		sendErrorResponse(res, 400, 'Missing defenceId, config or level');
+	if (defenceId === undefined) {
+		sendErrorResponse(res, 400, 'Missing defenceId');
+		return;
+	}
+
+	if (level === undefined) {
+		sendErrorResponse(res, 400, 'Missing level');
+		return;
+	}
+
+	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+		sendErrorResponse(res, 400, 'Invalid level');
+		return;
+	}
+
+	if (config === undefined) {
+		sendErrorResponse(res, 400, 'Missing config');
 		return;
 	}
 
@@ -116,6 +131,26 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 			res,
 			400,
 			'You cannot configure defences on this level, because it uses the default defences'
+		);
+		return;
+	}
+
+	const defence = currentDefences.find((defence) => defence.id === defenceId);
+
+	if (defence === undefined) {
+		sendErrorResponse(res, 400, `Defence with id ${defenceId} not found`);
+		return;
+	}
+
+	const configItem = defence.config.find(
+		(configItem) => configItem.id === config[0].id
+	);
+
+	if (configItem === undefined) {
+		sendErrorResponse(
+			res,
+			400,
+			`Config with id ${config[0].id} not found for defence with id ${defenceId}`
 		);
 		return;
 	}
