@@ -42,7 +42,9 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
-	if (req.session.levelState[level].defences === undefined) {
+	const currentDefences = req.session.levelState[level].defences;
+
+	if (currentDefences === undefined) {
 		sendErrorResponse(
 			res,
 			400,
@@ -51,11 +53,9 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
-	if (req.session.levelState[3].defences === undefined) return; // this dumb type guard is needed, because we are accessing the array via enum, and so typescript doesn't account for the above type guards. This will be solved with #842. The below array indices won't need to be hardcoded either.
-
-	req.session.levelState[3].defences = activateDefence(
+	req.session.levelState[level].defences = activateDefence(
 		defenceId,
-		req.session.levelState[3].defences
+		currentDefences
 	);
 	res.status(200).send();
 }
@@ -78,7 +78,9 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
-	if (req.session.levelState[level].defences === undefined) {
+	const currentDefences = req.session.levelState[level].defences;
+
+	if (currentDefences === undefined) {
 		sendErrorResponse(
 			res,
 			400,
@@ -87,11 +89,9 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
-	if (req.session.levelState[3].defences === undefined) return; // this dumb type guard is needed, because we are accessing the array via enum, and so typescript doesn't account for the above type guards. This will be solved with #842. The below array indices won't need to be hardcoded either.
-
-	req.session.levelState[3].defences = deactivateDefence(
+	req.session.levelState[level].defences = deactivateDefence(
 		defenceId,
-		req.session.levelState[3].defences
+		currentDefences
 	);
 	res.status(200).send();
 }
@@ -109,7 +109,9 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 		return;
 	}
 
-	if (req.session.levelState[level].defences === undefined) {
+	const currentDefences = req.session.levelState[level].defences;
+
+	if (currentDefences === undefined) {
 		sendErrorResponse(
 			res,
 			400,
@@ -118,11 +120,9 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 		return;
 	}
 
-	if (req.session.levelState[3].defences === undefined) return; // this dumb type guard is needed, because we are accessing the array via enum, and so typescript doesn't account for the above type guards. This will be solved with #842. The below array indices won't need to be hardcoded either.
-
 	req.session.levelState[3].defences = configureDefence(
 		defenceId,
-		req.session.levelState[3].defences,
+		currentDefences,
 		config
 	);
 	res.send();
@@ -145,7 +145,9 @@ function handleResetSingleDefence(
 		return;
 	}
 
-	if (req.session.levelState[level].defences === undefined) {
+	const currentDefences = req.session.levelState[level].defences;
+
+	if (currentDefences === undefined) {
 		sendErrorResponse(
 			res,
 			400,
@@ -157,8 +159,9 @@ function handleResetSingleDefence(
 	req.session.levelState[level].defences = resetDefenceConfig(
 		defenceId,
 		configId,
-		req.session.levelState[level].defences
+		currentDefences
 	);
+
 	const updatedDefenceConfig: DefenceConfigItem | undefined =
 		req.session.levelState[level].defences
 			.find((defence) => defence.id === defenceId)
