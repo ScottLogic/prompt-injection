@@ -36,7 +36,7 @@
 	--level-button-colour: var(--accent-background-colour);
 	--level-button-colour-disabled: #8c8c8c;
 	--level-button-border-colour: var(--accent-border-colour);
-	--level-button-border-colour-disabled: #aaaaaa80;
+	--level-button-border-colour-disabled: #8c8c8c;
 	--level-button-background-colour-selected: var(--main-text-colour);
 	--level-button-background-colour-hover: #11484b;
 
