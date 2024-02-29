@@ -1,11 +1,11 @@
 import { LEVELS } from '@src/Levels';
+import Handler from '@src/assets/images/handler.png';
+import Lawyer from '@src/assets/images/lawyer.png';
+import Manager from '@src/assets/images/manager.png';
 import OverlayButton from '@src/components/ThemedButtons/OverlayButton';
 import { LEVEL_NAMES } from '@src/models/level';
 
-import MissionDialogue from './MissionDialogue';
-import Overlay from './Overlay';
-
-import './MissionInformation.css';
+import MultipageOverlay from './MultipageOverlay';
 
 function MissionInformation({
 	currentLevel,
@@ -14,21 +14,38 @@ function MissionInformation({
 	currentLevel: LEVEL_NAMES;
 	closeOverlay: () => void;
 }) {
-	const heading = `${LEVELS[currentLevel].name} Mission Information`;
+	const heading = `${LEVELS[currentLevel].name} Mission Info`;
+
+	const pages = LEVELS[currentLevel].missionInfoDialogue.map(
+		({ speaker, text }, index, source) => {
+			return {
+				content: (
+					<>
+						<h2>{speaker}:</h2>
+						<p>{text}</p>
+						{index === source.length - 1 && (
+							<OverlayButton onClick={closeOverlay}>OK</OverlayButton>
+						)}
+					</>
+				),
+				imageUrl:
+					speaker === 'ScottBrew Manager'
+						? Manager
+						: speaker === 'ScottBrew Lawyer'
+						? Lawyer
+						: speaker === 'Handler'
+						? Handler
+						: '',
+			};
+		}
+	);
 
 	return (
-		<Overlay closeOverlay={closeOverlay} heading={heading}>
-			<div className="mission-information">
-				<div className="content">
-					<MissionDialogue
-						dialogueLines={LEVELS[currentLevel].missionInfoDialogue}
-					/>
-					<div className="button-area">
-						<OverlayButton onClick={closeOverlay}>OK</OverlayButton>
-					</div>
-				</div>
-			</div>
-		</Overlay>
+		<MultipageOverlay
+			closeOverlay={closeOverlay}
+			heading={heading}
+			pages={pages}
+		/>
 	);
 }
 

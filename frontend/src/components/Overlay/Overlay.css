@@ -6,7 +6,6 @@
 	box-sizing: border-box;
 	width: 50vw;
 	height: fit-content;
-	max-height: 80vh;
 	padding: 0;
 	border: none;
 	border-radius: 0.625rem;
@@ -24,12 +23,19 @@
 }
 
 .overlay p {
+	margin: 0;
+	font-weight: 500;
 	font-size: 1.25rem;
 }
 
 .overlay-content {
 	display: flex;
+	flex-direction: column;
 	overflow: hidden;
 	height: 100%;
-	padding: 1.5rem;
+	border-radius: none;
+}
+
+.overlay h2 {
+	margin: 0;
 }
