@@ -7,7 +7,7 @@ import {
 	resetDefenceConfig,
 } from '@src/defence';
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
-import { DefenceConfigResetRequest } from '@src/models/api/DefenceConfigResetRequest';
+import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
 import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
 import { DefenceConfigItem } from '@src/models/defence';
@@ -164,18 +164,18 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 	res.send();
 }
 
-function handleResetSingleDefence(
-	req: DefenceConfigResetRequest,
+function handleResetDefenceConfigItem(
+	req: DefenceConfigItemResetRequest,
 	res: Response
 ) {
-	const { defenceId, configId, level } = req.body;
+	const { defenceId, configItemId, level } = req.body;
 
 	if (!defenceId) {
 		sendErrorResponse(res, 400, 'Missing defenceId');
 		return;
 	}
 
-	if (!configId) {
+	if (!configItemId) {
 		sendErrorResponse(res, 400, 'Missing configId');
 		return;
 	}
@@ -209,27 +209,27 @@ function handleResetSingleDefence(
 	}
 
 	const configItem = defence.config.find(
-		(configItem) => configItem.id === configId
+		(configItem) => configItem.id === configItemId
 	);
 
 	if (configItem === undefined) {
 		sendErrorResponse(
 			res,
 			400,
-			`Config with id ${configId} not found for defence with id ${defenceId}`
+			`Config with id ${configItemId} not found for defence with id ${defenceId}`
 		);
 		return;
 	}
 
 	req.session.levelState[level].defences = resetDefenceConfig(
 		defenceId,
-		configId,
+		configItemId,
 		currentDefences
 	);
 
 	const updatedDefenceConfig: DefenceConfigItem | undefined = currentDefences
 		.find((defence) => defence.id === defenceId)
-		?.config.find((config) => config.id === configId);
+		?.config.find((config) => config.id === configItemId);
 
 	res.send(updatedDefenceConfig);
 }
@@ -254,6 +254,6 @@ export {
 	handleDefenceActivation,
 	handleDefenceDeactivation,
 	handleConfigureDefence,
-	handleResetSingleDefence,
+	handleResetDefenceConfigItem as handleResetSingleDefence,
 	handleGetDefenceStatus,
 };

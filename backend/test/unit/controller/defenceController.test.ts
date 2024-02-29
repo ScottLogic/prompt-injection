@@ -15,7 +15,7 @@ import {
 	resetDefenceConfig,
 } from '@src/defence';
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
-import { DefenceConfigResetRequest } from '@src/models/api/DefenceConfigResetRequest';
+import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
 import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
 import { ChatModel } from '@src/models/chat';
@@ -628,7 +628,7 @@ describe('handleConfigureDefence', () => {
 	});
 });
 
-describe('handleResetSingleDefence', () => {
+describe('handleResetDefenceConfigItem', () => {
 	test('WHEN passed sensible parameters THEN resets config item', () => {
 		const mockResetDefenceConfig = resetDefenceConfig as jest.MockedFunction<
 			typeof resetDefenceConfig
@@ -637,7 +637,8 @@ describe('handleResetSingleDefence', () => {
 		const req = {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-				configId: 'PROMPT',
+				configItemId: 'PROMPT',
+				level: LEVEL_NAMES.SANDBOX,
 			},
 			session: {
 				levelState: [
@@ -658,7 +659,7 @@ describe('handleResetSingleDefence', () => {
 					},
 				],
 			},
-		} as DefenceConfigResetRequest;
+		} as DefenceConfigItemResetRequest;
 
 		const configuredDefences: Defence[] = [
 			{
@@ -690,9 +691,10 @@ describe('handleResetSingleDefence', () => {
 	test('WHEN missing defenceId THEN does not reset config item', () => {
 		const req = {
 			body: {
-				configId: 'PROMPT',
+				configItemId: 'PROMPT',
+				level: LEVEL_NAMES.SANDBOX,
 			},
-		} as DefenceConfigResetRequest;
+		} as DefenceConfigItemResetRequest;
 
 		const res = responseMock();
 
@@ -702,12 +704,13 @@ describe('handleResetSingleDefence', () => {
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId');
 	});
 
-	test('WHEN missing config THEN does not reset config item', () => {
+	test('WHEN missing config item id THEN does not reset config item', () => {
 		const req = {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				level: LEVEL_NAMES.SANDBOX,
 			},
-		} as DefenceConfigResetRequest;
+		} as DefenceConfigItemResetRequest;
 
 		const res = responseMock();
 
@@ -717,11 +720,45 @@ describe('handleResetSingleDefence', () => {
 		expect(res.send).toHaveBeenCalledWith('Missing configId');
 	});
 
+	test('WHEN missing level THEN does not reset config item', () => {
+		const req = {
+			body: {
+				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				configItemId: 'PROMPT',
+			},
+		} as DefenceConfigItemResetRequest;
+
+		const res = responseMock();
+
+		handleResetSingleDefence(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith('Missing level');
+	});
+
+	test('WHEN invalid level THEN does not reset config item', () => {
+		const req = {
+			body: {
+				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				configItemId: 'PROMPT',
+				level: 5 as LEVEL_NAMES,
+			},
+		} as DefenceConfigItemResetRequest;
+
+		const res = responseMock();
+
+		handleResetSingleDefence(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith('Invalid level');
+	});
+
 	test('WHEN defence does not exist THEN does not reset config item', () => {
 		const req = {
 			body: {
 				defenceId: 'badDefenceID' as DEFENCE_ID,
-				configId: 'PROMPT',
+				configItemId: 'PROMPT',
+				level: LEVEL_NAMES.SANDBOX,
 			},
 			session: {
 				levelState: [
@@ -734,7 +771,7 @@ describe('handleResetSingleDefence', () => {
 					},
 				],
 			},
-		} as DefenceConfigResetRequest;
+		} as DefenceConfigItemResetRequest;
 
 		const res = responseMock();
 
