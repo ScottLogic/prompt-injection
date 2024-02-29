@@ -1,4 +1,4 @@
-import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
+import { LevelSystemRole } from '@src/models/level';
 
 import './HandbookPage.css';
 
@@ -6,7 +6,7 @@ function HandbookSystemRole({
 	numCompletedLevels,
 	systemRoles,
 }: {
-	numCompletedLevels: LEVEL_NAMES;
+	numCompletedLevels: number;
 	systemRoles: LevelSystemRole[];
 }) {
 	return (
