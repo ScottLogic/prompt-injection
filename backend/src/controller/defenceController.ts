@@ -25,8 +25,7 @@ function configValueExceedsCharacterLimit(config: DefenceConfigItem[]) {
 }
 
 function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
-	const defenceId = req.body.defenceId;
-	const level = req.body.level;
+	const { defenceId, level } = req.body;
 
 	if (!defenceId) {
 		sendErrorResponse(res, 400, 'Missing defenceId');
@@ -62,8 +61,7 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 }
 
 function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
-	const defenceId = req.body.defenceId;
-	const level = req.body.level;
+	const { defenceId, level } = req.body;
 
 	if (!defenceId) {
 		sendErrorResponse(res, 400, 'Missing defenceId');
@@ -99,10 +97,7 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 }
 
 function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
-	// id of the defence
-	const defenceId = req.body.defenceId;
-	const config = req.body.config;
-	const level = req.body.level;
+	const { defenceId, level, config } = req.body;
 
 	if (!defenceId || !config || level === undefined) {
 		sendErrorResponse(res, 400, 'Missing defenceId, config or level');
@@ -181,7 +176,7 @@ function handleResetSingleDefence(
 }
 
 function handleGetDefenceStatus(req: DefenceStatusRequest, res: Response) {
-	const level: number | undefined = req.query.level as number | undefined;
+	const level = req.query.level as number | undefined;
 	if (level !== undefined) {
 		res.send(req.session.levelState[level].defences);
 	} else {
