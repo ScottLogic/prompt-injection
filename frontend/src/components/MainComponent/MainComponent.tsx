@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, JSX } from 'react';
 
 import { DEFAULT_DEFENCES } from '@src/Defences';
 import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
