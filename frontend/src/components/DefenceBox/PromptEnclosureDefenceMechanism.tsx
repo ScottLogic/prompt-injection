@@ -1,7 +1,11 @@
 import { useState } from 'react';
 
 import DefenceConfigurationRadioButton from '@src/components/DefenceBox/DefenceConfigurationRadioButton';
-import { DEFENCE_ID, Defence } from '@src/models/defence';
+import {
+	DEFENCE_CONFIG_ITEM_ID,
+	DEFENCE_ID,
+	Defence,
+} from '@src/models/defence';
 
 import DefenceConfiguration from './DefenceConfiguration';
 
@@ -20,7 +24,10 @@ function PromptEnclosureDefenceMechanism({
 		configId: string,
 		value: string
 	) => Promise<void>;
-	resetConfigurationValue: (defence: Defence, configId: string) => void;
+	resetConfigurationValue: (
+		defence: Defence,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) => void;
 }) {
 	// Using local state, else we'd need to wait for API response before updating
 	// selected radio. This could land us in trouble if there's a server error...

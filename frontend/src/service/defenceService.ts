@@ -4,7 +4,9 @@ import {
 	DefenceConfigItem,
 	DefenceResetResponse,
 	DefenceDTO,
+	DEFENCE_CONFIG_ITEM_ID,
 } from '@src/models/defence';
+import { LEVEL_NAMES } from '@src/models/level';
 
 import { sendRequest } from './backendService';
 
@@ -43,7 +45,7 @@ function getDefencesFromDTOs(defenceDTOs: DefenceDTO[]) {
 async function toggleDefence(
 	defenceId: DEFENCE_ID,
 	isActive: boolean,
-	level: number
+	level: LEVEL_NAMES
 ): Promise<boolean> {
 	const requestPath = isActive ? 'deactivate' : 'activate';
 	const response = await sendRequest(`${PATH}${requestPath}`, {
@@ -57,9 +59,9 @@ async function toggleDefence(
 }
 
 async function configureDefence(
-	defenceId: string,
+	defenceId: DEFENCE_ID,
 	config: DefenceConfigItem[],
-	level: number
+	level: LEVEL_NAMES
 ): Promise<boolean> {
 	const response = await sendRequest(`${PATH}configure`, {
 		method: 'POST',
@@ -71,53 +73,54 @@ async function configureDefence(
 	return response.status === 200;
 }
 
-async function resetDefenceConfig(
-	defenceId: string,
-	configId: string
+async function resetDefenceConfigItem(
+	defenceId: DEFENCE_ID,
+	configItemId: DEFENCE_CONFIG_ITEM_ID,
+	level: LEVEL_NAMES
 ): Promise<DefenceResetResponse> {
 	const response = await sendRequest(`${PATH}resetConfig`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ defenceId, configId }),
+		body: JSON.stringify({ defenceId, configItemId, level }),
 	});
 	return (await response.json()) as DefenceResetResponse;
 }
 
-function validatePositiveNumberConfig(config: string) {
+function validatePositiveNumberConfig(value: string) {
 	// config is a number greater than zero
-	return !isNaN(Number(config)) && Number(config) > 0;
+	return !isNaN(Number(value)) && Number(value) > 0;
 }
 
-function validateNonEmptyStringConfig(config: string) {
+function validateNonEmptyStringConfig(value: string) {
 	// config is non empty string and is not a number
-	return config !== '' && !Number(config);
+	return value !== '' && !Number(value);
 }
 
-function validateFilterConfig(config: string) {
+function validateFilterConfig(value: string) {
 	// config is not a list of empty commas
 	const commaPattern = /^,*,*$/;
-	return config === '' || !commaPattern.test(config);
+	return value === '' || !commaPattern.test(value);
 }
 
 function validateDefence(
 	defenceId: DEFENCE_ID,
-	configId: string,
-	config: string
+	configItemId: DEFENCE_CONFIG_ITEM_ID,
+	configItemValue: string
 ) {
 	switch (defenceId) {
 		case DEFENCE_ID.CHARACTER_LIMIT:
-			return validatePositiveNumberConfig(config);
+			return validatePositiveNumberConfig(configItemValue);
 		case DEFENCE_ID.INPUT_FILTERING:
 		case DEFENCE_ID.OUTPUT_FILTERING:
-			return validateFilterConfig(config);
+			return validateFilterConfig(configItemValue);
 		case DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE:
-			return configId === 'SEQUENCE_LENGTH'
-				? validatePositiveNumberConfig(config)
-				: validateNonEmptyStringConfig(config);
+			return configItemId === 'SEQUENCE_LENGTH'
+				? validatePositiveNumberConfig(configItemValue)
+				: validateNonEmptyStringConfig(configItemValue);
 		default:
-			return validateNonEmptyStringConfig(config);
+			return validateNonEmptyStringConfig(configItemValue);
 	}
 }
 
@@ -125,7 +128,7 @@ export {
 	getDefences,
 	toggleDefence,
 	configureDefence,
-	resetDefenceConfig,
+	resetDefenceConfigItem,
 	validateDefence,
 	getDefencesFromDTOs,
 };

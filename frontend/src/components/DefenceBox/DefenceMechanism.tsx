@@ -1,6 +1,11 @@
 import { useState } from 'react';
 
-import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
+import {
+	DEFENCE_ID,
+	DefenceConfigItem,
+	Defence,
+	DEFENCE_CONFIG_ITEM_ID,
+} from '@src/models/defence';
 
 import DefenceConfiguration from './DefenceConfiguration';
 import PromptEnclosureDefenceMechanism from './PromptEnclosureDefenceMechanism';
@@ -19,7 +24,10 @@ function DefenceMechanism({
 	showConfigurations: boolean;
 	promptEnclosureDefences: Defence[];
 	toggleDefence: (defence: Defence) => void;
-	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
+	resetDefenceConfiguration: (
+		defenceId: DEFENCE_ID,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
@@ -27,8 +35,11 @@ function DefenceMechanism({
 }) {
 	const [configKey, setConfigKey] = useState<number>(0);
 
-	function resetConfigurationValue(defence: Defence, configId: string) {
-		resetDefenceConfiguration(defence.id, configId);
+	function resetConfigurationValue(
+		defence: Defence,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) {
+		resetDefenceConfiguration(defence.id, configItemId);
 	}
 
 	async function setConfigurationValue(
