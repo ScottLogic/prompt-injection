@@ -12,7 +12,7 @@ const vuCookieJar = (() => {
 	};
 })();
 
-export function requestFunction() {
+export function postWithSessionUpdate() {
 	// Use same jar for every iteration of same VU! k6 doesn't do this for us :(
 	const vuID = exec.vu.idInTest;
 	let jar = vuCookieJar.get(vuID);

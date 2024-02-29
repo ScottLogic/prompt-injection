@@ -1,4 +1,4 @@
-import { requestFunction } from './requestFunctionExtract.js';
+import { postWithSessionUpdate } from './requestFunctions.js';
 
 export const options = {
 	// Key configurations for spike in this section
@@ -8,6 +8,6 @@ export const options = {
 	],
 };
 
-export default async function () {
-	requestFunction();
-}
+export default () => {
+	postWithSessionUpdate();
+};

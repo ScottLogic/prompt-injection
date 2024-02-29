@@ -1,4 +1,4 @@
-import { requestFunction } from './requestFunctionExtract.js';
+import { postWithSessionUpdate } from './requestFunctions.js';
 
 export const options = {
 	//vus and duration can be changed depending on what simulation needed running
@@ -11,6 +11,6 @@ export const options = {
 	},
 };
 
-export default async function () {
-	requestFunction();
-}
+export default () => {
+	postWithSessionUpdate();
+};
