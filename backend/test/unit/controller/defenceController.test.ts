@@ -6,7 +6,7 @@ import {
 	handleDefenceActivation,
 	handleDefenceDeactivation,
 	handleGetDefenceStatus,
-	handleResetSingleDefence,
+	handleResetDefenceConfigItem,
 } from '@src/controller/defenceController';
 import {
 	activateDefence,
@@ -673,7 +673,7 @@ describe('handleResetDefenceConfigItem', () => {
 		];
 		mockResetDefenceConfig.mockReturnValueOnce(configuredDefences);
 
-		handleResetSingleDefence(req, responseMock());
+		handleResetDefenceConfigItem(req, responseMock());
 
 		expect(mockResetDefenceConfig).toHaveBeenCalledTimes(1);
 		expect(mockResetDefenceConfig).toHaveBeenCalledWith(
@@ -702,7 +702,7 @@ describe('handleResetDefenceConfigItem', () => {
 
 		const res = responseMock();
 
-		handleResetSingleDefence(req, res);
+		handleResetDefenceConfigItem(req, res);
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith('Missing defenceId');
@@ -718,7 +718,7 @@ describe('handleResetDefenceConfigItem', () => {
 
 		const res = responseMock();
 
-		handleResetSingleDefence(req, res);
+		handleResetDefenceConfigItem(req, res);
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith('Missing configId');
@@ -734,7 +734,7 @@ describe('handleResetDefenceConfigItem', () => {
 
 		const res = responseMock();
 
-		handleResetSingleDefence(req, res);
+		handleResetDefenceConfigItem(req, res);
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith('Missing level');
@@ -751,7 +751,7 @@ describe('handleResetDefenceConfigItem', () => {
 
 		const res = responseMock();
 
-		handleResetSingleDefence(req, res);
+		handleResetDefenceConfigItem(req, res);
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith('Invalid level');
@@ -779,7 +779,7 @@ describe('handleResetDefenceConfigItem', () => {
 
 		const res = responseMock();
 
-		handleResetSingleDefence(req, res);
+		handleResetDefenceConfigItem(req, res);
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
@@ -815,7 +815,7 @@ describe('handleResetDefenceConfigItem', () => {
 
 		const res = responseMock();
 
-		handleResetSingleDefence(req, res);
+		handleResetDefenceConfigItem(req, res);
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(

@@ -196,7 +196,7 @@ function handleResetDefenceConfigItem(
 		sendErrorResponse(
 			res,
 			400,
-			'You cannot reset defences on this level, because it uses the default defences'
+			'You cannot reset defence config items on this level, because it uses the default defences'
 		);
 		return;
 	}
@@ -227,7 +227,12 @@ function handleResetDefenceConfigItem(
 		currentDefences
 	);
 
-	const updatedDefenceConfig: DefenceConfigItem | undefined = currentDefences
+	const updatedDefences = req.session.levelState[level].defences;
+	if (updatedDefences === undefined) {
+		sendErrorResponse(res, 500, 'Something went whacky');
+		return;
+	}
+	const updatedDefenceConfig = updatedDefences
 		.find((defence) => defence.id === defenceId)
 		?.config.find((config) => config.id === configItemId);
 
@@ -254,6 +259,6 @@ export {
 	handleDefenceActivation,
 	handleDefenceDeactivation,
 	handleConfigureDefence,
-	handleResetDefenceConfigItem as handleResetSingleDefence,
+	handleResetDefenceConfigItem,
 	handleGetDefenceStatus,
 };

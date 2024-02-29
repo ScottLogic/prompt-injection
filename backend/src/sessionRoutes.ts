@@ -14,7 +14,7 @@ import {
 	handleDefenceActivation,
 	handleDefenceDeactivation,
 	handleGetDefenceStatus,
-	handleResetSingleDefence,
+	handleResetDefenceConfigItem,
 } from './controller/defenceController';
 import {
 	handleClearEmails,
@@ -102,7 +102,7 @@ router.get('/defence/status', handleGetDefenceStatus);
 router.post('/defence/activate', handleDefenceActivation);
 router.post('/defence/deactivate', handleDefenceDeactivation);
 router.post('/defence/configure', handleConfigureDefence);
-router.post('/defence/resetConfig', handleResetSingleDefence);
+router.post('/defence/resetConfig', handleResetDefenceConfigItem);
 
 // emails
 router.get('/email/get', handleGetEmails);

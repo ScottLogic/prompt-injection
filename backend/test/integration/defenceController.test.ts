@@ -6,8 +6,10 @@ import {
 	handleDefenceActivation,
 	handleDefenceDeactivation,
 	handleGetDefenceStatus,
+	handleResetDefenceConfigItem,
 } from '@src/controller/defenceController';
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
+import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
 import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
 import { ChatModel } from '@src/models/chat';
@@ -106,6 +108,30 @@ describe('The correct levels can have their defences changed', () => {
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.send).toHaveBeenCalledWith(
 				'You cannot configure defences on this level, because it uses the default defences'
+			);
+		});
+
+		test(`GIVEN level ${
+			level + 1
+		} WHEN attempt to reset a defence config item THEN defence config item is not reset`, () => {
+			const req = {
+				body: {
+					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
+					level,
+					configItemId: 'MAX_MESSAGE_LENGTH',
+				},
+				session: {
+					levelState: getInitialLevelStates(),
+				},
+			} as DefenceConfigItemResetRequest;
+
+			const res = responseMock();
+
+			handleResetDefenceConfigItem(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(400);
+			expect(res.send).toHaveBeenCalledWith(
+				'You cannot reset defence config items on this level, because it uses the default defences'
 			);
 		});
 
@@ -223,13 +249,55 @@ describe('The correct levels can have their defences changed', () => {
 			expect(updatedDefenceConfig).toEqual(expectedDefenceConfig);
 		});
 
+		test(`GIVEN level ${
+			level + 1
+		} WHEN attempt to reset a defence config item THEN defence config item is reset`, () => {
+			const initialLevelStatesButWithCharacterLimitConfigured =
+				getInitialLevelStates().map((levelState) =>
+					levelState.level === level
+						? {
+								...levelState,
+								defences: levelState.defences?.map((defence) =>
+									defence.id === DEFENCE_ID.CHARACTER_LIMIT
+										? {
+												...defence,
+												config: [{ id: 'MAX_MESSAGE_LENGTH', value: '1' }],
+										  }
+										: defence
+								),
+						  }
+						: levelState
+				);
+
+			const req = {
+				body: {
+					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
+					level,
+					configItemId: 'MAX_MESSAGE_LENGTH',
+				},
+				session: {
+					levelState: initialLevelStatesButWithCharacterLimitConfigured,
+				},
+			} as DefenceConfigItemResetRequest;
+
+			const res = responseMock();
+
+			handleResetDefenceConfigItem(req, res);
+
+			expect(req.session.levelState).toEqual(getInitialLevelStates());
+			expect(res.send).toHaveBeenCalledWith({
+				id: 'MAX_MESSAGE_LENGTH',
+				value: '280',
+			});
+		});
+
 		test(`GIVEN level ${level} WHEN attempt to get defence status THEN should return the defences`, () => {
 			const req = {
 				query: { level },
 				session: {
 					levelState: getInitialLevelStates(),
 				},
-			} as unknown as DefenceStatusRequest;
+			} as DefenceStatusRequest;
 
 			const res = responseMock();
 
