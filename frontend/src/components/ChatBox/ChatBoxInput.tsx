@@ -60,6 +60,7 @@ function ChatBoxInput({
 				characterLimit={CHARACTER_LIMIT}
 				// eslint-disable-next-line jsx-a11y/no-autofocus
 				autoFocus={true}
+				id="chat-box-input"
 			/>
 		</label>
 	);
