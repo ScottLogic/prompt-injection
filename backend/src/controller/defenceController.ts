@@ -232,13 +232,19 @@ function handleResetSingleDefence(
 }
 
 function handleGetDefenceStatus(req: DefenceStatusRequest, res: Response) {
-	const level = req.query.level as number | undefined;
-	if (level !== undefined) {
-		res.send(req.session.levelState[level].defences);
-	} else {
-		res.status(400);
-		res.send('Missing level');
+	const level = req.query.level;
+
+	if (level === undefined) {
+		sendErrorResponse(res, 400, 'Missing level');
+		return;
 	}
+
+	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+		sendErrorResponse(res, 400, 'Invalid level');
+		return;
+	}
+
+	res.send(req.session.levelState[level].defences);
 }
 
 export {
