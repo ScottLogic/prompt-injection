@@ -216,7 +216,7 @@ function handleResetDefenceConfigItem(
 		sendErrorResponse(
 			res,
 			400,
-			`Config with id ${configItemId} not found for defence with id ${defenceId}`
+			`Config item with id ${configItemId} not found for defence with id ${defenceId}`
 		);
 		return;
 	}

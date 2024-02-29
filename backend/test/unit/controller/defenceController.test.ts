@@ -20,7 +20,11 @@ import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest
 import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
 import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
-import { DEFENCE_ID, Defence } from '@src/models/defence';
+import {
+	DEFENCE_CONFIG_ITEM_ID,
+	DEFENCE_ID,
+	Defence,
+} from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -780,6 +784,42 @@ describe('handleResetDefenceConfigItem', () => {
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
 			`Defence with id badDefenceID not found`
+		);
+	});
+
+	test('WHEN config item id does not exist for given defence THEN does not reset config item', () => {
+		const req = {
+			body: {
+				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				configItemId: 'badConfigItemId' as DEFENCE_CONFIG_ITEM_ID,
+				level: LEVEL_NAMES.SANDBOX,
+			},
+			session: {
+				levelState: [
+					{},
+					{},
+					{},
+					{
+						level: LEVEL_NAMES.SANDBOX,
+						defences: [
+							{
+								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+								isActive: true,
+								config: [{ id: 'PROMPT', value: 'old value' }],
+							},
+						] as Defence[],
+					},
+				],
+			},
+		} as DefenceConfigItemResetRequest;
+
+		const res = responseMock();
+
+		handleResetSingleDefence(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith(
+			`Config item with id badConfigItemId not found for defence with id ${DEFENCE_ID.PROMPT_EVALUATION_LLM}`
 		);
 	});
 });
