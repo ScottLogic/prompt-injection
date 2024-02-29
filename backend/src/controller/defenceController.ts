@@ -156,7 +156,7 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 		return;
 	}
 
-	req.session.levelState[3].defences = configureDefence(
+	req.session.levelState[level].defences = configureDefence(
 		defenceId,
 		currentDefences,
 		config
