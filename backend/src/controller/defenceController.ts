@@ -53,6 +53,13 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
+	const defence = currentDefences.find((defence) => defence.id === defenceId);
+
+	if (defence === undefined) {
+		sendErrorResponse(res, 400, `Defence with id ${defenceId} not found`);
+		return;
+	}
+
 	req.session.levelState[level].defences = activateDefence(
 		defenceId,
 		currentDefences
@@ -86,6 +93,13 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 			400,
 			'You cannot deactivate defences on this level, because it uses the default defences'
 		);
+		return;
+	}
+
+	const defence = currentDefences.find((defence) => defence.id === defenceId);
+
+	if (defence === undefined) {
+		sendErrorResponse(res, 400, `Defence with id ${defenceId} not found`);
 		return;
 	}
 
@@ -142,19 +156,6 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 		return;
 	}
 
-	const configItem = defence.config.find(
-		(configItem) => configItem.id === config[0].id
-	);
-
-	if (configItem === undefined) {
-		sendErrorResponse(
-			res,
-			400,
-			`Config with id ${config[0].id} not found for defence with id ${defenceId}`
-		);
-		return;
-	}
-
 	req.session.levelState[3].defences = configureDefence(
 		defenceId,
 		currentDefences,
@@ -191,6 +192,26 @@ function handleResetSingleDefence(
 		return;
 	}
 
+	const defence = currentDefences.find((defence) => defence.id === defenceId);
+
+	if (defence === undefined) {
+		sendErrorResponse(res, 400, `Defence with id ${defenceId} not found`);
+		return;
+	}
+
+	const configItem = defence.config.find(
+		(configItem) => configItem.id === configId
+	);
+
+	if (configItem === undefined) {
+		sendErrorResponse(
+			res,
+			400,
+			`Config with id ${configId} not found for defence with id ${defenceId}`
+		);
+		return;
+	}
+
 	req.session.levelState[level].defences = resetDefenceConfig(
 		defenceId,
 		configId,
@@ -205,10 +226,8 @@ function handleResetSingleDefence(
 	if (updatedDefenceConfig) {
 		res.send(updatedDefenceConfig);
 	} else {
-		res.status(400);
-		res.send(
-			"something went wrong while resetting the defence's config. Check the defenceId and configId."
-		);
+		res.status(500);
+		res.send("something went wrong while resetting the defence's config.");
 	}
 }
 
