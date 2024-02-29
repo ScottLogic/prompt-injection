@@ -68,10 +68,9 @@
 	outline-offset: 0.1rem;
 }
 
-.skip-link {
+.chat-box .skip-link {
 	position: absolute;
 	left: 0;
-	clip: auto;
 	width: 100%;
 	height: auto;
 	padding: 0.5rem 0;
@@ -81,23 +80,32 @@
 	font-weight: 600;
 	text-align: center;
 	text-decoration: none;
+	opacity: 1;
+	transition: opacity 0.3s ease-in-out;
 	clip-path: none;
 }
 
-.skip-to-top {
+@media (prefers-reduced-motion: reduce) {
+	.chat-box .skip-link {
+		transition: none;
+	}
+}
+
+.chat-box .skip-link.skip-to-top {
 	top: -1.5rem;
 }
 
-.skip-to-bottom {
+.chat-box .skip-link.skip-to-bottom {
 	top: 0.125rem;
 }
 
-.skip-link:not(:focus, :active) {
+.chat-box .skip-link:not(:focus, :active) {
 	position: absolute;
 	overflow: hidden;
 	width: 1px;
 	height: 1px;
 	white-space: nowrap;
+	opacity: 0;
 	clip-path: inset(50%);
 }
 
