@@ -13,4 +13,4 @@ export const options = {
 
 export default async function () {
 	requestFunction();
-};
+}
