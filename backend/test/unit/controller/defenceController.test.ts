@@ -5,6 +5,7 @@ import {
 	handleConfigureDefence,
 	handleDefenceActivation,
 	handleDefenceDeactivation,
+	handleGetDefenceStatus,
 	handleResetSingleDefence,
 } from '@src/controller/defenceController';
 import {
@@ -16,6 +17,7 @@ import {
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
 import { DefenceConfigResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
+import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
 import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
@@ -63,8 +65,6 @@ describe('handleDefenceActivation', () => {
 					{},
 					{
 						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
 						defences: [
 							{
 								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
@@ -109,25 +109,6 @@ describe('handleDefenceActivation', () => {
 			body: {
 				level: LEVEL_NAMES.SANDBOX,
 			},
-			session: {
-				levelState: [
-					{},
-					{},
-					{},
-					{
-						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
-						defences: [
-							{
-								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-								isActive: true,
-								config: [],
-							},
-						] as Defence[],
-					},
-				],
-			},
 		} as DefenceActivateRequest;
 
 		const res = responseMock();
@@ -142,25 +123,6 @@ describe('handleDefenceActivation', () => {
 		const req = {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-			},
-			session: {
-				levelState: [
-					{},
-					{},
-					{},
-					{
-						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
-						defences: [
-							{
-								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-								isActive: true,
-								config: [],
-							},
-						] as Defence[],
-					},
-				],
 			},
 		} as DefenceActivateRequest;
 
@@ -177,25 +139,6 @@ describe('handleDefenceActivation', () => {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
 				level: 5 as LEVEL_NAMES,
-			},
-			session: {
-				levelState: [
-					{},
-					{},
-					{},
-					{
-						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
-						defences: [
-							{
-								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-								isActive: true,
-								config: [],
-							},
-						] as Defence[],
-					},
-				],
 			},
 		} as DefenceActivateRequest;
 
@@ -217,23 +160,7 @@ describe('handleDefenceActivation', () => {
 				levelState: [
 					{
 						level: LEVEL_NAMES.LEVEL_1,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
 						defences: undefined,
-					},
-					{},
-					{},
-					{
-						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
-						defences: [
-							{
-								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-								isActive: true,
-								config: [],
-							},
-						] as Defence[],
 					},
 				],
 			},
@@ -262,8 +189,6 @@ describe('handleDefenceActivation', () => {
 					{},
 					{
 						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
 						defences: [
 							{
 								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
@@ -305,8 +230,6 @@ describe('handleDefenceDeactivation', () => {
 					{},
 					{
 						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
 						defences: [
 							{
 								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
@@ -351,25 +274,6 @@ describe('handleDefenceDeactivation', () => {
 			body: {
 				level: LEVEL_NAMES.SANDBOX,
 			},
-			session: {
-				levelState: [
-					{},
-					{},
-					{},
-					{
-						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
-						defences: [
-							{
-								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-								isActive: true,
-								config: [],
-							},
-						] as Defence[],
-					},
-				],
-			},
 		} as DefenceActivateRequest;
 
 		const res = responseMock();
@@ -384,25 +288,6 @@ describe('handleDefenceDeactivation', () => {
 		const req = {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-			},
-			session: {
-				levelState: [
-					{},
-					{},
-					{},
-					{
-						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
-						defences: [
-							{
-								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-								isActive: true,
-								config: [],
-							},
-						] as Defence[],
-					},
-				],
 			},
 		} as DefenceActivateRequest;
 
@@ -419,25 +304,6 @@ describe('handleDefenceDeactivation', () => {
 			body: {
 				defenceId: DEFENCE_ID.PROMPT_EVALUATION_LLM,
 				level: 5 as LEVEL_NAMES,
-			},
-			session: {
-				levelState: [
-					{},
-					{},
-					{},
-					{
-						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
-						defences: [
-							{
-								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-								isActive: true,
-								config: [],
-							},
-						] as Defence[],
-					},
-				],
 			},
 		} as DefenceActivateRequest;
 
@@ -459,23 +325,7 @@ describe('handleDefenceDeactivation', () => {
 				levelState: [
 					{
 						level: LEVEL_NAMES.LEVEL_1,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
 						defences: undefined,
-					},
-					{},
-					{},
-					{
-						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
-						defences: [
-							{
-								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-								isActive: true,
-								config: [],
-							},
-						] as Defence[],
 					},
 				],
 			},
@@ -504,8 +354,6 @@ describe('handleDefenceDeactivation', () => {
 					{},
 					{
 						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
 						defences: [
 							{
 								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
@@ -728,9 +576,6 @@ describe('handleConfigureDefence', () => {
 						sentEmails: [] as EmailInfo[],
 						defences: undefined,
 					},
-					{},
-					{},
-					{},
 				],
 			},
 		} as DefenceConfigureRequest;
@@ -885,8 +730,6 @@ describe('handleResetSingleDefence', () => {
 					{},
 					{
 						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
 						defences: [] as Defence[],
 					},
 				],
@@ -901,5 +744,72 @@ describe('handleResetSingleDefence', () => {
 		expect(res.send).toHaveBeenCalledWith(
 			`Defence with id badDefenceID not found`
 		);
+	});
+});
+
+describe('handleGetDefenceStatus', () => {
+	test('WHEN passed sensible parameters THEN gets defence status', () => {
+		const req = {
+			query: {
+				level: LEVEL_NAMES.SANDBOX,
+			},
+			session: {
+				levelState: [
+					{},
+					{},
+					{},
+					{
+						level: LEVEL_NAMES.SANDBOX,
+						chatHistory: [] as ChatMessage[],
+						sentEmails: [] as EmailInfo[],
+						defences: [
+							{
+								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+								isActive: true,
+								config: [{ id: 'PROMPT', value: 'old value' }],
+							},
+						] as Defence[],
+					},
+				],
+			},
+		} as DefenceStatusRequest;
+
+		const res = responseMock();
+
+		handleGetDefenceStatus(req, res);
+
+		expect(res.send).toHaveBeenCalledWith([
+			{
+				id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
+				isActive: true,
+				config: [{ id: 'PROMPT', value: 'old value' }],
+			},
+		]);
+	});
+
+	test('WHEN missing level THEN does not get defence status', () => {
+		const req = {
+			query: {},
+		} as DefenceStatusRequest;
+
+		const res = responseMock();
+
+		handleGetDefenceStatus(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith(`Missing level`);
+	});
+
+	test('WHEN invalid level THEN does not get defence status', () => {
+		const req = {
+			query: { level: 5 as LEVEL_NAMES },
+		} as DefenceStatusRequest;
+
+		const res = responseMock();
+
+		handleGetDefenceStatus(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith(`Invalid level`);
 	});
 });
