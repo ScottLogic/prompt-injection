@@ -8,6 +8,4 @@ export const options = {
 	],
 };
 
-export default () => {
-	postWithSessionUpdate();
-};
+export default postWithSessionUpdate;
