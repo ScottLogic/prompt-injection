@@ -81,7 +81,7 @@
 	text-align: center;
 	text-decoration: none;
 	opacity: 1;
-	transition: opacity 0.3s ease-in-out;
+	transition: opacity 0.2s ease-in-out;
 	clip-path: none;
 }
 
@@ -105,7 +105,7 @@
 	width: 1px;
 	height: 1px;
 	white-space: nowrap;
-	opacity: 0;
+	opacity: 0.1;
 	clip-path: inset(50%);
 }
 
