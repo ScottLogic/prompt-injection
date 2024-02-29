@@ -1,9 +1,11 @@
-enum LEVEL_NAMES {
-	LEVEL_1 = 0,
-	LEVEL_2,
-	LEVEL_3,
-	SANDBOX,
-}
+const LEVEL_NAMES = {
+	LEVEL_1: 0,
+	LEVEL_2: 1,
+	LEVEL_3: 2,
+	SANDBOX: 3,
+} as const;
+
+type LEVEL_NAMES = (typeof LEVEL_NAMES)[keyof typeof LEVEL_NAMES];
 
 interface Level {
 	id: LEVEL_NAMES;

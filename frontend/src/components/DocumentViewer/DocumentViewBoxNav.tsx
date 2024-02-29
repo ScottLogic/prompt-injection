@@ -17,7 +17,7 @@ function DocumentViewBoxNav({
 	onPrevious,
 	onNext,
 }: DocumentViewBoxNavProps) {
-	const documentNumber = `${documentIndex + 1} out of ${numberOfDocuments}`;
+	const documentNumber = `${documentIndex + 1} of ${numberOfDocuments}`;
 
 	return (
 		<div className="view-documents-nav">

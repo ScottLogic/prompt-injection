@@ -17,7 +17,7 @@ function OverlayHeader({
 		<header className="overlay-header">
 			<h1>{heading}</h1>
 			<button className="overlay-close-button" onClick={closeOverlay}>
-				close
+				Close
 				<span className="overlay-close-icon" aria-hidden>
 					<OverlayCloseIcon iconFill={iconColor} />
 				</span>
