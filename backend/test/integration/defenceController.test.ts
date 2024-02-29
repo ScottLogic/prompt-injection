@@ -20,16 +20,15 @@ function responseMock() {
 	} as unknown as Response;
 }
 
-describe('The correct can have their defences changed', () => {
-	describe('Levels 1 and 2', () => {
-		// [LEVEL_NAMES.LEVEL_1, LEVEL_NAMES.LEVEL_2].forEach((level) => {
-
-		// });
-		test('WHEN attempt to activate a defence THEN defence is not activated', () => {
+describe('The correct levels can have their defences changed', () => {
+	[LEVEL_NAMES.LEVEL_1, LEVEL_NAMES.LEVEL_2].forEach((level) => {
+		test(`GIVEN level ${
+			level + 1
+		} WHEN attempt to activate a defence THEN defence is not activated`, () => {
 			const req = {
 				body: {
 					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
-					level: LEVEL_NAMES.LEVEL_1,
+					level,
 				},
 				session: {
 					levelState: getInitialLevelStates(),
@@ -46,11 +45,13 @@ describe('The correct can have their defences changed', () => {
 			);
 		});
 
-		test('WHEN attempt to deactivate a defence THEN defence is not activated', () => {
+		test(`GIVEN level ${
+			level + 1
+		} WHEN attempt to deactivate a defence THEN defence is not activated`, () => {
 			const req = {
 				body: {
 					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
-					level: LEVEL_NAMES.LEVEL_1,
+					level,
 				},
 				session: {
 					levelState: getInitialLevelStates(),
@@ -67,11 +68,13 @@ describe('The correct can have their defences changed', () => {
 			);
 		});
 
-		test('WHEN attempt to configure a defence THEN defence is not configured', () => {
+		test(`GIVEN level ${
+			level + 1
+		} WHEN attempt to configure a defence THEN defence is not configured`, () => {
 			const req = {
 				body: {
 					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
-					level: LEVEL_NAMES.LEVEL_1,
+					level,
 					config: [],
 				},
 				session: {
@@ -89,9 +92,11 @@ describe('The correct can have their defences changed', () => {
 			);
 		});
 
-		test('WHEN attempt to get defence status THEN shoult return undefined', () => {
+		test(`GIVEN level ${
+			level + 1
+		} WHEN attempt to get defence status THEN shoult return undefined`, () => {
 			const req = {
-				query: { level: LEVEL_NAMES.LEVEL_1 },
+				query: { level },
 				session: {
 					levelState: getInitialLevelStates(),
 				},
