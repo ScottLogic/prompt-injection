@@ -1,7 +1,7 @@
 import { Response } from 'express';
 
 import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
-import { LEVEL_NAMES } from '@src/models/level';
+import { isValidLevel } from '@src/models/level';
 
 function handleLoadLevel(req: LevelGetRequest, res: Response) {
 	const { level } = req.query;
@@ -11,7 +11,7 @@ function handleLoadLevel(req: LevelGetRequest, res: Response) {
 		return;
 	}
 
-	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+	if (!isValidLevel(level)) {
 		res.status(400).send('Invalid level');
 		return;
 	}
