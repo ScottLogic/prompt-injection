@@ -3,17 +3,7 @@ import { Response } from 'express';
 
 import { handleClearEmails } from '@src/controller/emailController';
 import { EmailClearRequest } from '@src/models/api/EmailClearRequest';
-import { ChatModel } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
-import { LevelState } from '@src/models/level';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-}
 
 function responseMock() {
 	return {

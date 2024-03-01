@@ -24,16 +24,8 @@ import {
 import { handleResetProgress } from './controller/resetController';
 import { handleStart } from './controller/startController';
 import { handleTest } from './controller/testController';
-import { ChatModel, defaultChatModel } from './models/chat';
-import { LevelState, getInitialLevelStates } from './models/level';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-}
+import { defaultChatModel } from './models/chat';
+import { getInitialLevelStates } from './models/level';
 
 const sessionSigningSecret = process.env.SESSION_SECRET;
 if (!sessionSigningSecret) {

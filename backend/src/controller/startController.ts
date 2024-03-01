@@ -1,8 +1,7 @@
 import { Response } from 'express';
 
 import { StartGetRequest } from '@src/models/api/StartGetRequest';
-import { ChatModel } from '@src/models/chat';
-import { LEVEL_NAMES, LevelState } from '@src/models/level';
+import { LEVEL_NAMES } from '@src/models/level';
 import { getValidOpenAIModels } from '@src/openai';
 import {
 	systemRoleLevel1,
@@ -11,14 +10,6 @@ import {
 } from '@src/promptTemplates';
 
 import { sendErrorResponse } from './handleError';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-}
 
 function handleStart(req: StartGetRequest, res: Response) {
 	const { level } = req.query;

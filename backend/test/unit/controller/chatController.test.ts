@@ -12,7 +12,6 @@ import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import {
 	DefenceReport,
-	ChatModel,
 	ChatResponse,
 	MessageTransformation,
 } from '@src/models/chat';
@@ -25,14 +24,6 @@ import {
 	pushMessageToHistory,
 	setSystemRoleInChatHistory,
 } from '@src/utils/chat';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-}
 
 jest.mock('@src/openai');
 const mockChatGptSendMessage = chatGptSendMessage as jest.MockedFunction<

@@ -4,19 +4,10 @@ import { Response } from 'express';
 import { handleConfigureDefence } from '@src/controller/defenceController';
 import { configureDefence } from '@src/defence';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
-import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
-import { LEVEL_NAMES, LevelState } from '@src/models/level';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-}
+import { LEVEL_NAMES } from '@src/models/level';
 
 jest.mock('@src/defence');
 const mockConfigureDefence = configureDefence as jest.MockedFunction<

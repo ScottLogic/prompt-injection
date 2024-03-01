@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 
 import { handleResetProgress } from '@src/controller/resetController';
 import { defaultDefences } from '@src/defaultDefences';
-import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -12,14 +11,6 @@ import {
 	LevelState,
 	getInitialLevelStates,
 } from '@src/models/level';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-}
 
 function responseMock() {
 	return {
