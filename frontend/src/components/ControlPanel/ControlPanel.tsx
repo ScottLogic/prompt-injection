@@ -12,6 +12,7 @@ import {
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './ControlPanel.css';
+import { useState } from 'react';
 
 function ControlPanel({
 	currentLevel,
@@ -62,6 +63,26 @@ function ControlPanel({
 	// only allow configuration in sandbox
 	const showConfigurations = currentLevel === LEVEL_NAMES.SANDBOX;
 
+	const [isButtonOneExpanded, setIsButtonOneExpanded] = useState(document.getElementById('dw-button-one')?.getAttribute('aria-expanded') === 'true');
+	const [isButtonTwoExpanded, setIsButtonTwoExpanded] = useState(document.getElementById('dw-button-two')?.getAttribute('aria-expanded') === 'true');
+
+	function handleButtonOneClick() {
+		const button = document.querySelector('.dw-button-one');
+		if (button) {
+			const isExpanded = button.getAttribute('aria-expanded') === 'true';
+			button.setAttribute('aria-expanded', String(!isExpanded));
+			setIsButtonOneExpanded(!isExpanded);
+		}
+	}
+	function handleButtonTwoClick() {
+		const button = document.querySelector('.dw-button-two');
+		if (button) {
+			const isExpanded = button.getAttribute('aria-expanded') === 'true';
+			button.setAttribute('aria-expanded', String(!isExpanded));
+			setIsButtonTwoExpanded(!isExpanded);
+		}
+	}
+
 	return (
 		<div className="control-panel">
 			{/* only show control panel on level 3 and sandbox */}
@@ -69,6 +90,28 @@ function ControlPanel({
 				currentLevel === LEVEL_NAMES.SANDBOX) && (
 				<>
 					<h2 className="visually-hidden">ScottBrew System Access</h2>
+					<h3>ScottBrew System Access</h3>
+					{/* <button>expand all</button> */}
+					<button
+						type="button"
+						aria-expanded="false"
+						className="dw-button-one control-collapsible-section-header"
+						onClick={handleButtonOneClick}
+					>
+						<span className="button-arrow-icon" aria-hidden>{isButtonOneExpanded? '\u2B9F' : '\u2B9E'}&nbsp;</span>
+						Defence Configuration
+					</button>
+					<div className="dw-panel-one">
+						<DefenceBox
+							currentLevel={currentLevel}
+							defences={nonModelDefences}
+							showConfigurations={showConfigurations}
+							resetDefenceConfiguration={resetDefenceConfiguration}
+							toggleDefence={toggleDefence}
+							setDefenceConfiguration={setDefenceConfiguration}
+						/>
+					</div>
+
 					<details className="control-collapsible-section">
 						<summary className="control-collapsible-section-header">
 							Defence Configuration
@@ -82,8 +125,34 @@ function ControlPanel({
 							setDefenceConfiguration={setDefenceConfiguration}
 						/>
 					</details>
+					
+					<button
+						type="button"
+						aria-expanded="false"
+						className="dw-button-two control-collapsible-section-header"
+						onClick={handleButtonTwoClick}
+					>
+						<span aria-hidden>{isButtonTwoExpanded? '\u2B9F' : '\u2B9E'}&nbsp;</span>
+						Model Configuration
+					</button>
+					<div className="dw-panel-two">
+						<DefenceBox
+							currentLevel={currentLevel}
+							defences={modelDefences}
+							showConfigurations={showConfigurations}
+							toggleDefence={toggleDefence}
+							resetDefenceConfiguration={resetDefenceConfiguration}
+							setDefenceConfiguration={setDefenceConfiguration}
+						/>
+						{showConfigurations && (
+							<ModelBox
+								chatModelOptions={chatModelOptions}
+								addInfoMessage={addInfoMessage}
+							/>
+						)}
+					</div>
 
-					<details className="control-collapsible-section">
+					{/* <details className="control-collapsible-section">
 						<summary className="control-collapsible-section-header">
 							Model Configuration
 						</summary>
@@ -94,10 +163,10 @@ function ControlPanel({
 							toggleDefence={toggleDefence}
 							resetDefenceConfiguration={resetDefenceConfiguration}
 							setDefenceConfiguration={setDefenceConfiguration}
-						/>
+						/> */}
 
 						{/* only show model box in sandbox mode */}
-						{showConfigurations && (
+						{/* {showConfigurations && (
 							<ModelBox
 								chatModel={chatModel}
 								setChatModelId={setChatModelId}
@@ -105,7 +174,7 @@ function ControlPanel({
 								addInfoMessage={addInfoMessage}
 							/>
 						)}
-					</details>
+					</details> */}
 				</>
 			)}
 
