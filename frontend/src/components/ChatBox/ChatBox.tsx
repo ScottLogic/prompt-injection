@@ -201,9 +201,19 @@ function ChatBox({
 	}
 
 	return (
-		<div className="chat-box">
+		<div className="chat-box" id="chat-box">
+			<a
+				className="skip-to-bottom skip-link "
+				id="skip-to-bottom"
+				href="#chat-box-input"
+			>
+				<span aria-hidden>&#129035;&nbsp;</span>skip to chat input
+			</a>
 			<ChatBoxFeed messages={messages} />
 			<div className="footer">
+				<a className="skip-to-top skip-link " href="#skip-to-bottom">
+					<span aria-hidden>&#129033;&nbsp;</span>skip to top of chat
+				</a>
 				<div className="messages">
 					<ChatBoxInput
 						content={chatInput}

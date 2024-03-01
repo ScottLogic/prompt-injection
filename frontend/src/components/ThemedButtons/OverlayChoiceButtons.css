@@ -3,3 +3,13 @@
 	gap: 5rem;
 	justify-content: center;
 }
+
+@media (width < 43.75rem) {
+	.overlay-choice-buttons {
+		gap: 0;
+		justify-content: space-evenly;
+		margin: 0;
+		padding: 0;
+		line-height: auto;
+	}
+}

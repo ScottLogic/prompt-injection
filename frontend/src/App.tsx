@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, JSX } from 'react';
 
 import DocumentViewBox from './components/DocumentViewer/DocumentViewBox';
 import MainComponent from './components/MainComponent/MainComponent';
@@ -6,6 +6,7 @@ import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
+import useLocalStorage from './hooks/useLocalStorage';
 import { LEVEL_NAMES } from './models/level';
 import { resetService } from './service';
 
@@ -16,12 +17,15 @@ function App() {
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
 
-	const [isNewUser, setIsNewUser] = useState(loadIsNewUser);
-	const [currentLevel, setCurrentLevel] =
-		useState<LEVEL_NAMES>(loadCurrentLevel);
-	const [numCompletedLevels, setNumCompletedLevels] = useState(
-		loadNumCompletedLevels
-	);
+	const {
+		isNewUser,
+		setIsNewUser,
+		currentLevel,
+		setCurrentLevel,
+		numCompletedLevels,
+		setCompletedLevels,
+		resetCompletedLevels,
+	} = useLocalStorage();
 
 	const [overlayComponent, setOverlayComponent] = useState<JSX.Element | null>(
 		null
@@ -29,50 +33,9 @@ function App() {
 
 	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
 
-	function loadIsNewUser() {
-		// get isNewUser from local storage
-		const isNewUserStr = localStorage.getItem('isNewUser');
-		if (isNewUserStr) {
-			return isNewUserStr === 'true';
-		} else {
-			// is new user by default
-			return true;
-		}
-	}
-
-	function loadCurrentLevel() {
-		// get current level from local storage
-		const currentLevelStr = localStorage.getItem('currentLevel');
-		if (currentLevelStr && !isNewUser) {
-			// start the user from where they last left off
-			return parseInt(currentLevelStr);
-		} else {
-			// by default, start on level 1
-			return LEVEL_NAMES.LEVEL_1;
-		}
-	}
-
-	function loadNumCompletedLevels() {
-		// get number of completed levels from local storage
-		const numCompletedLevelsStr = localStorage.getItem('numCompletedLevels');
-
-		if (numCompletedLevelsStr && !isNewUser) {
-			// keep users progress from where they last left off
-			return parseInt(numCompletedLevelsStr);
-		} else {
-			// 0 levels completed by default
-			return 0;
-		}
-	}
-
 	function updateNumCompletedLevels(completedLevel: LEVEL_NAMES) {
-		setNumCompletedLevels(Math.max(numCompletedLevels, completedLevel + 1));
+		setCompletedLevels(completedLevel + 1);
 	}
-
-	useEffect(() => {
-		// save number of completed levels to local storage
-		localStorage.setItem('numCompletedLevels', numCompletedLevels.toString());
-	}, [numCompletedLevels]);
 
 	// called on mount
 	useEffect(() => {
@@ -83,19 +46,11 @@ function App() {
 	}, []);
 
 	useEffect(() => {
-		// save current level to local storage
-		localStorage.setItem('currentLevel', currentLevel.toString());
-		// show the information for the new level
 		openInformationOverlay();
 	}, [currentLevel]);
 
 	useEffect(() => {
-		// save isNewUser to local storage
-		localStorage.setItem('isNewUser', isNewUser.toString());
-		// open the welcome overlay for a new user
-		if (isNewUser) {
-			openWelcomeOverlay();
-		}
+		if (isNewUser) openWelcomeOverlay();
 	}, [isNewUser]);
 
 	useEffect(() => {
@@ -165,12 +120,7 @@ function App() {
 	}
 	function openLevelsCompleteOverlay() {
 		openOverlay(
-			<LevelsComplete
-				goToSandbox={() => {
-					goToSandbox();
-				}}
-				closeOverlay={closeOverlay}
-			/>
+			<LevelsComplete goToSandbox={goToSandbox} closeOverlay={closeOverlay} />
 		);
 	}
 	function openDocumentViewer() {
@@ -206,9 +156,7 @@ function App() {
 
 		// reset on the backend
 		await resetService.resetAllLevelProgress();
-
-		localStorage.setItem('numCompletedLevels', '0');
-		setNumCompletedLevels(0);
+		resetCompletedLevels();
 
 		// set as new user so welcome modal shows
 		setIsNewUser(true);

@@ -12,6 +12,7 @@
 
 .handbook-overlay .handbook {
 	display: flex;
+	flex-grow: 1;
 	flex-direction: row;
 	overflow: hidden;
 	background-color: var(--handbook-background-colour);

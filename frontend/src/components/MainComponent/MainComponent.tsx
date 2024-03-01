@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, JSX } from 'react';
 
 import { DEFAULT_DEFENCES } from '@src/Defences';
 import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
@@ -38,7 +38,7 @@ function MainComponent({
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
 	closeOverlay: () => void;
-	updateNumCompletedLevels: (level: number) => void;
+	updateNumCompletedLevels: (level: LEVEL_NAMES) => void;
 	openDocumentViewer: () => void;
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
