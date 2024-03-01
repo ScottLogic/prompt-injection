@@ -3,6 +3,7 @@ import { Response } from 'express';
 
 import { handleStart } from '@src/controller/startController';
 import { StartGetRequest } from '@src/models/api/StartGetRequest';
+import { LEVEL_NAMES } from '@src/models/level';
 
 jest.mock('@src/promptTemplates', () => ({
 	systemRoleLevel1: 'systemRoleLevel1',
@@ -23,37 +24,60 @@ afterEach(() => {
 	mockSend.mockClear();
 });
 
-test('GIVEN level 1 provided WHEN user starts the frontend THEN the backend sends the initial information', () => {
-	const req = {
-		query: {
-			level: 1,
-		},
-		session: {
-			levelState: [
-				{},
-				{
-					sentEmails: [],
-					chatHistory: [],
-					defences: [],
-				},
+[
+	LEVEL_NAMES.LEVEL_1,
+	LEVEL_NAMES.LEVEL_2,
+	LEVEL_NAMES.LEVEL_3,
+	LEVEL_NAMES.SANDBOX,
+].forEach((level) => {
+	test(`GIVEN level ${
+		level + 1
+	} provided WHEN user starts the frontend THEN the backend sends the correct initial information`, () => {
+		const req = {
+			query: {
+				level,
+			},
+			session: {
+				levelState: [
+					{
+						sentEmails: 'level 1 emails',
+						chatHistory: 'level 1 chat history',
+						defences: 'level 1 defences',
+					},
+					{
+						sentEmails: 'level 2 emails',
+						chatHistory: 'level 2 chat history',
+						defences: 'level 2 defences',
+					},
+					{
+						sentEmails: 'level 3 emails',
+						chatHistory: 'level 3 chat history',
+						defences: 'level 3 defences',
+					},
+					{
+						sentEmails: 'level 4 emails',
+						chatHistory: 'level 4 chat history',
+						defences: 'level 4 defences',
+					},
+				],
+				systemRoles: [],
+			},
+		} as unknown as StartGetRequest;
+		const res = responseMock();
+
+		handleStart(req, res);
+
+		expect(mockSend).toHaveBeenCalledWith({
+			emails: `level ${level + 1} emails`,
+			chatHistory: `level ${level + 1} chat history`,
+			defences: `level ${level + 1} defences`,
+			availableModels: [],
+			systemRoles: [
+				{ level: 0, systemRole: 'systemRoleLevel1' },
+				{ level: 1, systemRole: 'systemRoleLevel2' },
+				{ level: 2, systemRole: 'systemRoleLevel3' },
 			],
-			systemRoles: [],
-		},
-	} as unknown as StartGetRequest;
-	const res = responseMock();
-
-	handleStart(req, res);
-
-	expect(mockSend).toHaveBeenCalledWith({
-		emails: [],
-		chatHistory: [],
-		defences: [],
-		availableModels: [],
-		systemRoles: [
-			{ level: 0, systemRole: 'systemRoleLevel1' },
-			{ level: 1, systemRole: 'systemRoleLevel2' },
-			{ level: 2, systemRole: 'systemRoleLevel3' },
-		],
+		});
 	});
 });
 
