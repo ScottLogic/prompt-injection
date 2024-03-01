@@ -4,7 +4,7 @@ import { sendRequest } from './backendService';
 import { getChatMessagesFromDTOResponse } from './chatService';
 import { getDefencesFromDTOs } from './defenceService';
 
-const PATH = 'level/';
+const PATH = 'level';
 
 async function loadLevel(level: number) {
 	const response = await sendRequest(`${PATH}?level=${level}`, {
