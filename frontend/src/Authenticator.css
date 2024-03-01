@@ -20,6 +20,9 @@
 }
 
 [data-amplify-authenticator] [data-amplify-router] {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
 	height: 100%;
 	border: 0.1875rem solid var(--main-border-colour);
 	border-radius: 0.625rem;
@@ -39,10 +42,11 @@
 [data-amplify-authenticator] .form-header {
 	display: flex;
 	justify-content: space-between;
-}
-
-[data-amplify-authenticator] .welcome-header {
-	padding: 1rem 2rem 0;
+	position: sticky;
+	top: 0;
+	background-color: var(--main-text-colour);
+	border-bottom: 0.1875rem solid var(--main-border-colour);
+	z-index: 1;
 }
 
 [data-amplify-authenticator] .amplify-heading--3 {
@@ -67,16 +71,20 @@
 	align-items: stretch;
 }
 
+[data-amplify-authenticator] [data-amplify-router-content],
 [data-amplify-authenticator] [data-amplify-form] {
 	overflow-y: auto;
 	height: 100%;
-	padding: 1rem 2rem;
+}
+[data-amplify-authenticator] [data-amplify-router] > [data-amplify-form] {
+	padding-top: 0;
 }
 
 [data-amplify-authenticator] [data-amplify-form] fieldset {
 	margin: 0;
 	padding: 0;
 	border: none;
+	position: relative;
 }
 
 [data-amplify-authenticator] [data-amplify-form] .amplify-field {
@@ -203,10 +211,9 @@
 	.amplify-alert
 	.amplify-alert__dismiss {
 	padding: 0;
-	outline-offset: 0;
 }
 
-/* hide this fugly Amplify loader */
+/* hide fugly over-engineered Amplify loader spinner */
 [data-amplify-authenticator] [data-amplify-form] .amplify-loader {
 	width: 0;
 	height: 0;
@@ -221,7 +228,7 @@
 	align-items: center;
 }
 
-/* make our own simple css loader */
+/* make our own simple loader spinner */
 [data-amplify-authenticator]
 	[data-amplify-form]
 	.amplify-button__loader-wrapper::before {
@@ -247,7 +254,7 @@
 [data-amplify-authenticator] [data-amplify-footer] {
 	display: flex;
 	justify-content: center;
-	padding: 0 2rem 1rem;
+	padding-top: 0;
 }
 
 [data-amplify-authenticator] .amplify-button.amplify-button--link {
@@ -257,16 +264,40 @@
 	background-color: inherit;
 	color: var(--accent-background-colour);
 	font-size: inherit;
+	outline-offset: 0.125rem;
 }
 
-[data-amplify-authenticator] .amplify-button--link:focus-visible,
-[data-amplify-authenticator] .amplify-button--link:hover {
-	border-color: var(--main-text-colour);
+[data-amplify-authenticator] .amplify-button--link:focus-visible {
 	background-color: var(--chat-button-background-colour);
 }
 
 [data-amplify-authenticator] .amplify-button--link:hover {
 	background-color: var(--chat-button-background-colour-hover);
+}
+
+/* Apply common spacing (see also media queries) */
+[data-amplify-authenticator] [data-amplify-form],
+[data-amplify-authenticator] .form-header,
+[data-amplify-authenticator] .welcome-header,
+[data-amplify-authenticator] [data-amplify-footer] {
+	padding: 1rem 0;
+}
+
+[data-amplify-authenticator] [data-amplify-router] > [data-amplify-form],
+[data-amplify-authenticator] [data-amplify-footer] {
+	padding-top: 0;
+}
+
+[data-amplify-authenticator] [data-amplify-form],
+[data-amplify-authenticator] .form-header,
+[data-amplify-authenticator] .welcome-header,
+[data-amplify-authenticator] [data-amplify-footer] {
+	padding-left: 2rem;
+	padding-right: 2rem;
+}
+
+[data-amplify-authenticator] .form-header {
+	margin: 0 -2rem;
 }
 
 @media only screen and (width <= 70.5rem) {
@@ -275,16 +306,27 @@
 	}
 
 	[data-amplify-authenticator] [data-amplify-form],
-	[data-amplify-authenticator] .welcome-header {
-		padding: 0.75rem 1.5rem;
-	}
-
-	[data-amplify-authenticator] .welcome-header {
-		padding-bottom: 0;
-	}
-
+	[data-amplify-authenticator] .form-header,
+	[data-amplify-authenticator] .welcome-header,
 	[data-amplify-authenticator] [data-amplify-footer] {
-		padding: 0 1.5rem 0.75rem;
+		padding: 0.75rem 0;
+	}
+
+	[data-amplify-authenticator] [data-amplify-router] > [data-amplify-form],
+	[data-amplify-authenticator] [data-amplify-footer] {
+		padding-top: 0;
+	}
+
+	[data-amplify-authenticator] [data-amplify-form],
+	[data-amplify-authenticator] .form-header,
+	[data-amplify-authenticator] .welcome-header,
+	[data-amplify-authenticator] [data-amplify-footer] {
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+	}
+
+	[data-amplify-authenticator] .form-header {
+		margin: 0 -1.5rem;
 	}
 }
 
@@ -299,15 +341,31 @@
 	}
 
 	[data-amplify-authenticator] [data-amplify-form],
-	[data-amplify-authenticator] .welcome-header {
-		padding: 0.25rem 1rem;
-	}
-
-	[data-amplify-authenticator] .welcome-header {
-		padding-bottom: 0;
-	}
-
+	[data-amplify-authenticator] .form-header,
+	[data-amplify-authenticator] .welcome-header,
 	[data-amplify-authenticator] [data-amplify-footer] {
-		padding: 0 1rem 0.25rem;
+		padding: 0.25rem 0;
+	}
+
+	[data-amplify-authenticator] [data-amplify-router] > [data-amplify-form],
+	[data-amplify-authenticator] [data-amplify-footer] {
+		padding-top: 0;
+	}
+
+	[data-amplify-authenticator] [data-amplify-form],
+	[data-amplify-authenticator] [data-amplify-footer] {
+		padding-bottom: 0.5rem;
+	}
+
+	[data-amplify-authenticator] [data-amplify-form],
+	[data-amplify-authenticator] .form-header,
+	[data-amplify-authenticator] .welcome-header,
+	[data-amplify-authenticator] [data-amplify-footer] {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+
+	[data-amplify-authenticator] .form-header {
+		margin: 0 -1rem;
 	}
 }
