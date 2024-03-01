@@ -18,6 +18,11 @@
 	color: var(--main-input-inactive-text-colour);
 }
 
+.themed-input::placeholder {
+	color: var(--main-input-inactive-text-colour);
+	opacity: 1;
+}
+
 .invalid-input {
 	border-color: var(--error-colour-light);
 	color: var(--error-colour-light);
