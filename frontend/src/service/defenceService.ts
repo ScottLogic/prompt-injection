@@ -40,10 +40,7 @@ async function toggleDefence(
 	const requestPath = isActive ? 'deactivate' : 'activate';
 	const response = await sendRequest(`${PATH}${requestPath}`, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ defenceId, level }),
+		body: { defenceId, level },
 	});
 	return response.status === 200;
 }
@@ -55,10 +52,7 @@ async function configureDefence(
 ): Promise<boolean> {
 	const response = await sendRequest(`${PATH}configure`, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ defenceId, config, level }),
+		body: { defenceId, config, level },
 	});
 	return response.status === 200;
 }
@@ -69,10 +63,7 @@ async function resetDefenceConfig(
 ): Promise<DefenceResetResponse> {
 	const response = await sendRequest(`${PATH}resetConfig`, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ defenceId, configId }),
+		body: { defenceId, configId },
 	});
 	return (await response.json()) as DefenceResetResponse;
 }

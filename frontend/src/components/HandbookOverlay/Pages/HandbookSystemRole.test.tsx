@@ -17,7 +17,6 @@ describe('HandbookSystemRole component tests', () => {
 		{ level: LEVEL_NAMES.LEVEL_2, systemRole: level2SystemRole },
 		{ level: LEVEL_NAMES.LEVEL_3, systemRole: level3SystemRole },
 	];
-	const emptySystemRoles: LevelSystemRole[] = [];
 
 	test('renders no system roles and instead renders locked boxes when no levels complete', () => {
 		const numLevelsCompleted = 0;
@@ -135,7 +134,7 @@ describe('HandbookSystemRole component tests', () => {
 		render(
 			<HandbookSystemRole
 				numCompletedLevels={numLevelsCompleted}
-				systemRoles={emptySystemRoles}
+				systemRoles={[]}
 			/>
 		);
 
