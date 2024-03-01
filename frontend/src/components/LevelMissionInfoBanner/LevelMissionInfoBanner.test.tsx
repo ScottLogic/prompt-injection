@@ -1,4 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import {
+	render,
+	screen,
+	fireEvent,
+	getDefaultNormalizer,
+} from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 
 import { LEVELS } from '@src/Levels';
@@ -21,10 +26,10 @@ describe('LevelMissionInfoBanner component tests', () => {
 		if (!expectedContent)
 			throw new Error(`No missionInfoShort found for level ${currentLevel}`);
 
-		const expectedText = expectedContent
-			.slice(0, expectedContent.indexOf(' <u>'))
-			.replace(/\s+/g, ' '); //normalising whitespace
-
+		const expectedText = getDefaultNormalizer()(
+			expectedContent.slice(0, expectedContent.indexOf(' <u>'))
+		);
+		console.log(expectedText);
 		const banner = screen.getByText(expectedText);
 		expect(banner).toContainHTML(expectedContent);
 	});
