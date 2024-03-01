@@ -71,3 +71,25 @@ test('WHEN client does not provide a level THEN the backend sends the level info
 	expect(res.status).toHaveBeenCalledWith(400);
 	expect(mockSend).toHaveBeenCalledWith('Level not provided');
 });
+
+test('WHEN client provides an invalid level THEN the backend sends the level information for the given level', () => {
+	const req = {
+		query: { level: 5 },
+		session: {
+			levelState: [
+				{},
+				{
+					sentEmails: [],
+					chatHistory: [],
+					defences: [],
+				},
+			],
+		},
+	} as unknown as LevelGetRequest;
+	const res = responseMock();
+
+	handleLoadLevel(req, res);
+
+	expect(res.status).toHaveBeenCalledWith(400);
+	expect(mockSend).toHaveBeenCalledWith('Level is invalid');
+});
