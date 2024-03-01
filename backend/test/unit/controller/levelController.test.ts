@@ -91,5 +91,5 @@ test('WHEN client provides an invalid level THEN the backend sends the level inf
 	handleLoadLevel(req, res);
 
 	expect(res.status).toHaveBeenCalledWith(400);
-	expect(mockSend).toHaveBeenCalledWith('Level is invalid');
+	expect(mockSend).toHaveBeenCalledWith('Invalid level');
 });
