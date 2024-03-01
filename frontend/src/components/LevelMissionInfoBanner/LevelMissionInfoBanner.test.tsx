@@ -29,7 +29,6 @@ describe('LevelMissionInfoBanner component tests', () => {
 		const expectedText = getDefaultNormalizer()(
 			expectedContent.slice(0, expectedContent.indexOf(' <u>'))
 		);
-		console.log(expectedText);
 		const banner = screen.getByText(expectedText);
 		expect(banner).toContainHTML(expectedContent);
 	});
