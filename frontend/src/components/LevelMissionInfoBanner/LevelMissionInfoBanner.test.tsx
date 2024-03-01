@@ -16,8 +16,13 @@ describe('LevelMissionInfoBanner component tests', () => {
 			/>
 		);
 
-		const banner = screen.getByTestId('banner-info');
-		const expectedContent = LEVELS[currentLevel].missionInfoShort ?? '';
+		const expectedContent = LEVELS[currentLevel].missionInfoShort;
+
+		if (!expectedContent)
+			throw new Error(`No missionInfoShort found for level ${currentLevel}`);
+
+		const expectedText = expectedContent.replace(/(<([^>]+)>)/gi, ''); //remove markup!
+		const banner = screen.getByText(expectedText);
 		expect(banner).toContainHTML(expectedContent);
 	});
 
