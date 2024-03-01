@@ -6,7 +6,14 @@ import {
 	UserPoolClient,
 	UserPoolDomain,
 } from 'aws-cdk-lib/aws-cognito';
-import { CfnOutput, Duration, RemovalPolicy, Stack, StackProps, Tags } from 'aws-cdk-lib/core';
+import {
+	CfnOutput,
+	Duration,
+	RemovalPolicy,
+	Stack,
+	StackProps,
+	Tags,
+} from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
 import { resourceName } from './resourceNamingUtils';

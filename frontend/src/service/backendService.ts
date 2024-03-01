@@ -17,14 +17,20 @@ type RequestOptions<T> = Pick<RequestInit, 'method' | 'signal'> & {
 async function sendRequest<T>(path: string, options: RequestOptions<T> = {}) {
 	const { method = 'GET', body, signal } = options;
 	// No auth in dev mode
-	const auth: Record<string, string> = import.meta.env.MODE === 'production' ? {
-		Authorization: (await fetchAuthSession()).tokens?.accessToken.toString() ?? ''
-	} : {};
+	const auth: Record<string, string> =
+		import.meta.env.MODE === 'production'
+			? {
+					Authorization:
+						(await fetchAuthSession()).tokens?.accessToken.toString() ?? '',
+			  }
+			: {};
 
 	// Body is always JSON, if present
-	const contentType: Record<string, string> = body ? {
-		'Content-Type': 'application/json'
-	} : {};
+	const contentType: Record<string, string> = body
+		? {
+				'Content-Type': 'application/json',
+		  }
+		: {};
 
 	return fetch(makeUrl(path), {
 		method,
@@ -34,7 +40,7 @@ async function sendRequest<T>(path: string, options: RequestOptions<T> = {}) {
 		headers: {
 			...auth,
 			...contentType,
-		}
+		},
 	});
 }
 

@@ -40,13 +40,13 @@
 
 [data-amplify-authenticator] .welcome-header,
 [data-amplify-authenticator] .form-header {
-	display: flex;
-	justify-content: space-between;
 	position: sticky;
 	top: 0;
-	background-color: var(--main-text-colour);
-	border-bottom: 0.1875rem solid var(--main-border-colour);
 	z-index: 1;
+	display: flex;
+	justify-content: space-between;
+	border-bottom: 0.1875rem solid var(--main-border-colour);
+	background-color: var(--main-text-colour);
 }
 
 [data-amplify-authenticator] .amplify-heading--3 {
@@ -76,15 +76,12 @@
 	overflow-y: auto;
 	height: 100%;
 }
-[data-amplify-authenticator] [data-amplify-router] > [data-amplify-form] {
-	padding-top: 0;
-}
 
 [data-amplify-authenticator] [data-amplify-form] fieldset {
+	position: relative;
 	margin: 0;
 	padding: 0;
 	border: none;
-	position: relative;
 }
 
 [data-amplify-authenticator] [data-amplify-form] .amplify-field {
@@ -263,8 +260,8 @@
 	border-radius: 0.25rem;
 	background-color: inherit;
 	color: var(--accent-background-colour);
-	font-size: inherit;
 	outline-offset: 0.125rem;
+	font-size: inherit;
 }
 
 [data-amplify-authenticator] .amplify-button--link:focus-visible {
@@ -280,20 +277,12 @@
 [data-amplify-authenticator] .form-header,
 [data-amplify-authenticator] .welcome-header,
 [data-amplify-authenticator] [data-amplify-footer] {
-	padding: 1rem 0;
+	padding: 1rem 2rem;
 }
 
 [data-amplify-authenticator] [data-amplify-router] > [data-amplify-form],
 [data-amplify-authenticator] [data-amplify-footer] {
 	padding-top: 0;
-}
-
-[data-amplify-authenticator] [data-amplify-form],
-[data-amplify-authenticator] .form-header,
-[data-amplify-authenticator] .welcome-header,
-[data-amplify-authenticator] [data-amplify-footer] {
-	padding-left: 2rem;
-	padding-right: 2rem;
 }
 
 [data-amplify-authenticator] .form-header {
@@ -309,20 +298,12 @@
 	[data-amplify-authenticator] .form-header,
 	[data-amplify-authenticator] .welcome-header,
 	[data-amplify-authenticator] [data-amplify-footer] {
-		padding: 0.75rem 0;
+		padding: 0.75rem 1.5rem;
 	}
 
 	[data-amplify-authenticator] [data-amplify-router] > [data-amplify-form],
 	[data-amplify-authenticator] [data-amplify-footer] {
 		padding-top: 0;
-	}
-
-	[data-amplify-authenticator] [data-amplify-form],
-	[data-amplify-authenticator] .form-header,
-	[data-amplify-authenticator] .welcome-header,
-	[data-amplify-authenticator] [data-amplify-footer] {
-		padding-left: 1.5rem;
-		padding-right: 1.5rem;
 	}
 
 	[data-amplify-authenticator] .form-header {
@@ -344,12 +325,7 @@
 	[data-amplify-authenticator] .form-header,
 	[data-amplify-authenticator] .welcome-header,
 	[data-amplify-authenticator] [data-amplify-footer] {
-		padding: 0.25rem 0;
-	}
-
-	[data-amplify-authenticator] [data-amplify-router] > [data-amplify-form],
-	[data-amplify-authenticator] [data-amplify-footer] {
-		padding-top: 0;
+		padding: 0.25rem 1rem;
 	}
 
 	[data-amplify-authenticator] [data-amplify-form],
@@ -357,12 +333,9 @@
 		padding-bottom: 0.5rem;
 	}
 
-	[data-amplify-authenticator] [data-amplify-form],
-	[data-amplify-authenticator] .form-header,
-	[data-amplify-authenticator] .welcome-header,
+	[data-amplify-authenticator] [data-amplify-router] > [data-amplify-form],
 	[data-amplify-authenticator] [data-amplify-footer] {
-		padding-left: 1rem;
-		padding-right: 1rem;
+		padding-top: 0;
 	}
 
 	[data-amplify-authenticator] .form-header {
