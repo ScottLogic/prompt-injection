@@ -1,7 +1,7 @@
 import { Response } from 'express';
 
 import { StartGetRequest } from '@src/models/api/StartGetRequest';
-import { LEVEL_NAMES } from '@src/models/level';
+import { LEVEL_NAMES, isValidLevel } from '@src/models/level';
 import { getValidOpenAIModels } from '@src/openai';
 import {
 	systemRoleLevel1,
@@ -16,6 +16,11 @@ function handleStart(req: StartGetRequest, res: Response) {
 
 	if (level === undefined) {
 		sendErrorResponse(res, 400, 'Level not provided');
+		return;
+	}
+
+	if (!isValidLevel(level)) {
+		sendErrorResponse(res, 400, 'Invalid level');
 		return;
 	}
 

@@ -78,3 +78,25 @@ test('GIVEN no level provided WHEN user starts the frontend THEN the backend res
 	expect(res.status).toHaveBeenCalledWith(400);
 	expect(mockSend).toHaveBeenCalledWith('Level not provided');
 });
+
+test('GIVEN invalid level provided WHEN user starts the frontend THEN the backend responds with error message', () => {
+	const req = {
+		query: { level: 5 },
+		session: {
+			levelState: [
+				{
+					sentEmails: [],
+					chatHistory: [],
+					defences: [],
+				},
+			],
+			systemRoles: [],
+		},
+	} as unknown as StartGetRequest;
+	const res = responseMock();
+
+	handleStart(req, res);
+
+	expect(res.status).toHaveBeenCalledWith(400);
+	expect(mockSend).toHaveBeenCalledWith('Invalid level');
+});
