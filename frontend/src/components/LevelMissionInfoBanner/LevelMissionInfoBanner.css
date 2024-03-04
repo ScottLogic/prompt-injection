@@ -1,9 +1,8 @@
 .level-mission-info-banner {
 	display: flex;
-	gap: 0.5rem;
+	gap: 1.5rem;
 	align-items: center;
 	padding: 0.5rem 1.5rem;
-	border: 0.5rem solid transparent;
 	background-color: var(--level-banner-background-colour);
 	color: var(--level-banner-text-colour);
 	text-align: left;
@@ -16,9 +15,10 @@
 }
 
 .level-title-area {
-	min-width: 10%;
+	margin: 1rem 0;
 	font-weight: 800;
 	font-size: 1.875rem;
+	white-space: nowrap;
 }
 
 .level-mission-info-banner > p {
@@ -26,6 +26,23 @@
 	font-size: 1rem;
 }
 
-.level-mission-info-banner:hover {
-	background-color: var(--level-banner-background-colour-hover);
+.level-mission-info-banner .themed-button {
+	gap: 0.5rem;
+	height: auto;
+	padding: 0.75rem 1rem;
+	white-space: nowrap;
+}
+
+.info-icon {
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+	height: auto;
+	padding: 0 0.625rem;
+	border-radius: 50%;
+	background-color: var(--action-button-text-colour);
+	color: var(--action-button-background-colour);
+	font: 1rem serif;
+	font-weight: bold;
+	aspect-ratio: 1;
 }
