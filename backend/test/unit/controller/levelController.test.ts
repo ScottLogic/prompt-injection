@@ -74,7 +74,7 @@ afterEach(() => {
 	});
 });
 
-test('WHEN client does not provide a level THEN the backend sends the level information for the given level', () => {
+test('WHEN client does not provide a level THEN the backend responds with BadRequest', () => {
 	const req = {
 		query: {},
 		session: {
@@ -96,7 +96,7 @@ test('WHEN client does not provide a level THEN the backend sends the level info
 	expect(mockSend).toHaveBeenCalledWith('Level not provided');
 });
 
-test('WHEN client provides an invalid level THEN the backend sends the level information for the given level', () => {
+test('WHEN client provides an invalid level THEN the backend responds with BadRequest', () => {
 	const req = {
 		query: { level: 5 },
 		session: {
