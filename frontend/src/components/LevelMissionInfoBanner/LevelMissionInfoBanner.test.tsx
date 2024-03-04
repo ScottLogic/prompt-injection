@@ -1,4 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import {
+	render,
+	screen,
+	fireEvent,
+	getDefaultNormalizer,
+} from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 
 import { LEVELS } from '@src/Levels';
@@ -16,9 +21,16 @@ describe('LevelMissionInfoBanner component tests', () => {
 			/>
 		);
 
-		const button = screen.getByRole('button');
-		const expectedContent = LEVELS[currentLevel].missionInfoShort ?? '';
-		expect(button).toContainHTML(expectedContent);
+		const expectedContent = LEVELS[currentLevel].missionInfoShort;
+
+		if (!expectedContent)
+			throw new Error(`No missionInfoShort found for level ${currentLevel}`);
+
+		const expectedText = getDefaultNormalizer()(
+			expectedContent.slice(0, expectedContent.indexOf(' <u>'))
+		);
+		const banner = screen.getByText(expectedText);
+		expect(banner).toContainHTML(expectedContent);
 	});
 
 	test('fires the openOverlay callback on button click', () => {
