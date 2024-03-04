@@ -15,7 +15,7 @@ async function start(level: number) {
 
 	return {
 		emails,
-		history: getChatMessagesFromDTOResponse(chatHistory),
+		chatHistory: getChatMessagesFromDTOResponse(chatHistory),
 		defences: getDefencesFromDTOs(defences),
 		availableModels,
 		systemRoles,

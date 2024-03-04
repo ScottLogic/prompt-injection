@@ -1,7 +1,7 @@
 import { Response } from 'express';
 
-import { GetStartRequest } from '@src/models/api/getStartRequest';
-import { LEVEL_NAMES } from '@src/models/level';
+import { StartGetRequest } from '@src/models/api/StartGetRequest';
+import { LEVEL_NAMES, isValidLevel } from '@src/models/level';
 import { getValidOpenAIModels } from '@src/openai';
 import {
 	systemRoleLevel1,
@@ -9,8 +9,20 @@ import {
 	systemRoleLevel3,
 } from '@src/promptTemplates';
 
-function handleStart(req: GetStartRequest, res: Response) {
+import { sendErrorResponse } from './handleError';
+
+function handleStart(req: StartGetRequest, res: Response) {
 	const { level } = req.query;
+
+	if (level === undefined) {
+		sendErrorResponse(res, 400, 'Level not provided');
+		return;
+	}
+
+	if (!isValidLevel(level)) {
+		sendErrorResponse(res, 400, 'Invalid level');
+		return;
+	}
 
 	const systemRoles = [
 		{ level: LEVEL_NAMES.LEVEL_1, systemRole: systemRoleLevel1 },

@@ -3,26 +3,11 @@ import { Response } from 'express';
 
 import { handleChatToGPT } from '@src/controller/chatController';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
-import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
 import { systemRoleLevel1 } from '@src/promptTemplates';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-	interface LevelState {
-		level: LEVEL_NAMES;
-		chatHistory: ChatMessage[];
-		defences: Defence[];
-		sentEmails: EmailInfo[];
-	}
-}
 
 // mock the api call
 const mockCreateChatCompletion =

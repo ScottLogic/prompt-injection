@@ -8,7 +8,7 @@ import OverlayWelcome from './components/Overlay/OverlayWelcome';
 import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import useLocalStorage from './hooks/useLocalStorage';
 import { LEVEL_NAMES } from './models/level';
-import { levelService } from './service';
+import { resetService } from './service';
 
 import './App.css';
 import './Theme.css';
@@ -155,7 +155,7 @@ function App() {
 		console.log('resetting progress for all levels');
 
 		// reset on the backend
-		await levelService.resetAllLevelProgress();
+		await resetService.resetAllLevelProgress();
 		resetCompletedLevels();
 
 		// set as new user so welcome modal shows
