@@ -44,10 +44,17 @@
   border: none;
   border-radius: 0.5rem;
   text-align: start;
+  margin-bottom: 0.75rem
 }
 
 .dw-button-two[aria-expanded] {
-  background-color: yellow;
+    background-color: var(--control-header-background-colour);
+  color: inherit;
+  font-size: 1rem;
+  width: 100%;
+  border: none;
+  border-radius: 0.5rem;
+  text-align: start;
 }
 
 .dw-button-one[aria-expanded=false] ~ .dw-panel-one {
@@ -74,5 +81,8 @@
 }
 
 .button-arrow-icon {
-	margin-left: auto;
+	width: 1.5rem;
+    text-align: center;
+    display: inline-block;
 }
+

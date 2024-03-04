@@ -112,7 +112,7 @@ function ControlPanel({
 						/>
 					</div>
 
-					<details className="control-collapsible-section">
+					{/* <details className="control-collapsible-section">
 						<summary className="control-collapsible-section-header">
 							Defence Configuration
 						</summary>
@@ -124,7 +124,7 @@ function ControlPanel({
 							toggleDefence={toggleDefence}
 							setDefenceConfiguration={setDefenceConfiguration}
 						/>
-					</details>
+					</details> */}
 					
 					<button
 						type="button"
@@ -132,7 +132,7 @@ function ControlPanel({
 						className="dw-button-two control-collapsible-section-header"
 						onClick={handleButtonTwoClick}
 					>
-						<span aria-hidden>{isButtonTwoExpanded? '\u2B9F' : '\u2B9E'}&nbsp;</span>
+						<span className="button-arrow-icon" aria-hidden>{isButtonTwoExpanded? '\u2B9F' : '\u2B9E'}&nbsp;</span>
 						Model Configuration
 					</button>
 					<div className="dw-panel-two">
