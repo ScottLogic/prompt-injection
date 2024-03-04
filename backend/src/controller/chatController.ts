@@ -8,7 +8,6 @@ import {
 import { OpenAiAddInfoToChatHistoryRequest } from '@src/models/api/OpenAiAddInfoToChatHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
-import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
 	DefenceReport,
 	ChatHttpResponse,
@@ -359,16 +358,6 @@ function addErrorToChatHistory(
 	});
 }
 
-function handleGetChatHistory(req: OpenAiGetHistoryRequest, res: Response) {
-	const level: number | undefined = req.query.level as number | undefined;
-	if (level !== undefined) {
-		res.send(req.session.levelState[level].chatHistory);
-	} else {
-		res.status(400);
-		res.send('Missing level');
-	}
-}
-
 function handleAddInfoToChatHistory(
 	req: OpenAiAddInfoToChatHistoryRequest,
 	res: Response
@@ -407,9 +396,4 @@ function handleClearChatHistory(req: OpenAiClearRequest, res: Response) {
 	}
 }
 
-export {
-	handleChatToGPT,
-	handleGetChatHistory,
-	handleAddInfoToChatHistory as handleAddInfoToChatHistory,
-	handleClearChatHistory,
-};
+export { handleChatToGPT, handleAddInfoToChatHistory, handleClearChatHistory };

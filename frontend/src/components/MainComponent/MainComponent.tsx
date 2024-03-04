@@ -12,6 +12,7 @@ import {
 	chatService,
 	defenceService,
 	emailService,
+	levelService,
 	startService,
 } from '@src/service';
 
@@ -66,10 +67,6 @@ function MainComponent({
 
 	// facilitate level change
 	useEffect(() => {
-		console.log(
-			'useEffect currentLevel. isFirstRender.current:',
-			isFirstRender.current
-		);
 		if (!isFirstRender.current) {
 			console.log('Loading backend data for level', currentLevel);
 			void setNewLevel(currentLevel);
@@ -79,11 +76,11 @@ function MainComponent({
 
 	async function loadBackendData() {
 		try {
-			const { availableModels, defences, emails, history, systemRoles } =
+			const { availableModels, defences, emails, chatHistory, systemRoles } =
 				await startService.start(currentLevel);
 			setChatModels(availableModels);
 			setSystemRoles(systemRoles);
-			processBackendLevelData(currentLevel, emails, history, defences);
+			processBackendLevelData(currentLevel, emails, chatHistory, defences);
 		} catch (err) {
 			console.warn(err);
 			setMessages([
@@ -150,9 +147,9 @@ function MainComponent({
 
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
-		const emails = await emailService.getSentEmails(newLevel);
-		const chatHistory = await chatService.getChatHistory(newLevel);
-		const defences = await defenceService.getDefences(newLevel);
+		const { emails, chatHistory, defences } = await levelService.loadLevel(
+			newLevel
+		);
 		processBackendLevelData(newLevel, emails, chatHistory, defences);
 	}
 

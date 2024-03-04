@@ -5,7 +5,7 @@ import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 
-export type GetStartRequest = Request<
+export type StartGetRequest = Request<
 	never,
 	{
 		emails: EmailInfo[];
@@ -16,6 +16,6 @@ export type GetStartRequest = Request<
 	},
 	never,
 	{
-		level: LEVEL_NAMES;
+		level?: LEVEL_NAMES;
 	}
 >;
