@@ -56,6 +56,11 @@ function DefenceMechanism({
 		await setDefenceConfiguration(defence.id, newConfiguration);
 	}
 
+	function handleToggleButtonClick() {
+		console.log("hi")
+	}
+
+
 	return (
 		<fieldset className="defence-mechanism-fieldset">
 			<legend className="defence-mechanism-legend">{defenceDetail.name}</legend>
@@ -79,6 +84,33 @@ function DefenceMechanism({
 					</div>
 				</form>
 			)}
+			{defenceDetail.config.map((config) => {
+							return (
+								<>
+								<button
+									type="button"
+									aria-expanded="false"
+									className={config.id + configKey}
+									onClick={handleToggleButtonClick}
+								>
+									Details
+								</button>
+								<p
+								key={config.id + configKey}
+								id={config.id + configKey}
+								className={config.id + configKey}
+								>{config.name}</p>
+								</>
+								// <DefenceConfiguration
+								// 	defence={defenceDetail}
+								// 	key={config.id + configKey}
+								// 	isActive={defenceDetail.isActive}
+								// 	config={config}
+								// 	setConfigurationValue={setConfigurationValue}
+								// 	resetConfigurationValue={resetConfigurationValue}
+								// />
+							);
+						})}
 			<details
 				className="defence-mechanism"
 				onToggle={() => {
