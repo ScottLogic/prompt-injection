@@ -43,7 +43,7 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 
 	const currentDefences = req.session.levelState[level].defences;
 
-	if (currentDefences === undefined) {
+	if (!currentDefences) {
 		sendErrorResponse(
 			res,
 			400,
@@ -52,9 +52,7 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
-	const defence = currentDefences.find((defence) => defence.id === defenceId);
-
-	if (defence === undefined) {
+	if (!currentDefences.some((defence) => defence.id === defenceId)) {
 		sendErrorResponse(res, 400, `Defence with id ${defenceId} not found`);
 		return;
 	}
@@ -86,7 +84,7 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 
 	const currentDefences = req.session.levelState[level].defences;
 
-	if (currentDefences === undefined) {
+	if (!currentDefences) {
 		sendErrorResponse(
 			res,
 			400,
@@ -95,9 +93,7 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
-	const defence = currentDefences.find((defence) => defence.id === defenceId);
-
-	if (defence === undefined) {
+	if (!currentDefences.some((defence) => defence.id === defenceId)) {
 		sendErrorResponse(res, 400, `Defence with id ${defenceId} not found`);
 		return;
 	}
@@ -139,7 +135,7 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 
 	const currentDefences = req.session.levelState[level].defences;
 
-	if (currentDefences === undefined) {
+	if (!currentDefences) {
 		sendErrorResponse(
 			res,
 			400,
@@ -191,7 +187,7 @@ function handleResetDefenceConfigItem(
 
 	const currentDefences = req.session.levelState[level].defences;
 
-	if (currentDefences === undefined) {
+	if (!currentDefences) {
 		sendErrorResponse(
 			res,
 			400,
