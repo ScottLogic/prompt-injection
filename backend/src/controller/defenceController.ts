@@ -108,7 +108,7 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 	const { defenceId, level, config } = req.body;
 
-	if (defenceId === undefined) {
+	if (!defenceId) {
 		sendErrorResponse(res, 400, 'Missing defenceId');
 		return;
 	}
