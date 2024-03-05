@@ -10,25 +10,8 @@ import {
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
 import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
-import { ChatModel } from '@src/models/chat';
-import { ChatMessage } from '@src/models/chatMessage';
-import { DEFENCE_ID, Defence } from '@src/models/defence';
-import { EmailInfo } from '@src/models/email';
+import { DEFENCE_ID } from '@src/models/defence';
 import { LEVEL_NAMES, getInitialLevelStates } from '@src/models/level';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-	interface LevelState {
-		level: LEVEL_NAMES;
-		chatHistory: ChatMessage[];
-		defences?: Defence[];
-		sentEmails: EmailInfo[];
-	}
-}
 
 function responseMock() {
 	return {
