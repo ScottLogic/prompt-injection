@@ -92,8 +92,12 @@ function validateNonEmptyStringConfig(value: string) {
 
 function validateFilterConfig(value: string) {
 	// config is not a list of empty commas
-	const commaPattern = /^,*,*$/;
-	return value === '' || !commaPattern.test(value);
+	return (
+		value
+			.split(',')
+			.map((item) => item.trim())
+			.filter((item) => item).length > 0
+	);
 }
 
 function validateDefence(
