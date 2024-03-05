@@ -39,6 +39,8 @@ function handleStart(req: StartGetRequest, res: Response) {
 		defences: req.session.levelState[level].defences,
 		availableModels: getValidOpenAIModels(),
 		systemRoles,
+		chatModel:
+			level === LEVEL_NAMES.SANDBOX ? req.session.chatModel : undefined,
 	} as StartResponse);
 }
 

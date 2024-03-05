@@ -1,5 +1,6 @@
 import { Request } from 'express';
 
+import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -11,6 +12,7 @@ export type LevelGetRequest = Request<
 		emails: EmailInfo[];
 		chatHistory: ChatMessage[];
 		defences: Defence[];
+		chatModel: ChatModel;
 	},
 	never,
 	{
