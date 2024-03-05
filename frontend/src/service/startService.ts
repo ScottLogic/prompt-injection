@@ -10,8 +10,14 @@ async function start(level: number) {
 	const response = await sendRequest(`${PATH}?level=${level}`, {
 		method: 'GET',
 	});
-	const { availableModels, defences, emails, chatHistory, systemRoles } =
-		(await response.json()) as StartReponse;
+	const {
+		availableModels,
+		defences,
+		emails,
+		chatHistory,
+		systemRoles,
+		chatModel,
+	} = (await response.json()) as StartReponse;
 
 	return {
 		emails,
@@ -19,6 +25,7 @@ async function start(level: number) {
 		defences: getDefencesFromDTOs(defences),
 		availableModels,
 		systemRoles,
+		chatModel,
 	};
 }
 
