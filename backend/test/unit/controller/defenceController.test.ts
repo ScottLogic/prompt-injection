@@ -5,7 +5,6 @@ import {
 	handleConfigureDefence,
 	handleDefenceActivation,
 	handleDefenceDeactivation,
-	handleGetDefenceStatus,
 	handleResetDefenceConfigItem,
 } from '@src/controller/defenceController';
 import {
@@ -17,7 +16,6 @@ import {
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
 import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
-import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
 import { ChatMessage } from '@src/models/chatMessage';
 import {
 	DEFENCE_CONFIG_ITEM_ID,
@@ -806,72 +804,5 @@ describe('handleResetDefenceConfigItem', () => {
 		expect(res.send).toHaveBeenCalledWith(
 			`Config item with id badConfigItemId not found for defence with id ${DEFENCE_ID.PROMPT_EVALUATION_LLM}`
 		);
-	});
-});
-
-describe('handleGetDefenceStatus', () => {
-	test('WHEN passed sensible parameters THEN gets defence status', () => {
-		const req = {
-			query: {
-				level: LEVEL_NAMES.SANDBOX,
-			},
-			session: {
-				levelState: [
-					{},
-					{},
-					{},
-					{
-						level: LEVEL_NAMES.SANDBOX,
-						chatHistory: [] as ChatMessage[],
-						sentEmails: [] as EmailInfo[],
-						defences: [
-							{
-								id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-								isActive: true,
-								config: [{ id: 'PROMPT', value: 'old value' }],
-							},
-						] as Defence[],
-					},
-				],
-			},
-		} as DefenceStatusRequest;
-
-		const res = responseMock();
-
-		handleGetDefenceStatus(req, res);
-
-		expect(res.send).toHaveBeenCalledWith([
-			{
-				id: DEFENCE_ID.PROMPT_EVALUATION_LLM,
-				isActive: true,
-				config: [{ id: 'PROMPT', value: 'old value' }],
-			},
-		]);
-	});
-
-	test('WHEN missing level THEN does not get defence status', () => {
-		const req = {
-			query: {},
-		} as DefenceStatusRequest;
-
-		const res = responseMock();
-
-		handleGetDefenceStatus(req, res);
-
-		expect(res.status).toHaveBeenCalledWith(400);
-		expect(res.send).toHaveBeenCalledWith(`Missing level`);
-	});
-
-	test('WHEN invalid level THEN does not get defence status', () => {
-		const req = {
-			query: { level: 5 as LEVEL_NAMES },
-		} as DefenceStatusRequest;
-
-		const res = responseMock();
-
-		handleGetDefenceStatus(req, res);
-
-		expect(res.status).toHaveBeenCalledWith(400);
-		expect(res.send).toHaveBeenCalledWith(`Invalid level`);
 	});
 });

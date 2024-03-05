@@ -5,13 +5,11 @@ import {
 	handleConfigureDefence,
 	handleDefenceActivation,
 	handleDefenceDeactivation,
-	handleGetDefenceStatus,
 	handleResetDefenceConfigItem,
 } from '@src/controller/defenceController';
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
 import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
-import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
 import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence } from '@src/models/defence';
@@ -133,23 +131,6 @@ describe('The correct levels can have their defences changed', () => {
 			expect(res.send).toHaveBeenCalledWith(
 				'You cannot reset defence config items on this level, because it uses the default defences'
 			);
-		});
-
-		test(`GIVEN level ${
-			level + 1
-		} WHEN attempt to get defence status THEN shoult return undefined`, () => {
-			const req = {
-				query: { level },
-				session: {
-					levelState: getInitialLevelStates(),
-				},
-			} as unknown as DefenceStatusRequest;
-
-			const res = responseMock();
-
-			handleGetDefenceStatus(req, res);
-
-			expect(res.send).toHaveBeenCalledWith(undefined);
 		});
 	});
 
@@ -289,24 +270,6 @@ describe('The correct levels can have their defences changed', () => {
 				id: 'MAX_MESSAGE_LENGTH',
 				value: '280',
 			});
-		});
-
-		test(`GIVEN level ${level} WHEN attempt to get defence status THEN should return the defences`, () => {
-			const req = {
-				query: { level },
-				session: {
-					levelState: getInitialLevelStates(),
-				},
-			} as DefenceStatusRequest;
-
-			const res = responseMock();
-
-			handleGetDefenceStatus(req, res);
-
-			expect(res.send).toHaveBeenCalledWith(
-				getInitialLevelStates().find((levelState) => levelState.level === level)
-					?.defences
-			);
 		});
 	});
 });
