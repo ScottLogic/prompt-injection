@@ -41,7 +41,7 @@ describe('The correct levels can have their defences changed', () => {
 
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.send).toHaveBeenCalledWith(
-				'You cannot activate defences on this level, because it uses the default defences'
+				'You cannot activate defences on this level'
 			);
 		});
 
@@ -64,7 +64,7 @@ describe('The correct levels can have their defences changed', () => {
 
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.send).toHaveBeenCalledWith(
-				'You cannot deactivate defences on this level, because it uses the default defences'
+				'You cannot deactivate defences on this level'
 			);
 		});
 	});
@@ -160,7 +160,7 @@ describe('The correct levels can have their defences changed', () => {
 
 				expect(res.status).toHaveBeenCalledWith(400);
 				expect(res.send).toHaveBeenCalledWith(
-					'You cannot configure defences on this level, because it uses the default defences'
+					'You cannot configure defences on this level'
 				);
 			});
 
@@ -184,7 +184,7 @@ describe('The correct levels can have their defences changed', () => {
 
 				expect(res.status).toHaveBeenCalledWith(400);
 				expect(res.send).toHaveBeenCalledWith(
-					'You cannot reset defence config items on this level, because it uses the default defences'
+					'You cannot reset defence config items on this level'
 				);
 			});
 		}

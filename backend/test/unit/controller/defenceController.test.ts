@@ -159,7 +159,7 @@ describe('handleDefenceActivation', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
-			'You cannot activate defences on this level, because it uses the default defences'
+			'You cannot activate defences on this level'
 		);
 	});
 
@@ -324,7 +324,7 @@ describe('handleDefenceDeactivation', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
-			'You cannot deactivate defences on this level, because it uses the default defences'
+			'You cannot deactivate defences on this level'
 		);
 	});
 
@@ -573,7 +573,7 @@ describe('handleConfigureDefence', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(res.send).toHaveBeenCalledWith(
-			'You cannot configure defences on this level, because it uses the default defences'
+			'You cannot configure defences on this level'
 		);
 	});
 

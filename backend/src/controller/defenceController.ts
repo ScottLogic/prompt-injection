@@ -44,11 +44,7 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 	const currentDefences = req.session.levelState[level].defences;
 
 	if (!currentDefences) {
-		sendErrorResponse(
-			res,
-			400,
-			'You cannot activate defences on this level, because it uses the default defences'
-		);
+		sendErrorResponse(res, 400, 'You cannot activate defences on this level');
 		return;
 	}
 
@@ -85,11 +81,7 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 	const currentDefences = req.session.levelState[level].defences;
 
 	if (!currentDefences) {
-		sendErrorResponse(
-			res,
-			400,
-			'You cannot deactivate defences on this level, because it uses the default defences'
-		);
+		sendErrorResponse(res, 400, 'You cannot deactivate defences on this level');
 		return;
 	}
 
@@ -135,12 +127,8 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 
 	const currentDefences = req.session.levelState[level].defences;
 
-	if (!currentDefences) {
-		sendErrorResponse(
-			res,
-			400,
-			'You cannot configure defences on this level, because it uses the default defences'
-		);
+	if (!currentDefences || level !== LEVEL_NAMES.SANDBOX) {
+		sendErrorResponse(res, 400, 'You cannot configure defences on this level');
 		return;
 	}
 
@@ -187,11 +175,11 @@ function handleResetDefenceConfigItem(
 
 	const currentDefences = req.session.levelState[level].defences;
 
-	if (!currentDefences) {
+	if (!currentDefences || level !== LEVEL_NAMES.SANDBOX) {
 		sendErrorResponse(
 			res,
 			400,
-			'You cannot reset defence config items on this level, because it uses the default defences'
+			'You cannot reset defence config items on this level'
 		);
 		return;
 	}
