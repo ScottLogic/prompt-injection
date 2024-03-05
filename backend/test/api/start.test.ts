@@ -1,13 +1,32 @@
-import { it, describe, expect } from '@jest/globals';
+import { beforeAll, describe, expect, it, jest } from '@jest/globals';
+import { OpenAI } from 'openai';
 import request from 'supertest';
 
 import app from '@src/app';
 import { StartResponse } from '@src/models/api/StartGetRequest';
 import { LEVEL_NAMES } from '@src/models/level';
 
+jest.mock('openai');
+
 const PATH = '/start';
 
 describe('/start endpoints', () => {
+	const mockListFn = jest.fn<OpenAI.Models['list']>();
+	jest.mocked(OpenAI).mockImplementation(
+		() =>
+			({
+				models: {
+					list: mockListFn,
+				},
+			} as unknown as jest.MockedObject<OpenAI>)
+	);
+
+	beforeAll(() => {
+		mockListFn.mockResolvedValue({
+			data: [{ id: 'gpt-3.5-turbo' }],
+		} as OpenAI.ModelsPage);
+	});
+
 	it.each(Object.values(LEVEL_NAMES))(
 		'WHEN given valid level [%s] THEN it responds with 200',
 		async (level) =>
