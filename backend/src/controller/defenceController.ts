@@ -9,7 +9,6 @@ import {
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
 import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
-import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
 import { DefenceConfigItem } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -239,26 +238,9 @@ function handleResetDefenceConfigItem(
 	res.send(updatedDefenceConfig);
 }
 
-function handleGetDefenceStatus(req: DefenceStatusRequest, res: Response) {
-	const level = req.query.level;
-
-	if (level === undefined) {
-		sendErrorResponse(res, 400, 'Missing level');
-		return;
-	}
-
-	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
-		sendErrorResponse(res, 400, 'Invalid level');
-		return;
-	}
-
-	res.send(req.session.levelState[level].defences);
-}
-
 export {
 	handleDefenceActivation,
 	handleDefenceDeactivation,
 	handleConfigureDefence,
 	handleResetDefenceConfigItem,
-	handleGetDefenceStatus,
 };

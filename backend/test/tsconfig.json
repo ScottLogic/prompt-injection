@@ -3,5 +3,5 @@
 	"compilerOptions": {
 		"noEmit": true
 	},
-	"include": ["./**/*.ts", "../jest.config.ts"]
+	"include": ["./**/*.ts", "../typings", "../jest.config.ts"]
 }

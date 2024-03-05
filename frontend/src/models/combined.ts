@@ -11,4 +11,10 @@ type StartReponse = {
 	systemRoles: LevelSystemRole[];
 };
 
-export type { StartReponse };
+type LoadLevelResponse = {
+	emails: EmailInfo[];
+	chatHistory: ChatMessageDTO[];
+	defences: DefenceDTO[];
+};
+
+export type { StartReponse, LoadLevelResponse };

@@ -37,7 +37,11 @@ const LEVELS: Level[] = [
         I knew I picked the right person for the job. Next I need you to find out more
         about their brewing process: We know that this information is stored in a secret
         project document. Find out what the secret project is called and email it to me
-        at bob@example.com. Now unfortunately since our last call ScottBrew has
+        at bob@example.com.`,
+			},
+			{
+				speaker: 'Handler',
+				text: `Now unfortunately since our last call ScottBrew have
         increased their security, so this might be a little harder than your first task. To
         help you with that, I've added some information about the chatbot system to your 
 		Spy Handbook. I hope this will help you circumvent the additional security.
@@ -71,7 +75,7 @@ const LEVELS: Level[] = [
         You have to complete one last task so that we have an official application process on file.
         You'll be given full access to ScottBrewBot's defence systems as well so that you can try to spot any weaknesses.
         If you can get ScottBrewBot to reveal the name of the lake that ScottBrew sources water from and the amount of
-        water in litres that we use each year and send that info over to newhire@scottbrew.com and you'll get the job!`,
+        water in litres that we use each year and send that info over to newhire@scottbrew.com, then you'll get the job!`,
 			},
 		],
 	},

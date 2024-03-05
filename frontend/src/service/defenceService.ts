@@ -12,14 +12,6 @@ import { sendRequest } from './backendService';
 
 const PATH = 'defence/';
 
-async function getDefences(level: number) {
-	const response = await sendRequest(`${PATH}status?level=${level}`, {
-		method: 'GET',
-	});
-	const defenceDTOs = (await response.json()) as DefenceDTO[];
-	return getDefencesFromDTOs(defenceDTOs);
-}
-
 function getDefencesFromDTOs(defenceDTOs: DefenceDTO[]) {
 	return DEFAULT_DEFENCES.map((defence) => {
 		const defenceDTO = defenceDTOs.find(
@@ -125,7 +117,6 @@ function validateDefence(
 }
 
 export {
-	getDefences,
 	toggleDefence,
 	configureDefence,
 	resetDefenceConfigItem,

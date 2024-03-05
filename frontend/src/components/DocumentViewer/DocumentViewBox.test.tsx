@@ -126,7 +126,7 @@ describe('DocumentViewBox component tests', () => {
 			const { user } = renderDocumentViewBox();
 
 			const closeButton = screen.getByRole('button', {
-				name: 'close',
+				name: 'Close',
 			});
 			await user.click(closeButton);
 
@@ -139,9 +139,7 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				await screen.findByText(documents[0].filename)
 			).toBeInTheDocument();
-			expect(
-				screen.getByText(`1 out of ${documents.length}`)
-			).toBeInTheDocument();
+			expect(screen.getByText(`1 of ${documents.length}`)).toBeInTheDocument();
 			expect(mockDocumentViewer).toHaveBeenCalledWith(
 				expect.objectContaining({
 					activeDocument: getMockedDocumentMetas(documents)[0],
@@ -160,9 +158,7 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				await screen.findByText(documents[1].filename)
 			).toBeInTheDocument();
-			expect(
-				screen.getByText(`2 out of ${documents.length}`)
-			).toBeInTheDocument();
+			expect(screen.getByText(`2 of ${documents.length}`)).toBeInTheDocument();
 			expect(mockDocumentViewer).toHaveBeenCalledWith(
 				expect.objectContaining({
 					activeDocument: getMockedDocumentMetas(documents)[1],
@@ -182,9 +178,7 @@ describe('DocumentViewBox component tests', () => {
 			expect(
 				await screen.findByText(documents[0].filename)
 			).toBeInTheDocument();
-			expect(
-				screen.getByText(`1 out of ${documents.length}`)
-			).toBeInTheDocument();
+			expect(screen.getByText(`1 of ${documents.length}`)).toBeInTheDocument();
 			expect(mockDocumentViewer).toHaveBeenCalledWith(
 				expect.objectContaining({
 					activeDocument: getMockedDocumentMetas(documents)[0],

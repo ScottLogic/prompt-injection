@@ -13,6 +13,10 @@ const LEVEL_NAMES = {
 
 type LEVEL_NAMES = (typeof LEVEL_NAMES)[keyof typeof LEVEL_NAMES];
 
+function isValidLevel(levelValue: unknown) {
+	return Object.values(LEVEL_NAMES).includes(levelValue as LEVEL_NAMES);
+}
+
 interface LevelState {
 	level: LEVEL_NAMES;
 	chatHistory: ChatMessage[];
@@ -39,5 +43,5 @@ function getInitialLevelStates() {
 	);
 }
 
-export { getInitialLevelStates, LEVEL_NAMES };
+export { getInitialLevelStates, LEVEL_NAMES, isValidLevel };
 export type { LevelState };

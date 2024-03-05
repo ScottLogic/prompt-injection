@@ -18,7 +18,6 @@ import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
 import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
 import { DefenceStatusRequest } from '@src/models/api/DefenceStatusRequest';
-import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import {
 	DEFENCE_CONFIG_ITEM_ID,
@@ -27,20 +26,6 @@ import {
 } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-	interface LevelState {
-		level: LEVEL_NAMES;
-		chatHistory: ChatMessage[];
-		defences?: Defence[];
-		sentEmails: EmailInfo[];
-	}
-}
 
 jest.mock('@src/defence');
 

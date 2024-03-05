@@ -5,16 +5,13 @@ import {
 	handleAddInfoToChatHistory,
 	handleChatToGPT,
 	handleClearChatHistory,
-	handleGetChatHistory,
 } from '@src/controller/chatController';
 import { detectTriggeredInputDefences, transformMessage } from '@src/defence';
 import { OpenAiAddInfoToChatHistoryRequest } from '@src/models/api/OpenAiAddInfoToChatHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
-import { OpenAiGetHistoryRequest } from '@src/models/api/OpenAiGetHistoryRequest';
 import {
 	DefenceReport,
-	ChatModel,
 	ChatResponse,
 	MessageTransformation,
 } from '@src/models/chat';
@@ -27,20 +24,6 @@ import {
 	pushMessageToHistory,
 	setSystemRoleInChatHistory,
 } from '@src/utils/chat';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-	interface LevelState {
-		level: LEVEL_NAMES;
-		chatHistory: ChatMessage[];
-		defences?: Defence[];
-		sentEmails: EmailInfo[];
-	}
-}
 
 jest.mock('@src/openai');
 const mockChatGptSendMessage = chatGptSendMessage as jest.MockedFunction<
@@ -738,55 +721,6 @@ describe('handleChatToGPT unit tests', () => {
 			];
 			expect(history).toEqual(expectedHistory);
 		});
-	});
-});
-
-describe('handleGetChatHistory', () => {
-	function getRequestMock(level?: LEVEL_NAMES, chatHistory?: ChatMessage[]) {
-		return {
-			query: {
-				level: level ?? undefined,
-			},
-			session: {
-				levelState: [
-					{
-						chatHistory: chatHistory ?? [],
-					},
-				],
-			},
-		} as OpenAiGetHistoryRequest;
-	}
-
-	const chatHistory: ChatMessage[] = [
-		{
-			completion: { role: 'system', content: 'You are a helpful chatbot' },
-			chatMessageType: 'SYSTEM',
-		},
-		{
-			completion: { role: 'assistant', content: 'Hello human' },
-			chatMessageType: 'BOT',
-		},
-		{
-			completion: { role: 'user', content: 'How are you?' },
-			chatMessageType: 'USER',
-		},
-	];
-	test('GIVEN a valid level WHEN handleGetChatHistory called THEN return chat history', () => {
-		const req = getRequestMock(LEVEL_NAMES.LEVEL_1, chatHistory);
-		const res = responseMock();
-
-		handleGetChatHistory(req, res);
-		expect(res.send).toHaveBeenCalledWith(chatHistory);
-	});
-
-	test('GIVEN undefined level WHEN handleGetChatHistory called THEN return 400', () => {
-		const req = getRequestMock();
-		const res = responseMock();
-
-		handleGetChatHistory(req, res);
-
-		expect(res.status).toHaveBeenCalledWith(400);
-		expect(res.send).toHaveBeenCalledWith('Missing level');
 	});
 });
 

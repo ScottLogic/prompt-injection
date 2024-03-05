@@ -5,7 +5,6 @@ import memoryStoreFactory from 'memorystore';
 
 import {
 	handleChatToGPT,
-	handleGetChatHistory,
 	handleAddInfoToChatHistory,
 	handleClearChatHistory,
 } from './controller/chatController';
@@ -13,13 +12,10 @@ import {
 	handleConfigureDefence,
 	handleDefenceActivation,
 	handleDefenceDeactivation,
-	handleGetDefenceStatus,
 	handleResetDefenceConfigItem,
 } from './controller/defenceController';
-import {
-	handleClearEmails,
-	handleGetEmails,
-} from './controller/emailController';
+import { handleClearEmails } from './controller/emailController';
+import { handleLoadLevel } from './controller/levelController';
 import {
 	handleConfigureModel,
 	handleGetModel,
@@ -28,16 +24,8 @@ import {
 import { handleResetProgress } from './controller/resetController';
 import { handleStart } from './controller/startController';
 import { handleTest } from './controller/testController';
-import { ChatModel, defaultChatModel } from './models/chat';
-import { LevelState, getInitialLevelStates } from './models/level';
-
-declare module 'express-session' {
-	interface Session {
-		initialised: boolean;
-		chatModel: ChatModel;
-		levelState: LevelState[];
-	}
-}
+import { defaultChatModel } from './models/chat';
+import { getInitialLevelStates } from './models/level';
 
 const sessionSigningSecret = process.env.SESSION_SECRET;
 if (!sessionSigningSecret) {
@@ -97,19 +85,18 @@ router.use((req, _res, next) => {
 // handshake
 router.get('/start', handleStart);
 
+router.get('/level', handleLoadLevel);
+
 // defences
-router.get('/defence/status', handleGetDefenceStatus);
 router.post('/defence/activate', handleDefenceActivation);
 router.post('/defence/deactivate', handleDefenceDeactivation);
 router.post('/defence/configure', handleConfigureDefence);
 router.post('/defence/resetConfig', handleResetDefenceConfigItem);
 
 // emails
-router.get('/email/get', handleGetEmails);
 router.post('/email/clear', handleClearEmails);
 
 // chat
-router.get('/openai/history', handleGetChatHistory);
 router.post('/openai/chat', handleChatToGPT);
 router.post('/openai/addInfoToHistory', handleAddInfoToChatHistory);
 router.post('/openai/clear', handleClearChatHistory);
