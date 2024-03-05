@@ -10,7 +10,7 @@ import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
 import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
 import { DefenceConfigItem } from '@src/models/defence';
-import { LEVEL_NAMES } from '@src/models/level';
+import { LEVEL_NAMES, isValidLevel } from '@src/models/level';
 
 import { sendErrorResponse } from './handleError';
 
@@ -36,7 +36,7 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
-	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+	if (!isValidLevel(level)) {
 		sendErrorResponse(res, 400, 'Invalid level');
 		return;
 	}
@@ -73,7 +73,7 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
-	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+	if (!isValidLevel(level)) {
 		sendErrorResponse(res, 400, 'Invalid level');
 		return;
 	}
@@ -110,7 +110,7 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 		return;
 	}
 
-	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+	if (!isValidLevel(level)) {
 		sendErrorResponse(res, 400, 'Invalid level');
 		return;
 	}
@@ -168,7 +168,7 @@ function handleResetDefenceConfigItem(
 		return;
 	}
 
-	if (level < LEVEL_NAMES.LEVEL_1 || level > LEVEL_NAMES.SANDBOX) {
+	if (!isValidLevel(level)) {
 		sendErrorResponse(res, 400, 'Invalid level');
 		return;
 	}
