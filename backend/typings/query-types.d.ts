@@ -1,5 +1,5 @@
 declare module 'query-types' {
-	import { NextHandleFunction } from 'connect';
+	import type { NextHandleFunction } from 'connect';
 
 	function middleware(): NextHandleFunction;
 }

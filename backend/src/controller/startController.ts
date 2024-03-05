@@ -1,6 +1,9 @@
 import { Response } from 'express';
 
-import { StartGetRequest } from '@src/models/api/StartGetRequest';
+import {
+	StartGetRequest,
+	StartResponse,
+} from '@src/models/api/StartGetRequest';
 import { LEVEL_NAMES, isValidLevel } from '@src/models/level';
 import { getValidOpenAIModels } from '@src/openai';
 import {
@@ -36,7 +39,7 @@ function handleStart(req: StartGetRequest, res: Response) {
 		defences: req.session.levelState[level].defences,
 		availableModels: getValidOpenAIModels(),
 		systemRoles,
-	});
+	} as StartResponse);
 }
 
 export { handleStart };
