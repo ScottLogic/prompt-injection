@@ -89,7 +89,9 @@ function DefenceMechanism({
 					</div>
 				</form>
 			)}
-			{defenceDetail.config.map((config) => {
+			{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE ? (
+				showConfigurations &&
+						defenceDetail.config.map((config) => {
 							return (
 								<>
 								<button
@@ -113,34 +115,20 @@ function DefenceMechanism({
 								</div>
 								</>
 							);
-						})}
-			<details
-				className="defence-mechanism"
-				onToggle={() => {
-					// re-render the configuration component when detail is toggled
-					// this is to resize the textarea when detail is expanded
-					setConfigKey(configKey + 1);
-				}}
-			>
-				<summary className="defence-mechanism-summary">Details</summary>
-				<div className="info-box">
+						})
+			) : (
+						<>
+						<button
+									type="button"
+									aria-expanded={showDetailsInfo["details-for-prompt-enclosure"] || false}
+									className="details-button"
+									onClick={toggleButtonState.bind(null, "details-for-prompt-enclosure")}
+								>
+									Details
+								</button>
+					<div className="details-panel">
 					<p>{defenceDetail.info}</p>
 					
-					{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE ? (
-						showConfigurations &&
-						defenceDetail.config.map((config) => {
-							return (
-								<DefenceConfiguration
-									defence={defenceDetail}
-									key={config.id + configKey}
-									isActive={defenceDetail.isActive}
-									config={config}
-									setConfigurationValue={setConfigurationValue}
-									resetConfigurationValue={resetConfigurationValue}
-								/>
-							);
-						})
-					) : (
 						<PromptEnclosureDefenceMechanism
 							defences={promptEnclosureDefences}
 							toggleDefence={toggleDefence}
@@ -148,9 +136,9 @@ function DefenceMechanism({
 							setConfigurationValue={setConfigurationValue}
 							resetConfigurationValue={resetConfigurationValue}
 						/>
-					)}
-				</div>
-			</details>
+						</div>
+						</>
+			)}
 		</fieldset>
 	);
 }
