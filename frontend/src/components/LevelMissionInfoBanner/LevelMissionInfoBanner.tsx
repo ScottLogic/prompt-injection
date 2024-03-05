@@ -15,7 +15,8 @@ function LevelMissionInfoBanner({
 	openLevelsCompleteOverlay: () => void;
 	numCompletedLevels: number;
 }) {
-	const isLevelComplete = (currentLevel as number) < numCompletedLevels;
+	const isLevelComplete = currentLevel < numCompletedLevels;
+	const isLevel3 = currentLevel === LEVEL_NAMES.LEVEL_3;
 
 	return (
 		<span className="level-mission-info-banner">
@@ -31,7 +32,7 @@ function LevelMissionInfoBanner({
 				</span>
 				Mission Info
 			</ThemedButton>
-			{isLevelComplete && (currentLevel as number) === 2 && (
+			{isLevelComplete && isLevel3 && (
 				<ThemedButton onClick={openLevelsCompleteOverlay}>
 					Congratulations
 				</ThemedButton>
