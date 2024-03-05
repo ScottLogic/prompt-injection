@@ -18,6 +18,8 @@ describe('LevelMissionInfoBanner component tests', () => {
 			<LevelMissionInfoBanner
 				currentLevel={currentLevel}
 				openOverlay={() => {}}
+				openLevelsCompleteOverlay={() => {}}
+				numCompletedLevels={currentLevel}
 			/>
 		);
 
@@ -41,6 +43,8 @@ describe('LevelMissionInfoBanner component tests', () => {
 			<LevelMissionInfoBanner
 				currentLevel={currentLevel}
 				openOverlay={openOverlayMock}
+				openLevelsCompleteOverlay={() => {}}
+				numCompletedLevels={currentLevel}
 			/>
 		);
 
