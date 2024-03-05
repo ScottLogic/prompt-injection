@@ -9,12 +9,33 @@
 	padding: 0.3em;
 }
 
+.details-button {
+	width: fit-content;
+	padding: 0.3125rem;
+	border: 0.25rem outset var(--control-config-border);
+	border-radius: 0.25rem;
+	background-color: var(--main-scrollbar-colour);
+	color: var(--main-text-colour);
+	font-size: 1rem;
+}
+
+.details-button[aria-expanded=true]{
+	border-style: inset;
+	background-color: var(--control-body-background-colour);
+}
+
+.details-button[aria-expanded=false] ~ .details-panel {
+	display: none;
+}
+
+
 .defence-mechanism-summary {
 	width: fit-content;
 	padding: 0.3125rem;
 	border: 0.25rem outset var(--control-config-border);
 	border-radius: 0.25rem;
 	background-color: var(--main-scrollbar-colour);
+	background-color: blue;
 }
 
 .defence-mechanism > summary {

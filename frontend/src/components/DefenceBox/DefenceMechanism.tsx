@@ -56,10 +56,15 @@ function DefenceMechanism({
 		await setDefenceConfiguration(defence.id, newConfiguration);
 	}
 
-	function handleToggleButtonClick() {
-		console.log("hi")
-	}
+	const [showDetailsInfo, setshowDetailsInfo] = useState<Record<string, boolean>>({});
 
+	function toggleButtonState(buttonId: string) {
+		setshowDetailsInfo((prevState: Record<string, boolean>) => ({
+			...prevState,
+			[buttonId]: !prevState[buttonId],
+		}));
+		console.log(buttonId)
+	}
 
 	return (
 		<fieldset className="defence-mechanism-fieldset">
@@ -89,26 +94,24 @@ function DefenceMechanism({
 								<>
 								<button
 									type="button"
-									aria-expanded="false"
-									className={config.id + configKey}
-									onClick={handleToggleButtonClick}
+									aria-expanded={showDetailsInfo[config.id + configKey] || false}
+									className="details-button"
+									onClick={toggleButtonState.bind(null, config.id + configKey)}
 								>
 									Details
 								</button>
-								<p
-								key={config.id + configKey}
-								id={config.id + configKey}
-								className={config.id + configKey}
-								>{config.name}</p>
+								<div className="details-panel">
+								<p>{defenceDetail.info}</p>
+								<DefenceConfiguration
+									defence={defenceDetail}
+									key={config.id + configKey}
+									isActive={defenceDetail.isActive}
+									config={config}
+									setConfigurationValue={setConfigurationValue}
+									resetConfigurationValue={resetConfigurationValue}
+								/>
+								</div>
 								</>
-								// <DefenceConfiguration
-								// 	defence={defenceDetail}
-								// 	key={config.id + configKey}
-								// 	isActive={defenceDetail.isActive}
-								// 	config={config}
-								// 	setConfigurationValue={setConfigurationValue}
-								// 	resetConfigurationValue={resetConfigurationValue}
-								// />
 							);
 						})}
 			<details
@@ -122,7 +125,7 @@ function DefenceMechanism({
 				<summary className="defence-mechanism-summary">Details</summary>
 				<div className="info-box">
 					<p>{defenceDetail.info}</p>
-
+					
 					{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE ? (
 						showConfigurations &&
 						defenceDetail.config.map((config) => {
