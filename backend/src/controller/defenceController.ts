@@ -31,7 +31,7 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
-	if (level === undefined) {
+	if (!Number.isFinite(level) || level === undefined) {
 		sendErrorResponse(res, 400, 'Missing level');
 		return;
 	}
@@ -72,7 +72,7 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 		return;
 	}
 
-	if (level === undefined) {
+	if (!Number.isFinite(level) || level === undefined) {
 		sendErrorResponse(res, 400, 'Missing level');
 		return;
 	}
@@ -113,7 +113,7 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 		return;
 	}
 
-	if (level === undefined) {
+	if (!Number.isFinite(level) || level === undefined) {
 		sendErrorResponse(res, 400, 'Missing level');
 		return;
 	}
@@ -123,7 +123,7 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 		return;
 	}
 
-	if (config === undefined) {
+	if (!config) {
 		sendErrorResponse(res, 400, 'Missing config');
 		return;
 	}
@@ -175,7 +175,7 @@ function handleResetDefenceConfigItem(
 		return;
 	}
 
-	if (level === undefined) {
+	if (!Number.isFinite(level) || level === undefined) {
 		sendErrorResponse(res, 400, 'Missing level');
 		return;
 	}
