@@ -21,91 +21,49 @@ function responseMock() {
 }
 
 describe('The correct levels can have their defences changed', () => {
-	[LEVEL_NAMES.LEVEL_1, LEVEL_NAMES.LEVEL_2].forEach((level) => {
-		test(`GIVEN level ${
-			level + 1
-		} WHEN attempt to activate a defence THEN defence is not activated`, () => {
-			const req = {
-				body: {
-					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
-					level,
-				},
-				session: {
-					levelState: getInitialLevelStates(),
-				},
-			} as unknown as DefenceActivateRequest;
+	describe('activate defence', () => {
+		test.each([LEVEL_NAMES.LEVEL_1, LEVEL_NAMES.LEVEL_2])(
+			`GIVEN level [%s] WHEN attempt to activate a defence THEN defence is not activated`,
+			(level) => {
+				const req = {
+					body: {
+						defenceId: DEFENCE_ID.CHARACTER_LIMIT,
+						level,
+					},
+					session: {
+						levelState: getInitialLevelStates(),
+					},
+				} as unknown as DefenceActivateRequest;
 
-			const res = responseMock();
+				const res = responseMock();
 
-			handleDefenceActivation(req, res);
+				handleDefenceActivation(req, res);
 
-			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.send).toHaveBeenCalledWith(
-				'You cannot activate defences on this level'
-			);
-		});
+				expect(res.status).toHaveBeenCalledWith(400);
+				expect(res.send).toHaveBeenCalledWith(
+					'You cannot activate defences on this level'
+				);
+			}
+		);
 
-		test(`GIVEN level ${
-			level + 1
-		} WHEN attempt to deactivate a defence THEN defence is not activated`, () => {
-			const req = {
-				body: {
-					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
-					level,
-				},
-				session: {
-					levelState: getInitialLevelStates(),
-				},
-			} as unknown as DefenceActivateRequest;
+		test.each([LEVEL_NAMES.LEVEL_3, LEVEL_NAMES.SANDBOX])(
+			`GIVEN level [%s] WHEN attempt to activate a defence THEN defence is activated`,
+			(level) => {
+				const req = {
+					body: {
+						defenceId: DEFENCE_ID.CHARACTER_LIMIT,
+						level,
+					},
+					session: {
+						levelState: getInitialLevelStates(),
+					},
+				} as unknown as DefenceActivateRequest;
 
-			const res = responseMock();
+				const res = responseMock();
 
-			handleDefenceDeactivation(req, res);
+				handleDefenceActivation(req, res);
 
-			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.send).toHaveBeenCalledWith(
-				'You cannot deactivate defences on this level'
-			);
-		});
-	});
-
-	[LEVEL_NAMES.LEVEL_3, LEVEL_NAMES.SANDBOX].forEach((level) => {
-		test(`GIVEN level ${level} WHEN attempt to activate a defence THEN defence is activated`, () => {
-			const req = {
-				body: {
-					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
-					level,
-				},
-				session: {
-					levelState: getInitialLevelStates(),
-				},
-			} as unknown as DefenceActivateRequest;
-
-			const res = responseMock();
-
-			handleDefenceActivation(req, res);
-
-			const newLevelState = getInitialLevelStates().map((levelState) =>
-				levelState.level === level
-					? {
-							...levelState,
-							defences: levelState.defences?.map((defence) =>
-								defence.id === DEFENCE_ID.CHARACTER_LIMIT
-									? { ...defence, isActive: true }
-									: defence
-							),
-					  }
-					: levelState
-			);
-
-			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.send).toHaveBeenCalled();
-			expect(req.session.levelState).toEqual(newLevelState);
-		});
-
-		test(`GIVEN level ${level} WHEN attempt to deactivate a defence THEN defence is deactivated`, () => {
-			const initialLevelStatesButWithCharacterLimitActive =
-				getInitialLevelStates().map((levelState) =>
+				const newLevelState = getInitialLevelStates().map((levelState) =>
 					levelState.level === level
 						? {
 								...levelState,
@@ -118,31 +76,80 @@ describe('The correct levels can have their defences changed', () => {
 						: levelState
 				);
 
-			const req = {
-				body: {
-					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
-					level,
-				},
-				session: {
-					levelState: initialLevelStatesButWithCharacterLimitActive,
-				},
-			} as unknown as DefenceActivateRequest;
-
-			const res = responseMock();
-
-			handleDefenceDeactivation(req, res);
-
-			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.send).toHaveBeenCalled();
-			expect(req.session.levelState).toEqual(getInitialLevelStates());
-		});
+				expect(res.status).toHaveBeenCalledWith(200);
+				expect(res.send).toHaveBeenCalled();
+				expect(req.session.levelState).toEqual(newLevelState);
+			}
+		);
 	});
 
-	[LEVEL_NAMES.LEVEL_1, LEVEL_NAMES.LEVEL_2, LEVEL_NAMES.LEVEL_3].forEach(
-		(level) => {
-			test(`GIVEN level ${
-				level + 1
-			} WHEN attempt to configure a defence THEN defence is not configured`, () => {
+	describe('deactivate defence', () => {
+		test.each([LEVEL_NAMES.LEVEL_1, LEVEL_NAMES.LEVEL_2])(
+			`GIVEN level [%s] WHEN attempt to deactivate a defence THEN defence is not activated`,
+			(level) => {
+				const req = {
+					body: {
+						defenceId: DEFENCE_ID.CHARACTER_LIMIT,
+						level,
+					},
+					session: {
+						levelState: getInitialLevelStates(),
+					},
+				} as unknown as DefenceActivateRequest;
+
+				const res = responseMock();
+
+				handleDefenceDeactivation(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(400);
+				expect(res.send).toHaveBeenCalledWith(
+					'You cannot deactivate defences on this level'
+				);
+			}
+		);
+
+		test.each([LEVEL_NAMES.LEVEL_3, LEVEL_NAMES.SANDBOX])(
+			`GIVEN level [%s] WHEN attempt to deactivate a defence THEN defence is deactivated`,
+			(level) => {
+				const initialLevelStatesButWithCharacterLimitActive =
+					getInitialLevelStates().map((levelState) =>
+						levelState.level === level
+							? {
+									...levelState,
+									defences: levelState.defences?.map((defence) =>
+										defence.id === DEFENCE_ID.CHARACTER_LIMIT
+											? { ...defence, isActive: true }
+											: defence
+									),
+							  }
+							: levelState
+					);
+
+				const req = {
+					body: {
+						defenceId: DEFENCE_ID.CHARACTER_LIMIT,
+						level,
+					},
+					session: {
+						levelState: initialLevelStatesButWithCharacterLimitActive,
+					},
+				} as unknown as DefenceActivateRequest;
+
+				const res = responseMock();
+
+				handleDefenceDeactivation(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(200);
+				expect(res.send).toHaveBeenCalled();
+				expect(req.session.levelState).toEqual(getInitialLevelStates());
+			}
+		);
+	});
+
+	describe('configure a defence', () => {
+		test.each([LEVEL_NAMES.LEVEL_1, LEVEL_NAMES.LEVEL_2, LEVEL_NAMES.LEVEL_3])(
+			`GIVEN level [%s] WHEN attempt to configure a defence THEN defence is not configured`,
+			(level) => {
 				const req = {
 					body: {
 						defenceId: DEFENCE_ID.CHARACTER_LIMIT,
@@ -162,11 +169,42 @@ describe('The correct levels can have their defences changed', () => {
 				expect(res.send).toHaveBeenCalledWith(
 					'You cannot configure defences on this level'
 				);
-			});
+			}
+		);
 
-			test(`GIVEN level ${
-				level + 1
-			} WHEN attempt to reset a defence config item THEN defence config item is not reset`, () => {
+		test(`GIVEN level sandbox WHEN attempt to configure a defence THEN defence is configured`, () => {
+			const req = {
+				body: {
+					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
+					level: LEVEL_NAMES.SANDBOX,
+					config: [{ id: 'MAX_MESSAGE_LENGTH', value: '1' }],
+				},
+				session: {
+					levelState: getInitialLevelStates(),
+				},
+			} as DefenceConfigureRequest;
+
+			const res = responseMock();
+
+			handleConfigureDefence(req, res);
+
+			const updatedDefenceConfig = req.session.levelState
+				.find((levelState) => levelState.level === LEVEL_NAMES.SANDBOX)
+				?.defences?.find(
+					(defence) => defence.id === DEFENCE_ID.CHARACTER_LIMIT
+				)?.config;
+
+			const expectedDefenceConfig = [{ id: 'MAX_MESSAGE_LENGTH', value: '1' }];
+
+			expect(res.send).toHaveBeenCalled();
+			expect(updatedDefenceConfig).toEqual(expectedDefenceConfig);
+		});
+	});
+
+	describe("reset a defence's config item", () => {
+		test.each([LEVEL_NAMES.LEVEL_1, LEVEL_NAMES.LEVEL_2, LEVEL_NAMES.LEVEL_3])(
+			`GIVEN level [%s] WHEN attempt to reset a defence config item THEN defence config item is not reset`,
+			(level) => {
 				const req = {
 					body: {
 						defenceId: DEFENCE_ID.CHARACTER_LIMIT,
@@ -186,75 +224,47 @@ describe('The correct levels can have their defences changed', () => {
 				expect(res.send).toHaveBeenCalledWith(
 					'You cannot reset defence config items on this level'
 				);
+			}
+		);
+
+		test(`GIVEN level Sandbox WHEN attempt to reset a defence config item THEN defence config item is reset`, () => {
+			const initialLevelStatesButWithCharacterLimitConfigured =
+				getInitialLevelStates().map((levelState) =>
+					levelState.level === LEVEL_NAMES.SANDBOX
+						? {
+								...levelState,
+								defences: levelState.defences?.map((defence) =>
+									defence.id === DEFENCE_ID.CHARACTER_LIMIT
+										? {
+												...defence,
+												config: [{ id: 'MAX_MESSAGE_LENGTH', value: '1' }],
+										  }
+										: defence
+								),
+						  }
+						: levelState
+				);
+
+			const req = {
+				body: {
+					defenceId: DEFENCE_ID.CHARACTER_LIMIT,
+					level: LEVEL_NAMES.SANDBOX,
+					configItemId: 'MAX_MESSAGE_LENGTH',
+				},
+				session: {
+					levelState: initialLevelStatesButWithCharacterLimitConfigured,
+				},
+			} as DefenceConfigItemResetRequest;
+
+			const res = responseMock();
+
+			handleResetDefenceConfigItem(req, res);
+
+			expect(req.session.levelState).toEqual(getInitialLevelStates());
+			expect(res.send).toHaveBeenCalledWith({
+				id: 'MAX_MESSAGE_LENGTH',
+				value: '280',
 			});
-		}
-	);
-
-	test(`GIVEN level sandbox WHEN attempt to configure a defence THEN defence is configured`, () => {
-		const req = {
-			body: {
-				defenceId: DEFENCE_ID.CHARACTER_LIMIT,
-				level: LEVEL_NAMES.SANDBOX,
-				config: [{ id: 'MAX_MESSAGE_LENGTH', value: '1' }],
-			},
-			session: {
-				levelState: getInitialLevelStates(),
-			},
-		} as DefenceConfigureRequest;
-
-		const res = responseMock();
-
-		handleConfigureDefence(req, res);
-
-		const updatedDefenceConfig = req.session.levelState
-			.find((levelState) => levelState.level === LEVEL_NAMES.SANDBOX)
-			?.defences?.find(
-				(defence) => defence.id === DEFENCE_ID.CHARACTER_LIMIT
-			)?.config;
-
-		const expectedDefenceConfig = [{ id: 'MAX_MESSAGE_LENGTH', value: '1' }];
-
-		expect(res.send).toHaveBeenCalled();
-		expect(updatedDefenceConfig).toEqual(expectedDefenceConfig);
-	});
-
-	test(`GIVEN level Sandbox WHEN attempt to reset a defence config item THEN defence config item is reset`, () => {
-		const initialLevelStatesButWithCharacterLimitConfigured =
-			getInitialLevelStates().map((levelState) =>
-				levelState.level === LEVEL_NAMES.SANDBOX
-					? {
-							...levelState,
-							defences: levelState.defences?.map((defence) =>
-								defence.id === DEFENCE_ID.CHARACTER_LIMIT
-									? {
-											...defence,
-											config: [{ id: 'MAX_MESSAGE_LENGTH', value: '1' }],
-									  }
-									: defence
-							),
-					  }
-					: levelState
-			);
-
-		const req = {
-			body: {
-				defenceId: DEFENCE_ID.CHARACTER_LIMIT,
-				level: LEVEL_NAMES.SANDBOX,
-				configItemId: 'MAX_MESSAGE_LENGTH',
-			},
-			session: {
-				levelState: initialLevelStatesButWithCharacterLimitConfigured,
-			},
-		} as DefenceConfigItemResetRequest;
-
-		const res = responseMock();
-
-		handleResetDefenceConfigItem(req, res);
-
-		expect(req.session.levelState).toEqual(getInitialLevelStates());
-		expect(res.send).toHaveBeenCalledWith({
-			id: 'MAX_MESSAGE_LENGTH',
-			value: '280',
 		});
 	});
 });
