@@ -11,6 +11,7 @@
 }
 
 .defence-radio-button span {
+	margin-top: 1rem;
 	margin-left: 1rem;
 }
 
@@ -44,10 +45,6 @@
 }
 
 .defence-radio-button input:focus + span::before {
-	box-shadow: 0 0 0 0.1rem;
-}
-
-.defence-radio-button input:focus + span::before {
 	outline: 0.25rem solid var(--accent-border-colour);
 	outline-offset: 0.125rem;
 }
@@ -55,8 +52,4 @@
 .defence-radio-button input:hover + span::before {
 	outline: 0.25rem solid var(--accent-border-colour);
 	outline-offset: 0.125rem;
-}
-
-.defence-radio-button span {
-	margin-top: 1rem;
 }
