@@ -1,5 +1,6 @@
 import { CorsHttpMethod, HttpApi, VpcLink } from 'aws-cdk-lib/aws-apigatewayv2';
 import { HttpAlbIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
+import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 //import { UserPool, UserPoolClient, UserPoolDomain } from 'aws-cdk-lib/aws-cognito';
 import { Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
@@ -10,7 +11,7 @@ import {
 	Secret as EnvSecret,
 } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
-//import { ListenerAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+//import { ListenerAction, ListenerCondition } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 //import { AuthenticateCognitoAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
 import {
 	Effect,
@@ -20,6 +21,8 @@ import {
 } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { ARecord, IHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
+import { LoadBalancerTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import {
 	CronOptionsWithTimezone,
@@ -52,6 +55,8 @@ type ApiStackProps = StackProps & {
 	// userPool: UserPool;
 	// userPoolClient: UserPoolClient;
 	// userPoolDomain: UserPoolDomain;
+	certificate: ICertificate;
+	hostedZone: IHostedZone;
 	webappUrl: string;
 };
 
@@ -59,7 +64,8 @@ export class ApiStack extends Stack {
 	constructor(scope: Construct, id: string, props: ApiStackProps) {
 		super(scope, id, props);
 		// TODO Enable cognito/JWT authorization
-		const { /*userPool, userPoolClient, userPoolDomain,*/ webappUrl } = props;
+		const { certificate, hostedZone, webappUrl } = props;
+		const domainName = `api.${hostedZone.zoneName}`;
 
 		const generateResourceName = resourceName(scope);
 		const generateResourceDescription = resourceDescription(scope);
@@ -121,6 +127,9 @@ export class ApiStack extends Stack {
 				loadBalancerName,
 				openListener: false,
 				publicLoadBalancer: false,
+				certificate,
+				domainName,
+				domainZone: hostedZone,
 				propagateTags: PropagatedTagSource.SERVICE,
 			}
 		);
@@ -134,6 +143,16 @@ export class ApiStack extends Stack {
 				removalPolicy: RemovalPolicy.DESTROY,
 			})
 		);
+
+		// DNS A Record for Route53
+		const loadBalancerARecordName = generateResourceName('arecord-alb');
+		new ARecord(this, loadBalancerARecordName, {
+			zone: hostedZone,
+			target: RecordTarget.fromAlias(new LoadBalancerTarget(fargateService.loadBalancer)),
+			deleteExisting: true,
+			recordName: domainName,
+			comment: 'DNS A Record for the load-balanced API',
+		});
 
 		// Lambda to bring fargate service up or down
 		const startStopFunctionName = generateResourceName('fargate-switch');
@@ -209,10 +228,8 @@ export class ApiStack extends Stack {
 			}),
 		});
 
-		// Hook up Cognito to load balancer
+		// TODO Hook up Cognito to load balancer, then remove API Gateway shenanigans
 		// https://stackoverflow.com/q/71124324
-		// TODO Needs HTTPS and a Route53 domain, so for now we're using APIGateway and VPCLink:
-		// https://repost.aws/knowledge-center/api-gateway-alb-integration
 		/*
 		const authActionName = generateResourceName('alb-auth');
 		fargateService.listener.addAction(authActionName, {
@@ -222,6 +239,7 @@ export class ApiStack extends Stack {
 				userPoolDomain,
 				next: ListenerAction.forward([fargateService.targetGroup]),
 			}),
+			conditions: [ListenerCondition.hostHeaders([domainName])],
 		});
 		*/
 
