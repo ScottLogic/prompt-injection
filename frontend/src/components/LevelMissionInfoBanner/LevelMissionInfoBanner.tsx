@@ -34,7 +34,7 @@ function LevelMissionInfoBanner({
 			</ThemedButton>
 			{isLevelComplete && isLevel3 && (
 				<ThemedButton onClick={openLevelsCompleteOverlay}>
-					Congratulations
+					Congratulations!
 				</ThemedButton>
 			)}
 		</span>
