@@ -1,3 +1,4 @@
+import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import {
 	AllowedMethods,
 	CacheCookieBehavior,
@@ -8,20 +9,29 @@ import {
 	ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { CfnOutput, Duration, RemovalPolicy, Stack, StackProps, } from 'aws-cdk-lib/core';
+import {
+	CfnOutput,
+	Duration,
+	RemovalPolicy,
+	Stack,
+	StackProps,
+} from 'aws-cdk-lib/core';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { BlockPublicAccess, Bucket, BucketEncryption, } from 'aws-cdk-lib/aws-s3';
+import { AaaaRecord, IHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
+import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
+import {
+	BlockPublicAccess,
+	Bucket,
+	BucketEncryption,
+} from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
 import { appName, resourceName } from './resourceNamingUtils';
-import { AaaaRecord, IHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
-import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
-import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 
 type UiStackProps = StackProps & {
 	certificate: ICertificate;
 	hostedZone: IHostedZone;
-}
+};
 
 export class UiStack extends Stack {
 	public readonly cloudFrontUrl: string;
@@ -76,6 +86,7 @@ export class UiStack extends Stack {
 						responsePagePath: '/index.html',
 						ttl: Duration.seconds(30),
 					},
+					// TODO Do we want a custom page for 503, for when server is down?
 				],
 				defaultBehavior: {
 					origin: new S3Origin(hostBucket, {
@@ -89,7 +100,6 @@ export class UiStack extends Stack {
 					allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
 					viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 				},
-
 			}
 		);
 
@@ -97,7 +107,9 @@ export class UiStack extends Stack {
 		const cloudFrontARecordName = generateResourceName('arecord-cfront');
 		new AaaaRecord(this, cloudFrontARecordName, {
 			zone: hostedZone,
-			target: RecordTarget.fromAlias(new CloudFrontTarget(cloudFrontDistribution)),
+			target: RecordTarget.fromAlias(
+				new CloudFrontTarget(cloudFrontDistribution)
+			),
 			deleteExisting: true,
 			comment: 'DNS AAAA Record for the UI host',
 		});

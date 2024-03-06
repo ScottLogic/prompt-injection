@@ -1,8 +1,12 @@
-import { CorsHttpMethod, HttpApi, VpcLink } from 'aws-cdk-lib/aws-apigatewayv2';
-import { HttpAlbIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 //import { UserPool, UserPoolClient, UserPoolDomain } from 'aws-cdk-lib/aws-cognito';
-import { Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
+import {
+	InstanceClass,
+	InstanceSize,
+	InstanceType,
+	NatInstanceProvider,
+	Vpc,
+} from 'aws-cdk-lib/aws-ec2';
 import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
 import {
 	Cluster,
@@ -33,14 +37,7 @@ import {
 } from '@aws-cdk/aws-scheduler-alpha';
 import { LambdaInvoke } from '@aws-cdk/aws-scheduler-targets-alpha';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
-import {
-	CfnOutput,
-	RemovalPolicy,
-	Stack,
-	StackProps,
-	Tags,
-	TimeZone,
-} from 'aws-cdk-lib/core';
+import { RemovalPolicy, Stack, StackProps, TimeZone } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { join } from 'node:path';
 
@@ -80,7 +77,13 @@ export class ApiStack extends Stack {
 
 		// Default AZs is all in region, but for environment-agnostic stack, max is 2!
 		const vpcName = generateResourceName('vpc');
-		const vpc = new Vpc(this, vpcName, { vpcName, maxAzs: 2 });
+		const vpc = new Vpc(this, vpcName, {
+			vpcName,
+			maxAzs: 2,
+			natGatewayProvider: NatInstanceProvider.instance({
+				instanceType: InstanceType.of(InstanceClass.T3, InstanceSize.MICRO),
+			}),
+		});
 		const clusterName = generateResourceName('cluster');
 		const cluster = new Cluster(this, clusterName, { clusterName, vpc });
 
@@ -102,7 +105,7 @@ export class ApiStack extends Stack {
 				serviceName: fargateServiceName,
 				cluster,
 				cpu: 256, // Default is 256
-				desiredCount: 1, // Bump this up for prod!
+				desiredCount: 1,
 				taskImageOptions: {
 					image: ContainerImage.fromDockerImageAsset(dockerImageAsset),
 					containerPort,
@@ -126,7 +129,7 @@ export class ApiStack extends Stack {
 				memoryLimitMiB: 512, // Default is 512
 				loadBalancerName,
 				openListener: false,
-				publicLoadBalancer: false,
+				publicLoadBalancer: true,
 				certificate,
 				domainName,
 				domainZone: hostedZone,
@@ -148,7 +151,9 @@ export class ApiStack extends Stack {
 		const loadBalancerARecordName = generateResourceName('arecord-alb');
 		new ARecord(this, loadBalancerARecordName, {
 			zone: hostedZone,
-			target: RecordTarget.fromAlias(new LoadBalancerTarget(fargateService.loadBalancer)),
+			target: RecordTarget.fromAlias(
+				new LoadBalancerTarget(fargateService.loadBalancer)
+			),
 			deleteExisting: true,
 			recordName: domainName,
 			comment: 'DNS A Record for the load-balanced API',
@@ -242,58 +247,5 @@ export class ApiStack extends Stack {
 			conditions: [ListenerCondition.hostHeaders([domainName])],
 		});
 		*/
-
-		// Create an HTTP APIGateway with a VPCLink integrated with our load balancer
-		const securityGroupName = generateResourceName('vpclink-sg');
-		const vpcLinkSecurityGroup = new SecurityGroup(this, securityGroupName, {
-			vpc,
-			securityGroupName,
-			allowAllOutbound: false,
-		});
-		vpcLinkSecurityGroup.connections.allowFromAnyIpv4(
-			Port.tcp(80),
-			'APIGW to VPCLink'
-		);
-		vpcLinkSecurityGroup.connections.allowTo(
-			fargateService.loadBalancer,
-			Port.tcp(80),
-			'VPCLink to ALB'
-		);
-
-		const vpcLinkName = generateResourceName('vpclink');
-		const vpcLink = new VpcLink(this, vpcLinkName, {
-			vpc,
-			vpcLinkName,
-			securityGroups: [vpcLinkSecurityGroup],
-		});
-		Object.entries(props.tags ?? {}).forEach(([key, value]) => {
-			Tags.of(vpcLink).add(key, value);
-		});
-
-		const apiName = generateResourceName('api');
-		const api = new HttpApi(this, apiName, {
-			apiName,
-			description: generateResourceDescription('API'),
-			corsPreflight: {
-				allowOrigins: [webappUrl],
-				allowMethods: [CorsHttpMethod.ANY],
-				allowHeaders: ['Content-Type', 'Authorization'],
-				allowCredentials: true,
-			},
-		});
-		api.addRoutes({
-			path: '/{proxy+}',
-			integration: new HttpAlbIntegration(
-				generateResourceName('api-integration'),
-				fargateService.loadBalancer.listeners[0],
-				{ vpcLink }
-			),
-		});
-
-		new CfnOutput(this, 'APIGatewayURL', {
-			value:
-				api.defaultStage?.url ??
-				'FATAL ERROR: Gateway does not have a default stage',
-		});
 	}
 }

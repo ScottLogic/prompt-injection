@@ -24,7 +24,7 @@ const tags = {
 	owner: appName,
 	classification: 'unrestricted',
 	'environment-type': environmentName(app),
-	'keep-alive': '8-6-without-weekends',
+	'keep-alive': '9-5-without-weekends',
 };
 
 const generateStackName = stackName(app);
