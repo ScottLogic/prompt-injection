@@ -15,6 +15,7 @@ module.exports = {
 	root: true,
 	ignorePatterns: ['node_modules', 'cdk.out'],
 	rules: {
+		'@typescript-eslint/consistent-type-definitions': ['error', 'type'],
 		'@typescript-eslint/init-declarations': 'error',
 		'@typescript-eslint/no-misused-promises': [
 			'error',
