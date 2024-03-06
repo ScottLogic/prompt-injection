@@ -12,11 +12,13 @@
 		"test": "vitest"
 	},
 	"dependencies": {
+		"@aws-amplify/ui-react": "^6.1.7",
 		"@cyntler/react-doc-viewer": "^1.14.1",
 		"@emotion/react": "^11.11.4",
 		"@emotion/styled": "^11.11.5",
 		"@mui/material": "^5.15.15",
 		"@react-pdf/renderer": "^3.4.2",
+		"aws-amplify": "^6.0.28",
 		"clsx": "^2.1.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
