@@ -15,10 +15,7 @@ const PATH = 'openai/';
 async function clearChat(level: number) {
 	const response = await sendRequest(`${PATH}clear`, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ level }),
+		body: { level },
 	});
 	return response.status === 200;
 }
@@ -26,11 +23,9 @@ async function clearChat(level: number) {
 async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 	const response = await sendRequest(`${PATH}chat`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ message, currentLevel }),
+		body: { message, currentLevel },
 	});
-	const data = (await response.json()) as ChatResponse;
-	return data;
+	return (await response.json()) as ChatResponse;
 }
 
 function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
@@ -69,8 +64,7 @@ function getChatMessagesFromDTOResponse(chatMessageDTOs: ChatMessageDTO[]) {
 async function setGptModel(model: string): Promise<boolean> {
 	const response = await sendRequest(`${PATH}model`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ model }),
+		body: { model },
 	});
 	return response.status === 200;
 }
@@ -81,14 +75,13 @@ async function configureGptModel(
 ): Promise<boolean> {
 	const response = await sendRequest(`${PATH}model/configure`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ configId, value }),
+		body: { configId, value },
 	});
 	return response.status === 200;
 }
 
 async function getGptModel(): Promise<ChatModel> {
-	const response = await sendRequest(`${PATH}model`, { method: 'GET' });
+	const response = await sendRequest(`${PATH}model`);
 	return (await response.json()) as ChatModel;
 }
 
@@ -99,12 +92,11 @@ async function addInfoMessageToChatHistory(
 ) {
 	const response = await sendRequest(`${PATH}addInfoToHistory`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({
+		body: {
 			infoMessage: message,
 			chatMessageType,
 			level,
-		}),
+		},
 	});
 	return response.status === 200;
 }
