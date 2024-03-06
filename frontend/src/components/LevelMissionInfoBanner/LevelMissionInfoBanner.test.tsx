@@ -67,7 +67,7 @@ describe('LevelMissionInfoBanner component tests', () => {
 			/>
 		);
 
-		const button = screen.getByText('congratulations!');
+		const button = screen.getByText('Congratulations!');
 		fireEvent.click(button);
 
 		expect(openOverlayMock).toHaveBeenCalled();
