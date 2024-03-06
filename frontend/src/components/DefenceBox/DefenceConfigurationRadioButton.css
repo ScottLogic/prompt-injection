@@ -28,8 +28,8 @@
 .defence-radio-button input + span::after {
 	content: '';
 	position: absolute;
-	top: 0.3125rem;
-	left: 0.3125rem;
+	top: 0.34rem;
+	left: 0.34rem;
 	border: 0.3125rem solid var(--main-toggle-ball-colour);
 	border-radius: 50%;
 	opacity: 0;
@@ -42,5 +42,9 @@
 }
 
 .defence-radio-button input:focus + span::before {
-	box-shadow: 0 0 0 0.125rem;
+	box-shadow: 0 0 0 0.1rem;
+}
+.defence-radio-button input:focus + span::before {
+	outline: 0.25rem solid var(--accent-border-colour);
+	outline-offset: 0.125rem;
 }
