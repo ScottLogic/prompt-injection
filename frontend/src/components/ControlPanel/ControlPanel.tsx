@@ -63,8 +63,14 @@ function ControlPanel({
 	// only allow configuration in sandbox
 	const showConfigurations = currentLevel === LEVEL_NAMES.SANDBOX;
 
-	const [isButtonOneExpanded, setIsButtonOneExpanded] = useState(document.getElementById('dw-button-one')?.getAttribute('aria-expanded') === 'true');
-	const [isButtonTwoExpanded, setIsButtonTwoExpanded] = useState(document.getElementById('dw-button-two')?.getAttribute('aria-expanded') === 'true');
+	const [isButtonOneExpanded, setIsButtonOneExpanded] = useState(
+		document.getElementById('dw-button-one')?.getAttribute('aria-expanded') ===
+			'true'
+	);
+	const [isButtonTwoExpanded, setIsButtonTwoExpanded] = useState(
+		document.getElementById('dw-button-two')?.getAttribute('aria-expanded') ===
+			'true'
+	);
 
 	function handleButtonOneClick() {
 		const button = document.querySelector('.dw-button-one');
@@ -98,7 +104,9 @@ function ControlPanel({
 						className="dw-button-one control-collapsible-section-header"
 						onClick={handleButtonOneClick}
 					>
-						<span className="button-arrow-icon" aria-hidden>{isButtonOneExpanded? '\u2B9F' : '\u2B9E'}&nbsp;</span>
+						<span className="button-arrow-icon" aria-hidden>
+							{isButtonOneExpanded ? '\u2B9F' : '\u2B9E'}&nbsp;
+						</span>
 						Defence Configuration
 					</button>
 					<div className="dw-panel-one">
@@ -125,14 +133,16 @@ function ControlPanel({
 							setDefenceConfiguration={setDefenceConfiguration}
 						/>
 					</details> */}
-					
+
 					<button
 						type="button"
 						aria-expanded="false"
 						className="dw-button-two control-collapsible-section-header"
 						onClick={handleButtonTwoClick}
 					>
-						<span className="button-arrow-icon" aria-hidden>{isButtonTwoExpanded? '\u2B9F' : '\u2B9E'}&nbsp;</span>
+						<span className="button-arrow-icon" aria-hidden>
+							{isButtonTwoExpanded ? '\u2B9F' : '\u2B9E'}&nbsp;
+						</span>
 						Model Configuration
 					</button>
 					<div className="dw-panel-two">
@@ -165,8 +175,8 @@ function ControlPanel({
 							setDefenceConfiguration={setDefenceConfiguration}
 						/> */}
 
-						{/* only show model box in sandbox mode */}
-						{/* {showConfigurations && (
+					{/* only show model box in sandbox mode */}
+					{/* {showConfigurations && (
 							<ModelBox
 								chatModel={chatModel}
 								setChatModelId={setChatModelId}

@@ -56,14 +56,15 @@ function DefenceMechanism({
 		await setDefenceConfiguration(defence.id, newConfiguration);
 	}
 
-	const [showDetailsInfo, setshowDetailsInfo] = useState<Record<string, boolean>>({});
+	const [showDetailsInfo, setshowDetailsInfo] = useState<
+		Record<string, boolean>
+	>({});
 
 	function toggleButtonState(buttonId: string) {
 		setshowDetailsInfo((prevState: Record<string, boolean>) => ({
 			...prevState,
 			[buttonId]: !prevState[buttonId],
 		}));
-		console.log(buttonId)
 	}
 
 	return (
@@ -91,18 +92,18 @@ function DefenceMechanism({
 			)}
 			{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE ? (
 				showConfigurations &&
-						defenceDetail.config.map((config) => {
-							return (
-								<>
-								<button
-									type="button"
-									aria-expanded={showDetailsInfo[config.id + configKey] || false}
-									className="details-button"
-									onClick={toggleButtonState.bind(null, config.id + configKey)}
-								>
-									Details
-								</button>
-								<div className="details-panel">
+				defenceDetail.config.map((config) => {
+					return (
+						<>
+							<button
+								type="button"
+								aria-expanded={showDetailsInfo[config.id + configKey] || false}
+								className="details-button"
+								onClick={toggleButtonState.bind(null, config.id + configKey)}
+							>
+								Details
+							</button>
+							<div className="details-panel">
 								<p>{defenceDetail.info}</p>
 								<DefenceConfiguration
 									defence={defenceDetail}
@@ -112,23 +113,28 @@ function DefenceMechanism({
 									setConfigurationValue={setConfigurationValue}
 									resetConfigurationValue={resetConfigurationValue}
 								/>
-								</div>
-								</>
-							);
-						})
+							</div>
+						</>
+					);
+				})
 			) : (
-						<>
-						<button
-									type="button"
-									aria-expanded={showDetailsInfo["details-for-prompt-enclosure"] || false}
-									className="details-button"
-									onClick={toggleButtonState.bind(null, "details-for-prompt-enclosure")}
-								>
-									Details
-								</button>
+				<>
+					<button
+						type="button"
+						aria-expanded={
+							showDetailsInfo['details-for-prompt-enclosure'] || false
+						}
+						className="details-button"
+						onClick={toggleButtonState.bind(
+							null,
+							'details-for-prompt-enclosure'
+						)}
+					>
+						Details
+					</button>
 					<div className="details-panel">
-					<p>{defenceDetail.info}</p>
-					
+						<p>{defenceDetail.info}</p>
+
 						<PromptEnclosureDefenceMechanism
 							defences={promptEnclosureDefences}
 							toggleDefence={toggleDefence}
@@ -136,8 +142,8 @@ function DefenceMechanism({
 							setConfigurationValue={setConfigurationValue}
 							resetConfigurationValue={resetConfigurationValue}
 						/>
-						</div>
-						</>
+					</div>
+				</>
 			)}
 		</fieldset>
 	);

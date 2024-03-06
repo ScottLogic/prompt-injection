@@ -19,16 +19,16 @@
 	font-size: 1rem;
 }
 
-.details-button[aria-expanded=true]{
+.details-button[aria-expanded='true'] {
 	border-style: inset;
 	background-color: var(--control-body-background-colour);
 }
 
-.details-button[aria-expanded=false] ~ .details-panel {
+.details-button[aria-expanded='false'] ~ .details-panel {
 	display: none;
 }
 
-
+/* 
 .defence-mechanism-summary {
 	width: fit-content;
 	padding: 0.3125rem;
@@ -53,7 +53,7 @@
 .defence-mechanism-fieldset details[open] > summary {
 	border-style: inset;
 	background-color: var(--control-body-background-colour);
-}
+} */
 
 .defence-mechanism-form {
 	position: absolute;
