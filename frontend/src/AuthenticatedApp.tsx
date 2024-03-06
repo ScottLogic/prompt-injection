@@ -15,6 +15,14 @@ import './Theme.css';
 import './Authenticator.css';
 /* eslint-enable import/order */
 
+const usernameFormField = {
+	username: {
+		label: 'Email address',
+		placeholder: 'alice@example.com',
+		isRequired: true,
+	},
+};
+
 Amplify.configure({
 	Auth: {
 		Cognito: {
@@ -58,11 +66,11 @@ const AuthenticatedApp = withAuthenticator(
 			},
 		},
 		formFields: {
+			signIn: {
+				...usernameFormField,
+			},
 			forgotPassword: {
-				username: {
-					placeholder: 'Enter your Email',
-					isRequired: true,
-				},
+				...usernameFormField,
 			},
 		},
 	}
