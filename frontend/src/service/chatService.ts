@@ -15,11 +15,9 @@ const PATH = 'openai/';
 async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 	const response = await sendRequest(`${PATH}chat`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ message, currentLevel }),
+		body: { message, currentLevel },
 	});
-	const data = (await response.json()) as ChatResponse;
-	return data;
+	return (await response.json()) as ChatResponse;
 }
 
 function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
@@ -58,8 +56,7 @@ function getChatMessagesFromDTOResponse(chatMessageDTOs: ChatMessageDTO[]) {
 async function setGptModel(model: string): Promise<ChatMessage | null> {
 	const response = await sendRequest(`${PATH}model`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ model }),
+		body: { model },
 	});
 
 	if (response.status !== 200) return null;
@@ -75,8 +72,7 @@ async function configureGptModel(
 ): Promise<ChatMessage | null> {
 	const response = await sendRequest(`${PATH}model/configure`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ configId, value }),
+		body: { configId, value },
 	});
 
 	if (response.status !== 200) return null;
@@ -93,12 +89,11 @@ async function addInfoMessageToChatHistory(
 ) {
 	const response = await sendRequest(`${PATH}addInfoToHistory`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({
+		body: {
 			infoMessage: message,
 			chatMessageType,
 			level,
-		}),
+		},
 	});
 	return response.status === 200;
 }

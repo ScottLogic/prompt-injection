@@ -7,9 +7,7 @@ import { getDefencesFromDTOs } from './defenceService';
 const PATH = 'start';
 
 async function start(level: number) {
-	const response = await sendRequest(`${PATH}?level=${level}`, {
-		method: 'GET',
-	});
+	const response = await sendRequest(`${PATH}?level=${level}`);
 	const {
 		availableModels,
 		defences,

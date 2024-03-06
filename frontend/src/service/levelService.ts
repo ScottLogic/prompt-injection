@@ -7,9 +7,7 @@ import { getDefencesFromDTOs } from './defenceService';
 const PATH = 'level';
 
 async function loadLevel(level: number) {
-	const response = await sendRequest(`${PATH}?level=${level}`, {
-		method: 'GET',
-	});
+	const response = await sendRequest(`${PATH}?level=${level}`);
 	const { defences, emails, chatHistory, chatModel } =
 		(await response.json()) as LoadLevelResponse;
 
