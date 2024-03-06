@@ -12,7 +12,23 @@ import {
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
 //import { ListenerAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 //import { AuthenticateCognitoAction } from 'aws-cdk-lib/aws-elasticloadbalancingv2-actions';
+import {
+	Effect,
+	PolicyStatement,
+	Role,
+	ServicePrincipal,
+} from 'aws-cdk-lib/aws-iam';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
+import {
+	CronOptionsWithTimezone,
+	Group,
+	Schedule,
+	ScheduleExpression,
+	ScheduleTargetInput,
+} from '@aws-cdk/aws-scheduler-alpha';
+import { LambdaInvoke } from '@aws-cdk/aws-scheduler-targets-alpha';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import {
 	CfnOutput,
@@ -20,6 +36,7 @@ import {
 	Stack,
 	StackProps,
 	Tags,
+	TimeZone,
 } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { join } from 'node:path';
@@ -29,6 +46,7 @@ import {
 	resourceDescription,
 	resourceName,
 } from './resourceNamingUtils';
+import type { ServiceEventLambda } from './startStopServiceLambda';
 
 type ApiStackProps = StackProps & {
 	// userPool: UserPool;
@@ -116,6 +134,80 @@ export class ApiStack extends Stack {
 				removalPolicy: RemovalPolicy.DESTROY,
 			})
 		);
+
+		// Lambda to bring fargate service up or down
+		const startStopFunctionName = generateResourceName('fargate-switch');
+		const startStopServiceFunction = new NodejsFunction(
+			this,
+			startStopFunctionName,
+			{
+				functionName: startStopFunctionName,
+				description: generateResourceDescription(
+					'Fargate Service start/stop function'
+				),
+				runtime: Runtime.NODEJS_18_X,
+				handler: 'handler',
+				entry: join(__dirname, './startStopServiceLambda.ts'),
+				bundling: {
+					minify: true,
+				},
+				environment: {
+					CLUSTER_NAME: cluster.clusterName,
+					SERVICE_NAME: fargateService.service.serviceName,
+				},
+			}
+		);
+		startStopServiceFunction.addToRolePolicy(
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				actions: ['ecs:DescribeServices', 'ecs:UpdateService'],
+				resources: [fargateService.service.serviceArn],
+			})
+		);
+
+		// Schedule fargate service up at start of day, down at end
+		const schedulerRoleName = generateResourceName('scheduler-role');
+		const schedulerRole = new Role(this, schedulerRoleName, {
+			roleName: schedulerRoleName,
+			assumedBy: new ServicePrincipal('scheduler.amazonaws.com'),
+		});
+		const lambdaTarget = (operation: ServiceEventLambda['operation']) =>
+			new LambdaInvoke(startStopServiceFunction, {
+				input: ScheduleTargetInput.fromObject({ operation }),
+				role: schedulerRole,
+			});
+		const cronDef: CronOptionsWithTimezone = {
+			weekDay: 'MON-FRI',
+			minute: '0',
+			timeZone: TimeZone.EUROPE_LONDON,
+		};
+		const scheduleGroupName = generateResourceName('fargate-scheduler-group');
+		const scheduleGroup = new Group(this, scheduleGroupName, {
+			groupName: scheduleGroupName,
+			removalPolicy: RemovalPolicy.DESTROY,
+		});
+		const serverUpScheduleName = generateResourceName('server-up');
+		new Schedule(this, serverUpScheduleName, {
+			scheduleName: serverUpScheduleName,
+			description: generateResourceDescription('Scheduled server-up event'),
+			target: lambdaTarget('start'),
+			group: scheduleGroup,
+			schedule: ScheduleExpression.cron({
+				...cronDef,
+				hour: '9',
+			}),
+		});
+		const serverDownScheduleName = generateResourceName('server-down');
+		new Schedule(this, serverDownScheduleName, {
+			scheduleName: serverDownScheduleName,
+			description: generateResourceDescription('Scheduled server-down event'),
+			target: lambdaTarget('stop'),
+			group: scheduleGroup,
+			schedule: ScheduleExpression.cron({
+				...cronDef,
+				hour: '17',
+			}),
+		});
 
 		// Hook up Cognito to load balancer
 		// https://stackoverflow.com/q/71124324
