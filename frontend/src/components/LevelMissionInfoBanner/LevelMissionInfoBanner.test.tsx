@@ -55,15 +55,15 @@ describe('LevelMissionInfoBanner component tests', () => {
 	});
 
 	test('fires the openLevelsCompleteOverlay callback on button click', () => {
-		const currentLevel = LEVEL_NAMES.LEVEL_1;
+		const currentLevel = LEVEL_NAMES.LEVEL_3;
 
 		const openOverlayMock = vi.fn();
 		render(
 			<LevelMissionInfoBanner
 				currentLevel={currentLevel}
-				openOverlay={openOverlayMock}
-				openLevelsCompleteOverlay={() => {}}
-				numCompletedLevels={currentLevel}
+				openOverlay={() => {}}
+				openLevelsCompleteOverlay={openOverlayMock}
+				numCompletedLevels={4}
 			/>
 		);
 
