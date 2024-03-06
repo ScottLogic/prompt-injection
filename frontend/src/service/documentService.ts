@@ -4,8 +4,8 @@ import { getBackendUrl, sendRequest } from './backendService';
 
 const PATH = 'documents';
 
-async function getDocumentMetas(signal?: AbortSignal): Promise<DocumentMeta[]> {
-	const response = await sendRequest(PATH, { method: 'GET', signal });
+async function getDocumentMetas(signal: AbortSignal): Promise<DocumentMeta[]> {
+	const response = await sendRequest(PATH, { signal });
 	let documentMetas = (await response.json()) as DocumentMeta[];
 	documentMetas = documentMetas.map((documentMeta) => {
 		return {

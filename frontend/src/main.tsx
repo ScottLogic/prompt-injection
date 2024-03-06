@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from './App';
+import AuthenticatedApp from './AuthenticatedApp';
 
 import './index.css';
 
@@ -10,7 +11,7 @@ function main() {
 	const root = createRoot(document.getElementById('root')!);
 	root.render(
 		<StrictMode>
-			<App />
+			{import.meta.env.MODE === 'development' ? <App /> : <AuthenticatedApp />}
 		</StrictMode>
 	);
 }

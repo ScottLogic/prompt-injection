@@ -9,9 +9,6 @@ const PATH = 'reset';
 async function resetAllProgress(level: number) {
 	const response = await sendRequest(`${PATH}?level=${level}`, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
 	});
 	const { defences, emails, chatHistory, chatModel } =
 		(await response.json()) as LoadLevelResponse;
