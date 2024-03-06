@@ -1,3 +1,5 @@
+import { fetchAuthSession } from '@aws-amplify/auth';
+
 function backendUrl(): string {
 	const url = import.meta.env.VITE_BACKEND_URL;
 	if (!url) throw new Error('VITE_BACKEND_URL env variable not set');
@@ -30,6 +32,15 @@ async function post<T>(
 async function sendRequest<T>(path: string, options: RequestOptions<T> = {}) {
 	const { method = 'GET', body, signal } = options;
 
+	// No auth in dev mode
+	const auth: Record<string, string> =
+		import.meta.env.MODE === 'production'
+			? {
+				Authorization:
+					(await fetchAuthSession()).tokens?.accessToken.toString() ?? '',
+			}
+			: {};
+
 	// Body is always JSON, if present
 	const contentType: Record<string, string> = body
 		? {
@@ -43,6 +54,7 @@ async function sendRequest<T>(path: string, options: RequestOptions<T> = {}) {
 		signal,
 		credentials: 'include',
 		headers: {
+			...auth,
 			...contentType,
 		},
 	});
