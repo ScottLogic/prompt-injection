@@ -297,6 +297,8 @@ function MainComponent({
 				<LevelMissionInfoBanner
 					currentLevel={currentLevel}
 					openOverlay={openInformationOverlay}
+					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
+					numCompletedLevels={numCompletedLevels}
 				/>
 			)}
 			<MainBody
