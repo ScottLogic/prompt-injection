@@ -61,8 +61,10 @@ function ControlPanel({
 		MODEL_DEFENCES.includes(defence.id)
 	);
 
-	// only allow configuration in sandbox
-	const showConfigurations = currentLevel === LEVEL_NAMES.SANDBOX;
+	// only allow configuration in sandbox and level 3
+	const showConfigurations =
+		currentLevel === LEVEL_NAMES.SANDBOX ||
+		currentLevel === LEVEL_NAMES.LEVEL_3;
 
 	const [showDetailsInfo, setShowDetailsInfo] = useState<
 		Record<string, boolean>
@@ -73,6 +75,7 @@ function ControlPanel({
 			...prevState,
 			[buttonId]: !prevState[buttonId],
 		}));
+		setAllButtonsExpanded(false);
 	}
 
 	const [allButtonsExpanded, setAllButtonsExpanded] = useState<boolean>(false);
@@ -80,13 +83,26 @@ function ControlPanel({
 	function toggleAllButtons() {
 		if (allButtonsExpanded) {
 			setShowDetailsInfo({});
+			setAllButtonsExpanded(false);
 		} else {
 			setShowDetailsInfo({
 				'details-for-defence-config': true,
 				'details-for-model-config': true,
 			});
+			setAllButtonsExpanded(true);
 		}
-		setAllButtonsExpanded(!allButtonsExpanded);
+		// setAllButtonsExpanded(!allButtonsExpanded);
+	}
+
+	function contentHidden(buttonId: string) {
+		if (allButtonsExpanded) {
+			return true;
+		}
+		if (showDetailsInfo[buttonId]) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	return (
@@ -98,8 +114,10 @@ function ControlPanel({
 					<span className="header-and-button">
 						<h2>ScottBrew System Access</h2>
 						<button
+							type="button"
 							className="collapse-expand-button"
 							onClick={toggleAllButtons}
+							aria-pressed={allButtonsExpanded}
 						>
 							{allButtonsExpanded ? 'collapse all' : 'expand all'}
 						</button>
@@ -128,6 +146,8 @@ function ControlPanel({
 							resetDefenceConfiguration={resetDefenceConfiguration}
 							toggleDefence={toggleDefence}
 							setDefenceConfiguration={setDefenceConfiguration}
+							contentHidden={contentHidden}
+							toggleButtonState={toggleButtonState}
 						/>
 					</div>
 					<button
@@ -152,8 +172,10 @@ function ControlPanel({
 							toggleDefence={toggleDefence}
 							resetDefenceConfiguration={resetDefenceConfiguration}
 							setDefenceConfiguration={setDefenceConfiguration}
+							contentHidden={contentHidden}
+							toggleButtonState={toggleButtonState}
 						/>
-						{showConfigurations && (
+						{currentLevel === LEVEL_NAMES.SANDBOX && (
 							<ModelBox
 								chatModel={chatModel}
 								setChatModelId={setChatModelId}

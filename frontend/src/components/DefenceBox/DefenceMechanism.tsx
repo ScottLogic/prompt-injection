@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -19,6 +17,8 @@ function DefenceMechanism({
 	toggleDefence,
 	resetDefenceConfiguration,
 	setDefenceConfiguration,
+	contentHidden,
+	toggleButtonState,
 }: {
 	defenceDetail: Defence;
 	showConfigurations: boolean;
@@ -32,6 +32,8 @@ function DefenceMechanism({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
+	contentHidden: (buttonId: string) => boolean;
+	toggleButtonState: (buttonId: string) => void;
 }) {
 	// const [configKey, setConfigKey] = useState<number>(0);
 
@@ -54,17 +56,6 @@ function DefenceMechanism({
 			return config;
 		});
 		await setDefenceConfiguration(defence.id, newConfiguration);
-	}
-
-	const [showDetailsInfo, setshowDetailsInfo] = useState<
-		Record<string, boolean>
-	>({});
-
-	function toggleButtonState(buttonId: string) {
-		setshowDetailsInfo((prevState: Record<string, boolean>) => ({
-			...prevState,
-			[buttonId]: !prevState[buttonId],
-		}));
 	}
 
 	return (
@@ -97,14 +88,11 @@ function DefenceMechanism({
 						<>
 							<button
 								type="button"
-								aria-expanded={
-									showDetailsInfo[config.id + defenceDetail.id] || false
-								}
+								aria-expanded={contentHidden(config.id + defenceDetail.id)}
 								className="details-button"
-								onClick={toggleButtonState.bind(
-									null,
-									config.id + defenceDetail.id
-								)}
+								onClick={() => {
+									toggleButtonState(config.id + defenceDetail.id);
+								}}
 							>
 								Details
 							</button>
@@ -126,14 +114,11 @@ function DefenceMechanism({
 				<>
 					<button
 						type="button"
-						aria-expanded={
-							showDetailsInfo['details-for-prompt-enclosure'] || false
-						}
+						aria-expanded={contentHidden('details-for-prompt-enclosure')}
 						className="details-button"
-						onClick={toggleButtonState.bind(
-							null,
-							'details-for-prompt-enclosure'
-						)}
+						onClick={() => {
+							toggleButtonState('details-for-prompt-enclosure');
+						}}
 					>
 						Details
 					</button>
