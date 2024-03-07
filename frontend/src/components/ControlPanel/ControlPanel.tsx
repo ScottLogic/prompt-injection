@@ -64,15 +64,29 @@ function ControlPanel({
 	// only allow configuration in sandbox
 	const showConfigurations = currentLevel === LEVEL_NAMES.SANDBOX;
 
-	const [showDetailsInfo, setshowDetailsInfo] = useState<
+	const [showDetailsInfo, setShowDetailsInfo] = useState<
 		Record<string, boolean>
 	>({});
 
 	function toggleButtonState(buttonId: string) {
-		setshowDetailsInfo((prevState: Record<string, boolean>) => ({
+		setShowDetailsInfo((prevState: Record<string, boolean>) => ({
 			...prevState,
 			[buttonId]: !prevState[buttonId],
 		}));
+	}
+
+	const [allButtonsExpanded, setAllButtonsExpanded] = useState<boolean>(false);
+
+	function toggleAllButtons() {
+		if (allButtonsExpanded) {
+			setShowDetailsInfo({});
+		} else {
+			setShowDetailsInfo({
+				'details-for-defence-config': true,
+				'details-for-model-config': true,
+			});
+		}
+		setAllButtonsExpanded(!allButtonsExpanded);
 	}
 
 	return (
@@ -81,9 +95,15 @@ function ControlPanel({
 			{(currentLevel === LEVEL_NAMES.LEVEL_3 ||
 				currentLevel === LEVEL_NAMES.SANDBOX) && (
 				<>
-					{/* <h2 className="visually-hidden">ScottBrew System Access</h2> */}
-					<h2>ScottBrew System Access</h2>
-					{/* <button>expand all</button> */}
+					<span className="header-and-button">
+						<h2>ScottBrew System Access</h2>
+						<button
+							className="collapse-expand-button"
+							onClick={toggleAllButtons}
+						>
+							{allButtonsExpanded ? 'collapse all' : 'expand all'}
+						</button>
+					</span>
 					<button
 						type="button"
 						aria-expanded={

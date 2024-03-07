@@ -28,8 +28,12 @@
 	cursor: default;
 }
 
+.control-panel .control-collapsible-section-header:hover {
+	background-color: var(--control-header-background-colour-hover);
+}
+
 .control-panel .control-collapsible-section-header:focus-visible {
-	border-radius: 0;
+	background-color: var(--control-header-background-colour-hover);
 }
 
 .control-panel
@@ -39,10 +43,28 @@
 	border-bottom-left-radius: 0;
 }
 
+.control-panel .header-and-button {
+	display: flex;
+	justify-content: space-between;
+
+	/* background-color: blue; */
+}
+
 .control-panel h2 {
 	margin: 0;
-	/* background-color: blue; */
 	font-size: 1.25rem;
+}
+
+.control-panel .collapse-expand-button {
+	display: inline;
+	border: none;
+	border-radius: 0.5rem;
+	background-color: var(--control-header-background-colour);
+	color: inherit;
+}
+
+.control-panel .collapse-expand-button:hover {
+	background-color: var(--control-header-background-colour-hover);
 }
 
 .details-button-defence-config {
