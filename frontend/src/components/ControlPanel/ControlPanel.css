@@ -1,4 +1,7 @@
 .control-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
 	overflow-y: auto;
 	height: 100%;
 	padding: 1.875rem;
@@ -36,43 +39,58 @@
 	border-bottom-left-radius: 0;
 }
 
-.dw-button-one[aria-expanded] {
-	background-color: var(--control-header-background-colour);
-	color: inherit;
-	font-size: 1rem;
+.control-panel h2 {
+	margin: 0;
+	/* background-color: blue; */
+	font-size: 1.25rem;
+}
+
+.details-button-defence-config {
 	width: 100%;
 	border: none;
 	border-radius: 0.5rem;
-	text-align: start;
-	margin-bottom: 0.75rem;
-}
-
-.dw-button-two[aria-expanded] {
 	background-color: var(--control-header-background-colour);
 	color: inherit;
 	font-size: 1rem;
+	text-align: start;
+
+	/* margin-bottom: 0.75rem; */
+}
+
+.details-button-model-config {
 	width: 100%;
 	border: none;
 	border-radius: 0.5rem;
+	background-color: var(--control-header-background-colour);
+	color: inherit;
+	font-size: 1rem;
 	text-align: start;
+
+	/* margin-bottom: 0.75rem; */
 }
 
-.dw-button-one[aria-expanded='false'] ~ .dw-panel-one {
+.details-button-defence-config[aria-expanded='false']
+	~ .details-panel-for-defence-config {
 	display: none;
 }
-.dw-button-two[aria-expanded='false'] ~ .dw-panel-two {
+
+.details-button-model-config[aria-expanded='false']
+	~ .details-panel-for-model-config {
 	display: none;
 }
 
 .tab-container {
 	display: flex;
 	width: 100%;
+
 	/* flex-direction: column; */
+
 	/* height: 100%; */
 }
 
 .tab-buttons {
 	width: 100%;
+
 	/* background-color: aqua; */
 }
 
@@ -81,7 +99,7 @@
 }
 
 .button-arrow-icon {
+	display: inline-block;
 	width: 1.5rem;
 	text-align: center;
-	display: inline-block;
 }

@@ -33,7 +33,7 @@ function DefenceMechanism({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 }) {
-	const [configKey, setConfigKey] = useState<number>(0);
+	// const [configKey, setConfigKey] = useState<number>(0);
 
 	function resetConfigurationValue(
 		defence: Defence,
@@ -97,9 +97,14 @@ function DefenceMechanism({
 						<>
 							<button
 								type="button"
-								aria-expanded={showDetailsInfo[config.id + configKey] || false}
+								aria-expanded={
+									showDetailsInfo[config.id + defenceDetail.id] || false
+								}
 								className="details-button"
-								onClick={toggleButtonState.bind(null, config.id + configKey)}
+								onClick={toggleButtonState.bind(
+									null,
+									config.id + defenceDetail.id
+								)}
 							>
 								Details
 							</button>
@@ -107,7 +112,7 @@ function DefenceMechanism({
 								<p>{defenceDetail.info}</p>
 								<DefenceConfiguration
 									defence={defenceDetail}
-									key={config.id + configKey}
+									key={config.id + defenceDetail.id}
 									isActive={defenceDetail.isActive}
 									config={config}
 									setConfigurationValue={setConfigurationValue}

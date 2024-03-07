@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { DEFENCES_HIDDEN_LEVEL3_IDS, MODEL_DEFENCES } from '@src/Defences';
 import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
@@ -12,7 +14,6 @@ import {
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './ControlPanel.css';
-import { useState } from 'react';
 
 function ControlPanel({
 	currentLevel,
@@ -63,30 +64,15 @@ function ControlPanel({
 	// only allow configuration in sandbox
 	const showConfigurations = currentLevel === LEVEL_NAMES.SANDBOX;
 
-	const [isButtonOneExpanded, setIsButtonOneExpanded] = useState(
-		document.getElementById('dw-button-one')?.getAttribute('aria-expanded') ===
-			'true'
-	);
-	const [isButtonTwoExpanded, setIsButtonTwoExpanded] = useState(
-		document.getElementById('dw-button-two')?.getAttribute('aria-expanded') ===
-			'true'
-	);
+	const [showDetailsInfo, setshowDetailsInfo] = useState<
+		Record<string, boolean>
+	>({});
 
-	function handleButtonOneClick() {
-		const button = document.querySelector('.dw-button-one');
-		if (button) {
-			const isExpanded = button.getAttribute('aria-expanded') === 'true';
-			button.setAttribute('aria-expanded', String(!isExpanded));
-			setIsButtonOneExpanded(!isExpanded);
-		}
-	}
-	function handleButtonTwoClick() {
-		const button = document.querySelector('.dw-button-two');
-		if (button) {
-			const isExpanded = button.getAttribute('aria-expanded') === 'true';
-			button.setAttribute('aria-expanded', String(!isExpanded));
-			setIsButtonTwoExpanded(!isExpanded);
-		}
+	function toggleButtonState(buttonId: string) {
+		setshowDetailsInfo((prevState: Record<string, boolean>) => ({
+			...prevState,
+			[buttonId]: !prevState[buttonId],
+		}));
 	}
 
 	return (
@@ -95,21 +81,26 @@ function ControlPanel({
 			{(currentLevel === LEVEL_NAMES.LEVEL_3 ||
 				currentLevel === LEVEL_NAMES.SANDBOX) && (
 				<>
-					<h2 className="visually-hidden">ScottBrew System Access</h2>
-					<h3>ScottBrew System Access</h3>
+					{/* <h2 className="visually-hidden">ScottBrew System Access</h2> */}
+					<h2>ScottBrew System Access</h2>
 					{/* <button>expand all</button> */}
 					<button
 						type="button"
-						aria-expanded="false"
-						className="dw-button-one control-collapsible-section-header"
-						onClick={handleButtonOneClick}
+						aria-expanded={
+							showDetailsInfo['details-for-defence-config'] || false
+						}
+						className="details-button-defence-config control-collapsible-section-header"
+						onClick={toggleButtonState.bind(null, 'details-for-defence-config')}
 					>
 						<span className="button-arrow-icon" aria-hidden>
-							{isButtonOneExpanded ? '\u2B9F' : '\u2B9E'}&nbsp;
+							{showDetailsInfo['details-for-defence-config']
+								? '\u2B9F'
+								: '\u2B9E'}
+							&nbsp;
 						</span>
 						Defence Configuration
 					</button>
-					<div className="dw-panel-one">
+					<div className="details-panel-for-defence-config">
 						<DefenceBox
 							currentLevel={currentLevel}
 							defences={nonModelDefences}
@@ -119,33 +110,21 @@ function ControlPanel({
 							setDefenceConfiguration={setDefenceConfiguration}
 						/>
 					</div>
-
-					{/* <details className="control-collapsible-section">
-						<summary className="control-collapsible-section-header">
-							Defence Configuration
-						</summary>
-						<DefenceBox
-							currentLevel={currentLevel}
-							defences={nonModelDefences}
-							showConfigurations={showConfigurations}
-							resetDefenceConfiguration={resetDefenceConfiguration}
-							toggleDefence={toggleDefence}
-							setDefenceConfiguration={setDefenceConfiguration}
-						/>
-					</details> */}
-
 					<button
 						type="button"
-						aria-expanded="false"
-						className="dw-button-two control-collapsible-section-header"
-						onClick={handleButtonTwoClick}
+						aria-expanded={showDetailsInfo['details-for-model-config'] || false}
+						className="details-button-model-config control-collapsible-section-header"
+						onClick={toggleButtonState.bind(null, 'details-for-model-config')}
 					>
 						<span className="button-arrow-icon" aria-hidden>
-							{isButtonTwoExpanded ? '\u2B9F' : '\u2B9E'}&nbsp;
+							{showDetailsInfo['details-for-model-config']
+								? '\u2B9F'
+								: '\u2B9E'}
+							&nbsp;
 						</span>
 						Model Configuration
 					</button>
-					<div className="dw-panel-two">
+					<div className="details-panel-for-model-config">
 						<DefenceBox
 							currentLevel={currentLevel}
 							defences={modelDefences}
@@ -156,35 +135,13 @@ function ControlPanel({
 						/>
 						{showConfigurations && (
 							<ModelBox
-								chatModelOptions={chatModelOptions}
-								addInfoMessage={addInfoMessage}
-							/>
-						)}
-					</div>
-
-					{/* <details className="control-collapsible-section">
-						<summary className="control-collapsible-section-header">
-							Model Configuration
-						</summary>
-						<DefenceBox
-							currentLevel={currentLevel}
-							defences={modelDefences}
-							showConfigurations={showConfigurations}
-							toggleDefence={toggleDefence}
-							resetDefenceConfiguration={resetDefenceConfiguration}
-							setDefenceConfiguration={setDefenceConfiguration}
-						/> */}
-
-					{/* only show model box in sandbox mode */}
-					{/* {showConfigurations && (
-							<ModelBox
 								chatModel={chatModel}
 								setChatModelId={setChatModelId}
 								chatModelOptions={chatModelOptions}
 								addInfoMessage={addInfoMessage}
 							/>
 						)}
-					</details> */}
+					</div>
 				</>
 			)}
 
