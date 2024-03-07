@@ -10,10 +10,12 @@ import './ModelSelection.css';
 // return a drop down menu with the models
 function ModelSelection({
 	chatModel,
+	setChatModelId,
 	chatModelOptions,
 	addInfoMessage,
 }: {
 	chatModel?: ChatModel;
+	setChatModelId: (modelId: string) => void;
 	chatModelOptions: string[];
 	addInfoMessage: (message: string) => void;
 }) {
@@ -35,6 +37,7 @@ function ModelSelection({
 			if (modelUpdated) {
 				setErrorChangingModel(false);
 				addInfoMessage(`changed model to ${currentSelectedModel}`);
+				setChatModelId(currentSelectedModel);
 			} else {
 				setErrorChangingModel(true);
 			}

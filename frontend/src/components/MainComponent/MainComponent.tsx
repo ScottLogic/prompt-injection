@@ -299,6 +299,16 @@ function MainComponent({
 		setMessages((messages: ChatMessage[]) => [resetMessage, ...messages]);
 	}
 
+	function setChatModelId(modelId: string) {
+		if (!chatModel) {
+			console.error(
+				'You are trying to change the id of the chatModel but it has not been loaded yet'
+			);
+			return;
+		}
+		setChatModel({ ...chatModel, id: modelId });
+	}
+
 	return (
 		<div className="main-component">
 			<MainHeader
@@ -320,6 +330,7 @@ function MainComponent({
 				currentLevel={currentLevel}
 				defences={defences}
 				chatModel={chatModel}
+				setChatModelId={setChatModelId}
 				chatModels={chatModels}
 				emails={emails}
 				messages={messages}

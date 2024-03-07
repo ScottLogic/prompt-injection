@@ -12,6 +12,7 @@ function ControlPanel({
 	currentLevel,
 	defences,
 	chatModel,
+	setChatModelId,
 	chatModelOptions,
 	toggleDefence,
 	resetDefenceConfiguration,
@@ -22,6 +23,7 @@ function ControlPanel({
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
 	chatModel?: ChatModel;
+	setChatModelId: (modelId: string) => void;
 	chatModelOptions: string[];
 	toggleDefence: (defence: Defence) => void;
 	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
@@ -90,6 +92,7 @@ function ControlPanel({
 						{showConfigurations && (
 							<ModelBox
 								chatModel={chatModel}
+								setChatModelId={setChatModelId}
 								chatModelOptions={chatModelOptions}
 								addInfoMessage={addInfoMessage}
 							/>

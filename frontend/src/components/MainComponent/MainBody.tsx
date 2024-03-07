@@ -15,6 +15,7 @@ function MainBody({
 	messages,
 	chatModel,
 	chatModels,
+	setChatModelId,
 	addChatMessage,
 	addInfoMessage,
 	addSentEmails,
@@ -31,6 +32,7 @@ function MainBody({
 	emails: EmailInfo[];
 	messages: ChatMessage[];
 	chatModel?: ChatModel;
+	setChatModelId: (modelId: string) => void;
 	chatModels: string[];
 	addChatMessage: (message: ChatMessage) => void;
 	addInfoMessage: (message: string) => void;
@@ -54,6 +56,7 @@ function MainBody({
 					currentLevel={currentLevel}
 					defences={defences}
 					chatModel={chatModel}
+					setChatModelId={setChatModelId}
 					chatModelOptions={chatModels}
 					toggleDefence={toggleDefence}
 					resetDefenceConfiguration={resetDefenceConfiguration}

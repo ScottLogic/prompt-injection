@@ -7,10 +7,12 @@ import './ModelBox.css';
 
 function ModelBox({
 	chatModel,
+	setChatModelId,
 	chatModelOptions,
 	addInfoMessage,
 }: {
 	chatModel?: ChatModel;
+	setChatModelId: (modelId: string) => void;
 	chatModelOptions: string[];
 	addInfoMessage: (message: string) => void;
 }) {
@@ -18,6 +20,7 @@ function ModelBox({
 		<div className="model-box">
 			<ModelSelection
 				chatModel={chatModel}
+				setChatModelId={setChatModelId}
 				chatModelOptions={chatModelOptions}
 				addInfoMessage={addInfoMessage}
 			/>
