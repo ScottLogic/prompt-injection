@@ -3,6 +3,7 @@
 	display: inline-block;
 	margin: 0.1rem;
 	cursor: pointer;
+	display: flex;
 }
 
 .defence-radio-button input {
@@ -11,7 +12,6 @@
 }
 
 .defence-radio-button span {
-	margin-top: 1rem;
 	margin-left: 1rem;
 }
 
