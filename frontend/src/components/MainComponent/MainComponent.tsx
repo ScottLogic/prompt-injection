@@ -4,7 +4,7 @@ import { DEFAULT_DEFENCES } from '@src/Defences';
 import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
-import { ChatMessage } from '@src/models/chat';
+import { ChatMessage, ChatModel } from '@src/models/chat';
 import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
@@ -53,6 +53,7 @@ function MainComponent({
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
+	const [chatModel, setChatModel] = useState<ChatModel | undefined>(undefined);
 
 	const isFirstRender = useRef(true);
 
@@ -76,11 +77,23 @@ function MainComponent({
 
 	async function loadBackendData() {
 		try {
-			const { availableModels, defences, emails, chatHistory, systemRoles } =
-				await startService.start(currentLevel);
+			const {
+				availableModels,
+				defences,
+				emails,
+				chatHistory,
+				systemRoles,
+				chatModel,
+			} = await startService.start(currentLevel);
 			setChatModels(availableModels);
 			setSystemRoles(systemRoles);
-			processBackendLevelData(currentLevel, emails, chatHistory, defences);
+			processBackendLevelData(
+				currentLevel,
+				emails,
+				chatHistory,
+				defences,
+				chatModel
+			);
 		} catch (err) {
 			console.warn(err);
 			setMessages([
@@ -147,17 +160,17 @@ function MainComponent({
 
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
-		const { emails, chatHistory, defences } = await levelService.loadLevel(
-			newLevel
-		);
-		processBackendLevelData(newLevel, emails, chatHistory, defences);
+		const { emails, chatHistory, defences, chatModel } =
+			await levelService.loadLevel(newLevel);
+		processBackendLevelData(newLevel, emails, chatHistory, defences, chatModel);
 	}
 
 	function processBackendLevelData(
 		level: LEVEL_NAMES,
 		emails: EmailInfo[],
 		chatHistory: ChatMessage[],
-		defences: Defence[]
+		defences: Defence[],
+		chatModel?: ChatModel
 	) {
 		setEmails(emails);
 
@@ -167,6 +180,7 @@ function MainComponent({
 			: setMessages(chatHistory);
 
 		setDefences(defences);
+		setChatModel(chatModel);
 		setMainBodyKey(MainBodyKey + 1);
 	}
 
@@ -303,6 +317,7 @@ function MainComponent({
 				key={MainBodyKey}
 				currentLevel={currentLevel}
 				defences={defences}
+				chatModel={chatModel}
 				chatModels={chatModels}
 				emails={emails}
 				messages={messages}
