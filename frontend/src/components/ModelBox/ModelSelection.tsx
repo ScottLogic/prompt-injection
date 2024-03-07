@@ -20,7 +20,9 @@ function ModelSelection({
 	addInfoMessage: (message: string) => void;
 }) {
 	// model currently selected in the dropdown
-	const [selectedModel, setSelectedModel] = useState<string | null>(null);
+	const [selectedModel, setSelectedModel] = useState<string | undefined>(
+		undefined
+	);
 
 	const [errorChangingModel, setErrorChangingModel] = useState(false);
 
@@ -46,7 +48,7 @@ function ModelSelection({
 
 	// get the model
 	useEffect(() => {
-		setSelectedModel(chatModel ? chatModel.id : null); // could we set it do underfined instead of null?
+		setSelectedModel(chatModel?.id); // could we set it do underfined instead of null?
 	}, [chatModel]);
 
 	// return a drop down menu with the models
