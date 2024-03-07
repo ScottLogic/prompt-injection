@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
+import {
+	ChatModel,
+	CustomChatModelConfiguration,
+	MODEL_CONFIG,
+} from '@src/models/chat';
 import { chatService } from '@src/service';
 
 import ModelConfigurationSlider from './ModelConfigurationSlider';
@@ -8,10 +12,13 @@ import ModelConfigurationSlider from './ModelConfigurationSlider';
 import './ModelConfiguration.css';
 
 function ModelConfiguration({
+	chatModel,
 	addInfoMessage,
 }: {
+	chatModel?: ChatModel;
 	addInfoMessage: (message: string) => void;
 }) {
+	// can we move the default configurations to a different file?
 	const [customChatModelConfigs, setCustomChatModel] = useState<
 		CustomChatModelConfiguration[]
 	>([
@@ -79,25 +86,18 @@ function ModelConfiguration({
 		});
 	}
 
-	// get model configs on mount
 	useEffect(() => {
-		chatService
-			.getGptModel()
-			.then((model) => {
-				// apply the currently set values
-				const newCustomChatModelConfigs = customChatModelConfigs.map(
-					(config) => {
-						const newConfig = { ...config };
-						newConfig.value = model.configuration[config.id];
-						return newConfig;
-					}
-				);
-				setCustomChatModel(newCustomChatModelConfigs);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []);
+		if (!chatModel) {
+			// chatModel is undefined if this is the first time that the user has switched to the sandbox level, and the change level request has not yet resolved successfully
+			return;
+		}
+		const newCustomChatModelConfigs = customChatModelConfigs.map((config) => {
+			const newConfig = { ...config };
+			newConfig.value = chatModel.configuration[config.id];
+			return newConfig;
+		});
+		setCustomChatModel(newCustomChatModelConfigs);
+	}, [chatModel]);
 
 	return (
 		<div className="model-config-box">

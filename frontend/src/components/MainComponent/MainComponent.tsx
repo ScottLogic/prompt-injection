@@ -180,7 +180,9 @@ function MainComponent({
 			: setMessages(chatHistory);
 
 		setDefences(defences);
-		setChatModel(chatModel);
+
+		// we will only update the chatModel if it is defined in the backend response. It will only defined for the sandbox level.
+		chatModel && setChatModel(chatModel);
 		setMainBodyKey(MainBodyKey + 1);
 	}
 

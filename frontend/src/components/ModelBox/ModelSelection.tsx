@@ -2,22 +2,23 @@
 import { useEffect, useState } from 'react';
 
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
+import { ChatModel } from '@src/models/chat';
 import { chatService } from '@src/service';
 
 import './ModelSelection.css';
 
 // return a drop down menu with the models
 function ModelSelection({
+	chatModel,
 	chatModelOptions,
 	addInfoMessage,
 }: {
+	chatModel?: ChatModel;
 	chatModelOptions: string[];
 	addInfoMessage: (message: string) => void;
 }) {
 	// model currently selected in the dropdown
 	const [selectedModel, setSelectedModel] = useState<string | null>(null);
-	// model in use by the app
-	const [modelInUse, setModelInUse] = useState<string | null>(null);
 
 	const [errorChangingModel, setErrorChangingModel] = useState(false);
 
@@ -32,7 +33,6 @@ function ModelSelection({
 			const modelUpdated = await chatService.setGptModel(currentSelectedModel);
 			setIsSettingModel(false);
 			if (modelUpdated) {
-				setModelInUse(currentSelectedModel);
 				setErrorChangingModel(false);
 				addInfoMessage(`changed model to ${currentSelectedModel}`);
 			} else {
@@ -43,17 +43,8 @@ function ModelSelection({
 
 	// get the model
 	useEffect(() => {
-		chatService
-			.getGptModel()
-			.then((model) => {
-				setModelInUse(model.id);
-				// default the dropdown selection to the model in use
-				setSelectedModel(model.id);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []);
+		setSelectedModel(chatModel ? chatModel.id : null); // could we set it do underfined instead of null?
+	}, [chatModel]);
 
 	// return a drop down menu with the models
 	return (
@@ -90,13 +81,13 @@ function ModelSelection({
 					{errorChangingModel ? (
 						<p className="error-message" aria-live="polite">
 							Error: Could not change model. You are still chatting to:
-							<b> {modelInUse} </b>
+							<b> {chatModel?.id} </b>
 						</p>
 					) : (
 						<p>
-							{modelInUse ? (
+							{chatModel ? (
 								<>
-									You are chatting to model: <b>{modelInUse}</b>
+									You are chatting to model: <b>{chatModel.id}</b>
 								</>
 							) : (
 								'You are not connected to a model.'
