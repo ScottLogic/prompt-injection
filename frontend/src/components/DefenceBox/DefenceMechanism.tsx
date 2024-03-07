@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -19,6 +21,7 @@ function DefenceMechanism({
 	setDefenceConfiguration,
 	contentHidden,
 	toggleButtonState,
+	configKey,
 }: {
 	defenceDetail: Defence;
 	showConfigurations: boolean;
@@ -34,8 +37,9 @@ function DefenceMechanism({
 	) => Promise<boolean>;
 	contentHidden: (buttonId: string) => boolean;
 	toggleButtonState: (buttonId: string) => void;
+	configKey: number;
 }) {
-	// const [configKey, setConfigKey] = useState<number>(0);
+	const [newConfigKey, setNewConfigKey] = useState<number>(configKey);
 
 	function resetConfigurationValue(
 		defence: Defence,
@@ -92,6 +96,7 @@ function DefenceMechanism({
 								className="details-button"
 								onClick={() => {
 									toggleButtonState(config.id + defenceDetail.id);
+									setNewConfigKey(newConfigKey + 1);
 								}}
 							>
 								Details
@@ -100,7 +105,7 @@ function DefenceMechanism({
 								<p>{defenceDetail.info}</p>
 								<DefenceConfiguration
 									defence={defenceDetail}
-									key={config.id + defenceDetail.id}
+									key={config.id + configKey}
 									isActive={defenceDetail.isActive}
 									config={config}
 									setConfigurationValue={setConfigurationValue}

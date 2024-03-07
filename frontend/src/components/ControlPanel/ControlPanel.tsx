@@ -66,6 +66,8 @@ function ControlPanel({
 		currentLevel === LEVEL_NAMES.SANDBOX ||
 		currentLevel === LEVEL_NAMES.LEVEL_3;
 
+	const [configKey, setConfigKey] = useState<number>(0);
+
 	const [showDetailsInfo, setShowDetailsInfo] = useState<
 		Record<string, boolean>
 	>({});
@@ -75,6 +77,7 @@ function ControlPanel({
 			...prevState,
 			[buttonId]: !prevState[buttonId],
 		}));
+		setConfigKey(configKey + 1);
 		setAllButtonsExpanded(false);
 	}
 
@@ -96,6 +99,7 @@ function ControlPanel({
 
 	function contentHidden(buttonId: string) {
 		if (allButtonsExpanded) {
+			// setConfigKey(configKey + 1);
 			return true;
 		}
 		if (showDetailsInfo[buttonId]) {
@@ -148,6 +152,7 @@ function ControlPanel({
 							setDefenceConfiguration={setDefenceConfiguration}
 							contentHidden={contentHidden}
 							toggleButtonState={toggleButtonState}
+							configKey={configKey}
 						/>
 					</div>
 					<button
@@ -174,6 +179,7 @@ function ControlPanel({
 							setDefenceConfiguration={setDefenceConfiguration}
 							contentHidden={contentHidden}
 							toggleButtonState={toggleButtonState}
+							configKey={configKey}
 						/>
 						{currentLevel === LEVEL_NAMES.SANDBOX && (
 							<ModelBox
