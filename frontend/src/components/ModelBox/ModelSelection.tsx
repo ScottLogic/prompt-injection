@@ -48,7 +48,7 @@ function ModelSelection({
 
 	// get the model
 	useEffect(() => {
-		setSelectedModel(chatModel?.id); // could we set it do underfined instead of null?
+		setSelectedModel(chatModel?.id);
 	}, [chatModel]);
 
 	// return a drop down menu with the models
