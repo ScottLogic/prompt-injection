@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it, jest } from '@jest/globals';
 import { OpenAI } from 'openai';
 import request from 'supertest';
 
-import app from '@src/app';
+import app from '@src/app/app';
 import { StartResponse } from '@src/models/api/StartGetRequest';
 import { LEVEL_NAMES } from '@src/models/level';
 
