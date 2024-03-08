@@ -57,10 +57,10 @@ const router = express
 			}),
 			cookie: {
 				maxAge,
-				partitioned: isProd,
-				sameSite: isProd ? 'none' : 'strict',
+				sameSite: 'strict',
 				secure: isProd,
 			},
+			proxy: true,
 		})
 	)
 	.use((req, _res, next) => {

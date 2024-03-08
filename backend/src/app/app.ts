@@ -3,10 +3,9 @@ import express from 'express';
 import queryTypes from 'query-types';
 
 import nonSessionRoutes from './nonSessionRoutes';
-import { usingForwardedHeader } from './proxySetup';
 import sessionRoutes from './sessionRoutes';
 
-export default usingForwardedHeader(express())
+export default express()
 	.use(express.json())
 	.use(queryTypes.middleware())
 	.use(
