@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import DetailElement from '@src/components/ThemedButtons/DetailElement';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -19,9 +20,6 @@ function DefenceMechanism({
 	toggleDefence,
 	resetDefenceConfiguration,
 	setDefenceConfiguration,
-	contentHidden,
-	toggleButtonState,
-	configKey,
 }: {
 	defenceDetail: Defence;
 	showConfigurations: boolean;
@@ -35,11 +33,8 @@ function DefenceMechanism({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
-	contentHidden: (buttonId: string) => boolean;
-	toggleButtonState: (buttonId: string) => void;
-	configKey: number;
 }) {
-	const [newConfigKey, setNewConfigKey] = useState<number>(configKey);
+	const [configKey, setConfigKey] = useState<number>(0);
 
 	function resetConfigurationValue(
 		defence: Defence,
@@ -90,54 +85,48 @@ function DefenceMechanism({
 				defenceDetail.config.map((config) => {
 					return (
 						<>
-							<button
-								type="button"
-								aria-expanded={contentHidden(config.id + defenceDetail.id)}
-								className="details-button"
-								onClick={() => {
-									toggleButtonState(config.id + defenceDetail.id);
-									setNewConfigKey(newConfigKey + 1);
+							<DetailElement
+								useIcon={false}
+								buttonText={'Details'}
+								onExpanded={() => {
+									setConfigKey(configKey + 1);
 								}}
 							>
-								Details
-							</button>
-							<div className="details-panel">
-								<p>{defenceDetail.info}</p>
-								<DefenceConfiguration
-									defence={defenceDetail}
-									key={config.id + configKey}
-									isActive={defenceDetail.isActive}
-									config={config}
-									setConfigurationValue={setConfigurationValue}
-									resetConfigurationValue={resetConfigurationValue}
-								/>
-							</div>
+								<div className="details-panel">
+									<p>{defenceDetail.info}</p>
+									<DefenceConfiguration
+										defence={defenceDetail}
+										key={config.id + configKey}
+										isActive={defenceDetail.isActive}
+										config={config}
+										setConfigurationValue={setConfigurationValue}
+										resetConfigurationValue={resetConfigurationValue}
+									/>
+								</div>
+							</DetailElement>
 						</>
 					);
 				})
 			) : (
 				<>
-					<button
-						type="button"
-						aria-expanded={contentHidden('details-for-prompt-enclosure')}
-						className="details-button"
-						onClick={() => {
-							toggleButtonState('details-for-prompt-enclosure');
+					<DetailElement
+						useIcon={false}
+						buttonText={'Details'}
+						onExpanded={() => {
+							setConfigKey(configKey + 1);
 						}}
 					>
-						Details
-					</button>
-					<div className="details-panel">
-						<p>{defenceDetail.info}</p>
-
-						<PromptEnclosureDefenceMechanism
-							defences={promptEnclosureDefences}
-							toggleDefence={toggleDefence}
-							showConfigurations={showConfigurations}
-							setConfigurationValue={setConfigurationValue}
-							resetConfigurationValue={resetConfigurationValue}
-						/>
-					</div>
+						<div className="details-panel">
+							<p>{defenceDetail.info}</p>
+							<PromptEnclosureDefenceMechanism
+								defences={promptEnclosureDefences}
+								toggleDefence={toggleDefence}
+								showConfigurations={showConfigurations}
+								setConfigurationValue={setConfigurationValue}
+								resetConfigurationValue={resetConfigurationValue}
+							/>
+						</div>
+					</DetailElement>
 				</>
 			)}
 		</fieldset>

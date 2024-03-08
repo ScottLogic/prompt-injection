@@ -16,9 +16,6 @@ function DefenceBox({
 	toggleDefence,
 	resetDefenceConfiguration,
 	setDefenceConfiguration,
-	contentHidden,
-	toggleButtonState,
-	configKey,
 }: {
 	currentLevel: number;
 	defences: Defence[];
@@ -32,9 +29,6 @@ function DefenceBox({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
-	contentHidden: (buttonId: string) => boolean;
-	toggleButtonState: (buttonId: string) => void;
-	configKey: number;
 }) {
 	const promptEnclosureDefences = defences.filter((defence) =>
 		PROMPT_ENCLOSURE_DEFENCES.some((id) => id === defence.id)
@@ -55,9 +49,6 @@ function DefenceBox({
 						toggleDefence={toggleDefence}
 						resetDefenceConfiguration={resetDefenceConfiguration}
 						setDefenceConfiguration={setDefenceConfiguration}
-						contentHidden={contentHidden}
-						toggleButtonState={toggleButtonState}
-						configKey={configKey}
 					/>
 				);
 			})}

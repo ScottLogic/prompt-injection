@@ -1,0 +1,14 @@
+.details-button {
+	width: auto;
+	height: auto;
+}
+
+.details-button[aria-expanded='false'] ~ .details-content {
+	display: none;
+}
+
+.button-arrow-icon {
+	display: inline-block;
+	width: 1.5rem;
+	text-align: center;
+}

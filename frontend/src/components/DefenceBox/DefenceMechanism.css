@@ -9,7 +9,7 @@
 	padding: 0.3em;
 }
 
-.details-button {
+.defence-mechanism-fieldset .details-button {
 	width: fit-content;
 	padding: 0.3125rem;
 	border: 0.25rem outset var(--control-config-border);
@@ -19,21 +19,17 @@
 	font-size: 1rem;
 }
 
-.details-button:hover {
+.defence-mechanism-fieldset .details-button:hover {
 	background-color: var(--main-scrollbar-hover-colour);
 }
 
-.details-button[aria-expanded='true'] {
+.defence-mechanism-fieldset .details-button[aria-expanded='true'] {
 	border-style: inset;
 	background-color: var(--control-body-background-colour);
 }
 
-.details-button[aria-expanded='true']:hover {
+.defence-mechanism-fieldset .details-button[aria-expanded='true']:hover {
 	background-color: var(--main-scrollbar-hover-colour);
-}
-
-.details-button[aria-expanded='false'] ~ .details-panel {
-	display: none;
 }
 
 .defence-mechanism-form {

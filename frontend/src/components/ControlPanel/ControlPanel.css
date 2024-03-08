@@ -43,13 +43,6 @@
 	border-bottom-left-radius: 0;
 }
 
-.control-panel .header-and-button {
-	display: flex;
-	justify-content: space-between;
-
-	/* background-color: blue; */
-}
-
 .control-panel h2 {
 	margin: 0;
 	font-size: 1.25rem;
@@ -120,8 +113,8 @@
 	background-color: yellow;
 }
 
-.button-arrow-icon {
+/* .button-arrow-icon {
 	display: inline-block;
 	width: 1.5rem;
 	text-align: center;
-}
+} */
