@@ -19,9 +19,17 @@
 	font-size: 1rem;
 }
 
+.details-button:hover {
+	background-color: var(--main-scrollbar-hover-colour);
+}
+
 .details-button[aria-expanded='true'] {
 	border-style: inset;
 	background-color: var(--control-body-background-colour);
+}
+
+.details-button[aria-expanded='true']:hover {
+	background-color: var(--main-scrollbar-hover-colour);
 }
 
 .details-button[aria-expanded='false'] ~ .details-panel {
