@@ -17,7 +17,12 @@ import {
 	StackProps,
 } from 'aws-cdk-lib/core';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { AaaaRecord, IHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
+import {
+	AaaaRecord,
+	ARecord,
+	IHostedZone,
+	RecordTarget,
+} from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import {
 	BlockPublicAccess,
@@ -103,18 +108,24 @@ export class UiStack extends Stack {
 			}
 		);
 
-		// DNS AAAA Record for Route53
-		const cloudFrontARecordName = generateResourceName('arecord-cfront');
-		new AaaaRecord(this, cloudFrontARecordName, {
+		// DNS Records for Route53
+		const target = RecordTarget.fromAlias(
+			new CloudFrontTarget(cloudFrontDistribution)
+		);
+		new ARecord(this, generateResourceName('a-record-cfront'), {
 			zone: hostedZone,
-			target: RecordTarget.fromAlias(
-				new CloudFrontTarget(cloudFrontDistribution)
-			),
+			target,
+			deleteExisting: true,
+			comment: 'DNS A Record for the UI host',
+		});
+		new AaaaRecord(this, generateResourceName('aaaa-record-cfront'), {
+			zone: hostedZone,
+			target,
 			deleteExisting: true,
 			comment: 'DNS AAAA Record for the UI host',
 		});
 
-		this.cloudFrontUrl = `https://${cloudFrontDistribution.domainName}`;
+		this.cloudFrontUrl = `https://${hostedZone.zoneName}`;
 		new CfnOutput(this, 'WebURL', {
 			value: this.cloudFrontUrl,
 		});
