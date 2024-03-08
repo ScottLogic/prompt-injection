@@ -72,6 +72,7 @@ function ControlPanel({
 				currentLevel === LEVEL_NAMES.SANDBOX) && (
 				<>
 					<h2>ScottBrew System Access</h2>
+					{/* <div className="defence-config-container"> */}
 					<DetailElement useIcon={true} buttonText={'Defence Configuration'}>
 						<div className="details-panel-for-defence-config">
 							<DefenceBox
@@ -84,26 +85,29 @@ function ControlPanel({
 							/>
 						</div>
 					</DetailElement>
-					<DetailElement useIcon={true} buttonText={'Model Configuration'}>
-						<div className="details-panel-for-model-config">
-							<DefenceBox
-								currentLevel={currentLevel}
-								defences={modelDefences}
-								showConfigurations={showConfigurations}
-								toggleDefence={toggleDefence}
-								resetDefenceConfiguration={resetDefenceConfiguration}
-								setDefenceConfiguration={setDefenceConfiguration}
-							/>
-							{currentLevel === LEVEL_NAMES.SANDBOX && (
-								<ModelBox
-									chatModel={chatModel}
-									setChatModelId={setChatModelId}
-									chatModelOptions={chatModelOptions}
-									addInfoMessage={addInfoMessage}
+					{/* </div> */}
+					<div className="model-config-container">
+						<DetailElement useIcon={true} buttonText={'Model Configuration'}>
+							<div className="details-panel-for-model-config">
+								<DefenceBox
+									currentLevel={currentLevel}
+									defences={modelDefences}
+									showConfigurations={showConfigurations}
+									toggleDefence={toggleDefence}
+									resetDefenceConfiguration={resetDefenceConfiguration}
+									setDefenceConfiguration={setDefenceConfiguration}
 								/>
-							)}
-						</div>
-					</DetailElement>
+								{currentLevel === LEVEL_NAMES.SANDBOX && (
+									<ModelBox
+										chatModel={chatModel}
+										setChatModelId={setChatModelId}
+										chatModelOptions={chatModelOptions}
+										addInfoMessage={addInfoMessage}
+									/>
+								)}
+							</div>
+						</DetailElement>
+					</div>
 				</>
 			)}
 

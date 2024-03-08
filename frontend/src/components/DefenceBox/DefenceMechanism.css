@@ -9,7 +9,7 @@
 	padding: 0.3em;
 }
 
-.defence-mechanism-fieldset .details-button {
+.control-panel .defence-mechanism-fieldset .details-button {
 	width: fit-content;
 	padding: 0.3125rem;
 	border: 0.25rem outset var(--control-config-border);
@@ -19,16 +19,20 @@
 	font-size: 1rem;
 }
 
-.defence-mechanism-fieldset .details-button:hover {
+.control-panel .defence-mechanism-fieldset .details-button:hover {
 	background-color: var(--main-scrollbar-hover-colour);
 }
 
-.defence-mechanism-fieldset .details-button[aria-expanded='true'] {
+.control-panel
+	.defence-mechanism-fieldset
+	.details-button[aria-expanded='true'] {
 	border-style: inset;
 	background-color: var(--control-body-background-colour);
 }
 
-.defence-mechanism-fieldset .details-button[aria-expanded='true']:hover {
+.control-panel
+	.defence-mechanism-fieldset
+	.details-button[aria-expanded='true']:hover {
 	background-color: var(--main-scrollbar-hover-colour);
 }
 
