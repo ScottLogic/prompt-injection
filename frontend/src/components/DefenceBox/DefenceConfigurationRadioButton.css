@@ -2,15 +2,12 @@
 	position: relative;
 	display: flex;
 	cursor: pointer;
+	gap: 0.75rem;
 }
 
 .defence-radio-button input {
 	margin-bottom: 0.5rem;
 	opacity: 0;
-}
-
-.defence-radio-button span {
-	margin-left: 1rem;
 }
 
 /* checkmark outer circle */
