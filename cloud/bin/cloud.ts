@@ -63,10 +63,11 @@ const uiStack = new UiStack(app, generateStackName('ui'), {
 	hostedZone: hostedZoneStack.hostedZone,
 });
 
-/*const authStack = */ new AuthStack(app, generateStackName('auth'), {
+const authStack = new AuthStack(app, generateStackName('auth'), {
 	description: generateDescription('Auth stack'),
 	env,
 	tags,
+	hostedZone: hostedZoneStack.hostedZone,
 	webappUrl: uiStack.cloudFrontUrl,
 });
 
@@ -76,8 +77,8 @@ new ApiStack(app, generateStackName('api'), {
 	tags,
 	certificate: certificateStack.loadBalancerCert,
 	hostedZone: hostedZoneStack.hostedZone,
-	// userPool: authStack.userPool,
-	// userPoolClient: authStack.userPoolClient,
-	// userPoolDomain: authStack.userPoolDomain,
+	userPoolId: authStack.userPool.userPoolId,
+	userPoolName: authStack.userPoolName,
+	userPoolClient: authStack.userPoolClient,
 	webappUrl: uiStack.cloudFrontUrl,
 });

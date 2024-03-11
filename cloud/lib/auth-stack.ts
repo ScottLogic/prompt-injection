@@ -6,6 +6,7 @@ import {
 	UserPoolClient,
 	UserPoolDomain,
 } from 'aws-cdk-lib/aws-cognito';
+import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import {
 	CfnOutput,
 	Duration,
@@ -19,13 +20,15 @@ import { Construct } from 'constructs';
 import { resourceName } from './resourceNamingUtils';
 
 type AuthStackProps = StackProps & {
+	hostedZone: IHostedZone;
 	webappUrl: string;
 };
 
 export class AuthStack extends Stack {
-	userPool: UserPool;
-	userPoolClient: UserPoolClient;
-	userPoolDomain: UserPoolDomain;
+	public readonly userPool: UserPool;
+	public readonly userPoolName: string;
+	public readonly userPoolClient: UserPoolClient;
+	public readonly userPoolDomain: UserPoolDomain;
 
 	constructor(scope: Construct, id: string, props: AuthStackProps) {
 		super(scope, id, props);
@@ -33,9 +36,9 @@ export class AuthStack extends Stack {
 		const generateResourceName = resourceName(scope);
 
 		// Cognito UserPool
-		const userPoolName = generateResourceName('userpool');
-		this.userPool = new UserPool(this, userPoolName, {
-			userPoolName,
+		this.userPoolName = generateResourceName('userpool');
+		this.userPool = new UserPool(this, this.userPoolName, {
+			userPoolName: this.userPoolName,
 			enableSmsRole: false,
 			mfa: Mfa.OFF,
 			signInCaseSensitive: false,
@@ -67,10 +70,14 @@ export class AuthStack extends Stack {
 			value: `urn:amazon:cognito:sp:${this.userPool.userPoolId}`,
 		});
 
-		const callbackUrls = [`${props.webappUrl}/`];
+		const logoutUrls = [`${props.webappUrl}/`];
+		const callbackUrls = logoutUrls.concat(
+			`https://api.${props.hostedZone.zoneName}/oauth2/idpresponse`
+		);
 		const userPoolClientName = generateResourceName('userpool-client');
 		this.userPoolClient = this.userPool.addClient(userPoolClientName, {
 			userPoolClientName,
+			generateSecret: true,
 			authFlows: {
 				userSrp: true,
 			},
@@ -80,7 +87,7 @@ export class AuthStack extends Stack {
 				},
 				scopes: [OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE],
 				callbackUrls,
-				logoutUrls: callbackUrls,
+				logoutUrls,
 			},
 			accessTokenValidity: Duration.minutes(60),
 			idTokenValidity: Duration.minutes(60),
@@ -92,7 +99,7 @@ export class AuthStack extends Stack {
 		const userPoolDomainName = generateResourceName('userpool-domain');
 		this.userPoolDomain = this.userPool.addDomain(userPoolDomainName, {
 			cognitoDomain: {
-				domainPrefix: userPoolName,
+				domainPrefix: this.userPoolName,
 			},
 		});
 	}
