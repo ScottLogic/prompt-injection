@@ -5,7 +5,7 @@ import {
 	ChatCompletionMessageToolCall,
 } from 'openai/resources/chat/completions';
 
-import { isDefenceActive, getQAPromptFromConfig } from './defence';
+import { getQAPromptFromConfig } from './defence';
 import { sendEmail } from './email';
 import { queryDocuments } from './langchain';
 import {
@@ -17,7 +17,7 @@ import {
 	ToolCallResponse,
 } from './models/chat';
 import { ChatMessage } from './models/chatMessage';
-import { DEFENCE_ID, Defence } from './models/defence';
+import { QaLlmDefence } from './models/defence';
 import { EmailResponse } from './models/email';
 import { LEVEL_NAMES } from './models/level';
 import {
@@ -141,14 +141,14 @@ function isChatGptFunction(functionName: string) {
 async function handleAskQuestionFunction(
 	functionCallArgs: string | undefined,
 	currentLevel: LEVEL_NAMES,
-	defences: Defence[]
+	qaLlmDefence?: QaLlmDefence
 ) {
 	if (functionCallArgs) {
 		const params = JSON.parse(functionCallArgs) as FunctionAskQuestionParams;
 		console.debug(`Asking question: ${params.question}`);
 		// if asking a question, call the queryDocuments
-		const configQAPrompt = isDefenceActive(DEFENCE_ID.QA_LLM, defences)
-			? getQAPromptFromConfig(defences)
+		const configQAPrompt = qaLlmDefence?.isActive
+			? getQAPromptFromConfig([qaLlmDefence])
 			: '';
 		return await queryDocuments(params.question, configQAPrompt, currentLevel);
 	} else {
@@ -191,11 +191,11 @@ function handleSendEmailFunction(
 }
 
 async function chatGptCallFunction(
-	defences: Defence[],
 	toolCallId: string,
 	functionCall: ChatCompletionMessageToolCall.Function,
 	// default to sandbox
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
+	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX,
+	qaLlmDefence?: QaLlmDefence
 ): Promise<FunctionCallResponse> {
 	const functionName = functionCall.name;
 	let functionReply = '';
@@ -220,7 +220,7 @@ async function chatGptCallFunction(
 			functionReply = await handleAskQuestionFunction(
 				functionCall.arguments,
 				currentLevel,
-				defences
+				qaLlmDefence
 			);
 		}
 	} else {
@@ -326,18 +326,18 @@ function getChatCompletionsInContextWindow(
 async function performToolCalls(
 	toolCalls: ChatCompletionMessageToolCall[],
 	chatHistory: ChatMessage[],
-	defences: Defence[],
-	currentLevel: LEVEL_NAMES
+	currentLevel: LEVEL_NAMES,
+	qaLlmDefence?: QaLlmDefence
 ): Promise<ToolCallResponse> {
 	for (const toolCall of toolCalls) {
 		// only tool type supported by openai is function
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (toolCall.type === 'function') {
 			const functionCallReply = await chatGptCallFunction(
-				defences,
 				toolCall.id,
 				toolCall.function,
-				currentLevel
+				currentLevel,
+				qaLlmDefence
 			);
 
 			// We assume only one function call in toolCalls, and so we return after getting function reply.
@@ -358,9 +358,9 @@ async function performToolCalls(
 
 async function getFinalReplyAfterAllToolCalls(
 	chatHistory: ChatMessage[],
-	defences: Defence[],
 	chatModel: ChatModel,
-	currentLevel: LEVEL_NAMES
+	currentLevel: LEVEL_NAMES,
+	qaLlmDefence?: QaLlmDefence
 ) {
 	let updatedChatHistory = [...chatHistory];
 	const sentEmails = [];
@@ -385,8 +385,8 @@ async function getFinalReplyAfterAllToolCalls(
 			const toolCallReply = await performToolCalls(
 				gptReply.completion.tool_calls,
 				updatedChatHistory,
-				defences,
-				currentLevel
+				currentLevel,
+				qaLlmDefence
 			);
 
 			updatedChatHistory = toolCallReply.chatHistory;
@@ -408,17 +408,17 @@ async function getFinalReplyAfterAllToolCalls(
 
 async function chatGptSendMessage(
 	chatHistory: ChatMessage[],
-	defences: Defence[],
 	chatModel: ChatModel,
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
+	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX,
+	qaLlmDefence?: QaLlmDefence
 ) {
 	// this method just calls getFinalReplyAfterAllToolCalls then reformats the output. Does it need to exist?
 
 	const finalToolCallResponse = await getFinalReplyAfterAllToolCalls(
 		chatHistory,
-		defences,
 		chatModel,
-		currentLevel
+		currentLevel,
+		qaLlmDefence
 	);
 
 	const chatResponse: ChatResponse = {

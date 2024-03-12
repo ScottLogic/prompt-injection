@@ -2,7 +2,12 @@ import ChatBox from '@src/components/ChatBox/ChatBox';
 import ControlPanel from '@src/components/ControlPanel/ControlPanel';
 import EmailBox from '@src/components/EmailBox/EmailBox';
 import { ChatMessage } from '@src/models/chat';
-import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
+import {
+	DEFENCE_ID,
+	DefenceConfigItem,
+	Defence,
+	DEFENCE_CONFIG_ITEM_ID,
+} from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -33,7 +38,10 @@ function MainBody({
 	addChatMessage: (message: ChatMessage) => void;
 	addInfoMessage: (message: string) => void;
 	addSentEmails: (emails: EmailInfo[]) => void;
-	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
+	resetDefenceConfiguration: (
+		defenceId: DEFENCE_ID,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) => void;
 	resetLevel: () => void;
 	toggleDefence: (defence: Defence) => void;
 	setDefenceConfiguration: (

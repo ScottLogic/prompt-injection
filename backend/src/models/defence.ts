@@ -23,6 +23,10 @@ type DefenceConfigItem = {
 	value: string;
 };
 
+type QaLlmDefence = Defence & {
+	id: DEFENCE_ID.QA_LLM;
+};
+
 type Defence = {
 	id: DEFENCE_ID;
 	config: DefenceConfigItem[];
@@ -30,4 +34,9 @@ type Defence = {
 };
 
 export { DEFENCE_ID };
-export type { Defence, DefenceConfigItem, DEFENCE_CONFIG_ITEM_ID };
+export type {
+	Defence,
+	DefenceConfigItem,
+	DEFENCE_CONFIG_ITEM_ID,
+	QaLlmDefence,
+};

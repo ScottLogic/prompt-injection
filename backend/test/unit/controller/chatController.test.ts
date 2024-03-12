@@ -16,7 +16,7 @@ import {
 	MessageTransformation,
 } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
-import { DEFENCE_ID, Defence } from '@src/models/defence';
+import { DEFENCE_ID, Defence, QaLlmDefence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
@@ -497,7 +497,6 @@ describe('handleChatToGPT unit tests', () => {
 
 			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
 				[...existingHistory, newUserChatMessage],
-				[],
 				mockChatModel,
 				LEVEL_NAMES.LEVEL_1
 			);
@@ -558,10 +557,18 @@ describe('handleChatToGPT unit tests', () => {
 				},
 			} as ChatMessage;
 
+			const qaLllmDefence = {
+				id: DEFENCE_ID.QA_LLM,
+				isActive: true,
+				config: [{ id: 'PROMPT', value: 'query them documents!' }],
+			} as QaLlmDefence;
+
 			const req = openAiChatRequestMock(
 				'send an email to bob@example.com saying hi',
 				LEVEL_NAMES.SANDBOX,
-				existingHistory
+				existingHistory,
+				[],
+				[qaLllmDefence]
 			);
 			const res = responseMock();
 
@@ -590,9 +597,9 @@ describe('handleChatToGPT unit tests', () => {
 
 			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
 				[...existingHistory, newUserChatMessage],
-				[],
 				mockChatModel,
-				LEVEL_NAMES.SANDBOX
+				LEVEL_NAMES.SANDBOX,
+				qaLllmDefence
 			);
 
 			expect(res.send).toHaveBeenCalledWith({
@@ -655,10 +662,18 @@ describe('handleChatToGPT unit tests', () => {
 				},
 			} as ChatMessage;
 
+			const qaLllmDefence = {
+				id: DEFENCE_ID.QA_LLM,
+				isActive: true,
+				config: [{ id: 'PROMPT', value: 'query them documents!' }],
+			} as QaLlmDefence;
+
 			const req = openAiChatRequestMock(
 				'hello bot',
 				LEVEL_NAMES.SANDBOX,
-				existingHistory
+				existingHistory,
+				[],
+				[qaLllmDefence]
 			);
 			const res = responseMock();
 
@@ -690,9 +705,9 @@ describe('handleChatToGPT unit tests', () => {
 
 			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
 				[...existingHistory, ...newTransformationChatMessages],
-				[],
 				mockChatModel,
-				LEVEL_NAMES.SANDBOX
+				LEVEL_NAMES.SANDBOX,
+				qaLllmDefence
 			);
 
 			expect(res.send).toHaveBeenCalledWith({

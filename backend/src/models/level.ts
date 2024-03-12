@@ -20,17 +20,24 @@ function isValidLevel(levelValue: unknown) {
 interface LevelState {
 	level: LEVEL_NAMES;
 	chatHistory: ChatMessage[];
-	defences: Defence[];
+	defences?: Defence[];
 	sentEmails: EmailInfo[];
 }
 
 function getInitialLevelStates() {
+	const levelsWithDefences: number[] = [
+		LEVEL_NAMES.LEVEL_3,
+		LEVEL_NAMES.SANDBOX,
+	];
+
 	return Object.values(LEVEL_NAMES).map(
 		(level) =>
 			({
 				level,
 				chatHistory: [],
-				defences: defaultDefences,
+				defences: levelsWithDefences.includes(level)
+					? defaultDefences
+					: undefined,
 				sentEmails: [],
 			} as LevelState)
 	);
