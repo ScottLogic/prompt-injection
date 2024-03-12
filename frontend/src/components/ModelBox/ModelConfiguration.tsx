@@ -92,11 +92,10 @@ function ModelConfiguration({
 			// and the change level request has not yet resolved successfully
 			return;
 		}
-		const newCustomChatModelConfigs = customChatModelConfigs.map((config) => {
-			const newConfig = { ...config };
-			newConfig.value = chatModel.configuration[config.id];
-			return newConfig;
-		});
+		const newCustomChatModelConfigs = customChatModelConfigs.map((config) => ({
+			...config,
+			value: chatModel.configuration[config.id],
+		}));
 		setCustomChatModel(newCustomChatModelConfigs);
 	}, [chatModel]);
 
