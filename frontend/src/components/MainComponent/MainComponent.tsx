@@ -5,7 +5,12 @@ import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
 import { ChatMessage, ChatModel } from '@src/models/chat';
-import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
+import {
+	DEFENCE_ID,
+	DefenceConfigItem,
+	Defence,
+	DEFENCE_CONFIG_ITEM_ID,
+} from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
 import {
@@ -206,18 +211,19 @@ function MainComponent({
 
 	async function resetDefenceConfiguration(
 		defenceId: DEFENCE_ID,
-		configId: string
+		configItemId: DEFENCE_CONFIG_ITEM_ID
 	) {
-		const resetDefence = await defenceService.resetDefenceConfig(
+		const resetDefence = await defenceService.resetDefenceConfigItem(
 			defenceId,
-			configId
+			configItemId,
+			currentLevel
 		);
 		addConfigUpdateToChat(defenceId, 'reset');
 		// update state
 		const newDefences = defences.map((defence) => {
 			if (defence.id === defenceId) {
 				defence.config.forEach((config) => {
-					if (config.id === configId) {
+					if (config.id === configItemId) {
 						config.value = resetDefence.value.trim();
 					}
 				});
@@ -323,6 +329,8 @@ function MainComponent({
 				<LevelMissionInfoBanner
 					currentLevel={currentLevel}
 					openOverlay={openInformationOverlay}
+					openLevelsCompleteOverlay={openLevelsCompleteOverlay}
+					numCompletedLevels={numCompletedLevels}
 				/>
 			)}
 			<MainBody
@@ -337,9 +345,10 @@ function MainComponent({
 				addChatMessage={addChatMessage}
 				addInfoMessage={addInfoMessage}
 				addSentEmails={addSentEmails}
-				resetDefenceConfiguration={(defenceId: DEFENCE_ID, configId: string) =>
-					void resetDefenceConfiguration(defenceId, configId)
-				}
+				resetDefenceConfiguration={(
+					defenceId: DEFENCE_ID,
+					configItemId: DEFENCE_CONFIG_ITEM_ID
+				) => void resetDefenceConfiguration(defenceId, configItemId)}
 				resetLevel={() => void resetLevel()}
 				toggleDefence={(defence: Defence) => void setDefenceToggle(defence)}
 				setDefenceConfiguration={setDefenceConfiguration}

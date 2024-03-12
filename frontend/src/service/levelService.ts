@@ -16,7 +16,7 @@ async function loadLevel(level: number) {
 	return {
 		emails,
 		chatHistory: getChatMessagesFromDTOResponse(chatHistory),
-		defences: getDefencesFromDTOs(defences),
+		defences: defences ? getDefencesFromDTOs(defences) : [],
 		chatModel,
 	};
 }

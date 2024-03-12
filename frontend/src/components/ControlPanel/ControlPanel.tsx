@@ -3,7 +3,12 @@ import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
 import { ChatModel } from '@src/models/chat';
-import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
+import {
+	DEFENCE_ID,
+	DefenceConfigItem,
+	Defence,
+	DEFENCE_CONFIG_ITEM_ID,
+} from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './ControlPanel.css';
@@ -26,7 +31,10 @@ function ControlPanel({
 	setChatModelId: (modelId: string) => void;
 	chatModelOptions: string[];
 	toggleDefence: (defence: Defence) => void;
-	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
+	resetDefenceConfiguration: (
+		defenceId: DEFENCE_ID,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]

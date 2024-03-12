@@ -1,9 +1,7 @@
 import { expect, jest, test, describe } from '@jest/globals';
 
-import { defaultDefences } from '@src/defaultDefences';
 import { CHAT_MODELS, ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
-import { Defence } from '@src/models/defence';
 import { chatGptSendMessage } from '@src/openai';
 
 const mockCreateChatCompletion =
@@ -55,7 +53,6 @@ describe('OpenAI Integration Tests', () => {
 				},
 			},
 		];
-		const defences: Defence[] = defaultDefences;
 		const chatModel: ChatModel = {
 			id: CHAT_MODELS.GPT_4,
 			configuration: {
@@ -68,11 +65,7 @@ describe('OpenAI Integration Tests', () => {
 
 		mockCreateChatCompletion.mockResolvedValueOnce(chatResponseAssistant('Hi'));
 
-		const reply = await chatGptSendMessage(
-			chatHistoryWithMessage,
-			defences,
-			chatModel
-		);
+		const reply = await chatGptSendMessage(chatHistoryWithMessage, chatModel);
 
 		expect(reply).toBeDefined();
 		expect(reply.chatResponse.completion).toBeDefined();

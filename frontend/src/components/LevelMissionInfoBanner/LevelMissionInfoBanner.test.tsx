@@ -18,6 +18,8 @@ describe('LevelMissionInfoBanner component tests', () => {
 			<LevelMissionInfoBanner
 				currentLevel={currentLevel}
 				openOverlay={() => {}}
+				openLevelsCompleteOverlay={() => {}}
+				numCompletedLevels={currentLevel}
 			/>
 		);
 
@@ -41,10 +43,31 @@ describe('LevelMissionInfoBanner component tests', () => {
 			<LevelMissionInfoBanner
 				currentLevel={currentLevel}
 				openOverlay={openOverlayMock}
+				openLevelsCompleteOverlay={() => {}}
+				numCompletedLevels={currentLevel}
 			/>
 		);
 
 		const button = screen.getByRole('button');
+		fireEvent.click(button);
+
+		expect(openOverlayMock).toHaveBeenCalled();
+	});
+
+	test('fires the openLevelsCompleteOverlay callback on button click', () => {
+		const currentLevel = LEVEL_NAMES.LEVEL_3;
+
+		const openOverlayMock = vi.fn();
+		render(
+			<LevelMissionInfoBanner
+				currentLevel={currentLevel}
+				openOverlay={() => {}}
+				openLevelsCompleteOverlay={openOverlayMock}
+				numCompletedLevels={4}
+			/>
+		);
+
+		const button = screen.getByText('Congratulations!');
 		fireEvent.click(button);
 
 		expect(openOverlayMock).toHaveBeenCalled();

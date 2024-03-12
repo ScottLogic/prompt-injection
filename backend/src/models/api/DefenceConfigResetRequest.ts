@@ -5,13 +5,15 @@ import {
 	DEFENCE_ID,
 	DefenceConfigItem,
 } from '@src/models/defence';
+import { LEVEL_NAMES } from '@src/models/level';
 
-export type DefenceConfigResetRequest = Request<
+export type DefenceConfigItemResetRequest = Request<
 	never,
 	DefenceConfigItem,
 	{
 		defenceId?: DEFENCE_ID;
-		configId?: DEFENCE_CONFIG_ITEM_ID;
+		configItemId?: DEFENCE_CONFIG_ITEM_ID;
+		level?: LEVEL_NAMES;
 	},
 	never
 >;

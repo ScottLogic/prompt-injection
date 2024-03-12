@@ -24,15 +24,9 @@ afterEach(() => {
 	mockSend.mockClear();
 });
 
-[
-	LEVEL_NAMES.LEVEL_1,
-	LEVEL_NAMES.LEVEL_2,
-	LEVEL_NAMES.LEVEL_3,
-	LEVEL_NAMES.SANDBOX,
-].forEach((level) => {
-	test(`GIVEN level ${
-		level + 1
-	} provided WHEN user starts the frontend THEN the backend sends the correct initial information`, () => {
+test.each(Object.values(LEVEL_NAMES))(
+	`GIVEN level [%s] provided WHEN user starts the frontend THEN the backend sends the correct initial information`,
+	(level) => {
 		const req = {
 			query: {
 				level,
@@ -78,8 +72,8 @@ afterEach(() => {
 				{ level: 2, systemRole: 'systemRoleLevel3' },
 			],
 		});
-	});
-});
+	}
+);
 
 test('GIVEN no level provided WHEN user starts the frontend THEN the backend responds with error message', () => {
 	const req = {
