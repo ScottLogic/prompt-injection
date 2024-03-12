@@ -88,7 +88,8 @@ function ModelConfiguration({
 
 	useEffect(() => {
 		if (!chatModel) {
-			// chatModel is undefined if this is the first time that the user has switched to the sandbox level, and the change level request has not yet resolved successfully
+			// chatModel is undefined if this is the first time that the user has switched to the sandbox level
+			// and the change level request has not yet resolved successfully
 			return;
 		}
 		const newCustomChatModelConfigs = customChatModelConfigs.map((config) => {
