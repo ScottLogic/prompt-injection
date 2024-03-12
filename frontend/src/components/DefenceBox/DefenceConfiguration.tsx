@@ -1,5 +1,9 @@
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
-import { Defence, DefenceConfigItem } from '@src/models/defence';
+import {
+	DEFENCE_CONFIG_ITEM_ID,
+	Defence,
+	DefenceConfigItem,
+} from '@src/models/defence';
 import { defenceService } from '@src/service';
 
 import DefenceConfigurationInput from './DefenceConfigurationInput';
@@ -21,7 +25,10 @@ function DefenceConfiguration({
 		configId: string,
 		value: string
 	) => Promise<void>;
-	resetConfigurationValue: (defence: Defence, configId: string) => void;
+	resetConfigurationValue: (
+		defence: Defence,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) => void;
 }) {
 	const uniqueInputId = `${defence.id}-${config.id}`;
 	const supportText = `reset ${config.name} to default`;

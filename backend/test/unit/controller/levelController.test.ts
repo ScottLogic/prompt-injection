@@ -24,15 +24,9 @@ afterEach(() => {
 	mockSend.mockClear();
 });
 
-[
-	LEVEL_NAMES.LEVEL_1,
-	LEVEL_NAMES.LEVEL_2,
-	LEVEL_NAMES.LEVEL_3,
-	LEVEL_NAMES.SANDBOX,
-].forEach((level) => {
-	test(`GIVEN level ${
-		level + 1
-	} WHEN client asks to load the level THEN the backend sends the correct level information`, () => {
+test.each(Object.values(LEVEL_NAMES))(
+	`GIVEN level [%s] WHEN client asks to load the level THEN the backend sends the correct level information`,
+	(level) => {
 		const req = {
 			query: {
 				level,
@@ -71,8 +65,8 @@ afterEach(() => {
 			chatHistory: `level ${level + 1} chat history`,
 			defences: `level ${level + 1} defences`,
 		});
-	});
-});
+	}
+);
 
 test('WHEN client does not provide a level THEN the backend responds with BadRequest', () => {
 	const req = {

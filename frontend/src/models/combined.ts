@@ -6,7 +6,7 @@ import { LevelSystemRole } from './level';
 type StartReponse = {
 	emails: EmailInfo[];
 	chatHistory: ChatMessageDTO[];
-	defences: DefenceDTO[];
+	defences?: DefenceDTO[];
 	availableModels: string[];
 	systemRoles: LevelSystemRole[];
 };
@@ -14,7 +14,7 @@ type StartReponse = {
 type LoadLevelResponse = {
 	emails: EmailInfo[];
 	chatHistory: ChatMessageDTO[];
-	defences: DefenceDTO[];
+	defences?: DefenceDTO[];
 };
 
 export type { StartReponse, LoadLevelResponse };

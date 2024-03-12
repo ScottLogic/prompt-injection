@@ -1,5 +1,6 @@
 import { Response } from 'express';
 
+import { defaultDefences } from '@src/defaultDefences';
 import {
 	transformMessage,
 	detectTriggeredInputDefences,
@@ -21,7 +22,7 @@ import {
 	ChatInfoMessage,
 	chatInfoMessageTypes,
 } from '@src/models/chatMessage';
-import { Defence } from '@src/models/defence';
+import { DEFENCE_ID, Defence, QaLlmDefence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import { chatGptSendMessage } from '@src/openai';
@@ -94,8 +95,7 @@ async function handleChatWithoutDefenceDetection(
 	chatResponse: ChatHttpResponse,
 	currentLevel: LEVEL_NAMES,
 	chatModel: ChatModel,
-	chatHistory: ChatMessage[],
-	defences: Defence[]
+	chatHistory: ChatMessage[]
 ): Promise<LevelHandlerResponse> {
 	console.log(`User message: '${message}'`);
 
@@ -106,7 +106,6 @@ async function handleChatWithoutDefenceDetection(
 
 	const openAiReply = await chatGptSendMessage(
 		updatedChatHistory,
-		defences,
 		chatModel,
 		currentLevel
 	);
@@ -149,11 +148,15 @@ async function handleChatWithDefenceDetection(
 		}'`
 	);
 
+	const qaLlmDefence = defences.find(
+		(defence) => defence.id === DEFENCE_ID.QA_LLM
+	) as QaLlmDefence | undefined;
+
 	const openAiReplyPromise = chatGptSendMessage(
 		chatHistoryWithNewUserMessages,
-		defences,
 		chatModel,
-		currentLevel
+		currentLevel,
+		qaLlmDefence
 	);
 
 	// run input defence detection and chatGPT concurrently
@@ -240,13 +243,14 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 			? req.session.chatModel
 			: defaultChatModel;
 
+	const defences =
+		req.session.levelState[currentLevel].defences ?? defaultDefences;
+
 	const currentChatHistory = setSystemRoleInChatHistory(
 		currentLevel,
-		req.session.levelState[currentLevel].defences,
+		defences,
 		req.session.levelState[currentLevel].chatHistory
 	);
-
-	const defences = [...req.session.levelState[currentLevel].defences];
 
 	let levelResult: LevelHandlerResponse;
 	try {
@@ -256,8 +260,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				initChatResponse,
 				currentLevel,
 				chatModel,
-				currentChatHistory,
-				defences
+				currentChatHistory
 			);
 		} else {
 			levelResult = await handleChatWithDefenceDetection(

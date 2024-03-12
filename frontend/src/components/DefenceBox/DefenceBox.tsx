@@ -1,5 +1,10 @@
 import { PROMPT_ENCLOSURE_DEFENCES } from '@src/Defences';
-import { DEFENCE_ID, DefenceConfigItem, Defence } from '@src/models/defence';
+import {
+	DEFENCE_ID,
+	DefenceConfigItem,
+	Defence,
+	DEFENCE_CONFIG_ITEM_ID,
+} from '@src/models/defence';
 
 import DefenceMechanism from './DefenceMechanism';
 
@@ -16,7 +21,10 @@ function DefenceBox({
 	defences: Defence[];
 	showConfigurations: boolean;
 	toggleDefence: (defence: Defence) => void;
-	resetDefenceConfiguration: (defenceId: DEFENCE_ID, configId: string) => void;
+	resetDefenceConfiguration: (
+		defenceId: DEFENCE_ID,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) => void;
 	setDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
