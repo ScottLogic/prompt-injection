@@ -12,7 +12,7 @@ export type LevelGetRequest = Request<
 		emails: EmailInfo[];
 		chatHistory: ChatMessage[];
 		defences: Defence[];
-		chatModel: ChatModel;
+		chatModel?: ChatModel;
 	},
 	never,
 	{
