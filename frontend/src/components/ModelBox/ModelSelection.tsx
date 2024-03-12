@@ -56,50 +56,50 @@ function ModelSelection({
 		<div className="model-selection-box">
 			<fieldset className="model-selection-fieldset">
 				<legend>Select Model</legend>
-				<div className="model-selection-row">
-					<div className="select-wrapper">
-						<select
-							aria-label="model-select"
-							value={selectedModel ?? 0} // default to the first model
-							onChange={(e) => {
-								setSelectedModel(e.target.value);
-							}}
-						>
-							{chatModelOptions.map((model) => (
-								<option key={model} value={model}>
-									{model}
-								</option>
-							))}
-							;
-						</select>
-						<LoadingButton
-							onClick={() => void submitSelectedModel()}
-							isLoading={isSettingModel}
-							loadingTooltip="Changing model..."
-						>
-							Choose
-						</LoadingButton>
-					</div>
-				</div>
+				{chatModel ? (
+					<>
+						<div className="model-selection-row">
+							<div className="select-wrapper">
+								<select
+									aria-label="model-select"
+									value={selectedModel ?? 0} // default to the first model
+									onChange={(e) => {
+										setSelectedModel(e.target.value);
+									}}
+								>
+									{chatModelOptions.map((model) => (
+										<option key={model} value={model}>
+											{model}
+										</option>
+									))}
+									;
+								</select>
+								<LoadingButton
+									onClick={() => void submitSelectedModel()}
+									isLoading={isSettingModel}
+									loadingTooltip="Changing model..."
+								>
+									Choose
+								</LoadingButton>
+							</div>
+						</div>
 
-				<div className="model-selection-info">
-					{errorChangingModel ? (
-						<p className="error-message" aria-live="polite">
-							Error: Could not change model. You are still chatting to:
-							<b> {chatModel?.id} </b>
-						</p>
-					) : (
-						<p>
-							{chatModel ? (
-								<>
-									You are chatting to model: <b>{chatModel.id}</b>
-								</>
+						<div className="model-selection-info">
+							{errorChangingModel ? (
+								<p className="error-message" aria-live="polite">
+									Error: Could not change model. You are still chatting to:
+									<b> {chatModel.id} </b>
+								</p>
 							) : (
-								'You are not connected to a model.'
+								<p>
+									You are chatting to model: <b>{chatModel.id}</b>
+								</p>
 							)}
-						</p>
-					)}
-				</div>
+						</div>
+					</>
+				) : (
+					<p>Loading chatModel...</p>
+				)}
 			</fieldset>
 		</div>
 	);
