@@ -1,5 +1,6 @@
 import { Request } from 'express';
 
+import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
@@ -14,6 +15,7 @@ export type StartResponse = {
 		level: LEVEL_NAMES;
 		systemRole: string;
 	}[];
+	chatModel?: ChatModel;
 };
 
 export type StartGetRequest = Request<

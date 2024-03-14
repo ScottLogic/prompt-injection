@@ -2,7 +2,6 @@ import {
 	CHAT_MESSAGE_TYPE,
 	ChatMessageDTO,
 	ChatMessage,
-	ChatModel,
 	ChatResponse,
 	MODEL_CONFIG,
 } from '@src/models/chat';
@@ -87,11 +86,6 @@ async function configureGptModel(
 	return response.status === 200;
 }
 
-async function getGptModel(): Promise<ChatModel> {
-	const response = await sendRequest(`${PATH}model`, { method: 'GET' });
-	return (await response.json()) as ChatModel;
-}
-
 async function addInfoMessageToChatHistory(
 	message: string,
 	chatMessageType: CHAT_MESSAGE_TYPE,
@@ -113,7 +107,6 @@ export {
 	clearChat,
 	sendMessage,
 	configureGptModel,
-	getGptModel,
 	setGptModel,
 	addInfoMessageToChatHistory,
 	getChatMessagesFromDTOResponse,

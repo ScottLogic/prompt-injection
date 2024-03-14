@@ -1,6 +1,5 @@
 import { Response } from 'express';
 
-import { OpenAIGetModelRequest } from '@src/models/api/OpenAIGetModelRequest';
 import { OpenAiConfigureModelRequest } from '@src/models/api/OpenAiConfigureModelRequest';
 import { OpenAiSetModelRequest } from '@src/models/api/OpenAiSetModelRequest';
 import { MODEL_CONFIG } from '@src/models/chat';
@@ -32,8 +31,4 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 	}
 }
 
-function handleGetModel(req: OpenAIGetModelRequest, res: Response) {
-	res.send(req.session.chatModel);
-}
-
-export { handleSetModel, handleConfigureModel, handleGetModel };
+export { handleSetModel, handleConfigureModel };

@@ -2,6 +2,7 @@ import { DEFENCES_HIDDEN_LEVEL3_IDS, MODEL_DEFENCES } from '@src/Defences';
 import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
+import { ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -15,6 +16,8 @@ import './ControlPanel.css';
 function ControlPanel({
 	currentLevel,
 	defences,
+	chatModel,
+	setChatModelId,
 	chatModelOptions,
 	toggleDefence,
 	resetDefenceConfiguration,
@@ -24,6 +27,8 @@ function ControlPanel({
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
+	chatModel?: ChatModel;
+	setChatModelId: (modelId: string) => void;
 	chatModelOptions: string[];
 	toggleDefence: (defence: Defence) => void;
 	resetDefenceConfiguration: (
@@ -94,6 +99,8 @@ function ControlPanel({
 						{/* only show model box in sandbox mode */}
 						{showConfigurations && (
 							<ModelBox
+								chatModel={chatModel}
+								setChatModelId={setChatModelId}
 								chatModelOptions={chatModelOptions}
 								addInfoMessage={addInfoMessage}
 							/>
