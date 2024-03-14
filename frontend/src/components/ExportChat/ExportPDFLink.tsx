@@ -22,11 +22,7 @@ function ExportPDFLink({
 		}))
 	);
 
-	const ExportContent = lazy(() =>
-		import('./ExportContent').then((module) => ({
-			default: module.default,
-		}))
-	);
+	const ExportContent = lazy(() => import('./ExportContent'));
 
 	function getFileName() {
 		if (currentLevel === LEVEL_NAMES.SANDBOX) {
