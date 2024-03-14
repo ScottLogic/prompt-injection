@@ -1,11 +1,9 @@
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import { lazy } from 'react';
 
 import '@src/components/ThemedButtons/ChatButton.css';
 import { ChatMessage } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-
-import ExportContent from './ExportContent';
 
 import './ExportPDFLink.css';
 
@@ -18,6 +16,18 @@ function ExportPDFLink({
 	emails: EmailInfo[];
 	currentLevel: LEVEL_NAMES;
 }) {
+	const PDFDownloadLink = lazy(() =>
+		import('@react-pdf/renderer').then((module) => ({
+			default: module.PDFDownloadLink,
+		}))
+	);
+
+	const ExportContent = lazy(() =>
+		import('./ExportContent').then((module) => ({
+			default: module.default,
+		}))
+	);
+
 	function getFileName() {
 		if (currentLevel === LEVEL_NAMES.SANDBOX) {
 			return 'spy-logic-chat-log-sandbox.pdf';
