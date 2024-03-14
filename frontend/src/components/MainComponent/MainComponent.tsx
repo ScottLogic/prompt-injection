@@ -4,7 +4,7 @@ import { DEFAULT_DEFENCES } from '@src/Defences';
 import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
-import { ChatMessage } from '@src/models/chat';
+import { ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -58,6 +58,7 @@ function MainComponent({
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
+	const [chatModel, setChatModel] = useState<ChatModel | undefined>(undefined);
 
 	const isFirstRender = useRef(true);
 
@@ -81,11 +82,23 @@ function MainComponent({
 
 	async function loadBackendData() {
 		try {
-			const { availableModels, defences, emails, chatHistory, systemRoles } =
-				await startService.start(currentLevel);
+			const {
+				availableModels,
+				defences,
+				emails,
+				chatHistory,
+				systemRoles,
+				chatModel,
+			} = await startService.start(currentLevel);
 			setChatModels(availableModels);
 			setSystemRoles(systemRoles);
-			processBackendLevelData(currentLevel, emails, chatHistory, defences);
+			processBackendLevelData(
+				currentLevel,
+				emails,
+				chatHistory,
+				defences,
+				chatModel
+			);
 		} catch (err) {
 			console.warn(err);
 			setMessages([
@@ -152,17 +165,17 @@ function MainComponent({
 
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
-		const { emails, chatHistory, defences } = await levelService.loadLevel(
-			newLevel
-		);
-		processBackendLevelData(newLevel, emails, chatHistory, defences);
+		const { emails, chatHistory, defences, chatModel } =
+			await levelService.loadLevel(newLevel);
+		processBackendLevelData(newLevel, emails, chatHistory, defences, chatModel);
 	}
 
 	function processBackendLevelData(
 		level: LEVEL_NAMES,
 		emails: EmailInfo[],
 		chatHistory: ChatMessage[],
-		defences: Defence[]
+		defences: Defence[],
+		chatModel?: ChatModel
 	) {
 		setEmails(emails);
 
@@ -172,6 +185,9 @@ function MainComponent({
 			: setMessages(chatHistory);
 
 		setDefences(defences);
+
+		// we will only update the chatModel if it is defined in the backend response. It will only defined for the sandbox level.
+		setChatModel(chatModel);
 		setMainBodyKey(MainBodyKey + 1);
 	}
 
@@ -289,6 +305,16 @@ function MainComponent({
 		setMessages((messages: ChatMessage[]) => [resetMessage, ...messages]);
 	}
 
+	function setChatModelId(modelId: string) {
+		if (!chatModel) {
+			console.error(
+				'You are trying to change the id of the chatModel but it has not been loaded yet'
+			);
+			return;
+		}
+		setChatModel({ ...chatModel, id: modelId });
+	}
+
 	return (
 		<div className="main-component">
 			<MainHeader
@@ -311,6 +337,8 @@ function MainComponent({
 				key={MainBodyKey}
 				currentLevel={currentLevel}
 				defences={defences}
+				chatModel={chatModel}
+				setChatModelId={setChatModelId}
 				chatModels={chatModels}
 				emails={emails}
 				messages={messages}

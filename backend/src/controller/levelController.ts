@@ -1,7 +1,7 @@
 import { Response } from 'express';
 
 import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
-import { isValidLevel } from '@src/models/level';
+import { LEVEL_NAMES, isValidLevel } from '@src/models/level';
 
 function handleLoadLevel(req: LevelGetRequest, res: Response) {
 	const { level } = req.query;
@@ -20,6 +20,8 @@ function handleLoadLevel(req: LevelGetRequest, res: Response) {
 		emails: req.session.levelState[level].sentEmails,
 		chatHistory: req.session.levelState[level].chatHistory,
 		defences: req.session.levelState[level].defences,
+		chatModel:
+			level === LEVEL_NAMES.SANDBOX ? req.session.chatModel : undefined,
 	});
 }
 
