@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import loadable from '@loadable/component';
 
 import '@src/components/ThemedButtons/ChatButton.css';
 import { ChatMessage } from '@src/models/chat';
@@ -16,13 +16,13 @@ function ExportPDFLink({
 	emails: EmailInfo[];
 	currentLevel: LEVEL_NAMES;
 }) {
-	const PDFDownloadLink = lazy(() =>
+	const PDFDownloadLink = loadable(() =>
 		import('@react-pdf/renderer').then((module) => ({
 			default: module.PDFDownloadLink,
 		}))
 	);
 
-	const ExportContent = lazy(() => import('./ExportContent'));
+	const ExportContent = loadable(() => import('./ExportContent'));
 
 	function getFileName() {
 		if (currentLevel === LEVEL_NAMES.SANDBOX) {
