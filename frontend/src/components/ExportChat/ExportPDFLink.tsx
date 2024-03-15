@@ -1,4 +1,4 @@
-import loadable from '@loadable/component';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 
 import '@src/components/ThemedButtons/ChatButton.css';
 import { ChatMessage } from '@src/models/chat';
@@ -18,12 +18,6 @@ function ExportPDFLink({
 	emails: EmailInfo[];
 	currentLevel: LEVEL_NAMES;
 }) {
-	const PDFDownloadLink = loadable(() =>
-		import('@react-pdf/renderer').then((module) => ({
-			default: module.PDFDownloadLink,
-		}))
-	);
-
 	function getFileName() {
 		if (currentLevel === LEVEL_NAMES.SANDBOX) {
 			return 'spy-logic-chat-log-sandbox.pdf';

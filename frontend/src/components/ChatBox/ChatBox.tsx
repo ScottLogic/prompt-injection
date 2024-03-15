@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { lazy, useEffect, useState } from 'react';
 
 import { DEFAULT_DEFENCES } from '@src/Defences';
-import ExportPDFLink from '@src/components/ExportChat/ExportPDFLink';
 import '@src/components/ThemedButtons/ChatButton.css';
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
 import useUnitStepper from '@src/hooks/useUnitStepper';
@@ -34,6 +33,10 @@ function ChatBox({
 	openLevelsCompleteOverlay: () => void;
 	openResetLevelOverlay: () => void;
 }) {
+	const ExportPDFLink = lazy(
+		() => import('@src/components/ExportChat/ExportPDFLink')
+	);
+
 	const [chatInput, setChatInput] = useState<string>('');
 	const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
 	const {
