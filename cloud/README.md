@@ -48,3 +48,10 @@ npm install
 # run the bootstrap command
 npx cdk bootstrap --custom-permissions-boundary cdk-developer-policy
 ```
+
+Unless your default region is `us-east-1`, you will also need to bootstrap that region, as certificates for CloudFront
+currently need to be deployed into that region:
+
+```
+npx cdk bootstrap --custom-permissions-boundary cdk-developer-policy aws://YOUR_ACCOUNT_NUMBER/us-east-1
+```

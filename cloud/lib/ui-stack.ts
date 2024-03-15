@@ -1,3 +1,4 @@
+import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import {
 	AllowedMethods,
 	CacheCookieBehavior,
@@ -17,6 +18,13 @@ import {
 } from 'aws-cdk-lib/core';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import {
+	AaaaRecord,
+	ARecord,
+	IHostedZone,
+	RecordTarget,
+} from 'aws-cdk-lib/aws-route53';
+import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
+import {
 	BlockPublicAccess,
 	Bucket,
 	BucketEncryption,
@@ -25,21 +33,26 @@ import { Construct } from 'constructs';
 
 import { appName, resourceName } from './resourceNamingUtils';
 
-export class UiStack extends Stack {
-	public readonly cloudfrontUrl: string;
+type UiStackProps = StackProps & {
+	certificate: ICertificate;
+	hostedZone: IHostedZone;
+};
 
-	constructor(scope: Construct, id: string, props: StackProps) {
+export class UiStack extends Stack {
+	public readonly cloudFrontUrl: string;
+
+	constructor(scope: Construct, id: string, props: UiStackProps) {
 		super(scope, id, props);
 
 		const generateResourceName = resourceName(scope);
+		const { certificate, hostedZone } = props;
 
-		// allow s3 to be secured
 		const cloudfrontOAI = new OriginAccessIdentity(
 			this,
 			generateResourceName('cloudfront-OAI')
 		);
 
-		//HostBucket
+		// Host Bucket
 		const bucketName = generateResourceName('host-bucket');
 		const hostBucket = new Bucket(this, bucketName, {
 			bucketName,
@@ -61,14 +74,16 @@ export class UiStack extends Stack {
 			})
 		);
 
-		//CloudFront
+		// CloudFront Distribution
 		const cachePolicyName = generateResourceName('site-cache-policy');
-		const cloudFront = new Distribution(
+		const cloudFrontDistribution = new Distribution(
 			this,
 			generateResourceName('site-distribution'),
 			{
 				defaultRootObject: 'index.html',
 				minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
+				certificate,
+				domainNames: [hostedZone.zoneName],
 				errorResponses: [
 					{
 						httpStatus: 404,
@@ -76,6 +91,7 @@ export class UiStack extends Stack {
 						responsePagePath: '/index.html',
 						ttl: Duration.seconds(30),
 					},
+					// TODO Do we want a custom page for 503, for when server is down?
 				],
 				defaultBehavior: {
 					origin: new S3Origin(hostBucket, {
@@ -91,10 +107,27 @@ export class UiStack extends Stack {
 				},
 			}
 		);
-		this.cloudfrontUrl = `https://${cloudFront.domainName}`;
 
+		// DNS Records for Route53
+		const target = RecordTarget.fromAlias(
+			new CloudFrontTarget(cloudFrontDistribution)
+		);
+		new ARecord(this, generateResourceName('a-record-cfront'), {
+			zone: hostedZone,
+			target,
+			deleteExisting: true,
+			comment: 'DNS A Record for the UI host',
+		});
+		new AaaaRecord(this, generateResourceName('aaaa-record-cfront'), {
+			zone: hostedZone,
+			target,
+			deleteExisting: true,
+			comment: 'DNS AAAA Record for the UI host',
+		});
+
+		this.cloudFrontUrl = `https://${hostedZone.zoneName}`;
 		new CfnOutput(this, 'WebURL', {
-			value: this.cloudfrontUrl,
+			value: this.cloudFrontUrl,
 		});
 	}
 }
