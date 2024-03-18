@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 
 import { DEFAULT_DEFENCES } from '@src/Defences';
 import '@src/components/ThemedButtons/ChatButton.css';
@@ -13,6 +13,10 @@ import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';
 
 import './ChatBox.css';
+
+const ExportPDFLink = lazy(
+	() => import('@src/components/ExportChat/ExportPDFLink')
+);
 
 function ChatBox({
 	currentLevel,
@@ -33,10 +37,6 @@ function ChatBox({
 	openLevelsCompleteOverlay: () => void;
 	openResetLevelOverlay: () => void;
 }) {
-	const ExportPDFLink = lazy(
-		() => import('@src/components/ExportChat/ExportPDFLink')
-	);
-
 	const [chatInput, setChatInput] = useState<string>('');
 	const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
 	const {
@@ -235,11 +235,13 @@ function ChatBox({
 					</span>
 				</div>
 				<div className="control-buttons">
-					<ExportPDFLink
-						messages={messages}
-						emails={emails}
-						currentLevel={currentLevel}
-					/>
+					<Suspense fallback={<p>loading pdf library</p>}>
+						<ExportPDFLink
+							messages={messages}
+							emails={emails}
+							currentLevel={currentLevel}
+						/>
+					</Suspense>
 					<button className="chat-button" onClick={openResetLevelOverlay}>
 						Reset Level
 					</button>
