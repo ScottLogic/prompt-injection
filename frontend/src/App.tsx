@@ -31,8 +31,6 @@ function App() {
 		null
 	);
 
-	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
-
 	function updateNumCompletedLevels(completedLevel: LEVEL_NAMES) {
 		setCompletedLevels(completedLevel + 1);
 	}
@@ -153,9 +151,7 @@ function App() {
 	// resets whole game progress and start from level 1 or Sandbox
 	async function resetProgress() {
 		console.log('resetting progress for all levels');
-
-		// reset on the backend
-		await resetService.resetAllLevelProgress();
+		await resetService.resetAllLevelProgress(); //yeeeeeeeee
 		resetCompletedLevels();
 
 		// set as new user so welcome modal shows
@@ -164,9 +160,6 @@ function App() {
 		// take the user to level 1 if on levels, or stay in sandbox
 		currentLevel !== LEVEL_NAMES.SANDBOX &&
 			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
-
-		// re-render main component to update frontend chat & emails
-		setMainComponentKey(mainComponentKey + 1);
 	}
 
 	function goToSandbox() {
@@ -183,7 +176,6 @@ function App() {
 				<div ref={contentRef}>{overlayComponent}</div>
 			</dialog>
 			<MainComponent
-				key={mainComponentKey}
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				closeOverlay={closeOverlay}
