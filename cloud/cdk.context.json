@@ -1,8 +1,12 @@
 {
-	"availability-zones:account=992382568770:region=eu-north-1": [
-		"eu-north-1a",
-		"eu-north-1b",
-		"eu-north-1c"
-	],
-	"ami:account=992382568770:filters.image-type.0=machine:filters.name.0=amzn-ami-vpc-nat-*:filters.state.0=available:owners.0=amazon:region=eu-north-1": "ami-072517490bf2cf3a3"
+  "availability-zones:account=992382568770:region=eu-north-1": [
+    "eu-north-1a",
+    "eu-north-1b",
+    "eu-north-1c"
+  ],
+  "acknowledged-issue-numbers": [
+    29483
+  ],
+  "ssm:account=992382568770:parameterName=/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64:region=eu-north-1": "ami-079ae45378903f993",
+  "ami:account=992382568770:filters.image-type.0=machine:filters.name.0=amzn-ami-vpc-nat-*:filters.state.0=available:owners.0=amazon:region=eu-north-1": "ami-072517490bf2cf3a3"
 }

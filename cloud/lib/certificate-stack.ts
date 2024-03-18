@@ -33,6 +33,7 @@ export class CertificateStack extends Stack {
 			{
 				certificateName: cloudFrontCertName,
 				domainName: hostedZone.zoneName,
+				subjectAlternativeNames: [`auth.${hostedZone.zoneName}`],
 				hostedZone,
 				validation: CertificateValidation.fromDns(hostedZone),
 				region: 'us-east-1',

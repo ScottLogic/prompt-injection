@@ -28,6 +28,7 @@ Amplify.configure({
 		Cognito: {
 			userPoolId: import.meta.env.VITE_COGNITO_USERPOOL_ID,
 			userPoolClientId: import.meta.env.VITE_COGNITO_USERPOOL_CLIENT,
+			userPoolEndpoint: import.meta.env.VITE_COGNITO_USERPOOL_ENDPOINT,
 			loginWith: {
 				oauth: {
 					domain: import.meta.env.VITE_COGNITO_USERPOOL_DOMAIN,

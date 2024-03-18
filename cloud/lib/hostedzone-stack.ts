@@ -6,6 +6,7 @@ import { resourceName } from './resourceNamingUtils';
 
 export class HostedZoneStack extends Stack {
 	public readonly hostedZone: IHostedZone;
+	public readonly topLevelUrl: string;
 
 	constructor(scope: Construct, id: string, props: StackProps) {
 		super(scope, id, props);
@@ -26,5 +27,7 @@ export class HostedZoneStack extends Stack {
 				zoneName: DOMAIN_NAME,
 			}
 		);
+
+		this.topLevelUrl = `https://${this.hostedZone.zoneName}`
 	}
 }

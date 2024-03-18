@@ -1,44 +1,34 @@
 import {
-	AdvancedSecurityMode,
 	Mfa,
 	OAuthScope,
 	UserPool,
 	UserPoolClient,
-	UserPoolDomain,
 } from 'aws-cdk-lib/aws-cognito';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
-import {
-	CfnOutput,
-	Duration,
-	RemovalPolicy,
-	Stack,
-	StackProps,
-	Tags,
-} from 'aws-cdk-lib/core';
+import { CfnOutput, Duration, RemovalPolicy, Stack, StackProps, Tags, } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
 import { resourceName } from './resourceNamingUtils';
 
 type AuthStackProps = StackProps & {
 	hostedZone: IHostedZone;
-	webappUrl: string;
 };
 
 export class AuthStack extends Stack {
+	// TODO Need these in our auth lambda! Maybe use ParameterStore?
 	public readonly userPool: UserPool;
-	public readonly userPoolName: string;
 	public readonly userPoolClient: UserPoolClient;
-	public readonly userPoolDomain: UserPoolDomain;
 
 	constructor(scope: Construct, id: string, props: AuthStackProps) {
 		super(scope, id, props);
 
 		const generateResourceName = resourceName(scope);
+		const { hostedZone } = props;
 
 		// Cognito UserPool
-		this.userPoolName = generateResourceName('userpool');
-		this.userPool = new UserPool(this, this.userPoolName, {
-			userPoolName: this.userPoolName,
+		const userPoolName = generateResourceName('userpool');
+		this.userPool = new UserPool(this, userPoolName, {
+			userPoolName,
 			enableSmsRole: false,
 			mfa: Mfa.OFF,
 			signInCaseSensitive: false,
@@ -50,7 +40,6 @@ export class AuthStack extends Stack {
 				email: { required: true },
 			},
 			signInAliases: { email: true },
-			advancedSecurityMode: AdvancedSecurityMode.AUDIT,
 			passwordPolicy: {
 				minLength: 16,
 				requireSymbols: false,
@@ -70,9 +59,9 @@ export class AuthStack extends Stack {
 			value: `urn:amazon:cognito:sp:${this.userPool.userPoolId}`,
 		});
 
-		const logoutUrls = [`${props.webappUrl}/`];
+		const logoutUrls = [`https://${hostedZone.zoneName}`];
 		const callbackUrls = logoutUrls.concat(
-			`https://api.${props.hostedZone.zoneName}/oauth2/idpresponse`
+			`https://api.${hostedZone.zoneName}/oauth2/idpresponse`
 		);
 		const userPoolClientName = generateResourceName('userpool-client');
 		this.userPoolClient = this.userPool.addClient(userPoolClientName, {
@@ -97,9 +86,9 @@ export class AuthStack extends Stack {
 		});
 
 		const userPoolDomainName = generateResourceName('userpool-domain');
-		this.userPoolDomain = this.userPool.addDomain(userPoolDomainName, {
+		this.userPool.addDomain(userPoolDomainName, {
 			cognitoDomain: {
-				domainPrefix: this.userPoolName,
+				domainPrefix: userPoolName,
 			},
 		});
 	}

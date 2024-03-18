@@ -19,8 +19,8 @@ import { RemovalPolicy, Stack, StackProps, TimeZone } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { join } from 'node:path';
 
+import { ServiceEventLambda } from './lambdas/startStopService';
 import { resourceDescription, resourceName } from './resourceNamingUtils';
-import { ServiceEventLambda } from './startStopServiceLambda';
 
 type SchedulerStackProps = StackProps & {
 	fargateService: ApplicationLoadBalancedFargateService;
@@ -46,7 +46,7 @@ export class SchedulerStack extends Stack {
 				),
 				runtime: Runtime.NODEJS_18_X,
 				handler: 'handler',
-				entry: join(__dirname, './startStopServiceLambda.ts'),
+				entry: join(__dirname, 'lambdas/startStopService.ts'),
 				bundling: {
 					minify: true,
 				},
