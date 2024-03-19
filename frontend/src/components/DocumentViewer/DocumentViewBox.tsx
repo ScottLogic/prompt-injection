@@ -1,5 +1,5 @@
 import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer';
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import OverlayHeader from '@src/components/Overlay/OverlayHeader';
 import { DocumentMeta } from '@src/models/document';
@@ -59,18 +59,16 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 					// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
 					tabIndex={0}
 				>
-					<Suspense fallback={<p>loading...</p>}>
-						<DocViewer
-							documents={documentMetas}
-							activeDocument={documentMetas[documentIndex]}
-							pluginRenderers={DocViewerRenderers}
-							config={{
-								header: {
-									disableHeader: true,
-								},
-							}}
-						/>
-					</Suspense>
+					<DocViewer
+						documents={documentMetas}
+						activeDocument={documentMetas[documentIndex]}
+						pluginRenderers={DocViewerRenderers}
+						config={{
+							header: {
+								disableHeader: true,
+							},
+						}}
+					/>
 				</div>
 			</div>
 		</div>
