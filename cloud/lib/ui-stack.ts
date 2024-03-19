@@ -122,11 +122,6 @@ export class UiStack extends Stack {
 				viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 				originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_AND_CLOUDFRONT_2022,
 				responseHeadersPolicy: ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT_AND_SECURITY_HEADERS,
-				// TODO Remove this, but then might need to reinstate custom CORS policy
-				edgeLambdas: [{
-					eventType: LambdaEdgeEventType.VIEWER_REQUEST,
-					functionVersion: cognitoAuthEdgeFunction.currentVersion,
-				}],
 			},
 			priceClass: PriceClass.PRICE_CLASS_100,
 		});

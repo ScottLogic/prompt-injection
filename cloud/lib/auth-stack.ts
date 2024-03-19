@@ -15,7 +15,7 @@ type AuthStackProps = StackProps & {
 };
 
 export class AuthStack extends Stack {
-	// TODO Need these in our auth lambda! Maybe use ParameterStore?
+	// TODO Need these in our auth edge lambda! Maybe use ParameterStore?
 	public readonly userPool: UserPool;
 	public readonly userPoolClient: UserPoolClient;
 
@@ -66,7 +66,6 @@ export class AuthStack extends Stack {
 		const userPoolClientName = generateResourceName('userpool-client');
 		this.userPoolClient = this.userPool.addClient(userPoolClientName, {
 			userPoolClientName,
-			generateSecret: true,
 			authFlows: {
 				userSrp: true,
 			},
