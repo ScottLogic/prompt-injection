@@ -322,8 +322,17 @@ function MainComponent({
 	// resets whole game progress and start from level 1 or Sandbox
 	async function resetProgress() {
 		console.log('resetting progress for all levels');
-		await resetService.resetAllLevelProgress(); //yeeeeeeeee
 		resetCompletedLevels();
+
+		const { emails, chatHistory, defences, chatModel } =
+			await resetService.resetAllLevelProgress(currentLevel);
+		processBackendLevelData(
+			currentLevel,
+			emails,
+			chatHistory,
+			defences,
+			chatModel
+		);
 
 		// set as new user so welcome modal shows
 		setIsNewUser(true);
