@@ -1,5 +1,6 @@
 .document-view-button-wrapper {
 	display: flex;
+	flex-shrink: 0;
 	height: 2.5rem;
 }
 

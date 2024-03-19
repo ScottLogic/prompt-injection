@@ -72,9 +72,8 @@ function ControlPanel({
 				currentLevel === LEVEL_NAMES.SANDBOX) && (
 				<>
 					<h2>ScottBrew System Access</h2>
-					{/* <div className="defence-config-container"> */}
-					<DetailElement useIcon={true} buttonText={'Defence Configuration'}>
-						<div className="details-panel-for-defence-config">
+					<div className="defence-config-container">
+						<DetailElement useIcon={true} buttonText={'Defence Configuration'}>
 							<DefenceBox
 								currentLevel={currentLevel}
 								defences={nonModelDefences}
@@ -83,12 +82,11 @@ function ControlPanel({
 								toggleDefence={toggleDefence}
 								setDefenceConfiguration={setDefenceConfiguration}
 							/>
-						</div>
-					</DetailElement>
-					{/* </div> */}
+						</DetailElement>
+					</div>
 					<div className="model-config-container">
 						<DetailElement useIcon={true} buttonText={'Model Configuration'}>
-							<div className="details-panel-for-model-config">
+							<>
 								<DefenceBox
 									currentLevel={currentLevel}
 									defences={modelDefences}
@@ -105,7 +103,7 @@ function ControlPanel({
 										addInfoMessage={addInfoMessage}
 									/>
 								)}
-							</div>
+							</>
 						</DetailElement>
 					</div>
 				</>

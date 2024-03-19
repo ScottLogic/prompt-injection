@@ -3,6 +3,16 @@
 	flex-direction: column;
 }
 
+.model-selection-box .model-selection-fieldset {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	min-height: fit-content;
+	margin: 0;
+	border: 0.25rem solid var(--control-config-border);
+	border-radius: 0.5rem;
+}
+
 .model-selection-box .model-selection-row {
 	display: flex;
 	flex-wrap: wrap;

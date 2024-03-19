@@ -65,7 +65,7 @@ function DefenceMechanism({
 					<div className="toggles">
 						<input
 							id={defenceDetail.id}
-							className="toggle-switch-input"
+							className="visually-hidden"
 							type="checkbox"
 							placeholder="defence-toggle"
 							onChange={() => {
@@ -92,17 +92,15 @@ function DefenceMechanism({
 									setConfigKey(configKey + 1);
 								}}
 							>
-								<div className="details-panel">
-									<p>{defenceDetail.info}</p>
-									<DefenceConfiguration
-										defence={defenceDetail}
-										key={config.id + configKey}
-										isActive={defenceDetail.isActive}
-										config={config}
-										setConfigurationValue={setConfigurationValue}
-										resetConfigurationValue={resetConfigurationValue}
-									/>
-								</div>
+								<p>{defenceDetail.info}</p>
+								<DefenceConfiguration
+									defence={defenceDetail}
+									key={config.id + configKey}
+									isActive={defenceDetail.isActive}
+									config={config}
+									setConfigurationValue={setConfigurationValue}
+									resetConfigurationValue={resetConfigurationValue}
+								/>
 							</DetailElement>
 						</>
 					);
@@ -116,16 +114,14 @@ function DefenceMechanism({
 							setConfigKey(configKey + 1);
 						}}
 					>
-						<div className="details-panel">
-							<p>{defenceDetail.info}</p>
-							<PromptEnclosureDefenceMechanism
-								defences={promptEnclosureDefences}
-								toggleDefence={toggleDefence}
-								showConfigurations={showConfigurations}
-								setConfigurationValue={setConfigurationValue}
-								resetConfigurationValue={resetConfigurationValue}
-							/>
-						</div>
+						<p>{defenceDetail.info}</p>
+						<PromptEnclosureDefenceMechanism
+							defences={promptEnclosureDefences}
+							toggleDefence={toggleDefence}
+							showConfigurations={showConfigurations}
+							setConfigurationValue={setConfigurationValue}
+							resetConfigurationValue={resetConfigurationValue}
+						/>
 					</DetailElement>
 				</>
 			)}

@@ -1,7 +1,7 @@
 .control-panel {
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
+	gap: 1rem;
 	overflow-y: auto;
 	height: 100%;
 	padding: 1.875rem;
@@ -13,6 +13,12 @@
 	display: none;
 	width: 0;
 	background: transparent;
+}
+
+.control-panel .defence-config-container,
+.control-panel .model-config-container {
+	border-radius: 0.5rem;
+	background-color: var(--control-header-background-colour);
 }
 
 .control-panel h2 {
@@ -29,19 +35,6 @@
 	color: inherit;
 	font-size: 1rem;
 	text-align: start;
-	cursor: default;
-}
-
-.model-config-container .details-button {
-	width: 100%;
-	padding: 0.75rem;
-	border: none;
-	border-radius: 0.5rem;
-	background-color: var(--control-header-background-colour);
-	color: inherit;
-	font-size: 1rem;
-	text-align: start;
-	cursor: default;
 }
 
 .control-panel .details-button:hover {

@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 
 import './DetailElement.css';
 
-export interface DetailElementProps {
+export interface DetailElementProps extends PropsWithChildren {
 	useIcon: boolean;
 	buttonText: string;
-	children: React.ReactNode;
 	onExpanded?: () => void;
 }
 
