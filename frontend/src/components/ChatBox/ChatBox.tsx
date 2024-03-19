@@ -3,6 +3,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { DEFAULT_DEFENCES } from '@src/Defences';
 import '@src/components/ThemedButtons/ChatButton.css';
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import useUnitStepper from '@src/hooks/useUnitStepper';
 import { ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
@@ -14,9 +15,19 @@ import ChatBoxInput from './ChatBoxInput';
 
 import './ChatBox.css';
 
-const ExportPDFLink = lazy(
-	() => import('@src/components/ExportChat/ExportPDFLink')
+const ExportPDFLink = await later(4000).then(() =>
+	lazy(async () => {
+		return await later(4000).then(
+			() => import('@src/components/ExportChat/ExportPDFLink')
+		);
+	})
 );
+
+function later(delay: number) {
+	return new Promise(function (resolve) {
+		setTimeout(resolve, delay);
+	});
+}
 
 function ChatBox({
 	currentLevel,
@@ -235,7 +246,19 @@ function ChatBox({
 					</span>
 				</div>
 				<div className="control-buttons">
-					<Suspense fallback={<p>loading pdf library</p>}>
+					<Suspense
+						fallback={
+							<ThemedButton
+								className="chat-button export-chat-link"
+								onClick={() => {
+									console.error('This button is still loading');
+								}}
+								ariaDisabled={true}
+							>
+								Export Chat
+							</ThemedButton>
+						}
+					>
 						<ExportPDFLink
 							messages={messages}
 							emails={emails}
