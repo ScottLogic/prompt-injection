@@ -48,6 +48,7 @@ test.each(Object.values(LEVEL_NAMES))(
 						defences: 'level 4 defences',
 					},
 				],
+				chatModel: 'chat model',
 			},
 		} as unknown as LevelGetRequest;
 		const res = responseMock();
@@ -58,6 +59,7 @@ test.each(Object.values(LEVEL_NAMES))(
 			emails: `level ${level + 1} emails`,
 			chatHistory: `level ${level + 1} chat history`,
 			defences: `level ${level + 1} defences`,
+			chatModel: level === LEVEL_NAMES.SANDBOX ? 'chat model' : undefined,
 		});
 	}
 );
