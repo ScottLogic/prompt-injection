@@ -1,6 +1,7 @@
 import { Response } from 'express';
 
 import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
+import { defaultChatModel } from '@src/models/chat';
 import {
 	LEVEL_NAMES,
 	getInitialLevelStates,
@@ -22,6 +23,7 @@ function handleResetProgress(req: LevelGetRequest, res: Response) {
 
 	console.debug('Resetting progress for all levels', req.session.levelState);
 	req.session.levelState = getInitialLevelStates();
+	req.session.chatModel = defaultChatModel;
 	res.send({
 		emails: req.session.levelState[level].sentEmails,
 		chatHistory: req.session.levelState[level].chatHistory,
