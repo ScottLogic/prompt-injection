@@ -1,108 +1,156 @@
-import { expect, test, jest, describe } from '@jest/globals';
-import { Request, Response } from 'express';
+import { expect, test, jest, afterEach } from '@jest/globals';
+import { Response } from 'express';
 
 import { handleResetProgress } from '@src/controller/resetController';
 import { defaultDefences } from '@src/defaultDefences';
-import { ChatMessage } from '@src/models/chatMessage';
-import { DEFENCE_ID, Defence, DefenceConfigItem } from '@src/models/defence';
-import { EmailInfo } from '@src/models/email';
-import {
-	LEVEL_NAMES,
-	LevelState,
-	getInitialLevelStates,
-} from '@src/models/level';
+import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
+import { defaultChatModel } from '@src/models/chat';
+import { LEVEL_NAMES } from '@src/models/level';
+
+const mockSend = jest.fn();
 
 function responseMock() {
 	return {
-		send: jest.fn(),
-		status: jest.fn(),
+		send: mockSend,
+		status: jest.fn().mockReturnValue({ send: mockSend }),
 	} as unknown as Response;
 }
 
-function createLevelObject(
-	param: keyof LevelState,
-	setTo: unknown
-): Record<string, LevelState> {
-	const obj: Record<string, LevelState> = {};
-	Object.values(LEVEL_NAMES)
-		.filter((value) => Number.isNaN(Number(value)))
-		.forEach((value, index) => {
-			obj[index.toString()] = {
-				level: value as LEVEL_NAMES,
-				chatHistory: param === 'chatHistory' ? setTo : [],
-				defences: param === 'defences' ? setTo : defaultDefences,
-				sentEmails: param === 'sentEmails' ? setTo : [],
-			} as LevelState;
-		});
-	return obj;
-}
+jest.mock('@src/defaultDefences', () => ({
+	defaultDefences: 'DEFAULT_DEFENCES',
+}));
 
-describe('handleResetProgress unit tests', () => {
-	test('GIVEN a chat history THEN should reset all chatHistory for all levels', () => {
-		const mockChatHistory: ChatMessage[] = [
+jest.mock('@src/models/chat', () => ({
+	defaultChatModel: 'DEFAULT_CHAT_MODEL',
+}));
+
+const mockGetInitialLevelStates = jest.fn();
+
+jest.mock('@src/models/level', () => {
+	const originalModule =
+		jest.requireActual<typeof import('@src/models/level')>('@src/models/level');
+	return {
+		...originalModule,
+		getInitialLevelStates: () => mockGetInitialLevelStates(),
+	};
+});
+
+afterEach(() => {
+	mockSend.mockClear();
+});
+
+test.each(Object.values(LEVEL_NAMES))(
+	`GIVEN level [%s] WHEN client asks to reset all progress THEN game state is cleared AND the backend sends the correct level information`,
+	(level) => {
+		const req = {
+			query: {
+				level,
+			},
+			session: {
+				levelState: [
+					{
+						sentEmails: 'level 1 emails',
+						chatHistory: 'level 1 chat history',
+						defences: 'level 1 defences',
+					},
+					{
+						sentEmails: 'level 2 emails',
+						chatHistory: 'level 2 chat history',
+						defences: 'level 2 defences',
+					},
+					{
+						sentEmails: 'level 3 emails',
+						chatHistory: 'level 3 chat history',
+						defences: 'level 3 defences',
+					},
+					{
+						sentEmails: 'level 4 emails',
+						chatHistory: 'level 4 chat history',
+						defences: 'level 4 defences',
+					},
+				],
+				chatModel: 'chat model',
+			},
+		} as unknown as LevelGetRequest;
+		const res = responseMock();
+
+		mockGetInitialLevelStates.mockReturnValue([
 			{
-				completion: {
-					content: 'testing',
-					role: 'assistant',
-				},
-				chatMessageType: 'BOT',
+				sentEmails: [],
+				chatHistory: [],
+				defences: undefined,
 			},
-		];
-		const reqWithChatHistory = {
-			session: {
-				levelState: createLevelObject('chatHistory', mockChatHistory),
+			{
+				sentEmails: [],
+				chatHistory: [],
+				defences: undefined,
 			},
-		} as unknown as Request;
-
-		const res = responseMock();
-		handleResetProgress(reqWithChatHistory, res);
-		expect(res.send).toHaveBeenCalledWith(getInitialLevelStates());
-	});
-
-	test('GIVEN sent emails THEN should reset emails for all levels', () => {
-		const mockSentEmails: EmailInfo[] = [
-			{ address: 'bob@example.com', subject: 'test', body: 'this is a test' },
-		];
-		const reqWithSentEmails = {
-			session: {
-				levelState: createLevelObject('sentEmails', mockSentEmails),
+			{
+				sentEmails: [],
+				chatHistory: [],
+				defences: defaultDefences,
 			},
-		} as unknown as Request;
+			{
+				sentEmails: [],
+				chatHistory: [],
+				defences: defaultDefences,
+			},
+		]);
 
-		const res = responseMock();
-		handleResetProgress(reqWithSentEmails, res);
-		expect(res.send).toHaveBeenCalledWith(getInitialLevelStates());
-	});
+		handleResetProgress(req, res);
 
-	test('GIVEN defences THEN should reset defences for levels', () => {
-		function configureAndActivateDefence(
-			id: DEFENCE_ID,
-			defences: Defence[],
-			config: DefenceConfigItem[]
-		): Defence[] {
-			// return the updated list of defences
-			return defences.map((defence) =>
-				defence.id === id ? { ...defence, config, isActive: true } : defence
-			);
-		}
-		const mockDefences = configureAndActivateDefence(
-			DEFENCE_ID.CHARACTER_LIMIT,
-			defaultDefences,
-			[
+		expect(mockSend).toHaveBeenCalledWith({
+			emails: [],
+			chatHistory: [],
+			defences:
+				level === LEVEL_NAMES.LEVEL_1 || level === LEVEL_NAMES.LEVEL_2
+					? undefined
+					: defaultDefences,
+			chatModel: level === LEVEL_NAMES.SANDBOX ? defaultChatModel : undefined,
+		});
+	}
+);
+
+test('WHEN client does not provide a level THEN the backend responds with BadRequest', () => {
+	const req = {
+		query: {},
+		session: {
+			levelState: [
+				{},
 				{
-					id: 'MAX_MESSAGE_LENGTH',
-					value: '10',
+					sentEmails: [],
+					chatHistory: [],
+					defences: [],
 				},
-			]
-		);
-		const reqWithDefences = {
-			session: {
-				levelState: createLevelObject('defences', mockDefences),
-			},
-		} as unknown as Request;
+			],
+		},
+	} as unknown as LevelGetRequest;
+	const res = responseMock();
 
-		const res = responseMock();
-		handleResetProgress(reqWithDefences, res);
-		expect(res.send).toHaveBeenCalledWith(getInitialLevelStates());
-	});
+	handleResetProgress(req, res);
+
+	expect(res.status).toHaveBeenCalledWith(400);
+	expect(mockSend).toHaveBeenCalledWith('Level not provided');
+});
+
+test('WHEN client provides an invalid level THEN the backend responds with BadRequest', () => {
+	const req = {
+		query: { level: 5 },
+		session: {
+			levelState: [
+				{},
+				{
+					sentEmails: [],
+					chatHistory: [],
+					defences: [],
+				},
+			],
+		},
+	} as unknown as LevelGetRequest;
+	const res = responseMock();
+
+	handleResetProgress(req, res);
+
+	expect(res.status).toHaveBeenCalledWith(400);
+	expect(mockSend).toHaveBeenCalledWith('Invalid level');
 });
