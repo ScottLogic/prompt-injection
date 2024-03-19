@@ -328,6 +328,9 @@ function MainComponent({
 			currentLevel
 		);
 
+		// set as new user so welcome modal shows
+		setIsNewUser(true);
+
 		if (
 			currentLevel === LEVEL_NAMES.SANDBOX ||
 			currentLevel === LEVEL_NAMES.LEVEL_1
@@ -344,9 +347,6 @@ function MainComponent({
 			// game state will be updated by the [currentLevel] useEffect
 			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
 		}
-
-		// set as new user so welcome modal shows
-		setIsNewUser(true);
 	}
 
 	function openResetProgressOverlay() {
