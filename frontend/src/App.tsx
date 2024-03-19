@@ -5,10 +5,8 @@ import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
-import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import useLocalStorage from './hooks/useLocalStorage';
 import { LEVEL_NAMES } from './models/level';
-import { resetService } from './service';
 
 import './App.css';
 import './Theme.css';
@@ -124,14 +122,6 @@ function App() {
 	function openDocumentViewer() {
 		openOverlay(<DocumentViewBox closeOverlay={closeOverlay} />);
 	}
-	function openResetProgressOverlay() {
-		openOverlay(
-			<ResetProgressOverlay
-				resetProgress={resetProgress}
-				closeOverlay={closeOverlay}
-			/>
-		);
-	}
 
 	// set the start level for a user who clicks beginner/expert
 	function setStartLevel(startLevel: LEVEL_NAMES) {
@@ -146,20 +136,6 @@ function App() {
 			setCurrentLevel(startLevel);
 		}
 		closeOverlay();
-	}
-
-	// resets whole game progress and start from level 1 or Sandbox
-	async function resetProgress() {
-		console.log('resetting progress for all levels');
-		await resetService.resetAllLevelProgress(); //yeeeeeeeee
-		resetCompletedLevels();
-
-		// set as new user so welcome modal shows
-		setIsNewUser(true);
-
-		// take the user to level 1 if on levels, or stay in sandbox
-		currentLevel !== LEVEL_NAMES.SANDBOX &&
-			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
 	}
 
 	function goToSandbox() {
@@ -184,9 +160,10 @@ function App() {
 				openOverlay={openOverlay}
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
-				openResetProgressOverlay={openResetProgressOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
+				resetCompletedLevels={resetCompletedLevels}
+				setIsNewUser={setIsNewUser}
 			/>
 		</div>
 	);
