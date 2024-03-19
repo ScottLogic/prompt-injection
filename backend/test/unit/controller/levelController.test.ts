@@ -5,12 +5,6 @@ import { handleLoadLevel } from '@src/controller/levelController';
 import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
 import { LEVEL_NAMES } from '@src/models/level';
 
-jest.mock('@src/promptTemplates', () => ({
-	systemRoleLevel1: 'systemRoleLevel1',
-	systemRoleLevel2: 'systemRoleLevel2',
-	systemRoleLevel3: 'systemRoleLevel3',
-}));
-
 const mockSend = jest.fn();
 
 function responseMock() {
