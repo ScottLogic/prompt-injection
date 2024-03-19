@@ -6,7 +6,7 @@ import { getDefencesFromDTOs } from './defenceService';
 
 const PATH = 'reset';
 
-async function resetAllLevelProgress(level: number) {
+async function resetAllProgress(level: number) {
 	const response = await sendRequest(`${PATH}?level=${level}`, {
 		method: 'POST',
 		headers: {
@@ -24,4 +24,4 @@ async function resetAllLevelProgress(level: number) {
 	};
 }
 
-export { resetAllLevelProgress };
+export { resetAllProgress };

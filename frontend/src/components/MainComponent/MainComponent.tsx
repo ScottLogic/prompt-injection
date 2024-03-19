@@ -324,7 +324,7 @@ function MainComponent({
 		console.log('resetting progress for all levels');
 		resetCompletedLevels();
 
-		const resetServiceResult = await resetService.resetAllLevelProgress(
+		const resetServiceResult = await resetService.resetAllProgress(
 			currentLevel
 		);
 
