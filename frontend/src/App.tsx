@@ -46,33 +46,8 @@ function App() {
 	}, [currentLevel]);
 
 	useEffect(() => {
-		if (isNewUser) openWelcomeOverlay();
+		isNewUser && openWelcomeOverlay();
 	}, [isNewUser]);
-
-	useEffect(() => {
-		// must re-bind event listener after changing overlay type
-		setTimeout(() => {
-			// Need timeout, else dialog consumes same click that
-			// opened it and closes immediately!
-			window.addEventListener('click', handleOverlayClick);
-		});
-		return () => {
-			window.removeEventListener('click', handleOverlayClick);
-		};
-	}, [overlayComponent]);
-
-	const handleOverlayClick = useCallback(
-		(event: MouseEvent) => {
-			if (
-				overlayComponent !== null &&
-				contentRef.current &&
-				!event.composedPath().includes(contentRef.current)
-			) {
-				closeOverlay();
-			}
-		},
-		[closeOverlay, contentRef, overlayComponent]
-	);
 
 	const handleEscape = useCallback(
 		(event: KeyboardEvent) => {
@@ -88,18 +63,18 @@ function App() {
 
 	function openOverlay(overlay: JSX.Element) {
 		setOverlayComponent(overlay);
-		dialogRef.current?.showModal();
+		// Some of our dialogs open directly after others, and showModal()
+		// throws error if the dialog is already open, so this check is vital!
+		dialogRef.current?.open === false && dialogRef.current.showModal();
 	}
 
 	function openWelcomeOverlay() {
+		setIsNewUser(false);
 		openOverlay(
 			<OverlayWelcome
 				currentLevel={currentLevel}
 				setStartLevel={(level: LEVEL_NAMES) => {
 					setStartLevel(level);
-					// after welcome overlay, open mission info overlay
-					setIsNewUser(false);
-					openInformationOverlay();
 				}}
 				closeOverlay={closeOverlay}
 			/>
@@ -116,7 +91,12 @@ function App() {
 	}
 	function openLevelsCompleteOverlay() {
 		openOverlay(
-			<LevelsComplete goToSandbox={goToSandbox} closeOverlay={closeOverlay} />
+			<LevelsComplete
+				goToSandbox={() => {
+					setCurrentLevel(LEVEL_NAMES.SANDBOX);
+				}}
+				closeOverlay={closeOverlay}
+			/>
 		);
 	}
 	function openDocumentViewer() {
@@ -125,24 +105,7 @@ function App() {
 
 	// set the start level for a user who clicks beginner/expert
 	function setStartLevel(startLevel: LEVEL_NAMES) {
-		if (
-			(startLevel === LEVEL_NAMES.LEVEL_1 &&
-				currentLevel === LEVEL_NAMES.SANDBOX) ||
-			(startLevel === LEVEL_NAMES.SANDBOX &&
-				currentLevel !== LEVEL_NAMES.SANDBOX)
-		) {
-			console.log(`setting start level to ${startLevel} from ${currentLevel}`);
-
-			setCurrentLevel(startLevel);
-		}
-		closeOverlay();
-	}
-
-	function goToSandbox() {
-		setStartLevel(LEVEL_NAMES.SANDBOX);
-		// close the current overlay
-		closeOverlay();
-		// open the sandbox info overlay
+		setCurrentLevel(startLevel);
 		openInformationOverlay();
 	}
 
