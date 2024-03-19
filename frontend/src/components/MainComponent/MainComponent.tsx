@@ -323,8 +323,6 @@ function MainComponent({
 	async function resetProgress() {
 		console.log('resetting progress for all levels');
 		resetCompletedLevels();
-		// set as new user so welcome modal shows
-		setIsNewUser(true);
 
 		const resetServiceResult = await resetService.resetAllLevelProgress(
 			currentLevel
@@ -346,6 +344,9 @@ function MainComponent({
 			// game state will be updated by the [currentLevel] useEffect
 			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
 		}
+
+		// set as new user so welcome modal shows
+		setIsNewUser(true);
 	}
 
 	function openResetProgressOverlay() {
