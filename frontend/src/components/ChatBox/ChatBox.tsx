@@ -239,11 +239,15 @@ function ChatBox({
 					<Suspense
 						fallback={
 							<ThemedButton
-								className="chat-button export-chat-link"
+								className={'chat-button chat-button-disabled'}
 								onClick={() => {
 									console.error('This button is still loading');
 								}}
 								ariaDisabled={true}
+								tooltip={{
+									id: 'hey',
+									text: 'This button is still loading. Please wait...',
+								}}
 							>
 								Export Chat
 							</ThemedButton>
