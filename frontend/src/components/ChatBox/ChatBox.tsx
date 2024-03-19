@@ -15,19 +15,9 @@ import ChatBoxInput from './ChatBoxInput';
 
 import './ChatBox.css';
 
-const ExportPDFLink = await later(4000).then(() =>
-	lazy(async () => {
-		return await later(4000).then(
-			() => import('@src/components/ExportChat/ExportPDFLink')
-		);
-	})
+const ExportPDFLink = lazy(
+	() => import('@src/components/ExportChat/ExportPDFLink')
 );
-
-function later(delay: number) {
-	return new Promise(function (resolve) {
-		setTimeout(resolve, delay);
-	});
-}
 
 function ChatBox({
 	currentLevel,
