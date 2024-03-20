@@ -16,6 +16,6 @@
 	background-color: var(--chat-button-background-colour-hover);
 }
 
-.chat-button-disabled:hover {
+.chat-button[aria-disabled='true']:hover {
 	background-color: var(--action-button-disabled-background-colour);
 }
