@@ -7,6 +7,6 @@
 
 /* hide arrows in firefox */
 .themed-number-input {
-	appearance: textfield;
 	outline-offset: 0.125rem;
+	appearance: textfield;
 }

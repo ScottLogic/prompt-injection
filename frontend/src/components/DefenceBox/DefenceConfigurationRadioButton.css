@@ -1,8 +1,8 @@
 .defence-radio-button {
 	position: relative;
 	display: flex;
-	cursor: pointer;
 	gap: 0.75rem;
+	cursor: pointer;
 }
 
 .defence-radio-button input {

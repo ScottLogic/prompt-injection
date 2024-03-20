@@ -86,18 +86,21 @@ function ThemedTextArea({
 }) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-	const resizeObserverRef = useRef(new ResizeObserver((entries) => {
-		entries.forEach((entry) => {
-			// If component was hidden in DOM when mounted (e.g. display: none) then
-			// we must trigger resize when it first becomes visible
-			if (entry.contentBoxSize[0].blockSize === 0) {
-				resizeInput(entry.target as HTMLTextAreaElement, maxLines);
-			}
-		});
-	}));
+	const resizeObserverRef = useRef(
+		new ResizeObserver((entries) => {
+			entries.forEach((entry) => {
+				// If component was hidden in DOM when mounted (e.g. display: none) then
+				// we must trigger resize when it first becomes visible
+				if (entry.contentBoxSize[0].blockSize === 0) {
+					resizeInput(entry.target as HTMLTextAreaElement, maxLines);
+				}
+			});
+		})
+	);
 
 	useEffect(() => {
-		textareaRef.current && resizeObserverRef.current.observe(textareaRef.current);
+		textareaRef.current &&
+			resizeObserverRef.current.observe(textareaRef.current);
 		return () => {
 			resizeObserverRef.current.disconnect();
 		};
