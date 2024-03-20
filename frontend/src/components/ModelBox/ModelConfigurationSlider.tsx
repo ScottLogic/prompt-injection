@@ -4,6 +4,7 @@ import { SyntheticEvent, useEffect, useState } from 'react';
 import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
 
 import './ModelConfigurationSlider.css';
+import DetailElement from '@src/components/ThemedButtons/DetailElement';
 
 function ModelConfigurationSlider({
 	config,
@@ -32,6 +33,7 @@ function ModelConfigurationSlider({
 		setValue(config.value);
 	}, [config]);
 
+	// TODO Fix this to use new DetailElement !!
 	return (
 		<fieldset className="model-config-slider-fieldset">
 			<legend>{config.name}</legend>
@@ -50,10 +52,9 @@ function ModelConfigurationSlider({
 					}}
 				/>
 			</div>
-			<details>
-				<summary>Details</summary>
+			<DetailElement useIcon={false}>
 				<div className="info-text">{config.info}</div>
-			</details>
+			</DetailElement>
 		</fieldset>
 	);
 }

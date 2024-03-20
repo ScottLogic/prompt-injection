@@ -86,24 +86,22 @@ function ControlPanel({
 					</div>
 					<div className="model-config-container">
 						<DetailElement useIcon={true} buttonText={'Model Configuration'}>
-							<>
-								<DefenceBox
-									currentLevel={currentLevel}
-									defences={modelDefences}
-									showConfigurations={showConfigurations}
-									toggleDefence={toggleDefence}
-									resetDefenceConfiguration={resetDefenceConfiguration}
-									setDefenceConfiguration={setDefenceConfiguration}
+							<DefenceBox
+								currentLevel={currentLevel}
+								defences={modelDefences}
+								showConfigurations={showConfigurations}
+								toggleDefence={toggleDefence}
+								resetDefenceConfiguration={resetDefenceConfiguration}
+								setDefenceConfiguration={setDefenceConfiguration}
+							/>
+							{currentLevel === LEVEL_NAMES.SANDBOX && (
+								<ModelBox
+									chatModel={chatModel}
+									setChatModelId={setChatModelId}
+									chatModelOptions={chatModelOptions}
+									addInfoMessage={addInfoMessage}
 								/>
-								{currentLevel === LEVEL_NAMES.SANDBOX && (
-									<ModelBox
-										chatModel={chatModel}
-										setChatModelId={setChatModelId}
-										chatModelOptions={chatModelOptions}
-										addInfoMessage={addInfoMessage}
-									/>
-								)}
-							</>
+							)}
 						</DetailElement>
 					</div>
 				</>

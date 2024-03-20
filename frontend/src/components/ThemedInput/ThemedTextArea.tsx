@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import { KeyboardEvent, useEffect, useRef } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useRef } from 'react';
 
 import useIsOverflow from '@src/hooks/useIsOverflow';
 
@@ -86,13 +86,28 @@ function ThemedTextArea({
 }) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+	const resizeObserverRef = useRef(new ResizeObserver((entries) => {
+		entries.forEach((entry) => {
+			// If component was hidden in DOM when mounted (e.g. display: none) then
+			// we must trigger resize when it first becomes visible
+			if (entry.contentBoxSize[0].blockSize === 0) {
+				resizeInput(entry.target as HTMLTextAreaElement, maxLines);
+			}
+		});
+	}));
+
 	useEffect(() => {
-		if (textareaRef.current) {
-			resizeInput(textareaRef.current, maxLines);
-		}
+		textareaRef.current && resizeObserverRef.current.observe(textareaRef.current);
+		return () => {
+			resizeObserverRef.current.disconnect();
+		};
+	}, []);
+
+	useEffect(() => {
+		textareaRef.current && resizeInput(textareaRef.current, maxLines);
 	}, [content]);
 
-	function inputChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+	function inputChange(event: ChangeEvent<HTMLTextAreaElement>) {
 		onContentChanged(event.target.value);
 	}
 
@@ -112,6 +127,8 @@ function ThemedTextArea({
 	return (
 		<textarea
 			ref={textareaRef}
+			id={id}
+			tabIndex={isOverflow ? 0 : undefined}
 			className={textAreaClass}
 			placeholder={placeHolderText}
 			value={content}
@@ -124,8 +141,6 @@ function ThemedTextArea({
 			// eslint-disable-next-line jsx-a11y/no-autofocus
 			autoFocus={autoFocus}
 			maxLength={characterLimit}
-			tabIndex={isOverflow ? 0 : undefined}
-			id={id}
 		/>
 	);
 }

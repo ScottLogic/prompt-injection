@@ -26,7 +26,8 @@
 	font-size: 1.25rem;
 }
 
-.control-panel .details-button {
+.control-panel .defence-config-container > .details-button,
+.control-panel .model-config-container > .details-button {
 	width: 100%;
 	padding: 0.75rem;
 	border: none;
@@ -37,10 +38,9 @@
 	text-align: start;
 }
 
-.control-panel .details-button:hover {
-	background-color: var(--control-header-background-colour-hover);
-}
-
-.control-panel .details-button:focus-visible {
+.control-panel .defence-config-container > .details-button:hover,
+.control-panel .defence-config-container > .details-button:focus-visible,
+.control-panel .model-config-container > .details-button:hover,
+.control-panel .model-config-container > .details-button:focus-visible {
 	background-color: var(--control-header-background-colour-hover);
 }

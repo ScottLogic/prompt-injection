@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import DetailElement from '@src/components/ThemedButtons/DetailElement';
 import {
 	DEFENCE_ID,
@@ -34,8 +32,6 @@ function DefenceMechanism({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 }) {
-	const [configKey, setConfigKey] = useState<number>(0);
-
 	function resetConfigurationValue(
 		defence: Defence,
 		configItemId: DEFENCE_CONFIG_ITEM_ID
@@ -84,46 +80,29 @@ function DefenceMechanism({
 				showConfigurations &&
 				defenceDetail.config.map((config) => {
 					return (
-						<>
-							<DetailElement
-								useIcon={false}
-								buttonText={'Details'}
-								onExpanded={() => {
-									setConfigKey(configKey + 1);
-								}}
-							>
-								<p>{defenceDetail.info}</p>
-								<DefenceConfiguration
-									defence={defenceDetail}
-									key={config.id + configKey}
-									isActive={defenceDetail.isActive}
-									config={config}
-									setConfigurationValue={setConfigurationValue}
-									resetConfigurationValue={resetConfigurationValue}
-								/>
-							</DetailElement>
-						</>
+						<DetailElement useIcon={false} key={config.id}>
+							<p>{defenceDetail.info}</p>
+							<DefenceConfiguration
+								defence={defenceDetail}
+								isActive={defenceDetail.isActive}
+								config={config}
+								setConfigurationValue={setConfigurationValue}
+								resetConfigurationValue={resetConfigurationValue}
+							/>
+						</DetailElement>
 					);
 				})
 			) : (
-				<>
-					<DetailElement
-						useIcon={false}
-						buttonText={'Details'}
-						onExpanded={() => {
-							setConfigKey(configKey + 1);
-						}}
-					>
-						<p>{defenceDetail.info}</p>
-						<PromptEnclosureDefenceMechanism
-							defences={promptEnclosureDefences}
-							toggleDefence={toggleDefence}
-							showConfigurations={showConfigurations}
-							setConfigurationValue={setConfigurationValue}
-							resetConfigurationValue={resetConfigurationValue}
-						/>
-					</DetailElement>
-				</>
+				<DetailElement useIcon={false}>
+					<p>{defenceDetail.info}</p>
+					<PromptEnclosureDefenceMechanism
+						defences={promptEnclosureDefences}
+						toggleDefence={toggleDefence}
+						showConfigurations={showConfigurations}
+						setConfigurationValue={setConfigurationValue}
+						resetConfigurationValue={resetConfigurationValue}
+					/>
+				</DetailElement>
 			)}
 		</fieldset>
 	);

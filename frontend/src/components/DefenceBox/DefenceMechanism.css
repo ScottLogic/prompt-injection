@@ -16,33 +16,6 @@
 	height: 2.5rem;
 }
 
-.control-panel .defence-mechanism-fieldset .details-button {
-	width: fit-content;
-	padding: 0.3125rem;
-	border: 0.25rem outset var(--control-config-border);
-	border-radius: 0.25rem;
-	background-color: var(--main-scrollbar-colour);
-	color: var(--main-text-colour);
-	font-size: 1rem;
-}
-
-.control-panel .defence-mechanism-fieldset .details-button:hover {
-	background-color: var(--main-scrollbar-hover-colour);
-}
-
-.control-panel
-	.defence-mechanism-fieldset
-	.details-button[aria-expanded='true'] {
-	border-style: inset;
-	background-color: var(--control-body-background-colour);
-}
-
-.control-panel
-	.defence-mechanism-fieldset
-	.details-button[aria-expanded='true']:hover {
-	background-color: var(--main-scrollbar-hover-colour);
-}
-
 .defence-mechanism-fieldset .defence-radio-buttons {
 	display: flex;
 	flex-direction: column;
