@@ -23,10 +23,6 @@
 	background-color: var(--main-scrollbar-hover-colour);
 }
 
-.details-button[aria-expanded='false'] ~ .details-content {
-	display: none;
-}
-
 .details-button .button-arrow-icon {
 	display: inline-block;
 	width: 1.5rem;

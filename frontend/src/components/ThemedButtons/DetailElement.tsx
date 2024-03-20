@@ -34,7 +34,12 @@ function DetailElement({
 				)}
 				{buttonText}
 			</button>
-			<div className="details-content">{children}</div>
+			<div
+				className="details-content"
+				style={{ display: isExpanded ? 'block' : 'none' }}
+			>
+				{children}
+			</div>
 		</>
 	);
 }
