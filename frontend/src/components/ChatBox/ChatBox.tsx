@@ -240,14 +240,14 @@ function ChatBox({
 						fallback={
 							<ThemedButton
 								className={'chat-button chat-button-disabled'}
-								onClick={() => {
-									console.error('This button is still loading');
-								}}
+								// eslint-disable-next-line @typescript-eslint/no-empty-function
+								onClick={() => {}}
 								ariaDisabled={true}
 								tooltip={{
-									id: 'hey',
+									id: 'export-chat-tooltip',
 									text: 'This button is still loading. Please wait...',
 								}}
+								tooltipAnchor="bottom-center"
 							>
 								Export Chat
 							</ThemedButton>
