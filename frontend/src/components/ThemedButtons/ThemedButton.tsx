@@ -12,7 +12,7 @@ export interface ThemedButtonProps {
 		id: string;
 		text: string;
 	};
-	tooltipAnchor?: 'left' | 'center' | 'right';
+	tooltipAnchor?: 'top-left' | 'top-center' | 'top-right' | 'bottom-center';
 	onClick: () => void;
 }
 
@@ -22,7 +22,7 @@ function ThemedButton({
 	ariaLabel,
 	className,
 	tooltip,
-	tooltipAnchor = 'center',
+	tooltipAnchor = 'top-center',
 	onClick,
 }: ThemedButtonProps) {
 	function onClickDisabledCheck() {
