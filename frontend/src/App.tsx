@@ -5,10 +5,8 @@ import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
 import OverlayWelcome from './components/Overlay/OverlayWelcome';
-import ResetProgressOverlay from './components/Overlay/ResetProgress';
 import useLocalStorage from './hooks/useLocalStorage';
 import { LEVEL_NAMES } from './models/level';
-import { resetService } from './service';
 
 import './App.css';
 import './Theme.css';
@@ -30,8 +28,6 @@ function App() {
 	const [overlayComponent, setOverlayComponent] = useState<JSX.Element | null>(
 		null
 	);
-
-	const [mainComponentKey, setMainComponentKey] = useState<number>(0);
 
 	function updateNumCompletedLevels(completedLevel: LEVEL_NAMES) {
 		setCompletedLevels(completedLevel + 1);
@@ -126,14 +122,6 @@ function App() {
 	function openDocumentViewer() {
 		openOverlay(<DocumentViewBox closeOverlay={closeOverlay} />);
 	}
-	function openResetProgressOverlay() {
-		openOverlay(
-			<ResetProgressOverlay
-				resetProgress={resetProgress}
-				closeOverlay={closeOverlay}
-			/>
-		);
-	}
 
 	// set the start level for a user who clicks beginner/expert
 	function setStartLevel(startLevel: LEVEL_NAMES) {
@@ -150,25 +138,6 @@ function App() {
 		closeOverlay();
 	}
 
-	// resets whole game progress and start from level 1 or Sandbox
-	async function resetProgress() {
-		console.log('resetting progress for all levels');
-
-		// reset on the backend
-		await resetService.resetAllLevelProgress();
-		resetCompletedLevels();
-
-		// set as new user so welcome modal shows
-		setIsNewUser(true);
-
-		// take the user to level 1 if on levels, or stay in sandbox
-		currentLevel !== LEVEL_NAMES.SANDBOX &&
-			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
-
-		// re-render main component to update frontend chat & emails
-		setMainComponentKey(mainComponentKey + 1);
-	}
-
 	function goToSandbox() {
 		setStartLevel(LEVEL_NAMES.SANDBOX);
 		// close the current overlay
@@ -183,7 +152,6 @@ function App() {
 				<div ref={contentRef}>{overlayComponent}</div>
 			</dialog>
 			<MainComponent
-				key={mainComponentKey}
 				currentLevel={currentLevel}
 				numCompletedLevels={numCompletedLevels}
 				closeOverlay={closeOverlay}
@@ -192,9 +160,10 @@ function App() {
 				openOverlay={openOverlay}
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}
-				openResetProgressOverlay={openResetProgressOverlay}
 				openWelcomeOverlay={openWelcomeOverlay}
 				setCurrentLevel={setCurrentLevel}
+				resetCompletedLevels={resetCompletedLevels}
+				setIsNewUser={setIsNewUser}
 			/>
 		</div>
 	);
