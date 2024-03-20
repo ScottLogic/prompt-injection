@@ -71,7 +71,7 @@ function ControlPanel({
 			{(currentLevel === LEVEL_NAMES.LEVEL_3 ||
 				currentLevel === LEVEL_NAMES.SANDBOX) && (
 				<>
-					<h2>ScottBrew System Access</h2>
+					<h2 className="visually-hidden">ScottBrewBot Security Configuration</h2>
 					<div className="defence-config-container">
 						<DetailElement useIcon={true} buttonText={'Defence Configuration'}>
 							<DefenceBox
