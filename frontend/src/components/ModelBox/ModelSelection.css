@@ -34,6 +34,9 @@
 
 .model-selection-box .model-selection-row select {
 	flex: 1 1 auto;
+	border-radius: 0.25rem;
+	border-width: 0.0625rem;
+	outline-offset: 0.125rem;
 	padding: 0.5rem;
 }
 

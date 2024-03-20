@@ -51,7 +51,7 @@ function PromptEnclosureDefenceMechanism({
 	}
 
 	return (
-		<div className="defence-mechanism">
+		<>
 			<div className="defence-radio-buttons">
 				<DefenceConfigurationRadioButton
 					id="off"
@@ -89,7 +89,7 @@ function PromptEnclosureDefenceMechanism({
 						))}
 				</div>
 			)}
-		</div>
+		</>
 	);
 }
 
