@@ -4,6 +4,7 @@ import { DEFAULT_DEFENCES } from '@src/Defences';
 import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
+import ResetProgressOverlay from '@src/components/Overlay/ResetProgress';
 import { ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
@@ -18,6 +19,7 @@ import {
 	defenceService,
 	emailService,
 	levelService,
+	resetService,
 	startService,
 } from '@src/service';
 
@@ -36,9 +38,10 @@ function MainComponent({
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
 	openOverlay,
-	openResetProgressOverlay,
 	openWelcomeOverlay,
 	setCurrentLevel,
+	resetCompletedLevels,
+	setIsNewUser,
 }: {
 	currentLevel: LEVEL_NAMES;
 	numCompletedLevels: number;
@@ -48,9 +51,10 @@ function MainComponent({
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openOverlay: (overlayComponent: JSX.Element) => void;
-	openResetProgressOverlay: () => void;
 	openWelcomeOverlay: () => void;
 	setCurrentLevel: (newLevel: LEVEL_NAMES) => void;
+	resetCompletedLevels: () => void;
+	setIsNewUser: (isNewUser: boolean) => void;
 }) {
 	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defences, setDefences] = useState<Defence[]>(DEFAULT_DEFENCES);
@@ -313,6 +317,45 @@ function MainComponent({
 			return;
 		}
 		setChatModel({ ...chatModel, id: modelId });
+	}
+
+	// resets whole game progress and start from level 1 or Sandbox
+	async function resetProgress() {
+		console.log('resetting progress for all levels');
+		resetCompletedLevels();
+
+		const resetServiceResult = await resetService.resetAllProgress(
+			currentLevel
+		);
+
+		// set as new user so welcome modal shows
+		setIsNewUser(true);
+
+		if (
+			currentLevel === LEVEL_NAMES.SANDBOX ||
+			currentLevel === LEVEL_NAMES.LEVEL_1
+		) {
+			const { emails, chatHistory, defences, chatModel } = resetServiceResult;
+			processBackendLevelData(
+				currentLevel,
+				emails,
+				chatHistory,
+				defences,
+				chatModel
+			);
+		} else {
+			// game state will be updated by the [currentLevel] useEffect
+			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
+		}
+	}
+
+	function openResetProgressOverlay() {
+		openOverlay(
+			<ResetProgressOverlay
+				resetProgress={resetProgress}
+				closeOverlay={closeOverlay}
+			/>
+		);
 	}
 
 	return (

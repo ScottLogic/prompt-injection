@@ -54,6 +54,7 @@ test.each(Object.values(LEVEL_NAMES))(
 						defences: 'level 4 defences',
 					},
 				],
+				chatModel: 'chat model',
 				systemRoles: [],
 			},
 		} as unknown as StartGetRequest;
@@ -71,6 +72,7 @@ test.each(Object.values(LEVEL_NAMES))(
 				{ level: 1, systemRole: 'systemRoleLevel2' },
 				{ level: 2, systemRole: 'systemRoleLevel3' },
 			],
+			chatModel: level === LEVEL_NAMES.SANDBOX ? 'chat model' : undefined,
 		});
 	}
 );
