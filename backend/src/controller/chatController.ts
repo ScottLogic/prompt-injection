@@ -8,7 +8,6 @@ import {
 } from '@src/defence';
 import { OpenAiAddInfoToChatHistoryRequest } from '@src/models/api/OpenAiAddInfoToChatHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
-import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import {
 	DefenceReport,
 	ChatHttpResponse,
@@ -387,16 +386,4 @@ function handleAddInfoToChatHistory(
 	}
 }
 
-function handleClearChatHistory(req: OpenAiClearRequest, res: Response) {
-	const level = req.body.level;
-	if (level !== undefined && level >= LEVEL_NAMES.LEVEL_1) {
-		req.session.levelState[level].chatHistory = [];
-		console.debug('ChatGPT messages cleared');
-		res.send();
-	} else {
-		res.status(400);
-		res.send();
-	}
-}
-
-export { handleChatToGPT, handleAddInfoToChatHistory, handleClearChatHistory };
+export { handleChatToGPT, handleAddInfoToChatHistory };
