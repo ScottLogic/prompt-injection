@@ -1,7 +1,9 @@
 import { Response } from 'express';
 
 import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
+import { LevelResetRequest } from '@src/models/api/LevelResetRequest';
 import { defaultChatModel } from '@src/models/chat';
+import { ChatInfoMessage } from '@src/models/chatMessage';
 import {
 	LEVEL_NAMES,
 	getInitialLevelStates,
@@ -33,7 +35,7 @@ function handleResetProgress(req: LevelGetRequest, res: Response) {
 	});
 }
 
-function handleResetLevel(req: LevelGetRequest, res: Response) {
+function handleResetLevel(req: LevelResetRequest, res: Response) {
 	const { level } = req.query;
 
 	if (level === undefined) {
@@ -49,7 +51,12 @@ function handleResetLevel(req: LevelGetRequest, res: Response) {
 	console.debug('Resetting progress for level ', level);
 	req.session.levelState[level].chatHistory = [];
 	req.session.levelState[level].sentEmails = [];
-	res.send({ infoMessage: `Reset progress for ${level}` });
+	res.send({
+		resultingChatMessage: {
+			infoMessage: `Level progress reset`,
+			chatMessageType: 'RESET_LEVEL',
+		} as ChatInfoMessage,
+	});
 }
 
 export { handleResetProgress, handleResetLevel };
