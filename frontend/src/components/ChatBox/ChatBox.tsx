@@ -247,7 +247,7 @@ function ChatBox({
 									id: 'export-chat-tooltip',
 									text: 'This button is still loading. Please wait...',
 								}}
-								tooltipAnchor="bottom-center"
+								tooltipPosition="top-center"
 							>
 								Export Chat
 							</ThemedButton>
