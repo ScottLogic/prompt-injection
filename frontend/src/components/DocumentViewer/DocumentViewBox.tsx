@@ -39,37 +39,44 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 				iconColor="#FFF"
 			/>
 			<div className="view-documents-main">
-				<DocumentViewBoxNav
-					documentIndex={documentIndex}
-					documentName={documentMetas[documentIndex]?.filename ?? ''}
-					numberOfDocuments={documentMetas.length}
-					onPrevious={() => {
-						if (documentIndex > 0) {
-							setDocumentIndex(documentIndex - 1);
-						}
-					}}
-					onNext={() => {
-						if (documentIndex < documentMetas.length - 1) {
-							setDocumentIndex(documentIndex + 1);
-						}
-					}}
-				/>
-				<div
-					className="document-viewer-container"
-					// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-					tabIndex={0}
-				>
-					<DocViewer
-						documents={documentMetas}
-						activeDocument={documentMetas[documentIndex]}
-						pluginRenderers={DocViewerRenderers}
-						config={{
-							header: {
-								disableHeader: true,
-							},
-						}}
-					/>
-				</div>
+				{documentMetas.length > 0 ? (
+					<>
+						<DocumentViewBoxNav
+							documentIndex={documentIndex}
+							documentName={documentMetas[documentIndex]?.filename ?? ''}
+							numberOfDocuments={documentMetas.length}
+							onPrevious={() => {
+								if (documentIndex > 0) {
+									setDocumentIndex(documentIndex - 1);
+								}
+							}}
+							onNext={() => {
+								if (documentIndex < documentMetas.length - 1) {
+									setDocumentIndex(documentIndex + 1);
+								}
+							}}
+						/>
+
+						<div
+							className="document-viewer-container"
+							// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+							tabIndex={0}
+						>
+							<DocViewer
+								documents={documentMetas}
+								activeDocument={documentMetas[documentIndex]}
+								pluginRenderers={DocViewerRenderers}
+								config={{
+									header: {
+										disableHeader: true,
+									},
+								}}
+							/>
+						</div>
+					</>
+				) : (
+					<p>Unable to fetch documents. Try again in a few minutes.</p>
+				)}
 			</div>
 		</div>
 	);

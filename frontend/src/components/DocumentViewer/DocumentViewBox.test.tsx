@@ -261,4 +261,21 @@ describe('DocumentViewBox component tests', () => {
 			expect(nextButton).toBeEnabled();
 		});
 	});
+
+	describe('With zero documents', () => {
+		const documents = [] as MockDocument[];
+
+		beforeEach(() => {
+			setupMocks(documents);
+		});
+
+		test('GIVEN are zero documents THEN an error message is shown', async () => {
+			const ExpectedErrorText =
+				'Unable to fetch documents. Try again in a few minutes.';
+			renderDocumentViewBox();
+			const messageElement = await screen.findByText(ExpectedErrorText);
+
+			expect(messageElement).toBeInTheDocument();
+		});
+	});
 });
