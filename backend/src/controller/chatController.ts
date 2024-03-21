@@ -333,6 +333,25 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	req.session.levelState[currentLevel].chatHistory = updatedChatHistory;
 	req.session.levelState[currentLevel].sentEmails = totalSentEmails;
 
+	const levelCompleteMessageHasBeenSent = req.session.levelState[
+		currentLevel
+	].chatHistory.some((msg) => msg.chatMessageType === 'LEVEL_COMPLETE');
+	if (updatedChatResponse.wonLevel && !levelCompleteMessageHasBeenSent) {
+		const levelCompleteMessage = {
+			chatMessageType: 'LEVEL_COMPLETE',
+			infoMessage: `🎉 Congratulations! You have completed this level. Please click on the next level to continue.`,
+		} as ChatInfoMessage;
+
+		// add level complete message to chat history
+		req.session.levelState[currentLevel].chatHistory = pushMessageToHistory(
+			req.session.levelState[currentLevel].chatHistory,
+			levelCompleteMessage
+		);
+
+		// add level complete message to chat response
+		updatedChatResponse.resultingChatInfoMessage = levelCompleteMessage;
+	}
+
 	console.log('chatResponse: ', updatedChatResponse);
 	console.log('chatHistory: ', updatedChatHistory);
 
