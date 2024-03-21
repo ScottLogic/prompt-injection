@@ -13,7 +13,6 @@ import {
 	handleDefenceDeactivation,
 	handleResetDefenceConfigItem,
 } from './controller/defenceController';
-import { handleClearEmails } from './controller/emailController';
 import { handleLoadLevel } from './controller/levelController';
 import {
 	handleConfigureModel,
@@ -93,9 +92,6 @@ router.post('/defence/activate', handleDefenceActivation);
 router.post('/defence/deactivate', handleDefenceDeactivation);
 router.post('/defence/configure', handleConfigureDefence);
 router.post('/defence/resetConfig', handleResetDefenceConfigItem);
-
-// emails
-router.post('/email/clear', handleClearEmails);
 
 // chat
 router.post('/openai/chat', handleChatToGPT);
