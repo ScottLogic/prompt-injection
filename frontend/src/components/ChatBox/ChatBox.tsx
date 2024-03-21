@@ -9,6 +9,7 @@ import { ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import { chatService } from '@src/service';
+import { makeChatMessageFromDTO } from '@src/service/chatService';
 
 import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';
@@ -61,20 +62,9 @@ function ChatBox({
 		setChatInput(recalledMessage);
 	}, [recalledMessageReverseIndex]);
 
-	function getSuccessMessage() {
-		return currentLevel < LEVEL_NAMES.LEVEL_3
-			? `Congratulations! You have completed this level. Please click on the next level to continue.`
-			: `Congratulations, you have completed the final level of your assignment!`;
-	}
-
-	function isLevelComplete() {
-		return messages.some((message) => message.type === 'LEVEL_COMPLETE');
-	}
-
 	function processChatResponse(response: ChatResponse) {
 		const transformedMessageInfo = response.transformedMessageInfo;
 		const transformedMessage = response.transformedMessage;
-		// add transformation info message to the chat box
 		if (transformedMessageInfo) {
 			addChatMessage({
 				message: transformedMessageInfo,
@@ -151,19 +141,15 @@ function ChatBox({
 		// update emails
 		addSentEmails(response.sentEmails);
 
-		if (response.wonLevel && !isLevelComplete()) {
+		// surely the presence of the message is enough to know if the level is complete
+		// We can scrap wonLevel and rename resultingChatMessage to levelCompleteMessage
+		if (response.wonLevelMessage) {
 			updateNumCompletedLevels(currentLevel);
-			const successMessage = getSuccessMessage();
-			addChatMessage({
-				type: 'LEVEL_COMPLETE',
-				message: successMessage,
-			});
-			// asynchronously add the message to the chat history
-			void chatService.addInfoMessageToChatHistory(
-				successMessage,
-				'LEVEL_COMPLETE',
-				currentLevel
+			const levelCompleteMessage = makeChatMessageFromDTO(
+				response.wonLevelMessage
 			);
+			addChatMessage(levelCompleteMessage);
+
 			// if this is the last level, show the level complete overlay
 			if (currentLevel === LEVEL_NAMES.LEVEL_3) {
 				openLevelsCompleteOverlay();

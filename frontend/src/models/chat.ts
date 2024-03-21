@@ -71,6 +71,7 @@ interface ChatResponse {
 	isError: boolean;
 	sentEmails: EmailInfo[];
 	transformedMessageInfo?: string;
+	wonLevelMessage?: ChatMessageDTO;
 }
 
 interface ChatCompletionRequestMessage {
