@@ -141,8 +141,6 @@ function ChatBox({
 		// update emails
 		addSentEmails(response.sentEmails);
 
-		// surely the presence of the message is enough to know if the level is complete
-		// We can scrap wonLevel and rename resultingChatMessage to levelCompleteMessage
 		if (response.wonLevelMessage) {
 			updateNumCompletedLevels(currentLevel);
 			const levelCompleteMessage = makeChatMessageFromDTO(
