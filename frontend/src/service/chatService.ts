@@ -110,4 +110,5 @@ export {
 	setGptModel,
 	addInfoMessageToChatHistory,
 	getChatMessagesFromDTOResponse,
+	makeChatMessageFromDTO,
 };

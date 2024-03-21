@@ -1,7 +1,10 @@
 import { LoadLevelResponse, ResetLevelResponse } from '@src/models/apiResponse';
 
 import { sendRequest } from './backendService';
-import { getChatMessagesFromDTOResponse } from './chatService';
+import {
+	getChatMessagesFromDTOResponse,
+	makeChatMessageFromDTO,
+} from './chatService';
 import { getDefencesFromDTOs } from './defenceService';
 
 const PATH = 'reset';
@@ -34,7 +37,7 @@ async function resetLevelProgress(level: number) {
 	const { resultingChatMessage } =
 		(await response.json()) as ResetLevelResponse;
 
-	return resultingChatMessage;
+	return makeChatMessageFromDTO(resultingChatMessage);
 }
 
 export { resetAllProgress, resetLevelProgress };
