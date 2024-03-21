@@ -75,7 +75,10 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 						</div>
 					</>
 				) : (
-					<p>Unable to fetch documents. Try again in a few minutes.</p>
+					<p>
+						Unable to fetch documents. Try opening the document viewer again. If
+						the problem persists, please contact support.
+					</p>
 				)}
 			</div>
 		</div>
