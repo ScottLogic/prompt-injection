@@ -48,12 +48,6 @@ function MessageBubble({
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
 		<section className={className} lang="en" tabIndex={0}>
-			{message.type === 'LEVEL_COMPLETE' && (
-				<>
-					<p className="header">Information</p>
-					<span className="visually-hidden"> message: </span>
-				</>
-			)}
 			<span className="visually-hidden">{messageAuthor}</span>
 			{message.transformedMessage ? (
 				<span>
