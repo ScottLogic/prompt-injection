@@ -319,23 +319,17 @@ function MainComponent({
 		setChatModel({ ...chatModel, id: modelId });
 	}
 
-	// resets whole game progress and start from level 1 or Sandbox
+	// reset whole game progress and start from level 1 or Sandbox
 	async function resetProgress() {
-		console.log('resetting progress for all levels');
+		const levelState = await resetService.resetAllProgress(currentLevel);
 		resetCompletedLevels();
-
-		const resetServiceResult = await resetService.resetAllProgress(
-			currentLevel
-		);
-
-		// set as new user so welcome modal shows
-		setIsNewUser(true);
 
 		if (
 			currentLevel === LEVEL_NAMES.SANDBOX ||
 			currentLevel === LEVEL_NAMES.LEVEL_1
 		) {
-			const { emails, chatHistory, defences, chatModel } = resetServiceResult;
+			// staying on current level, so just update our state
+			const { emails, chatHistory, defences, chatModel } = levelState;
 			processBackendLevelData(
 				currentLevel,
 				emails,
@@ -344,9 +338,12 @@ function MainComponent({
 				chatModel
 			);
 		} else {
-			// game state will be updated by the [currentLevel] useEffect
+			// new state will be fetched as a result of level change
 			setCurrentLevel(LEVEL_NAMES.LEVEL_1);
 		}
+
+		// setting as new user causes welcome dialog to open
+		setIsNewUser(true);
 	}
 
 	function openResetProgressOverlay() {
