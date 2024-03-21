@@ -19,4 +19,8 @@ type LoadLevelResponse = {
 	chatModel?: ChatModel;
 };
 
-export type { StartResponse, LoadLevelResponse };
+type ResetLevelResponse = {
+	resultingChatMessage: ChatMessageDTO;
+};
+
+export type { StartResponse, LoadLevelResponse, ResetLevelResponse };
