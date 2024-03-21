@@ -269,7 +269,7 @@ describe('DocumentViewBox component tests', () => {
 			setupMocks(documents);
 		});
 
-		test('GIVEN are zero documents THEN an error message is shown', async () => {
+		test('GIVEN there are zero documents THEN an error message is shown', async () => {
 			const ExpectedErrorText =
 				'Unable to fetch documents. Try opening the document viewer again. Contact support if the problem persists.';
 			renderDocumentViewBox();
