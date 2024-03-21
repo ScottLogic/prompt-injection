@@ -26,7 +26,7 @@ function ThemedButton({
 	ariaLabel,
 	className,
 	tooltip,
-	tooltipPosition = 'top-center',
+	tooltipPosition = 'bottom-center',
 	onClick,
 }: ThemedButtonProps) {
 	function onClickDisabledCheck() {
