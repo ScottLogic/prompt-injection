@@ -28,3 +28,16 @@
 	width: 1.5rem;
 	text-align: center;
 }
+
+.details-content {
+	margin-top: 0.5rem;
+	font-size: 0.875rem;
+}
+
+.details-content > :first-child {
+	margin-top: 0;
+}
+
+.details-content > :last-child {
+	margin-bottom: 0;
+}

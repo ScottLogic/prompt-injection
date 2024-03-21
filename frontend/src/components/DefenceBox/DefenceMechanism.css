@@ -1,13 +1,3 @@
-.defence-mechanism-fieldset {
-	margin: 0;
-	border: 0.25rem solid var(--control-config-border);
-	border-radius: 0.5rem;
-}
-
-.defence-mechanism-fieldset .defence-mechanism-legend {
-	padding: 0.25rem;
-}
-
 .defence-mechanism-fieldset .defence-mechanism-form {
 	position: absolute;
 	right: 1rem;
@@ -19,13 +9,7 @@
 .defence-mechanism-fieldset .defence-radio-buttons {
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
-	padding: 0.75rem 0;
-}
-
-.defence-mechanism-fieldset .prompt-enclosure-configuration-area {
-	padding: 0;
-	cursor: default;
+	gap: 0.875rem;
 }
 
 /* adapted from: https://adrianroselli.com/2019/03/under-engineered-toggles.html */

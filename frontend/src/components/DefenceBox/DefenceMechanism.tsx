@@ -77,11 +77,10 @@ function DefenceMechanism({
 				</form>
 			)}
 			{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE ? (
-				showConfigurations &&
-				defenceDetail.config.map((config) => {
-					return (
-						<DetailElement useIcon={false} key={config.id}>
-							<p>{defenceDetail.info}</p>
+				defenceDetail.config.map((config) => (
+					<DetailElement useIcon={false} key={config.id}>
+						<p>{defenceDetail.info}</p>
+						{showConfigurations && (
 							<DefenceConfiguration
 								defence={defenceDetail}
 								isActive={defenceDetail.isActive}
@@ -89,9 +88,9 @@ function DefenceMechanism({
 								setConfigurationValue={setConfigurationValue}
 								resetConfigurationValue={resetConfigurationValue}
 							/>
-						</DetailElement>
-					);
-				})
+						)}
+					</DetailElement>
+				))
 			) : (
 				<DetailElement useIcon={false}>
 					<p>{defenceDetail.info}</p>

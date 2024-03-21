@@ -61,9 +61,7 @@ function ControlPanel({
 	);
 
 	// only allow configuration in sandbox and level 3
-	const showConfigurations =
-		currentLevel === LEVEL_NAMES.SANDBOX ||
-		currentLevel === LEVEL_NAMES.LEVEL_3;
+	const showConfigurations = currentLevel === LEVEL_NAMES.SANDBOX;
 
 	return (
 		<div className="control-panel">
@@ -74,7 +72,7 @@ function ControlPanel({
 					<h2 className="visually-hidden">
 						ScottBrewBot Security Configuration
 					</h2>
-					<div className="defence-config-container">
+					<div className="config-container">
 						<DetailElement useIcon={true} buttonText={'Defence Configuration'}>
 							<DefenceBox
 								currentLevel={currentLevel}
@@ -86,7 +84,7 @@ function ControlPanel({
 							/>
 						</DetailElement>
 					</div>
-					<div className="model-config-container">
+					<div className="config-container">
 						<DetailElement useIcon={true} buttonText={'Model Configuration'}>
 							<DefenceBox
 								currentLevel={currentLevel}
