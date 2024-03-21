@@ -68,8 +68,7 @@ function ChatBox({
 	}
 
 	function isLevelComplete() {
-		// level is complete if the chat contains a LEVEL_INFO message
-		return messages.some((message) => message.type === 'LEVEL_INFO');
+		return messages.some((message) => message.type === 'LEVEL_COMPLETE');
 	}
 
 	function processChatResponse(response: ChatResponse) {
@@ -156,13 +155,13 @@ function ChatBox({
 			updateNumCompletedLevels(currentLevel);
 			const successMessage = getSuccessMessage();
 			addChatMessage({
-				type: 'LEVEL_INFO',
+				type: 'LEVEL_COMPLETE',
 				message: successMessage,
 			});
 			// asynchronously add the message to the chat history
 			void chatService.addInfoMessageToChatHistory(
 				successMessage,
-				'LEVEL_INFO',
+				'LEVEL_COMPLETE',
 				currentLevel
 			);
 			// if this is the last level, show the level complete overlay
