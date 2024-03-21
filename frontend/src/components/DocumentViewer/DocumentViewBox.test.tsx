@@ -271,7 +271,7 @@ describe('DocumentViewBox component tests', () => {
 
 		test('GIVEN are zero documents THEN an error message is shown', async () => {
 			const ExpectedErrorText =
-				'Unable to fetch documents. Try again in a few minutes.';
+				'Unable to fetch documents. Try opening the document viewer again. Contact support if the problem persists.';
 			renderDocumentViewBox();
 			const messageElement = await screen.findByText(ExpectedErrorText);
 
