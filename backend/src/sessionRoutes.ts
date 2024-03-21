@@ -20,7 +20,10 @@ import {
 	handleConfigureModel,
 	handleSetModel,
 } from './controller/modelController';
-import { handleResetProgress } from './controller/resetController';
+import {
+	handleResetLevel,
+	handleResetProgress,
+} from './controller/resetController';
 import { handleStart } from './controller/startController';
 import { handleTest } from './controller/testController';
 import { defaultChatModel } from './models/chat';
@@ -106,6 +109,7 @@ router.post('/openai/model/configure', handleConfigureModel);
 
 // reset progress for all levels
 router.post('/reset', handleResetProgress);
+router.post('/resetlevel', handleResetLevel);
 
 // Testing endpoints
 router.post('/test/load', handleTest);

@@ -33,4 +33,23 @@ function handleResetProgress(req: LevelGetRequest, res: Response) {
 	});
 }
 
-export { handleResetProgress };
+function handleResetLevel(req: LevelGetRequest, res: Response) {
+	const { level } = req.query;
+
+	if (level === undefined) {
+		res.status(400).send('Level not provided');
+		return;
+	}
+
+	if (!isValidLevel(level)) {
+		res.status(400).send('Invalid level');
+		return;
+	}
+
+	console.debug('Resetting progress for level ', level);
+	req.session.levelState[level].chatHistory = [];
+	req.session.levelState[level].sentEmails = [];
+	res.send({ infoMessage: `Reset progress for ${level}` });
+}
+
+export { handleResetProgress, handleResetLevel };
