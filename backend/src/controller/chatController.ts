@@ -333,6 +333,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	req.session.levelState[currentLevel].chatHistory = updatedChatHistory;
 	req.session.levelState[currentLevel].sentEmails = totalSentEmails;
 
+	// If the level has just been won, add a level complete message to chat history and return it in the response
 	const levelCompleteMessageInChatHistory = req.session.levelState[
 		currentLevel
 	].chatHistory.some((msg) => msg.chatMessageType === 'LEVEL_COMPLETE');
