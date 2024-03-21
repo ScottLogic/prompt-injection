@@ -339,7 +339,10 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	if (updatedChatResponse.wonLevel && !levelCompleteMessageHasBeenSent) {
 		const levelCompleteMessage = {
 			chatMessageType: 'LEVEL_COMPLETE',
-			infoMessage: `🎉 Congratulations! You have completed this level. Please click on the next level to continue.`,
+			infoMessage:
+				currentLevel === LEVEL_NAMES.LEVEL_3
+					? `🎉 Congratulations, you have completed the final level of your assignment!`
+					: `🎉 Congratulations! You have completed this level. Please click on the next level to continue.`,
 		} as ChatInfoMessage;
 
 		// add level complete message to chat history
@@ -349,7 +352,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		);
 
 		// add level complete message to chat response
-		updatedChatResponse.resultingChatInfoMessage = levelCompleteMessage;
+		updatedChatResponse.wonLevelMessage = levelCompleteMessage;
 	}
 
 	console.log('chatResponse: ', updatedChatResponse);

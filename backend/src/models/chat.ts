@@ -100,7 +100,7 @@ interface ChatHttpResponse {
 	openAIErrorMessage: string | null;
 	sentEmails: EmailInfo[];
 	transformedMessageInfo?: string;
-	resultingChatInfoMessage?: ChatInfoMessage;
+	wonLevelMessage?: ChatInfoMessage;
 }
 
 interface LevelHandlerResponse {
