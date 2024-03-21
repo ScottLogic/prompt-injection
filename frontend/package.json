@@ -5,9 +5,9 @@
 	"scripts": {
 		"dev": "vite --open",
 		"build": "tsc && vite build",
+		"preview": "vite preview --strictPort 5173",
 		"format": "prettier --write .",
 		"lint": "concurrently \"eslint . --fix\" \"stylelint **/*.css --fix\"",
-		"preview": "vite preview",
 		"pretest": "tsc --project tsconfig.test.json",
 		"test": "vitest"
 	},

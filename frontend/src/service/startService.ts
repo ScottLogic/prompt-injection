@@ -4,7 +4,7 @@ import { sendRequest } from './backendService';
 import { getChatMessagesFromDTOResponse } from './chatService';
 import { getDefencesFromDTOs } from './defenceService';
 
-const PATH = 'start/';
+const PATH = 'start';
 
 async function start(level: number) {
 	const response = await sendRequest(`${PATH}?level=${level}`, {

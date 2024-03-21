@@ -1,0 +1,12 @@
+**/node_modules
+**/build/
+**/dist/
+**/test/
+**/jest*
+**/tsconfig.test.json
+**/vitest*
+**/.env*
+**/.eslint*
+**/.prettier*
+**/.stylelint*
+**/*.md
