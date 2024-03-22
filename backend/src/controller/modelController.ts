@@ -3,6 +3,9 @@ import { Response } from 'express';
 import { OpenAiConfigureModelRequest } from '@src/models/api/OpenAiConfigureModelRequest';
 import { OpenAiSetModelRequest } from '@src/models/api/OpenAiSetModelRequest';
 import { MODEL_CONFIG_ID, modelConfigIds } from '@src/models/chat';
+import { ChatInfoMessage } from '@src/models/chatMessage';
+import { LEVEL_NAMES } from '@src/models/level';
+import { pushMessageToHistory } from '@src/utils/chat';
 
 import { sendErrorResponse } from './handleError';
 
@@ -51,7 +54,18 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 	}
 
 	req.session.chatModel.configuration[configId] = value;
-	res.status(200).send();
+
+	const resultingChatInfoMessage = {
+		infoMessage: `changed ${configId} to ${value}`,
+		chatMessageType: 'GENERIC_INFO',
+	} as ChatInfoMessage;
+	req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory =
+		pushMessageToHistory(
+			req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory,
+			resultingChatInfoMessage
+		);
+
+	res.status(200).send({ resultingChatInfoMessage });
 }
 
 export { handleSetModel, handleConfigureModel };
