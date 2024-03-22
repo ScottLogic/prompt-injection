@@ -37,7 +37,7 @@ const modelConfigIds = [
 	'presencePenalty',
 ] as const;
 
-type MODEL_CONFIG_IDS = (typeof modelConfigIds)[number];
+type MODEL_CONFIG_ID = (typeof modelConfigIds)[number];
 
 interface DefenceReport {
 	blockedReason: string | null;
@@ -134,6 +134,6 @@ export type {
 	ToolCallResponse,
 	MessageTransformation,
 	SingleDefenceReport,
-	MODEL_CONFIG_IDS,
+	MODEL_CONFIG_ID,
 };
 export { CHAT_MODELS, defaultChatModel, modelConfigIds };
