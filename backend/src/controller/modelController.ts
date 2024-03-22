@@ -37,7 +37,7 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 	}
 
 	if (!Number.isFinite(value) || value === undefined) {
-		sendErrorResponse(res, 400, 'Missing value');
+		sendErrorResponse(res, 400, 'Missing or invalid value');
 		return;
 	}
 
