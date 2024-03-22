@@ -113,7 +113,6 @@ async function handleChatWithoutDefenceDetection(
 	const updatedChatResponse: ChatHttpResponse = {
 		...chatResponse,
 		reply: openAiReply.chatResponse.completion?.content?.toString() ?? '',
-		wonLevel: openAiReply.chatResponse.wonLevel,
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 		sentEmails: openAiReply.sentEmails,
 	};
@@ -189,8 +188,6 @@ async function handleChatWithDefenceDetection(
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 		reply: !combinedDefenceReport.isBlocked && botReply ? botReply : '',
 		transformedMessage: messageTransformation?.transformedMessage,
-		wonLevel:
-			openAiReply.chatResponse.wonLevel && !combinedDefenceReport.isBlocked,
 		sentEmails: combinedDefenceReport.isBlocked ? [] : openAiReply.sentEmails,
 		transformedMessageInfo: messageTransformation?.transformedMessageInfo,
 	};
