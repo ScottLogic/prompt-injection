@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import {
+	ChatMessage,
 	ChatModel,
 	CustomChatModelConfiguration,
 	MODEL_CONFIG_ID,
@@ -48,10 +49,10 @@ const DEFAULT_CONFIGS: CustomChatModelConfiguration[] = [
 
 function ModelConfiguration({
 	chatModel,
-	addInfoMessage,
+	addChatMessage,
 }: {
 	chatModel?: ChatModel;
-	addInfoMessage: (message: string) => void;
+	addChatMessage: (chatMessage: ChatMessage) => void;
 }) {
 	const [customChatModelConfigs, setCustomChatModel] =
 		useState<CustomChatModelConfiguration[]>(DEFAULT_CONFIGS);
@@ -77,13 +78,15 @@ function ModelConfiguration({
 
 		setCustomChatModelByID(id, newValue);
 
-		void chatService.configureGptModel(id, newValue).then((success) => {
-			if (success) {
-				addInfoMessage(`changed ${id} to ${newValue}`);
-			} else {
-				setCustomChatModelByID(id, prevValue);
-			}
-		});
+		void chatService
+			.configureGptModel(id, newValue)
+			.then((resultingChatInfoMessage) => {
+				if (resultingChatInfoMessage) {
+					addChatMessage(resultingChatInfoMessage);
+				} else {
+					setCustomChatModelByID(id, prevValue);
+				}
+			});
 	}
 
 	useEffect(() => {
