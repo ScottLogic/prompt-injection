@@ -157,13 +157,13 @@ function MainComponent({
 	// for clearing single level progress
 	async function resetLevel() {
 		// reset on the backend
-		const resultingChatMessage = await resetService.resetLevelProgress(
+		const resultingChatInfoMessage = await resetService.resetLevelProgress(
 			currentLevel
 		);
 
 		resetFrontendState();
 		setMessages((messages: ChatMessage[]) => [
-			resultingChatMessage,
+			resultingChatInfoMessage,
 			...messages,
 		]);
 	}

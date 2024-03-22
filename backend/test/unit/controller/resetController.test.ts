@@ -205,7 +205,7 @@ describe('reset level', () => {
 			expect(req.session.levelState[level].sentEmails).toEqual([]);
 
 			expect(mockSend).toHaveBeenCalledWith({
-				resultingChatMessage: {
+				resultingChatInfoMessage: {
 					infoMessage: 'Level progress reset',
 					chatMessageType: 'RESET_LEVEL',
 				},

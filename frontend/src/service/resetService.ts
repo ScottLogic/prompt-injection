@@ -34,10 +34,10 @@ async function resetLevelProgress(level: number) {
 			'Content-Type': 'application/json',
 		},
 	});
-	const { resultingChatMessage } =
+	const { resultingChatInfoMessage } =
 		(await response.json()) as ResetLevelResponse;
 
-	return makeChatMessageFromDTO(resultingChatMessage);
+	return makeChatMessageFromDTO(resultingChatInfoMessage);
 }
 
 export { resetAllProgress, resetLevelProgress };
