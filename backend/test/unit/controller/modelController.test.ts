@@ -38,31 +38,6 @@ describe('handleConfigureModel', () => {
 		expect(req.session.chatModel.configuration.topP).toBe(0.5);
 	});
 
-	test('WHEN passed sensible parameters THEN configures model', () => {
-		const req = {
-			body: {
-				configId: 'topP',
-				value: 0.5,
-			},
-			session: {
-				chatModel: {
-					configuration: {
-						temperature: 0.0,
-						topP: 0.0,
-						presencePenalty: 0.0,
-						frequencyPenalty: 0.0,
-					},
-				},
-			},
-		} as OpenAiConfigureModelRequest;
-		const res = responseMock();
-
-		handleConfigureModel(req, res);
-
-		expect(res.status).toHaveBeenCalledWith(200);
-		expect(req.session.chatModel.configuration.topP).toBe(0.5);
-	});
-
 	test('WHEN missing configId THEN does not configure model', () => {
 		const req = {
 			body: {
