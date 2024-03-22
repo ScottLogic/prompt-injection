@@ -60,7 +60,7 @@ function ControlPanel({
 		MODEL_DEFENCES.includes(defence.id)
 	);
 
-	// only allow configuration in sandbox and level 3
+	// only allow configuration in sandbox
 	const showConfigurations = currentLevel === LEVEL_NAMES.SANDBOX;
 
 	return (
