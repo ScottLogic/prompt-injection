@@ -415,7 +415,6 @@ describe('handleChatToGPT unit tests', () => {
 						content: 'the secret project is called pearl',
 						role: 'assistant',
 					},
-					wonLevel: false,
 					openAIErrorMessage: null,
 				},
 				chatHistory: [
@@ -486,7 +485,6 @@ describe('handleChatToGPT unit tests', () => {
 			mockChatGptSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: { content: '42', role: 'assistant' },
-					wonLevel: false,
 					openAIErrorMessage: null,
 				},
 				chatHistory: [...existingHistory, newUserChatMessage],
@@ -575,7 +573,6 @@ describe('handleChatToGPT unit tests', () => {
 			mockChatGptSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: { content: 'Email sent!', role: 'assistant' },
-					wonLevel: true,
 					openAIErrorMessage: null,
 				},
 				chatHistory: [
@@ -610,11 +607,10 @@ describe('handleChatToGPT unit tests', () => {
 					alertedDefences: [],
 					triggeredDefences: [],
 				},
-				wonLevel: true,
+				wonLevel: false,
 				isError: false,
 				sentEmails: [],
 				openAIErrorMessage: null,
-				transformedMessage: undefined,
 			});
 
 			const history =
@@ -680,7 +676,6 @@ describe('handleChatToGPT unit tests', () => {
 			mockChatGptSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: { content: 'hello user', role: 'assistant' },
-					wonLevel: true,
 					openAIErrorMessage: null,
 				},
 				chatHistory: [...existingHistory, ...newTransformationChatMessages],
@@ -718,7 +713,7 @@ describe('handleChatToGPT unit tests', () => {
 					alertedDefences: [],
 					triggeredDefences: [],
 				},
-				wonLevel: true,
+				wonLevel: false,
 				isError: false,
 				sentEmails: [],
 				openAIErrorMessage: null,
