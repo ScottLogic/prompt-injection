@@ -1,13 +1,12 @@
-interface EmailInfo {
+type EmailInfo = {
 	address: string;
 	subject: string;
 	body: string;
-}
+};
 
-interface EmailResponse {
+type EmailResponse = {
 	response: string;
 	sentEmail?: EmailInfo;
-	wonLevel: boolean;
-}
+};
 
 export type { EmailInfo, EmailResponse };
