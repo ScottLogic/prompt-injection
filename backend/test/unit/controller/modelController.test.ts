@@ -4,6 +4,8 @@ import { Response } from 'express';
 import { handleConfigureModel } from '@src/controller/modelController';
 import { OpenAiConfigureModelRequest } from '@src/models/api/OpenAiConfigureModelRequest';
 import { modelConfigIds } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
+import { LEVEL_NAMES, LevelState } from '@src/models/level';
 
 function responseMock() {
 	return {
@@ -13,7 +15,7 @@ function responseMock() {
 }
 
 describe('handleConfigureModel', () => {
-	test('WHEN passed sensible parameters THEN configures model', () => {
+	test('WHEN passed sensible parameters THEN configures model AND adds info message to chat history AND responds with info message', () => {
 		const req = {
 			body: {
 				configId: 'topP',
@@ -28,6 +30,7 @@ describe('handleConfigureModel', () => {
 						frequencyPenalty: 0.0,
 					},
 				},
+				levelState: [{}, {}, {}, { chatHistory: [] } as unknown as LevelState],
 			},
 		} as OpenAiConfigureModelRequest;
 		const res = responseMock();
@@ -36,6 +39,17 @@ describe('handleConfigureModel', () => {
 
 		expect(res.status).toHaveBeenCalledWith(200);
 		expect(req.session.chatModel.configuration.topP).toBe(0.5);
+
+		const expectedInfoMessage = {
+			infoMessage: 'changed topP to 0.5',
+			chatMessageType: 'GENERIC_INFO',
+		} as ChatMessage;
+		expect(
+			req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory.at(-1)
+		).toEqual(expectedInfoMessage);
+		expect(res.send).toHaveBeenCalledWith({
+			resultingChatInfoMessage: expectedInfoMessage,
+		});
 	});
 
 	test('WHEN missing configId THEN does not configure model', () => {
