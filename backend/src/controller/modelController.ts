@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import { OpenAiConfigureModelRequest } from '@src/models/api/OpenAiConfigureModelRequest';
 import { OpenAiSetModelRequest } from '@src/models/api/OpenAiSetModelRequest';
-import { MODEL_CONFIG } from '@src/models/chat';
+import { MODEL_CONFIG_IDS } from '@src/models/chat';
 
 function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 	const { model } = req.body;
@@ -19,9 +19,10 @@ function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 }
 
 function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
-	const configId = req.body.configId as MODEL_CONFIG | undefined;
+	const configId = req.body.configId as MODEL_CONFIG_IDS | undefined;
 	const value = req.body.value;
-	const maxValue = configId === MODEL_CONFIG.TOP_P ? 1 : 2;
+
+	const maxValue = configId === 'topP' ? 1 : 2;
 
 	if (configId && value !== undefined && value >= 0 && value <= maxValue) {
 		req.session.chatModel.configuration[configId] = value;

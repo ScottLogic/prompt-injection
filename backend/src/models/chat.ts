@@ -17,12 +17,14 @@ enum CHAT_MODELS {
 	GPT_3_5_TURBO_16K_0613 = 'gpt-3.5-turbo-16k-0613',
 }
 
-enum MODEL_CONFIG {
-	TEMPERATURE = 'temperature',
-	TOP_P = 'topP',
-	FREQUENCY_PENALTY = 'frequencyPenalty',
-	PRESENCE_PENALTY = 'presencePenalty',
-}
+const modelConfigIds = [
+	'temperature',
+	'topP',
+	'frequencyPenalty',
+	'presencePenalty',
+] as const;
+
+type MODEL_CONFIG_IDS = (typeof modelConfigIds)[number];
 
 interface ChatModel {
 	id: CHAT_MODELS;
@@ -131,5 +133,6 @@ export type {
 	ToolCallResponse,
 	MessageTransformation,
 	SingleDefenceReport,
+	MODEL_CONFIG_IDS,
 };
-export { CHAT_MODELS, MODEL_CONFIG, defaultChatModel };
+export { CHAT_MODELS, defaultChatModel, modelConfigIds };
