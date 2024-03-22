@@ -17,6 +17,19 @@ enum CHAT_MODELS {
 	GPT_3_5_TURBO_16K_0613 = 'gpt-3.5-turbo-16k-0613',
 }
 
+type ChatModel = {
+	id: CHAT_MODELS;
+	configuration: ChatModelConfiguration;
+};
+
+type ChatModelConfiguration = {
+	temperature: number;
+	topP: number;
+	frequencyPenalty: number;
+	presencePenalty: number;
+};
+
+// these must match the above type because they are used for indexing
 const modelConfigIds = [
 	'temperature',
 	'topP',
@@ -25,18 +38,6 @@ const modelConfigIds = [
 ] as const;
 
 type MODEL_CONFIG_IDS = (typeof modelConfigIds)[number];
-
-interface ChatModel {
-	id: CHAT_MODELS;
-	configuration: ChatModelConfiguration;
-}
-
-interface ChatModelConfiguration {
-	temperature: number;
-	topP: number;
-	frequencyPenalty: number;
-	presencePenalty: number;
-}
 
 interface DefenceReport {
 	blockedReason: string | null;
