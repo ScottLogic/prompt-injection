@@ -3,7 +3,7 @@ import {
 	ChatMessageDTO,
 	ChatMessage,
 	ChatResponse,
-	MODEL_CONFIG,
+	MODEL_CONFIG_ID,
 } from '@src/models/chat';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -75,7 +75,7 @@ async function setGptModel(model: string): Promise<boolean> {
 }
 
 async function configureGptModel(
-	configId: MODEL_CONFIG,
+	configId: MODEL_CONFIG_ID,
 	value: number
 ): Promise<boolean> {
 	const response = await sendRequest(`${PATH}model/configure`, {

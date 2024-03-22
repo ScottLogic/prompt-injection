@@ -15,27 +15,30 @@ type CHAT_MESSAGE_TYPE =
 	| 'ERROR_MSG'
 	| 'RESET_LEVEL';
 
-enum MODEL_CONFIG {
-	TEMPERATURE = 'temperature',
-	TOP_P = 'topP',
-	FREQUENCY_PENALTY = 'frequencyPenalty',
-	PRESENCE_PENALTY = 'presencePenalty',
-}
-
-interface ChatModel {
+type ChatModel = {
 	id: string;
 	configuration: ChatModelConfigurations;
-}
+};
 
-interface ChatModelConfigurations {
+type ChatModelConfigurations = {
 	temperature: number;
 	topP: number;
 	frequencyPenalty: number;
 	presencePenalty: number;
-}
+};
+
+// these must match the above type because they are used for indexing
+const modelConfigIds = [
+	'temperature',
+	'topP',
+	'frequencyPenalty',
+	'presencePenalty',
+] as const;
+
+type MODEL_CONFIG_ID = (typeof modelConfigIds)[number];
 
 interface CustomChatModelConfiguration {
-	id: MODEL_CONFIG;
+	id: MODEL_CONFIG_ID;
 	name: string;
 	info: string;
 	value: number;
@@ -94,5 +97,5 @@ export type {
 	ChatModelConfigurations,
 	CustomChatModelConfiguration,
 	CHAT_MESSAGE_TYPE,
+	MODEL_CONFIG_ID,
 };
-export { MODEL_CONFIG };
