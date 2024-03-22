@@ -2,7 +2,9 @@ import { Response } from 'express';
 
 import { OpenAiConfigureModelRequest } from '@src/models/api/OpenAiConfigureModelRequest';
 import { OpenAiSetModelRequest } from '@src/models/api/OpenAiSetModelRequest';
-import { MODEL_CONFIG_ID } from '@src/models/chat';
+import { MODEL_CONFIG_ID, modelConfigIds } from '@src/models/chat';
+
+import { sendErrorResponse } from './handleError';
 
 function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 	const { model } = req.body;
@@ -24,12 +26,32 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 
 	const maxValue = configId === 'topP' ? 1 : 2;
 
-	if (configId && value !== undefined && value >= 0 && value <= maxValue) {
-		req.session.chatModel.configuration[configId] = value;
-		res.status(200).send();
-	} else {
-		res.status(400).send();
+	if (!configId) {
+		sendErrorResponse(res, 400, 'Missing configId');
+		return;
 	}
+
+	if (!modelConfigIds.includes(configId)) {
+		sendErrorResponse(res, 400, 'Invalid configId');
+		return;
+	}
+
+	if (!Number.isFinite(value) || value === undefined) {
+		sendErrorResponse(res, 400, 'Missing value');
+		return;
+	}
+
+	if (value < 0 || value > maxValue) {
+		sendErrorResponse(
+			res,
+			400,
+			`Value should be between 0 and ${maxValue} for ${configId}`
+		);
+		return;
+	}
+
+	req.session.chatModel.configuration[configId] = value;
+	res.status(200).send();
 }
 
 export { handleSetModel, handleConfigureModel };
