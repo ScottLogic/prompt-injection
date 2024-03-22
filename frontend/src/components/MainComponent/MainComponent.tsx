@@ -261,13 +261,13 @@ function MainComponent({
 		defenceId: DEFENCE_ID,
 		config: DefenceConfigItem[]
 	) {
-		const success = await defenceService.configureDefence(
+		const resultingChatInfoMessage = await defenceService.configureDefence(
 			defenceId,
 			config,
 			currentLevel
 		);
-		if (success) {
-			addConfigUpdateToChat(defenceId, 'updated');
+		if (resultingChatInfoMessage) {
+			addChatMessage(resultingChatInfoMessage);
 			// update state
 			const newDefences = defences.map((defence) => {
 				if (defence.id === defenceId) {
@@ -277,7 +277,7 @@ function MainComponent({
 			});
 			setDefences(newDefences);
 		}
-		return success;
+		return resultingChatInfoMessage !== null;
 	}
 
 	function setMessagesWithWelcome(retrievedMessages: ChatMessage[]) {
