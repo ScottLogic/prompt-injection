@@ -9,8 +9,10 @@ import {
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
 import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
+import { ChatInfoMessage } from '@src/models/chatMessage';
 import { DefenceConfigItem } from '@src/models/defence';
 import { LEVEL_NAMES, isValidLevel } from '@src/models/level';
+import { pushMessageToHistory } from '@src/utils/chat';
 
 import { sendErrorResponse } from './handleError';
 
@@ -144,7 +146,21 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 		currentDefences,
 		config
 	);
-	res.send();
+
+	const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
+	const resultingChatInfoMessage = {
+		infoMessage: `${displayedDefenceId} defence updated`,
+		chatMessageType: 'GENERIC_INFO',
+	} as ChatInfoMessage;
+
+	req.session.levelState[level].chatHistory = pushMessageToHistory(
+		req.session.levelState[level].chatHistory,
+		resultingChatInfoMessage
+	);
+
+	res.send({
+		resultingChatInfoMessage,
+	});
 }
 
 function handleResetDefenceConfigItem(
