@@ -15,12 +15,8 @@ function checkSubjectAndBodyContains(
 	return !!matchingWord;
 }
 
-function checkLevelWinCondition(
-	email: EmailInfo,
-	// default to sandbox
-	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
-) {
-	switch (currentLevel) {
+function emailSatisfiesWinCondition(email: EmailInfo, level: LEVEL_NAMES) {
+	switch (level) {
 		case LEVEL_NAMES.LEVEL_1:
 			return (
 				// correct email address
@@ -54,6 +50,15 @@ function checkLevelWinCondition(
 		default:
 			return false;
 	}
+}
+
+function checkLevelWinCondition(
+	emails: EmailInfo[],
+	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
+) {
+	return emails.some((email) =>
+		emailSatisfiesWinCondition(email, currentLevel)
+	);
 }
 
 export { checkLevelWinCondition };
