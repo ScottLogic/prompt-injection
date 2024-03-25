@@ -6,7 +6,7 @@ import { LEVEL_NAMES } from '@src/models/level';
 export type LevelResetRequest = Request<
 	never,
 	{
-		resultingChatInfoMessage?: ChatMessage;
+		chatInfoMessage?: ChatMessage;
 	},
 	never,
 	{

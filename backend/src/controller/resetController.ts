@@ -52,7 +52,7 @@ function handleResetLevel(req: LevelResetRequest, res: Response) {
 	req.session.levelState[level].chatHistory = [];
 	req.session.levelState[level].sentEmails = [];
 	res.send({
-		resultingChatInfoMessage: {
+		chatInfoMessage: {
 			infoMessage: `Level progress reset`,
 			chatMessageType: 'RESET_LEVEL',
 		} as ChatInfoMessage,
