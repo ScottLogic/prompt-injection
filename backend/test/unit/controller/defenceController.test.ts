@@ -437,16 +437,16 @@ describe('handleConfigureDefence', () => {
 			configuredDefences
 		);
 
-		const expectedResultingChatMessage = {
+		const expectedChatInfoMessage = {
 			infoMessage: 'prompt evaluation llm defence updated',
 			chatMessageType: 'GENERIC_INFO',
 		} as ChatInfoMessage;
 		expect(
 			req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory.at(-1)
-		).toEqual(expectedResultingChatMessage);
+		).toEqual(expectedChatInfoMessage);
 
 		expect(res.send).toHaveBeenCalledWith({
-			resultingChatInfoMessage: expectedResultingChatMessage,
+			chatInfoMessage: expectedChatInfoMessage,
 		});
 	});
 
