@@ -9,7 +9,6 @@ import { ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import { chatService } from '@src/service';
-import { makeChatMessageFromDTO } from '@src/service/chatService';
 
 import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';
@@ -143,7 +142,7 @@ function ChatBox({
 
 		if (response.wonLevelMessage) {
 			updateNumCompletedLevels(currentLevel);
-			const levelCompleteMessage = makeChatMessageFromDTO(
+			const levelCompleteMessage = chatService.makeChatMessageFromDTO(
 				response.wonLevelMessage
 			);
 			addChatMessage(levelCompleteMessage);
