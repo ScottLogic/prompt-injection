@@ -20,7 +20,7 @@ type LoadLevelResponse = {
 };
 
 type ConfigureGptModelResponse = {
-	resultingChatInfoMessage: ChatMessageDTO;
+	chatInfoMessage: ChatMessageDTO;
 };
 
 export type { StartReponse, LoadLevelResponse, ConfigureGptModelResponse };

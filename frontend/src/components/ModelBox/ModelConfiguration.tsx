@@ -78,15 +78,13 @@ function ModelConfiguration({
 
 		setCustomChatModelByID(id, newValue);
 
-		void chatService
-			.configureGptModel(id, newValue)
-			.then((resultingChatInfoMessage) => {
-				if (resultingChatInfoMessage) {
-					addChatMessage(resultingChatInfoMessage);
-				} else {
-					setCustomChatModelByID(id, prevValue);
-				}
-			});
+		void chatService.configureGptModel(id, newValue).then((chatInfoMessage) => {
+			if (chatInfoMessage) {
+				addChatMessage(chatInfoMessage);
+			} else {
+				setCustomChatModelByID(id, prevValue);
+			}
+		});
 	}
 
 	useEffect(() => {

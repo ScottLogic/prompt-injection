@@ -55,17 +55,17 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 
 	req.session.chatModel.configuration[configId] = value;
 
-	const resultingChatInfoMessage = {
+	const chatInfoMessage = {
 		infoMessage: `changed ${configId} to ${value}`,
 		chatMessageType: 'GENERIC_INFO',
 	} as ChatInfoMessage;
 	req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory =
 		pushMessageToHistory(
 			req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory,
-			resultingChatInfoMessage
+			chatInfoMessage
 		);
 
-	res.status(200).send({ resultingChatInfoMessage });
+	res.status(200).send({ chatInfoMessage });
 }
 
 export { handleSetModel, handleConfigureModel };

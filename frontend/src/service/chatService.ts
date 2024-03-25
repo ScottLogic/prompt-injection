@@ -84,10 +84,10 @@ async function configureGptModel(
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ configId, value }),
 	});
-	const { resultingChatInfoMessage } =
+	const { chatInfoMessage } =
 		(await response.json()) as ConfigureGptModelResponse;
 	return response.status === 200
-		? makeChatMessageFromDTO(resultingChatInfoMessage)
+		? makeChatMessageFromDTO(chatInfoMessage)
 		: null;
 }
 

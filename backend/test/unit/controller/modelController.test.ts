@@ -48,7 +48,7 @@ describe('handleConfigureModel', () => {
 			req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory.at(-1)
 		).toEqual(expectedInfoMessage);
 		expect(res.send).toHaveBeenCalledWith({
-			resultingChatInfoMessage: expectedInfoMessage,
+			chatInfoMessage: expectedInfoMessage,
 		});
 	});
 

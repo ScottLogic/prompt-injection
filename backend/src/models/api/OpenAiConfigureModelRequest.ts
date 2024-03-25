@@ -4,7 +4,7 @@ import { ChatMessage } from '@src/models/chatMessage';
 
 export type OpenAiConfigureModelRequest = Request<
 	never,
-	null | { resultingChatInfoMessage: ChatMessage },
+	null | { chatInfoMessage: ChatMessage },
 	{
 		configId?: string;
 		value?: number;
