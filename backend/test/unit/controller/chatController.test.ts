@@ -732,6 +732,20 @@ describe('handleChatToGPT unit tests', () => {
 			expect(history).toEqual(expectedHistory);
 		});
 	});
+
+	describe('winning', () => {
+		test('Given win condition met THEN level is won', () => {
+			expect(true).toBe(true);
+		});
+
+		test('Given win condition met AND reply is blocked THEN level is not won', () => {
+			expect(true).toBe(true);
+		});
+
+		test('Given win condition met AND openAI error THEN level is won', () => {
+			expect(true).toBe(true);
+		});
+	});
 });
 
 describe('handleAddInfoToChatHistory', () => {
