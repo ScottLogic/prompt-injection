@@ -533,11 +533,12 @@ describe('handleChatToGPT unit tests', () => {
 				chatMessageType: 'USER',
 			} as ChatMessage;
 
+			const newBotMessageText = 'The winning email has been sent';
 			const newBotChatMessage = {
 				chatMessageType: 'BOT',
 				completion: {
 					role: 'assistant',
-					content: 'The winning email has been sent',
+					content: newBotMessageText,
 				},
 			} as ChatMessage;
 
@@ -551,7 +552,7 @@ describe('handleChatToGPT unit tests', () => {
 			mockChatGptSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: {
-						content: 'The winning email has been sent',
+						content: newBotMessageText,
 						role: 'assistant',
 					},
 					wonLevel: true,
@@ -576,7 +577,7 @@ describe('handleChatToGPT unit tests', () => {
 			);
 
 			expect(res.send).toHaveBeenCalledWith({
-				reply: 'The winning email has been sent',
+				reply: newBotMessageText,
 				defenceReport: {
 					blockedReason: null,
 					isBlocked: false,
