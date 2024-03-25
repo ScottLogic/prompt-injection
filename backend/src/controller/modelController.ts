@@ -27,8 +27,6 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 	const configId = req.body.configId as MODEL_CONFIG_ID | undefined;
 	const value = req.body.value;
 
-	const maxValue = configId === 'topP' ? 1 : 2;
-
 	if (!configId) {
 		sendErrorResponse(res, 400, 'Missing configId');
 		return;
@@ -43,6 +41,8 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 		sendErrorResponse(res, 400, 'Missing or invalid value');
 		return;
 	}
+
+	const maxValue = configId === 'topP' ? 1 : 2;
 
 	if (value < 0 || value > maxValue) {
 		sendErrorResponse(
