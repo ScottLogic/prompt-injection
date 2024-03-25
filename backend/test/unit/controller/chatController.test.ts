@@ -160,7 +160,6 @@ describe('handleChatToGPT unit tests', () => {
 	}
 
 	beforeEach(() => {
-		console.debug('before each: setting mock value');
 		mockCheckLevelWinCondition.mockReturnValue(false);
 	});
 
