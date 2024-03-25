@@ -160,10 +160,7 @@ async function handleAskQuestionFunction(
 	}
 }
 
-function handleSendEmailFunction(
-	functionCallArgs: string | undefined,
-	currentLevel: LEVEL_NAMES
-) {
+function handleSendEmailFunction(functionCallArgs: string | undefined) {
 	if (functionCallArgs) {
 		const params = JSON.parse(functionCallArgs) as FunctionSendEmailParams;
 		console.debug('Send email params: ', JSON.stringify(params));
@@ -172,19 +169,16 @@ function handleSendEmailFunction(
 			params.address,
 			params.subject,
 			params.body,
-			params.confirmed,
-			currentLevel
+			params.confirmed
 		);
 		return {
 			reply: emailResponse.response,
-			wonLevel: emailResponse.wonLevel,
 			sentEmails: emailResponse.sentEmail ? [emailResponse.sentEmail] : [],
 		};
 	} else {
 		console.error('No arguments provided to sendEmail function');
 		return {
 			reply: "Reply with 'I don't know what to send'",
-			wonLevel: false,
 			sendEmails: [],
 		};
 	}
@@ -199,7 +193,6 @@ async function chatGptCallFunction(
 ): Promise<FunctionCallResponse> {
 	const functionName = functionCall.name;
 	let functionReply = '';
-	let wonLevel = false;
 	const sentEmails = [];
 
 	// check if we know the function
@@ -208,11 +201,9 @@ async function chatGptCallFunction(
 		// call the function
 		if (functionName === 'sendEmail') {
 			const emailFunctionOutput = handleSendEmailFunction(
-				functionCall.arguments,
-				currentLevel
+				functionCall.arguments
 			);
 			functionReply = emailFunctionOutput.reply;
-			wonLevel = emailFunctionOutput.wonLevel;
 			if (emailFunctionOutput.sentEmails) {
 				sentEmails.push(...emailFunctionOutput.sentEmails);
 			}
@@ -233,7 +224,6 @@ async function chatGptCallFunction(
 			content: functionReply,
 			tool_call_id: toolCallId,
 		} as ChatCompletionMessageParam,
-		wonLevel,
 		sentEmails,
 	};
 }
@@ -364,7 +354,6 @@ async function getFinalReplyAfterAllToolCalls(
 ) {
 	let updatedChatHistory = [...chatHistory];
 	const sentEmails = [];
-	let wonLevel = false;
 
 	let gptReply: ChatGptReply | null = null;
 	const openAI = getOpenAI();
@@ -393,14 +382,11 @@ async function getFinalReplyAfterAllToolCalls(
 			if (toolCallReply.functionCallReply?.sentEmails) {
 				sentEmails.push(...toolCallReply.functionCallReply.sentEmails);
 			}
-			wonLevel =
-				(wonLevel || toolCallReply.functionCallReply?.wonLevel) ?? false;
 		}
 	} while (gptReply.completion?.tool_calls);
 
 	return {
 		gptReply,
-		wonLevel,
 		chatHistory: updatedChatHistory,
 		sentEmails,
 	};
@@ -423,7 +409,6 @@ async function chatGptSendMessage(
 
 	const chatResponse: ChatResponse = {
 		completion: finalToolCallResponse.gptReply.completion,
-		wonLevel: finalToolCallResponse.wonLevel,
 		openAIErrorMessage: finalToolCallResponse.gptReply.openAIErrorMessage,
 	};
 
