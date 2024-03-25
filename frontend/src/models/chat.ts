@@ -20,14 +20,6 @@ type ChatModel = {
 	configuration: ChatModelConfigurations;
 };
 
-type ChatModelConfigurations = {
-	temperature: number;
-	topP: number;
-	frequencyPenalty: number;
-	presencePenalty: number;
-};
-
-// these must match the above type because they are used for indexing
 const modelConfigIds = [
 	'temperature',
 	'topP',
@@ -36,6 +28,10 @@ const modelConfigIds = [
 ] as const;
 
 type MODEL_CONFIG_ID = (typeof modelConfigIds)[number];
+
+type ChatModelConfigurations = {
+	[key in MODEL_CONFIG_ID]: number;
+};
 
 interface CustomChatModelConfiguration {
 	id: MODEL_CONFIG_ID;

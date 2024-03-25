@@ -19,17 +19,9 @@ enum CHAT_MODELS {
 
 type ChatModel = {
 	id: CHAT_MODELS;
-	configuration: ChatModelConfiguration;
+	configuration: ChatModelConfigurations;
 };
 
-type ChatModelConfiguration = {
-	temperature: number;
-	topP: number;
-	frequencyPenalty: number;
-	presencePenalty: number;
-};
-
-// these must match the above type because they are used for indexing
 const modelConfigIds = [
 	'temperature',
 	'topP',
@@ -38,6 +30,10 @@ const modelConfigIds = [
 ] as const;
 
 type MODEL_CONFIG_ID = (typeof modelConfigIds)[number];
+
+type ChatModelConfigurations = {
+	[key in MODEL_CONFIG_ID]: number;
+};
 
 interface DefenceReport {
 	blockedReason: string | null;
@@ -125,7 +121,7 @@ export type {
 	ChatGptReply,
 	ChatMalicious,
 	ChatModel,
-	ChatModelConfiguration,
+	ChatModelConfigurations as ChatModelConfiguration,
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
