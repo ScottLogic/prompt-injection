@@ -61,6 +61,7 @@
 
 	/* control panel */
 	--control-header-background-colour: #313131;
+	--control-header-background-colour-hover: #414141;
 	--control-body-background-colour: #3a3a3a;
 	--control-config-border: var(--chat-info-text-colour);
 
@@ -107,7 +108,7 @@
 	--chat-alerted-text-colour: teal;
 	--chat-triggered-text-colour: var(--error-colour);
 	--chat-button-background-colour: #eee;
-	--chat-button-background-colour-hover: #dedede;
+	--chat-button-background-colour-hover: #cecece;
 	--chat-button-border-colour: #ccc;
 	--chat-button-text-colour: #444;
 

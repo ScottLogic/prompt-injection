@@ -1,5 +1,7 @@
 .defence-configuration {
-	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
 }
 
 .defence-configuration .header {

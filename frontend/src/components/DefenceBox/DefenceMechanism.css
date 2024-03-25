@@ -1,99 +1,31 @@
-.defence-mechanism-fieldset {
-	min-height: fit-content;
-	margin: 0;
-	border: 0.25rem solid var(--control-config-border);
-	border-radius: 0.5rem;
-}
-
-.defence-mechanism-legend {
-	padding: 0.3em;
-}
-
-.defence-mechanism-summary {
-	width: fit-content;
-	padding: 0.3125rem;
-	border: 0.25rem outset var(--control-config-border);
-	border-radius: 0.25rem;
-	background-color: var(--main-scrollbar-colour);
-}
-
-.defence-mechanism > summary {
-	font-size: 1rem;
-}
-
-.defence-mechanism-fieldset details > summary {
-	list-style: none;
-}
-
-.defence-mechanism-fieldset details > summary::-webkit-details-marker {
-	display: none;
-}
-
-.defence-mechanism-fieldset details[open] > summary {
-	border-style: inset;
-	background-color: var(--control-body-background-colour);
-}
-
-.defence-mechanism-form {
+.defence-mechanism-fieldset .defence-mechanism-form {
 	position: absolute;
-	right: 1em;
+	right: 1rem;
+	display: flex;
+	align-items: center;
+	height: 2.5rem;
 }
 
-.defence-mechanism {
-	cursor: default;
-}
-
-.defence-mechanism .info-box :first-child {
-	margin-top: 0;
-}
-
-.defence-mechanism .info-box {
-	padding: 0.5em;
-	font-size: 0.875rem;
-}
-
-.defence-mechanism .info-box .validation-text {
-	font-weight: 600;
-	font-size: inherit;
-}
-
-.defence-mechanism .defence-radio-buttons {
+.defence-mechanism-fieldset .defence-radio-buttons {
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
-	padding: 0.75rem 0;
-}
-
-.defence-mechanism .prompt-enclosure-configuration-area {
-	padding: 0;
+	gap: 0.875rem;
 }
 
 /* adapted from: https://adrianroselli.com/2019/03/under-engineered-toggles.html */
 
-.toggles [type='checkbox'] {
-	position: absolute;
-	top: auto;
-	overflow: hidden;
-	clip: rect(1px, 1px, 1px, 1px);
-	width: 1px;
-	height: 1px;
-	white-space: nowrap;
+.toggles *,
+.toggles ::before,
+.toggles ::after {
+	box-sizing: border-box;
 }
 
 .toggles [type='checkbox'] + label {
 	position: relative;
 	display: block;
 	max-width: fit-content;
-	padding-right: 3em;
+	padding-right: 3rem;
 	text-align: right;
-}
-
-.toggles [type='checkbox'] + label::before,
-.toggles [type='checkbox'] + label::after {
-	content: '';
-	position: absolute;
-	height: 0.9em;
-	transition: all 0.25s ease;
 }
 
 .toggles [type='checkbox']:focus + label,
@@ -101,23 +33,32 @@
 	color: var(--main-text-accent-colour);
 }
 
+.toggles [type='checkbox'] + label::before,
+.toggles [type='checkbox'] + label::after {
+	content: '';
+	position: absolute;
+}
+
 .toggles [type='checkbox'] + label::before {
-	top: 0.1em;
+	top: 0;
 	right: 0;
-	width: 1.9em;
-	border: 0.15em solid var(--main-toggle-off-border-colour);
-	border-radius: 1.1em;
-	background: var(--main-toggle-off-colour);
+	width: 2.125rem;
+	height: 1.25rem;
+	border: 0.125rem solid var(--main-toggle-off-border-colour);
+	border-radius: 1rem;
+	background-color: var(--main-toggle-off-colour);
 }
 
 .toggles [type='checkbox'] + label::after {
-	top: 0.17em;
-	right: 0.95em;
-	width: 1em;
-	border: 0.05em solid var(--main-toggle-off-border-colour);
+	top: 0.125rem;
+	right: 1rem;
+	width: 1rem;
+	height: 1rem;
+	border: 0.0625rem solid var(--main-toggle-off-border-colour);
 	border-radius: 50%;
-	background: var(--main-text-colour);
+	background-color: var(--main-text-colour);
 	background-position: center center;
+	transition: right 0.3s ease 0.2s;
 }
 
 .toggles [type='checkbox']:focus + label::before,
@@ -134,19 +75,18 @@
 	background-repeat: no-repeat;
 }
 
-.toggles [type='checkbox']:checked + label::after {
-	right: 0.1em;
-	border-color: var(--main-toggle-on-border-colour);
-	color: var(--main-toggle-on-border-colour);
-}
-
 .toggles [type='checkbox']:checked + label::before {
 	border-color: var(--main-toggle-on-border-colour);
 	background-color: var(--main-toggle-on-border-colour);
 }
 
+.toggles [type='checkbox']:checked + label::after {
+	right: 0.125rem;
+	border-color: var(--main-toggle-on-border-colour);
+	color: var(--main-toggle-on-border-colour);
+}
+
 @media screen and (prefers-reduced-motion: reduce) {
-	.toggles [type='checkbox'] + label::before,
 	.toggles [type='checkbox'] + label::after {
 		transition: none;
 	}

@@ -51,7 +51,7 @@ function PromptEnclosureDefenceMechanism({
 	}
 
 	return (
-		<div className="defence-mechanism">
+		<>
 			<div className="defence-radio-buttons">
 				<DefenceConfigurationRadioButton
 					id="off"
@@ -74,7 +74,7 @@ function PromptEnclosureDefenceMechanism({
 				))}
 			</div>
 			{selectedDefence && (
-				<div className="prompt-enclosure-configuration-area">
+				<>
 					<p>{selectedDefence.info}</p>
 					{showConfigurations &&
 						selectedDefence.config.map((config, index) => (
@@ -87,9 +87,9 @@ function PromptEnclosureDefenceMechanism({
 								resetConfigurationValue={resetConfigurationValue}
 							/>
 						))}
-				</div>
+				</>
 			)}
-		</div>
+		</>
 	);
 }
 

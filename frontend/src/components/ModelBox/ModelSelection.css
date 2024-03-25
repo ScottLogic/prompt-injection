@@ -3,6 +3,13 @@
 	flex-direction: column;
 }
 
+.model-selection-box .model-selection-fieldset {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	min-height: fit-content;
+}
+
 .model-selection-box .model-selection-row {
 	display: flex;
 	flex-wrap: wrap;
@@ -25,6 +32,9 @@
 .model-selection-box .model-selection-row select {
 	flex: 1 1 auto;
 	padding: 0.5rem;
+	border-width: 0.0625rem;
+	border-radius: 0.25rem;
+	outline-offset: 0.125rem;
 }
 
 .model-selection-box .model-selection-info {

@@ -1,5 +1,4 @@
-import { useState } from 'react';
-
+import DetailElement from '@src/components/ThemedButtons/DetailElement';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -33,8 +32,6 @@ function DefenceMechanism({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 }) {
-	const [configKey, setConfigKey] = useState<number>(0);
-
 	function resetConfigurationValue(
 		defence: Defence,
 		configItemId: DEFENCE_CONFIG_ITEM_ID
@@ -64,7 +61,7 @@ function DefenceMechanism({
 					<div className="toggles">
 						<input
 							id={defenceDetail.id}
-							className="toggle-switch-input"
+							className="visually-hidden"
 							type="checkbox"
 							placeholder="defence-toggle"
 							onChange={() => {
@@ -79,43 +76,33 @@ function DefenceMechanism({
 					</div>
 				</form>
 			)}
-			<details
-				className="defence-mechanism"
-				onToggle={() => {
-					// re-render the configuration component when detail is toggled
-					// this is to resize the textarea when detail is expanded
-					setConfigKey(configKey + 1);
-				}}
-			>
-				<summary className="defence-mechanism-summary">Details</summary>
-				<div className="info-box">
+			{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE ? (
+				defenceDetail.config.map((config) => (
+					<DetailElement useIcon={false} key={config.id}>
+						<p>{defenceDetail.info}</p>
+						{showConfigurations && (
+							<DefenceConfiguration
+								defence={defenceDetail}
+								isActive={defenceDetail.isActive}
+								config={config}
+								setConfigurationValue={setConfigurationValue}
+								resetConfigurationValue={resetConfigurationValue}
+							/>
+						)}
+					</DetailElement>
+				))
+			) : (
+				<DetailElement useIcon={false}>
 					<p>{defenceDetail.info}</p>
-
-					{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE ? (
-						showConfigurations &&
-						defenceDetail.config.map((config) => {
-							return (
-								<DefenceConfiguration
-									defence={defenceDetail}
-									key={config.id + configKey}
-									isActive={defenceDetail.isActive}
-									config={config}
-									setConfigurationValue={setConfigurationValue}
-									resetConfigurationValue={resetConfigurationValue}
-								/>
-							);
-						})
-					) : (
-						<PromptEnclosureDefenceMechanism
-							defences={promptEnclosureDefences}
-							toggleDefence={toggleDefence}
-							showConfigurations={showConfigurations}
-							setConfigurationValue={setConfigurationValue}
-							resetConfigurationValue={resetConfigurationValue}
-						/>
-					)}
-				</div>
-			</details>
+					<PromptEnclosureDefenceMechanism
+						defences={promptEnclosureDefences}
+						toggleDefence={toggleDefence}
+						showConfigurations={showConfigurations}
+						setConfigurationValue={setConfigurationValue}
+						resetConfigurationValue={resetConfigurationValue}
+					/>
+				</DetailElement>
+			)}
 		</fieldset>
 	);
 }

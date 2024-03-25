@@ -5,7 +5,9 @@
 	appearance: none;
 }
 
-/* hide arrows in firefox */
 .themed-number-input {
+	outline-offset: 0.125rem;
+
+	/* hide arrows in firefox */
 	appearance: textfield;
 }
