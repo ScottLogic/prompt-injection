@@ -1,5 +1,4 @@
 import { View, StyleSheet } from '@react-pdf/renderer';
-import { Fragment } from 'react';
 
 import { ChatMessage } from '@src/models/chat';
 
@@ -18,7 +17,7 @@ function ExportChatBox({ items }: { items: ChatMessage[] }) {
 			<ExportChatMessage message={item} />
 		</View>
 	));
-	return <Fragment>{rows}</Fragment>;
+	return <>{rows}</>;
 }
 
 export default ExportChatBox;

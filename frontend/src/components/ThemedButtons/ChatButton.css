@@ -9,8 +9,13 @@
 	color: var(--chat-button-text-colour);
 	font-weight: 700;
 	font-size: 1rem;
+	width: 100%;
 }
 
 .chat-button:hover {
 	background-color: var(--chat-button-background-colour-hover);
+}
+
+.chat-button[aria-disabled='true']:hover {
+	background-color: var(--action-button-disabled-background-colour);
 }
