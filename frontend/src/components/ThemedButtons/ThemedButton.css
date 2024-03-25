@@ -40,17 +40,24 @@
 	color: var(--tooltip-text-colour);
 }
 
-.themed-button-tooltip.show.left {
+.themed-button-tooltip.show.top-left {
 	left: 0;
 }
 
-.themed-button-tooltip.show.right {
+.themed-button-tooltip.show.top-right {
 	right: 0;
 }
 
-.themed-button-tooltip.show.center {
+.themed-button-tooltip.show.top-center {
 	right: 50%;
 	transform: translateX(50%);
+}
+
+.themed-button-tooltip.show.bottom-center {
+	right: 50%;
+	transform: translateX(50%);
+	bottom: calc(100% + 0.125rem);
+	top: auto;
 }
 
 .themed-button:hover + .themed-button-tooltip.show,

@@ -1,0 +1,43 @@
+.details-button {
+	width: fit-content;
+	height: auto;
+	padding: 0.3125rem;
+	border: 0.25rem outset var(--control-config-border);
+	border-radius: 0.25rem;
+	background-color: var(--main-scrollbar-colour);
+	color: var(--main-text-colour);
+	font-size: 1rem;
+	cursor: default;
+}
+
+.details-button:hover {
+	background-color: var(--main-scrollbar-hover-colour);
+}
+
+.details-button[aria-expanded='true'] {
+	border-style: inset;
+	background-color: var(--control-body-background-colour);
+}
+
+.details-button[aria-expanded='true']:hover {
+	background-color: var(--main-scrollbar-hover-colour);
+}
+
+.details-button .button-arrow-icon {
+	display: inline-block;
+	width: 1.5rem;
+	text-align: center;
+}
+
+.details-content {
+	margin-top: 0.5rem;
+	font-size: 0.875rem;
+}
+
+.details-content > :first-child {
+	margin-top: 0;
+}
+
+.details-content > :last-child {
+	margin-bottom: 0;
+}

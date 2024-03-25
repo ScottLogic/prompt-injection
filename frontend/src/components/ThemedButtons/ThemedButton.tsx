@@ -12,7 +12,11 @@ export interface ThemedButtonProps {
 		id: string;
 		text: string;
 	};
-	tooltipAnchor?: 'left' | 'center' | 'right';
+	tooltipPosition?:
+		| 'bottom-left'
+		| 'bottom-center'
+		| 'bottom-right'
+		| 'top-center';
 	onClick: () => void;
 }
 
@@ -22,7 +26,7 @@ function ThemedButton({
 	ariaLabel,
 	className,
 	tooltip,
-	tooltipAnchor = 'center',
+	tooltipPosition = 'bottom-center',
 	onClick,
 }: ThemedButtonProps) {
 	function onClickDisabledCheck() {
@@ -32,7 +36,7 @@ function ThemedButton({
 	const buttonClass = clsx('themed-button', className, {
 		disabled: ariaDisabled,
 	});
-	const tooltipClass = clsx('themed-button-tooltip', tooltipAnchor, {
+	const tooltipClass = clsx('themed-button-tooltip', tooltipPosition, {
 		show: !!tooltip,
 	});
 
