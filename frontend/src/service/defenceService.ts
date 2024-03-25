@@ -66,12 +66,12 @@ async function configureDefence(
 		body: JSON.stringify({ defenceId, config, level }),
 	});
 
-	const { resultingChatInfoMessage } =
+	if (response.status !== 200) return null;
+
+	const { chatInfoMessage } =
 		(await response.json()) as ConfigureDefenceResponse;
 
-	return response.status === 200
-		? makeChatMessageFromDTO(resultingChatInfoMessage)
-		: null;
+	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
 async function resetDefenceConfigItem(

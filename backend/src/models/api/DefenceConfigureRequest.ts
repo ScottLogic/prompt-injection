@@ -8,7 +8,7 @@ export type DefenceConfigureRequest = Request<
 	never,
 	| string
 	| {
-			resultingChatInfoMessage: ChatInfoMessage;
+			chatInfoMessage: ChatInfoMessage;
 	  },
 	{
 		config?: DefenceConfigItem[];

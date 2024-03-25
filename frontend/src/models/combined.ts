@@ -20,7 +20,7 @@ type LoadLevelResponse = {
 };
 
 type ConfigureDefenceResponse = {
-	resultingChatInfoMessage: ChatMessageDTO;
+	chatInfoMessage: ChatMessageDTO;
 };
 
 export type { StartReponse, LoadLevelResponse, ConfigureDefenceResponse };

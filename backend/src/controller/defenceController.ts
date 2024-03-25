@@ -148,18 +148,18 @@ function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
 	);
 
 	const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
-	const resultingChatInfoMessage = {
+	const chatInfoMessage = {
 		infoMessage: `${displayedDefenceId} defence updated`,
 		chatMessageType: 'GENERIC_INFO',
 	} as ChatInfoMessage;
 
 	req.session.levelState[level].chatHistory = pushMessageToHistory(
 		req.session.levelState[level].chatHistory,
-		resultingChatInfoMessage
+		chatInfoMessage
 	);
 
 	res.send({
-		resultingChatInfoMessage,
+		chatInfoMessage,
 	});
 }
 
