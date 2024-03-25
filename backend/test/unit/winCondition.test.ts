@@ -2,7 +2,7 @@ import { expect, test } from '@jest/globals';
 
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-import { checkLevelWinCondition } from '@src/winCondition';
+import { isLevelWon } from '@src/winCondition';
 
 test('GIVEN in sandbox mode WHEN email is sent THEN level is not won ', () => {
 	const emails = [
@@ -14,7 +14,7 @@ test('GIVEN in sandbox mode WHEN email is sent THEN level is not won ', () => {
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.SANDBOX;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(false);
+	expect(isLevelWon(emails, currentLevel)).toBe(false);
 });
 
 test('GIVEN email body meets win condition for level 1 AND email recipient is correct WHEN email is sent THEN level is won ', () => {
@@ -27,7 +27,7 @@ test('GIVEN email body meets win condition for level 1 AND email recipient is co
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_1;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(true);
+	expect(isLevelWon(emails, currentLevel)).toBe(true);
 });
 
 test('GIVEN email subject meets win condition for level 1 AND email recipient is correct WHEN email is sent THEN level is won ', () => {
@@ -40,7 +40,7 @@ test('GIVEN email subject meets win condition for level 1 AND email recipient is
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_1;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(true);
+	expect(isLevelWon(emails, currentLevel)).toBe(true);
 });
 
 test('GIVEN email body or subject meets win condition for level 1 AND email recipient is not correct WHEN email is sent THEN level is not won ', () => {
@@ -53,7 +53,7 @@ test('GIVEN email body or subject meets win condition for level 1 AND email reci
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_1;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(false);
+	expect(isLevelWon(emails, currentLevel)).toBe(false);
 });
 
 test('GIVEN email body and subject does not meet win condition for level 1 AND email recipient is correct WHEN email is sent THEN level is not won ', () => {
@@ -66,7 +66,7 @@ test('GIVEN email body and subject does not meet win condition for level 1 AND e
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_1;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(false);
+	expect(isLevelWon(emails, currentLevel)).toBe(false);
 });
 
 test('GIVEN email body meets win condition for level 2 AND email recipient is correct WHEN email is sent THEN level is won ', () => {
@@ -79,7 +79,7 @@ test('GIVEN email body meets win condition for level 2 AND email recipient is co
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_2;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(true);
+	expect(isLevelWon(emails, currentLevel)).toBe(true);
 });
 
 test('GIVEN email subject meets win condition for level 2 AND email recipient is correct WHEN email is sent THEN level is won ', () => {
@@ -92,7 +92,7 @@ test('GIVEN email subject meets win condition for level 2 AND email recipient is
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_2;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(true);
+	expect(isLevelWon(emails, currentLevel)).toBe(true);
 });
 
 test('GIVEN email body or subject meets win condition for level 2 AND email recipient is not correct WHEN email is sent THEN level is not won ', () => {
@@ -105,7 +105,7 @@ test('GIVEN email body or subject meets win condition for level 2 AND email reci
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_2;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(false);
+	expect(isLevelWon(emails, currentLevel)).toBe(false);
 });
 
 test('GIVEN email body and subject does not meet win condition for level 2 AND email recipient is correct WHEN email is sent THEN level is not won ', () => {
@@ -118,7 +118,7 @@ test('GIVEN email body and subject does not meet win condition for level 2 AND e
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_2;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(false);
+	expect(isLevelWon(emails, currentLevel)).toBe(false);
 });
 
 test('GIVEN email body meets win condition for level 3 AND email recipient is correct WHEN email is sent THEN level is won ', () => {
@@ -131,7 +131,7 @@ test('GIVEN email body meets win condition for level 3 AND email recipient is co
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_3;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(true);
+	expect(isLevelWon(emails, currentLevel)).toBe(true);
 });
 
 test('GIVEN email subject meets win condition for level 3 AND email recipient is correct WHEN email is sent THEN level is won ', () => {
@@ -145,7 +145,7 @@ test('GIVEN email subject meets win condition for level 3 AND email recipient is
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_3;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(true);
+	expect(isLevelWon(emails, currentLevel)).toBe(true);
 });
 
 test('GIVEN email body or subject meets win condition for level 3 AND email recipient is not correct WHEN email is sent THEN level is not won ', () => {
@@ -158,7 +158,7 @@ test('GIVEN email body or subject meets win condition for level 3 AND email reci
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_3;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(false);
+	expect(isLevelWon(emails, currentLevel)).toBe(false);
 });
 
 test('GIVEN email body and subject does not meet win condition for level 3 AND email recipient is correct WHEN email is sent THEN level is not won ', () => {
@@ -171,5 +171,5 @@ test('GIVEN email body and subject does not meet win condition for level 3 AND e
 	] as EmailInfo[];
 	const currentLevel = LEVEL_NAMES.LEVEL_3;
 
-	expect(checkLevelWinCondition(emails, currentLevel)).toBe(false);
+	expect(isLevelWon(emails, currentLevel)).toBe(false);
 });

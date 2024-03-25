@@ -30,7 +30,7 @@ import {
 	pushMessageToHistory,
 	setSystemRoleInChatHistory,
 } from '@src/utils/chat';
-import { checkLevelWinCondition } from '@src/winCondition';
+import { isLevelWon } from '@src/winCondition';
 
 import { handleChatError } from './handleError';
 
@@ -293,7 +293,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		...levelResult.chatResponse,
 		wonLevel:
 			!levelResult.chatResponse.defenceReport.isBlocked &&
-			checkLevelWinCondition(levelResult.chatResponse.sentEmails, currentLevel),
+			isLevelWon(levelResult.chatResponse.sentEmails, currentLevel),
 	};
 
 	if (updatedChatResponse.defenceReport.isBlocked) {

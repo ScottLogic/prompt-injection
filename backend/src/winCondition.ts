@@ -52,7 +52,7 @@ function emailSatisfiesWinCondition(email: EmailInfo, level: LEVEL_NAMES) {
 	}
 }
 
-function checkLevelWinCondition(
+function isLevelWon(
 	emails: EmailInfo[],
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
@@ -61,4 +61,4 @@ function checkLevelWinCondition(
 	);
 }
 
-export { checkLevelWinCondition };
+export { isLevelWon };

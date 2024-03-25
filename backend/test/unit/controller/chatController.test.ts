@@ -31,7 +31,7 @@ import {
 	pushMessageToHistory,
 	setSystemRoleInChatHistory,
 } from '@src/utils/chat';
-import { checkLevelWinCondition } from '@src/winCondition';
+import { isLevelWon } from '@src/winCondition';
 
 jest.mock('@src/openai');
 const mockChatGptSendMessage = chatGptSendMessage as jest.MockedFunction<
@@ -77,8 +77,7 @@ jest.mock('@src/models/chat', () => {
 });
 
 jest.mock('@src/winCondition');
-const mockCheckLevelWinCondition =
-	checkLevelWinCondition as jest.MockedFunction<typeof checkLevelWinCondition>;
+const mockisLevelWon = isLevelWon as jest.MockedFunction<typeof isLevelWon>;
 
 describe('handleChatToGPT unit tests', () => {
 	const mockSetSystemRoleInChatHistory =
@@ -160,7 +159,7 @@ describe('handleChatToGPT unit tests', () => {
 	}
 
 	beforeEach(() => {
-		mockCheckLevelWinCondition.mockReturnValue(false);
+		mockisLevelWon.mockReturnValue(false);
 	});
 
 	afterEach(() => {
@@ -778,7 +777,7 @@ describe('handleChatToGPT unit tests', () => {
 				sentEmails: [] as EmailInfo[],
 			});
 
-			mockCheckLevelWinCondition.mockReturnValueOnce(true);
+			mockisLevelWon.mockReturnValueOnce(true);
 
 			await handleChatToGPT(req, res);
 
@@ -823,7 +822,7 @@ describe('handleChatToGPT unit tests', () => {
 				sentEmails: [] as EmailInfo[],
 			});
 
-			mockCheckLevelWinCondition.mockReturnValueOnce(true);
+			mockisLevelWon.mockReturnValueOnce(true);
 
 			await handleChatToGPT(req, res);
 
@@ -864,7 +863,7 @@ describe('handleChatToGPT unit tests', () => {
 				triggeredDefences: [],
 			} as DefenceReport);
 
-			mockCheckLevelWinCondition.mockReturnValueOnce(true);
+			mockisLevelWon.mockReturnValueOnce(true);
 
 			await handleChatToGPT(req, res);
 
