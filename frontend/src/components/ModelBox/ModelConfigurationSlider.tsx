@@ -1,6 +1,7 @@
 import { Slider } from '@mui/material';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import DetailElement from '@src/components/ThemedButtons/DetailElement';
 import { CustomChatModelConfiguration, MODEL_CONFIG } from '@src/models/chat';
 
 import './ModelConfigurationSlider.css';
@@ -14,10 +15,7 @@ function ModelConfigurationSlider({
 }) {
 	const [value, setValue] = useState<number>(config.value);
 
-	function handleValueChange(
-		_: Event | SyntheticEvent,
-		value: number | number[]
-	) {
+	function handleValueChange(_: Event, value: number | number[]) {
 		const val = Array.isArray(value) ? value[0] : value;
 		setValue(val);
 	}
@@ -50,10 +48,9 @@ function ModelConfigurationSlider({
 					}}
 				/>
 			</div>
-			<details>
-				<summary>Details</summary>
+			<DetailElement useIcon={false}>
 				<div className="info-text">{config.info}</div>
-			</details>
+			</DetailElement>
 		</fieldset>
 	);
 }

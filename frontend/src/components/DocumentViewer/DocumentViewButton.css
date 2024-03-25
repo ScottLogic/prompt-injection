@@ -1,7 +1,7 @@
 .document-view-button-wrapper {
 	display: flex;
+	flex-shrink: 0;
 	height: 2.5rem;
-	padding-top: 0.5rem;
 }
 
 /* Button fills all available width */
