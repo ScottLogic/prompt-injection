@@ -537,82 +537,6 @@ describe('handleChatToGPT unit tests', () => {
 			]);
 		});
 
-		test('Given level 1 WHEN message sent that wins a level THEN send reply AND won level message AND session history is updated', async () => {
-			const newUserChatMessage = {
-				completion: {
-					content: 'Yes, send the winning email!',
-					role: 'user',
-				},
-				chatMessageType: 'USER',
-			} as ChatMessage;
-
-			const newBotMessageText = 'The winning email has been sent';
-			const newBotChatMessage = {
-				chatMessageType: 'BOT',
-				completion: {
-					role: 'assistant',
-					content: newBotMessageText,
-				},
-			} as ChatMessage;
-
-			const req = openAiChatRequestMock(
-				'Yes, send the winning email!',
-				LEVEL_NAMES.LEVEL_1,
-				existingHistory
-			);
-			const res = responseMock();
-
-			mockChatGptSendMessage.mockResolvedValueOnce({
-				chatResponse: {
-					completion: {
-						content: newBotMessageText,
-						role: 'assistant',
-					},
-					openAIErrorMessage: null,
-				},
-				chatHistory: [...existingHistory, newUserChatMessage],
-				sentEmails: [] as EmailInfo[],
-			});
-
-			await handleChatToGPT(req, res);
-
-			const expectedWonLevelMessage = {
-				infoMessage:
-					'🎉 Congratulations! You have completed this level. Please click on the next level to continue.',
-				chatMessageType: 'LEVEL_COMPLETE',
-			} as ChatMessage;
-
-			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
-				[...existingHistory, newUserChatMessage],
-				mockChatModel,
-				LEVEL_NAMES.LEVEL_1
-			);
-
-			expect(res.send).toHaveBeenCalledWith({
-				reply: newBotMessageText,
-				defenceReport: {
-					blockedReason: null,
-					isBlocked: false,
-					alertedDefences: [],
-					triggeredDefences: [],
-				},
-				wonLevel: true,
-				isError: false,
-				sentEmails: [],
-				openAIErrorMessage: null,
-				wonLevelMessage: expectedWonLevelMessage,
-			});
-
-			const history =
-				req.session.levelState[LEVEL_NAMES.LEVEL_1.valueOf()].chatHistory;
-			expect(history).toEqual([
-				...existingHistory,
-				newUserChatMessage,
-				newBotChatMessage,
-				expectedWonLevelMessage,
-			]);
-		});
-
 		test('Given sandbox WHEN message sent THEN send reply with email AND session chat history is updated AND session emails are updated', async () => {
 			const newUserChatMessage = {
 				chatMessageType: 'USER',
@@ -825,6 +749,12 @@ describe('handleChatToGPT unit tests', () => {
 	});
 
 	describe('winning', () => {
+		const expectedWonLevelMessage = {
+			infoMessage:
+				'🎉 Congratulations! You have completed this level. Please click on the next level to continue.',
+			chatMessageType: 'LEVEL_COMPLETE',
+		} as ChatMessage;
+
 		test('Given win condition met THEN level is won', async () => {
 			const newUserChatMessage = {
 				completion: {
@@ -858,7 +788,10 @@ describe('handleChatToGPT unit tests', () => {
 			await handleChatToGPT(req, res);
 
 			expect(res.send).toHaveBeenCalledWith(
-				expect.objectContaining({ wonLevel: true })
+				expect.objectContaining({
+					wonLevel: true,
+					wonLevelMessage: expectedWonLevelMessage,
+				})
 			);
 		});
 
@@ -903,7 +836,9 @@ describe('handleChatToGPT unit tests', () => {
 			await handleChatToGPT(req, res);
 
 			expect(res.send).toHaveBeenCalledWith(
-				expect.objectContaining({ wonLevel: false })
+				expect.objectContaining({
+					wonLevel: false,
+				})
 			);
 		});
 
@@ -944,7 +879,10 @@ describe('handleChatToGPT unit tests', () => {
 			await handleChatToGPT(req, res);
 
 			expect(res.send).toHaveBeenCalledWith(
-				expect.objectContaining({ wonLevel: true })
+				expect.objectContaining({
+					wonLevel: true,
+					wonLevelMessage: expectedWonLevelMessage,
+				})
 			);
 		});
 	});
