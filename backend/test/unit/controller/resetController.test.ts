@@ -168,7 +168,7 @@ describe('reset level', () => {
 		`GIVEN level [%s] WHEN client asks to reset level progress THEN sent messages and emails are cleared AND the backend sends an info message`,
 		(level) => {
 			const req = {
-				query: {
+				params: {
 					level,
 				},
 				session: {
@@ -213,31 +213,9 @@ describe('reset level', () => {
 		}
 	);
 
-	test('WHEN client does not provide a level THEN the backend responds with BadRequest', () => {
-		const req = {
-			query: {},
-			session: {
-				levelState: [
-					{},
-					{
-						sentEmails: [],
-						chatHistory: [],
-						defences: [],
-					},
-				],
-			},
-		} as unknown as LevelResetRequest;
-		const res = responseMock();
-
-		handleResetLevel(req, res);
-
-		expect(res.status).toHaveBeenCalledWith(400);
-		expect(mockSend).toHaveBeenCalledWith('Level not provided');
-	});
-
 	test('WHEN client provides an invalid level THEN the backend responds with BadRequest', () => {
 		const req = {
-			query: { level: 5 },
+			params: { level: 5 },
 			session: {
 				levelState: [
 					{},
