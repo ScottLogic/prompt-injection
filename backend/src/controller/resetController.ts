@@ -38,7 +38,7 @@ function handleResetProgress(req: LevelGetRequest, res: Response) {
 function handleResetLevel(req: LevelResetRequest, res: Response) {
 	const { level: levelStr } = req.params;
 
-	const level = parseInt(levelStr) as LEVEL_NAMES; // is there a better way to do this? i.e. middleware
+	const level = Number(levelStr) as LEVEL_NAMES;
 
 	if (!isValidLevel(level)) {
 		res.status(400).send('Invalid level');
