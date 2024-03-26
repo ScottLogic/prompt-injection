@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 
 import { DEFAULT_DEFENCES } from '@src/Defences';
-import ExportPDFLink from '@src/components/ExportChat/ExportPDFLink';
 import '@src/components/ThemedButtons/ChatButton.css';
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
 import useUnitStepper from '@src/hooks/useUnitStepper';
 import { ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
@@ -14,6 +14,10 @@ import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';
 
 import './ChatBox.css';
+
+const ExportPDFLink = lazy(
+	() => import('@src/components/ExportChat/ExportPDFLink')
+);
 
 function ChatBox({
 	currentLevel,
@@ -214,11 +218,29 @@ function ChatBox({
 					</span>
 				</div>
 				<div className="control-buttons">
-					<ExportPDFLink
-						messages={messages}
-						emails={emails}
-						currentLevel={currentLevel}
-					/>
+					<Suspense
+						fallback={
+							<ThemedButton
+								className={'chat-button chat-button-disabled'}
+								// eslint-disable-next-line @typescript-eslint/no-empty-function
+								onClick={() => {}}
+								ariaDisabled={true}
+								tooltip={{
+									id: 'export-chat-tooltip',
+									text: 'This button is still loading. Please wait...',
+								}}
+								tooltipPosition="top-center"
+							>
+								Export Chat
+							</ThemedButton>
+						}
+					>
+						<ExportPDFLink
+							messages={messages}
+							emails={emails}
+							currentLevel={currentLevel}
+						/>
+					</Suspense>
 					<button className="chat-button" onClick={openResetLevelOverlay}>
 						Reset Level
 					</button>

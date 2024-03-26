@@ -2,6 +2,7 @@ import { DEFENCES_HIDDEN_LEVEL3_IDS, MODEL_DEFENCES } from '@src/Defences';
 import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
+import DetailElement from '@src/components/ThemedButtons/DetailElement';
 import { ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
@@ -68,44 +69,41 @@ function ControlPanel({
 			{(currentLevel === LEVEL_NAMES.LEVEL_3 ||
 				currentLevel === LEVEL_NAMES.SANDBOX) && (
 				<>
-					<h2 className="visually-hidden">ScottBrew System Access</h2>
-					<details className="control-collapsible-section">
-						<summary className="control-collapsible-section-header">
-							Defence Configuration
-						</summary>
-						<DefenceBox
-							currentLevel={currentLevel}
-							defences={nonModelDefences}
-							showConfigurations={showConfigurations}
-							resetDefenceConfiguration={resetDefenceConfiguration}
-							toggleDefence={toggleDefence}
-							setDefenceConfiguration={setDefenceConfiguration}
-						/>
-					</details>
-
-					<details className="control-collapsible-section">
-						<summary className="control-collapsible-section-header">
-							Model Configuration
-						</summary>
-						<DefenceBox
-							currentLevel={currentLevel}
-							defences={modelDefences}
-							showConfigurations={showConfigurations}
-							toggleDefence={toggleDefence}
-							resetDefenceConfiguration={resetDefenceConfiguration}
-							setDefenceConfiguration={setDefenceConfiguration}
-						/>
-
-						{/* only show model box in sandbox mode */}
-						{showConfigurations && (
-							<ModelBox
-								chatModel={chatModel}
-								setChatModelId={setChatModelId}
-								chatModelOptions={chatModelOptions}
-								addInfoMessage={addInfoMessage}
+					<h2 className="visually-hidden">
+						ScottBrewBot Security Configuration
+					</h2>
+					<div className="config-container">
+						<DetailElement useIcon={true} buttonText={'Defence Configuration'}>
+							<DefenceBox
+								currentLevel={currentLevel}
+								defences={nonModelDefences}
+								showConfigurations={showConfigurations}
+								resetDefenceConfiguration={resetDefenceConfiguration}
+								toggleDefence={toggleDefence}
+								setDefenceConfiguration={setDefenceConfiguration}
 							/>
-						)}
-					</details>
+						</DetailElement>
+					</div>
+					<div className="config-container">
+						<DetailElement useIcon={true} buttonText={'Model Configuration'}>
+							<DefenceBox
+								currentLevel={currentLevel}
+								defences={modelDefences}
+								showConfigurations={showConfigurations}
+								toggleDefence={toggleDefence}
+								resetDefenceConfiguration={resetDefenceConfiguration}
+								setDefenceConfiguration={setDefenceConfiguration}
+							/>
+							{currentLevel === LEVEL_NAMES.SANDBOX && (
+								<ModelBox
+									chatModel={chatModel}
+									setChatModelId={setChatModelId}
+									chatModelOptions={chatModelOptions}
+									addInfoMessage={addInfoMessage}
+								/>
+							)}
+						</DetailElement>
+					</div>
 				</>
 			)}
 
