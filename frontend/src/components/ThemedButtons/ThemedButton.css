@@ -54,10 +54,10 @@
 }
 
 .themed-button-tooltip.show.bottom-center {
-	right: 50%;
-	transform: translateX(50%);
-	bottom: calc(100% + 0.125rem);
 	top: auto;
+	right: 50%;
+	bottom: calc(100% + 0.125rem);
+	transform: translateX(50%);
 }
 
 .themed-button:hover + .themed-button-tooltip.show,

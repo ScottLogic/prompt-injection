@@ -5,11 +5,9 @@ import { LEVEL_NAMES } from '@src/models/level';
 import MultipageOverlay from './MultipageOverlay';
 
 function OverlayWelcome({
-	currentLevel,
 	setStartLevel,
 	closeOverlay,
 }: {
-	currentLevel: LEVEL_NAMES;
 	setStartLevel: (newLevel: LEVEL_NAMES) => void;
 	closeOverlay: () => void;
 }) {
@@ -43,10 +41,7 @@ function OverlayWelcome({
 						beginning, or are you an expert spy, and would prefer to jump
 						straight in at the sandbox?
 					</p>
-					<StartLevelButtons
-						currentLevel={currentLevel}
-						setStartLevel={setStartLevel}
-					/>
+					<StartLevelButtons setStartLevel={setStartLevel} />
 				</>
 			),
 			imageUrl: BotAvatarDefault,

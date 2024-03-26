@@ -12,11 +12,9 @@ function ModeSelectButtons({
 	return (
 		<ul className="mode-selection-buttons">
 			{modeButtons.map((modeButton) => (
-				<li
-					key={modeButton.targetLevel}
-				>
+				<li key={modeButton.targetLevel}>
 					<button
-						className='mode-button'
+						className="mode-button"
 						onClick={() => {
 							setLevel(modeButton.targetLevel);
 						}}

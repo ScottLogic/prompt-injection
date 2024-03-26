@@ -24,13 +24,7 @@ function LevelsCompleteButtons({
 		}
 	}
 
-	return (
-		<ModeSelectButtons
-			defaultSelection={lastLevel}
-			modeButtons={modes}
-			setLevel={handleLevelSelect}
-		/>
-	);
+	return <ModeSelectButtons modeButtons={modes} setLevel={handleLevelSelect} />;
 }
 
 export default LevelsCompleteButtons;
