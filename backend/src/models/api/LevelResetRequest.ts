@@ -4,7 +4,7 @@ import { ChatMessage } from '@src/models/chatMessage';
 import { LEVEL_NAMES } from '@src/models/level';
 
 export type LevelResetRequest = Request<
-	never,
+	{ level: string }, // can we use a middleware to convert this to LEVEL_NAMES?
 	{
 		chatInfoMessage?: ChatMessage;
 	},

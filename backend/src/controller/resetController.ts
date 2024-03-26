@@ -36,12 +36,9 @@ function handleResetProgress(req: LevelGetRequest, res: Response) {
 }
 
 function handleResetLevel(req: LevelResetRequest, res: Response) {
-	const { level } = req.query;
+	const { level: levelStr } = req.params;
 
-	if (level === undefined) {
-		res.status(400).send('Level not provided');
-		return;
-	}
+	const level = parseInt(levelStr) as LEVEL_NAMES; // is there a better way to do this? i.e. middleware
 
 	if (!isValidLevel(level)) {
 		res.status(400).send('Invalid level');

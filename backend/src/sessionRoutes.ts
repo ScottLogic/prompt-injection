@@ -101,9 +101,9 @@ router.post('/openai/addInfoToHistory', handleAddInfoToChatHistory);
 router.post('/openai/model', handleSetModel);
 router.post('/openai/model/configure', handleConfigureModel);
 
-// reset progress for all levels
-router.post('/reset', handleResetProgress);
-router.post('/resetlevel', handleResetLevel);
+// reset
+router.post('/reset/all', handleResetProgress);
+router.post('/reset/:level', handleResetLevel);
 
 // Testing endpoints
 router.post('/test/load', handleTest);
