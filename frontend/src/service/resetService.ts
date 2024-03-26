@@ -28,16 +28,15 @@ async function resetAllProgress(level: number) {
 }
 
 async function resetLevelProgress(level: number) {
-	const response = await sendRequest(`resetlevel?level=${level}`, {
+	const response = await sendRequest(`${PATH}/${level}`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
-	const { resultingChatInfoMessage } =
-		(await response.json()) as ResetLevelResponse;
+	const { chatInfoMessage } = (await response.json()) as ResetLevelResponse;
 
-	return makeChatMessageFromDTO(resultingChatInfoMessage);
+	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
 export { resetAllProgress, resetLevelProgress };

@@ -20,7 +20,7 @@ type LoadLevelResponse = {
 };
 
 type ResetLevelResponse = {
-	resultingChatInfoMessage: ChatMessageDTO;
+	chatInfoMessage: ChatMessageDTO;
 };
 
 export type { StartResponse, LoadLevelResponse, ResetLevelResponse };
