@@ -34,18 +34,19 @@ if (!sessionSigningSecret) {
 	process.exit(1);
 }
 
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 const stage = process.env.NODE_ENV || 'development';
 console.log(`env=${stage}`);
-const isProduction = stage === 'production';
-
-const defaultSessionTTL = 2;
 const cookieName = process.env.COOKIE_NAME || 'SpyLogic.sid';
-const sessionExpiry = process.env.SESSION_EXPIRY_HOURS || `${defaultSessionTTL}`;
-const cookieStaleHours = Number(sessionExpiry);
+/* eslint-enable @typescript-eslint/prefer-nullish-coalescing */
+
+const isProduction = stage === 'production';
+const cookieStaleHours = Number(process.env.SESSION_EXPIRY_HOURS);
+const defaultSessionTTL = 2;
 const oneHourInMillis = 60 * 60 * 1000;
-const maxAge = oneHourInMillis * (
-	Number.isFinite(cookieStaleHours) ? cookieStaleHours : defaultSessionTTL
-);
+const maxAge =
+	oneHourInMillis *
+	(Number.isFinite(cookieStaleHours) ? cookieStaleHours : defaultSessionTTL);
 
 const router = express.Router();
 
