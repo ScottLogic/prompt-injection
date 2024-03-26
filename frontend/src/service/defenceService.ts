@@ -1,4 +1,6 @@
 import { DEFAULT_DEFENCES } from '@src/Defences';
+import { ChatMessage } from '@src/models/chat';
+import { ConfigureDefenceResponse } from '@src/models/combined';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -9,6 +11,7 @@ import {
 import { LEVEL_NAMES } from '@src/models/level';
 
 import { sendRequest } from './backendService';
+import { makeChatMessageFromDTO } from './chatService';
 
 const PATH = 'defence/';
 
@@ -54,7 +57,7 @@ async function configureDefence(
 	defenceId: DEFENCE_ID,
 	config: DefenceConfigItem[],
 	level: LEVEL_NAMES
-): Promise<boolean> {
+): Promise<ChatMessage | null> {
 	const response = await sendRequest(`${PATH}configure`, {
 		method: 'POST',
 		headers: {
@@ -62,7 +65,13 @@ async function configureDefence(
 		},
 		body: JSON.stringify({ defenceId, config, level }),
 	});
-	return response.status === 200;
+
+	if (response.status !== 200) return null;
+
+	const { chatInfoMessage } =
+		(await response.json()) as ConfigureDefenceResponse;
+
+	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
 async function resetDefenceConfigItem(

@@ -50,7 +50,6 @@ interface SingleDefenceReport {
 
 interface FunctionCallResponse {
 	completion: ChatCompletionMessageParam;
-	wonLevel: boolean;
 	sentEmails: EmailInfo[];
 }
 
@@ -65,17 +64,16 @@ interface ChatMalicious {
 	reason: string;
 }
 
-interface ChatResponse {
+type ChatResponse = {
 	completion: ChatCompletionMessageParam | null;
-	wonLevel: boolean;
 	openAIErrorMessage: string | null;
-}
+};
 
-interface ChatGptReply {
+type ChatGptReply = {
 	chatHistory: ChatMessage[];
 	completion: ChatCompletionAssistantMessageParam | null;
 	openAIErrorMessage: string | null;
-}
+};
 
 interface TransformedChatMessage {
 	preMessage: string;

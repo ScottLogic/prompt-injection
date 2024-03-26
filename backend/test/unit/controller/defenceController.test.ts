@@ -16,7 +16,7 @@ import {
 import { DefenceActivateRequest } from '@src/models/api/DefenceActivateRequest';
 import { DefenceConfigItemResetRequest } from '@src/models/api/DefenceConfigResetRequest';
 import { DefenceConfigureRequest } from '@src/models/api/DefenceConfigureRequest';
-import { ChatMessage } from '@src/models/chatMessage';
+import { ChatInfoMessage, ChatMessage } from '@src/models/chatMessage';
 import {
 	DEFENCE_CONFIG_ITEM_ID,
 	DEFENCE_ID,
@@ -365,7 +365,7 @@ describe('handleDefenceDeactivation', () => {
 });
 
 describe('handleConfigureDefence', () => {
-	test('WHEN passed a sensible config value THEN configures defence', () => {
+	test('WHEN passed a sensible config value THEN configures defence AND adds info message to history AND responds with info message', () => {
 		const mockConfigureDefence = configureDefence as jest.MockedFunction<
 			typeof configureDefence
 		>;
@@ -402,6 +402,8 @@ describe('handleConfigureDefence', () => {
 			},
 		} as DefenceConfigureRequest;
 
+		const res = responseMock();
+
 		const configuredDefences: Defence[] = [
 			{
 				id: 'PROMPT_EVALUATION_LLM',
@@ -412,7 +414,7 @@ describe('handleConfigureDefence', () => {
 		];
 		mockConfigureDefence.mockReturnValueOnce(configuredDefences);
 
-		handleConfigureDefence(req, responseMock());
+		handleConfigureDefence(req, res);
 
 		expect(mockConfigureDefence).toHaveBeenCalledTimes(1);
 		expect(mockConfigureDefence).toHaveBeenCalledWith(
@@ -434,6 +436,18 @@ describe('handleConfigureDefence', () => {
 		expect(req.session.levelState[LEVEL_NAMES.SANDBOX].defences).toEqual(
 			configuredDefences
 		);
+
+		const expectedChatInfoMessage = {
+			infoMessage: 'prompt evaluation llm defence updated',
+			chatMessageType: 'GENERIC_INFO',
+		} as ChatInfoMessage;
+		expect(
+			req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory.at(-1)
+		).toEqual(expectedChatInfoMessage);
+
+		expect(res.send).toHaveBeenCalledWith({
+			chatInfoMessage: expectedChatInfoMessage,
+		});
 	});
 
 	test('WHEN missing defenceId THEN does not configure defence', () => {

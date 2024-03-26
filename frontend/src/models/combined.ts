@@ -23,4 +23,13 @@ type ConfigureGptModelResponse = {
 	chatInfoMessage: ChatMessageDTO;
 };
 
-export type { StartReponse, LoadLevelResponse, ConfigureGptModelResponse };
+type ConfigureDefenceResponse = {
+	chatInfoMessage: ChatMessageDTO;
+};
+
+export type {
+	StartReponse,
+	LoadLevelResponse,
+	ConfigureDefenceResponse,
+	ConfigureGptModelResponse,
+};
