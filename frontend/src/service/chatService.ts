@@ -86,11 +86,10 @@ async function configureGptModel(
 	});
 
 	if (response.status !== 200) return null;
-	else {
-		const { chatInfoMessage } =
-			(await response.json()) as ConfigureGptModelResponse;
-		return makeChatMessageFromDTO(chatInfoMessage);
-	}
+
+	const { chatInfoMessage } =
+		(await response.json()) as ConfigureGptModelResponse;
+	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
 async function addInfoMessageToChatHistory(
