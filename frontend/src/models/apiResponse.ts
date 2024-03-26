@@ -23,8 +23,4 @@ type chatInfoMessageResponse = {
 	chatInfoMessage: ChatMessageDTO;
 };
 
-export type {
-	StartResponse,
-	LoadLevelResponse,
-	chatInfoMessageResponse as chatInfoMessageResponse,
-};
+export type { StartResponse, LoadLevelResponse, chatInfoMessageResponse };

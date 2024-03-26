@@ -1,4 +1,7 @@
-import { LoadLevelResponse, ResetLevelResponse } from '@src/models/apiResponse';
+import {
+	LoadLevelResponse,
+	chatInfoMessageResponse,
+} from '@src/models/apiResponse';
 
 import { sendRequest } from './backendService';
 import {
@@ -34,7 +37,8 @@ async function resetLevelProgress(level: number) {
 			'Content-Type': 'application/json',
 		},
 	});
-	const { chatInfoMessage } = (await response.json()) as ResetLevelResponse;
+	const { chatInfoMessage } =
+		(await response.json()) as chatInfoMessageResponse;
 
 	return makeChatMessageFromDTO(chatInfoMessage);
 }
