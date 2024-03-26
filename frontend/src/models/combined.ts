@@ -19,17 +19,8 @@ type LoadLevelResponse = {
 	chatModel?: ChatModel;
 };
 
-type ConfigureGptModelResponse = {
+type chatInfoMessageResponse = {
 	chatInfoMessage: ChatMessageDTO;
 };
 
-type ConfigureDefenceResponse = {
-	chatInfoMessage: ChatMessageDTO;
-};
-
-export type {
-	StartReponse,
-	LoadLevelResponse,
-	ConfigureDefenceResponse,
-	ConfigureGptModelResponse,
-};
+export type { StartReponse, LoadLevelResponse, chatInfoMessageResponse };
