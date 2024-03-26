@@ -1,11 +1,15 @@
 import { Request } from 'express';
 
+import { ChatInfoMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, DefenceConfigItem } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 
 export type DefenceConfigureRequest = Request<
 	never,
-	null | string,
+	| string
+	| {
+			chatInfoMessage: ChatInfoMessage;
+	  },
 	{
 		config?: DefenceConfigItem[];
 		defenceId?: DEFENCE_ID;
