@@ -99,9 +99,6 @@ export class ApiStack extends Stack {
 				},
 				memoryLimitMiB: 512,
 				loadBalancerName,
-				// TODO Cloudfront api-auth proxy, revert this to auto-generated domain for ALB?
-				//   Can we block direct access, force traffic through cloudfront?
-				//   Do we need SecurityGroup to allow ALB access from (only) cloudfront?
 				certificate,
 				domainName,
 				domainZone: hostedZone,
@@ -118,5 +115,22 @@ export class ApiStack extends Stack {
 				removalPolicy: RemovalPolicy.DESTROY,
 			})
 		);
+
+		// TODO
+		// - Cloudfront distribution for API, non-caching
+		// - Edge function on API distribution to verify access token from header (or cookie?),
+		//   and if ok add X-Origin-Secret header (uuid) to request, else log and passthrough unchanged
+		// - ALB listener rule redirects to target group only if X-Origin-Secret header present with expected value
+		// - ALB default listener rule returns 403 Forbidden
+		// - In UI code, make cognito/amplify auth opt-in via env flag
+		/*
+		const authFunctionName = generateResourceName('api-gatekeeper');
+		const authEdgeFunction = new experimental.EdgeFunction(this, authFunctionName, {
+			functionName: authFunctionName,
+			handler: 'index.handler',
+			runtime: Runtime.NODEJS_18_X,
+			code: Code.fromAsset(join(__dirname, 'lambdas/build/verifyAuthToken')),
+		});
+		*/
 	}
 }

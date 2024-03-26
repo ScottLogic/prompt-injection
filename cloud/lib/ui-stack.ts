@@ -4,21 +4,17 @@ import {
 	CacheCookieBehavior,
 	CachePolicy,
 	Distribution,
-	experimental,
-	LambdaEdgeEventType,
 	OriginAccessIdentity, OriginRequestPolicy,
 	PriceClass, ResponseHeadersPolicy,
 	ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin, S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { CanonicalUserPrincipal, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { Code, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { AaaaRecord, ARecord, IHostedZone, RecordTarget, } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { BlockPublicAccess, Bucket, BucketEncryption, } from 'aws-cdk-lib/aws-s3';
 import { Duration, RemovalPolicy, Stack, StackProps, } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
-import { join } from 'node:path';
 
 import { appName, resourceName } from './resourceNamingUtils';
 
@@ -93,23 +89,13 @@ export class UiStack extends Stack {
 					}),
 					compress: true,
 					allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-					viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
 				},
 				priceClass: PriceClass.PRICE_CLASS_100,
 			}
 		);
 
-		// TODO Edge function to verify auth token for API requests
-		const authFunctionName = generateResourceName('auth-interceptor');
-		const cognitoAuthEdgeFunction = new experimental.EdgeFunction(this, authFunctionName, {
-			functionName: authFunctionName,
-			handler: 'index.handler',
-			runtime: Runtime.NODEJS_18_X,
-			code: Code.fromAsset(join(__dirname, 'lambdas/build/addCognitoSecret')),
-		});
-
-		// TODO API proxy distribution for auth token verification! Use aws-jwt-verify
-
+		// TODO Try with custom userpool domain, instead of distribution?
 		// Cognito proxy distribution
 		const cognitoProxyDistribution = new Distribution(this, generateResourceName('cognito-proxy'), {
 			certificate,

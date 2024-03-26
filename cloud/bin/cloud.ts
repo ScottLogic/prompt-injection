@@ -70,6 +70,7 @@ new UiStack(app, generateStackName('ui'), {
 	hostedZone: hostedZoneStack.hostedZone,
 });
 
+// TODO Generate header uuid in build pipeline, so is created within AWS account
 new ApiStack(app, generateStackName('api'), {
 	description: generateDescription('API stack'),
 	env,
