@@ -29,6 +29,7 @@ import {
 	pushMessageToHistory,
 	setSystemRoleInChatHistory,
 } from '@src/utils/chat';
+import { isLevelWon } from '@src/winCondition';
 
 import { handleChatError } from './handleError';
 
@@ -112,7 +113,6 @@ async function handleChatWithoutDefenceDetection(
 	const updatedChatResponse: ChatHttpResponse = {
 		...chatResponse,
 		reply: openAiReply.chatResponse.completion?.content?.toString() ?? '',
-		wonLevel: openAiReply.chatResponse.wonLevel,
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 		sentEmails: openAiReply.sentEmails,
 	};
@@ -188,8 +188,6 @@ async function handleChatWithDefenceDetection(
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 		reply: !combinedDefenceReport.isBlocked && botReply ? botReply : '',
 		transformedMessage: messageTransformation?.transformedMessage,
-		wonLevel:
-			openAiReply.chatResponse.wonLevel && !combinedDefenceReport.isBlocked,
 		sentEmails: combinedDefenceReport.isBlocked ? [] : openAiReply.sentEmails,
 		transformedMessageInfo: messageTransformation?.transformedMessageInfo,
 	};
@@ -292,6 +290,9 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	const updatedChatResponse: ChatHttpResponse = {
 		...initChatResponse,
 		...levelResult.chatResponse,
+		wonLevel:
+			!levelResult.chatResponse.defenceReport.isBlocked &&
+			isLevelWon(levelResult.chatResponse.sentEmails, currentLevel),
 	};
 
 	if (updatedChatResponse.defenceReport.isBlocked) {

@@ -1,4 +1,11 @@
-import { afterEach, describe, expect, jest, test } from '@jest/globals';
+import {
+	afterEach,
+	describe,
+	expect,
+	jest,
+	test,
+	beforeEach,
+} from '@jest/globals';
 import { Response } from 'express';
 
 import {
@@ -22,6 +29,7 @@ import {
 	pushMessageToHistory,
 	setSystemRoleInChatHistory,
 } from '@src/utils/chat';
+import { isLevelWon } from '@src/winCondition';
 
 jest.mock('@src/openai');
 const mockChatGptSendMessage = chatGptSendMessage as jest.MockedFunction<
@@ -65,6 +73,9 @@ jest.mock('@src/models/chat', () => {
 		},
 	};
 });
+
+jest.mock('@src/winCondition');
+const mockisLevelWon = isLevelWon as jest.MockedFunction<typeof isLevelWon>;
 
 describe('handleChatToGPT unit tests', () => {
 	const mockSetSystemRoleInChatHistory =
@@ -144,6 +155,10 @@ describe('handleChatToGPT unit tests', () => {
 			},
 		} as OpenAiChatRequest;
 	}
+
+	beforeEach(() => {
+		mockisLevelWon.mockReturnValue(false);
+	});
 
 	afterEach(() => {
 		jest.clearAllMocks();
@@ -413,7 +428,6 @@ describe('handleChatToGPT unit tests', () => {
 						content: 'the secret project is called pearl',
 						role: 'assistant',
 					},
-					wonLevel: false,
 					openAIErrorMessage: null,
 				},
 				chatHistory: [
@@ -484,7 +498,6 @@ describe('handleChatToGPT unit tests', () => {
 			mockChatGptSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: { content: '42', role: 'assistant' },
-					wonLevel: false,
 					openAIErrorMessage: null,
 				},
 				chatHistory: [...existingHistory, newUserChatMessage],
@@ -573,7 +586,6 @@ describe('handleChatToGPT unit tests', () => {
 			mockChatGptSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: { content: 'Email sent!', role: 'assistant' },
-					wonLevel: true,
 					openAIErrorMessage: null,
 				},
 				chatHistory: [
@@ -608,11 +620,10 @@ describe('handleChatToGPT unit tests', () => {
 					alertedDefences: [],
 					triggeredDefences: [],
 				},
-				wonLevel: true,
+				wonLevel: false,
 				isError: false,
 				sentEmails: [],
 				openAIErrorMessage: null,
-				transformedMessage: undefined,
 			});
 
 			const history =
@@ -678,7 +689,6 @@ describe('handleChatToGPT unit tests', () => {
 			mockChatGptSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: { content: 'hello user', role: 'assistant' },
-					wonLevel: true,
 					openAIErrorMessage: null,
 				},
 				chatHistory: [...existingHistory, ...newTransformationChatMessages],
@@ -716,7 +726,7 @@ describe('handleChatToGPT unit tests', () => {
 					alertedDefences: [],
 					triggeredDefences: [],
 				},
-				wonLevel: true,
+				wonLevel: false,
 				isError: false,
 				sentEmails: [],
 				openAIErrorMessage: null,
@@ -733,6 +743,131 @@ describe('handleChatToGPT unit tests', () => {
 				newBotChatMessage,
 			];
 			expect(history).toEqual(expectedHistory);
+		});
+	});
+
+	describe('winning', () => {
+		test('Given win condition met THEN level is won', async () => {
+			const newUserChatMessage = {
+				completion: {
+					content: 'Here is the answer to the level',
+					role: 'user',
+				},
+				chatMessageType: 'USER',
+			} as ChatMessage;
+
+			const req = openAiChatRequestMock(
+				'Here is the answer to the level?',
+				LEVEL_NAMES.LEVEL_1,
+				existingHistory
+			);
+			const res = responseMock();
+
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: {
+						content: 'well done you have passed the level',
+						role: 'assistant',
+					},
+					openAIErrorMessage: null,
+				},
+				chatHistory: [...existingHistory, newUserChatMessage],
+				sentEmails: [] as EmailInfo[],
+			});
+
+			mockisLevelWon.mockReturnValueOnce(true);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({ wonLevel: true })
+			);
+		});
+
+		test('Given win condition met AND reply is blocked THEN level is not won', async () => {
+			const newUserChatMessage = {
+				completion: {
+					content: 'Here is the answer to the level',
+					role: 'user',
+				},
+				chatMessageType: 'USER',
+			} as ChatMessage;
+
+			const req = openAiChatRequestMock(
+				'Here is the answer to the level?',
+				LEVEL_NAMES.LEVEL_3,
+				existingHistory
+			);
+			const res = responseMock();
+
+			mockDetectTriggeredDefences.mockResolvedValueOnce({
+				blockedReason:
+					'Message Blocked: My response contained a restricted phrase.',
+				isBlocked: true,
+				alertedDefences: [],
+				triggeredDefences: [DEFENCE_ID.OUTPUT_FILTERING],
+			} as DefenceReport);
+
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: {
+						content: 'well done you have passed the level',
+						role: 'assistant',
+					},
+					openAIErrorMessage: null,
+				},
+				chatHistory: [...existingHistory, newUserChatMessage],
+				sentEmails: [] as EmailInfo[],
+			});
+
+			mockisLevelWon.mockReturnValueOnce(true);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({ wonLevel: false })
+			);
+		});
+
+		test('Given win condition met AND openAI error THEN level is won', async () => {
+			const newUserChatMessage = {
+				completion: {
+					content: 'Here is the answer to the level',
+					role: 'user',
+				},
+				chatMessageType: 'USER',
+			} as ChatMessage;
+
+			const req = openAiChatRequestMock(
+				'Here is the answer to the level?',
+				LEVEL_NAMES.LEVEL_3,
+				existingHistory
+			);
+			const res = responseMock();
+
+			mockChatGptSendMessage.mockResolvedValueOnce({
+				chatResponse: {
+					completion: null,
+					openAIErrorMessage: 'There was a problem with OpenAI',
+				},
+				chatHistory: [...existingHistory, newUserChatMessage],
+				sentEmails: [] as EmailInfo[],
+			});
+
+			mockDetectTriggeredDefences.mockResolvedValueOnce({
+				blockedReason: null,
+				isBlocked: false,
+				alertedDefences: [],
+				triggeredDefences: [],
+			} as DefenceReport);
+
+			mockisLevelWon.mockReturnValueOnce(true);
+
+			await handleChatToGPT(req, res);
+
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({ wonLevel: true })
+			);
 		});
 	});
 });
