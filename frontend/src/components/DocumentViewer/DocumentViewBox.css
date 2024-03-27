@@ -37,8 +37,8 @@
 	padding: 2rem;
 	border: 0.1875rem solid var(--main-border-colour);
 	background: var(--main-background);
-	aspect-ratio: 7/8;
 	color: var(--main-text-colour);
+	aspect-ratio: 7/8;
 }
 
 .document-viewer-container {

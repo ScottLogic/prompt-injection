@@ -2,6 +2,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	width: 100%;
 	padding: 0.75rem;
 	border: 1px solid var(--chat-button-border-colour);
 	border-radius: 0.625rem;
@@ -9,7 +10,6 @@
 	color: var(--chat-button-text-colour);
 	font-weight: 700;
 	font-size: 1rem;
-	width: 100%;
 }
 
 .chat-button:hover {
