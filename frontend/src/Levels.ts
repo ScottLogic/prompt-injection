@@ -10,9 +10,9 @@ const LEVELS: Level[] = [
 		missionInfoDialogue: [
 			{
 				speaker: 'ScottBrew Manager',
-				text: `...and that's all the information you need to get started.
-        Oh, one last thing: please familiarise yourself with our new chatbot, ScottBrewBot. 
-        I'll leave you to it, so glad you have decided to join us as a Developer at ScottBrew!`,
+				text: `Welcome to ScottBrew, your onboarding is complete!
+		I suggest you start by familiarising yourself with our in-house chatbot, ScottBrewBot. 
+		I'll leave you to it, so glad you have decided to join us as a Developer!`,
 			},
 			{
 				speaker: 'Handler',
