@@ -29,7 +29,7 @@ function LevelSelectionBox({
 	}
 
 	return (
-		<div className="level-selection-box">
+		<nav className="level-selection-box">
 			{displayLevels.map(({ id, displayName }, index) => {
 				const disabled =
 					index > numCompletedLevels && id !== LEVEL_NAMES.SANDBOX;
@@ -62,7 +62,7 @@ function LevelSelectionBox({
 					</ThemedButton>
 				);
 			})}
-		</div>
+		</nav>
 	);
 }
 

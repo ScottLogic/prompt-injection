@@ -72,7 +72,6 @@ function App() {
 		setIsNewUser(false);
 		openOverlay(
 			<OverlayWelcome
-				currentLevel={currentLevel}
 				setStartLevel={(level: LEVEL_NAMES) => {
 					setStartLevel(level);
 				}}

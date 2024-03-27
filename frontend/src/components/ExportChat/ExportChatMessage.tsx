@@ -72,7 +72,7 @@ function getMessageStyle(type: CHAT_MESSAGE_TYPE) {
 			return styles.chatBoxInfo;
 		case 'BOT_BLOCKED':
 		case 'BOT':
-		case 'LEVEL_INFO':
+		case 'LEVEL_COMPLETE':
 		case 'ERROR_MSG':
 			return styles.chatBoxMessageBot;
 		case 'USER':

@@ -12,7 +12,7 @@
 	align-items: center;
 	margin: 0;
 	padding: 1rem 2rem;
-	border: 0.0625rem solid var(--overlay-tab-colour);
+	border: 0.125rem solid var(--overlay-tab-colour);
 	border-radius: 0.5rem;
 	background-color: var(--overlay-background-colour);
 	font-weight: 700;
@@ -20,10 +20,6 @@
 	line-height: 1;
 	white-space: nowrap;
 	transition: ease 0.1s;
-}
-
-.mode-selection-buttons .mode-button.selected {
-	background-color: var(--overlay-tab-colour);
 }
 
 .mode-selection-buttons button:hover {
