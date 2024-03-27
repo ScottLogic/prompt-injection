@@ -13,7 +13,7 @@ import { getDefencesFromDTOs } from './defenceService';
 const PATH = 'reset';
 
 async function resetAllProgress(level: number) {
-	const response = await sendRequest(`${PATH}?level=${level}`, {
+	const response = await sendRequest(`${PATH}/all?level=${level}`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
