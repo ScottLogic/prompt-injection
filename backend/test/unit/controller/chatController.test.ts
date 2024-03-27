@@ -749,12 +749,6 @@ describe('handleChatToGPT unit tests', () => {
 	});
 
 	describe('winning', () => {
-		const expectedWonLevelMessage = {
-			infoMessage:
-				'🎉 Congratulations! You have completed this level. Please click on the next level to continue.',
-			chatMessageType: 'LEVEL_COMPLETE',
-		} as ChatMessage;
-
 		test('Given win condition met THEN level is won', async () => {
 			const newUserChatMessage = {
 				completion: {
@@ -786,6 +780,12 @@ describe('handleChatToGPT unit tests', () => {
 			mockisLevelWon.mockReturnValueOnce(true);
 
 			await handleChatToGPT(req, res);
+
+			const expectedWonLevelMessage = {
+				infoMessage:
+					'🎉 Congratulations! You have completed this level. Please click on the next level to continue.',
+				chatMessageType: 'LEVEL_COMPLETE',
+			} as ChatMessage;
 
 			expect(res.send).toHaveBeenCalledWith(
 				expect.objectContaining({
@@ -842,7 +842,7 @@ describe('handleChatToGPT unit tests', () => {
 			);
 		});
 
-		test('Given win condition met AND openAI error THEN level is won', async () => {
+		test('Given win condition met AND openAI error THEN level is not won', async () => {
 			const newUserChatMessage = {
 				completion: {
 					content: 'Here is the answer to the level',
@@ -880,8 +880,7 @@ describe('handleChatToGPT unit tests', () => {
 
 			expect(res.send).toHaveBeenCalledWith(
 				expect.objectContaining({
-					wonLevel: true,
-					wonLevelMessage: expectedWonLevelMessage,
+					wonLevel: false,
 				})
 			);
 		});

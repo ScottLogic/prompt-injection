@@ -293,6 +293,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		...levelResult.chatResponse,
 		wonLevel:
 			!levelResult.chatResponse.defenceReport.isBlocked &&
+			!levelResult.chatResponse.openAIErrorMessage &&
 			isLevelWon(levelResult.chatResponse.sentEmails, currentLevel),
 	};
 
