@@ -65,21 +65,9 @@ function ChatBox({
 		setChatInput(recalledMessage);
 	}, [recalledMessageReverseIndex]);
 
-	function getSuccessMessage() {
-		return currentLevel < LEVEL_NAMES.LEVEL_3
-			? `Congratulations! You have completed this level. Please click on the next level to continue.`
-			: `Congratulations, you have completed the final level of your assignment!`;
-	}
-
-	function isLevelComplete() {
-		// level is complete if the chat contains a LEVEL_INFO message
-		return messages.some((message) => message.type === 'LEVEL_INFO');
-	}
-
 	function processChatResponse(response: ChatResponse) {
 		const transformedMessageInfo = response.transformedMessageInfo;
 		const transformedMessage = response.transformedMessage;
-		// add transformation info message to the chat box
 		if (transformedMessageInfo) {
 			addChatMessage({
 				message: transformedMessageInfo,
@@ -156,19 +144,13 @@ function ChatBox({
 		// update emails
 		addSentEmails(response.sentEmails);
 
-		if (response.wonLevel && !isLevelComplete()) {
+		if (response.wonLevelMessage) {
 			updateNumCompletedLevels(currentLevel);
-			const successMessage = getSuccessMessage();
-			addChatMessage({
-				type: 'LEVEL_INFO',
-				message: successMessage,
-			});
-			// asynchronously add the message to the chat history
-			void chatService.addInfoMessageToChatHistory(
-				successMessage,
-				'LEVEL_INFO',
-				currentLevel
+			const levelCompleteMessage = chatService.makeChatMessageFromDTO(
+				response.wonLevelMessage
 			);
+			addChatMessage(levelCompleteMessage);
+
 			// if this is the last level, show the level complete overlay
 			if (currentLevel === LEVEL_NAMES.LEVEL_3) {
 				openLevelsCompleteOverlay();
