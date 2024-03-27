@@ -119,7 +119,7 @@ export type {
 	ChatGptReply,
 	ChatMalicious,
 	ChatModel,
-	ChatModelConfigurations as ChatModelConfiguration,
+	ChatModelConfigurations,
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
