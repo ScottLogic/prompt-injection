@@ -3,7 +3,7 @@ import {
 	ChatCompletionMessageParam,
 } from 'openai/resources/chat/completions';
 
-import { ChatMessage } from './chatMessage';
+import { ChatInfoMessage, ChatMessage } from './chatMessage';
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
 
@@ -98,6 +98,7 @@ interface ChatHttpResponse {
 	openAIErrorMessage: string | null;
 	sentEmails: EmailInfo[];
 	transformedMessageInfo?: string;
+	wonLevelMessage?: ChatInfoMessage;
 }
 
 interface LevelHandlerResponse {

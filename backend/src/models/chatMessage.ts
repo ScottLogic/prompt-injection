@@ -10,7 +10,7 @@ import { TransformedChatMessage } from './chat';
 const chatInfoMessageTypes = [
 	'DEFENCE_ALERTED',
 	'DEFENCE_TRIGGERED',
-	'LEVEL_INFO',
+	'LEVEL_COMPLETE',
 	'RESET_LEVEL',
 	'ERROR_MSG',
 	'BOT_BLOCKED',
