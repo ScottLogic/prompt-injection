@@ -3,10 +3,8 @@ import { LEVEL_NAMES, ModeSelectButton } from '@src/models/level';
 import ModeSelectButtons from './ModeSelectButtons';
 
 function StartLevelButtons({
-	currentLevel,
 	setStartLevel,
 }: {
-	currentLevel: LEVEL_NAMES;
 	setStartLevel: (newLevel: LEVEL_NAMES) => void;
 }) {
 	const levels: ModeSelectButton[] = [
@@ -14,13 +12,7 @@ function StartLevelButtons({
 		{ displayName: 'Sandbox', targetLevel: LEVEL_NAMES.SANDBOX },
 	];
 
-	return (
-		<ModeSelectButtons
-			defaultSelection={currentLevel}
-			modeButtons={levels}
-			setLevel={setStartLevel}
-		/>
-	);
+	return <ModeSelectButtons modeButtons={levels} setLevel={setStartLevel} />;
 }
 
 export default StartLevelButtons;

@@ -293,6 +293,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		...levelResult.chatResponse,
 		wonLevel:
 			!levelResult.chatResponse.defenceReport.isBlocked &&
+			!levelResult.chatResponse.openAIErrorMessage &&
 			isLevelWon(levelResult.chatResponse.sentEmails, currentLevel),
 	};
 
@@ -333,6 +334,29 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 
 	req.session.levelState[currentLevel].chatHistory = updatedChatHistory;
 	req.session.levelState[currentLevel].sentEmails = totalSentEmails;
+
+	// If the level has just been won, add a level complete message to chat history and return it in the response
+	const levelCompleteMessageInChatHistory = req.session.levelState[
+		currentLevel
+	].chatHistory.some((msg) => msg.chatMessageType === 'LEVEL_COMPLETE');
+	if (updatedChatResponse.wonLevel && !levelCompleteMessageInChatHistory) {
+		const levelCompleteMessage = {
+			chatMessageType: 'LEVEL_COMPLETE',
+			infoMessage:
+				currentLevel === LEVEL_NAMES.LEVEL_3
+					? `🎉 Congratulations, you have completed the final level of your assignment!`
+					: `🎉 Congratulations! You have completed this level. Please click on the next level to continue.`,
+		} as ChatInfoMessage;
+
+		// add level complete message to chat history
+		req.session.levelState[currentLevel].chatHistory = pushMessageToHistory(
+			req.session.levelState[currentLevel].chatHistory,
+			levelCompleteMessage
+		);
+
+		// add level complete message to chat response
+		updatedChatResponse.wonLevelMessage = levelCompleteMessage;
+	}
 
 	console.log('chatResponse: ', updatedChatResponse);
 	console.log('chatHistory: ', updatedChatHistory);

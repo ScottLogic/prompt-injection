@@ -7,7 +7,7 @@ type CHAT_MESSAGE_TYPE =
 	| 'GENERIC_INFO'
 	| 'USER'
 	| 'USER_TRANSFORMED'
-	| 'LEVEL_INFO'
+	| 'LEVEL_COMPLETE'
 	| 'DEFENCE_ALERTED'
 	| 'DEFENCE_TRIGGERED'
 	| 'SYSTEM'
@@ -70,6 +70,7 @@ interface ChatResponse {
 	isError: boolean;
 	sentEmails: EmailInfo[];
 	transformedMessageInfo?: string;
+	wonLevelMessage?: ChatMessageDTO;
 }
 
 interface ChatCompletionRequestMessage {
