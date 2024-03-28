@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 
 import {
+	ChatMessage,
 	ChatModel,
 	CustomChatModelConfiguration,
-	MODEL_CONFIG,
+	MODEL_CONFIG_ID,
 } from '@src/models/chat';
 import { chatService } from '@src/service';
 
@@ -13,7 +14,7 @@ import './ModelConfiguration.css';
 
 const DEFAULT_CONFIGS: CustomChatModelConfiguration[] = [
 	{
-		id: MODEL_CONFIG.TEMPERATURE,
+		id: 'temperature',
 		name: 'Model Temperature',
 		info: 'Controls the randomness of the model. Lower means more deterministic, higher means more surprising. Default is 1.',
 		value: 1,
@@ -21,7 +22,7 @@ const DEFAULT_CONFIGS: CustomChatModelConfiguration[] = [
 		max: 2,
 	},
 	{
-		id: MODEL_CONFIG.TOP_P,
+		id: 'topP',
 		name: 'Top P',
 		info: 'Controls how many different words or phrases the language model considers when it’s trying to predict the next word. Default is 1. ',
 		value: 1,
@@ -29,7 +30,7 @@ const DEFAULT_CONFIGS: CustomChatModelConfiguration[] = [
 		max: 1,
 	},
 	{
-		id: MODEL_CONFIG.PRESENCE_PENALTY,
+		id: 'presencePenalty',
 		name: 'Presence Penalty',
 		info: 'Controls diversity of text generation. Higher presence penalty increases likelihood of using new words. Default is 0.',
 		value: 0,
@@ -37,7 +38,7 @@ const DEFAULT_CONFIGS: CustomChatModelConfiguration[] = [
 		max: 2,
 	},
 	{
-		id: MODEL_CONFIG.FREQUENCY_PENALTY,
+		id: 'frequencyPenalty',
 		name: 'Frequency Penalty',
 		info: 'Controls diversity of text generation. Higher frequency penalty decreases likelihood of using the same words. Default is 0.',
 		value: 0,
@@ -48,15 +49,15 @@ const DEFAULT_CONFIGS: CustomChatModelConfiguration[] = [
 
 function ModelConfiguration({
 	chatModel,
-	addInfoMessage,
+	addChatMessage,
 }: {
 	chatModel?: ChatModel;
-	addInfoMessage: (message: string) => void;
+	addChatMessage: (chatMessage: ChatMessage) => void;
 }) {
 	const [customChatModelConfigs, setCustomChatModel] =
 		useState<CustomChatModelConfiguration[]>(DEFAULT_CONFIGS);
 
-	function setCustomChatModelByID(id: MODEL_CONFIG, value: number) {
+	function setCustomChatModelByID(id: MODEL_CONFIG_ID, value: number) {
 		setCustomChatModel((prev) => {
 			return prev.map((config) => {
 				if (config.id === id) {
@@ -67,7 +68,7 @@ function ModelConfiguration({
 		});
 	}
 
-	function updateConfigValue(id: MODEL_CONFIG, newValue: number) {
+	function updateConfigValue(id: MODEL_CONFIG_ID, newValue: number) {
 		const prevValue = customChatModelConfigs.find(
 			(config) => config.id === id
 		)?.value;
@@ -77,9 +78,9 @@ function ModelConfiguration({
 
 		setCustomChatModelByID(id, newValue);
 
-		void chatService.configureGptModel(id, newValue).then((success) => {
-			if (success) {
-				addInfoMessage(`changed ${id} to ${newValue}`);
+		void chatService.configureGptModel(id, newValue).then((chatInfoMessage) => {
+			if (chatInfoMessage) {
+				addChatMessage(chatInfoMessage);
 			} else {
 				setCustomChatModelByID(id, prevValue);
 			}
