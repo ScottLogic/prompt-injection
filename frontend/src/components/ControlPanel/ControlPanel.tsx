@@ -3,7 +3,7 @@ import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import DocumentViewButton from '@src/components/DocumentViewer/DocumentViewButton';
 import ModelBox from '@src/components/ModelBox/ModelBox';
 import DetailElement from '@src/components/ThemedButtons/DetailElement';
-import { ChatMessage, ChatModel } from '@src/models/chat';
+import { CHAT_MODEL_ID, ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -24,13 +24,12 @@ function ControlPanel({
 	resetDefenceConfiguration,
 	setDefenceConfiguration,
 	openDocumentViewer,
-	addInfoMessage,
 	addChatMessage,
 }: {
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
 	chatModel?: ChatModel;
-	setChatModelId: (modelId: string) => void;
+	setChatModelId: (modelId: CHAT_MODEL_ID) => void;
 	chatModelOptions: string[];
 	toggleDefence: (defence: Defence) => void;
 	resetDefenceConfiguration: (
@@ -42,7 +41,6 @@ function ControlPanel({
 		config: DefenceConfigItem[]
 	) => Promise<boolean>;
 	openDocumentViewer: () => void;
-	addInfoMessage: (message: string) => void;
 	addChatMessage: (chatMessage: ChatMessage) => void;
 }) {
 	const configurableDefences =
@@ -101,7 +99,6 @@ function ControlPanel({
 									chatModel={chatModel}
 									setChatModelId={setChatModelId}
 									chatModelOptions={chatModelOptions}
-									addInfoMessage={addInfoMessage}
 									addChatMessage={addChatMessage}
 								/>
 							)}

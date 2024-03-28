@@ -107,4 +107,5 @@ export type {
 	CustomChatModelConfiguration,
 	CHAT_MESSAGE_TYPE,
 	MODEL_CONFIG_ID,
+	CHAT_MODEL_ID,
 };
