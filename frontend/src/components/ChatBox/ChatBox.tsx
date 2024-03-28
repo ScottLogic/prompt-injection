@@ -9,6 +9,7 @@ import { ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 import { chatService } from '@src/service';
+import { makeChatMessageFromDTO } from '@src/service/chatService';
 
 import ChatBoxFeed from './ChatBoxFeed';
 import ChatBoxInput from './ChatBoxInput';
@@ -66,7 +67,9 @@ function ChatBox({
 	}, [recalledMessageReverseIndex]);
 
 	function processChatResponse(response: ChatResponse) {
-		const newChatMessages = response.newChatMessages;
+		const newChatMessages = response.newChatMessages.map((chatMessageDTO) =>
+			makeChatMessageFromDTO(chatMessageDTO)
+		);
 		console.log(newChatMessages);
 
 		const transformedMessageInfo = response.transformedMessageInfo;
