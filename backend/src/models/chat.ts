@@ -17,24 +17,23 @@ enum CHAT_MODELS {
 	GPT_3_5_TURBO_16K_0613 = 'gpt-3.5-turbo-16k-0613',
 }
 
-enum MODEL_CONFIG {
-	TEMPERATURE = 'temperature',
-	TOP_P = 'topP',
-	FREQUENCY_PENALTY = 'frequencyPenalty',
-	PRESENCE_PENALTY = 'presencePenalty',
-}
-
-interface ChatModel {
+type ChatModel = {
 	id: CHAT_MODELS;
-	configuration: ChatModelConfiguration;
-}
+	configuration: ChatModelConfigurations;
+};
 
-interface ChatModelConfiguration {
-	temperature: number;
-	topP: number;
-	frequencyPenalty: number;
-	presencePenalty: number;
-}
+const modelConfigIds = [
+	'temperature',
+	'topP',
+	'frequencyPenalty',
+	'presencePenalty',
+] as const;
+
+type MODEL_CONFIG_ID = (typeof modelConfigIds)[number];
+
+type ChatModelConfigurations = {
+	[key in MODEL_CONFIG_ID]: number;
+};
 
 interface DefenceReport {
 	blockedReason: string | null;
@@ -121,7 +120,7 @@ export type {
 	ChatGptReply,
 	ChatMalicious,
 	ChatModel,
-	ChatModelConfiguration,
+	ChatModelConfigurations,
 	ChatResponse,
 	LevelHandlerResponse,
 	ChatHttpResponse,
@@ -130,5 +129,6 @@ export type {
 	ToolCallResponse,
 	MessageTransformation,
 	SingleDefenceReport,
+	MODEL_CONFIG_ID,
 };
-export { CHAT_MODELS, MODEL_CONFIG, defaultChatModel };
+export { CHAT_MODELS, defaultChatModel, modelConfigIds };
