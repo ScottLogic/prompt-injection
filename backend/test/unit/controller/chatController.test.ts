@@ -11,12 +11,10 @@ import { Response } from 'express';
 import {
 	handleAddInfoToChatHistory,
 	handleChatToGPT,
-	handleClearChatHistory,
 } from '@src/controller/chatController';
 import { detectTriggeredInputDefences, transformMessage } from '@src/defence';
 import { OpenAiAddInfoToChatHistoryRequest } from '@src/models/api/OpenAiAddInfoToChatHistoryRequest';
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
-import { OpenAiClearRequest } from '@src/models/api/OpenAiClearRequest';
 import {
 	DefenceReport,
 	ChatResponse,
@@ -951,52 +949,5 @@ describe('handleAddInfoToChatHistory', () => {
 
 		expect(res.status).toHaveBeenCalledWith(400);
 		expect(req.session.levelState[0].chatHistory).toEqual(chatHistory);
-	});
-});
-
-describe('handleClearChatHistory', () => {
-	function openAiClearRequestMock(
-		level?: LEVEL_NAMES,
-		chatHistory?: ChatMessage[]
-	) {
-		return {
-			body: {
-				level: level ?? undefined,
-			},
-			session: {
-				levelState: [
-					{
-						chatHistory: chatHistory ?? [],
-					},
-				],
-			},
-		} as OpenAiClearRequest;
-	}
-
-	const chatHistory: ChatMessage[] = [
-		{
-			completion: { role: 'system', content: 'You are a helpful chatbot' },
-			chatMessageType: 'SYSTEM',
-		},
-		{
-			completion: { role: 'assistant', content: 'Hello human' },
-			chatMessageType: 'BOT',
-		},
-	];
-	test('GIVEN valid level WHEN handleClearChatHistory called THEN it sets chatHistory to empty', () => {
-		const req = openAiClearRequestMock(LEVEL_NAMES.LEVEL_1, chatHistory);
-		const res = responseMock();
-		handleClearChatHistory(req, res);
-		expect(req.session.levelState[0].chatHistory.length).toEqual(0);
-	});
-
-	test('GIVEN invalid level WHEN handleClearChatHistory called THEN returns 400 ', () => {
-		const req = openAiClearRequestMock(undefined, chatHistory);
-
-		const res = responseMock();
-
-		handleClearChatHistory(req, res);
-
-		expect(res.status).toHaveBeenCalledWith(400);
 	});
 });

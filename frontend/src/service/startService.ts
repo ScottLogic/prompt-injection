@@ -1,4 +1,4 @@
-import { StartReponse } from '@src/models/combined';
+import { StartResponse } from '@src/models/apiResponse';
 
 import { sendRequest } from './backendService';
 import { getChatMessagesFromDTOResponse } from './chatService';
@@ -17,7 +17,7 @@ async function start(level: number) {
 		chatHistory,
 		systemRoles,
 		chatModel,
-	} = (await response.json()) as StartReponse;
+	} = (await response.json()) as StartResponse;
 
 	return {
 		emails,
