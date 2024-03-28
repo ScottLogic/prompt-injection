@@ -1,6 +1,7 @@
 .level-mission-info-banner {
 	display: flex;
 	gap: 1.5rem;
+	justify-content: space-between;
 	align-items: center;
 	padding: 0.5rem 1rem;
 	background-color: var(--level-banner-background-colour);
@@ -15,7 +16,7 @@
 }
 
 .level-title-area {
-	margin: 1rem 0;
+	margin: 0;
 	font-weight: 800;
 	font-size: 1.875rem;
 	white-space: nowrap;
@@ -55,10 +56,12 @@
 @media (width < 62.5rem) {
 	.level-mission-info-banner {
 		gap: 1rem;
+		padding: 0.5rem;
 	}
 
 	.level-mission-info-banner .banner-button-container {
 		flex-direction: column;
+		align-items: flex-end;
 	}
 
 	.level-mission-info-banner .themed-button {
