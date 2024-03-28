@@ -1,62 +1,99 @@
-# prompt-injection
+# ![SpyLogic Avatar](./frontend/src/assets/images/BotAvatarDefault.svg) Welcome to SpyLogic
 
 ## Introduction
 
-Welcome to the Scott Logic prompt injection open source project!
-As generative AI and LLMs become more prevalent, it becomes more important to learn about the dangers of prompt injection.
-This project aims to teach people about prompt injection attacks that can be used on generative AI, and how to defend against such attacks.
+Welcome to the open source Scott Logic prompt injection playground!
 
-This project is presented in two modes:
+As generative AI and LLMs are becoming more prevalent, it is important to learn about the weaknesses inherent to
+generative AI models. We have built an application called **SpyLogic** to teach people in a fun way about prompt
+injection attacks, and how to defend against them.
+
+SpyLogic is presented in two modes:
 
 ### Story mode
 
-Go undercover and use prompt injection attacks on ScottBrewBot, a clever but flawed generative AI bot. Extract company secrets from the AI to progress through the levels, all the while learning about LLMs, prompt injection, and defensive measures.
+Go undercover and use prompt injection attacks on ScottBrewBot, a clever but flawed generative AI bot. Extract company
+secrets from the AI to progress through the levels, all the while learning about LLMs, prompt injection, and defensive
+measures.
 
 ### Sandbox mode
 
-Activate and configure a number of different prompt injection defence measures to create your own security system. Then talk to the AI and try to crack it!
+Activate and configure a number of different prompt injection defence measures to create your own security system. Then
+talk to the AI and try to crack it!
 
 ## Installation
-Ensure you have Node v18+ installed. Clone this repo and run 
+
+Minimum requirement: Node v18
 
 ```bash
 npm ci
 ```
 
-## Setup
+## Setup Local Environment
 
-### Environment variables
+To run locally, a few environment variables must be defined. We are using [dotenv](https://github.com/motdotla/dotenv)
+to load local `.env` files.
 
-#### Backend
+_Note: these files are deliberately gitignored, as they will contain secrets! Never commit them._
 
-1. Copy the example environment file [.env.example](backend/.env.example) in the backend directory and rename it to `.env`.
-1. Replace the `OPENAI_API_KEY` value in the `.env` file with your [OpenAI API key](https://platform.openai.com/account/api-keys).
-1. Replace the `SESSION_SECRET` value with a [random UUID](https://www.uuidgenerator.net/).
+### API
 
-#### Frontend
+1. In the backend directory, copy file [.env.example](backend/.env.example) and name the copy `.env`, then open for
+   editing
+2. Set value of `OPENAI_API_KEY` to your [OpenAI API key](https://platform.openai.com/account/api-keys)
+3. Set value of `SESSION_SECRET` to a [random UUID](https://www.uuidgenerator.net/)
 
-1. Copy the example environment file [.env.example](frontend/.env.example) in the frontend directory and rename it to `.env`.
-1. If you've changed the default port for running the API, adjust the `VITE_BACKEND_URL` value accordingly.
+### UI
+
+1. In the frontend directory, copy file [.env.example](frontend/.env.example) and name the copy `.env`
+2. If you've changed the default port for running the server, modify the value of `VITE_BACKEND_URL` accordingly
 
 ## Run
 
-### Backend
+### Local
+
+It is easiest to host both API and UI through the server. From project root:
 
 ```bash
-npm run start:api
+npm run build
+npm start
 ```
 
-### Frontend
+Alternatively, to run in Docker we have provided a [Compose file](./compose.yaml) and npm scripts for convenience:
 
 ```bash
-npm run start:ui
+# Run container - image will be built first time this is run, so be patient
+npm run docker:start
+
+# Tail the server logs
+npm run docker:logs
+
+# Stop the container
+npm run docker:stop
 ```
 
-Note that this project also includes a VS Code launch file, to allow running API and UI directly from the IDE.
+In either case you will need the `backend/.env` file, as mentioned above.
 
-## Development
+### Remote
 
-For development instructions, see the [frontend](frontend/README.md) and [backend](backend/README.md) READMEs.
+For those wishing to host the application in their own infrastructure, we have provided two Dockerfiles:
+
+1. [Dockerfile](./backend/Dockerfile) in the backend directory will generate an image for running just the API. If you
+   intend to deploy to the cloud, this is the one to use.
+2. [prodlite.Dockerfile](./prodlite.Dockerfile) in the root directory will generate an image hosting UI and API from the
+   same server, for convenience. This will get you up and running as quickly as possible.
+
+In either case, you will need to provide environment vars `OPENAI_API_KEY` and `SESSION_SECRET` (as described in
+[Setup Environment](#setup-local-environment) above).
+
+Please note server-side session storage is currently in-memory, so if you wish to scale the API you will either need to
+enable sticky load-balancing, or, modify the code to use a shared storage solution - refer to
+[Express-Session](https://www.npmjs.com/package/express-session#compatible-session-stores) for the various options.
+
+## Develop
+
+For all the hot reloading and React DevTools comforts, you'll want to run UI and API separately in dev mode.
+See the [frontend](frontend/README.md) and [backend](backend/README.md) READMEs for instructions.
 
 ## Contributing
 
@@ -64,7 +101,7 @@ For development instructions, see the [frontend](frontend/README.md) and [backen
 
 Thank you for considering contributing to this open source project!
 
-Please read the our [contributing guide](CONTRIBUTING.md) and our [code of conduct](CODE_OF_CONDUCT.md) before contributing.
+Please read the our [contributing guide](CONTRIBUTING.md) and our [code of conduct](CODE_OF_CONDUCT.md) first.
 
 ## License
 
