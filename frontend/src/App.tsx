@@ -104,8 +104,13 @@ function App() {
 
 	// set the start level for a user who clicks beginner/expert
 	function setStartLevel(startLevel: LEVEL_NAMES) {
-		setCurrentLevel(startLevel);
-		openInformationOverlay();
+		if (currentLevel !== startLevel) {
+			// Changing level triggers info overlay: wait for that to avoid flash-of-wrong-level
+			setCurrentLevel(startLevel);
+		} else {
+			// Same level will not trigger info overlay, so must open manually
+			openInformationOverlay();
+		}
 	}
 
 	return (

@@ -232,23 +232,23 @@ function MainComponent({
 	}
 
 	async function setDefenceToggle(defence: Defence) {
-		await defenceService.toggleDefence(
+		const chatInfoMessage = await defenceService.toggleDefence(
 			defence.id,
 			defence.isActive,
 			currentLevel
 		);
 
-		const newDefenceDetails = defences.map((defenceDetail) => {
-			if (defenceDetail.id === defence.id) {
-				defenceDetail.isActive = !defence.isActive;
-				const action = defenceDetail.isActive ? 'activated' : 'deactivated';
-				const infoMessage = `${defence.name} defence ${action}`;
-				addInfoMessage(infoMessage.toLowerCase());
-			}
-			return defenceDetail;
-		});
+		if (chatInfoMessage) {
+			addChatMessage(chatInfoMessage);
+			const newDefenceDetails = defences.map((defenceDetail) => {
+				if (defenceDetail.id === defence.id) {
+					defenceDetail.isActive = !defence.isActive;
+				}
+				return defenceDetail;
+			});
 
-		setDefences(newDefenceDetails);
+			setDefences(newDefenceDetails);
+		}
 	}
 
 	async function setDefenceConfiguration(

@@ -26,17 +26,19 @@ function LevelMissionInfoBanner({
 					__html: LEVELS[currentLevel].missionInfoShort ?? '',
 				}}
 			></p>
-			<ThemedButton onClick={openOverlay}>
-				<span className="info-icon" aria-hidden="true">
-					i
-				</span>
-				Mission Info
-			</ThemedButton>
-			{isLevelComplete && isLevel3 && (
-				<ThemedButton onClick={openLevelsCompleteOverlay}>
-					Congratulations!
+			<div className="banner-button-container">
+				<ThemedButton onClick={openOverlay}>
+					<span className="info-icon" aria-hidden="true">
+						i
+					</span>
+					Mission Info
 				</ThemedButton>
-			)}
+				{isLevelComplete && isLevel3 && (
+					<ThemedButton onClick={openLevelsCompleteOverlay}>
+						Congratulations!
+					</ThemedButton>
+				)}
+			</div>
 		</span>
 	);
 }
