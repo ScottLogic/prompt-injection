@@ -4,18 +4,20 @@ import {
 } from 'openai/resources/chat/completions';
 import { promptTokensEstimate, stringTokens } from 'openai-chat-tokens';
 
+import { CHAT_MODEL_ID } from '@src/models/chat';
 import { chatGptTools } from '@src/openai';
 
 // The size of each model's context window in number of tokens. https://platform.openai.com/docs/models
-const chatModelMaxTokens = {
-	['gpt4-turbo-preview']: 128000,
-	['gpt-4']: 8192,
-	['gpt-4-1106-preview']: 128000,
-	['gpt-4-0613']: 8192,
-	['gpt-3.5-turbo']: 16385,
-	['gpt-3.5-turbo-0613']: 4096, // will be deprecated on June 13th 2024
-	['gpt-3.5-turbo-16k']: 16385, // legacy - points to gpt-3.5-turbo-16k-0613, which will be deprecated
-	['gpt-3.5-turbo-16k-0613']: 16385, // will be deprecated on June 13th 2024
+const chatModelMaxTokens: {
+	[key in CHAT_MODEL_ID]: number;
+} = {
+	'gpt-4': 8192,
+	'gpt-4-1106-preview': 128000,
+	'gpt-4-0613': 8192,
+	'gpt-3.5-turbo': 16385,
+	'gpt-3.5-turbo-0613': 4096, // will be deprecated on June 13th 2024
+	'gpt-3.5-turbo-16k': 16385, // legacy - points to gpt-3.5-turbo-16k-0613, which will be deprecated
+	'gpt-3.5-turbo-16k-0613': 16385, // will be deprecated on June 13th 2024
 };
 
 const TOKENS_PER_TOOL_CALL = 4;
