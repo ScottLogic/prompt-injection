@@ -42,13 +42,13 @@
 
 @media (width < 87.5rem) {
 	.overlay-header {
-		padding: 0.125rem;
+		padding: 0.5rem 0.75rem;
 	}
 }
 
 @media (width < 62.5rem) {
 	.overlay-header {
-		padding: 0 0.125rem;
+		padding: 0 0.5rem;
 	}
 
 	.overlay-header button {
