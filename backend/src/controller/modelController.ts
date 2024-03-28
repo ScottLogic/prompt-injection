@@ -14,13 +14,14 @@ function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 
 	if (model === undefined) {
 		res.status(400).send();
-	} else {
-		const configuration =
-			req.body.configuration ?? req.session.chatModel.configuration;
-		req.session.chatModel = { id: model, configuration };
-		console.debug('GPT model set:', JSON.stringify(req.session.chatModel));
-		res.status(200).send();
+		return;
 	}
+
+	const configuration =
+		req.body.configuration ?? req.session.chatModel.configuration;
+	req.session.chatModel = { id: model, configuration };
+	console.debug('GPT model set:', JSON.stringify(req.session.chatModel));
+	res.status(200).send();
 }
 
 function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
