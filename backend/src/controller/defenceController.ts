@@ -59,7 +59,21 @@ function handleDefenceActivation(req: DefenceActivateRequest, res: Response) {
 		defenceId,
 		currentDefences
 	);
-	res.status(200).send();
+
+	const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
+	const chatInfoMessage = {
+		infoMessage: `${displayedDefenceId} defence activated`,
+		chatMessageType: 'GENERIC_INFO',
+	} as ChatInfoMessage;
+
+	req.session.levelState[level].chatHistory = pushMessageToHistory(
+		req.session.levelState[level].chatHistory,
+		chatInfoMessage
+	);
+
+	res.send({
+		chatInfoMessage,
+	});
 }
 
 function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
@@ -96,7 +110,21 @@ function handleDefenceDeactivation(req: DefenceActivateRequest, res: Response) {
 		defenceId,
 		currentDefences
 	);
-	res.status(200).send();
+
+	const displayedDefenceId = defenceId.replace(/_/g, ' ').toLowerCase();
+	const chatInfoMessage = {
+		infoMessage: `${displayedDefenceId} defence deactivated`,
+		chatMessageType: 'GENERIC_INFO',
+	} as ChatInfoMessage;
+
+	req.session.levelState[level].chatHistory = pushMessageToHistory(
+		req.session.levelState[level].chatHistory,
+		chatInfoMessage
+	);
+
+	res.send({
+		chatInfoMessage,
+	});
 }
 
 function handleConfigureDefence(req: DefenceConfigureRequest, res: Response) {
