@@ -26,25 +26,43 @@
 .document-popup-inner {
 	display: flex;
 	flex-direction: column;
+	justify-content: center;
+	height: 85vh;
 }
 
 .view-documents-main {
 	position: relative;
 	display: flex;
+	flex-grow: 1;
 	flex-direction: column;
 	box-sizing: border-box;
-	height: 75vh;
-	padding: 2rem;
+	overflow: hidden;
+	padding: 2rem 3rem;
 	border: 0.1875rem solid var(--main-border-colour);
 	background: var(--main-background);
 	color: var(--main-text-colour);
-	aspect-ratio: 7/8;
 }
 
 .document-viewer-container {
 	flex-grow: 1;
 	overflow-y: auto;
+	width: 32.5rem;
 	background-color: var(--document-viewer-background-colour);
+}
+
+@media (width < 87.5rem) {
+	.view-documents-main {
+		padding: 1.5rem 2rem;
+	}
+}
+
+@media (width < 62.5rem) {
+	.document-popup-inner {
+		height: 95vh;
+	}
+	.view-documents-main {
+		padding: 1rem 1.5rem;
+	}
 }
 
 #react-doc-viewer {

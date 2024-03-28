@@ -6,11 +6,16 @@
 	padding-bottom: 0.25rem;
 	color: var(--main-text-colour);
 }
+@media (width < 87.5rem) {
+	.view-documents-nav {
+		gap: 1rem;
+	}
+}
 
-.view-documents-nav .info {
-	margin: 0;
-	padding: 0;
-	font-size: 1.25rem;
+@media (width < 62.5rem) {
+	.view-documents-nav {
+		gap: 0.75rem;
+	}
 }
 
 .view-documents-nav .button-container {
@@ -21,9 +26,23 @@
 	align-self: stretch;
 }
 
+.view-documents-nav .button-container > * {
+	flex: 1 0 0;
+}
+
+.view-documents-nav .button-container .info {
+	margin: 0;
+	padding: 0;
+	font-size: 1.25rem;
+	text-align: center;
+}
+
+.view-documents-nav .button-container .themed-button-wrapper {
+	flex-grow: 2;
+}
 .view-documents-nav .button-container button {
-	flex: 0 0 30%;
 	white-space: nowrap;
+	width: 100%;
 }
 
 .view-documents-nav .button-container button:focus-visible {
