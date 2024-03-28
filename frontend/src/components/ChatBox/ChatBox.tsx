@@ -66,30 +66,11 @@ function ChatBox({
 	}, [recalledMessageReverseIndex]);
 
 	function processChatResponse(response: ChatResponse) {
-		const newChatMessages = response.newChatMessages.map((chatMessageDTO) =>
-			makeChatMessageFromDTO(chatMessageDTO)
-		);
+		const newChatMessages = response.newChatMessages
+			.map((chatMessageDTO) => makeChatMessageFromDTO(chatMessageDTO))
+			.filter((message) => message.type !== 'USER');
 
-		newChatMessages.forEach((message) => {
-			message.type !== 'USER' && addChatMessage(message);
-		});
-
-		// if (response.isError) {
-		// 	addChatMessage({
-		// 		message: response.reply,
-		// 		type: 'ERROR_MSG',
-		// 	});
-		// } else if (response.defenceReport.isBlocked) {
-		// 	addChatMessage({
-		// 		type: 'BOT_BLOCKED',
-		// 		message: response.defenceReport.blockedReason,
-		// 	});
-		// } else {
-		// 	addChatMessage({
-		// 		type: 'BOT',
-		// 		message: response.reply,
-		// 	});
-		// }
+		newChatMessages.forEach(addChatMessage);
 
 		// update emails
 		addSentEmails(response.sentEmails);
