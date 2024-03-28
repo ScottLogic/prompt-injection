@@ -4,9 +4,9 @@ import 'source-map-support/register';
 
 import {
 	appName,
-	environmentName,
 	resourceDescription,
 	stackName,
+	stageName,
 	ApiStack,
 	AuthStack,
 	CertificateStack,
@@ -27,9 +27,7 @@ const env: Environment = {
 
 const tags = {
 	owner: appName,
-	classification: 'unrestricted',
-	'environment-type': environmentName(app),
-	'keep-alive': '9-5-without-weekends',
+	stage: stageName(app),
 };
 
 /* Stack constructs */

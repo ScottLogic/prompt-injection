@@ -20,7 +20,7 @@ import { Construct } from 'constructs';
 import { join } from 'node:path';
 
 import { ServiceEventLambda } from './lambdas/startStopService';
-import { resourceDescription, resourceName } from './resourceNamingUtils';
+import { resourceDescription, resourceId } from './resourceNamingUtils';
 
 type SchedulerStackProps = StackProps & {
 	fargateService: ApplicationLoadBalancedFargateService;
@@ -31,16 +31,14 @@ export class SchedulerStack extends Stack {
 		super(scope, id, props);
 
 		const { fargateService } = props;
-		const generateResourceName = resourceName(scope);
+		const generateResourceId = resourceId(scope);
 		const generateResourceDescription = resourceDescription(scope);
 
 		// Lambda to bring fargate service up and down
-		const startStopFunctionName = generateResourceName('fargate-switch');
 		const startStopServiceFunction = new NodejsFunction(
 			this,
-			startStopFunctionName,
+			generateResourceId('fargate-switch'),
 			{
-				functionName: startStopFunctionName,
 				description: generateResourceDescription(
 					'Fargate Service start/stop function'
 				),
@@ -65,9 +63,7 @@ export class SchedulerStack extends Stack {
 		);
 
 		// Schedule fargate service up at start of day, down at end
-		const schedulerRoleName = generateResourceName('scheduler-role');
-		const schedulerRole = new Role(this, schedulerRoleName, {
-			roleName: schedulerRoleName,
+		const schedulerRole = new Role(this, generateResourceId('scheduler-role'), {
 			assumedBy: new ServicePrincipal('scheduler.amazonaws.com'),
 		});
 		const lambdaTarget = (operation: ServiceEventLambda['operation']) =>
@@ -81,15 +77,11 @@ export class SchedulerStack extends Stack {
 			timeZone: TimeZone.EUROPE_LONDON,
 		};
 
-		const scheduleGroupName = generateResourceName('fargate-scheduler-group');
-		const scheduleGroup = new Group(this, scheduleGroupName, {
-			groupName: scheduleGroupName,
+		const scheduleGroup = new Group(this, generateResourceId('fargate-scheduler-group'), {
 			removalPolicy: RemovalPolicy.DESTROY,
 		});
 
-		const serverUpScheduleName = generateResourceName('server-up');
-		new Schedule(this, serverUpScheduleName, {
-			scheduleName: serverUpScheduleName,
+		new Schedule(this, generateResourceId('server-up'), {
 			description: generateResourceDescription('Scheduled server-up event'),
 			target: lambdaTarget('start'),
 			group: scheduleGroup,
@@ -99,9 +91,7 @@ export class SchedulerStack extends Stack {
 			}),
 		});
 
-		const serverDownScheduleName = generateResourceName('server-down');
-		new Schedule(this, serverDownScheduleName, {
-			scheduleName: serverDownScheduleName,
+		new Schedule(this, generateResourceId('server-down'), {
 			description: generateResourceDescription('Scheduled server-down event'),
 			target: lambdaTarget('stop'),
 			group: scheduleGroup,

@@ -8,27 +8,25 @@ import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { CfnOutput, Duration, RemovalPolicy, Stack, StackProps, Tags, } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
-import { resourceName } from './resourceNamingUtils';
+import { resourceId } from './resourceNamingUtils';
 
 type AuthStackProps = StackProps & {
 	hostedZone: IHostedZone;
 };
 
 export class AuthStack extends Stack {
-	// TODO Need these in our auth edge lambda! Maybe use ParameterStore?
+	// TODO Need these in our auth edge lambda! Can we use ParameterStore?
 	public readonly userPool: UserPool;
 	public readonly userPoolClient: UserPoolClient;
 
 	constructor(scope: Construct, id: string, props: AuthStackProps) {
 		super(scope, id, props);
 
-		const generateResourceName = resourceName(scope);
+		const generateResourceId = resourceId(scope);
 		const { hostedZone } = props;
 
 		// Cognito UserPool
-		const userPoolName = generateResourceName('userpool');
-		this.userPool = new UserPool(this, userPoolName, {
-			userPoolName,
+		this.userPool = new UserPool(this, generateResourceId('userpool'), {
 			enableSmsRole: false,
 			mfa: Mfa.OFF,
 			signInCaseSensitive: false,
@@ -55,7 +53,7 @@ export class AuthStack extends Stack {
 			Tags.of(this.userPool).add(key, value);
 		});
 
-		new CfnOutput(this, 'UserPool.Identifier', {
+		new CfnOutput(this, 'UserPool.Id', {
 			value: `urn:amazon:cognito:sp:${this.userPool.userPoolId}`,
 		});
 
@@ -63,31 +61,35 @@ export class AuthStack extends Stack {
 		const callbackUrls = logoutUrls.concat(
 			`https://api.${hostedZone.zoneName}/oauth2/idpresponse`
 		);
-		const userPoolClientName = generateResourceName('userpool-client');
-		this.userPoolClient = this.userPool.addClient(userPoolClientName, {
-			userPoolClientName,
-			authFlows: {
-				userSrp: true,
-			},
-			oAuth: {
-				flows: {
-					authorizationCodeGrant: true,
+		this.userPoolClient = this.userPool.addClient(
+			generateResourceId('userpool-client'),
+			{
+				authFlows: {
+					userSrp: true,
 				},
-				scopes: [OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE],
-				callbackUrls,
-				logoutUrls,
-			},
-			accessTokenValidity: Duration.minutes(60),
-			idTokenValidity: Duration.minutes(60),
-			refreshTokenValidity: Duration.days(14),
-			enableTokenRevocation: true,
-			preventUserExistenceErrors: true,
+				oAuth: {
+					flows: {
+						authorizationCodeGrant: true,
+					},
+					scopes: [OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE],
+					callbackUrls,
+					logoutUrls,
+				},
+				accessTokenValidity: Duration.minutes(60),
+				idTokenValidity: Duration.minutes(60),
+				refreshTokenValidity: Duration.days(14),
+				enableTokenRevocation: true,
+				preventUserExistenceErrors: true,
+			}
+		);
+
+		new CfnOutput(this, 'UserPoolClient.Id', {
+			value: this.userPoolClient.userPoolClientId,
 		});
 
-		const userPoolDomainName = generateResourceName('userpool-domain');
-		this.userPool.addDomain(userPoolDomainName, {
+		this.userPool.addDomain(generateResourceId('userpool-domain'), {
 			cognitoDomain: {
-				domainPrefix: userPoolName,
+				domainPrefix: generateResourceId('auth'),
 			},
 		});
 	}

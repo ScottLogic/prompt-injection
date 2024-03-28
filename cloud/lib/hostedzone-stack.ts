@@ -2,7 +2,7 @@ import { HostedZone, IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { Stack, StackProps } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
-import { resourceName } from './resourceNamingUtils';
+import { resourceId } from './resourceNamingUtils';
 
 export class HostedZoneStack extends Stack {
 	public readonly hostedZone: IHostedZone;
@@ -21,7 +21,7 @@ export class HostedZoneStack extends Stack {
 
 		this.hostedZone = HostedZone.fromHostedZoneAttributes(
 			this,
-			resourceName(scope)('hosted-zone'),
+			resourceId(scope)('hosted-zone'),
 			{
 				hostedZoneId: HOSTED_ZONE_ID,
 				zoneName: DOMAIN_NAME,

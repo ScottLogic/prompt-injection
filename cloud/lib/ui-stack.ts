@@ -4,8 +4,10 @@ import {
 	CacheCookieBehavior,
 	CachePolicy,
 	Distribution,
-	OriginAccessIdentity, OriginRequestPolicy,
-	PriceClass, ResponseHeadersPolicy,
+	OriginAccessIdentity,
+	OriginRequestPolicy,
+	PriceClass,
+	ResponseHeadersPolicy,
 	ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin, S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
@@ -16,7 +18,7 @@ import { BlockPublicAccess, Bucket, BucketEncryption, } from 'aws-cdk-lib/aws-s3
 import { Duration, RemovalPolicy, Stack, StackProps, } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
-import { appName, resourceName } from './resourceNamingUtils';
+import { appName, resourceId } from './resourceNamingUtils';
 
 type UiStackProps = StackProps & {
 	certificate: ICertificate;
@@ -27,7 +29,7 @@ export class UiStack extends Stack {
 	constructor(scope: Construct, id: string, props: UiStackProps) {
 		super(scope, id, props);
 
-		const generateResourceName = resourceName(scope);
+		const generateResourceId = resourceId(scope);
 		const { certificate, env, hostedZone } = props;
 		const authDomainName = `auth.${hostedZone.zoneName}`;
 
@@ -37,11 +39,11 @@ export class UiStack extends Stack {
 
 		const cloudfrontOAI = new OriginAccessIdentity(
 			this,
-			generateResourceName('cloudfront-OAI')
+			generateResourceId('cloudfront-OAI')
 		);
 
 		// Host Bucket
-		const bucketName = generateResourceName('host-bucket');
+		const bucketName = generateResourceId('host-bucket');
 		const hostBucket = new Bucket(this, bucketName, {
 			bucketName,
 			blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
@@ -63,10 +65,9 @@ export class UiStack extends Stack {
 		);
 
 		// Main CloudFront distribution
-		const cachePolicyName = generateResourceName('site-cache-policy');
 		const websiteDistribution = new Distribution(
 			this,
-			generateResourceName('site-distribution'),
+			generateResourceId('site-distribution'),
 			{
 				defaultRootObject: 'index.html',
 				certificate,
@@ -83,8 +84,7 @@ export class UiStack extends Stack {
 					origin: new S3Origin(hostBucket, {
 						originAccessIdentity: cloudfrontOAI,
 					}),
-					cachePolicy: new CachePolicy(this, cachePolicyName, {
-						cachePolicyName,
+					cachePolicy: new CachePolicy(this, generateResourceId('site-cache-policy'), {
 						cookieBehavior: CacheCookieBehavior.allowList(`${appName}.sid`),
 					}),
 					compress: true,
@@ -95,9 +95,14 @@ export class UiStack extends Stack {
 			}
 		);
 
-		// TODO Try with custom userpool domain, instead of distribution?
-		// Cognito proxy distribution
-		const cognitoProxyDistribution = new Distribution(this, generateResourceName('cognito-proxy'), {
+		/*
+		Use a CloudFront distribution to proxy Cognito.
+
+		Turns out a custom userpool domain doesn't work due to CORS failures :(
+		As it happens, Cognito does that by creating a CloudFront distro under the
+		hood, so we're not adding any costs by configuring this manually.
+		*/
+		const cognitoProxyDistribution = new Distribution(this, generateResourceId('cognito-proxy'), {
 			certificate,
 			domainNames: [authDomainName],
 			enableLogging: true,
@@ -119,19 +124,19 @@ export class UiStack extends Stack {
 		const authTarget = RecordTarget.fromAlias(
 			new CloudFrontTarget(cognitoProxyDistribution)
 		);
-		new ARecord(this, generateResourceName('arecord-cfront'), {
+		new ARecord(this, generateResourceId('arecord-cfront'), {
 			zone: hostedZone,
 			target: websiteTarget,
 			deleteExisting: true,
-			comment: 'DNS A Record for the UI host',
+			comment: 'DNS A Record for UI host',
 		});
-		new AaaaRecord(this, generateResourceName('aaaarecord-cfront'), {
+		new AaaaRecord(this, generateResourceId('aaaarecord-cfront'), {
 			zone: hostedZone,
 			target: websiteTarget,
 			deleteExisting: true,
 			comment: 'DNS AAAA Record for the UI host',
 		});
-		new ARecord(this, generateResourceName('arecord-auth-proxy'), {
+		new ARecord(this, generateResourceId('arecord-auth-proxy'), {
 			zone: hostedZone,
 			recordName: authDomainName,
 			target: authTarget,
