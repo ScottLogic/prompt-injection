@@ -1,26 +1,16 @@
+import { ChatInfoMessageResponse } from '@src/models/apiResponse';
 import {
 	CHAT_MESSAGE_TYPE,
 	ChatMessageDTO,
 	ChatMessage,
 	ChatResponse,
-	MODEL_CONFIG,
+	MODEL_CONFIG_ID,
 } from '@src/models/chat';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import { sendRequest } from './backendService';
 
 const PATH = 'openai/';
-
-async function clearChat(level: number) {
-	const response = await sendRequest(`${PATH}clear`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ level }),
-	});
-	return response.status === 200;
-}
 
 async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 	const response = await sendRequest(`${PATH}chat`, {
@@ -75,15 +65,20 @@ async function setGptModel(model: string): Promise<boolean> {
 }
 
 async function configureGptModel(
-	configId: MODEL_CONFIG,
+	configId: MODEL_CONFIG_ID,
 	value: number
-): Promise<boolean> {
+): Promise<ChatMessage | null> {
 	const response = await sendRequest(`${PATH}model/configure`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ configId, value }),
 	});
-	return response.status === 200;
+
+	if (response.status !== 200) return null;
+
+	const { chatInfoMessage } =
+		(await response.json()) as ChatInfoMessageResponse;
+	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
 async function addInfoMessageToChatHistory(
@@ -104,7 +99,6 @@ async function addInfoMessageToChatHistory(
 }
 
 export {
-	clearChat,
 	sendMessage,
 	configureGptModel,
 	setGptModel,

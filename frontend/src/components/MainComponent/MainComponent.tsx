@@ -17,7 +17,6 @@ import { LEVEL_NAMES, LevelSystemRole } from '@src/models/level';
 import {
 	chatService,
 	defenceService,
-	emailService,
 	levelService,
 	resetService,
 	startService,
@@ -155,16 +154,11 @@ function MainComponent({
 		}
 	}
 
-	// for clearing single level progress
 	async function resetLevel() {
-		// reset on the backend
-		await Promise.all([
-			chatService.clearChat(currentLevel),
-			emailService.clearEmails(currentLevel),
-		]);
+		const chatInfoMessage = await resetService.resetLevelProgress(currentLevel);
 
 		resetFrontendState();
-		addResetMessage();
+		setMessages((messages: ChatMessage[]) => [chatInfoMessage, ...messages]);
 	}
 
 	// for going switching level without clearing progress
@@ -294,19 +288,6 @@ function MainComponent({
 		} else {
 			setMessages([welcomeMessage, ...retrievedMessages]);
 		}
-	}
-
-	function addResetMessage() {
-		const resetMessage: ChatMessage = {
-			message: `Level progress reset`,
-			type: 'RESET_LEVEL',
-		};
-		void chatService.addInfoMessageToChatHistory(
-			resetMessage.message,
-			resetMessage.type,
-			currentLevel
-		);
-		setMessages((messages: ChatMessage[]) => [resetMessage, ...messages]);
 	}
 
 	function setChatModelId(modelId: string) {

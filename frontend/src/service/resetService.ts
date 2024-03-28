@@ -1,13 +1,19 @@
-import { LoadLevelResponse } from '@src/models/combined';
+import {
+	LoadLevelResponse,
+	ChatInfoMessageResponse,
+} from '@src/models/apiResponse';
 
 import { sendRequest } from './backendService';
-import { getChatMessagesFromDTOResponse } from './chatService';
+import {
+	getChatMessagesFromDTOResponse,
+	makeChatMessageFromDTO,
+} from './chatService';
 import { getDefencesFromDTOs } from './defenceService';
 
 const PATH = 'reset';
 
 async function resetAllProgress(level: number) {
-	const response = await sendRequest(`${PATH}?level=${level}`, {
+	const response = await sendRequest(`${PATH}/all?level=${level}`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -24,4 +30,17 @@ async function resetAllProgress(level: number) {
 	};
 }
 
-export { resetAllProgress };
+async function resetLevelProgress(level: number) {
+	const response = await sendRequest(`${PATH}/${level}`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+	const { chatInfoMessage } =
+		(await response.json()) as ChatInfoMessageResponse;
+
+	return makeChatMessageFromDTO(chatInfoMessage);
+}
+
+export { resetAllProgress, resetLevelProgress };

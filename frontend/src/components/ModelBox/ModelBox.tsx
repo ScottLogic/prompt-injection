@@ -1,4 +1,4 @@
-import { ChatModel } from '@src/models/chat';
+import { ChatMessage, ChatModel } from '@src/models/chat';
 
 import ModelConfiguration from './ModelConfiguration';
 import ModelSelection from './ModelSelection';
@@ -10,11 +10,13 @@ function ModelBox({
 	setChatModelId,
 	chatModelOptions,
 	addInfoMessage,
+	addChatMessage,
 }: {
 	chatModel?: ChatModel;
 	setChatModelId: (modelId: string) => void;
 	chatModelOptions: string[];
 	addInfoMessage: (message: string) => void;
+	addChatMessage: (chatMessage: ChatMessage) => void;
 }) {
 	return (
 		<div className="model-box">
@@ -26,7 +28,7 @@ function ModelBox({
 			/>
 			<ModelConfiguration
 				chatModel={chatModel}
-				addInfoMessage={addInfoMessage}
+				addChatMessage={addChatMessage}
 			/>
 		</div>
 	);

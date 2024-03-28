@@ -1,10 +1,10 @@
-import { StartReponse } from '@src/models/combined';
+import { StartResponse } from '@src/models/apiResponse';
 
 import { sendRequest } from './backendService';
 import { getChatMessagesFromDTOResponse } from './chatService';
 import { getDefencesFromDTOs } from './defenceService';
 
-const PATH = 'start/';
+const PATH = 'start';
 
 async function start(level: number) {
 	const response = await sendRequest(`${PATH}?level=${level}`, {
@@ -17,7 +17,7 @@ async function start(level: number) {
 		chatHistory,
 		systemRoles,
 		chatModel,
-	} = (await response.json()) as StartReponse;
+	} = (await response.json()) as StartResponse;
 
 	return {
 		emails,

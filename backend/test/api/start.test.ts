@@ -2,13 +2,13 @@ import { beforeAll, describe, expect, it, jest } from '@jest/globals';
 import { OpenAI } from 'openai';
 import request from 'supertest';
 
-import app from '@src/app';
 import { StartResponse } from '@src/models/api/StartGetRequest';
 import { LEVEL_NAMES } from '@src/models/level';
+import app from '@src/server/app';
 
 jest.mock('openai');
 
-const PATH = '/start';
+const PATH = '/api/start';
 
 describe('/start endpoints', () => {
 	const mockListFn = jest.fn<OpenAI.Models['list']>();

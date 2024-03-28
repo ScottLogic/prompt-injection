@@ -1,6 +1,6 @@
 import { DEFAULT_DEFENCES } from '@src/Defences';
+import { ChatInfoMessageResponse } from '@src/models/apiResponse';
 import { ChatMessage } from '@src/models/chat';
-import { ConfigureDefenceResponse } from '@src/models/combined';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -69,7 +69,7 @@ async function configureDefence(
 	if (response.status !== 200) return null;
 
 	const { chatInfoMessage } =
-		(await response.json()) as ConfigureDefenceResponse;
+		(await response.json()) as ChatInfoMessageResponse;
 
 	return makeChatMessageFromDTO(chatInfoMessage);
 }

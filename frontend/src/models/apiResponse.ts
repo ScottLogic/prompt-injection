@@ -3,7 +3,7 @@ import { DefenceDTO } from './defence';
 import { EmailInfo } from './email';
 import { LevelSystemRole } from './level';
 
-type StartReponse = {
+type StartResponse = {
 	emails: EmailInfo[];
 	chatHistory: ChatMessageDTO[];
 	defences?: DefenceDTO[];
@@ -19,8 +19,8 @@ type LoadLevelResponse = {
 	chatModel?: ChatModel;
 };
 
-type ConfigureDefenceResponse = {
+type ChatInfoMessageResponse = {
 	chatInfoMessage: ChatMessageDTO;
 };
 
-export type { StartReponse, LoadLevelResponse, ConfigureDefenceResponse };
+export type { StartResponse, LoadLevelResponse, ChatInfoMessageResponse };
