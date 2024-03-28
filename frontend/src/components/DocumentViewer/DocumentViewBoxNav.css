@@ -30,7 +30,7 @@
 	flex: 1 0 0;
 }
 
-.view-documents-nav .button-container .info {
+.view-documents-nav .button-container .page-info {
 	margin: 0;
 	padding: 0;
 	font-size: 1.25rem;
@@ -54,4 +54,8 @@
 	.button-container
 	button[aria-disabled='true']:focus-visible {
 	background-color: var(--action-button-disabled-background-colour);
+}
+
+.view-documents-nav .file-name {
+	margin: 0;
 }

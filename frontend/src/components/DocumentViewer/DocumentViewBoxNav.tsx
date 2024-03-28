@@ -25,7 +25,7 @@ function DocumentViewBoxNav({
 				<ThemedButton onClick={onPrevious} ariaDisabled={documentIndex <= 0}>
 					<i aria-hidden>◄</i>&nbsp;previous document
 				</ThemedButton>
-				<div className="info">{documentNumber}</div>
+				<div className="page-info">{documentNumber}</div>
 				<ThemedButton
 					onClick={onNext}
 					ariaDisabled={documentIndex >= numberOfDocuments - 1}
@@ -33,7 +33,7 @@ function DocumentViewBoxNav({
 					next document&nbsp;<i aria-hidden>►</i>
 				</ThemedButton>
 			</nav>
-			<p className="info">{documentName}</p>
+			<p className="file-name">{documentName}</p>
 		</div>
 	);
 }
