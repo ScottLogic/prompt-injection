@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
-import { ChatModel } from '@src/models/chat';
+import { CHAT_MODEL_ID, ChatMessage, ChatModel } from '@src/models/chat';
 import { chatService } from '@src/service';
 
 import './ModelSelection.css';
@@ -12,15 +12,15 @@ function ModelSelection({
 	chatModel,
 	setChatModelId,
 	chatModelOptions,
-	addInfoMessage,
+	addChatMessage,
 }: {
 	chatModel?: ChatModel;
-	setChatModelId: (modelId: string) => void;
+	setChatModelId: (modelId: CHAT_MODEL_ID) => void;
 	chatModelOptions: string[];
-	addInfoMessage: (message: string) => void;
+	addChatMessage: (message: ChatMessage) => void;
 }) {
 	// model currently selected in the dropdown
-	const [selectedModel, setSelectedModel] = useState<string | undefined>(
+	const [selectedModel, setSelectedModel] = useState<CHAT_MODEL_ID | undefined>(
 		undefined
 	);
 
@@ -34,11 +34,13 @@ function ModelSelection({
 			const currentSelectedModel = selectedModel;
 			console.log(`selected model: ${currentSelectedModel}`);
 			setIsSettingModel(true);
-			const modelUpdated = await chatService.setGptModel(currentSelectedModel);
+			const chatInfoMessage = await chatService.setGptModel(
+				currentSelectedModel
+			);
 			setIsSettingModel(false);
-			if (modelUpdated) {
+			if (chatInfoMessage) {
 				setErrorChangingModel(false);
-				addInfoMessage(`changed model to ${currentSelectedModel}`);
+				addChatMessage(chatInfoMessage);
 				setChatModelId(currentSelectedModel);
 			} else {
 				setErrorChangingModel(true);
@@ -64,7 +66,7 @@ function ModelSelection({
 									aria-label="model-select"
 									value={selectedModel ?? 0} // default to the first model
 									onChange={(e) => {
-										setSelectedModel(e.target.value);
+										setSelectedModel(e.target.value as CHAT_MODEL_ID);
 									}}
 								>
 									{chatModelOptions.map((model) => (

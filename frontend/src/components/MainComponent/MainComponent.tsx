@@ -5,7 +5,7 @@ import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
 import ResetProgressOverlay from '@src/components/Overlay/ResetProgress';
-import { ChatMessage, ChatModel } from '@src/models/chat';
+import { CHAT_MODEL_ID, ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -290,7 +290,7 @@ function MainComponent({
 		}
 	}
 
-	function setChatModelId(modelId: string) {
+	function setChatModelId(modelId: CHAT_MODEL_ID) {
 		if (!chatModel) {
 			console.error(
 				'You are trying to change the id of the chatModel but it has not been loaded yet'
@@ -364,7 +364,6 @@ function MainComponent({
 				emails={emails}
 				messages={messages}
 				addChatMessage={addChatMessage}
-				addInfoMessage={addInfoMessage}
 				addSentEmails={addSentEmails}
 				resetDefenceConfiguration={(
 					defenceId: DEFENCE_ID,

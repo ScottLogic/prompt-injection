@@ -55,13 +55,18 @@ function getChatMessagesFromDTOResponse(chatMessageDTOs: ChatMessageDTO[]) {
 		.map(makeChatMessageFromDTO);
 }
 
-async function setGptModel(model: string): Promise<boolean> {
+async function setGptModel(model: string): Promise<ChatMessage | null> {
 	const response = await sendRequest(`${PATH}model`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ model }),
 	});
-	return response.status === 200;
+
+	if (response.status !== 200) return null;
+
+	const { chatInfoMessage } =
+		(await response.json()) as ChatInfoMessageResponse;
+	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
 async function configureGptModel(

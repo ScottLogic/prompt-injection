@@ -1,6 +1,6 @@
 import { expect, jest, test, describe } from '@jest/globals';
 
-import { CHAT_MODELS, ChatModel } from '@src/models/chat';
+import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { chatGptSendMessage } from '@src/openai';
 
@@ -54,7 +54,7 @@ describe('OpenAI Integration Tests', () => {
 			},
 		];
 		const chatModel: ChatModel = {
-			id: CHAT_MODELS.GPT_4,
+			id: 'gpt-4',
 			configuration: {
 				temperature: 1,
 				topP: 1,
