@@ -1,10 +1,12 @@
 import { env, exit } from 'node:process';
 
+import { initDocumentVectors } from '@src/document';
+import { getValidModelsFromOpenAI } from '@src/openai';
+
 import app from './app';
-import { initDocumentVectors } from './document';
-import { getValidModelsFromOpenAI } from './openai';
-// by default runs on port 3001
-const port = env.PORT ?? String(3001);
+
+// by default runs on port 3000
+const port = env.PORT ?? String(3000);
 
 app.listen(port, () => {
 	// Set API key from environment variable

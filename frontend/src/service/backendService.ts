@@ -1,7 +1,8 @@
 function getBackendUrl(): string {
 	const url = import.meta.env.VITE_BACKEND_URL;
 	if (!url) throw new Error('VITE_BACKEND_URL env variable not set');
-	return url;
+
+	return url.endsWith('/') ? url : `${url}/`;
 }
 
 function makeUrl(path: string): URL {
