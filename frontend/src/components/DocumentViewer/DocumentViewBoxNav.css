@@ -6,6 +6,7 @@
 	padding-bottom: 0.25rem;
 	color: var(--main-text-colour);
 }
+
 @media (width < 87.5rem) {
 	.view-documents-nav {
 		gap: 1rem;
@@ -40,9 +41,10 @@
 .view-documents-nav .button-container .themed-button-wrapper {
 	flex-grow: 2;
 }
+
 .view-documents-nav .button-container button {
-	white-space: nowrap;
 	width: 100%;
+	white-space: nowrap;
 }
 
 .view-documents-nav .button-container button:focus-visible {

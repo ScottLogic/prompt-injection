@@ -35,8 +35,8 @@
 	display: flex;
 	flex-grow: 1;
 	flex-direction: column;
-	box-sizing: border-box;
 	overflow: hidden;
+	box-sizing: border-box;
 	padding: 2rem 3rem;
 	border: 0.1875rem solid var(--main-border-colour);
 	background: var(--main-background);
@@ -60,6 +60,7 @@
 	.document-popup-inner {
 		height: 95vh;
 	}
+
 	.view-documents-main {
 		padding: 1rem 1.5rem;
 	}
