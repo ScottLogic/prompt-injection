@@ -1,8 +1,9 @@
 .level-mission-info-banner {
 	display: flex;
 	gap: 1.5rem;
+	justify-content: space-between;
 	align-items: center;
-	padding: 0.5rem 1.5rem;
+	padding: 0.5rem 1rem;
 	background-color: var(--level-banner-background-colour);
 	color: var(--level-banner-text-colour);
 	text-align: left;
@@ -15,7 +16,7 @@
 }
 
 .level-title-area {
-	margin: 1rem 0;
+	margin: 0;
 	font-weight: 800;
 	font-size: 1.875rem;
 	white-space: nowrap;
@@ -24,6 +25,11 @@
 .level-mission-info-banner > p {
 	margin: 0;
 	font-size: 1rem;
+}
+
+.level-mission-info-banner .banner-button-container {
+	display: flex;
+	gap: 0.5rem;
 }
 
 .level-mission-info-banner .themed-button {
@@ -38,11 +44,27 @@
 	align-items: center;
 	box-sizing: border-box;
 	height: auto;
-	padding: 0 0.625rem;
+	padding: 0 0.5rem;
 	border-radius: 50%;
 	background-color: var(--action-button-text-colour);
 	color: var(--action-button-background-colour);
 	font: 1rem serif;
 	font-weight: bold;
 	aspect-ratio: 1;
+}
+
+@media (width < 62.5rem) {
+	.level-mission-info-banner {
+		gap: 1rem;
+		padding: 0.5rem;
+	}
+
+	.level-mission-info-banner .banner-button-container {
+		flex-direction: column;
+		align-items: flex-end;
+	}
+
+	.level-mission-info-banner .themed-button {
+		padding: 0.5rem;
+	}
 }
