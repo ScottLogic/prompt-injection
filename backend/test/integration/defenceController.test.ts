@@ -76,9 +76,10 @@ describe('The correct levels can have their defences changed', () => {
 						: levelState
 				);
 
-				expect(res.status).toHaveBeenCalledWith(200);
 				expect(res.send).toHaveBeenCalled();
-				expect(req.session.levelState).toEqual(newLevelState);
+				expect(req.session.levelState[level].defences).toEqual(
+					newLevelState[level].defences
+				);
 			}
 		);
 	});
@@ -139,9 +140,10 @@ describe('The correct levels can have their defences changed', () => {
 
 				handleDefenceDeactivation(req, res);
 
-				expect(res.status).toHaveBeenCalledWith(200);
 				expect(res.send).toHaveBeenCalled();
-				expect(req.session.levelState).toEqual(getInitialLevelStates());
+				expect(req.session.levelState[level].defences).toEqual(
+					getInitialLevelStates()[level].defences
+				);
 			}
 		);
 	});

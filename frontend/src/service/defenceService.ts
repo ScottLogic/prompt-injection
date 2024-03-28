@@ -41,7 +41,7 @@ async function toggleDefence(
 	defenceId: DEFENCE_ID,
 	isActive: boolean,
 	level: LEVEL_NAMES
-): Promise<boolean> {
+): Promise<ChatMessage | null> {
 	const requestPath = isActive ? 'deactivate' : 'activate';
 	const response = await sendRequest(`${PATH}${requestPath}`, {
 		method: 'POST',
@@ -50,7 +50,12 @@ async function toggleDefence(
 		},
 		body: JSON.stringify({ defenceId, level }),
 	});
-	return response.status === 200;
+	if (response.status !== 200) return null;
+
+	const { chatInfoMessage } =
+		(await response.json()) as ChatInfoMessageResponse;
+
+	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
 async function configureDefence(
