@@ -6,7 +6,6 @@ import memoryStoreFactory from 'memorystore';
 import {
 	handleChatToGPT,
 	handleAddInfoToChatHistory,
-	handleClearChatHistory,
 } from './controller/chatController';
 import {
 	handleConfigureDefence,
@@ -14,13 +13,15 @@ import {
 	handleDefenceDeactivation,
 	handleResetDefenceConfigItem,
 } from './controller/defenceController';
-import { handleClearEmails } from './controller/emailController';
 import { handleLoadLevel } from './controller/levelController';
 import {
 	handleConfigureModel,
 	handleSetModel,
 } from './controller/modelController';
-import { handleResetProgress } from './controller/resetController';
+import {
+	handleResetLevel,
+	handleResetProgress,
+} from './controller/resetController';
 import { handleStart } from './controller/startController';
 import { handleTest } from './controller/testController';
 import { defaultChatModel } from './models/chat';
@@ -92,20 +93,17 @@ router.post('/defence/deactivate', handleDefenceDeactivation);
 router.post('/defence/configure', handleConfigureDefence);
 router.post('/defence/resetConfig', handleResetDefenceConfigItem);
 
-// emails
-router.post('/email/clear', handleClearEmails);
-
 // chat
 router.post('/openai/chat', handleChatToGPT);
 router.post('/openai/addInfoToHistory', handleAddInfoToChatHistory);
-router.post('/openai/clear', handleClearChatHistory);
 
 // model configurations
 router.post('/openai/model', handleSetModel);
 router.post('/openai/model/configure', handleConfigureModel);
 
-// reset progress for all levels
-router.post('/reset', handleResetProgress);
+// reset
+router.post('/reset/all', handleResetProgress);
+router.post('/reset/:level', handleResetLevel);
 
 // Testing endpoints
 router.post('/test/load', handleTest);

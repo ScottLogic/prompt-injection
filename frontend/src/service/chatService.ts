@@ -11,17 +11,6 @@ import { sendRequest } from './backendService';
 
 const PATH = 'openai/';
 
-async function clearChat(level: number) {
-	const response = await sendRequest(`${PATH}clear`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ level }),
-	});
-	return response.status === 200;
-}
-
 async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
 	const response = await sendRequest(`${PATH}chat`, {
 		method: 'POST',
@@ -104,7 +93,6 @@ async function addInfoMessageToChatHistory(
 }
 
 export {
-	clearChat,
 	sendMessage,
 	configureGptModel,
 	setGptModel,
