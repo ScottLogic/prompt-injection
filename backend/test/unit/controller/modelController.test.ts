@@ -37,7 +37,6 @@ describe('handleConfigureModel', () => {
 
 		handleConfigureModel(req, res);
 
-		expect(res.status).toHaveBeenCalledWith(200);
 		expect(req.session.chatModel.configuration.topP).toBe(0.5);
 
 		const expectedInfoMessage = {

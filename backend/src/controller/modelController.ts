@@ -42,7 +42,7 @@ function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 			chatInfoMessage
 		);
 
-	req.res?.status(200).send({ chatInfoMessage });
+	res.send({ chatInfoMessage });
 }
 
 function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
@@ -88,7 +88,7 @@ function handleConfigureModel(req: OpenAiConfigureModelRequest, res: Response) {
 			chatInfoMessage
 		);
 
-	req.res?.status(200).send({ chatInfoMessage });
+	res.send({ chatInfoMessage });
 }
 
 export { handleSetModel, handleConfigureModel };
