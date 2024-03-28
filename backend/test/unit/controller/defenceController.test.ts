@@ -35,7 +35,7 @@ function responseMock() {
 }
 
 describe('handleDefenceActivation', () => {
-	test('WHEN passed sensible parameters THEN activates defence', () => {
+	test('WHEN passed sensible parameters THEN activates defence AND adds info message to history AND returns info message', () => {
 		const mockActivateDefence = activateDefence as jest.MockedFunction<
 			typeof activateDefence
 		>;
@@ -64,6 +64,7 @@ describe('handleDefenceActivation', () => {
 				],
 			},
 		} as DefenceActivateRequest;
+		const res = responseMock();
 
 		const configuredDefences: Defence[] = [
 			{
@@ -74,7 +75,7 @@ describe('handleDefenceActivation', () => {
 		];
 		mockActivateDefence.mockReturnValueOnce(configuredDefences);
 
-		handleDefenceActivation(req, responseMock());
+		handleDefenceActivation(req, res);
 
 		expect(mockActivateDefence).toHaveBeenCalledTimes(1);
 		expect(mockActivateDefence).toHaveBeenCalledWith(
@@ -90,6 +91,17 @@ describe('handleDefenceActivation', () => {
 		expect(req.session.levelState[LEVEL_NAMES.SANDBOX].defences).toEqual(
 			configuredDefences
 		);
+
+		const expectedChatInfoMessage = {
+			infoMessage: 'prompt evaluation llm defence activated',
+			chatMessageType: 'GENERIC_INFO',
+		} as ChatInfoMessage;
+		expect(
+			req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory.at(-1)
+		).toEqual(expectedChatInfoMessage);
+		expect(res.send).toHaveBeenCalledWith({
+			chatInfoMessage: expectedChatInfoMessage,
+		});
 	});
 
 	test('WHEN missing defenceId THEN does not activate defence', () => {
@@ -201,7 +213,7 @@ describe('handleDefenceActivation', () => {
 });
 
 describe('handleDefenceDeactivation', () => {
-	test('WHEN passed sensible parameters THEN deactivates defence', () => {
+	test('WHEN passed sensible parameters THEN deactivates defence AND adds info message to history AND returns info message', () => {
 		const mockDeactivateDefence = deactivateDefence as jest.MockedFunction<
 			typeof deactivateDefence
 		>;
@@ -230,6 +242,7 @@ describe('handleDefenceDeactivation', () => {
 				],
 			},
 		} as DefenceActivateRequest;
+		const res = responseMock();
 
 		const configuredDefences: Defence[] = [
 			{
@@ -240,7 +253,7 @@ describe('handleDefenceDeactivation', () => {
 		];
 		mockDeactivateDefence.mockReturnValueOnce(configuredDefences);
 
-		handleDefenceDeactivation(req, responseMock());
+		handleDefenceDeactivation(req, res);
 
 		expect(mockDeactivateDefence).toHaveBeenCalledTimes(1);
 		expect(mockDeactivateDefence).toHaveBeenCalledWith(
@@ -256,6 +269,17 @@ describe('handleDefenceDeactivation', () => {
 		expect(req.session.levelState[LEVEL_NAMES.SANDBOX].defences).toEqual(
 			configuredDefences
 		);
+
+		const expectedChatInfoMessage = {
+			infoMessage: 'prompt evaluation llm defence deactivated',
+			chatMessageType: 'GENERIC_INFO',
+		} as ChatInfoMessage;
+		expect(
+			req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory.at(-1)
+		).toEqual(expectedChatInfoMessage);
+		expect(res.send).toHaveBeenCalledWith({
+			chatInfoMessage: expectedChatInfoMessage,
+		});
 	});
 
 	test('WHEN missing defenceId THEN does not deactivate defence', () => {
