@@ -1,3 +1,4 @@
+import { ChatInfoMessageResponse } from '@src/models/apiResponse';
 import {
 	CHAT_MESSAGE_TYPE,
 	ChatMessageDTO,
@@ -5,7 +6,6 @@ import {
 	ChatResponse,
 	MODEL_CONFIG_ID,
 } from '@src/models/chat';
-import { chatInfoMessageResponse } from '@src/models/combined';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import { sendRequest } from './backendService';
@@ -77,7 +77,7 @@ async function configureGptModel(
 	if (response.status !== 200) return null;
 
 	const { chatInfoMessage } =
-		(await response.json()) as chatInfoMessageResponse;
+		(await response.json()) as ChatInfoMessageResponse;
 	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
