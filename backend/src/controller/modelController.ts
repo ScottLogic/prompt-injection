@@ -13,7 +13,7 @@ function handleSetModel(req: OpenAiSetModelRequest, res: Response) {
 	const { model } = req.body;
 
 	if (model === undefined) {
-		res.status(400).send();
+		sendErrorResponse(res, 400, 'Missing model');
 		return;
 	}
 

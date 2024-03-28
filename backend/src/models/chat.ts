@@ -7,18 +7,20 @@ import { ChatInfoMessage, ChatMessage } from './chatMessage';
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
 
-enum CHAT_MODELS {
-	GPT_4_TURBO = 'gpt-4-1106-preview',
-	GPT_4 = 'gpt-4',
-	GPT_4_0613 = 'gpt-4-0613',
-	GPT_3_5_TURBO = 'gpt-3.5-turbo',
-	GPT_3_5_TURBO_0613 = 'gpt-3.5-turbo-0613',
-	GPT_3_5_TURBO_16K = 'gpt-3.5-turbo-16k',
-	GPT_3_5_TURBO_16K_0613 = 'gpt-3.5-turbo-16k-0613',
-}
+const chatModelIds = [
+	'gpt-4-1106-preview',
+	'gpt-4',
+	'gpt-4-0613',
+	'gpt-3.5-turbo',
+	'gpt-3.5-turbo-0613',
+	'gpt-3.5-turbo-16k',
+	'gpt-3.5-turbo-16k-0613',
+] as const;
+
+type CHAT_MODEL_ID = (typeof chatModelIds)[number];
 
 type ChatModel = {
-	id: CHAT_MODELS;
+	id: CHAT_MODEL_ID;
 	configuration: ChatModelConfigurations;
 };
 
@@ -106,7 +108,7 @@ interface LevelHandlerResponse {
 }
 
 const defaultChatModel: ChatModel = {
-	id: CHAT_MODELS.GPT_3_5_TURBO,
+	id: 'gpt-3.5-turbo',
 	configuration: {
 		temperature: 1,
 		topP: 1,
@@ -131,4 +133,5 @@ export type {
 	SingleDefenceReport,
 	MODEL_CONFIG_ID,
 };
-export { CHAT_MODELS, defaultChatModel, modelConfigIds };
+export { defaultChatModel, modelConfigIds };
+export type { CHAT_MODEL_ID as CHAT_MODELS };
