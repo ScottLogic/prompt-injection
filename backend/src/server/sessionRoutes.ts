@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import memoryStoreFactory from 'memorystore';
@@ -6,26 +5,26 @@ import memoryStoreFactory from 'memorystore';
 import {
 	handleChatToGPT,
 	handleAddInfoToChatHistory,
-} from './controller/chatController';
+} from '@src/controller/chatController';
 import {
 	handleConfigureDefence,
 	handleDefenceActivation,
 	handleDefenceDeactivation,
 	handleResetDefenceConfigItem,
-} from './controller/defenceController';
-import { handleLoadLevel } from './controller/levelController';
+} from '@src/controller/defenceController';
+import { handleLoadLevel } from '@src/controller/levelController';
 import {
 	handleConfigureModel,
 	handleSetModel,
-} from './controller/modelController';
+} from '@src/controller/modelController';
 import {
 	handleResetLevel,
 	handleResetProgress,
-} from './controller/resetController';
-import { handleStart } from './controller/startController';
-import { handleTest } from './controller/testController';
-import { defaultChatModel } from './models/chat';
-import { getInitialLevelStates } from './models/level';
+} from '@src/controller/resetController';
+import { handleStart } from '@src/controller/startController';
+import { handleTest } from '@src/controller/testController';
+import { defaultChatModel } from '@src/models/chat';
+import { getInitialLevelStates } from '@src/models/level';
 
 const sessionSigningSecret = process.env.SESSION_SECRET;
 if (!sessionSigningSecret) {
@@ -35,40 +34,45 @@ if (!sessionSigningSecret) {
 	process.exit(1);
 }
 
-const router = express.Router();
-
-const stage = process.env.NODE_ENV;
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+const stage = process.env.NODE_ENV || 'development';
 console.log(`env=${stage}`);
-const isProd = stage === 'production';
-const cookieStaleHours = isProd ? 2 : 8;
+const cookieName = process.env.COOKIE_NAME || 'SpyLogic.sid';
+/* eslint-enable @typescript-eslint/prefer-nullish-coalescing */
+
+const isProduction = stage === 'production';
+const cookieStaleHours = Number(process.env.SESSION_EXPIRY_HOURS);
+const defaultSessionTTL = 2;
 const oneHourInMillis = 60 * 60 * 1000;
-const maxAge = oneHourInMillis * cookieStaleHours;
+const maxAge =
+	oneHourInMillis *
+	(Number.isFinite(cookieStaleHours) ? cookieStaleHours : defaultSessionTTL);
+
+const router = express.Router();
 
 router.use(
 	session({
-		name: 'prompt-injection.sid',
+		name: cookieName,
 		resave: false,
 		saveUninitialized: true,
 		secret: sessionSigningSecret,
-		// Session storage: currently in-memory but could use Redis in AWS
+		// In-memory session storage means single instance or sticky sessions!
+		// There are scalable alternatives:
+		// https://www.npmjs.com/package/express-session#compatible-session-stores
 		store: new (memoryStoreFactory(session))({
 			checkPeriod: oneHourInMillis,
 		}),
-		proxy: isProd,
+		// Trust proxy servers in production, else secure cookies won't work
+		proxy: isProduction,
 		cookie: {
 			maxAge,
 			/*
 				https://developer.mozilla.org/en-US/blog/goodbye-third-party-cookies/
-				Now that browsers have begun clamping down on non-secure Cookies, we
-				need to set secure=true in prod, until we can put Route53 in front of both
-				UI and API and get rid of APIGateway entirely. The showstopper is that
-				APIGateway is not adding Forwarded headers correctly, so the (secure)
-				session Cookie is no longer working in Prod.
-				See
-				https://repost.aws/questions/QUtBHMaz7IQ6aM4RCBMnJvgw/why-does-apigw-http-api-use-forwarded-header-while-other-services-still-use-x-forwarded-headers
+				Now browsers have begun clamping down on non-secure Cookies, we must
+				set secure=true in production, meaning prod deployments must use https
 			*/
-			sameSite: isProd ? 'none' : 'strict',
-			secure: isProd,
+			sameSite: isProduction ? 'none' : 'strict',
+			secure: isProduction,
 		},
 	})
 );
@@ -107,16 +111,5 @@ router.post('/reset/:level', handleResetLevel);
 
 // Testing endpoints
 router.post('/test/load', handleTest);
-
-// Debugging: log headers in prod for primary routes
-if (isProd) {
-	router.use('/openai', (req, res, next) => {
-		console.log('Request:', req.path, `secure=${req.secure}`, req.headers);
-		res.on('finish', () => {
-			console.log('Response:', req.path, res.getHeaders());
-		});
-		next();
-	});
-}
 
 export default router;
