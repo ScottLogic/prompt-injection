@@ -99,7 +99,8 @@ async function handleChatWithoutDefenceDetection(
 ): Promise<LevelHandlerResponse> {
 	console.log(`User message: '${message}'`);
 
-	const updatedChatHistory = createNewUserMessages(message).reduce(
+	const newMessages = createNewUserMessages(message);
+	const updatedChatHistory = newMessages.reduce(
 		pushMessageToHistory,
 		chatHistory
 	);
@@ -112,6 +113,7 @@ async function handleChatWithoutDefenceDetection(
 
 	const updatedChatResponse: ChatHttpResponse = {
 		...chatResponse,
+		newChatMessages: chatResponse.newChatMessages.concat(newMessages),
 		reply: openAiReply.chatResponse.completion?.content?.toString() ?? '',
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 		sentEmails: openAiReply.sentEmails,
@@ -131,10 +133,11 @@ async function handleChatWithDefenceDetection(
 	defences: Defence[]
 ): Promise<LevelHandlerResponse> {
 	const messageTransformation = transformMessage(message, defences);
-	const chatHistoryWithNewUserMessages = createNewUserMessages(
-		message,
-		messageTransformation
-	).reduce(pushMessageToHistory, chatHistory);
+	const newMessages = createNewUserMessages(message, messageTransformation);
+	const chatHistoryWithNewUserMessages = newMessages.reduce(
+		pushMessageToHistory,
+		chatHistory
+	);
 
 	const triggeredInputDefencesPromise = detectTriggeredInputDefences(
 		message,
@@ -184,6 +187,7 @@ async function handleChatWithDefenceDetection(
 
 	const updatedChatResponse: ChatHttpResponse = {
 		...chatResponse,
+		newChatMessages: chatResponse.newChatMessages.concat(newMessages),
 		defenceReport: combinedDefenceReport,
 		openAIErrorMessage: openAiReply.chatResponse.openAIErrorMessage,
 		reply: !combinedDefenceReport.isBlocked && botReply ? botReply : '',
@@ -317,20 +321,27 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	};
 
 	if (updatedChatResponse.defenceReport.isBlocked) {
-		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
+		const blockedMessage = {
 			chatMessageType: 'BOT_BLOCKED',
 			infoMessage:
 				updatedChatResponse.defenceReport.blockedReason ??
 				'block reason unknown',
-		});
+		} as ChatInfoMessage;
+		updatedChatHistory = pushMessageToHistory(
+			updatedChatHistory,
+			blockedMessage
+		);
+		updatedChatResponse.newChatMessages.push(blockedMessage);
 	} else {
-		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
+		const botMessage = {
 			completion: {
 				role: 'assistant',
 				content: updatedChatResponse.reply,
 			},
 			chatMessageType: 'BOT',
-		});
+		} as ChatMessage;
+		updatedChatHistory = pushMessageToHistory(updatedChatHistory, botMessage);
+		updatedChatResponse.newChatMessages.push(botMessage);
 	}
 
 	req.session.levelState[currentLevel].chatHistory = updatedChatHistory;
@@ -340,6 +351,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 	const levelCompleteMessageInChatHistory = req.session.levelState[
 		currentLevel
 	].chatHistory.some((msg) => msg.chatMessageType === 'LEVEL_COMPLETE');
+
 	if (updatedChatResponse.wonLevel && !levelCompleteMessageInChatHistory) {
 		const levelCompleteMessage = {
 			chatMessageType: 'LEVEL_COMPLETE',
@@ -356,7 +368,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		);
 
 		// add level complete message to chat response
-		updatedChatResponse.wonLevelMessage = levelCompleteMessage;
+		updatedChatResponse.newChatMessages.push(levelCompleteMessage);
 	}
 
 	console.log('chatResponse: ', updatedChatResponse);

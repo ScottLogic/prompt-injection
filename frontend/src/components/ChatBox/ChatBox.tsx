@@ -1,6 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 
-import { DEFAULT_DEFENCES } from '@src/Defences';
 import '@src/components/ThemedButtons/ChatButton.css';
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
@@ -70,97 +69,38 @@ function ChatBox({
 		const newChatMessages = response.newChatMessages.map((chatMessageDTO) =>
 			makeChatMessageFromDTO(chatMessageDTO)
 		);
-		console.log(newChatMessages);
 
-		const transformedMessageInfo = response.transformedMessageInfo;
-		const transformedMessage = response.transformedMessage;
-		if (transformedMessageInfo) {
-			addChatMessage({
-				message: transformedMessageInfo,
-				type: 'GENERIC_INFO',
-			});
-		}
-		// add the transformed message to the chat box if it is different from the original message
-		if (transformedMessage) {
-			addChatMessage({
-				message:
-					transformedMessage.preMessage +
-					transformedMessage.message +
-					transformedMessage.postMessage,
-				transformedMessage,
-				type: 'USER_TRANSFORMED',
-			});
-		}
-		if (response.isError) {
-			addChatMessage({
-				message: response.reply,
-				type: 'ERROR_MSG',
-			});
-		} else if (response.defenceReport.isBlocked) {
-			addChatMessage({
-				type: 'BOT_BLOCKED',
-				message: response.defenceReport.blockedReason,
-			});
-		} else {
-			addChatMessage({
-				type: 'BOT',
-				message: response.reply,
-			});
-		}
-		response.defenceReport.alertedDefences.forEach((triggeredDefence) => {
-			// get user-friendly defence name
-			const defenceName = DEFAULT_DEFENCES.find((defence) => {
-				return defence.id === triggeredDefence;
-			})?.name.toLowerCase();
-			if (defenceName) {
-				const alertMsg = `your last message would have triggered the ${defenceName} defence`;
-				addChatMessage({
-					type: 'DEFENCE_ALERTED',
-					message: alertMsg,
-				});
-				// asynchronously add the message to the chat history
-				void chatService.addInfoMessageToChatHistory(
-					alertMsg,
-					'DEFENCE_ALERTED',
-					currentLevel
-				);
-			}
+		newChatMessages.forEach((message) => {
+			message.type !== 'USER' && addChatMessage(message);
 		});
-		// add triggered defences to the chat
-		response.defenceReport.triggeredDefences.forEach((triggeredDefence) => {
-			// get user-friendly defence name
-			const defenceName = DEFAULT_DEFENCES.find((defence) => {
-				return defence.id === triggeredDefence;
-			})?.name.toLowerCase();
-			if (defenceName) {
-				const triggerMsg = `${defenceName} defence triggered`;
-				addChatMessage({
-					type: 'DEFENCE_TRIGGERED',
-					message: triggerMsg,
-				});
-				// asynchronously add the message to the chat history
-				void chatService.addInfoMessageToChatHistory(
-					triggerMsg,
-					'DEFENCE_TRIGGERED',
-					currentLevel
-				);
-			}
-		});
+
+		// if (response.isError) {
+		// 	addChatMessage({
+		// 		message: response.reply,
+		// 		type: 'ERROR_MSG',
+		// 	});
+		// } else if (response.defenceReport.isBlocked) {
+		// 	addChatMessage({
+		// 		type: 'BOT_BLOCKED',
+		// 		message: response.defenceReport.blockedReason,
+		// 	});
+		// } else {
+		// 	addChatMessage({
+		// 		type: 'BOT',
+		// 		message: response.reply,
+		// 	});
+		// }
 
 		// update emails
 		addSentEmails(response.sentEmails);
 
-		if (response.wonLevelMessage) {
+		if (response.wonLevel) {
 			updateNumCompletedLevels(currentLevel);
-			const levelCompleteMessage = chatService.makeChatMessageFromDTO(
-				response.wonLevelMessage
-			);
-			addChatMessage(levelCompleteMessage);
+		}
 
-			// if this is the last level, show the level complete overlay
-			if (currentLevel === LEVEL_NAMES.LEVEL_3) {
-				openLevelsCompleteOverlay();
-			}
+		// if this is the last level, show the level complete overlay
+		if (response.wonLevel && currentLevel === LEVEL_NAMES.LEVEL_3) {
+			openLevelsCompleteOverlay();
 		}
 	}
 
