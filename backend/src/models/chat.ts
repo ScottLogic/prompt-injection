@@ -98,6 +98,7 @@ interface ChatHttpResponse {
 	sentEmails: EmailInfo[];
 	transformedMessageInfo?: string;
 	wonLevelMessage?: ChatInfoMessage;
+	newChatMessages: ChatMessage[];
 }
 
 interface LevelHandlerResponse {

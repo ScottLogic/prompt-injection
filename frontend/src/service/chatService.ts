@@ -81,7 +81,7 @@ async function configureGptModel(
 	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
-async function addInfoMessageToChatHistory(
+async function addInfoMessageToChatHistory( //DELETE ME
 	message: string,
 	chatMessageType: CHAT_MESSAGE_TYPE,
 	level: number

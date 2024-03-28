@@ -210,6 +210,7 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 		isError: false,
 		openAIErrorMessage: null,
 		sentEmails: [],
+		newChatMessages: [],
 	};
 	const { message, currentLevel } = req.body;
 

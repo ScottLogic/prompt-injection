@@ -66,6 +66,9 @@ function ChatBox({
 	}, [recalledMessageReverseIndex]);
 
 	function processChatResponse(response: ChatResponse) {
+		const newChatMessages = response.newChatMessages;
+		console.log(newChatMessages);
+
 		const transformedMessageInfo = response.transformedMessageInfo;
 		const transformedMessage = response.transformedMessage;
 		if (transformedMessageInfo) {
