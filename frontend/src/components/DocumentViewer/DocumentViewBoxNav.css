@@ -7,10 +7,16 @@
 	color: var(--main-text-colour);
 }
 
-.view-documents-nav .info {
-	margin: 0;
-	padding: 0;
-	font-size: 1.25rem;
+@media (width < 87.5rem) {
+	.view-documents-nav {
+		gap: 1rem;
+	}
+}
+
+@media (width < 62.5rem) {
+	.view-documents-nav {
+		gap: 0.75rem;
+	}
 }
 
 .view-documents-nav .button-container {
@@ -21,8 +27,23 @@
 	align-self: stretch;
 }
 
+.view-documents-nav .button-container > * {
+	flex: 1 0 0;
+}
+
+.view-documents-nav .button-container .page-info {
+	margin: 0;
+	padding: 0;
+	font-size: 1.25rem;
+	text-align: center;
+}
+
+.view-documents-nav .button-container .themed-button-wrapper {
+	flex-grow: 2;
+}
+
 .view-documents-nav .button-container button {
-	flex: 0 0 30%;
+	width: 100%;
 	white-space: nowrap;
 }
 
@@ -35,4 +56,8 @@
 	.button-container
 	button[aria-disabled='true']:focus-visible {
 	background-color: var(--action-button-disabled-background-colour);
+}
+
+.view-documents-nav .file-name {
+	margin: 0;
 }
