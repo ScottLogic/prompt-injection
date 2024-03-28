@@ -283,13 +283,32 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 
 	let updatedChatHistory = levelResult.chatHistory;
 
+	if (levelResult.chatResponse.openAIErrorMessage) {
+		const errorMsg = simplifyOpenAIErrorMessage(
+			levelResult.chatResponse.openAIErrorMessage
+		);
+		req.session.levelState[currentLevel].chatHistory = addErrorToChatHistory(
+			updatedChatHistory,
+			errorMsg
+		);
+		handleChatError(res, levelResult.chatResponse, errorMsg, 500);
+		return;
+	} else if (!levelResult.chatResponse.reply) {
+		const errorMsg = 'Failed to get chatGPT reply';
+		req.session.levelState[currentLevel].chatHistory = addErrorToChatHistory(
+			updatedChatHistory,
+			errorMsg
+		);
+		handleChatError(res, levelResult.chatResponse, errorMsg, 500);
+		return;
+	}
+
 	const totalSentEmails: EmailInfo[] = [
 		...req.session.levelState[currentLevel].sentEmails,
 		...levelResult.chatResponse.sentEmails,
 	];
 
 	const updatedChatResponse: ChatHttpResponse = {
-		...initChatResponse,
 		...levelResult.chatResponse,
 		wonLevel:
 			!levelResult.chatResponse.defenceReport.isBlocked &&
@@ -304,24 +323,6 @@ async function handleChatToGPT(req: OpenAiChatRequest, res: Response) {
 				updatedChatResponse.defenceReport.blockedReason ??
 				'block reason unknown',
 		});
-	} else if (updatedChatResponse.openAIErrorMessage) {
-		const errorMsg = simplifyOpenAIErrorMessage(
-			updatedChatResponse.openAIErrorMessage
-		);
-		req.session.levelState[currentLevel].chatHistory = addErrorToChatHistory(
-			updatedChatHistory,
-			errorMsg
-		);
-		handleChatError(res, updatedChatResponse, errorMsg, 500);
-		return;
-	} else if (!updatedChatResponse.reply) {
-		const errorMsg = 'Failed to get chatGPT reply';
-		req.session.levelState[currentLevel].chatHistory = addErrorToChatHistory(
-			updatedChatHistory,
-			errorMsg
-		);
-		handleChatError(res, updatedChatResponse, errorMsg, 500);
-		return;
 	} else {
 		updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
 			completion: {
