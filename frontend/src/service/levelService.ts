@@ -1,4 +1,4 @@
-import { LoadLevelResponse } from '@src/models/combined';
+import { LoadLevelResponse } from '@src/models/apiResponse';
 
 import { sendRequest } from './backendService';
 import { getChatMessagesFromDTOResponse } from './chatService';
