@@ -4,7 +4,7 @@ import { OpenAI } from 'langchain/llms/openai';
 import { PromptTemplate } from 'langchain/prompts';
 
 import { getDocumentVectors } from './document';
-import { CHAT_MODELS } from './models/chat';
+import { CHAT_MODEL_ID } from './models/chat';
 import { PromptEvaluationChainReply, QaChainReply } from './models/langchain';
 import { LEVEL_NAMES } from './models/level';
 import { getOpenAIKey, getValidOpenAIModels } from './openai';
@@ -30,10 +30,8 @@ function makePromptTemplate(
 	return PromptTemplate.fromTemplate(fullPrompt);
 }
 
-function getChatModel() {
-	return getValidOpenAIModels().includes(CHAT_MODELS.GPT_4)
-		? CHAT_MODELS.GPT_4
-		: CHAT_MODELS.GPT_3_5_TURBO;
+function getChatModel(): CHAT_MODEL_ID {
+	return getValidOpenAIModels().includes('gpt-4') ? 'gpt-4' : 'gpt-3.5-turbo';
 }
 
 function initQAModel(level: LEVEL_NAMES, Prompt: string) {

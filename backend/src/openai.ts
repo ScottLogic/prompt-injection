@@ -9,12 +9,13 @@ import { getQAPromptFromConfig } from './defence';
 import { sendEmail } from './email';
 import { queryDocuments } from './langchain';
 import {
-	CHAT_MODELS,
+	CHAT_MODEL_ID,
 	ChatGptReply,
 	ChatModel,
 	ChatResponse,
 	FunctionCallResponse,
 	ToolCallResponse,
+	chatModelIds,
 } from './models/chat';
 import { ChatMessage } from './models/chatMessage';
 import { QaLlmDefence } from './models/defence';
@@ -84,10 +85,10 @@ const chatGptTools: ChatCompletionTool[] = [
 
 // list of valid chat models for the api key
 const validOpenAiModels = (() => {
-	let validModels: string[] = [];
+	let validModels: CHAT_MODEL_ID[] = [];
 	return {
 		get: () => validModels,
-		set: (models: string[]) => {
+		set: (models: CHAT_MODEL_ID[]) => {
 			validModels = models;
 		},
 	};
@@ -117,8 +118,8 @@ async function getValidModelsFromOpenAI() {
 
 		// get the model ids that are supported by our app. Non-chat models like Dall-e and whisper are not supported.
 		const validModels = models.data
-			.map((model) => model.id)
-			.filter((id) => Object.values(CHAT_MODELS).includes(id as CHAT_MODELS))
+			.map((model) => model.id as CHAT_MODEL_ID)
+			.filter((id) => chatModelIds.includes(id))
 			.sort();
 
 		validOpenAiModels.set(validModels);
@@ -283,7 +284,7 @@ async function chatGptChatCompletion(
 
 function getChatCompletionsInContextWindow(
 	chatHistory: ChatMessage[],
-	gptModel: CHAT_MODELS
+	gptModel: CHAT_MODEL_ID
 ): ChatCompletionMessageParam[] {
 	const completions = chatHistory
 		.map((chatMessage) =>

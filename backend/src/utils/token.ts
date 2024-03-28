@@ -4,18 +4,18 @@ import {
 } from 'openai/resources/chat/completions';
 import { promptTokensEstimate, stringTokens } from 'openai-chat-tokens';
 
-import { CHAT_MODELS } from '@src/models/chat';
 import { chatGptTools } from '@src/openai';
 
 // The size of each model's context window in number of tokens. https://platform.openai.com/docs/models
 const chatModelMaxTokens = {
-	[CHAT_MODELS.GPT_4_TURBO]: 128000,
-	[CHAT_MODELS.GPT_4]: 8192,
-	[CHAT_MODELS.GPT_4_0613]: 8192,
-	[CHAT_MODELS.GPT_3_5_TURBO]: 4097,
-	[CHAT_MODELS.GPT_3_5_TURBO_0613]: 4097,
-	[CHAT_MODELS.GPT_3_5_TURBO_16K]: 16385,
-	[CHAT_MODELS.GPT_3_5_TURBO_16K_0613]: 16385,
+	['gpt4-turbo']: 128000,
+	['gpt-4']: 8192,
+	['gpt-4-1106-preview']: 128000,
+	['gpt-4-0613']: 8192,
+	['gpt-3.5-turbo']: 4097,
+	['gpt-3.5-turbo-0613']: 4097,
+	['gpt-3.5-turbo-16k']: 16385,
+	['gpt-3.5-turbo-16k-0613']: 16385,
 };
 
 const TOKENS_PER_TOOL_CALL = 4;

@@ -133,5 +133,5 @@ export type {
 	SingleDefenceReport,
 	MODEL_CONFIG_ID,
 };
-export { defaultChatModel, modelConfigIds };
-export type { CHAT_MODEL_ID as CHAT_MODELS };
+export { defaultChatModel, modelConfigIds, chatModelIds };
+export type { CHAT_MODEL_ID };
