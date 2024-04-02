@@ -1,8 +1,12 @@
 import { expect, jest, test, describe } from '@jest/globals';
 import { Response } from 'express';
 
-import { handleConfigureModel } from '@src/controller/modelController';
+import {
+	handleConfigureModel,
+	handleSetModel,
+} from '@src/controller/modelController';
 import { OpenAiConfigureModelRequest } from '@src/models/api/OpenAiConfigureModelRequest';
+import { OpenAiSetModelRequest } from '@src/models/api/OpenAiSetModelRequest';
 import { modelConfigIds } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
@@ -13,6 +17,64 @@ function responseMock() {
 		status: jest.fn().mockReturnThis(),
 	} as unknown as Response;
 }
+
+describe('handleSetModel', () => {
+	test('WHEN passed sensible parameters THEN sets model AND adds info message to chat history AND responds with info message', () => {
+		const req = {
+			body: {
+				model: 'gpt-4',
+			},
+			session: {
+				chatModel: {
+					id: 'gpt-3.5-turbo',
+				},
+				levelState: [{}, {}, {}, { chatHistory: [] } as unknown as LevelState],
+			},
+		} as OpenAiSetModelRequest;
+		const res = responseMock();
+
+		handleSetModel(req, res);
+
+		expect(req.session.chatModel.id).toBe('gpt-4');
+
+		const expectedInfoMessage = {
+			infoMessage: 'changed model to gpt-4',
+			chatMessageType: 'GENERIC_INFO',
+		} as ChatMessage;
+		expect(
+			req.session.levelState[LEVEL_NAMES.SANDBOX].chatHistory.at(-1)
+		).toEqual(expectedInfoMessage);
+		expect(res.send).toHaveBeenCalledWith({
+			chatInfoMessage: expectedInfoMessage,
+		});
+	});
+
+	test('WHEN missing model THEN does not set model', () => {
+		const req = {
+			body: {},
+		} as OpenAiSetModelRequest;
+		const res = responseMock();
+
+		handleSetModel(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith('Missing model');
+	});
+
+	test('WHEN model is invalid THEN does not set model', () => {
+		const req = {
+			body: {
+				model: 'invalid model',
+			},
+		} as unknown as OpenAiSetModelRequest;
+		const res = responseMock();
+
+		handleSetModel(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.send).toHaveBeenCalledWith('Invalid model');
+	});
+});
 
 describe('handleConfigureModel', () => {
 	test('WHEN passed sensible parameters THEN configures model AND adds info message to chat history AND responds with info message', () => {
@@ -37,7 +99,6 @@ describe('handleConfigureModel', () => {
 
 		handleConfigureModel(req, res);
 
-		expect(res.status).toHaveBeenCalledWith(200);
 		expect(req.session.chatModel.configuration.topP).toBe(0.5);
 
 		const expectedInfoMessage = {

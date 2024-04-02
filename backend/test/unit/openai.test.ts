@@ -42,12 +42,7 @@ describe('getValidModelsFromOpenAI', () => {
 			{ id: 'da-vinci-1' },
 			{ id: 'da-vinci-2' },
 		];
-		const expectedValidModels = [
-			'gpt-3.5-turbo',
-			'gpt-3.5-turbo-0613',
-			'gpt-4',
-			'gpt-4-0613',
-		];
+		const expectedValidModels = ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-0613'];
 
 		mockListFn.mockResolvedValueOnce({
 			data: mockModelList,
