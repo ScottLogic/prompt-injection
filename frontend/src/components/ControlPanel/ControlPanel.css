@@ -50,3 +50,8 @@
 .control-panel .config-container > .details-content {
 	margin: 0;
 }
+
+.control-panel .document-view-button {
+	width: 100%;
+	height: 2.5rem;
+}
