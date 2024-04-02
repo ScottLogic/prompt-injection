@@ -1,7 +1,7 @@
 import ChatBox from '@src/components/ChatBox/ChatBox';
 import ControlPanel from '@src/components/ControlPanel/ControlPanel';
 import EmailBox from '@src/components/EmailBox/EmailBox';
-import { ChatMessage, ChatModel } from '@src/models/chat';
+import { CHAT_MODEL_ID, ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -22,7 +22,6 @@ function MainBody({
 	chatModels,
 	setChatModelId,
 	addChatMessage,
-	addInfoMessage,
 	addSentEmails,
 	resetDefenceConfiguration,
 	toggleDefence,
@@ -37,10 +36,9 @@ function MainBody({
 	emails: EmailInfo[];
 	messages: ChatMessage[];
 	chatModel?: ChatModel;
-	setChatModelId: (modelId: string) => void;
+	setChatModelId: (modelId: CHAT_MODEL_ID) => void;
 	chatModels: string[];
 	addChatMessage: (message: ChatMessage) => void;
-	addInfoMessage: (message: string) => void;
 	addSentEmails: (emails: EmailInfo[]) => void;
 	resetDefenceConfiguration: (
 		defenceId: DEFENCE_ID,
@@ -70,7 +68,6 @@ function MainBody({
 					resetDefenceConfiguration={resetDefenceConfiguration}
 					setDefenceConfiguration={setDefenceConfiguration}
 					openDocumentViewer={openDocumentViewer}
-					addInfoMessage={addInfoMessage}
 					addChatMessage={addChatMessage}
 				/>
 			</div>
