@@ -21,6 +21,12 @@ measures.
 Activate and configure a number of different prompt injection defence measures to create your own security system. Then
 talk to the AI and try to crack it!
 
+## OpenAI
+
+This app is build using the OpenAI API. To use it you will need to have an [OpenAI](https://openai.com/) account, and that account must have credit! You can check your credit on the [billing page](https://platform.openai.com/account/billing/overview).
+
+$5 of credit is issued to every new free acount, however this expires after 3 months ([true in July 2023](https://community.openai.com/t/does-even-today-openai-provides-free-api-credits/289938)). Note: When you verify a new account, you do so with a phone number. To gain free credits, you will need to use a phone number that has not yet verified an account. See [OpenAI Pricing](https://openai.com/pricing) for more information.
+
 ## Installation
 
 Minimum requirement: Node v18
