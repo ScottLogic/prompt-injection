@@ -10,7 +10,7 @@ function SentEmail({ emailDetails }: { emailDetails: EmailInfo }) {
       <div className="sent-email-subject">
         <b>Subject:</b> {emailDetails.subject}
       </div>
-      <div className="sent-email-divider"></div>
+      <hr />
       <div className="sent-email-content">{emailDetails.content}</div>
     </div>
   );

@@ -25,6 +25,7 @@ function LevelsComplete({
         <h1>Congratulations!</h1>
         <div className="content">
           <MissionDialogue dialogueLines={managerDialogue} />
+          <hr />
           <p>
             You&apos;ve completed the story mode! You can stay here and continue
             to play with the levels, or you can move onto Sandbox mode where you
