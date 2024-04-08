@@ -5,11 +5,9 @@ import "./MissionInformation.css";
 
 function MissionInformation({ currentLevel }: { currentLevel: LEVEL_NAMES }) {
   return (
-    <div>
+    <div className="mission-info">
       <h1> Mission Information </h1>
-      <div id="mission-info">
-        <p>{LEVELS[currentLevel].missionInfoLong}</p>
-      </div>
+      <p>{LEVELS[currentLevel].missionInfoLong}</p>
     </div>
   );
 }
