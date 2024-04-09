@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "vite --open",
 		"build": "tsc && vite build",
-		"preview": "vite preview --strictPort 5173",
+		"preview": "vite preview --strictPort --port 5173 --open",
 		"format": "prettier --write .",
 		"lint": "concurrently \"eslint . --fix\" \"stylelint **/*.css --fix\"",
 		"pretest": "tsc --project tsconfig.test.json",
