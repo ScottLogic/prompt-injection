@@ -1,16 +1,19 @@
-import { Request } from "express";
-import { DEFENCE_TYPES, DefenceConfig } from "../defence";
-import { PHASE_NAMES } from "../phase";
+import { Request } from 'express';
 
-type DefenceConfigureRequest = Request<
-  object,
-  object,
-  {
-    config?: DefenceConfig[];
-    defenceId?: DEFENCE_TYPES;
-    phase?: PHASE_NAMES;
-  },
-  object
+import { ChatInfoMessage } from '@src/models/chatMessage';
+import { DEFENCE_ID, DefenceConfigItem } from '@src/models/defence';
+import { LEVEL_NAMES } from '@src/models/level';
+
+export type DefenceConfigureRequest = Request<
+	never,
+	| string
+	| {
+			chatInfoMessage: ChatInfoMessage;
+	  },
+	{
+		config?: DefenceConfigItem[];
+		defenceId?: DEFENCE_ID;
+		level?: LEVEL_NAMES;
+	},
+	never
 >;
-
-export type { DefenceConfigureRequest };

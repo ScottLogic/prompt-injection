@@ -1,383 +1,483 @@
-import { queryPromptEvaluationModel } from "./langchain";
-import { ChatDefenceReport } from "./models/chat";
-import { DEFENCE_TYPES, DefenceConfig, DefenceInfo } from "./models/defence";
-import { PHASE_NAMES } from "./models/phase";
-import { retrievalQAPrePromptSecure } from "./promptTemplates";
+import { defaultDefences } from './defaultDefences';
+import { evaluatePrompt } from './langchain';
+import {
+	DefenceReport,
+	MessageTransformation,
+	SingleDefenceReport,
+	TransformedChatMessage,
+} from './models/chat';
+import {
+	DEFENCE_ID,
+	DefenceConfigItem,
+	Defence,
+	DEFENCE_CONFIG_ITEM_ID,
+} from './models/defence';
+import { LEVEL_NAMES } from './models/level';
+import {
+	systemRoleLevel1,
+	systemRoleLevel2,
+	systemRoleLevel3,
+} from './promptTemplates';
 
-function getInitialDefences(): DefenceInfo[] {
-  return [
-    new DefenceInfo(DEFENCE_TYPES.CHARACTER_LIMIT, [
-      {
-        id: "maxMessageLength",
-        value: process.env.MAX_MESSAGE_LENGTH ?? String(280),
-      },
-    ]),
-    new DefenceInfo(DEFENCE_TYPES.EMAIL_WHITELIST, [
-      {
-        id: "whitelist",
-        value: process.env.EMAIL_WHITELIST ?? "",
-      },
-    ]),
-    new DefenceInfo(DEFENCE_TYPES.LLM_EVALUATION, []),
-    new DefenceInfo(DEFENCE_TYPES.QA_LLM_INSTRUCTIONS, [
-      {
-        id: "prePrompt",
-        value: retrievalQAPrePromptSecure,
-      },
-    ]),
-    new DefenceInfo(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, [
-      {
-        id: "prePrompt",
-        value: process.env.RANDOM_SEQ_ENCLOSURE_PRE_PROMPT ?? "",
-      },
-      {
-        id: "length",
-        value: process.env.RANDOM_SEQ_ENCLOSURE_LENGTH ?? String(10),
-      },
-    ]),
-    new DefenceInfo(DEFENCE_TYPES.SYSTEM_ROLE, [
-      {
-        id: "systemRole",
-        value: process.env.SYSTEM_ROLE ?? "",
-      },
-    ]),
-    new DefenceInfo(DEFENCE_TYPES.XML_TAGGING, []),
-    new DefenceInfo(DEFENCE_TYPES.FILTER_USER_INPUT, [
-      {
-        id: "filterUserInput",
-        value: process.env.FILTER_LIST_INPUT ?? "",
-      },
-    ]),
-    new DefenceInfo(DEFENCE_TYPES.FILTER_BOT_OUTPUT, [
-      {
-        id: "filterBotOutput",
-        value: process.env.FILTER_LIST_OUTPUT ?? "",
-      },
-    ]),
-  ];
+function activateDefence(id: DEFENCE_ID, defences: Defence[]) {
+	return defences.map((defence) =>
+		defence.id === id ? { ...defence, isActive: true } : defence
+	);
 }
 
-function activateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
-  // return the updated list of defences
-  return defences.map((defence) =>
-    defence.id === id ? { ...defence, isActive: true } : defence
-  );
-}
-
-function deactivateDefence(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
-  // return the updated list of defences
-  return defences.map((defence) =>
-    defence.id === id ? { ...defence, isActive: false } : defence
-  );
+function deactivateDefence(id: DEFENCE_ID, defences: Defence[]) {
+	return defences.map((defence) =>
+		defence.id === id ? { ...defence, isActive: false } : defence
+	);
 }
 
 function configureDefence(
-  id: DEFENCE_TYPES,
-  defences: DefenceInfo[],
-  config: DefenceConfig[]
-) {
-  // return the updated list of defences
-  return defences.map((defence) =>
-    defence.id === id ? { ...defence, config: config } : defence
-  );
+	id: DEFENCE_ID,
+	defences: Defence[],
+	config: DefenceConfigItem[]
+): Defence[] {
+	return defences.map((defence) =>
+		defence.id === id ? { ...defence, config } : defence
+	);
+}
+
+function resetDefenceConfig(
+	id: DEFENCE_ID,
+	configId: DEFENCE_CONFIG_ITEM_ID,
+	defences: Defence[]
+): Defence[] {
+	const defenceConfig = defences.find((defence) => defence.id === id)?.config;
+	if (!defenceConfig) {
+		throw new Error(`Defence ${id} not found in default defences.`);
+	}
+	const defaultValue = getConfigValue(defaultDefences, id, configId);
+	const updatedConfig: DefenceConfigItem[] = defenceConfig.map((config) =>
+		config.id === configId ? { ...config, value: defaultValue } : config
+	);
+	return configureDefence(id, defences, updatedConfig);
 }
 
 function getConfigValue(
-  defences: DefenceInfo[],
-  defenceId: DEFENCE_TYPES,
-  configId: string,
-  defaultValue: string
+	defences: Defence[],
+	defenceId: DEFENCE_ID,
+	configId: string
 ) {
-  const configValue: string | undefined = defences
-    .find((defence) => defence.id === defenceId)
-    ?.config.find((config) => config.id === configId)?.value;
-  return configValue ?? defaultValue;
+	const config: DefenceConfigItem | undefined = defences
+		.find((defence) => defence.id === defenceId)
+		?.config.find((config) => config.id === configId);
+	if (!config) {
+		throw new Error(
+			`Config item ${configId} not found for defence ${defenceId} in default defences.`
+		);
+	}
+	return config.value;
 }
 
-function getMaxMessageLength(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.CHARACTER_LIMIT,
-    "maxMessageLength",
-    String(280)
-  );
+function getMaxMessageLength(defences: Defence[]) {
+	return Number(
+		getConfigValue(defences, DEFENCE_ID.CHARACTER_LIMIT, 'MAX_MESSAGE_LENGTH')
+	);
 }
 
-function getRandomSequenceEnclosurePrePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-    "prePrompt",
-    retrievalQAPrePromptSecure
-  );
+function getXMLTaggingPrompt(defences: Defence[]) {
+	return getConfigValue(defences, DEFENCE_ID.XML_TAGGING, 'PROMPT');
 }
 
-function getRandomSequenceEnclosureLength(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE,
-    "length",
-    String(10)
-  );
-}
-
-function getFilterList(defences: DefenceInfo[], type: DEFENCE_TYPES) {
-  return getConfigValue(
-    defences,
-    type,
-    type === DEFENCE_TYPES.FILTER_USER_INPUT
-      ? "filterUserInput"
-      : "filterBotOutput",
-    ""
-  );
+function getFilterList(defences: Defence[], type: DEFENCE_ID) {
+	return getConfigValue(
+		defences,
+		type,
+		type === DEFENCE_ID.INPUT_FILTERING ? 'INPUT_FILTERING' : 'OUTPUT_FILTERING'
+	);
 }
 function getSystemRole(
-  defences: DefenceInfo[],
-  // by default, use sandbox
-  currentPhase: PHASE_NAMES = PHASE_NAMES.SANDBOX
+	defences: Defence[],
+	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX
 ) {
-  switch (currentPhase) {
-    case PHASE_NAMES.PHASE_0:
-      return process.env.SYSTEM_ROLE_PHASE_0 ?? "";
-    case PHASE_NAMES.PHASE_1:
-      return process.env.SYSTEM_ROLE_PHASE_1 ?? "";
-    case PHASE_NAMES.PHASE_2:
-      return process.env.SYSTEM_ROLE_PHASE_2 ?? "";
-    default:
-      return getConfigValue(
-        defences,
-        DEFENCE_TYPES.SYSTEM_ROLE,
-        "systemRole",
-        ""
-      );
-  }
+	switch (currentLevel) {
+		case LEVEL_NAMES.LEVEL_1:
+			return systemRoleLevel1;
+		case LEVEL_NAMES.LEVEL_2:
+			return systemRoleLevel2;
+		case LEVEL_NAMES.LEVEL_3:
+			return systemRoleLevel3;
+		default:
+			return getConfigValue(defences, DEFENCE_ID.SYSTEM_ROLE, 'SYSTEM_ROLE');
+	}
 }
 
-function getEmailWhitelistVar(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.EMAIL_WHITELIST,
-    "whitelist",
-    ""
-  );
+function getRandomSequenceEnclosurePrePrompt(defences: Defence[]) {
+	return getConfigValue(
+		defences,
+		DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+		'PROMPT'
+	);
 }
 
-function getQALLMprePrompt(defences: DefenceInfo[]) {
-  return getConfigValue(
-    defences,
-    DEFENCE_TYPES.QA_LLM_INSTRUCTIONS,
-    "prePrompt",
-    ""
-  );
+function getRandomSequenceEnclosureLength(defences: Defence[]) {
+	return Number(
+		getConfigValue(
+			defences,
+			DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE,
+			'SEQUENCE_LENGTH'
+		)
+	);
 }
 
-function isDefenceActive(id: DEFENCE_TYPES, defences: DefenceInfo[]) {
-  return defences.find((defence) => defence.id === id && defence.isActive)
-    ? true
-    : false;
+function getInstructionDefencePrePrompt(defences: Defence[]) {
+	return getConfigValue(defences, DEFENCE_ID.INSTRUCTION, 'PROMPT');
 }
 
-function generateRandomString(string_length: number) {
-  let random_string = "";
-  for (let i = 0; i < string_length; i++) {
-    const random_ascii: number = Math.floor(Math.random() * 25 + 97);
-    random_string += String.fromCharCode(random_ascii);
-  }
-  return random_string;
+function getQAPromptFromConfig(defences: Defence[]) {
+	return getConfigValue(defences, DEFENCE_ID.QA_LLM, 'PROMPT');
+}
+
+function getPromptEvalPromptFromConfig(defences: Defence[]) {
+	return getConfigValue(defences, DEFENCE_ID.PROMPT_EVALUATION_LLM, 'PROMPT');
+}
+
+function isDefenceActive(id: DEFENCE_ID, defences: Defence[]) {
+	return defences.some((defence) => defence.id === id && defence.isActive);
 }
 
 // check message for any words in the filter list
 function detectFilterList(message: string, filterList: string) {
-  const detectedPhrases = [];
-  const cleanedMessage = message.replace(/[^a-zA-Z ]/g, "").toLowerCase();
-  const filterListSplit = filterList
-    .toLowerCase()
-    .split(",")
-    .filter((phrase) => phrase.trim() !== "");
-  for (const phrase of filterListSplit) {
-    // check if original message or cleaned message contains the phrase
-    if (
-      message.toLowerCase().includes(phrase.trim()) ||
-      cleanedMessage.includes(phrase.trim())
-    ) {
-      detectedPhrases.push(phrase);
-    }
-  }
-  return detectedPhrases;
-}
-
-// apply random sequence enclosure defense to input message
-function transformRandomSequenceEnclosure(
-  message: string,
-  defences: DefenceInfo[]
-) {
-  console.debug("Random Sequence Enclosure defence active.");
-  const randomString: string = generateRandomString(
-    Number(getRandomSequenceEnclosureLength(defences))
-  );
-  const introText: string = getRandomSequenceEnclosurePrePrompt(defences);
-  const transformedMessage: string = introText.concat(
-    randomString,
-    " {{ ",
-    message,
-    " }} ",
-    randomString,
-    ". "
-  );
-  return transformedMessage;
+	const detectedPhrases = [];
+	const cleanedMessage = message.replace(/[^a-zA-Z ]/g, '').toLowerCase();
+	const filterListSplit = filterList
+		.toLowerCase()
+		.split(',')
+		.filter((phrase) => phrase.trim() !== '');
+	for (const phrase of filterListSplit) {
+		// check if original message or cleaned message contains the phrase
+		if (
+			message.toLowerCase().includes(phrase.trim()) ||
+			cleanedMessage.includes(phrase.trim())
+		) {
+			detectedPhrases.push(phrase);
+		}
+	}
+	return detectedPhrases;
 }
 
 // function to escape XML characters in user input to prevent hacking with XML tagging on
 function escapeXml(unsafe: string) {
-  return unsafe.replace(/[<>&'"]/g, function (c: string): string {
-    switch (c) {
-      case "<":
-        return "&lt;";
-      case ">":
-        return "&gt;";
-      case "&":
-        return "&amp;";
-      case "'":
-        return "&apos;";
-      case '"':
-      default:
-        return "&quot;";
-    }
-  });
+	return unsafe.replace(/[<>&'"]/g, function (c: string): string {
+		switch (c) {
+			case '<':
+				return '&lt;';
+			case '>':
+				return '&gt;';
+			case '&':
+				return '&amp;';
+			case "'":
+				return '&apos;';
+			case '"':
+			default:
+				return '&quot;';
+		}
+	});
 }
 
-// function to detect any XML tags in user input
-function detectXMLTags(input: string) {
-  const tagRegex = /<\/?[a-zA-Z][\w-]*(?:\b[^>]*\/\s*|[^>]*>|[?]>)/g;
-  const foundTags: string[] = input.match(tagRegex) ?? [];
-  return foundTags.length > 0;
+function containsXMLTags(input: string) {
+	const tagRegex = /<\/?[a-zA-Z][\w-]*(?:\b[^>]*\/\s*|[^>]*>|[?]>)/g;
+	const foundTags: string[] = input.match(tagRegex) ?? [];
+	return foundTags.length > 0;
 }
 
-// apply XML tagging defence to input message
-function transformXmlTagging(message: string) {
-  console.debug("XML Tagging defence active.");
-  const openTag = "<user_input>";
-  const closeTag = "</user_input>";
-  const transformedMessage: string = openTag.concat(
-    escapeXml(message),
-    closeTag
-  );
-  return transformedMessage;
+function transformXmlTagging(
+	message: string,
+	defences: Defence[]
+): TransformedChatMessage {
+	console.debug('XML Tagging defence active.');
+	const prompt = getXMLTaggingPrompt(defences);
+	const openTag = '<user_input>';
+	const closeTag = '</user_input>';
+	return {
+		preMessage: prompt.concat(openTag),
+		message: escapeXml(message),
+		postMessage: closeTag,
+		transformationName: 'XML Tagging',
+	};
 }
 
-//apply defence string transformations to original message
-function transformMessage(message: string, defences: DefenceInfo[]) {
-  let transformedMessage: string = message;
-  if (isDefenceActive(DEFENCE_TYPES.RANDOM_SEQUENCE_ENCLOSURE, defences)) {
-    transformedMessage = transformRandomSequenceEnclosure(
-      transformedMessage,
-      defences
-    );
-  }
-  if (isDefenceActive(DEFENCE_TYPES.XML_TAGGING, defences)) {
-    transformedMessage = transformXmlTagging(transformedMessage);
-  }
-  if (message == transformedMessage) {
-    console.debug("No defences applied. Message unchanged.");
-  } else {
-    console.debug(
-      `Defences applied. Transformed message: ${transformedMessage}`
-    );
-  }
-  return transformedMessage;
+function generateRandomString(length: number) {
+	return Array.from({ length }, () =>
+		String.fromCharCode(Math.floor(Math.random() * 26 + 97))
+	).join('');
 }
 
-// detects triggered defences in original message and blocks the message if necessary
-async function detectTriggeredDefences(
-  message: string,
-  defences: DefenceInfo[],
-  openAiApiKey: string
+function transformRandomSequenceEnclosure(
+	message: string,
+	defences: Defence[]
+): TransformedChatMessage {
+	console.debug('Random Sequence Enclosure defence active.');
+	const randomString: string = generateRandomString(
+		getRandomSequenceEnclosureLength(defences)
+	);
+	const openTag = randomString.concat(' {{ ');
+	const closeTag = ' }} '.concat(randomString);
+	return {
+		preMessage: getRandomSequenceEnclosurePrePrompt(defences).concat(openTag),
+		message,
+		postMessage: closeTag,
+		transformationName: 'Random Sequence Enclosure',
+	};
+}
+
+function transformInstructionDefence(message: string, defences: Defence[]) {
+	console.debug('Instruction Defence active.');
+	return {
+		preMessage: getInstructionDefencePrePrompt(defences).concat(' {{ '),
+		message,
+		postMessage: ' }}',
+		transformationName: 'Instruction Defence',
+	};
+}
+
+function combineTransformedMessage(transformedMessage: TransformedChatMessage) {
+	return (
+		transformedMessage.preMessage +
+		transformedMessage.message +
+		transformedMessage.postMessage
+	);
+}
+
+function transformMessage(
+	message: string,
+	defences: Defence[]
+): MessageTransformation | undefined {
+	const transformedMessage = isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)
+		? transformXmlTagging(message, defences)
+		: isDefenceActive(DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE, defences)
+		? transformRandomSequenceEnclosure(message, defences)
+		: isDefenceActive(DEFENCE_ID.INSTRUCTION, defences)
+		? transformInstructionDefence(message, defences)
+		: undefined;
+
+	if (!transformedMessage) {
+		console.debug('No transformation applied. Message unchanged.');
+		return;
+	}
+
+	const transformedMessageCombined =
+		combineTransformedMessage(transformedMessage);
+
+	const transformedMessageInfo =
+		`${transformedMessage.transformationName} enabled, your message has been transformed`.toLocaleLowerCase();
+
+	console.debug(
+		`Defences applied. Transformed message: ${transformedMessageCombined}`
+	);
+	return {
+		transformedMessage,
+		transformedMessageCombined,
+		transformedMessageInfo,
+	};
+}
+
+async function detectTriggeredInputDefences(
+	message: string,
+	defences: Defence[]
 ) {
-  // keep track of any triggered defences
-  const defenceReport: ChatDefenceReport = {
-    blockedReason: null,
-    isBlocked: false,
-    alertedDefences: [],
-    triggeredDefences: [],
-  };
-  const maxMessageLength = Number(getMaxMessageLength(defences));
-  // check if the message is too long
-  if (message.length > maxMessageLength) {
-    console.debug("CHARACTER_LIMIT defence triggered.");
-    // check if the defence is active
-    if (isDefenceActive(DEFENCE_TYPES.CHARACTER_LIMIT, defences)) {
-      // add the defence to the list of triggered defences
-      defenceReport.triggeredDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
-      // block the message
-      defenceReport.isBlocked = true;
-      defenceReport.blockedReason = "Message is too long";
-      // return the defence info
-      return defenceReport;
-    } else {
-      // add the defence to the list of alerted defences
-      defenceReport.alertedDefences.push(DEFENCE_TYPES.CHARACTER_LIMIT);
-    }
-  }
+	const singleDefenceReports = [
+		detectCharacterLimit(message, defences),
+		detectFilterUserInput(message, defences),
+		detectXmlTagging(message, defences),
+		await detectEvaluationLLM(message, defences),
+	];
 
-  // check for words/phrases in the block list
-  const detectedPhrases = detectFilterList(
-    message,
-    getFilterList(defences, DEFENCE_TYPES.FILTER_USER_INPUT)
-  );
-  if (detectedPhrases.length > 0) {
-    console.debug(
-      `FILTER_USER_INPUT defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
-        ", "
-      )}`
-    );
-    if (isDefenceActive(DEFENCE_TYPES.FILTER_USER_INPUT, defences)) {
-      defenceReport.triggeredDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
-      defenceReport.isBlocked = true;
-      defenceReport.blockedReason = `Message blocked - I cannot answer questions about '${detectedPhrases.join(
-        "' or '"
-      )}'!`;
-    } else {
-      defenceReport.alertedDefences.push(DEFENCE_TYPES.FILTER_USER_INPUT);
-    }
-  }
-  // check if message contains XML tags
-  if (detectXMLTags(message)) {
-    console.debug("XML_TAGGING defence triggered.");
-    if (isDefenceActive(DEFENCE_TYPES.XML_TAGGING, defences)) {
-      // add the defence to the list of triggered defences
-      defenceReport.triggeredDefences.push(DEFENCE_TYPES.XML_TAGGING);
-    } else {
-      // add the defence to the list of alerted defences
-      defenceReport.alertedDefences.push(DEFENCE_TYPES.XML_TAGGING);
-    }
-  }
+	return combineDefenceReports(singleDefenceReports);
+}
 
-  // evaluate the message for prompt injection
-  const evalPrompt = await queryPromptEvaluationModel(message, openAiApiKey);
-  if (evalPrompt.isMalicious) {
-    if (isDefenceActive(DEFENCE_TYPES.LLM_EVALUATION, defences)) {
-      defenceReport.triggeredDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
-      console.debug("LLM evalutation defence active.");
-      defenceReport.isBlocked = true;
-      defenceReport.blockedReason = `Message blocked by the malicious prompt evaluator.${evalPrompt.reason}`;
-    } else {
-      defenceReport.alertedDefences.push(DEFENCE_TYPES.LLM_EVALUATION);
-    }
-  }
-  return defenceReport;
+function detectTriggeredOutputDefences(message: string, defences: Defence[]) {
+	const singleDefenceReports = [detectFilterBotOutput(message, defences)];
+	return combineDefenceReports(singleDefenceReports);
+}
+
+function combineDefenceReports(
+	defenceReports: SingleDefenceReport[]
+): DefenceReport {
+	const isBlocked = defenceReports.some((report) => report.blockedReason);
+	const blockedReason = isBlocked
+		? defenceReports
+				.map((report) => report.blockedReason)
+				.filter((reason) => reason !== null)
+				.join('\n')
+		: null;
+
+	const alertedDefences = defenceReports
+		.filter((report) => report.status === 'alerted')
+		.map((report) => report.defence);
+
+	const triggeredDefences = defenceReports
+		.filter((report) => report.status === 'triggered')
+		.map((report) => report.defence);
+
+	return {
+		isBlocked,
+		blockedReason,
+		alertedDefences,
+		triggeredDefences,
+	};
+}
+
+function detectCharacterLimit(
+	message: string,
+	defences: Defence[]
+): SingleDefenceReport {
+	const maxMessageLength = getMaxMessageLength(defences);
+
+	const messageExceedsLimit = message.length > maxMessageLength;
+	const defenceActive = isDefenceActive(DEFENCE_ID.CHARACTER_LIMIT, defences);
+
+	if (messageExceedsLimit) console.debug('CHARACTER_LIMIT defence triggered.');
+
+	return {
+		defence: DEFENCE_ID.CHARACTER_LIMIT,
+		blockedReason:
+			messageExceedsLimit && defenceActive
+				? 'Message Blocked: Input exceeded character limit.'
+				: null,
+		status: !messageExceedsLimit
+			? 'ok'
+			: defenceActive
+			? 'triggered'
+			: 'alerted',
+	};
+}
+
+function detectFilterUserInput(
+	message: string,
+	defences: Defence[]
+): SingleDefenceReport {
+	const detectedPhrases = detectFilterList(
+		message,
+		getFilterList(defences, DEFENCE_ID.INPUT_FILTERING)
+	);
+
+	const filterWordsDetected = detectedPhrases.length > 0;
+	const defenceActive = isDefenceActive(DEFENCE_ID.INPUT_FILTERING, defences);
+
+	if (filterWordsDetected) {
+		console.debug(
+			`INPUT_FILTERING defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
+				', '
+			)}`
+		);
+	}
+
+	return {
+		defence: DEFENCE_ID.INPUT_FILTERING,
+		blockedReason:
+			filterWordsDetected && defenceActive
+				? `Message Blocked: I cannot answer questions about '${detectedPhrases.join(
+						"' or '"
+				  )}'!`
+				: null,
+		status: !filterWordsDetected
+			? 'ok'
+			: defenceActive
+			? 'triggered'
+			: 'alerted',
+	};
+}
+
+function detectFilterBotOutput(
+	message: string,
+	defences: Defence[]
+): SingleDefenceReport {
+	const detectedPhrases = detectFilterList(
+		message,
+		getFilterList(defences, DEFENCE_ID.OUTPUT_FILTERING)
+	);
+
+	const filterWordsDetected = detectedPhrases.length > 0;
+	const defenceActive = isDefenceActive(DEFENCE_ID.OUTPUT_FILTERING, defences);
+
+	if (filterWordsDetected) {
+		console.debug(
+			`OUTPUT_FILTERING defence triggered. Detected phrases from blocklist: ${detectedPhrases.join(
+				', '
+			)}`
+		);
+	}
+
+	return {
+		defence: DEFENCE_ID.OUTPUT_FILTERING,
+		blockedReason:
+			filterWordsDetected && defenceActive
+				? 'My original response was blocked as it contained a restricted word/phrase. Ask me something else. '
+				: null,
+		status: !filterWordsDetected
+			? 'ok'
+			: defenceActive
+			? 'triggered'
+			: 'alerted',
+	};
+}
+
+function detectXmlTagging(
+	message: string,
+	defences: Defence[]
+): SingleDefenceReport {
+	const containsXML = containsXMLTags(message);
+	const defenceActive = isDefenceActive(DEFENCE_ID.XML_TAGGING, defences);
+
+	if (containsXML) {
+		console.debug('XML_TAGGING defence triggered.');
+	}
+
+	return {
+		defence: DEFENCE_ID.XML_TAGGING,
+		blockedReason: null,
+		status: !containsXML ? 'ok' : defenceActive ? 'triggered' : 'alerted',
+	};
+}
+
+async function detectEvaluationLLM(
+	message: string,
+	defences: Defence[]
+): Promise<SingleDefenceReport> {
+	const defence = DEFENCE_ID.PROMPT_EVALUATION_LLM;
+	// to save money and processing time, and to reduce risk of rate limiting, we only run if defence is active
+	// this means that, contrary to the other defences, the user won't get alerts when the defence is not active, i.e. "your last prompt would have been blocked by the prompt evaluation LLM"
+	if (isDefenceActive(DEFENCE_ID.PROMPT_EVALUATION_LLM, defences)) {
+		const promptEvalLLMPrompt = getPromptEvalPromptFromConfig(defences);
+
+		const promptIsMalicious = await evaluatePrompt(
+			message,
+			promptEvalLLMPrompt
+		);
+
+		if (promptIsMalicious) {
+			console.debug('LLM evaluation defence active and prompt is malicious.');
+
+			return {
+				defence,
+				status: 'triggered',
+				blockedReason:
+					'Message Blocked: The prompt evaluation LLM detected a malicious input.',
+			};
+		}
+	}
+	return {
+		defence,
+		status: 'ok',
+		blockedReason: null,
+	};
 }
 
 export {
-  activateDefence,
-  configureDefence,
-  deactivateDefence,
-  detectTriggeredDefences,
-  getEmailWhitelistVar,
-  getInitialDefences,
-  getQALLMprePrompt,
-  getSystemRole,
-  isDefenceActive,
-  transformMessage,
-  getFilterList,
-  detectFilterList,
+	activateDefence,
+	configureDefence,
+	deactivateDefence,
+	resetDefenceConfig,
+	detectTriggeredInputDefences,
+	detectTriggeredOutputDefences,
+	getQAPromptFromConfig,
+	getSystemRole,
+	isDefenceActive,
+	transformMessage,
+	combineTransformedMessage,
 };

@@ -1,0 +1,22 @@
+.themed-text-area {
+	overflow-y: auto;
+	width: 100%;
+	margin: 0;
+
+	/* must set line height to be able to calculate number of lines
+  this is relative to font size of the text area */
+	line-height: 1.25em;
+
+	/* the textarea is automatically resized as the user types */
+
+	/* disable user resizing */
+	resize: none;
+}
+
+.themed-text-area:focus-visible {
+	outline-offset: 0.125rem;
+}
+
+.themed-text-area.loose {
+	padding: 1.125rem 1.25rem;
+}

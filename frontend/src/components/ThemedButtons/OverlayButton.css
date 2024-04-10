@@ -1,0 +1,19 @@
+.overlay-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	align-self: center;
+	width: fit-content;
+	margin: 0.5rem;
+	padding: 0.5rem 3rem;
+	border: 0.0625rem solid var(--overlay-tab-colour);
+	border-radius: 0.5rem;
+	background-color: var(--overlay-background-colour);
+	font-weight: 700;
+	font-size: 1.25rem;
+	transition: ease 0.1s;
+}
+
+.overlay-button:hover {
+	background-color: var(--overlay-tab-colour);
+}

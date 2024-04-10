@@ -1,17 +1,44 @@
-.chat-box-info-text {
-  color: var(--chat-info-text-colour);
-  font-size: 14px;
-  padding-top: 16px;
+.chat-box-info {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0.125rem;
+	font-style: italic;
+	font-size: 0.875rem;
+	text-align: center;
 }
 
-.chat-box-info-defence-alerted-text {
-  color: var(--chat-alerted-text-colour);
-  font-size: 14px;
-  padding-top: 16px;
+.chat-box-info:focus-visible {
+	outline-offset: 0.125rem;
 }
 
-.chat-box-info-defence-triggered-text {
-  color: var(--chat-triggered-text-colour);
-  font-size: 14px;
-  padding-top: 16px;
+.chat-box-info.info-text {
+	color: var(--chat-info-text-colour);
+}
+
+.chat-box-info.defence-alerted-text {
+	color: var(--chat-alerted-text-colour);
+}
+
+.chat-box-info.defence-triggered-text {
+	color: var(--chat-triggered-text-colour);
+}
+
+.chat-box-info.reset-level-text {
+	display: inline-block;
+	margin: 0.6rem 0.1rem;
+	padding: 0;
+	border-bottom: 1px solid var(--chat-reset-level-line-colour);
+	border-radius: 0;
+	color: var(--chat-info-text-colour);
+	line-height: 0.1em;
+}
+
+.chat-box-info.reset-level-text:focus-visible {
+	outline-offset: 0.5rem;
+}
+
+.chat-box-info.reset-level-text span {
+	padding: 0 1rem;
+	background: var(--main-text-colour);
 }

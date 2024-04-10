@@ -1,77 +1,55 @@
-import { OpenAIApi } from "openai";
-import { validateApiKey, setOpenAiApiKey } from "../../src/openai";
-import { initQAModel } from "../../src/langchain";
-import { CHAT_MODELS } from "../../src/models/chat";
+import {
+	beforeEach,
+	afterEach,
+	describe,
+	expect,
+	jest,
+	test,
+} from '@jest/globals';
+import { OpenAI } from 'openai';
 
-// Define a mock implementation for the createChatCompletion method
-const mockCreateChatCompletion = jest.fn();
-// Mock the OpenAIApi class
-jest.mock("openai", () => ({
-  OpenAIApi: jest.fn().mockImplementation(() => ({
-    createChatCompletion: mockCreateChatCompletion,
-  })),
-  Configuration: jest.fn().mockImplementation(() => ({})),
-}));
+import { getValidModelsFromOpenAI } from '@src/openai';
 
-jest.mock("../../src/openai", () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const originalModule = jest.requireActual("../../src/openai");
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return {
-    ...originalModule,
-    initOpenAi: jest.fn(),
-  };
-});
+jest.mock('openai');
+jest.mock('@src/defence');
 
-jest.mock("../../src/langchain", () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const originalModule = jest.requireActual("../../src/langchain");
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return {
-    ...originalModule,
-    initQAModel: jest.fn(),
-    initDocumentVectors: jest.fn(),
-  };
-});
+describe('getValidModelsFromOpenAI', () => {
+	const mockListFn = jest.fn<OpenAI.Models['list']>();
+	jest.mocked(OpenAI).mockImplementation(
+		() =>
+			({
+				models: {
+					list: mockListFn,
+				},
+			} as unknown as jest.MockedObject<OpenAI>)
+	);
 
-beforeEach(() => {
-  // clear environment variables
-  process.env = {};
-});
+	beforeEach(() => {
+		process.env = {};
+	});
 
-test("GIVEN a valid API key WHEN calling validateApiKey THEN it should return true", async () => {
-  const result = await validateApiKey("sk-1234567", CHAT_MODELS.GPT_4);
-  expect(result).toBe(true);
-});
+	afterEach(() => {
+		mockListFn.mockReset();
+	});
 
-test("GIVEN an invalid API key WHEN calling validateApiKey THEN it should return false", async () => {
-  mockCreateChatCompletion.mockRejectedValueOnce(new Error("Invalid API key"));
-  const result = await validateApiKey("invalid-api-key", CHAT_MODELS.GPT_4);
-  expect(result).toBe(false);
-});
+	test('GIVEN the user has an openAI key WHEN getValidModelsFromOpenAI is called THEN it returns only the models that are also in the CHAT_MODELS enum', async () => {
+		process.env.OPENAI_API_KEY = 'sk-12345';
+		const mockModelList = [
+			{ id: 'gpt-3.5-turbo' },
+			{ id: 'gpt-3.5-turbo-0613' },
+			{ id: 'gpt-4' },
+			{ id: 'gpt-4-0613' },
+			{ id: 'da-vinci-1' },
+			{ id: 'da-vinci-2' },
+		];
+		const expectedValidModels = ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-0613'];
 
-test("GIVEN a valid API key WHEN calling setOpenAiApiKey THEN it should set the API key and initialize models", async () => {
-  const openAiApiKey = "sk-1234567";
-  const result = await setOpenAiApiKey(openAiApiKey, CHAT_MODELS.GPT_4);
+		mockListFn.mockResolvedValueOnce({
+			data: mockModelList,
+		} as OpenAI.ModelsPage);
 
-  expect(result).toBe(true);
-  // once to validate, once to initalize
-  expect(OpenAIApi).toHaveBeenCalledTimes(2);
-});
+		const validModels = await getValidModelsFromOpenAI();
 
-test("GIVEN an invalid API key WHEN calling setOpenAiApiKey THEN it should set the API key to empty", async () => {
-  mockCreateChatCompletion.mockRejectedValueOnce(new Error("Invalid API key"));
-  const openAiApiKey = "invalid-api-key";
-  // Call the function
-  const result = await setOpenAiApiKey(openAiApiKey, CHAT_MODELS.GPT_4);
-
-  // Check if the API key and models are reset correctly
-  expect(result).toBe(false);
-  // once only to validate
-  expect(OpenAIApi).toHaveBeenCalledTimes(1);
-  expect(initQAModel).not.toHaveBeenCalled();
-});
-
-afterEach(() => {
-  jest.clearAllMocks();
+		expect(validModels).toEqual(expectedValidModels);
+	});
 });

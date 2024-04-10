@@ -1,44 +1,46 @@
-import ExportContent from "./ExportContent";
-import { ChatMessage } from "../../models/chat";
-import { EmailInfo } from "../../models/email";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink } from '@react-pdf/renderer';
 
-import "./ExportPDFLink.css";
-import { PHASE_NAMES } from "../../models/phase";
+import '@src/components/ThemedButtons/ChatButton.css';
+import { ChatMessage } from '@src/models/chat';
+import { EmailInfo } from '@src/models/email';
+import { LEVEL_NAMES } from '@src/models/level';
+
+import ExportContent from './ExportContent';
+
+import './ExportPDFLink.css';
 
 function ExportPDFLink({
-  messages,
-  emails,
-  currentPhase,
+	messages,
+	emails,
+	currentLevel,
 }: {
-  messages: ChatMessage[];
-  emails: EmailInfo[];
-  currentPhase: PHASE_NAMES;
+	messages: ChatMessage[];
+	emails: EmailInfo[];
+	currentLevel: LEVEL_NAMES;
 }) {
-  function getFileName() {
-    if (currentPhase === PHASE_NAMES.SANDBOX) {
-      return "prompt-injection-chat-log-sandbox.pdf";
-    } else {
-      return `prompt-injection-chat-log-phase-${currentPhase}.pdf`;
-    }
-  }
+	function getFileName() {
+		if (currentLevel === LEVEL_NAMES.SANDBOX) {
+			return 'spy-logic-chat-log-sandbox.pdf';
+		} else {
+			return `spy-logic-chat-log-level-${currentLevel + 1}.pdf`;
+		}
+	}
 
-  return (
-    <div id="export-chat-box">
-      <PDFDownloadLink
-        document={
-          <ExportContent
-            messages={messages}
-            emails={emails}
-            currentPhase={currentPhase}
-          />
-        }
-        fileName={getFileName()}
-      >
-        <button className="prompt-injection-button">Export</button>
-      </PDFDownloadLink>{" "}
-    </div>
-  );
+	return (
+		<PDFDownloadLink
+			document={
+				<ExportContent
+					messages={messages}
+					emails={emails}
+					currentLevel={currentLevel}
+				/>
+			}
+			className="chat-button export-chat-link"
+			fileName={getFileName()}
+		>
+			Export Chat
+		</PDFDownloadLink>
+	);
 }
 
 export default ExportPDFLink;

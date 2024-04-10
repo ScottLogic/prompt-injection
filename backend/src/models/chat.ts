@@ -1,73 +1,134 @@
-import { ChatCompletionRequestMessage } from "openai";
-import { DEFENCE_TYPES } from "./defence";
+import {
+	ChatCompletionAssistantMessageParam,
+	ChatCompletionMessageParam,
+} from 'openai/resources/chat/completions';
 
-enum CHAT_MODELS {
-  GPT_4 = "gpt-4",
-  GPT_4_0613 = "gpt-4-0613",
-  GPT_4_32K = "gpt-4-32k",
-  GPT_4_32K_0613 = "gpt-4-32k-0613",
-  GPT_3_5_TURBO = "gpt-3.5-turbo",
-  GPT_3_5_TURBO_0613 = "gpt-3.5-turbo-0613",
-  GPT_3_5_TURBO_16K = "gpt-3.5-turbo-16k",
-  GPT_3_5_TURBO_16K_0613 = "gpt-3.5-turbo-16k-0613",
+import { ChatInfoMessage, ChatMessage } from './chatMessage';
+import { DEFENCE_ID } from './defence';
+import { EmailInfo } from './email';
+
+const chatModelIds = [
+	'gpt-4-1106-preview',
+	'gpt-4',
+	'gpt-4-0613',
+	'gpt-3.5-turbo',
+] as const;
+
+type CHAT_MODEL_ID = (typeof chatModelIds)[number];
+
+type ChatModel = {
+	id: CHAT_MODEL_ID;
+	configuration: ChatModelConfigurations;
+};
+
+const modelConfigIds = [
+	'temperature',
+	'topP',
+	'frequencyPenalty',
+	'presencePenalty',
+] as const;
+
+type MODEL_CONFIG_ID = (typeof modelConfigIds)[number];
+
+type ChatModelConfigurations = {
+	[key in MODEL_CONFIG_ID]: number;
+};
+
+interface DefenceReport {
+	blockedReason: string | null;
+	isBlocked: boolean;
+	alertedDefences: DEFENCE_ID[];
+	triggeredDefences: DEFENCE_ID[];
 }
 
-enum CHAT_MESSAGE_TYPE {
-  BOT,
-  BOT_BLOCKED,
-  INFO,
-  USER,
-  USER_TRANSFORMED,
-  PHASE_INFO,
-  DEFENCE_ALERTED,
-  DEFENCE_TRIGGERED,
-  SYSTEM,
-  FUNCTION_CALL,
+interface SingleDefenceReport {
+	defence: DEFENCE_ID;
+	blockedReason: string | null;
+	status: 'alerted' | 'triggered' | 'ok';
 }
 
-interface ChatDefenceReport {
-  blockedReason: string | null;
-  isBlocked: boolean;
-  alertedDefences: DEFENCE_TYPES[];
-  triggeredDefences: DEFENCE_TYPES[];
+interface FunctionCallResponse {
+	completion: ChatCompletionMessageParam;
+	sentEmails: EmailInfo[];
 }
 
-interface ChatAnswer {
-  reply: string;
-  questionAnswered: boolean;
+interface ToolCallResponse {
+	functionCallReply?: FunctionCallResponse;
+	chatResponse?: ChatResponse;
+	chatHistory: ChatMessage[];
 }
 
 interface ChatMalicious {
-  isMalicious: boolean;
-  reason: string;
+	isMalicious: boolean;
+	reason: string;
 }
 
-interface ChatResponse {
-  completion: ChatCompletionRequestMessage;
-  defenceInfo: ChatDefenceReport;
-  wonPhase: boolean;
+type ChatResponse = {
+	completion: ChatCompletionMessageParam | null;
+	openAIErrorMessage: string | null;
+};
+
+type ChatGptReply = {
+	chatHistory: ChatMessage[];
+	completion: ChatCompletionAssistantMessageParam | null;
+	openAIErrorMessage: string | null;
+};
+
+interface TransformedChatMessage {
+	preMessage: string;
+	message: string;
+	postMessage: string;
+	transformationName: string;
+}
+
+interface MessageTransformation {
+	transformedMessage: TransformedChatMessage;
+	transformedMessageInfo: string;
+	transformedMessageCombined: string;
 }
 
 interface ChatHttpResponse {
-  reply: string;
-  defenceInfo: ChatDefenceReport;
-  numPhasesCompleted: number;
-  transformedMessage: string;
-  wonPhase: boolean;
+	reply: string;
+	defenceReport: DefenceReport;
+	transformedMessage?: TransformedChatMessage;
+	wonLevel: boolean;
+	isError: boolean;
+	openAIErrorMessage: string | null;
+	sentEmails: EmailInfo[];
+	transformedMessageInfo?: string;
+	wonLevelMessage?: ChatInfoMessage;
 }
 
-interface ChatHistoryMessage {
-  completion: ChatCompletionRequestMessage | null;
-  chatMessageType: CHAT_MESSAGE_TYPE;
-  infoMessage?: string | null;
+interface LevelHandlerResponse {
+	chatResponse: ChatHttpResponse;
+	chatHistory: ChatMessage[];
 }
+
+const defaultChatModel: ChatModel = {
+	id: 'gpt-3.5-turbo',
+	configuration: {
+		temperature: 1,
+		topP: 1,
+		frequencyPenalty: 0,
+		presencePenalty: 0,
+	},
+};
 
 export type {
-  ChatAnswer,
-  ChatDefenceReport,
-  ChatMalicious,
-  ChatResponse,
-  ChatHttpResponse,
-  ChatHistoryMessage,
+	DefenceReport,
+	ChatGptReply,
+	ChatMalicious,
+	ChatModel,
+	ChatModelConfigurations,
+	ChatResponse,
+	LevelHandlerResponse,
+	ChatHttpResponse,
+	TransformedChatMessage,
+	FunctionCallResponse,
+	ToolCallResponse,
+	MessageTransformation,
+	SingleDefenceReport,
+	MODEL_CONFIG_ID,
 };
-export { CHAT_MODELS, CHAT_MESSAGE_TYPE };
+export { defaultChatModel, modelConfigIds, chatModelIds };
+export type { CHAT_MODEL_ID };

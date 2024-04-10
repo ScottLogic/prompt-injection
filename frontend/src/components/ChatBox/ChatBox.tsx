@@ -1,225 +1,253 @@
-import { useEffect, useState } from "react";
-import "./ChatBox.css";
-import ChatBoxFeed from "./ChatBoxFeed";
-import {
-  addMessageToChatHistory,
-  sendMessage,
-} from "../../service/chatService";
-import { getSentEmails } from "../../service/emailService";
-import {
-  CHAT_MESSAGE_TYPE,
-  ChatMessage,
-  ChatResponse,
-} from "../../models/chat";
-import { EmailInfo } from "../../models/email";
-import { PHASE_NAMES } from "../../models/phase";
-import { DEFENCE_DETAILS_ALL } from "../../Defences";
-import { ThreeDots } from "react-loader-spinner";
+import { Suspense, lazy, useEffect, useState } from 'react';
+
+import { DEFAULT_DEFENCES } from '@src/Defences';
+import '@src/components/ThemedButtons/ChatButton.css';
+import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
+import useUnitStepper from '@src/hooks/useUnitStepper';
+import { ChatMessage, ChatResponse } from '@src/models/chat';
+import { EmailInfo } from '@src/models/email';
+import { LEVEL_NAMES } from '@src/models/level';
+import { chatService } from '@src/service';
+
+import ChatBoxFeed from './ChatBoxFeed';
+import ChatBoxInput from './ChatBoxInput';
+
+import './ChatBox.css';
+
+const ExportPDFLink = lazy(
+	() => import('@src/components/ExportChat/ExportPDFLink')
+);
 
 function ChatBox({
-  messages,
-  completedPhases,
-  currentPhase,
-  addChatMessage,
-  addCompletedPhase,
-  setNumCompletedPhases,
-  setEmails,
+	currentLevel,
+	emails,
+	messages,
+	addChatMessage,
+	addSentEmails,
+	updateNumCompletedLevels,
+	openLevelsCompleteOverlay,
+	openResetLevelOverlay,
 }: {
-  messages: ChatMessage[];
-  completedPhases: Set<PHASE_NAMES>;
-  currentPhase: PHASE_NAMES;
-  addChatMessage: (message: ChatMessage) => void;
-  addCompletedPhase: (phase: PHASE_NAMES) => void;
-  setNumCompletedPhases: (numCompletedPhases: number) => void;
-  setEmails: (emails: EmailInfo[]) => void;
+	currentLevel: LEVEL_NAMES;
+	emails: EmailInfo[];
+	messages: ChatMessage[];
+	addChatMessage: (message: ChatMessage) => void;
+	addSentEmails: (emails: EmailInfo[]) => void;
+	updateNumCompletedLevels: (level: LEVEL_NAMES) => void;
+	openLevelsCompleteOverlay: () => void;
+	openResetLevelOverlay: () => void;
 }) {
-  const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
+	const [chatInput, setChatInput] = useState<string>('');
+	const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false);
+	const {
+		value: recalledMessageReverseIndex,
+		increment: recallLaterMessage,
+		decrement: recallEarlierMessage,
+		reset: resetRecallToLatest,
+	} = useUnitStepper();
 
-  // called on mount
-  useEffect(() => {
-    // get sent emails
-    getSentEmails(currentPhase)
-      .then((sentEmails) => {
-        setEmails(sentEmails);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [setEmails]);
+	function recallSentMessageFromHistory(direction: 'backward' | 'forward') {
+		const sentMessages = messages.filter((message) => message.type === 'USER');
 
-  function inputChange() {
-    const inputBoxElement = document.getElementById(
-      "chat-box-input"
-    ) as HTMLSpanElement;
+		if (direction === 'backward') recallEarlierMessage();
+		else recallLaterMessage(sentMessages.length);
+	}
 
-    // scroll to the bottom
-    inputBoxElement.scrollTop =
-      inputBoxElement.scrollHeight - inputBoxElement.clientHeight;
+	useEffect(() => {
+		const sentMessages = messages.filter((message) => message.type === 'USER');
 
-    const maxHeightPx = 150;
-    inputBoxElement.style.height = "0";
-    if (inputBoxElement.scrollHeight > maxHeightPx) {
-      inputBoxElement.style.height = `${maxHeightPx}px`;
-      inputBoxElement.style.overflowY = "auto";
-    } else {
-      inputBoxElement.style.height = `${inputBoxElement.scrollHeight}px`;
-      inputBoxElement.style.overflowY = "hidden";
-    }
-  }
+		// recall the message from the history. If at current time, clear the chatbox
+		const index = sentMessages.length - recalledMessageReverseIndex;
+		const recalledMessage =
+			index === sentMessages.length ? '' : sentMessages[index]?.message ?? '';
 
-  function inputKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-    }
-  }
+		setChatInput(recalledMessage);
+	}, [recalledMessageReverseIndex]);
 
-  function inputKeyUp(event: React.KeyboardEvent<HTMLTextAreaElement>) {
-    // shift+enter shouldn't send message
-    if (event.key === "Enter" && !event.shiftKey) {
-      // asynchronously send the message
-      void sendChatMessage();
-    }
-  }
+	function processChatResponse(response: ChatResponse) {
+		const transformedMessageInfo = response.transformedMessageInfo;
+		const transformedMessage = response.transformedMessage;
+		if (transformedMessageInfo) {
+			addChatMessage({
+				message: transformedMessageInfo,
+				type: 'GENERIC_INFO',
+			});
+		}
+		// add the transformed message to the chat box if it is different from the original message
+		if (transformedMessage) {
+			addChatMessage({
+				message:
+					transformedMessage.preMessage +
+					transformedMessage.message +
+					transformedMessage.postMessage,
+				transformedMessage,
+				type: 'USER_TRANSFORMED',
+			});
+		}
+		if (response.isError) {
+			addChatMessage({
+				message: response.reply,
+				type: 'ERROR_MSG',
+			});
+		} else if (response.defenceReport.isBlocked) {
+			addChatMessage({
+				type: 'BOT_BLOCKED',
+				message: response.defenceReport.blockedReason,
+			});
+		} else {
+			addChatMessage({
+				type: 'BOT',
+				message: response.reply,
+			});
+		}
+		response.defenceReport.alertedDefences.forEach((triggeredDefence) => {
+			// get user-friendly defence name
+			const defenceName = DEFAULT_DEFENCES.find((defence) => {
+				return defence.id === triggeredDefence;
+			})?.name.toLowerCase();
+			if (defenceName) {
+				const alertMsg = `your last message would have triggered the ${defenceName} defence`;
+				addChatMessage({
+					type: 'DEFENCE_ALERTED',
+					message: alertMsg,
+				});
+				// asynchronously add the message to the chat history
+				void chatService.addInfoMessageToChatHistory(
+					alertMsg,
+					'DEFENCE_ALERTED',
+					currentLevel
+				);
+			}
+		});
+		// add triggered defences to the chat
+		response.defenceReport.triggeredDefences.forEach((triggeredDefence) => {
+			// get user-friendly defence name
+			const defenceName = DEFAULT_DEFENCES.find((defence) => {
+				return defence.id === triggeredDefence;
+			})?.name.toLowerCase();
+			if (defenceName) {
+				const triggerMsg = `${defenceName} defence triggered`;
+				addChatMessage({
+					type: 'DEFENCE_TRIGGERED',
+					message: triggerMsg,
+				});
+				// asynchronously add the message to the chat history
+				void chatService.addInfoMessageToChatHistory(
+					triggerMsg,
+					'DEFENCE_TRIGGERED',
+					currentLevel
+				);
+			}
+		});
 
-  async function sendChatMessage() {
-    const inputBoxElement = document.getElementById(
-      "chat-box-input"
-    ) as HTMLTextAreaElement;
-    // get the message from the input box
-    const message = inputBoxElement.value;
-    // clear the input box
-    inputBoxElement.value = "";
+		// update emails
+		addSentEmails(response.sentEmails);
 
-    if (message && !isSendingMessage) {
-      setIsSendingMessage(true);
-      // if input has been edited, add both messages to the list of messages. otherwise add original message only
-      addChatMessage({
-        message: message,
-        type: CHAT_MESSAGE_TYPE.USER,
-      });
+		if (response.wonLevelMessage) {
+			updateNumCompletedLevels(currentLevel);
+			const levelCompleteMessage = chatService.makeChatMessageFromDTO(
+				response.wonLevelMessage
+			);
+			addChatMessage(levelCompleteMessage);
 
-      const response: ChatResponse = await sendMessage(message, currentPhase);
-      setNumCompletedPhases(response.numPhasesCompleted);
-      const transformedMessage = response.transformedMessage;
-      const isTransformed = transformedMessage !== message;
-      // add the transformed message to the chat box if it is different from the original message
-      if (isTransformed) {
-        addChatMessage({
-          message: transformedMessage,
-          type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
-        });
-      }
-      // add it to the list of messages
-      if (response.defenceInfo.isBlocked) {
-        addChatMessage({
-          type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-          message: response.defenceInfo.blockedReason,
-        });
-      } else {
-        addChatMessage({
-          type: CHAT_MESSAGE_TYPE.BOT,
-          message: response.reply,
-        });
-      }
-      // add altered defences to the chat
-      response.defenceInfo.alertedDefences.forEach((triggeredDefence) => {
-        // get user-friendly defence name
-        const defenceName = DEFENCE_DETAILS_ALL.find((defence) => {
-          return defence.id === triggeredDefence;
-        })?.name.toLowerCase();
-        if (defenceName) {
-          const alertMsg = `your last message would have triggered the ${defenceName} defence`;
-          addChatMessage({
-            type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
-            message: alertMsg,
-          });
-          // asynchronously add the message to the chat history
-          void addMessageToChatHistory(
-            alertMsg,
-            CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
-            currentPhase
-          );
-        }
-      });
-      // add triggered defences to the chat
-      response.defenceInfo.triggeredDefences.forEach((triggeredDefence) => {
-        // get user-friendly defence name
-        const defenceName = DEFENCE_DETAILS_ALL.find((defence) => {
-          return defence.id === triggeredDefence;
-        })?.name.toLowerCase();
-        if (defenceName) {
-          const triggerMsg = `${defenceName} defence triggered`;
-          addChatMessage({
-            type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-            message: triggerMsg,
-          });
-          // asynchronously add the message to the chat history
-          void addMessageToChatHistory(
-            triggerMsg,
-            CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-            currentPhase
-          );
-        }
-      });
+			// if this is the last level, show the level complete overlay
+			if (currentLevel === LEVEL_NAMES.LEVEL_3) {
+				openLevelsCompleteOverlay();
+			}
+		}
+	}
 
-      // we have the message reply
-      setIsSendingMessage(false);
+	async function sendChatMessage() {
+		if (chatInput && !isSendingMessage) {
+			setIsSendingMessage(true);
+			setChatInput('');
+			addChatMessage({
+				message: chatInput,
+				type: 'USER',
+			});
 
-      // get sent emails
-      const sentEmails: EmailInfo[] = await getSentEmails(currentPhase);
-      // update emails
-      setEmails(sentEmails);
+			try {
+				const response: ChatResponse = await chatService.sendMessage(
+					chatInput,
+					currentLevel
+				);
+				processChatResponse(response);
+			} catch (e) {
+				addChatMessage({
+					type: 'ERROR_MSG',
+					message: 'Failed to get reply. Please try again.',
+				});
+			}
 
-      if (response.wonPhase && !completedPhases.has(currentPhase)) {
-        addCompletedPhase(currentPhase);
-        const successMessage =
-          "Congratulations! You have completed this phase. Please click on the next phase to continue.";
-        addChatMessage({
-          type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-          message: successMessage,
-        });
-        // asynchronously add the message to the chat history
-        void addMessageToChatHistory(
-          successMessage,
-          CHAT_MESSAGE_TYPE.PHASE_INFO,
-          currentPhase
-        );
-      }
-    }
-  }
-  return (
-    <div id="chat-box">
-      <ChatBoxFeed messages={messages} />
-      <div id="chat-box-footer">
-        <div id="chat-box-footer-messages">
-          <textarea
-            id="chat-box-input"
-            className="prompt-injection-input"
-            placeholder="Type here..."
-            autoFocus
-            rows={1}
-            onChange={inputChange}
-            onKeyDown={inputKeyDown}
-            onKeyUp={inputKeyUp}
-          />
-          <button
-            id="chat-box-button-send"
-            className="prompt-injection-button"
-            disabled={isSendingMessage}
-            onClick={() => void sendChatMessage()}
-          >
-            <span id="chat-box-button-content">
-              {isSendingMessage ? (
-                <ThreeDots width="24px" color="white" />
-              ) : (
-                "Send"
-              )}
-            </span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+			setIsSendingMessage(false);
+		}
+
+		resetRecallToLatest();
+	}
+
+	return (
+		<div className="chat-box" id="chat-box">
+			<a
+				className="skip-to-bottom skip-link "
+				id="skip-to-bottom"
+				href="#chat-box-input"
+			>
+				<span aria-hidden>&#129035;&nbsp;</span>skip to chat input
+			</a>
+			<ChatBoxFeed messages={messages} />
+			<div className="footer">
+				<a className="skip-to-top skip-link " href="#skip-to-bottom">
+					<span aria-hidden>&#129033;&nbsp;</span>skip to top of chat
+				</a>
+				<div className="messages">
+					<ChatBoxInput
+						content={chatInput}
+						onContentChanged={setChatInput}
+						recallSentMessageFromHistory={recallSentMessageFromHistory}
+						sendChatMessage={() => void sendChatMessage()}
+					/>
+					<span className="send-button-wrapper">
+						<LoadingButton
+							onClick={() => void sendChatMessage()}
+							isLoading={isSendingMessage}
+							loadingTooltip="Sending message..."
+						>
+							send
+						</LoadingButton>
+					</span>
+				</div>
+				<div className="control-buttons">
+					<Suspense
+						fallback={
+							<ThemedButton
+								className={'chat-button chat-button-disabled'}
+								// eslint-disable-next-line @typescript-eslint/no-empty-function
+								onClick={() => {}}
+								ariaDisabled={true}
+								tooltip={{
+									id: 'export-chat-tooltip',
+									text: 'This button is still loading. Please wait...',
+								}}
+								tooltipPosition="top-center"
+							>
+								Export Chat
+							</ThemedButton>
+						}
+					>
+						<ExportPDFLink
+							messages={messages}
+							emails={emails}
+							currentLevel={currentLevel}
+						/>
+					</Suspense>
+					<button className="chat-button" onClick={openResetLevelOverlay}>
+						Reset Level
+					</button>
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default ChatBox;

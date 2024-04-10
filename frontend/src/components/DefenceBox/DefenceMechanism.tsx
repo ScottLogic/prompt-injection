@@ -1,131 +1,110 @@
-import { useState } from "react";
+import DetailElement from '@src/components/ThemedButtons/DetailElement';
 import {
-  DEFENCE_TYPES,
-  DefenceConfig,
-  DefenceInfo,
-} from "../../models/defence";
-import { validateDefence } from "../../service/defenceService";
-import "./DefenceMechanism.css";
-import "../StrategyBox/StrategyMechanism.css";
-import DefenceConfiguration from "./DefenceConfiguration";
-import { TiTick, TiTimes } from "react-icons/ti";
+	DEFENCE_ID,
+	DefenceConfigItem,
+	Defence,
+	DEFENCE_CONFIG_ITEM_ID,
+} from '@src/models/defence';
+
+import DefenceConfiguration from './DefenceConfiguration';
+import PromptEnclosureDefenceMechanism from './PromptEnclosureDefenceMechanism';
+
+import './DefenceMechanism.css';
 
 function DefenceMechanism({
-  defenceDetail,
-  showConfigurations,
-  setDefenceActive,
-  setDefenceInactive,
-  setDefenceConfiguration,
+	defenceDetail,
+	showConfigurations,
+	promptEnclosureDefences,
+	toggleDefence,
+	resetDefenceConfiguration,
+	setDefenceConfiguration,
 }: {
-  defenceDetail: DefenceInfo;
-  showConfigurations: boolean;
-  setDefenceActive: (defence: DefenceInfo) => void;
-  setDefenceInactive: (defence: DefenceInfo) => void;
-  setDefenceConfiguration: (
-    defenceId: DEFENCE_TYPES,
-    config: DefenceConfig[]
-  ) => Promise<boolean>;
+	defenceDetail: Defence;
+	showConfigurations: boolean;
+	promptEnclosureDefences: Defence[];
+	toggleDefence: (defence: Defence) => void;
+	resetDefenceConfiguration: (
+		defenceId: DEFENCE_ID,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) => void;
+	setDefenceConfiguration: (
+		defenceId: DEFENCE_ID,
+		config: DefenceConfigItem[]
+	) => Promise<boolean>;
 }) {
-  const [isInfoBoxVisible, setIsInfoBoxVisible] = useState<boolean>(false);
-  const [isConfigured, setIsConfigured] = useState<boolean>(false);
-  const [configValidated, setConfigValidated] = useState<boolean>(true);
+	function resetConfigurationValue(
+		defence: Defence,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) {
+		resetDefenceConfiguration(defence.id, configItemId);
+	}
 
-  async function setConfigurationValue(configId: string, value: string) {
-    const configName =
-      defenceDetail.config.find((config) => config.id === configId)?.name ?? "";
+	async function setConfigurationValue(
+		defence: Defence,
+		configId: string,
+		value: string
+	) {
+		const newConfiguration = defence.config.map((config) => {
+			if (config.id === configId) {
+				config.value = value;
+			}
+			return config;
+		});
+		await setDefenceConfiguration(defence.id, newConfiguration);
+	}
 
-    const configIsValid = validateDefence(defenceDetail.id, configName, value);
-    if (configIsValid) {
-      const newConfiguration = defenceDetail.config.map((config) => {
-        if (config.id === configId) {
-          config.value = value;
-        }
-        return config;
-      });
-
-      const configured = await setDefenceConfiguration(
-        defenceDetail.id,
-        newConfiguration
-      );
-      setIsConfigured(true);
-      setConfigValidated(configured);
-    } else {
-      setConfigValidated(false);
-      setIsConfigured(true);
-    }
-
-    // hide the message after 3 seconds
-    setTimeout(() => {
-      setIsConfigured(false);
-    }, 3000);
-  }
-
-  function toggleDefence() {
-    defenceDetail.isActive
-      ? setDefenceInactive(defenceDetail)
-      : setDefenceActive(defenceDetail);
-  }
-
-  return (
-    <span>
-      <div
-        className="strategy-mechanism defence-mechanism"
-        onMouseOver={() => {
-          setIsInfoBoxVisible(true);
-        }}
-        onMouseLeave={() => {
-          setIsInfoBoxVisible(false);
-        }}
-      >
-        <div className="strategy-mechanism-header">
-          <span>{defenceDetail.name}</span>
-          <label className="switch">
-            <input
-              type="checkbox"
-              placeholder="defence-toggle"
-              onChange={toggleDefence}
-              // set checked if defence is active
-              checked={defenceDetail.isActive}
-            />
-            <span className="slider round"></span>
-          </label>
-        </div>
-        {isInfoBoxVisible ? (
-          <div className="strategy-mechanism-info-box">
-            <div>{defenceDetail.info}</div>
-
-            {showConfigurations ? (
-              <div className="defence-mechanism-config">
-                {defenceDetail.config.map((config) => {
-                  return (
-                    <DefenceConfiguration
-                      key={config.id}
-                      config={config}
-                      setConfigurationValue={setConfigurationValue}
-                    />
-                  );
-                })}
-              </div>
-            ) : null}
-
-            {isConfigured ? (
-              <div className="defence-mechanism-config-validated">
-                {configValidated ? (
-                  <p className="validation-text">
-                    <TiTick /> defence successfully configured
-                  </p>
-                ) : (
-                  <p className="validation-text">
-                    <TiTimes /> invalid input - configuration failed
-                  </p>
-                )}
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-      </div>
-    </span>
-  );
+	return (
+		<fieldset className="defence-mechanism-fieldset">
+			<legend className="defence-mechanism-legend">{defenceDetail.name}</legend>
+			{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE && (
+				<form className="defence-mechanism-form">
+					<div className="toggles">
+						<input
+							id={defenceDetail.id}
+							className="visually-hidden"
+							type="checkbox"
+							placeholder="defence-toggle"
+							onChange={() => {
+								toggleDefence(defenceDetail);
+							}}
+							// set checked if defence is active
+							checked={defenceDetail.isActive}
+						/>
+						<label htmlFor={defenceDetail.id}>
+							{defenceDetail.isActive ? 'on' : 'off'}
+						</label>
+					</div>
+				</form>
+			)}
+			{defenceDetail.id !== DEFENCE_ID.PROMPT_ENCLOSURE ? (
+				defenceDetail.config.map((config) => (
+					<DetailElement useIcon={false} key={config.id}>
+						<p>{defenceDetail.info}</p>
+						{showConfigurations && (
+							<DefenceConfiguration
+								defence={defenceDetail}
+								isActive={defenceDetail.isActive}
+								config={config}
+								setConfigurationValue={setConfigurationValue}
+								resetConfigurationValue={resetConfigurationValue}
+							/>
+						)}
+					</DetailElement>
+				))
+			) : (
+				<DetailElement useIcon={false}>
+					<p>{defenceDetail.info}</p>
+					<PromptEnclosureDefenceMechanism
+						defences={promptEnclosureDefences}
+						toggleDefence={toggleDefence}
+						showConfigurations={showConfigurations}
+						setConfigurationValue={setConfigurationValue}
+						resetConfigurationValue={resetConfigurationValue}
+					/>
+				</DetailElement>
+			)}
+		</fieldset>
+	);
 }
 
 export default DefenceMechanism;

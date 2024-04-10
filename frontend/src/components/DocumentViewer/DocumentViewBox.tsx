@@ -1,57 +1,88 @@
-import { useEffect, useState } from "react";
-import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import { getDocumentUris } from "../../service/documentService";
+import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer';
+import { useEffect, useState } from 'react';
 
-import "./DocumentViewBox.css";
-import { RemoteDocument } from "../../models/document";
+import OverlayHeader from '@src/components/Overlay/OverlayHeader';
+import { DocumentMeta } from '@src/models/document';
+import { documentService } from '@src/service';
 
-function DocumentViewBox({
-  show,
-  setShow,
-}: {
-  show: boolean;
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
-  const [documents, setDocuments] = useState<RemoteDocument[]>([]);
-  // on mount get document uris
-  useEffect(() => {
-    getDocumentUris()
-      .then((uris) => {
-        setDocuments(uris);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+import DocumentViewBoxNav from './DocumentViewBoxNav';
 
-  return show ? (
-    <div className="document-popup">
-      <div className="document-popup-inner">
-        <span
-          className="close-button"
-          onClick={() => {
-            setShow(false);
-          }}
-        >
-          x
-        </span>
-        <div className="content">
-          <div className="view-documents-header">
-            <h3>view documents</h3>
-          </div>
-          <div className="view-documents-body">
-            <DocViewer
-              className="document-viewer"
-              documents={documents}
-              pluginRenderers={DocViewerRenderers}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  ) : (
-    ""
-  );
+import './DocumentViewBox.css';
+
+const emptyList: DocumentMeta[] = [];
+
+function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
+	const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>(emptyList);
+	const [documentIndex, setDocumentIndex] = useState<number>(0);
+
+	// on mount get document uris
+	useEffect(() => {
+		const abortController = new AbortController();
+		void documentService
+			.getDocumentMetas(abortController.signal)
+			.then((uris) => {
+				setDocumentMetas(uris);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+		return () => {
+			abortController.abort('component unmounted');
+		};
+	}, []);
+
+	return (
+		<div className="document-popup-inner">
+			<OverlayHeader
+				closeOverlay={closeOverlay}
+				heading="View Documents"
+				iconColor="#FFF"
+			/>
+			<div className="view-documents-main">
+				{documentMetas.length > 0 ? (
+					<>
+						<DocumentViewBoxNav
+							documentIndex={documentIndex}
+							documentName={documentMetas[documentIndex]?.filename ?? ''}
+							numberOfDocuments={documentMetas.length}
+							onPrevious={() => {
+								if (documentIndex > 0) {
+									setDocumentIndex(documentIndex - 1);
+								}
+							}}
+							onNext={() => {
+								if (documentIndex < documentMetas.length - 1) {
+									setDocumentIndex(documentIndex + 1);
+								}
+							}}
+						/>
+
+						<div
+							className="document-viewer-container"
+							// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+							tabIndex={0}
+						>
+							<DocViewer
+								documents={documentMetas}
+								activeDocument={documentMetas[documentIndex]}
+								pluginRenderers={DocViewerRenderers}
+								config={{
+									header: {
+										disableHeader: true,
+									},
+								}}
+							/>
+						</div>
+					</>
+				) : (
+					<p>
+						Unable to fetch documents. Try opening the document viewer again. If
+						the problem persists, please contact support.
+					</p>
+				)}
+			</div>
+		</div>
+	);
 }
 
 export default DocumentViewBox;

@@ -1,6 +1,17 @@
-.defence-config-value {
-  background-color: var(--main-background-colour);
-  font-size: 14px;
-  padding: 2px 4px;
-  margin: 4px 0px;
+.defence-configuration {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.defence-configuration .header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.25rem;
+}
+
+.defence-configuration .error-message {
+	color: var(--error-colour-light);
+	font-weight: bold;
 }

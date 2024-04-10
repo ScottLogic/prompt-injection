@@ -1,0 +1,27 @@
+.main-area {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: row;
+	overflow: hidden;
+	border-top: 0.125rem solid var(--level-banner-border-colour);
+	background: var(--main-background);
+}
+
+.centre-area {
+	width: 55%;
+	background-color: var(--main-text-colour);
+}
+
+.left-side-bar {
+	display: flex;
+	flex-direction: column;
+	width: 30%;
+	height: 100%;
+}
+
+.right-side-bar {
+	display: flex;
+	flex-direction: column-reverse;
+	width: 30%;
+	height: 100%;
+}

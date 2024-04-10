@@ -1,0 +1,41 @@
+.overlay {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	overflow: visible;
+	box-sizing: border-box;
+	width: 50vw;
+	height: fit-content;
+	padding: 0;
+	border: none;
+	border-radius: 0.625rem;
+	background-color: var(--overlay-background-colour);
+	color: var(--overlay-text-colour);
+}
+
+.overlay * {
+	box-sizing: border-box;
+}
+
+.overlay *:focus-visible {
+	background-color: var(--overlay-tab-colour);
+	outline-color: var(--main-text-colour);
+}
+
+.overlay p {
+	margin: 0;
+	font-weight: 500;
+	font-size: 1.25rem;
+}
+
+.overlay-content {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	height: 100%;
+	border-radius: none;
+}
+
+.overlay h2 {
+	margin: 0;
+}

@@ -1,0 +1,84 @@
+.multi-page-container {
+	display: flex;
+	overflow: auto;
+}
+
+.multi-page-content {
+	height: 60vh;
+	padding: 1.5rem;
+}
+
+.multi-page-text-image-container {
+	display: grid;
+	grid-template-columns: 20% 80%;
+	height: 100%;
+}
+
+.multi-page-speaker-image {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	object-fit: contain;
+	width: 100%;
+	height: 100%;
+}
+
+.multi-page-speaker-text {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	justify-content: center;
+	width: 100%;
+	padding: 0 4rem;
+}
+
+@media (width < 87.5rem) {
+	.overlay {
+		width: 60vw;
+	}
+
+	.overlay p {
+		margin: 0;
+	}
+
+	.multi-page-content {
+		padding: 0.5rem;
+	}
+
+	.multi-page-text-image-container {
+		grid-template-columns: 15% 85%;
+	}
+
+	.multi-page-speaker-text {
+		gap: 0.25rem;
+		padding: 0 1rem;
+	}
+
+	.overlay-button {
+		padding: 0.5rem 2rem;
+	}
+}
+
+@media (width < 62.5rem) {
+	.overlay {
+		width: 65vw;
+	}
+
+	.multi-page-text-image-container {
+		grid-template-columns: 100%;
+	}
+
+	.multi-page-speaker-image {
+		display: none;
+	}
+}
+
+@media (width < 43.75rem) {
+	.overlay {
+		width: 85vw;
+	}
+
+	.overlay-button {
+		padding: 0.125rem 2rem;
+	}
+}

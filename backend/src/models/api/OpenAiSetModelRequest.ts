@@ -1,13 +1,16 @@
-import { Request } from "express";
-import { CHAT_MODELS } from "../chat";
+import { Request } from 'express';
 
-type OpenAiSetModelRequest = Request<
-  object,
-  object,
-  {
-    model?: CHAT_MODELS;
-  },
-  object
+import { CHAT_MODEL_ID, ChatModelConfigurations } from '@src/models/chat';
+import { ChatMessage } from '@src/models/chatMessage';
+
+export type OpenAiSetModelRequest = Request<
+	never,
+	{
+		chatInfoMessage: ChatMessage;
+	},
+	{
+		model?: CHAT_MODEL_ID;
+		configuration?: ChatModelConfigurations;
+	},
+	never
 >;
-
-export type { OpenAiSetModelRequest };

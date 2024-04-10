@@ -1,0 +1,41 @@
+.level-selection-box {
+	position: relative;
+	display: flex;
+	gap: 0.5rem;
+	justify-content: center;
+	align-items: stretch;
+}
+
+.level-button {
+	height: 3.125rem;
+	padding: 1rem;
+	border: 0.125rem solid var(--level-button-border-colour);
+	border-radius: 0;
+	background-color: var(--level-button-colour);
+	font-size: 1.875rem;
+}
+
+.level-button.sandbox {
+	font-size: 1rem;
+}
+
+.level-button.selected {
+	background-color: var(--level-button-background-colour-selected);
+	color: var(--level-button-colour);
+	cursor: default;
+}
+
+.level-button.disabled {
+	border-color: var(--level-button-border-colour-disabled);
+	background-color: transparent;
+	color: var(--level-button-colour-disabled);
+}
+
+.level-button[aria-disabled='false']:hover {
+	background-color: var(--level-button-background-colour-hover);
+}
+
+.level-button.selected:hover {
+	background-color: var(--level-button-background-colour-selected);
+	color: var(--level-button-colour);
+}

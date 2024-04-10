@@ -1,0 +1,15 @@
+.model-config-slider-fieldset {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.model-config-slider-fieldset .config-slider {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 90%;
+	margin: 0 auto;
+	padding: 0;
+}

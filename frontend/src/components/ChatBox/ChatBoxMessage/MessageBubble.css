@@ -1,0 +1,65 @@
+.message-bubble {
+	max-width: 65%;
+	padding: 1.25rem;
+	border: 0.0625rem solid transparent;
+	border-radius: 1.25rem;
+	color: var(--chat-bot-text-colour);
+	white-space: pre-line;
+	word-wrap: break-word;
+	hyphens: auto;
+}
+
+.message-bubble:focus-visible {
+	outline-offset: 0.125rem;
+}
+
+.message-bubble.bot {
+	border-color: var(--chat-bot-border-colour);
+	background-color: var(--chat-bot-background-colour);
+}
+
+.message-bubble.blocked {
+	border-color: var(--chat-blocked-border-colour);
+	background-color: var(--chat-blocked-background-colour);
+}
+
+.message-bubble.error {
+	border-color: var(--chat-blocked-border-colour);
+	background-color: var(--chat-blocked-background-colour);
+}
+
+.message-bubble.user {
+	border-color: var(--chat-user-border-colour);
+	background-color: var(--chat-user-background-colour);
+	color: var(--main-text-colour);
+}
+
+.message-bubble.transformed {
+	border-color: var(--chat-transformed-border-colour);
+	background-color: var(--chat-transformed-background-colour);
+	color: var(--chat-transformed-text-colour);
+}
+
+.message-bubble.transformed b {
+	color: var(--chat-transformed-text-highlight-colour);
+}
+
+.message-bubble.level-info {
+	max-width: 100%;
+	background-color: var(--email-background-colour);
+	color: var(--chat-level-info-text-colour);
+}
+
+.message-bubble.level-info .header {
+	margin-top: 0;
+	margin-bottom: 0.3125rem;
+	font-weight: bold;
+}
+
+.message-bubble.left {
+	border-top-left-radius: 0;
+}
+
+.message-bubble.right {
+	border-top-right-radius: 0;
+}

@@ -1,15 +1,14 @@
-import { Request } from "express";
-import { DEFENCE_TYPES } from "../defence";
-import { PHASE_NAMES } from "../phase";
+import { Request } from 'express';
 
-type DefenceActivateRequest = Request<
-  object,
-  object,
-  {
-    defenceId?: DEFENCE_TYPES;
-    phase?: PHASE_NAMES;
-  },
-  object
+import { DEFENCE_ID } from '@src/models/defence';
+import { LEVEL_NAMES } from '@src/models/level';
+
+export type DefenceActivateRequest = Request<
+	never,
+	never,
+	{
+		defenceId?: DEFENCE_ID;
+		level?: LEVEL_NAMES;
+	},
+	never
 >;
-
-export type { DefenceActivateRequest };

@@ -1,14 +1,13 @@
-import { Request } from "express";
-import { PHASE_NAMES } from "../phase";
+import { Request } from 'express';
 
-type OpenAiChatRequest = Request<
-  object,
-  object,
-  {
-    currentPhase?: PHASE_NAMES;
-    message?: string;
-  },
-  object
+import { LEVEL_NAMES } from '@src/models/level';
+
+export type OpenAiChatRequest = Request<
+	never,
+	never,
+	{
+		currentLevel?: LEVEL_NAMES;
+		message?: string;
+	},
+	never
 >;
-
-export type { OpenAiChatRequest };

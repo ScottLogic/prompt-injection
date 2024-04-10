@@ -1,79 +1,93 @@
-.defence-mechanism-config {
-  font-size: 14px;
-  margin-top: 4px;
+.defence-mechanism-fieldset .defence-mechanism-form {
+	position: absolute;
+	right: 1rem;
+	display: flex;
+	align-items: center;
+	height: 2.5rem;
 }
 
-.defence-mechanism-config-validated {
-  margin-top: 10px;
-  margin-bottom: 10px;
+.defence-mechanism-fieldset .defence-radio-buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 0.875rem;
 }
 
-.validation-text {
-  font-size: 14px;
-  font-weight: 600;
+/* adapted from: https://adrianroselli.com/2019/03/under-engineered-toggles.html */
+
+.toggles *,
+.toggles ::before,
+.toggles ::after {
+	box-sizing: border-box;
 }
 
-/* The switch - the box around the slider */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 29px;
-  height: 13px;
+.toggles [type='checkbox'] + label {
+	position: relative;
+	display: block;
+	max-width: fit-content;
+	padding-right: 3rem;
+	text-align: right;
 }
 
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+.toggles [type='checkbox']:focus + label,
+.toggles [type='checkbox']:hover + label {
+	color: var(--main-text-accent-colour);
 }
 
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--main-toggle-off-colour);
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+.toggles [type='checkbox'] + label::before,
+.toggles [type='checkbox'] + label::after {
+	content: '';
+	position: absolute;
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 13px;
-  width: 13px;
-  background-color: var(--main-toggle-ball-colour);
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+.toggles [type='checkbox'] + label::before {
+	top: 0;
+	right: 0;
+	width: 2.125rem;
+	height: 1.25rem;
+	border: 0.125rem solid var(--main-toggle-off-border-colour);
+	border-radius: 1rem;
+	background-color: var(--main-toggle-off-colour);
 }
 
-input:checked + .slider {
-  background-color: var(--main-toggle-on-colour);
+.toggles [type='checkbox'] + label::after {
+	top: 0.125rem;
+	right: 1rem;
+	width: 1rem;
+	height: 1rem;
+	border: 0.0625rem solid var(--main-toggle-off-border-colour);
+	border-radius: 50%;
+	background-color: var(--main-text-colour);
+	background-position: center center;
+	transition: right 0.3s ease 0.2s;
 }
 
-input:focus + .slider {
-  box-shadow: 0 0 1px var(--main-toggle-on-colour);
+.toggles [type='checkbox']:focus + label::before,
+.toggles [type='checkbox']:hover + label::before {
+	outline: 0.25rem solid var(--accent-border-colour);
+	outline-offset: 0.125rem;
 }
 
-input:checked + .slider:before {
-  -webkit-transform: translateX(16px);
-  -ms-transform: translateX(16px);
-  transform: translateX(16px);
+.toggles [type='checkbox']:focus + label::after,
+.toggles [type='checkbox']:hover + label::after {
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50' fill='rgba(0,0,0,.25)'/%3E%3C/svg%3E");
+	background-position: center center;
+	background-size: 30%;
+	background-repeat: no-repeat;
 }
 
-/*
- * Modified from https://www.w3schools.com/howto/howto_css_switch.asp
-*/
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
+.toggles [type='checkbox']:checked + label::before {
+	border-color: var(--main-toggle-on-border-colour);
+	background-color: var(--main-toggle-on-border-colour);
 }
 
-.slider.round:before {
-  border-radius: 50%;
+.toggles [type='checkbox']:checked + label::after {
+	right: 0.125rem;
+	border-color: var(--main-toggle-on-border-colour);
+	color: var(--main-toggle-on-border-colour);
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+	.toggles [type='checkbox'] + label::after {
+		transition: none;
+	}
 }

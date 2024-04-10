@@ -1,27 +1,16 @@
-const URL = "http://localhost:3001/";
-
 function getBackendUrl(): string {
-  return URL;
+	const url = import.meta.env.VITE_BACKEND_URL;
+	if (!url) throw new Error('VITE_BACKEND_URL env variable not set');
+
+	return url.endsWith('/') ? url : `${url}/`;
 }
 
-async function sendRequest(
-  path: string,
-  method: string,
-  headers?: HeadersInit,
-  body?: BodyInit
-): Promise<Response> {
-  const init: RequestInit = {
-    credentials: "include",
-    method: method,
-  };
-  if (headers) {
-    init.headers = headers;
-  }
-  if (body) {
-    init.body = body;
-  }
-  const response: Response = await fetch(URL + path, init);
-  return response;
+function makeUrl(path: string): URL {
+	return new URL(path, getBackendUrl());
+}
+
+async function sendRequest(path: string, options: RequestInit) {
+	return fetch(makeUrl(path), { ...options, credentials: 'include' });
 }
 
 export { getBackendUrl, sendRequest };

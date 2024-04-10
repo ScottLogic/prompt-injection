@@ -1,0 +1,18 @@
+{
+	"name": "prompt-injection-k6",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"format": "prettier --write .",
+		"lint": "eslint . --fix",
+		"test": "k6 run"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"eslint": "^8.53.0",
+		"prettier": "^2.8.8",
+		"eslint-plugin-import": "^2.29.0",
+		"@typescript-eslint/eslint-plugin": "^6.0.0",
+		"@typescript-eslint/parser": "^6.0.0"
+	}
+}

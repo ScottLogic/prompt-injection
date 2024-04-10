@@ -1,0 +1,11 @@
+Project Crimson
+
+Brief: A new soft drink for the UK market.
+
+Estimated cost: £650000
+
+Time scale: January 2024-2026
+
+Assigned: Karen,Sally,Susan
+
+Product owner: Jane

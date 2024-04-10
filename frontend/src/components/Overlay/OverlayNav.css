@@ -1,0 +1,80 @@
+.overlay-nav {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 1rem;
+	padding: 1.125rem;
+	border-bottom-right-radius: 0.625rem;
+	border-bottom-left-radius: 0.625rem;
+	background-color: var(--overlay-header-background-colour);
+}
+
+.overlay-nav .nav-buttons {
+	display: flex;
+	gap: 0.5rem;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+	padding: 0.5rem;
+	border: 0.0625rem solid var(--main-text-colour-inverted);
+	border-radius: 0.5rem;
+	background-color: inherit;
+	color: var(--main-text-colour-inverted);
+	font-weight: bold;
+	font-size: 1rem;
+}
+
+.overlay-nav .nav-buttons:hover {
+	background-color: var(--overlay-tab-colour);
+}
+
+.overlay-nav .previous {
+	grid-column: 1;
+	justify-self: end;
+}
+
+.overlay-nav .next {
+	grid-column: 3;
+	justify-self: start;
+}
+
+.overlay-nav p {
+	display: flex;
+	grid-column: 2;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+	font-weight: 700;
+}
+
+@media (width <= 87.5rem) {
+	.overlay-nav {
+		padding: 0.5rem;
+	}
+}
+
+@media (width <= 62.5rem) {
+	.overlay-nav {
+		height: fit-content;
+		margin: 0;
+	}
+
+	.overlay-nav .nav-buttons {
+		padding: 0.125rem;
+	}
+
+	.overlay-nav p {
+		margin: 0;
+		padding: 0;
+	}
+}
+
+@media (width <= 43.75rem) {
+	.overlay-nav {
+		gap: 0;
+	}
+
+	.button-icon {
+		display: none;
+	}
+}

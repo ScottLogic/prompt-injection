@@ -1,0 +1,31 @@
+.mode-selection-buttons {
+	display: flex;
+	justify-content: space-evenly;
+	margin-top: 0.5rem;
+	padding: 0;
+	list-style: none;
+}
+
+.mode-selection-buttons .mode-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+	padding: 1rem 2rem;
+	border: 0.125rem solid var(--overlay-tab-colour);
+	border-radius: 0.5rem;
+	background-color: var(--overlay-background-colour);
+	font-weight: 700;
+	font-size: 1.25rem;
+	line-height: 1;
+	white-space: nowrap;
+	transition: ease 0.1s;
+}
+
+.mode-selection-buttons button:hover {
+	background-color: var(--overlay-tab-colour);
+}
+
+.mode-selection-buttons button:focus-visible {
+	background-color: var(--overlay-tab-colour);
+}

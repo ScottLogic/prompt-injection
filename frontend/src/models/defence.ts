@@ -1,49 +1,61 @@
-enum DEFENCE_TYPES {
-  CHARACTER_LIMIT = "CHARACTER_LIMIT",
-  EMAIL_WHITELIST = "EMAIL_WHITELIST",
-  LLM_EVALUATION = "LLM_EVALUATION",
-  QA_LLM_INSTRUCTIONS = "QA_LLM_INSTRUCTIONS",
-  RANDOM_SEQUENCE_ENCLOSURE = "RANDOM_SEQUENCE_ENCLOSURE",
-  SYSTEM_ROLE = "SYSTEM_ROLE",
-  XML_TAGGING = "XML_TAGGING",
-  FILTER_USER_INPUT = "FILTER_USER_INPUT",
-  FILTER_BOT_OUTPUT = "FILTER_BOT_OUTPUT",
+enum DEFENCE_ID {
+	CHARACTER_LIMIT = 'CHARACTER_LIMIT',
+	PROMPT_EVALUATION_LLM = 'PROMPT_EVALUATION_LLM',
+	QA_LLM = 'QA_LLM',
+	SYSTEM_ROLE = 'SYSTEM_ROLE',
+	XML_TAGGING = 'XML_TAGGING',
+	RANDOM_SEQUENCE_ENCLOSURE = 'RANDOM_SEQUENCE_ENCLOSURE',
+	INSTRUCTION = 'INSTRUCTION',
+	INPUT_FILTERING = 'INPUT_FILTERING',
+	OUTPUT_FILTERING = 'OUTPUT_FILTERING',
+	PROMPT_ENCLOSURE = 'PROMPT_ENCLOSURE',
 }
 
-class DefenceConfig {
-  constructor(id: string, name: string) {
-    this.id = id;
-    this.name = name;
-    this.value = "";
-  }
+type DEFENCE_CONFIG_ITEM_ID =
+	| 'MAX_MESSAGE_LENGTH'
+	| 'PROMPT'
+	| 'SYSTEM_ROLE'
+	| 'SEQUENCE_LENGTH'
+	| 'INPUT_FILTERING'
+	| 'OUTPUT_FILTERING';
 
-  id: string;
-  name: string;
-  value: string;
-}
+type DefenceConfigItem = {
+	id: DEFENCE_CONFIG_ITEM_ID;
+	inputType: 'text' | 'number';
+	name: string;
+	value: string;
+};
 
-class DefenceInfo {
-  constructor(
-    id: DEFENCE_TYPES,
-    name: string,
-    info: string,
-    config: DefenceConfig[]
-  ) {
-    this.id = id;
-    this.name = name;
-    this.info = info;
-    this.config = config;
-    // each defence starts off as inactive and not triggered
-    this.isActive = false;
-    this.isTriggered = false;
-  }
+type Defence = {
+	id: DEFENCE_ID;
+	name: string;
+	info: string;
+	config: DefenceConfigItem[];
+	isActive: boolean;
+};
 
-  id: DEFENCE_TYPES;
-  name: string;
-  info: string;
-  config: DefenceConfig[];
-  isActive: boolean;
-  isTriggered: boolean;
-}
+type DefenceDTO = {
+	id: DEFENCE_ID;
+	config: DefenceConfigItemDTO[];
+	isActive: boolean;
+};
 
-export { DEFENCE_TYPES, DefenceConfig, DefenceInfo };
+type DefenceConfigItemDTO = {
+	id: DEFENCE_CONFIG_ITEM_ID;
+	value: string;
+};
+
+type DefenceResetResponse = {
+	id: string;
+	value: string;
+};
+
+export { DEFENCE_ID };
+export type {
+	DefenceResetResponse,
+	DEFENCE_CONFIG_ITEM_ID,
+	DefenceConfigItem,
+	Defence,
+	DefenceDTO,
+	DefenceConfigItemDTO,
+};

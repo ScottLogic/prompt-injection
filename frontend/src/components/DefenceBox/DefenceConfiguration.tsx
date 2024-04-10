@@ -1,38 +1,71 @@
-import "./DefenceConfiguration.css";
-import { DefenceConfig } from "../../models/defence";
-import ContentEditable from "react-contenteditable";
+import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
+import {
+	DEFENCE_CONFIG_ITEM_ID,
+	Defence,
+	DefenceConfigItem,
+} from '@src/models/defence';
+import { defenceService } from '@src/service';
+
+import DefenceConfigurationInput from './DefenceConfigurationInput';
+
+import './DefenceConfiguration.css';
 
 function DefenceConfiguration({
-  config,
-  setConfigurationValue,
+	defence,
+	config,
+	isActive,
+	setConfigurationValue,
+	resetConfigurationValue,
 }: {
-  config: DefenceConfig;
-  setConfigurationValue: (configId: string, value: string) => Promise<void>;
+	defence: Defence;
+	config: DefenceConfigItem;
+	isActive: boolean;
+	setConfigurationValue: (
+		defence: Defence,
+		configId: string,
+		value: string
+	) => Promise<void>;
+	resetConfigurationValue: (
+		defence: Defence,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) => void;
 }) {
-  function setConfiguration(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Enter") {
-      const value = event.currentTarget.innerText.trim();
-      // asynchronously set the configuration value
-      void setConfigurationValue(config.id, value);
-    }
-  }
+	const uniqueInputId = `${defence.id}-${config.id}`;
+	const supportText = `reset ${config.name} to default`;
 
-  return (
-    <div>
-      <span className="defence-config-name">{config.name}: </span>
-      <ContentEditable
-        className="defence-config-value prompt-injection-input"
-        html={config.value.toString()}
-        onKeyUp={setConfiguration}
-        onClick={(event) => {
-          event.stopPropagation();
-        }}
-        onChange={() => {
-          return;
-        }}
-      />
-    </div>
-  );
+	function validateNewInput(value: string) {
+		return defenceService.validateDefence(defence.id, config.id, value);
+	}
+
+	return (
+		<div className="defence-configuration">
+			<div className="header">
+				<label htmlFor={uniqueInputId}>{config.name}: </label>
+				<ThemedButton
+					onClick={() => {
+						resetConfigurationValue(defence, config.id);
+					}}
+					ariaLabel={supportText}
+					tooltip={{
+						id: `reset-${config.id}`,
+						text: supportText,
+					}}
+				>
+					reset
+				</ThemedButton>
+			</div>
+			<DefenceConfigurationInput
+				id={uniqueInputId}
+				currentValue={config.value}
+				disabled={!isActive}
+				inputType={config.inputType}
+				setConfigurationValue={(value) =>
+					setConfigurationValue(defence, config.id, value.trim())
+				}
+				validateNewInput={validateNewInput}
+			/>
+		</div>
+	);
 }
 
 export default DefenceConfiguration;

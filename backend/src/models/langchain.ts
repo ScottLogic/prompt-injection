@@ -1,10 +1,9 @@
 interface PromptEvaluationChainReply {
-  promptInjectionEval: string;
-  maliciousInputEval: string;
+	promptEvalOutput: string;
 }
 
 interface QaChainReply {
-  text: string;
+	text: string;
 }
 
 export type { PromptEvaluationChainReply, QaChainReply };

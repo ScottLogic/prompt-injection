@@ -1,0 +1,53 @@
+.model-selection-box {
+	display: flex;
+	flex-direction: column;
+}
+
+.model-selection-box .model-selection-fieldset {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	min-height: fit-content;
+}
+
+.model-selection-box .model-selection-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem 0.5rem;
+	align-items: center;
+}
+
+.model-selection-box .model-selection-row p {
+	flex: 1 1 auto;
+	margin: 0;
+}
+
+.model-selection-box .model-selection-row .select-wrapper {
+	display: flex;
+	flex: 1 1 auto;
+	flex-wrap: wrap;
+	gap: 0.25rem 0.5rem;
+}
+
+.model-selection-box .model-selection-row select {
+	flex: 1 1 auto;
+	padding: 0.5rem;
+	border-width: 0.0625rem;
+	border-radius: 0.25rem;
+	outline-offset: 0.125rem;
+}
+
+.model-selection-box .model-selection-info {
+	align-items: center;
+	text-align: center;
+}
+
+.model-selection-box .model-selection-info p {
+	margin: 0;
+	padding: 0;
+}
+
+.model-selection-box .model-selection-info .error-message {
+	color: var(--error-colour-light);
+	font-weight: bold;
+}

@@ -1,0 +1,17 @@
+.overlay-choice {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	overflow: auto;
+	padding: 1.5rem;
+}
+
+.overlay-choice p {
+	margin-top: 0;
+}
+
+@media (width < 62.5rem) {
+	.overlay-choice {
+		padding: 0.5rem;
+	}
+}

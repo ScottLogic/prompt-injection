@@ -1,0 +1,43 @@
+.handbook-page header {
+	margin-bottom: 2rem;
+}
+
+.handbook-terms {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	margin: 0;
+	text-align: left;
+}
+
+.handbook-terms .term {
+	font-size: 1rem;
+}
+
+.handbook-terms .term dt {
+	margin-bottom: 0.5rem;
+	font-weight: bold;
+	font-size: 1.125rem;
+}
+
+.handbook-terms .term dd {
+	margin: 0;
+}
+
+.handbook-terms .role-locked {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 7.5rem;
+	border: 2px dashed var(--handbook-locked-section-border-colour);
+	border-radius: 0.625rem;
+	background: var(--handbook-locked-section-colour);
+	text-align: center;
+}
+
+.handbook-terms .system-role-error-message {
+	padding: 0.625rem;
+	border: 0.125rem dashed var(--error-colour);
+	border-radius: 0.625rem;
+	background-color: var(--error-background-colour);
+}

@@ -1,80 +1,86 @@
-.document-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Black w/ opacity */
+.document-popup-inner header {
+	border-radius: 0;
+	background-color: var(--accent-background-colour);
+	color: var(--main-text-colour);
+}
+
+.document-popup-inner header .overlay-close-button {
+	border-color: var(--main-text-colour);
+	color: var(--main-text-colour);
+}
+
+.document-popup-inner header .overlay-close-icon {
+	border-color: var(--main-text-colour);
+	color: var(--main-text-colour);
+}
+
+.document-popup-inner header .overlay-close-button:hover {
+	background-color: var(--action-button-background-colour-hover);
+}
+
+.document-popup-inner header .overlay-close-button:focus-visible {
+	background-color: var(--action-button-background-colour-hover);
+	outline-color: var(--main-text-colour);
 }
 
 .document-popup-inner {
-  position: relative;
-  padding: 32px;
-  width: 100%;
-  max-width: 800px;
-  max-height: 90%;
-  background-color: var(--main-background-colour);
-  border: 3px solid var(--main-border-colour);
-  border-color: var(--main-border-colour);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 85vh;
 }
 
-.document-popup-inner .close-button {
-  color: var(--main-accent-colour);
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+.view-documents-main {
+	position: relative;
+	display: flex;
+	flex-grow: 1;
+	flex-direction: column;
+	overflow: hidden;
+	box-sizing: border-box;
+	padding: 2rem 3rem;
+	border: 0.1875rem solid var(--main-border-colour);
+	background: var(--main-background);
+	color: var(--main-text-colour);
 }
 
-.document-popup-inner .close-button:hover {
-  color: var(--main-button-hover-text-colour);
-  text-decoration: none;
-  cursor: pointer;
+.document-viewer-container {
+	flex-grow: 1;
+	overflow-y: auto;
+	width: 32.5rem;
+	background-color: var(--document-viewer-background-colour);
 }
 
-.view-documents-header {
-  color: var(--main-accent-colour);
-  border-color: var(--main-border-colour);
-  border-width: 0 0 1px 0;
-  border-style: solid;
-  margin: 15px;
-  margin-bottom: 10px;
-  padding-bottom: 20px;
-  text-align: center;
+@media (width < 87.5rem) {
+	.view-documents-main {
+		padding: 1.5rem 2rem;
+	}
+}
+
+@media (width < 62.5rem) {
+	.document-popup-inner {
+		height: 95vh;
+	}
+
+	.view-documents-main {
+		padding: 1rem 1.5rem;
+	}
 }
 
 #react-doc-viewer {
-  color: var(--chat-message-text-colour);
-  width: 70%;
-  height: 500px;
-  margin: auto;
-}
-
-#react-doc-viewer #header-bar {
-  background-color: var(--main-background-colour);
-  color: var(--main-accent-colour);
-}
-
-#react-doc-viewer #header-bar #file-name {
-  color: var(--main-accent-colour);
-}
-
-#react-doc-viewer #doc-nav-info {
-  color: var(--main-accent-colour);
+	/* don't scroll */
+	overflow: visible;
+	margin: auto;
+	background-color: var(--document-viewer-background-colour);
+	color: var(--document-viewer-text-colour);
 }
 
 #react-doc-viewer #proxy-renderer {
-  padding: 20px;
+	/* don't scroll */
+	overflow: visible;
+	padding: 1.25rem;
 }
 
 #react-doc-viewer #txt-renderer {
-  padding: 10px;
-  text-align: left;
-  white-space: pre-wrap;
+	padding: 0.625rem;
+	white-space: pre-line;
 }

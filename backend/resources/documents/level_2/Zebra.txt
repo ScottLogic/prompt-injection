@@ -1,0 +1,11 @@
+Project Zebra 
+
+Brief: A special drink to celebrate the company anniversary.  
+
+Estimated cost: £25000
+
+Time scale: September 2023 - August 2024
+
+Assigned: Bob, Karen, Kevin 
+
+Product owner: Bob 

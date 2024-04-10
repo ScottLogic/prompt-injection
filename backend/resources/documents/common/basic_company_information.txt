@@ -1,0 +1,14 @@
+ScottBrew: Basic Company Information
+
+- Founding Year: 2005
+- Location: Glasgow, Scotland
+- Founders: George Smith and Heather Campbell
+- Number of Employees: 328
+- Revenue:
+- - £32 million in 2022
+- - £31 million in 2021
+- - £32 million in 2020
+- - £29 million in 2019
+- Innovation Focus: Sustainable and ethically sourced ingredients
+- Cultural Engagement: Sponsors local events, folklore festivals, and traditional Highland games
+- Community Support: Actively supports local artisans and musicians

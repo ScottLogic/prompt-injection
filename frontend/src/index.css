@@ -1,19 +1,36 @@
 body {
-  height: 100%;
-  margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	overflow: hidden;
+	height: 100%;
+	margin: 0;
+	font-family: 'Noto Sans', Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body * {
+	font-family: 'Noto Sans', Arial, sans-serif;
+}
+
+button {
+	cursor: pointer;
+}
+
+button[disabled],
+button[aria-disabled='true'] {
+	cursor: default;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+	font-family: 'Noto Sans Mono', source-code-pro, Menlo, Monaco, Consolas,
+		'Courier New', monospace;
 }
 
 html {
-  height: 100%;
-  background-color: var(--main-background-colour);
-  border-color: var(--main-border-colour);
-  color: var(--main-text-colour);
+	height: 100%;
+	background: var(--main-background);
+	color: var(--main-text-colour);
+}
+
+*:focus-visible {
+	outline: 0.25rem solid var(--accent-border-colour);
 }

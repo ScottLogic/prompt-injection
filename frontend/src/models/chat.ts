@@ -1,60 +1,111 @@
-import { DEFENCE_TYPES } from "./defence";
+import { DEFENCE_ID } from './defence';
+import { EmailInfo } from './email';
 
-enum CHAT_MODELS {
-  GPT_4 = "gpt-4",
-  GPT_4_0613 = "gpt-4-0613",
-  GPT_4_32K = "gpt-4-32k",
-  GPT_4_32K_0613 = "gpt-4-32k-0613",
-  GPT_3_5_TURBO = "gpt-3.5-turbo",
-  GPT_3_5_TURBO_0613 = "gpt-3.5-turbo-0613",
-  GPT_3_5_TURBO_16K = "gpt-3.5-turbo-16k",
-  GPT_3_5_TURBO_16K_0613 = "gpt-3.5-turbo-16k-0613",
+type CHAT_MESSAGE_TYPE =
+	| 'BOT'
+	| 'BOT_BLOCKED'
+	| 'GENERIC_INFO'
+	| 'USER'
+	| 'USER_TRANSFORMED'
+	| 'LEVEL_COMPLETE'
+	| 'DEFENCE_ALERTED'
+	| 'DEFENCE_TRIGGERED'
+	| 'SYSTEM'
+	| 'FUNCTION_CALL'
+	| 'ERROR_MSG'
+	| 'RESET_LEVEL';
+
+const chatModelIds = [
+	'gpt-4-1106-preview',
+	'gpt-4',
+	'gpt-4-0613',
+	'gpt-3.5-turbo',
+	'gpt-3.5-turbo-0613',
+	'gpt-3.5-turbo-16k',
+	'gpt-3.5-turbo-16k-0613',
+] as const;
+
+type CHAT_MODEL_ID = (typeof chatModelIds)[number];
+
+type ChatModel = {
+	id: CHAT_MODEL_ID;
+	configuration: ChatModelConfigurations;
+};
+
+const modelConfigIds = [
+	'temperature',
+	'topP',
+	'frequencyPenalty',
+	'presencePenalty',
+] as const;
+
+type MODEL_CONFIG_ID = (typeof modelConfigIds)[number];
+
+type ChatModelConfigurations = {
+	[key in MODEL_CONFIG_ID]: number;
+};
+
+interface CustomChatModelConfiguration {
+	id: MODEL_CONFIG_ID;
+	name: string;
+	info: string;
+	value: number;
+	min: number;
+	max: number;
 }
 
-enum CHAT_MESSAGE_TYPE {
-  BOT,
-  BOT_BLOCKED,
-  INFO,
-  USER,
-  USER_TRANSFORMED,
-  PHASE_INFO,
-  DEFENCE_ALERTED,
-  DEFENCE_TRIGGERED,
-  SYSTEM,
-  FUNCTION_CALL,
-}
-
-interface ChatDefenceReport {
-  blockedReason: string;
-  isBlocked: boolean;
-  alertedDefences: DEFENCE_TYPES[];
-  triggeredDefences: DEFENCE_TYPES[];
+interface DefenceReport {
+	blockedReason: string;
+	isBlocked: boolean;
+	alertedDefences: DEFENCE_ID[];
+	triggeredDefences: DEFENCE_ID[];
 }
 
 interface ChatMessage {
-  message: string;
-  type: CHAT_MESSAGE_TYPE;
+	message: string;
+	transformedMessage?: TransformedChatMessage;
+	type: CHAT_MESSAGE_TYPE;
+}
+
+interface TransformedChatMessage {
+	preMessage: string;
+	message: string;
+	postMessage: string;
+	transformationName: string;
 }
 
 interface ChatResponse {
-  reply: string;
-  defenceInfo: ChatDefenceReport;
-  numPhasesCompleted: number;
-  transformedMessage: string;
-  wonPhase: boolean;
+	reply: string;
+	defenceReport: DefenceReport;
+	transformedMessage?: TransformedChatMessage;
+	wonLevel: boolean;
+	isError: boolean;
+	sentEmails: EmailInfo[];
+	transformedMessageInfo?: string;
+	wonLevelMessage?: ChatMessageDTO;
 }
 
 interface ChatCompletionRequestMessage {
-  role: string;
-  name: string | null;
-  content: string;
+	role: string;
+	name: string | null;
+	content: string;
 }
 
-interface ChatHistoryMessage {
-  completion: ChatCompletionRequestMessage | null;
-  chatMessageType: CHAT_MESSAGE_TYPE;
-  infoMessage: string | null | undefined;
+interface ChatMessageDTO {
+	completion: ChatCompletionRequestMessage | null;
+	chatMessageType: CHAT_MESSAGE_TYPE;
+	infoMessage: string | null | undefined;
+	transformedMessage?: TransformedChatMessage;
 }
 
-export type { ChatMessage, ChatResponse, ChatHistoryMessage };
-export { CHAT_MODELS, CHAT_MESSAGE_TYPE };
+export type {
+	ChatMessage,
+	ChatResponse,
+	ChatMessageDTO,
+	ChatModel,
+	ChatModelConfigurations,
+	CustomChatModelConfiguration,
+	CHAT_MESSAGE_TYPE,
+	MODEL_CONFIG_ID,
+	CHAT_MODEL_ID,
+};

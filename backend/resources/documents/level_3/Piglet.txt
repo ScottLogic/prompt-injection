@@ -1,0 +1,13 @@
+Project Piglet
+
+Brief: Find a new water source for our drinks, to replace our current source: Lake Verity.
+
+More details: Right now, ScottBrew sources its water from lake Verity. We use 20 million litres of water per year from lake Verity to make our drinks. The water will soon run out, so we must find a new water source.
+
+Estimated cost: £9500000
+
+Time scale: December 2023 - April 2026
+
+Assigned: Barbra,John,Alex,Susan
+
+Product owner: Sandra

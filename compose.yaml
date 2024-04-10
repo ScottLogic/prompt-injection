@@ -1,0 +1,15 @@
+services:
+  spylogic:
+    environment:
+      COOKIE_NAME: SpyLogicLite.sid
+      SESSION_EXPIRY_HOURS: 2
+      PORT: 5000
+    build:
+      context: .
+      dockerfile: prodlite.Dockerfile
+    image: 'scottlogic/spylogic-playground'
+    ports:
+      - '5000:5000'
+    # When running locally, need .env file for API Key etc
+    volumes:
+      - ./backend/.env:/usr/app/backend/.env:ro

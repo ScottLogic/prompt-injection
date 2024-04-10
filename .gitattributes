@@ -1,0 +1,5 @@
+# Always use LF for line endings
+* text eol=lf
+# Apart from font files and images
+*.[ot]tf binary
+*.png -text

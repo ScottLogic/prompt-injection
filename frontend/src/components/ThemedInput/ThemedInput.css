@@ -1,0 +1,29 @@
+.themed-input {
+	box-sizing: border-box;
+	width: 100%;
+	padding: 0.125rem;
+	border-width: 0.0625rem;
+	border-style: solid;
+	border-radius: 0.25rem;
+	background-color: var(--main-input-active-background-colour);
+	color: var(--main-input-active-text-colour);
+
+	/* must inherit to override default styling */
+	font-size: inherit;
+	font-family: inherit;
+}
+
+.themed-input.disabled {
+	background-color: var(--chat-button-background-colour);
+	color: var(--main-input-inactive-text-colour);
+}
+
+.themed-input::placeholder {
+	color: var(--main-input-inactive-text-colour);
+	opacity: 1;
+}
+
+.invalid-input {
+	border-color: var(--error-colour-light);
+	color: var(--error-colour-light);
+}

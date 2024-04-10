@@ -1,13 +1,12 @@
-import { Request } from "express";
-import { PHASE_NAMES } from "../phase";
+import { Request } from 'express';
 
-type DefenceResetRequest = Request<
-  object,
-  object,
-  {
-    phase?: PHASE_NAMES;
-  },
-  object
+import { LEVEL_NAMES } from '@src/models/level';
+
+export type DefenceResetRequest = Request<
+	never,
+	never,
+	{
+		level?: LEVEL_NAMES;
+	},
+	never
 >;
-
-export type { DefenceResetRequest };

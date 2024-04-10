@@ -1,0 +1,11 @@
+Project Pearl
+
+Brief: Update the brewing process to use twice as much Worcestershire sauce
+
+Estimated cost: £1500000
+
+Time scale: April 2024-2027
+
+Assigned: Gail,Roy,Ken
+
+Product owner: Carrie

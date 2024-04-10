@@ -1,158 +1,113 @@
-import { sendRequest } from "./backendService";
+import { ChatInfoMessageResponse } from '@src/models/apiResponse';
 import {
-  CHAT_MESSAGE_TYPE,
-  CHAT_MODELS,
-  ChatHistoryMessage,
-  ChatMessage,
-  ChatResponse,
-} from "../models/chat";
-import { PHASE_NAMES } from "../models/phase";
+	CHAT_MESSAGE_TYPE,
+	ChatMessageDTO,
+	ChatMessage,
+	ChatResponse,
+	MODEL_CONFIG_ID,
+} from '@src/models/chat';
+import { LEVEL_NAMES } from '@src/models/level';
 
-const PATH = "openai/";
+import { sendRequest } from './backendService';
 
-async function clearChat(phase: number) {
-  const response = await sendRequest(
-    `${PATH}clear`,
-    "POST",
-    {
-      "Content-Type": "application/json",
-    },
-    JSON.stringify({ phase: phase })
-  );
-  return response.status === 200;
+const PATH = 'openai/';
+
+async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
+	const response = await sendRequest(`${PATH}chat`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ message, currentLevel }),
+	});
+	const data = (await response.json()) as ChatResponse;
+	return data;
 }
 
-async function sendMessage(message: string, currentPhase: PHASE_NAMES) {
-  const response = await sendRequest(
-    `${PATH}chat`,
-    "POST",
-    { "Content-Type": "application/json" },
-    JSON.stringify({ message, currentPhase })
-  );
-  const data = (await response.json()) as ChatResponse;
-  console.log(data);
-  return data;
+function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
+	if (!chatMessageDTOIsConvertible(chatMessageDTO)) {
+		throw new Error(
+			'Cannot convert chatMessageDTO of type SYSTEM or FUNCTION_CALL to ChatMessage'
+		);
+	}
+
+	const type = chatMessageDTO.chatMessageType;
+	return {
+		transformedMessage: chatMessageDTO.transformedMessage ?? undefined,
+		message:
+			type === 'USER'
+				? chatMessageDTO.completion?.content ?? chatMessageDTO.infoMessage ?? ''
+				: type === 'BOT' || type === 'USER_TRANSFORMED'
+				? chatMessageDTO.completion?.content ?? ''
+				: chatMessageDTO.infoMessage ?? '',
+		type,
+	};
 }
 
-async function getChatHistory(phase: number): Promise<ChatMessage[]> {
-  const response = await sendRequest(`${PATH}history?phase=${phase}`, "GET");
-  const chatHistory = (await response.json()) as ChatHistoryMessage[];
-  // convert to ChatMessage object
-  const chatMessages: ChatMessage[] = [];
-  chatHistory.forEach((message) => {
-    switch (message.chatMessageType) {
-      case CHAT_MESSAGE_TYPE.BOT:
-        chatMessages.push({
-          message: message.completion?.content ?? "",
-          type: CHAT_MESSAGE_TYPE.BOT,
-        });
-        break;
-      case CHAT_MESSAGE_TYPE.BOT_BLOCKED:
-        chatMessages.push({
-          message: message.infoMessage ?? "",
-          type: CHAT_MESSAGE_TYPE.BOT_BLOCKED,
-        });
-        break;
-      case CHAT_MESSAGE_TYPE.USER:
-        chatMessages.push({
-          message: message.completion?.content ?? message.infoMessage ?? "",
-          type: CHAT_MESSAGE_TYPE.USER,
-        });
-        break;
-      case CHAT_MESSAGE_TYPE.USER_TRANSFORMED:
-        chatMessages.push({
-          message: message.completion?.content ?? "",
-          type: CHAT_MESSAGE_TYPE.USER_TRANSFORMED,
-        });
-        break;
-      case CHAT_MESSAGE_TYPE.INFO:
-        chatMessages.push({
-          message: message.infoMessage ?? "",
-          type: message.chatMessageType,
-        });
-        break;
-      case CHAT_MESSAGE_TYPE.PHASE_INFO:
-        chatMessages.push({
-          message: message.infoMessage ?? "",
-          type: CHAT_MESSAGE_TYPE.PHASE_INFO,
-        });
-        break;
-      case CHAT_MESSAGE_TYPE.DEFENCE_ALERTED:
-        chatMessages.push({
-          message: message.infoMessage ?? "",
-          type: CHAT_MESSAGE_TYPE.DEFENCE_ALERTED,
-        });
-        break;
-      case CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED:
-        chatMessages.push({
-          message: message.infoMessage ?? "",
-          type: CHAT_MESSAGE_TYPE.DEFENCE_TRIGGERED,
-        });
-        break;
-      default:
-        break;
-    }
-  });
-  return chatMessages;
+function chatMessageDTOIsConvertible(chatMessageDTO: ChatMessageDTO) {
+	return (
+		chatMessageDTO.chatMessageType !== 'SYSTEM' &&
+		chatMessageDTO.chatMessageType !== 'FUNCTION_CALL'
+	);
 }
 
-async function setOpenAIApiKey(openAiApiKey: string): Promise<boolean> {
-  const response = await sendRequest(
-    `${PATH}openAiApiKey`,
-    "POST",
-    { "Content-Type": "application/json" },
-    JSON.stringify({ openAiApiKey })
-  );
-  return response.status === 200;
+function getChatMessagesFromDTOResponse(chatMessageDTOs: ChatMessageDTO[]) {
+	return chatMessageDTOs
+		.filter(chatMessageDTOIsConvertible)
+		.map(makeChatMessageFromDTO);
 }
 
-async function getOpenAIApiKey(): Promise<string> {
-  const response = await sendRequest(`${PATH}openAiApiKey`, "GET");
-  const data = await response.text();
-  return data;
+async function setGptModel(model: string): Promise<ChatMessage | null> {
+	const response = await sendRequest(`${PATH}model`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ model }),
+	});
+
+	if (response.status !== 200) return null;
+
+	const { chatInfoMessage } =
+		(await response.json()) as ChatInfoMessageResponse;
+	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
-async function setGptModel(model: string): Promise<boolean> {
-  const response = await sendRequest(
-    `${PATH}model`,
-    "POST",
-    { "Content-Type": "application/json" },
-    JSON.stringify({ model })
-  );
-  return response.status === 200;
+async function configureGptModel(
+	configId: MODEL_CONFIG_ID,
+	value: number
+): Promise<ChatMessage | null> {
+	const response = await sendRequest(`${PATH}model/configure`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ configId, value }),
+	});
+
+	if (response.status !== 200) return null;
+
+	const { chatInfoMessage } =
+		(await response.json()) as ChatInfoMessageResponse;
+	return makeChatMessageFromDTO(chatInfoMessage);
 }
 
-async function getGptModel(): Promise<CHAT_MODELS> {
-  const response = await sendRequest(`${PATH}model`, "GET");
-  const modelStr = await response.text();
-  return modelStr as CHAT_MODELS;
-}
-
-async function addMessageToChatHistory(
-  message: string,
-  chatMessageType: CHAT_MESSAGE_TYPE,
-  phase: number
+async function addInfoMessageToChatHistory(
+	message: string,
+	chatMessageType: CHAT_MESSAGE_TYPE,
+	level: number
 ) {
-  const response = await sendRequest(
-    `${PATH}addHistory`,
-    "POST",
-    { "Content-Type": "application/json" },
-    JSON.stringify({
-      message: message,
-      chatMessageType: chatMessageType,
-      phase: phase,
-    })
-  );
-  return response.status === 200;
+	const response = await sendRequest(`${PATH}addInfoToHistory`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			infoMessage: message,
+			chatMessageType,
+			level,
+		}),
+	});
+	return response.status === 200;
 }
 
 export {
-  clearChat,
-  sendMessage,
-  setOpenAIApiKey,
-  getOpenAIApiKey,
-  getGptModel,
-  setGptModel,
-  getChatHistory,
-  addMessageToChatHistory,
+	sendMessage,
+	configureGptModel,
+	setGptModel,
+	addInfoMessageToChatHistory,
+	getChatMessagesFromDTOResponse,
+	makeChatMessageFromDTO,
 };

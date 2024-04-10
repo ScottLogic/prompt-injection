@@ -1,45 +1,59 @@
-import "../StrategyBox/StrategyBox.css";
-import DefenceMechanism from "./DefenceMechanism";
+import { PROMPT_ENCLOSURE_DEFENCES } from '@src/Defences';
 import {
-  DEFENCE_TYPES,
-  DefenceConfig,
-  DefenceInfo,
-} from "../../models/defence";
+	DEFENCE_ID,
+	DefenceConfigItem,
+	Defence,
+	DEFENCE_CONFIG_ITEM_ID,
+} from '@src/models/defence';
+
+import DefenceMechanism from './DefenceMechanism';
+
+import './DefenceBox.css';
 
 function DefenceBox({
-  defences,
-  showConfigurations,
-  setDefenceActive,
-  setDefenceInactive,
-  setDefenceConfiguration,
+	defences,
+	showConfigurations,
+	toggleDefence,
+	resetDefenceConfiguration,
+	setDefenceConfiguration,
 }: {
-  currentPhase: number;
-  defences: DefenceInfo[];
-  showConfigurations: boolean;
-  setDefenceActive: (defence: DefenceInfo) => void;
-  setDefenceInactive: (defence: DefenceInfo) => void;
-  setDefenceConfiguration: (
-    defenceId: DEFENCE_TYPES,
-    config: DefenceConfig[]
-  ) => Promise<boolean>;
+	currentLevel: number;
+	defences: Defence[];
+	showConfigurations: boolean;
+	toggleDefence: (defence: Defence) => void;
+	resetDefenceConfiguration: (
+		defenceId: DEFENCE_ID,
+		configItemId: DEFENCE_CONFIG_ITEM_ID
+	) => void;
+	setDefenceConfiguration: (
+		defenceId: DEFENCE_ID,
+		config: DefenceConfigItem[]
+	) => Promise<boolean>;
 }) {
-  return (
-    <div id="strategy-box">
-      <div className="side-bar-header">Defences</div>
-      {defences.map((defence, index) => {
-        return (
-          <DefenceMechanism
-            key={index}
-            defenceDetail={defence}
-            showConfigurations={showConfigurations}
-            setDefenceActive={setDefenceActive}
-            setDefenceInactive={setDefenceInactive}
-            setDefenceConfiguration={setDefenceConfiguration}
-          />
-        );
-      })}
-    </div>
-  );
+	const promptEnclosureDefences = defences.filter((defence) =>
+		PROMPT_ENCLOSURE_DEFENCES.some((id) => id === defence.id)
+	);
+	const notPromptEnclosureDefences = defences.filter(
+		(defence) => !promptEnclosureDefences.includes(defence)
+	);
+
+	return (
+		<div className="defence-box">
+			{notPromptEnclosureDefences.map((defence, index) => {
+				return (
+					<DefenceMechanism
+						key={index}
+						defenceDetail={defence}
+						promptEnclosureDefences={promptEnclosureDefences}
+						showConfigurations={showConfigurations}
+						toggleDefence={toggleDefence}
+						resetDefenceConfiguration={resetDefenceConfiguration}
+						setDefenceConfiguration={setDefenceConfiguration}
+					/>
+				);
+			})}
+		</div>
+	);
 }
 
 export default DefenceBox;

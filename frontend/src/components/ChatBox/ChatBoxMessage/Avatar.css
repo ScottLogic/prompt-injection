@@ -1,0 +1,22 @@
+.avatar-circle {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 3.75rem;
+	height: 3.75rem;
+	border-radius: 50%;
+}
+
+.avatar-circle-user {
+	background-color: var(--avatar-circle-user-colour);
+}
+
+.avatar-circle-bot {
+	background-color: var(--avatar-circle-bot-colour);
+}
+
+.avatar-circle img {
+	width: 75%;
+	height: 75%;
+}

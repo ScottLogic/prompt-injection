@@ -1,14 +1,16 @@
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
-import { PHASE_NAMES } from "./phase";
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
-interface Document {
-  filename: string;
-  filetype: string;
+import { LEVEL_NAMES } from './level';
+
+interface DocumentMeta {
+	filename: string;
+	filetype: string;
+	folder: string;
 }
 
 interface DocumentsVector {
-  phase: PHASE_NAMES;
-  docVector: MemoryVectorStore;
+	level: LEVEL_NAMES;
+	docVector: MemoryVectorStore;
 }
 
-export type { Document, DocumentsVector };
+export type { DocumentMeta, DocumentsVector };
