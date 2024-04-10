@@ -4,10 +4,11 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+  
     {
       "name": "Launch Frontend",
       "request": "launch",
-      "runtimeArgs": ["start"],
+      "runtimeArgs": ["run", "dev"],
       "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
       "type": "node",
@@ -15,10 +16,12 @@
     },
     {
       "name": "Launch Backend",
-      "type": "node",
       "request": "launch",
+      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\backend\\app.js"
+      "type": "node",
+      "cwd": "${workspaceFolder}\\backend"
     }
   ]
 }

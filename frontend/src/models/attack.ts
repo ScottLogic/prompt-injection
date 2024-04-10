@@ -1,0 +1,20 @@
+enum ATTACK_TYPES {
+  DEFEINED_DICTIONARY_ATTACK,
+  INDIRECT_INJECTION,
+  JAILBREAK,
+  PAYLOAD_SPLITTING,
+  PARTIAL_REVEAL,
+  PROMPT_LEAKING,
+  RECURSIVE_INJECTION,
+  TOKEN_SMUGGLING,
+  VIRTUALISATION,
+}
+
+interface AttackInfo {
+  id: ATTACK_TYPES;
+  name: string;
+  info: string;
+}
+
+export { ATTACK_TYPES };
+export type { AttackInfo };

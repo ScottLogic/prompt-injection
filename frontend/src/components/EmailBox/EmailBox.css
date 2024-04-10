@@ -2,7 +2,7 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 80%;
 }
 
 #email-box-feed {
@@ -10,6 +10,6 @@
   flex-direction: column-reverse;
   flex-grow: 1;
   overflow-y: auto;
-  padding: 0 40px;
-  padding-bottom: 40px;
+  padding: 32px 8px;
+  scrollbar-width: thin;
 }

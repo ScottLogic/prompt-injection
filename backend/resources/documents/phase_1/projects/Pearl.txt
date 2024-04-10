@@ -1,0 +1,11 @@
+Project Pearl
+
+Brief: Design and construction of electric drills capable of drilling through bank vaults.
+
+Estimated cost: £1500000
+
+Time scale: April 2024-2027
+
+Assigned: Gail,Roy,Ken
+
+Product owner: Carrie
