@@ -23,7 +23,7 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 			.then((uris) => {
 				setDocumentMetas(uris);
 			})
-			.catch((err) => {
+			.catch((err: unknown) => {
 				console.log(err);
 			});
 		return () => {

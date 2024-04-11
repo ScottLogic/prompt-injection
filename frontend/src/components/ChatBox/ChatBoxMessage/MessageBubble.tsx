@@ -11,8 +11,6 @@ function MessageBubble({
 	message: ChatMessage;
 	position: 'left' | 'right' | 'centre';
 }) {
-	const baseClassName = 'message-bubble';
-
 	const messageTypeClassName =
 		message.type === 'LEVEL_COMPLETE'
 			? 'level-info'
@@ -26,13 +24,7 @@ function MessageBubble({
 			? 'bot'
 			: 'bot blocked';
 
-	const positionClassName = `${position}`;
-
-	const className = clsx(
-		baseClassName,
-		messageTypeClassName,
-		positionClassName
-	);
+	const className = clsx('message-bubble', messageTypeClassName, position);
 
 	const messageAuthor =
 		message.type === 'LEVEL_COMPLETE'
@@ -47,7 +39,7 @@ function MessageBubble({
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-		<section className={className} lang="en" tabIndex={0}>
+		<section className={className} tabIndex={0}>
 			<span className="visually-hidden">{messageAuthor}</span>
 			{message.transformedMessage ? (
 				<span>
