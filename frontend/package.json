@@ -12,23 +12,22 @@
 		"test": "vitest"
 	},
 	"dependencies": {
-		"@cyntler/react-doc-viewer": "^1.13.0",
-		"@emotion/react": "^11.11.1",
-		"@emotion/styled": "^11.11.0",
-		"@mui/material": "^5.14.17",
-		"@react-pdf/renderer": "^3.1.12",
-		"clsx": "^2.0.0",
+		"@cyntler/react-doc-viewer": "^1.14.1",
+		"@emotion/react": "^11.11.4",
+		"@emotion/styled": "^11.11.5",
+		"@mui/material": "^5.15.15",
+		"@react-pdf/renderer": "^3.4.2",
+		"clsx": "^2.1.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-icons": "^4.10.1",
-		"react-loader-spinner": "^5.4.5"
+		"react-loader-spinner": "^6.1.6"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^6.1.4",
 		"@testing-library/react": "^14.0.0",
 		"@testing-library/user-event": "^14.5.1",
-		"@types/react": "^18.2.21",
-		"@types/react-dom": "^18.2.7",
+		"@types/react": "^18.2.75",
+		"@types/react-dom": "^18.2.24",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
 		"@vitejs/plugin-react": "^4.1.0",
