@@ -133,7 +133,7 @@ describe('handleChatToGPT unit tests', () => {
 								chatHistory: [],
 								sentEmails: [],
 								defences: [],
-							} as LevelState)
+							}) as LevelState
 					)
 			: [];
 		return {

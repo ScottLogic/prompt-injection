@@ -16,6 +16,7 @@ module.exports = {
 		'plugin:@typescript-eslint/strict-type-checked',
 		'plugin:import/recommended',
 		'plugin:import/typescript',
+		'prettier',
 	],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
@@ -26,7 +27,6 @@ module.exports = {
 	rules: {
 		eqeqeq: 'error',
 		'func-style': ['error', 'declaration'],
-		'no-mixed-spaces-and-tabs': 0, // disable rule
 		'no-restricted-imports': [
 			'error',
 			{

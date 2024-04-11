@@ -250,10 +250,10 @@ function transformMessage(
 	const transformedMessage = isDefenceActive(DEFENCE_ID.XML_TAGGING, defences)
 		? transformXmlTagging(message, defences)
 		: isDefenceActive(DEFENCE_ID.RANDOM_SEQUENCE_ENCLOSURE, defences)
-		? transformRandomSequenceEnclosure(message, defences)
-		: isDefenceActive(DEFENCE_ID.INSTRUCTION, defences)
-		? transformInstructionDefence(message, defences)
-		: undefined;
+			? transformRandomSequenceEnclosure(message, defences)
+			: isDefenceActive(DEFENCE_ID.INSTRUCTION, defences)
+				? transformInstructionDefence(message, defences)
+				: undefined;
 
 	if (!transformedMessage) {
 		console.debug('No transformation applied. Message unchanged.');
@@ -342,8 +342,8 @@ function detectCharacterLimit(
 		status: !messageExceedsLimit
 			? 'ok'
 			: defenceActive
-			? 'triggered'
-			: 'alerted',
+				? 'triggered'
+				: 'alerted',
 	};
 }
 
@@ -373,13 +373,13 @@ function detectFilterUserInput(
 			filterWordsDetected && defenceActive
 				? `Message Blocked: I cannot answer questions about '${detectedPhrases.join(
 						"' or '"
-				  )}'!`
+					)}'!`
 				: null,
 		status: !filterWordsDetected
 			? 'ok'
 			: defenceActive
-			? 'triggered'
-			: 'alerted',
+				? 'triggered'
+				: 'alerted',
 	};
 }
 
@@ -412,8 +412,8 @@ function detectFilterBotOutput(
 		status: !filterWordsDetected
 			? 'ok'
 			: defenceActive
-			? 'triggered'
-			: 'alerted',
+				? 'triggered'
+				: 'alerted',
 	};
 }
 
