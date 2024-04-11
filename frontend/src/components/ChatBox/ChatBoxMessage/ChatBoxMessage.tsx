@@ -10,17 +10,17 @@ function ChatBoxMessage({ message }: { message: ChatMessage }) {
 		message.type === 'USER' || message.type === 'USER_TRANSFORMED'
 			? 'user'
 			: message.type === 'BOT'
-			? 'bot'
-			: message.type === 'BOT_BLOCKED' || message.type === 'ERROR_MSG'
-			? 'botError'
-			: 'none';
+				? 'bot'
+				: message.type === 'BOT_BLOCKED' || message.type === 'ERROR_MSG'
+					? 'botError'
+					: 'none';
 
 	const position =
 		avatar === 'botError' || avatar === 'bot'
 			? 'left'
 			: avatar === 'user'
-			? 'right'
-			: 'centre';
+				? 'right'
+				: 'centre';
 
 	const className = `chat-box-message chat-box-message-${position}`;
 

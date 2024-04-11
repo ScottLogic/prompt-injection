@@ -15,14 +15,14 @@ function MessageBubble({
 		message.type === 'LEVEL_COMPLETE'
 			? 'level-info'
 			: message.type === 'USER'
-			? 'user'
-			: message.type === 'USER_TRANSFORMED'
-			? 'user transformed'
-			: message.type === 'ERROR_MSG'
-			? 'error'
-			: message.type === 'BOT'
-			? 'bot'
-			: 'bot blocked';
+				? 'user'
+				: message.type === 'USER_TRANSFORMED'
+					? 'user transformed'
+					: message.type === 'ERROR_MSG'
+						? 'error'
+						: message.type === 'BOT'
+							? 'bot'
+							: 'bot blocked';
 
 	const className = clsx('message-bubble', messageTypeClassName, position);
 
@@ -30,12 +30,12 @@ function MessageBubble({
 		message.type === 'LEVEL_COMPLETE'
 			? ''
 			: message.type === 'USER'
-			? 'You said:'
-			: message.type === 'USER_TRANSFORMED'
-			? 'Your message transformed by XML tagging: '
-			: message.type === 'ERROR_MSG'
-			? 'Error message:'
-			: 'ScottBrewBot said:';
+				? 'You said:'
+				: message.type === 'USER_TRANSFORMED'
+					? 'Your message transformed by XML tagging: '
+					: message.type === 'ERROR_MSG'
+						? 'Error message:'
+						: 'ScottBrewBot said:';
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex

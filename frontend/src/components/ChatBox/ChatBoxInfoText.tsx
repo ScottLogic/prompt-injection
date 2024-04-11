@@ -27,10 +27,10 @@ function ChatBoxInfoText({
 				type === 'DEFENCE_TRIGGERED'
 					? 'defence-triggered-text'
 					: type === 'DEFENCE_ALERTED'
-					? 'defence-alerted-text'
-					: type === 'RESET_LEVEL'
-					? 'reset-level-text'
-					: 'info-text'
+						? 'defence-alerted-text'
+						: type === 'RESET_LEVEL'
+							? 'reset-level-text'
+							: 'info-text'
 			)}
 		>
 			<span className="visually-hidden">{messageType}</span>

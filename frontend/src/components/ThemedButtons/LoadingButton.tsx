@@ -24,7 +24,7 @@ function LoadingButton({
 					? {
 							id: 'loading-button',
 							text: loadingTooltip,
-					  }
+						}
 					: undefined
 			}
 			className="loading-button"
