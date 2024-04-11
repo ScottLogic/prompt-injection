@@ -15,8 +15,8 @@ export default defineConfig({
 		environment: 'happy-dom',
 		testTimeout: 10000,
 		setupFiles: ['./vitest-setup.ts'],
-		reporters: process.env.CI ? ['default', 'junit'] : undefined,
+		reporters: process.env.CI ? ['default', 'junit'] : 'default',
 		outputFile: process.env.CI ? 'reports/test-output.xml' : undefined,
-		globals: true,
+		globals: false,
 	},
 });

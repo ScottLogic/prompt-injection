@@ -54,7 +54,7 @@ function LevelSelectionBox({
 								? {
 										id: `level-${index}`,
 										text: `Complete level ${index} to unlock`,
-								  }
+									}
 								: undefined
 						}
 					>

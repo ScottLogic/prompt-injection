@@ -16,8 +16,8 @@ function Avatar({ avatar }: { avatar: 'user' | 'bot' | 'botError' }) {
 		avatar === 'user'
 			? userAvatar
 			: avatar === 'bot'
-			? botAvatarDefault
-			: botAvatarError;
+				? botAvatarDefault
+				: botAvatarError;
 
 	return (
 		<div className={avatarCircleClass}>

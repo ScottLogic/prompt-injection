@@ -47,10 +47,10 @@ function ControlPanel({
 		currentLevel === LEVEL_NAMES.SANDBOX
 			? defences
 			: currentLevel === LEVEL_NAMES.LEVEL_3
-			? defences.filter(
-					(defence) => !DEFENCES_HIDDEN_LEVEL3_IDS.includes(defence.id)
-			  )
-			: [];
+				? defences.filter(
+						(defence) => !DEFENCES_HIDDEN_LEVEL3_IDS.includes(defence.id)
+					)
+				: [];
 
 	const nonModelDefences = configurableDefences.filter(
 		(defence) => !MODEL_DEFENCES.includes(defence.id)

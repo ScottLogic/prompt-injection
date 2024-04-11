@@ -76,7 +76,7 @@ module.exports = {
 			},
 		],
 		'jsx-a11y/label-has-associated-control': [
-			2,
+			'error',
 			{
 				controlComponents: ['ThemedTextArea'],
 				depth: 2,
@@ -85,6 +85,13 @@ module.exports = {
 		'no-mixed-spaces-and-tabs': 0, // disable rule
 		'@typescript-eslint/consistent-type-definitions': 0, // disable rule. Eventually use below rule to enforce type over interface
 		// '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+		'@typescript-eslint/restrict-template-expressions': [
+			'error',
+			{
+				allowNumber: true,
+				allowBoolean: true,
+			},
+		],
 	},
 	overrides: [
 		{
