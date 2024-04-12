@@ -1,6 +1,6 @@
 import { afterEach, test, jest, expect } from '@jest/globals';
-import { OpenAI } from 'langchain/llms/openai';
-import { PromptTemplate } from 'langchain/prompts';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { OpenAI } from '@langchain/openai';
 
 import { evaluatePrompt } from '@src/langchain';
 import {
@@ -12,9 +12,11 @@ const mockPromptEvalChain = {
 	call: jest.fn<() => Promise<{ promptEvalOutput: string }>>(),
 };
 
-jest.mock('langchain/prompts');
-const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
-PromptTemplate.fromTemplate = mockFromTemplate;
+jest.mock('@langchain/core/prompts', () => ({
+	PromptTemplate: {
+		fromTemplate: jest.fn(),
+	},
+}));
 
 jest.mock('langchain/chains', () => {
 	return {
@@ -36,7 +38,7 @@ jest.mock('@src/openai', () => {
 	};
 });
 
-jest.mock('langchain/llms/openai');
+jest.mock('@langchain/openai');
 
 afterEach(() => {
 	jest.clearAllMocks();
@@ -44,8 +46,8 @@ afterEach(() => {
 
 test('WHEN we query the prompt evaluation model THEN it is initialised', async () => {
 	await evaluatePrompt('some input', promptEvalPrompt);
-	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
-	expect(mockFromTemplate).toHaveBeenCalledWith(
+	expect(PromptTemplate.fromTemplate).toHaveBeenCalledTimes(1);
+	expect(PromptTemplate.fromTemplate).toHaveBeenCalledWith(
 		`${promptEvalPrompt}\n${promptEvalContextTemplate}`
 	);
 });

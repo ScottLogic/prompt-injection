@@ -1,55 +1,46 @@
 import { afterEach, beforeEach, test, jest, expect } from '@jest/globals';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { ChatOpenAI } from '@langchain/openai';
 import { RetrievalQAChain } from 'langchain/chains';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { PromptTemplate } from 'langchain/prompts';
 
 import { getDocumentVectors } from '@src/document';
 import { queryDocuments } from '@src/langchain';
 import { LEVEL_NAMES } from '@src/models/level';
-import { getOpenAIKey } from '@src/openai';
 import { qAPrompt, qaContextTemplate } from '@src/promptTemplates';
 
+const mockFromTemplate = jest.mocked(PromptTemplate.fromTemplate);
+const mockFromLLM = jest.mocked(RetrievalQAChain.fromLLM);
 const mockRetrievalQAChain = {
-	call: jest.fn<() => Promise<{ text: string }>>(),
+	invoke: jest.fn<typeof RetrievalQAChain.prototype.invoke>(),
 };
-const mockFromLLM = jest.fn<() => typeof mockRetrievalQAChain>();
-const mockFromTemplate = jest.fn<typeof PromptTemplate.fromTemplate>();
 
 // eslint-disable-next-line prefer-const
-let mockValidModels: string[] = [];
+const mockValidModels: string[] = [];
+const expectedAnswer = 'The CEO is Bill.';
 
 // mock OpenAIEmbeddings
-jest.mock('langchain/embeddings/openai', () => {
+jest.mock('@langchain/openai', () => {
 	return {
 		OpenAIEmbeddings: jest.fn().mockImplementation(() => {
 			return {
 				init: jest.fn(),
 			};
 		}),
+		ChatOpenAI: jest.fn(),
 	};
 });
 
-// mock PromptTemplate.fromTemplate static method
-jest.mock('langchain/prompts');
-PromptTemplate.fromTemplate = mockFromTemplate;
+jest.mock('@langchain/core/prompts', () => ({
+	PromptTemplate: {
+		fromTemplate: jest.fn(),
+	},
+}));
 
-// mock OpenAI for ChatOpenAI class
-jest.mock('langchain/chat_models/openai');
-
-// mock chains
-jest.mock('langchain/chains', () => {
-	return {
-		RetrievalQAChain: jest.fn().mockImplementation(() => {
-			return mockRetrievalQAChain;
-		}),
-	};
-});
-RetrievalQAChain.fromLLM =
-	mockFromLLM as unknown as typeof RetrievalQAChain.fromLLM;
-
-jest.mock('@src/openai');
-const mockGetOpenAIKey = jest.fn<typeof getOpenAIKey>();
-mockGetOpenAIKey.mockReturnValue('sk-12345');
+jest.mock('langchain/chains', () => ({
+	RetrievalQAChain: {
+		fromLLM: jest.fn(() => mockRetrievalQAChain),
+	},
+}));
 
 jest.mock('@src/openai', () => {
 	const originalModule =
@@ -69,13 +60,19 @@ mockGetDocumentVectors.mockReturnValue([
 ]);
 
 beforeEach(() => {
-	mockFromLLM.mockImplementation(() => mockRetrievalQAChain); // this is weird
+	mockRetrievalQAChain.invoke.mockResolvedValueOnce({
+		text: expectedAnswer,
+	});
+	mockFromLLM.mockImplementation(
+		() => mockRetrievalQAChain as unknown as RetrievalQAChain
+	);
 });
 
 afterEach(() => {
-	mockRetrievalQAChain.call.mockRestore();
+	mockRetrievalQAChain.invoke.mockRestore();
 	mockFromLLM.mockRestore();
 	mockFromTemplate.mockRestore();
+	mockValidModels.length = 0;
 });
 
 test('WHEN we query the documents with an empty prompt THEN the qa llm is initialised and the prompt is set to the default', async () => {
@@ -84,7 +81,7 @@ test('WHEN we query the documents with an empty prompt THEN the qa llm is initia
 
 	await queryDocuments('some question', prompt, level);
 
-	expect(mockFromLLM).toHaveBeenCalledTimes(1);
+	expect(RetrievalQAChain.fromLLM).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
 		`${qAPrompt}\n${qaContextTemplate}`
@@ -97,7 +94,7 @@ test('WHEN we query the documents with a prompt THEN the llm is initialised and 
 
 	await queryDocuments('some question', prompt, level);
 
-	expect(mockFromLLM).toHaveBeenCalledTimes(1);
+	expect(RetrievalQAChain.fromLLM).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledTimes(1);
 	expect(mockFromTemplate).toHaveBeenCalledWith(
 		`this is a test prompt. \n${qaContextTemplate}`
@@ -109,19 +106,14 @@ test('GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it an
 	const level = LEVEL_NAMES.LEVEL_1;
 	const prompt = '';
 
-	mockRetrievalQAChain.call.mockResolvedValueOnce({
-		text: 'The CEO is Bill.',
-	});
-
 	const answer = await queryDocuments(question, prompt, level);
 
-	expect(mockFromLLM).toHaveBeenCalledTimes(1);
-	expect(mockRetrievalQAChain.call).toHaveBeenCalledTimes(1);
-	expect(answer).toEqual('The CEO is Bill.');
+	expect(RetrievalQAChain.fromLLM).toHaveBeenCalledTimes(1);
+	expect(answer).toEqual(expectedAnswer);
 });
 
 test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised THEN it is initialised with GPT-4', async () => {
-	mockValidModels = ['gpt-4', 'gpt-3.5-turbo', 'gpt-3'];
+	mockValidModels.push('gpt-4', 'gpt-3.5-turbo', 'gpt-3');
 
 	const level = LEVEL_NAMES.LEVEL_1;
 	const prompt = 'this is a test prompt. ';
@@ -136,7 +128,7 @@ test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised TH
 });
 
 test('GIVEN the users api key does not support GPT-4 WHEN the QA model is initialised THEN it is initialised with gpt-3.5-turbo', async () => {
-	mockValidModels = ['gpt-2', 'gpt-3.5-turbo', 'gpt-3'];
+	mockValidModels.push('gpt-2', 'gpt-3.5-turbo', 'gpt-3');
 
 	const level = LEVEL_NAMES.LEVEL_1;
 	const prompt = 'this is a test prompt. ';

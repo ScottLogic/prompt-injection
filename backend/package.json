@@ -16,9 +16,9 @@
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
 		"express-session": "^1.18.0",
-		"langchain": "^0.0.113",
+		"langchain": "^0.1.33",
 		"memorystore": "^1.6.7",
-		"openai": "^4.19.0",
+		"openai": "^4.33.0",
 		"openai-chat-tokens": "^0.2.8",
 		"pdf-parse": "^1.1.1",
 		"query-types": "^0.1.4"

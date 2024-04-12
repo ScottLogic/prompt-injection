@@ -1,8 +1,8 @@
+import { OpenAIEmbeddings } from '@langchain/openai';
 import { CSVLoader } from 'langchain/document_loaders/fs/csv';
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 import * as fs from 'node:fs';
