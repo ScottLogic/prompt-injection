@@ -16,8 +16,9 @@ app.listen(port, () => {
 		.then(() => {
 			console.debug('OpenAI models fetched');
 		})
-		.catch((err) => {
-			throw new Error(`Error fetching OpenAI models: ${err}`);
+		.catch((err: unknown) => {
+			console.error(err);
+			throw new Error('Error fetching OpenAI models');
 		});
 
 	// initialise the documents on app startup
@@ -25,15 +26,16 @@ app.listen(port, () => {
 		.then(() => {
 			console.debug('Document vector store initialized');
 		})
-		.catch((err) => {
-			throw new Error(`Error initializing document vectors: ${err}`);
+		.catch((err: unknown) => {
+			console.error(err);
+			throw new Error('Error initializing document vectors');
 		});
 
 	Promise.all([modelsPromise, vectorsPromise])
 		.then(() => {
 			console.log(`Server is running on port ${port}`);
 		})
-		.catch((err) => {
+		.catch((err: unknown) => {
 			console.error(err);
 			exit(1);
 		});

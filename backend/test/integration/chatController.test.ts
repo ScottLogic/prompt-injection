@@ -112,7 +112,7 @@ describe('handleChatToGPT integration tests', () => {
 								chatHistory: [],
 								sentEmails: [],
 								defences: [],
-							} as LevelState)
+							}) as LevelState
 					)
 			: [];
 		return {

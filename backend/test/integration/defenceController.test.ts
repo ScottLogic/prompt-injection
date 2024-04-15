@@ -72,7 +72,7 @@ describe('The correct levels can have their defences changed', () => {
 										? { ...defence, isActive: true }
 										: defence
 								),
-						  }
+							}
 						: levelState
 				);
 
@@ -122,7 +122,7 @@ describe('The correct levels can have their defences changed', () => {
 											? { ...defence, isActive: true }
 											: defence
 									),
-							  }
+								}
 							: levelState
 					);
 
@@ -240,10 +240,10 @@ describe('The correct levels can have their defences changed', () => {
 										? {
 												...defence,
 												config: [{ id: 'MAX_MESSAGE_LENGTH', value: '1' }],
-										  }
+											}
 										: defence
 								),
-						  }
+							}
 						: levelState
 				);
 

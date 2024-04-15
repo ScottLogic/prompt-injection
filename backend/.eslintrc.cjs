@@ -16,6 +16,7 @@ module.exports = {
 		'plugin:@typescript-eslint/strict-type-checked',
 		'plugin:import/recommended',
 		'plugin:import/typescript',
+		'prettier',
 	],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
@@ -26,22 +27,14 @@ module.exports = {
 	rules: {
 		eqeqeq: 'error',
 		'func-style': ['error', 'declaration'],
-		'object-shorthand': 'error',
 		'no-restricted-imports': [
 			'error',
 			{
 				patterns: ['../*'],
 			},
 		],
+		'object-shorthand': 'error',
 		'prefer-template': 'error',
-
-		'@typescript-eslint/no-misused-promises': [
-			'error',
-			{
-				checksVoidReturn: false,
-			},
-		],
-		'@typescript-eslint/unbound-method': ['error', { ignoreStatic: true }],
 		'import/order': [
 			'error',
 			{
@@ -62,9 +55,23 @@ module.exports = {
 				],
 			},
 		],
-		'no-mixed-spaces-and-tabs': 0, // disable rule
+		'jest/unbound-method': ['error', { ignoreStatic: true }],
 		'@typescript-eslint/consistent-type-definitions': 0, // disable rule. Eventually use below rule to enforce type over interface
 		// '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+		'@typescript-eslint/no-misused-promises': [
+			'error',
+			{
+				checksVoidReturn: false,
+			},
+		],
+		'@typescript-eslint/restrict-template-expressions': [
+			'error',
+			{
+				allowNumber: true,
+				allowBoolean: true,
+			},
+		],
+		'@typescript-eslint/unbound-method': ['error', { ignoreStatic: true }],
 	},
 	overrides: [
 		{

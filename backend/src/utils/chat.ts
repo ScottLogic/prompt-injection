@@ -55,7 +55,7 @@ function setSystemRoleInChatHistory(
 					? ({
 							...existingSystemRole,
 							completion: completionConfig,
-					  } as ChatMessage)
+						} as ChatMessage)
 					: message
 			);
 		}
