@@ -24,6 +24,7 @@ module.exports = {
 		'plugin:jest-dom/recommended',
 		'plugin:import/recommended',
 		'plugin:import/typescript',
+		'prettier',
 	],
 	ignorePatterns: ['dist', '.eslintrc.cjs'],
 	parser: '@typescript-eslint/parser',
@@ -76,15 +77,21 @@ module.exports = {
 			},
 		],
 		'jsx-a11y/label-has-associated-control': [
-			2,
+			'error',
 			{
 				controlComponents: ['ThemedTextArea'],
 				depth: 2,
 			},
 		],
-		'no-mixed-spaces-and-tabs': 0, // disable rule
 		'@typescript-eslint/consistent-type-definitions': 0, // disable rule. Eventually use below rule to enforce type over interface
 		// '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+		'@typescript-eslint/restrict-template-expressions': [
+			'error',
+			{
+				allowNumber: true,
+				allowBoolean: true,
+			},
+		],
 	},
 	overrides: [
 		{

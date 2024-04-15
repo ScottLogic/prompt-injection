@@ -133,7 +133,7 @@ describe('handleChatToGPT unit tests', () => {
 								chatHistory: [],
 								sentEmails: [],
 								defences: [],
-							} as LevelState)
+							}) as LevelState
 					)
 			: [];
 		return {
@@ -229,17 +229,11 @@ describe('handleChatToGPT unit tests', () => {
 			blockedReason: string,
 			triggeredDefence: DEFENCE_ID
 		): Promise<DefenceReport> {
-			return new Promise((resolve, reject) => {
-				try {
-					resolve({
-						blockedReason,
-						isBlocked: true,
-						alertedDefences: [],
-						triggeredDefences: [triggeredDefence],
-					} as DefenceReport);
-				} catch (err) {
-					reject(err);
-				}
+			return Promise.resolve({
+				blockedReason,
+				isBlocked: true,
+				alertedDefences: [],
+				triggeredDefences: [triggeredDefence],
 			});
 		}
 

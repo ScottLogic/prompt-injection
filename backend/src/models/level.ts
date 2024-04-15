@@ -39,7 +39,7 @@ function getInitialLevelStates() {
 					? defaultDefences
 					: undefined,
 				sentEmails: [],
-			} as LevelState)
+			}) as LevelState
 	);
 }
 

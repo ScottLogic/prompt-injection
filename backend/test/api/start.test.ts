@@ -18,7 +18,7 @@ describe('/start endpoints', () => {
 				models: {
 					list: mockListFn,
 				},
-			} as unknown as jest.MockedObject<OpenAI>)
+			}) as unknown as jest.MockedObject<OpenAI>
 	);
 
 	beforeAll(() => {

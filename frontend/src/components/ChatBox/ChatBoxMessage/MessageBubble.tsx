@@ -11,43 +11,35 @@ function MessageBubble({
 	message: ChatMessage;
 	position: 'left' | 'right' | 'centre';
 }) {
-	const baseClassName = 'message-bubble';
-
 	const messageTypeClassName =
 		message.type === 'LEVEL_COMPLETE'
 			? 'level-info'
 			: message.type === 'USER'
-			? 'user'
-			: message.type === 'USER_TRANSFORMED'
-			? 'user transformed'
-			: message.type === 'ERROR_MSG'
-			? 'error'
-			: message.type === 'BOT'
-			? 'bot'
-			: 'bot blocked';
+				? 'user'
+				: message.type === 'USER_TRANSFORMED'
+					? 'user transformed'
+					: message.type === 'ERROR_MSG'
+						? 'error'
+						: message.type === 'BOT'
+							? 'bot'
+							: 'bot blocked';
 
-	const positionClassName = `${position}`;
-
-	const className = clsx(
-		baseClassName,
-		messageTypeClassName,
-		positionClassName
-	);
+	const className = clsx('message-bubble', messageTypeClassName, position);
 
 	const messageAuthor =
 		message.type === 'LEVEL_COMPLETE'
 			? ''
 			: message.type === 'USER'
-			? 'You said:'
-			: message.type === 'USER_TRANSFORMED'
-			? 'Your message transformed by XML tagging: '
-			: message.type === 'ERROR_MSG'
-			? 'Error message:'
-			: 'ScottBrewBot said:';
+				? 'You said:'
+				: message.type === 'USER_TRANSFORMED'
+					? 'Your message transformed by XML tagging: '
+					: message.type === 'ERROR_MSG'
+						? 'Error message:'
+						: 'ScottBrewBot said:';
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-		<section className={className} lang="en" tabIndex={0}>
+		<section className={className} tabIndex={0}>
 			<span className="visually-hidden">{messageAuthor}</span>
 			{message.transformedMessage ? (
 				<span>

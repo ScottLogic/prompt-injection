@@ -32,10 +32,10 @@ function MissionInformation({
 					speaker === 'ScottBrew Manager'
 						? Manager
 						: speaker === 'ScottBrew Lawyer'
-						? Lawyer
-						: speaker === 'Handler'
-						? Handler
-						: '',
+							? Lawyer
+							: speaker === 'Handler'
+								? Handler
+								: '',
 			};
 		}
 	);

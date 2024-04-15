@@ -1,7 +1,6 @@
+import { PromptTemplate } from '@langchain/core/prompts';
+import { ChatOpenAI, OpenAI } from '@langchain/openai';
 import { RetrievalQAChain, LLMChain } from 'langchain/chains';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { OpenAI } from 'langchain/llms/openai';
-import { PromptTemplate } from 'langchain/prompts';
 
 import { getDocumentVectors } from './document';
 import { CHAT_MODEL_ID } from './models/chat';
@@ -92,7 +91,7 @@ async function queryDocuments(
 
 		const startTime = Date.now();
 		console.debug('Calling QA model...');
-		const response = (await qaChain.call({
+		const response = (await qaChain.invoke({
 			query: question,
 		})) as QaChainReply;
 

@@ -32,7 +32,7 @@ function getDefencesFromDTOs(defenceDTOs: DefenceDTO[]) {
 							? { ...config, value: matchingConfigItemDTO.value }
 							: config;
 					}),
-			  }
+				}
 			: defence;
 	});
 }

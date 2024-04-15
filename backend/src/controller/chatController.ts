@@ -66,7 +66,7 @@ function createNewUserMessages(
 						? {
 								role: 'user',
 								content: messageTransformation.transformedMessageCombined,
-						  }
+							}
 						: undefined,
 				chatMessageType: 'USER_TRANSFORMED',
 				transformedMessage: messageTransformation.transformedMessage,
@@ -81,11 +81,11 @@ function createNewUserMessages(
 							content: message,
 						},
 						chatMessageType: 'USER',
-				  }
+					}
 				: {
 						chatMessageType: 'USER',
 						infoMessage: message,
-				  },
+					},
 		];
 	}
 }
@@ -179,7 +179,7 @@ async function handleChatWithDefenceDetection(
 		? createNewUserMessages(message, messageTransformation, 'info').reduce(
 				pushMessageToHistory,
 				chatHistory
-		  )
+			)
 		: openAiReply.chatHistory;
 
 	const updatedChatResponse: ChatHttpResponse = {

@@ -21,7 +21,7 @@ describe('getValidModelsFromOpenAI', () => {
 				models: {
 					list: mockListFn,
 				},
-			} as unknown as jest.MockedObject<OpenAI>)
+			}) as unknown as jest.MockedObject<OpenAI>
 	);
 
 	beforeEach(() => {

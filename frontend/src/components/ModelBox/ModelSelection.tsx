@@ -34,9 +34,8 @@ function ModelSelection({
 			const currentSelectedModel = selectedModel;
 			console.log(`selected model: ${currentSelectedModel}`);
 			setIsSettingModel(true);
-			const chatInfoMessage = await chatService.setGptModel(
-				currentSelectedModel
-			);
+			const chatInfoMessage =
+				await chatService.setGptModel(currentSelectedModel);
 			setIsSettingModel(false);
 			if (chatInfoMessage) {
 				setErrorChangingModel(false);
