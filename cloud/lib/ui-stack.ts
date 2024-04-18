@@ -1,9 +1,12 @@
+import { TypeScriptCode } from '@mrgrain/cdk-esbuild';
 import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import {
 	AllowedMethods,
 	CacheCookieBehavior,
 	CachePolicy,
 	Distribution,
+	experimental,
+	LambdaEdgeEventType,
 	OriginAccessIdentity,
 	OriginRequestPolicy,
 	PriceClass,
@@ -11,18 +14,25 @@ import {
 	ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin, S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { CanonicalUserPrincipal, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { CanonicalUserPrincipal, Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { AaaaRecord, ARecord, IHostedZone, RecordTarget, } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { BlockPublicAccess, Bucket, BucketEncryption, } from 'aws-cdk-lib/aws-s3';
 import { Duration, RemovalPolicy, Stack, StackProps, } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
+import { join } from 'node:path';
 
 import { appName, resourceId } from './resourceNamingUtils';
 
 type UiStackProps = StackProps & {
+	apiDomainName: string;
 	certificate: ICertificate;
+	customAuthHeaderName: string;
+	customAuthHeaderValue: string;
 	hostedZone: IHostedZone;
+	parameterNameUserPoolClient: string;
+	parameterNameUserPoolId: string;
 };
 
 export class UiStack extends Stack {
@@ -30,8 +40,16 @@ export class UiStack extends Stack {
 		super(scope, id, props);
 
 		const generateResourceId = resourceId(scope);
-		const { certificate, env, hostedZone } = props;
-		const authDomainName = `auth.${hostedZone.zoneName}`;
+		const {
+			apiDomainName,
+			certificate,
+			customAuthHeaderName,
+			customAuthHeaderValue,
+			env,
+			hostedZone,
+			parameterNameUserPoolClient,
+			parameterNameUserPoolId
+		} = props;
 
 		if (!env?.region) {
 			throw new Error('Region not defined in stack env, cannot continue!');
@@ -42,7 +60,9 @@ export class UiStack extends Stack {
 			generateResourceId('cloudfront-OAI')
 		);
 
-		// Host Bucket
+		/*
+		UI Host Bucket
+		*/
 		const bucketName = generateResourceId('host-bucket');
 		const hostBucket = new Bucket(this, bucketName, {
 			bucketName,
@@ -64,14 +84,61 @@ export class UiStack extends Stack {
 			})
 		);
 
-		// Main CloudFront distribution
-		const websiteDistribution = new Distribution(
+		/*
+		Edge lambda as JWT token verifier, to check request has access token
+			- YES and valid: add custom header with UUID that ALB will filter on
+			- NO or invalid: return 401 Unauthorized
+
+		TODO
+		Once we have a pipeline, could we inject the jwks.json during a build step?
+		If so, we might be able to switch to a CloudFront Function instead of Edge,
+		and use CloudFront KeyValueStore to hold our jwks value as JSON.
+		*/
+		const verifierEdgeFunction = new experimental.EdgeFunction(
+			this,
+			generateResourceId('api-gatekeeper'),
+			{
+				functionName: 'edge-api-gatekeeper',
+				handler: 'index.handler',
+				runtime: Runtime.NODEJS_18_X,
+				code: new TypeScriptCode(join(__dirname, 'lambdas/verifyAuth/index.ts'), {
+					buildOptions: {
+						bundle: true,
+						external: ['@aws-sdk/client-ssm'],
+						minify: false,
+						platform: 'node',
+						target: 'node18',
+						define: {
+							'process.env.DOMAIN_NAME': `"${hostedZone.zoneName}"`,
+							'process.env.PARAM_USERPOOL_ID': `"${parameterNameUserPoolId}"`,
+							'process.env.PARAM_USERPOOL_CLIENT': `"${parameterNameUserPoolClient}"`,
+						},
+					},
+				}),
+			}
+		);
+		verifierEdgeFunction.addToRolePolicy(
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				actions: ['ssm:GetParameters'],
+				resources: ['*'],
+			})
+		);
+
+		/*
+		Main CloudFront distribution
+
+		Includes API proxy to verify user is authorized and add a custom header; load balancer
+		can then use this as a filter, to only accept authorized requests from CloudFront.
+		*/
+		const siteDistribution = new Distribution(
 			this,
 			generateResourceId('site-distribution'),
 			{
 				defaultRootObject: 'index.html',
 				certificate,
 				domainNames: [hostedZone.zoneName],
+				enableLogging: true,
 				errorResponses: [
 					{
 						httpStatus: 404,
@@ -91,38 +158,33 @@ export class UiStack extends Stack {
 					allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
 					viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
 				},
+				additionalBehaviors: {
+					'/api/*': {
+						origin: new HttpOrigin(apiDomainName, {
+							customHeaders: {
+								[customAuthHeaderName]: customAuthHeaderValue,
+							},
+						}),
+						allowedMethods: AllowedMethods.ALLOW_ALL,
+						cachePolicy: CachePolicy.CACHING_DISABLED,
+						viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
+						originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+						responseHeadersPolicy: ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT_AND_SECURITY_HEADERS,
+						edgeLambdas: [{
+							functionVersion: verifierEdgeFunction.currentVersion,
+							eventType: LambdaEdgeEventType.VIEWER_REQUEST,
+						}],
+					},
+				},
 				priceClass: PriceClass.PRICE_CLASS_100,
 			}
 		);
 
 		/*
-		Use a CloudFront distribution to proxy Cognito.
-
-		Turns out a custom userpool domain doesn't work due to CORS failures :(
-		As it happens, Cognito does that by creating a CloudFront distro under the
-		hood, so we're not adding any costs by configuring this manually.
+		DNS Records for Route53
 		*/
-		const cognitoProxyDistribution = new Distribution(this, generateResourceId('cognito-proxy'), {
-			certificate,
-			domainNames: [authDomainName],
-			enableLogging: true,
-			defaultBehavior: {
-				origin: new HttpOrigin(`cognito-idp.${env.region}.amazonaws.com`),
-				allowedMethods: AllowedMethods.ALLOW_ALL,
-				cachePolicy: CachePolicy.CACHING_DISABLED,
-				viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-				originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_AND_CLOUDFRONT_2022,
-				responseHeadersPolicy: ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT_AND_SECURITY_HEADERS,
-			},
-			priceClass: PriceClass.PRICE_CLASS_100,
-		});
-
-		// DNS Records for Route53
 		const websiteTarget = RecordTarget.fromAlias(
-			new CloudFrontTarget(websiteDistribution)
-		);
-		const authTarget = RecordTarget.fromAlias(
-			new CloudFrontTarget(cognitoProxyDistribution)
+			new CloudFrontTarget(siteDistribution)
 		);
 		new ARecord(this, generateResourceId('arecord-cfront'), {
 			zone: hostedZone,
@@ -134,14 +196,7 @@ export class UiStack extends Stack {
 			zone: hostedZone,
 			target: websiteTarget,
 			deleteExisting: true,
-			comment: 'DNS AAAA Record for the UI host',
-		});
-		new ARecord(this, generateResourceId('arecord-auth-proxy'), {
-			zone: hostedZone,
-			recordName: authDomainName,
-			target: authTarget,
-			deleteExisting: true,
-			comment: 'DNS A Record for Cognito auth proxy',
+			comment: 'DNS AAAA Record for UI host',
 		});
 	}
 }

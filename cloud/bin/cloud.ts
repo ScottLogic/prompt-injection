@@ -53,10 +53,23 @@ const certificateStack = new CertificateStack(
 	}
 );
 
-new AuthStack(app, generateStackName('auth'), {
+const authStack = new AuthStack(app, generateStackName('auth'), {
 	description: generateDescription('Auth stack'),
 	env,
 	tags,
+	authDomainName: certificateStack.authDomainName,
+	certificate: certificateStack.cloudFrontCert,
+	hostedZone: hostedZoneStack.hostedZone,
+});
+
+new ApiStack(app, generateStackName('api'), {
+	description: generateDescription('API stack'),
+	env,
+	tags,
+	apiDomainName: certificateStack.apiDomainName,
+	certificate: certificateStack.loadBalancerCert,
+	customAuthHeaderName: authStack.customAuthHeaderName,
+	customAuthHeaderValue: authStack.customAuthHeaderValue,
 	hostedZone: hostedZoneStack.hostedZone,
 });
 
@@ -64,15 +77,11 @@ new UiStack(app, generateStackName('ui'), {
 	description: generateDescription('UI stack'),
 	env,
 	tags,
+	apiDomainName: certificateStack.apiDomainName,
 	certificate: certificateStack.cloudFrontCert,
+	customAuthHeaderName: authStack.customAuthHeaderName,
+	customAuthHeaderValue: authStack.customAuthHeaderValue,
 	hostedZone: hostedZoneStack.hostedZone,
-});
-
-// TODO Generate header uuid in build pipeline, so is created within AWS account
-new ApiStack(app, generateStackName('api'), {
-	description: generateDescription('API stack'),
-	env,
-	tags,
-	certificate: certificateStack.loadBalancerCert,
-	hostedZone: hostedZoneStack.hostedZone,
+	parameterNameUserPoolClient: authStack.parameterNameUserPoolClient,
+	parameterNameUserPoolId: authStack.parameterNameUserPoolId,
 });
