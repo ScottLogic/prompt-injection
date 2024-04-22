@@ -86,17 +86,6 @@ router.use((req, _res, next) => {
 	next();
 });
 
-// TODO: Remove this debug logging!
-if (isProduction) {
-	router.use('/openai', (req, res, next) => {
-		console.log('Request:', req.path, `secure=${req.secure}`, req.headers);
-		res.on('finish', () => {
-			console.log('Response:', req.path, res.getHeaders());
-		});
-		next();
-	});
-}
-
 // handshake
 router.get('/start', handleStart);
 

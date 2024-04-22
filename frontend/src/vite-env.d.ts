@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
 	readonly VITE_BACKEND_URL: string;
+	readonly VITE_AUTH_PROVIDER: 'cognito';
 	readonly VITE_COGNITO_USERPOOL_ID: string;
 	readonly VITE_COGNITO_USERPOOL_CLIENT: string;
 	readonly VITE_COGNITO_USERPOOL_DOMAIN: string;

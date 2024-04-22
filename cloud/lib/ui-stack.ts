@@ -131,6 +131,11 @@ export class UiStack extends Stack {
 		Includes API proxy to verify user is authorized and add a custom header; load balancer
 		can then use this as a filter, to only accept authorized requests from CloudFront.
 		*/
+		const albOrigin = new HttpOrigin(apiDomainName, {
+			customHeaders: {
+				[customAuthHeaderName]: customAuthHeaderValue,
+			},
+		});
 		const siteDistribution = new Distribution(
 			this,
 			generateResourceId('site-distribution'),
@@ -159,17 +164,29 @@ export class UiStack extends Stack {
 					viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
 				},
 				additionalBehaviors: {
-					'/api/*': {
-						origin: new HttpOrigin(apiDomainName, {
-							customHeaders: {
-								[customAuthHeaderName]: customAuthHeaderValue,
-							},
+					'/api/documents/*': {
+						// Cache static content, currently just docs
+						origin: albOrigin,
+						cachePolicy: new CachePolicy(this, generateResourceId('static-resources'), {
+							comment: 'Long-lived cache for static files, invalidation forced after redeploy',
+							minTtl: Duration.days(14),
 						}),
+						viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
+						originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+						responseHeadersPolicy: ResponseHeadersPolicy.SECURITY_HEADERS,
+						edgeLambdas: [{
+							functionVersion: verifierEdgeFunction.currentVersion,
+							eventType: LambdaEdgeEventType.VIEWER_REQUEST,
+						}],
+					},
+					'/api/*': {
+						// Treat all other paths as dynamic, do not cache
+						origin: albOrigin,
 						allowedMethods: AllowedMethods.ALLOW_ALL,
 						cachePolicy: CachePolicy.CACHING_DISABLED,
 						viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
 						originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-						responseHeadersPolicy: ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT_AND_SECURITY_HEADERS,
+						responseHeadersPolicy: ResponseHeadersPolicy.SECURITY_HEADERS,
 						edgeLambdas: [{
 							functionVersion: verifierEdgeFunction.currentVersion,
 							eventType: LambdaEdgeEventType.VIEWER_REQUEST,

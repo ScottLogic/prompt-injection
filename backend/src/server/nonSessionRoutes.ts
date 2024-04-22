@@ -11,7 +11,13 @@ export default express
 	.use(
 		'/documents',
 		express.static(
-			fileURLToPath(new URL('../../resources/documents', importMetaUrl()))
+			fileURLToPath(new URL('../../resources/documents', importMetaUrl())),
+			{
+				cacheControl: true,
+				maxAge: 604800000, // 7 days as millis
+				immutable: true,
+				index: false,
+			}
 		)
 	)
 	.get('/documents', handleGetDocuments)

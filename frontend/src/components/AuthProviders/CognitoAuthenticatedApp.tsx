@@ -1,3 +1,4 @@
+import { fetchAuthSession } from '@aws-amplify/auth';
 import {
 	withAuthenticator,
 	WithAuthenticatorProps,
@@ -5,14 +6,14 @@ import {
 import { Amplify } from 'aws-amplify';
 import { PropsWithChildren } from 'react';
 
+import App from '@src/components/App';
 import BotAvatar from '@src/assets/images/BotAvatarDefault.svg';
-
-import App from './App';
+import { useInterceptor } from '@src/service/backendService';
 
 /* eslint-disable import/order */
-import './index.css';
-import './Theme.css';
-import './Authenticator.css';
+import '../../index.css';
+import '../../Theme.css';
+import './CognitoAuthenticator.css';
 /* eslint-enable import/order */
 
 const usernameFormField = {
@@ -42,7 +43,22 @@ Amplify.configure({
 	},
 });
 
-const AuthenticatedApp = withAuthenticator(
+useInterceptor('auth', async (request) => {
+	const token = (await fetchAuthSession()).tokens?.accessToken.toString();
+	if (!token) {
+		console.warn('Auth session has expired!');
+		return request;
+	}
+	return {
+		...request,
+		headers: {
+			...request.headers,
+			Authorization: token
+		},
+	};
+});
+
+const CognitoAuthenticatedApp = withAuthenticator(
 	({ user }: WithAuthenticatorProps) =>
 		user ? (
 			<App />
@@ -103,4 +119,4 @@ function CustomHeader({
 	);
 }
 
-export default AuthenticatedApp;
+export default CognitoAuthenticatedApp;

@@ -172,7 +172,6 @@ export class ApiStack extends Stack {
 		// TODO
 		// In UI code
 		// - make cognito/amplify auth opt-in via env flag
-		// - store tokens in cookie instead of header?
 		//   https://docs.amplify.aws/javascript/build-a-backend/auth/manage-user-session/#update-your-token-saving-mechanism
 	}
 }

@@ -1,18 +1,21 @@
-import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer';
+import DocViewer, { TXTRenderer, CSVRenderer, IDocument } from '@cyntler/react-doc-viewer';
 import { useEffect, useState } from 'react';
 
 import OverlayHeader from '@src/components/Overlay/OverlayHeader';
-import { DocumentMeta } from '@src/models/document';
 import { documentService } from '@src/service';
 
 import DocumentViewBoxNav from './DocumentViewBoxNav';
 
 import './DocumentViewBox.css';
 
-const emptyList: DocumentMeta[] = [];
+const emptyList: IDocument[] = [];
+
+// Use our own loader that handles auth
+TXTRenderer.fileLoader = documentService.fetchDocument;
+CSVRenderer.fileLoader = documentService.fetchDocument;
 
 function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
-	const [documentMetas, setDocumentMetas] = useState<DocumentMeta[]>(emptyList);
+	const [documentMetas, setDocumentMetas] = useState<IDocument[]>(emptyList);
 	const [documentIndex, setDocumentIndex] = useState<number>(0);
 
 	// on mount get document uris
@@ -20,8 +23,8 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 		const abortController = new AbortController();
 		void documentService
 			.getDocumentMetas(abortController.signal)
-			.then((uris) => {
-				setDocumentMetas(uris);
+			.then((docs) => {
+				setDocumentMetas(docs);
 			})
 			.catch((err: unknown) => {
 				console.log(err);
@@ -43,7 +46,7 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 					<>
 						<DocumentViewBoxNav
 							documentIndex={documentIndex}
-							documentName={documentMetas[documentIndex]?.filename ?? ''}
+							documentName={documentMetas[documentIndex]?.fileName ?? ''}
 							numberOfDocuments={documentMetas.length}
 							onPrevious={() => {
 								if (documentIndex > 0) {
@@ -65,7 +68,7 @@ function DocumentViewBox({ closeOverlay }: { closeOverlay: () => void }) {
 							<DocViewer
 								documents={documentMetas}
 								activeDocument={documentMetas[documentIndex]}
-								pluginRenderers={DocViewerRenderers}
+								pluginRenderers={[TXTRenderer, CSVRenderer]}
 								config={{
 									header: {
 										disableHeader: true,

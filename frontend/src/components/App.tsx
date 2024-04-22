@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef, useState, JSX } from 'react';
 
-import DocumentViewBox from './components/DocumentViewer/DocumentViewBox';
-import MainComponent from './components/MainComponent/MainComponent';
-import LevelsComplete from './components/Overlay/LevelsComplete';
-import MissionInformation from './components/Overlay/MissionInformation';
-import OverlayWelcome from './components/Overlay/OverlayWelcome';
-import useLocalStorage from './hooks/useLocalStorage';
-import { LEVEL_NAMES } from './models/level';
+import DocumentViewBox from './DocumentViewer/DocumentViewBox';
+import MainComponent from './MainComponent/MainComponent';
+import LevelsComplete from './Overlay/LevelsComplete';
+import MissionInformation from './Overlay/MissionInformation';
+import OverlayWelcome from './Overlay/OverlayWelcome';
+import useLocalStorage from '../hooks/useLocalStorage';
+import { LEVEL_NAMES } from '../models/level';
 
 import './App.css';
-import './Theme.css';
+import '../Theme.css';
 
 function App() {
 	const dialogRef = useRef<HTMLDialogElement>(null);
