@@ -15,6 +15,9 @@ jest.mock('langchain/document_loaders/fs/directory', () => {
 				load: mockLoader,
 			};
 		}),
+		UnknownHandling: {
+			Warn: 'warn',
+		},
 	};
 });
 
@@ -31,10 +34,12 @@ jest.mock('langchain/text_splitter', () => {
 
 beforeAll(() => {
 	mockLoader.mockResolvedValue([]);
+	mockSplitDocuments.mockResolvedValue([]);
 });
 
 afterEach(() => {
 	mockLoader.mockClear();
+	mockSplitDocuments.mockClear();
 });
 
 test('GIVEN application WHEN application starts THEN document vectors are loaded for all levels', async () => {

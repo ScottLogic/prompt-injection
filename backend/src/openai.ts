@@ -1,3 +1,4 @@
+import { inspect } from 'node:util';
 import { OpenAI } from 'openai';
 import {
 	ChatCompletionMessageParam,
@@ -256,7 +257,7 @@ async function chatGptChatCompletion(
 		});
 		console.debug(
 			'chat_completion=',
-			chat_completion.choices[0].message,
+			inspect(chat_completion.choices[0].message, { depth: 4 }),
 			' tokens=',
 			chat_completion.usage
 		);
