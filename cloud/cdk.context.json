@@ -6,6 +6,5 @@
   ],
   "acknowledged-issue-numbers": [
     29483
-  ],
-  "ami:account=992382568770:filters.image-type.0=machine:filters.name.0=amzn-ami-vpc-nat-*:filters.state.0=available:owners.0=amazon:region=eu-north-1": "ami-072517490bf2cf3a3"
+  ]
 }
