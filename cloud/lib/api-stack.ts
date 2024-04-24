@@ -15,13 +15,13 @@ import {
 	FargateService,
 	PropagatedTagSource,
 	Secret as EnvSecret,
-	TaskDefinition
+	TaskDefinition,
 } from 'aws-cdk-lib/aws-ecs';
 import {
 	ApplicationLoadBalancer,
 	ApplicationProtocol,
 	ListenerAction,
-	ListenerCondition
+	ListenerCondition,
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { ARecord, IHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { LoadBalancerTarget } from 'aws-cdk-lib/aws-route53-targets';
@@ -53,20 +53,16 @@ export class ApiStack extends Stack {
 			customAuthHeaderName,
 			customAuthHeaderValue,
 			env,
-			hostedZone
+			hostedZone,
 		} = props;
 		const region = env?.region;
 		if (!region) {
 			throw new Error('Region not defined in stack env, cannot continue!');
 		}
 
-		const dockerImageAsset = new DockerImageAsset(
-			this,
-			generateResourceId('container-image'),
-			{
-				directory: join(__dirname, '../../backend/'),
-			}
-		);
+		const dockerImageAsset = new DockerImageAsset(this, generateResourceId('container-image'), {
+			directory: join(__dirname, '../../backend/'),
+		});
 
 		// Default AZs is all in region, but for environment-agnostic stack, max is 2!
 		const vpc = new Vpc(this, generateResourceId('vpc'), {
@@ -109,14 +105,8 @@ export class ApiStack extends Stack {
 				COOKIE_NAME: `${appName}.sid`,
 			},
 			secrets: {
-				OPENAI_API_KEY: EnvSecret.fromSecretsManager(
-					apiKeySecret,
-					'OPENAI_API_KEY'
-				),
-				SESSION_SECRET: EnvSecret.fromSecretsManager(
-					apiKeySecret,
-					'SESSION_SECRET'
-				),
+				OPENAI_API_KEY: EnvSecret.fromSecretsManager(apiKeySecret, 'OPENAI_API_KEY'),
+				SESSION_SECRET: EnvSecret.fromSecretsManager(apiKeySecret, 'SESSION_SECRET'),
 			},
 		});
 

@@ -6,7 +6,7 @@ import {
 	OriginRequestPolicy,
 	PriceClass,
 	ResponseHeadersPolicy,
-	ViewerProtocolPolicy
+	ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Mfa, OAuthScope, UserPool } from 'aws-cdk-lib/aws-cognito';
@@ -74,30 +74,25 @@ export class AuthStack extends Stack {
 		});
 
 		const logoutUrls = [`https://${hostedZone.zoneName}`];
-		const callbackUrls = logoutUrls.concat(
-			`https://api.${hostedZone.zoneName}/oauth2/idpresponse`
-		);
-		const userPoolClient = userPool.addClient(
-			generateResourceId('userpool-client'),
-			{
-				authFlows: {
-					userSrp: true,
+		const callbackUrls = logoutUrls.concat(`https://api.${hostedZone.zoneName}/oauth2/idpresponse`);
+		const userPoolClient = userPool.addClient(generateResourceId('userpool-client'), {
+			authFlows: {
+				userSrp: true,
+			},
+			oAuth: {
+				flows: {
+					authorizationCodeGrant: true,
 				},
-				oAuth: {
-					flows: {
-						authorizationCodeGrant: true,
-					},
-					scopes: [OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE],
-					callbackUrls,
-					logoutUrls,
-				},
-				accessTokenValidity: Duration.minutes(60),
-				idTokenValidity: Duration.minutes(60),
-				refreshTokenValidity: Duration.days(14),
-				enableTokenRevocation: true,
-				preventUserExistenceErrors: true,
-			}
-		);
+				scopes: [OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE],
+				callbackUrls,
+				logoutUrls,
+			},
+			accessTokenValidity: Duration.minutes(60),
+			idTokenValidity: Duration.minutes(60),
+			refreshTokenValidity: Duration.days(14),
+			enableTokenRevocation: true,
+			preventUserExistenceErrors: true,
+		});
 
 		userPool.addDomain(generateResourceId('userpool-domain'), {
 			cognitoDomain: {
@@ -126,7 +121,8 @@ export class AuthStack extends Stack {
 				cachePolicy: CachePolicy.CACHING_DISABLED,
 				viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
 				originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_AND_CLOUDFRONT_2022,
-				responseHeadersPolicy: ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT_AND_SECURITY_HEADERS,
+				responseHeadersPolicy:
+					ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT_AND_SECURITY_HEADERS,
 			},
 			priceClass: PriceClass.PRICE_CLASS_100,
 		});
@@ -134,9 +130,7 @@ export class AuthStack extends Stack {
 		new ARecord(this, generateResourceId('arecord-auth-proxy'), {
 			zone: hostedZone,
 			recordName: authDomainName,
-			target: RecordTarget.fromAlias(
-				new CloudFrontTarget(cognitoProxyDistribution)
-			),
+			target: RecordTarget.fromAlias(new CloudFrontTarget(cognitoProxyDistribution)),
 			deleteExisting: true,
 			comment: 'DNS A Record for Cognito auth proxy',
 		});

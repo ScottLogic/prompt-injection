@@ -19,15 +19,11 @@ export class HostedZoneStack extends Stack {
 			throw new Error('HOSTED_ZONE_ID not found in env vars');
 		}
 
-		this.hostedZone = HostedZone.fromHostedZoneAttributes(
-			this,
-			resourceId(scope)('hosted-zone'),
-			{
-				hostedZoneId: HOSTED_ZONE_ID,
-				zoneName: DOMAIN_NAME,
-			}
-		);
+		this.hostedZone = HostedZone.fromHostedZoneAttributes(this, resourceId(scope)('hosted-zone'), {
+			hostedZoneId: HOSTED_ZONE_ID,
+			zoneName: DOMAIN_NAME,
+		});
 
-		this.topLevelUrl = `https://${this.hostedZone.zoneName}`
+		this.topLevelUrl = `https://${this.hostedZone.zoneName}`;
 	}
 }

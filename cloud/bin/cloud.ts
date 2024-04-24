@@ -32,26 +32,18 @@ const tags = {
 
 /* Stack constructs */
 
-const hostedZoneStack = new HostedZoneStack(
-	app,
-	generateStackName('hosted-zone'),
-	{
-		description: generateDescription('Hosted Zone stack'),
-		env,
-		tags,
-	}
-);
+const hostedZoneStack = new HostedZoneStack(app, generateStackName('hosted-zone'), {
+	description: generateDescription('Hosted Zone stack'),
+	env,
+	tags,
+});
 
-const certificateStack = new CertificateStack(
-	app,
-	generateStackName('certificate'),
-	{
-		description: generateDescription('Certificate stack'),
-		env,
-		tags,
-		hostedZone: hostedZoneStack.hostedZone,
-	}
-);
+const certificateStack = new CertificateStack(app, generateStackName('certificate'), {
+	description: generateDescription('Certificate stack'),
+	env,
+	tags,
+	hostedZone: hostedZoneStack.hostedZone,
+});
 
 const authStack = new AuthStack(app, generateStackName('auth'), {
 	description: generateDescription('Auth stack'),

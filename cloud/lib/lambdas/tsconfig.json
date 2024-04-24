@@ -10,7 +10,7 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"moduleResolution": "node16",
-		"outDir": "./build",
+		"outDir": "./build"
 	},
 	"include": ["**/*.ts"]
 }

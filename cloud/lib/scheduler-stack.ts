@@ -1,12 +1,3 @@
-import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
-import {
-	Effect,
-	PolicyStatement,
-	Role,
-	ServicePrincipal,
-} from 'aws-cdk-lib/aws-iam';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import {
 	CronOptionsWithTimezone,
 	Group,
@@ -15,6 +6,10 @@ import {
 	ScheduleTargetInput,
 } from '@aws-cdk/aws-scheduler-alpha';
 import { LambdaInvoke } from '@aws-cdk/aws-scheduler-targets-alpha';
+import { FargateService } from 'aws-cdk-lib/aws-ecs';
+import { Effect, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RemovalPolicy, Stack, StackProps, TimeZone } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { join } from 'node:path';
@@ -23,7 +18,7 @@ import { ServiceEventLambda } from './lambdas/startStopService';
 import { resourceDescription, resourceId } from './resourceNamingUtils';
 
 type SchedulerStackProps = StackProps & {
-	fargateService: ApplicationLoadBalancedFargateService;
+	fargateService: FargateService;
 };
 
 export class SchedulerStack extends Stack {
@@ -39,9 +34,7 @@ export class SchedulerStack extends Stack {
 			this,
 			generateResourceId('fargate-switch'),
 			{
-				description: generateResourceDescription(
-					'Fargate Service start/stop function'
-				),
+				description: generateResourceDescription('Fargate Service start/stop function'),
 				runtime: Runtime.NODEJS_18_X,
 				handler: 'handler',
 				entry: join(__dirname, 'lambdas/startStopService.ts'),
@@ -50,7 +43,7 @@ export class SchedulerStack extends Stack {
 				},
 				environment: {
 					CLUSTER_NAME: fargateService.cluster.clusterName,
-					SERVICE_NAME: fargateService.service.serviceName,
+					SERVICE_NAME: fargateService.serviceName,
 				},
 			}
 		);
@@ -58,7 +51,7 @@ export class SchedulerStack extends Stack {
 			new PolicyStatement({
 				effect: Effect.ALLOW,
 				actions: ['ecs:DescribeServices', 'ecs:UpdateService'],
-				resources: [fargateService.service.serviceArn],
+				resources: [fargateService.serviceArn],
 			})
 		);
 

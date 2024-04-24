@@ -16,10 +16,10 @@ import {
 import { HttpOrigin, S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { CanonicalUserPrincipal, Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { AaaaRecord, ARecord, IHostedZone, RecordTarget, } from 'aws-cdk-lib/aws-route53';
+import { AaaaRecord, ARecord, IHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
-import { BlockPublicAccess, Bucket, BucketEncryption, } from 'aws-cdk-lib/aws-s3';
-import { Duration, RemovalPolicy, Stack, StackProps, } from 'aws-cdk-lib/core';
+import { BlockPublicAccess, Bucket, BucketEncryption } from 'aws-cdk-lib/aws-s3';
+import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { join } from 'node:path';
 
@@ -48,17 +48,14 @@ export class UiStack extends Stack {
 			env,
 			hostedZone,
 			parameterNameUserPoolClient,
-			parameterNameUserPoolId
+			parameterNameUserPoolId,
 		} = props;
 
 		if (!env?.region) {
 			throw new Error('Region not defined in stack env, cannot continue!');
 		}
 
-		const cloudfrontOAI = new OriginAccessIdentity(
-			this,
-			generateResourceId('cloudfront-OAI')
-		);
+		const cloudfrontOAI = new OriginAccessIdentity(this, generateResourceId('cloudfront-OAI'));
 
 		/*
 		UI Host Bucket
@@ -77,9 +74,7 @@ export class UiStack extends Stack {
 				actions: ['s3:GetObject'],
 				resources: [hostBucket.arnForObjects('*')],
 				principals: [
-					new CanonicalUserPrincipal(
-						cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId
-					),
+					new CanonicalUserPrincipal(cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId),
 				],
 			})
 		);
@@ -136,73 +131,71 @@ export class UiStack extends Stack {
 				[customAuthHeaderName]: customAuthHeaderValue,
 			},
 		});
-		const siteDistribution = new Distribution(
-			this,
-			generateResourceId('site-distribution'),
-			{
-				defaultRootObject: 'index.html',
-				certificate,
-				domainNames: [hostedZone.zoneName],
-				enableLogging: true,
-				errorResponses: [
-					{
-						httpStatus: 404,
-						responseHttpStatus: 200,
-						responsePagePath: '/index.html',
-						ttl: Duration.seconds(30),
-					},
-				],
-				defaultBehavior: {
-					origin: new S3Origin(hostBucket, {
-						originAccessIdentity: cloudfrontOAI,
+		const siteDistribution = new Distribution(this, generateResourceId('site-distribution'), {
+			defaultRootObject: 'index.html',
+			certificate,
+			domainNames: [hostedZone.zoneName],
+			enableLogging: true,
+			errorResponses: [
+				{
+					httpStatus: 404,
+					responseHttpStatus: 200,
+					responsePagePath: '/index.html',
+					ttl: Duration.seconds(30),
+				},
+			],
+			defaultBehavior: {
+				origin: new S3Origin(hostBucket, {
+					originAccessIdentity: cloudfrontOAI,
+				}),
+				cachePolicy: new CachePolicy(this, generateResourceId('site-cache-policy'), {
+					cookieBehavior: CacheCookieBehavior.allowList(`${appName}.sid`),
+				}),
+				compress: true,
+				allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+				viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
+			},
+			additionalBehaviors: {
+				'/api/documents/*': {
+					// Cache static content, currently just docs
+					origin: albOrigin,
+					cachePolicy: new CachePolicy(this, generateResourceId('static-resources'), {
+						comment: 'Long-lived cache for static files, invalidation forced after redeploy',
+						minTtl: Duration.days(14),
 					}),
-					cachePolicy: new CachePolicy(this, generateResourceId('site-cache-policy'), {
-						cookieBehavior: CacheCookieBehavior.allowList(`${appName}.sid`),
-					}),
-					compress: true,
-					allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
 					viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
-				},
-				additionalBehaviors: {
-					'/api/documents/*': {
-						// Cache static content, currently just docs
-						origin: albOrigin,
-						cachePolicy: new CachePolicy(this, generateResourceId('static-resources'), {
-							comment: 'Long-lived cache for static files, invalidation forced after redeploy',
-							minTtl: Duration.days(14),
-						}),
-						viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
-						originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-						responseHeadersPolicy: ResponseHeadersPolicy.SECURITY_HEADERS,
-						edgeLambdas: [{
+					originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+					responseHeadersPolicy: ResponseHeadersPolicy.SECURITY_HEADERS,
+					edgeLambdas: [
+						{
 							functionVersion: verifierEdgeFunction.currentVersion,
 							eventType: LambdaEdgeEventType.VIEWER_REQUEST,
-						}],
-					},
-					'/api/*': {
-						// Treat all other paths as dynamic, do not cache
-						origin: albOrigin,
-						allowedMethods: AllowedMethods.ALLOW_ALL,
-						cachePolicy: CachePolicy.CACHING_DISABLED,
-						viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
-						originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-						responseHeadersPolicy: ResponseHeadersPolicy.SECURITY_HEADERS,
-						edgeLambdas: [{
+						},
+					],
+				},
+				'/api/*': {
+					// Treat all other paths as dynamic, do not cache
+					origin: albOrigin,
+					allowedMethods: AllowedMethods.ALLOW_ALL,
+					cachePolicy: CachePolicy.CACHING_DISABLED,
+					viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
+					originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+					responseHeadersPolicy: ResponseHeadersPolicy.SECURITY_HEADERS,
+					edgeLambdas: [
+						{
 							functionVersion: verifierEdgeFunction.currentVersion,
 							eventType: LambdaEdgeEventType.VIEWER_REQUEST,
-						}],
-					},
+						},
+					],
 				},
-				priceClass: PriceClass.PRICE_CLASS_100,
-			}
-		);
+			},
+			priceClass: PriceClass.PRICE_CLASS_100,
+		});
 
 		/*
 		DNS Records for Route53
 		*/
-		const websiteTarget = RecordTarget.fromAlias(
-			new CloudFrontTarget(siteDistribution)
-		);
+		const websiteTarget = RecordTarget.fromAlias(new CloudFrontTarget(siteDistribution));
 		new ARecord(this, generateResourceId('arecord-cfront'), {
 			zone: hostedZone,
 			target: websiteTarget,

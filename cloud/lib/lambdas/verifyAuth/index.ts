@@ -1,8 +1,10 @@
-import { GetParametersCommand, Parameter, SSMClient } from '@aws-sdk/client-ssm';
-import {
-	CognitoJwtVerifier,
+import { GetParametersCommand, SSMClient } from '@aws-sdk/client-ssm';
+import { CognitoJwtVerifier } from 'aws-jwt-verify';
+
+import type {
 	CognitoJwtVerifierProperties,
 	CognitoVerifyProperties,
+	CognitoJwtVerifierSingleUserPool,
 } from 'aws-jwt-verify/cognito-verifier';
 import type { CloudFrontRequestEvent, CloudFrontResponse } from 'aws-lambda';
 
@@ -15,16 +17,22 @@ const inFlightResponse = {
 	status: '200',
 	statusDescription: 'OK',
 	headers: {
-		'access-control-allow-origin': [{
-			value: `https://${domainName}`,
-		}],
-		'access-control-allow-methods': [{
-			value: 'HEAD,GET,POST',
-		}],
-		'access-control-allow-headers': [{
-			value: 'cache-control,content-type,x-amz-target,x-amz-user-agent',
-		}],
-	}
+		'access-control-allow-origin': [
+			{
+				value: `https://${domainName}`,
+			},
+		],
+		'access-control-allow-methods': [
+			{
+				value: 'HEAD,GET,POST',
+			},
+		],
+		'access-control-allow-headers': [
+			{
+				value: 'cache-control,content-type,x-amz-target,x-amz-user-agent',
+			},
+		],
+	},
 } as CloudFrontResponse;
 
 const unauthorizedResponse = {
@@ -50,9 +58,9 @@ const retrieveParameters = async () => {
 		})
 	);
 
-	if ((params?.length ?? 0) < 2) throw new Error('Userpool parameters not found in SSM');
+	if (!params?.length || params.length < 2) throw new Error('Userpool parameters not found in SSM');
 
-	return params as Parameter[];
+	return params;
 };
 
 const jwtVerifierPromise = retrieveParameters().then(async (params) => {
@@ -80,7 +88,8 @@ export const handler = async (event: CloudFrontRequestEvent) => {
 		return inFlightResponse;
 	}
 
-	let verifier;
+	// eslint-disable-next-line @typescript-eslint/init-declarations
+	let verifier: CognitoJwtVerifierSingleUserPool<CognitoJwtVerifierProperties>;
 	try {
 		verifier = await jwtVerifierPromise;
 	} catch (err: unknown) {
@@ -91,11 +100,11 @@ export const handler = async (event: CloudFrontRequestEvent) => {
 	try {
 		// TODO Change to using cookie for tokens?
 		console.log(request.headers);
-		const accessToken = request.headers['authorization'][0].value;
+		const accessToken = request.headers.authorization[0].value;
 		await verifier.verify(accessToken, {} as CognitoVerifyProperties);
 		return request;
 	} catch (err: unknown) {
-		console.log(`Unable to verify access token: ${err}`);
+		console.log('Unable to verify access token', err);
 		return unauthorizedResponse;
 	}
 };
