@@ -1,4 +1,4 @@
-import { DEFAULT_DEFENCES } from '@src/Defences';
+import { DEFAULT_DEFENCES } from '@src/defences';
 import { ChatInfoMessageResponse } from '@src/models/apiResponse';
 import { ChatMessage } from '@src/models/chat';
 import {
@@ -57,7 +57,11 @@ async function configureDefence(
 	config: DefenceConfigItem[],
 	level: LEVEL_NAMES
 ): Promise<ChatMessage | null> {
-	const response = await post(`${PATH}/configure`, { defenceId, config, level });
+	const response = await post(`${PATH}/configure`, {
+		defenceId,
+		config,
+		level,
+	});
 
 	if (response.status !== 200) return null;
 
@@ -72,7 +76,11 @@ async function resetDefenceConfigItem(
 	configItemId: DEFENCE_CONFIG_ITEM_ID,
 	level: LEVEL_NAMES
 ): Promise<DefenceResetResponse> {
-	const response = await post(`${PATH}/resetConfig`, { defenceId, configItemId, level });
+	const response = await post(`${PATH}/resetConfig`, {
+		defenceId,
+		configItemId,
+		level,
+	});
 	return (await response.json()) as DefenceResetResponse;
 }
 

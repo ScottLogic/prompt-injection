@@ -1,15 +1,18 @@
 import { useCallback, useEffect, useRef, useState, JSX } from 'react';
 
+import useLocalStorage from '@src/hooks/useLocalStorage';
+import { LEVEL_NAMES } from '@src/models/level';
+
 import DocumentViewBox from './DocumentViewer/DocumentViewBox';
 import MainComponent from './MainComponent/MainComponent';
 import LevelsComplete from './Overlay/LevelsComplete';
 import MissionInformation from './Overlay/MissionInformation';
 import OverlayWelcome from './Overlay/OverlayWelcome';
-import useLocalStorage from '../hooks/useLocalStorage';
-import { LEVEL_NAMES } from '../models/level';
 
 import './App.css';
-import '../Theme.css';
+
+// eslint-disable-next-line import/order
+import '@src/styles/Theme.css';
 
 function App() {
 	const dialogRef = useRef<HTMLDialogElement>(null);

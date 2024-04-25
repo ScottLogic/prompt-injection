@@ -2,13 +2,13 @@ import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 
-import { LEVELS } from '@src/Levels';
+import { Levels } from '@src/levels';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import LevelSelectionBox, { LevelSelectionBoxProps } from './LevelSelectionBox';
 
 const defaultProps: LevelSelectionBoxProps = {
-	currentLevel: LEVELS[0].id,
+	currentLevel: Levels[0].id,
 	numCompletedLevels: 0,
 	setCurrentLevel: () => {},
 };
@@ -19,7 +19,7 @@ function renderComponent(props: LevelSelectionBoxProps = defaultProps) {
 	return { user };
 }
 
-const levels = LEVELS.map(({ id, name }) => ({
+const levels = Levels.map(({ id, name }) => ({
 	id,
 	name: id === LEVEL_NAMES.SANDBOX ? name : `Level ${id + 1}`,
 }));
@@ -50,7 +50,7 @@ describe('LevelSelectionBox component tests', () => {
 
 	test('renders buttons disabled ahead of highest level completed, except for sandbox', () => {
 		const numCompletedLevels = 1;
-		const currentLevel = LEVELS[numCompletedLevels];
+		const currentLevel = Levels[numCompletedLevels];
 		const setCurrentLevel = vi.fn();
 
 		renderComponent({
@@ -70,7 +70,7 @@ describe('LevelSelectionBox component tests', () => {
 
 	test('clicking aria-disabled button does not trigger level change', async () => {
 		const numCompletedLevels = 0;
-		const currentLevel = LEVELS[numCompletedLevels];
+		const currentLevel = Levels[numCompletedLevels];
 		const setCurrentLevel = vi.fn();
 
 		const { user } = renderComponent({

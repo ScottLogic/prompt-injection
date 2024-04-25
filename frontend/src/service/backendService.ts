@@ -8,22 +8,19 @@ const interceptors = (() => {
 	}
 
 	async function applyAll(originalRequest: RequestInit) {
-		return Object.values(registry).reduce(
-			async (request, intercept) => {
-				try {
-					return intercept(await request);
-				} catch (err: unknown) {
-					console.warn('Could not apply request interceptor', err);
-					return request;
-				}
-			},
-			Promise.resolve(originalRequest)
-		);
+		return Object.values(registry).reduce(async (request, intercept) => {
+			try {
+				return intercept(await request);
+			} catch (err: unknown) {
+				console.warn('Could not apply request interceptor', err);
+				return request;
+			}
+		}, Promise.resolve(originalRequest));
 	}
 
 	return {
 		applyAll,
-		use
+		use,
 	};
 })();
 
@@ -38,10 +35,17 @@ type RequestOptions<T> = Pick<RequestInit, 'method' | 'signal'> & {
 	body?: T;
 };
 
-async function get(path: string, options?: Omit<RequestOptions<never>, 'method' | 'body'>) {
+async function get(
+	path: string,
+	options?: Omit<RequestOptions<never>, 'method' | 'body'>
+) {
 	return sendRequest<never>(path, options);
 }
-async function post<T>(path: string, body?: T, options: Omit<RequestOptions<T>, 'method' | 'body'> = {}) {
+async function post<T>(
+	path: string,
+	body?: T,
+	options: Omit<RequestOptions<T>, 'method' | 'body'> = {}
+) {
 	return sendRequest(path, { ...options, method: 'POST', body });
 }
 
@@ -52,7 +56,7 @@ async function sendRequest<T>(path: string, options: RequestOptions<T> = {}) {
 	const contentType: Record<string, string> = body
 		? {
 				'Content-Type': 'application/json',
-		  }
+			}
 		: {};
 
 	const requestInit = await interceptors.applyAll({
@@ -68,5 +72,5 @@ async function sendRequest<T>(path: string, options: RequestOptions<T> = {}) {
 	return fetch(new URL(path, backendUrl()), requestInit);
 }
 
-const useInterceptor = interceptors.use;
-export { backendUrl, get, post, useInterceptor  };
+const interceptRequest = interceptors.use;
+export { backendUrl, get, post, interceptRequest };

@@ -6,13 +6,12 @@ import {
 import { Amplify } from 'aws-amplify';
 import { PropsWithChildren } from 'react';
 
-import App from '@src/components/App';
 import BotAvatar from '@src/assets/images/BotAvatarDefault.svg';
-import { useInterceptor } from '@src/service/backendService';
-
+import App from '@src/components/App';
+import { interceptRequest } from '@src/service/backendService';
 /* eslint-disable import/order */
-import '../../index.css';
-import '../../Theme.css';
+import '@src/styles/index.css';
+import '@src/styles/Theme.css';
 import './CognitoAuthenticator.css';
 /* eslint-enable import/order */
 
@@ -43,7 +42,7 @@ Amplify.configure({
 	},
 });
 
-useInterceptor('auth', async (request) => {
+interceptRequest('auth', async (request) => {
 	const token = (await fetchAuthSession()).tokens?.accessToken.toString();
 	if (!token) {
 		console.warn('Auth session has expired!');
@@ -53,7 +52,7 @@ useInterceptor('auth', async (request) => {
 		...request,
 		headers: {
 			...request.headers,
-			Authorization: token
+			Authorization: token,
 		},
 	};
 });

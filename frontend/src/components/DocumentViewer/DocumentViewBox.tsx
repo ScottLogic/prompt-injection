@@ -1,4 +1,8 @@
-import DocViewer, { TXTRenderer, CSVRenderer, IDocument } from '@cyntler/react-doc-viewer';
+import DocViewer, {
+	TXTRenderer,
+	CSVRenderer,
+	IDocument,
+} from '@cyntler/react-doc-viewer';
 import { useEffect, useState } from 'react';
 
 import OverlayHeader from '@src/components/Overlay/OverlayHeader';

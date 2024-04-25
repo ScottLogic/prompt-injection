@@ -29,7 +29,8 @@ async function resetAllProgress(level: number) {
 async function resetLevelProgress(level: number) {
 	const response = await post(`${PATH}/${level}`);
 
-	const { chatInfoMessage } = await response.json() as ChatInfoMessageResponse;
+	const { chatInfoMessage } =
+		(await response.json()) as ChatInfoMessageResponse;
 
 	return makeChatMessageFromDTO(chatInfoMessage);
 }

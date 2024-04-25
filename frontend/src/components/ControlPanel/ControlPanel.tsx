@@ -1,8 +1,8 @@
-import { DEFENCES_HIDDEN_LEVEL3_IDS, MODEL_DEFENCES } from '@src/Defences';
 import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import ModelBox from '@src/components/ModelBox/ModelBox';
 import DetailElement from '@src/components/ThemedButtons/DetailElement';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
+import { DEFENCES_HIDDEN_LEVEL3_IDS, MODEL_DEFENCES } from '@src/defences';
 import { CHAT_MODEL_ID, ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,

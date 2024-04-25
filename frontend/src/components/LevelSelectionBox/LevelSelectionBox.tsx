@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 
-import { LEVELS } from '@src/Levels';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
+import { Levels } from '@src/levels';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './LevelSelectionBox.css';
@@ -17,7 +17,7 @@ function LevelSelectionBox({
 	numCompletedLevels,
 	setCurrentLevel,
 }: LevelSelectionBoxProps) {
-	const displayLevels = LEVELS.map(({ id, name }) => ({
+	const displayLevels = Levels.map(({ id, name }) => ({
 		id,
 		displayName: id === LEVEL_NAMES.SANDBOX ? name : `${id + 1}`,
 	}));

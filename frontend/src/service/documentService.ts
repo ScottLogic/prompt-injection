@@ -8,7 +8,7 @@ const PATH = 'documents';
 
 async function getDocumentMetas(signal: AbortSignal): Promise<IDocument[]> {
 	const response = await get(`${PATH}/`, { signal });
-	const docs = await response.json() as DocumentMeta[];
+	const docs = (await response.json()) as DocumentMeta[];
 	return docs.map((documentMeta) => {
 		const { fileName, fileType, folder } = documentMeta;
 		return {
@@ -37,12 +37,18 @@ async function getDocumentMetas(signal: AbortSignal): Promise<IDocument[]> {
  * @param signal See {@link FileLoaderFuncProps}
  * @param fileLoaderComplete See {@link FileLoaderFuncProps}
  */
-function fetchDocument({ documentURI, signal, fileLoaderComplete }: FileLoaderFuncProps) {
+function fetchDocument({
+	documentURI,
+	signal,
+	fileLoaderComplete,
+}: FileLoaderFuncProps) {
 	void get(documentURI, { signal })
-		.then((response) => response.blob()
-			.then((blob) => {
+		.then((response) =>
+			response.blob().then((blob) => {
 				const fileReader = new FileReader();
-				fileReader.addEventListener('loadend', () => fileLoaderComplete(fileReader));
+				fileReader.addEventListener('loadend', () => {
+					fileLoaderComplete(fileReader);
+				});
 				fileReader.readAsText(blob);
 			})
 		)
