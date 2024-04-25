@@ -1,5 +1,5 @@
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
-import { Levels } from '@src/levels';
+import { LEVELS } from '@src/levels';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './LevelMissionInfoBanner.css';
@@ -23,7 +23,7 @@ function LevelMissionInfoBanner({
 			<h2 className="level-title-area">{`Level ${currentLevel + 1}`}</h2>
 			<p
 				dangerouslySetInnerHTML={{
-					__html: Levels[currentLevel].missionInfoShort ?? '',
+					__html: LEVELS[currentLevel].missionInfoShort ?? '',
 				}}
 			></p>
 			<div className="banner-button-container">

@@ -1,6 +1,6 @@
 import { Level, LEVEL_NAMES } from './models/level';
 
-const Levels: Level[] = [
+const LEVELS: Level[] = [
 	{
 		id: LEVEL_NAMES.LEVEL_1,
 		name: 'Level 1',
@@ -93,4 +93,4 @@ const Levels: Level[] = [
 	},
 ];
 
-export { Levels };
+export { LEVELS };

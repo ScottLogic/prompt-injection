@@ -6,7 +6,7 @@ import {
 } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 
-import { Levels } from '@src/levels';
+import { LEVELS } from '@src/levels';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import LevelMissionInfoBanner from './LevelMissionInfoBanner';
@@ -23,7 +23,7 @@ describe('LevelMissionInfoBanner component tests', () => {
 			/>
 		);
 
-		const expectedContent = Levels[currentLevel].missionInfoShort;
+		const expectedContent = LEVELS[currentLevel].missionInfoShort;
 
 		if (!expectedContent)
 			throw new Error(`No missionInfoShort found for level ${currentLevel}`);
