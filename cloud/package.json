@@ -6,8 +6,12 @@
 	},
 	"scripts": {
 		"cdk:synth": "cdk synth -q \"*\"",
-		"cdk:deploy": "cdk deploy --app cdk.out --all",
-		"cdk:destroy": "cdk destroy --all",
+		"cdk:diff": "cdk diff --app cdk.out",
+		"cdk:deploy": "cdk deploy --app cdk.out",
+		"cdk:deploy:all": "cdk deploy --app cdk.out --all",
+		"cdk:destroy": "cdk destroy --app cdk.out",
+		"cdk:destroy:all": "cdk destroy --app cdk.out --all",
+		"cdk:clean": "rimraf cdk.out",
 		"codecheck": "concurrently \"npm run lint:check\" \"npm run format:check\"",
 		"format": "prettier . --write",
 		"format:check": "prettier . --check",
@@ -15,24 +19,32 @@
 		"lint:check": "eslint . --ext .ts"
 	},
 	"devDependencies": {
-		"@types/node": "^18.19.15",
+		"@types/aws-lambda": "^8.10.137",
+		"@types/node": "^18.19.31",
 		"@types/source-map-support": "^0.5.10",
-		"@typescript-eslint/eslint-plugin": "^6.21.0",
-		"@typescript-eslint/parser": "^6.21.0",
-		"aws-cdk": "^2.131.0",
+		"@typescript-eslint/eslint-plugin": "^7.7.1",
+		"@typescript-eslint/parser": "^7.7.1",
+		"aws-cdk": "^2.138.0",
 		"concurrently": "^8.2.2",
-		"eslint": "^8.56.0",
+		"eslint": "^8.57.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-import": "^2.29.1",
 		"prettier": "^3.2.5",
+		"rimraf": "^5.0.5",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.3.3"
+		"typescript": "^5.4.5"
 	},
 	"dependencies": {
-		"@aws-cdk/aws-scheduler-alpha": "^2.131.0-alpha.0",
-		"@aws-cdk/aws-scheduler-targets-alpha": "^2.131.0-alpha.0",
-		"aws-cdk-lib": "^2.131.0",
-		"@aws-sdk/client-ecs": "^3.525.0",
+		"@aws-cdk/aws-scheduler-alpha": "^2.138.0-alpha.0",
+		"@aws-cdk/aws-scheduler-targets-alpha": "^2.138.0-alpha.0",
+		"@aws-sdk/client-ecs": "^3.556.0",
+		"@aws-sdk/client-ssm": "^3.556.0",
+		"@mrgrain/cdk-esbuild": "^5.0.16",
+		"aws-cdk-lib": "^2.138.0",
+		"aws-jwt-verify": "^4.0.1",
 		"constructs": "^10.3.0",
-		"dotenv": "^16.4.4",
+		"dotenv": "^16.4.5",
+		"esbuild": "^0.20.2",
 		"source-map-support": "^0.5.21"
 	}
 }
