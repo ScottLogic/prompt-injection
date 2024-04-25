@@ -16,6 +16,7 @@ const paramClientId = process.env.PARAM_USERPOOL_CLIENT;
 const inFlightResponse = {
 	status: '200',
 	statusDescription: 'OK',
+	// Headers must be declared lowercase and use this funky format :(
 	headers: {
 		'access-control-allow-origin': [
 			{
@@ -82,8 +83,7 @@ const jwtVerifierPromise = retrieveParameters().then(async (params) => {
 export const handler = async (event: CloudFrontRequestEvent) => {
 	const { request } = event.Records[0].cf;
 
-	// Annoyingly, must add CORS headers manually here, and
-	// they must be in this funky lowercase/uppercase/key-value format :(
+	// Handle CORS preflight
 	if (request.method === 'OPTIONS') {
 		return inFlightResponse;
 	}
@@ -98,8 +98,7 @@ export const handler = async (event: CloudFrontRequestEvent) => {
 	}
 
 	try {
-		// TODO Change to using cookie for tokens?
-		console.log(request.headers);
+		// Maybe change to using cookie for tokens?
 		const accessToken = request.headers.authorization[0].value;
 		await verifier.verify(accessToken, {} as CognitoVerifyProperties);
 		return request;
