@@ -12,7 +12,6 @@
 		"cdk:destroy": "cdk destroy --app cdk.out",
 		"cdk:destroy:all": "cdk destroy --app cdk.out --all",
 		"cdk:clean": "rimraf cdk.out",
-		"build:edge": "tsc -p lib/lambdas/tsconfig.json",
 		"codecheck": "concurrently \"npm run lint:check\" \"npm run format:check\"",
 		"format": "prettier . --write",
 		"format:check": "prettier . --check",
