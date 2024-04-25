@@ -2,10 +2,11 @@ import { HostedZone, IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { Stack, StackProps } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
-import { resourceName } from './resourceNamingUtils';
+import { resourceId } from './resourceNamingUtils';
 
 export class HostedZoneStack extends Stack {
 	public readonly hostedZone: IHostedZone;
+	public readonly topLevelUrl: string;
 
 	constructor(scope: Construct, id: string, props: StackProps) {
 		super(scope, id, props);
@@ -18,13 +19,11 @@ export class HostedZoneStack extends Stack {
 			throw new Error('HOSTED_ZONE_ID not found in env vars');
 		}
 
-		this.hostedZone = HostedZone.fromHostedZoneAttributes(
-			this,
-			resourceName(scope)('hosted-zone'),
-			{
-				hostedZoneId: HOSTED_ZONE_ID,
-				zoneName: DOMAIN_NAME,
-			}
-		);
+		this.hostedZone = HostedZone.fromHostedZoneAttributes(this, resourceId(scope)('hosted-zone'), {
+			hostedZoneId: HOSTED_ZONE_ID,
+			zoneName: DOMAIN_NAME,
+		});
+
+		this.topLevelUrl = `https://${this.hostedZone.zoneName}`;
 	}
 }

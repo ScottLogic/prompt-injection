@@ -1,4 +1,4 @@
-import { DEFAULT_DEFENCES } from '@src/Defences';
+import { DEFAULT_DEFENCES } from '@src/defences';
 import { ChatInfoMessageResponse } from '@src/models/apiResponse';
 import { ChatMessage } from '@src/models/chat';
 import {
@@ -10,10 +10,10 @@ import {
 } from '@src/models/defence';
 import { LEVEL_NAMES } from '@src/models/level';
 
-import { sendRequest } from './backendService';
+import { post } from './backendService';
 import { makeChatMessageFromDTO } from './chatService';
 
-const PATH = 'defence/';
+const PATH = 'defence';
 
 function getDefencesFromDTOs(defenceDTOs: DefenceDTO[]) {
 	return DEFAULT_DEFENCES.map((defence) => {
@@ -42,11 +42,8 @@ async function toggleDefence(
 	isActive: boolean,
 	level: LEVEL_NAMES
 ): Promise<ChatMessage | null> {
-	const requestPath = isActive ? 'deactivate' : 'activate';
-	const response = await sendRequest(`${PATH}${requestPath}`, {
-		method: 'POST',
-		body: { defenceId, level },
-	});
+	const command = isActive ? 'deactivate' : 'activate';
+	const response = await post(`${PATH}/${command}`, { defenceId, level });
 	if (response.status !== 200) return null;
 
 	const { chatInfoMessage } =
@@ -60,9 +57,10 @@ async function configureDefence(
 	config: DefenceConfigItem[],
 	level: LEVEL_NAMES
 ): Promise<ChatMessage | null> {
-	const response = await sendRequest(`${PATH}configure`, {
-		method: 'POST',
-		body: { defenceId, config, level },
+	const response = await post(`${PATH}/configure`, {
+		defenceId,
+		config,
+		level,
 	});
 
 	if (response.status !== 200) return null;
@@ -78,9 +76,10 @@ async function resetDefenceConfigItem(
 	configItemId: DEFENCE_CONFIG_ITEM_ID,
 	level: LEVEL_NAMES
 ): Promise<DefenceResetResponse> {
-	const response = await sendRequest(`${PATH}resetConfig`, {
-		method: 'POST',
-		body: { defenceId, configItemId, level },
+	const response = await post(`${PATH}/resetConfig`, {
+		defenceId,
+		configItemId,
+		level,
 	});
 	return (await response.json()) as DefenceResetResponse;
 }

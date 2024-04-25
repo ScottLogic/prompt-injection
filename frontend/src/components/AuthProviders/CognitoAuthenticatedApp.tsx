@@ -1,3 +1,4 @@
+import { fetchAuthSession } from '@aws-amplify/auth';
 import {
 	withAuthenticator,
 	WithAuthenticatorProps,
@@ -6,13 +7,12 @@ import { Amplify } from 'aws-amplify';
 import { PropsWithChildren } from 'react';
 
 import BotAvatar from '@src/assets/images/BotAvatarDefault.svg';
-
-import App from './App';
-
+import App from '@src/components/App';
+import { interceptRequest } from '@src/service/backendService';
 /* eslint-disable import/order */
-import './index.css';
-import './Theme.css';
-import './Authenticator.css';
+import '@src/styles/index.css';
+import '@src/styles/Theme.css';
+import './CognitoAuthenticator.css';
 /* eslint-enable import/order */
 
 const usernameFormField = {
@@ -28,6 +28,7 @@ Amplify.configure({
 		Cognito: {
 			userPoolId: import.meta.env.VITE_COGNITO_USERPOOL_ID,
 			userPoolClientId: import.meta.env.VITE_COGNITO_USERPOOL_CLIENT,
+			userPoolEndpoint: import.meta.env.VITE_COGNITO_USERPOOL_ENDPOINT,
 			loginWith: {
 				oauth: {
 					domain: import.meta.env.VITE_COGNITO_USERPOOL_DOMAIN,
@@ -41,7 +42,22 @@ Amplify.configure({
 	},
 });
 
-const AuthenticatedApp = withAuthenticator(
+interceptRequest('auth', async (request) => {
+	const token = (await fetchAuthSession()).tokens?.accessToken.toString();
+	if (!token) {
+		console.warn('Auth session has expired!');
+		return request;
+	}
+	return {
+		...request,
+		headers: {
+			...request.headers,
+			Authorization: token,
+		},
+	};
+});
+
+const CognitoAuthenticatedApp = withAuthenticator(
 	({ user }: WithAuthenticatorProps) =>
 		user ? (
 			<App />
@@ -102,4 +118,4 @@ function CustomHeader({
 	);
 }
 
-export default AuthenticatedApp;
+export default CognitoAuthenticatedApp;

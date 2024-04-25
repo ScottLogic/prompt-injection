@@ -3,8 +3,8 @@ import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 import { LEVEL_NAMES } from './level';
 
 interface DocumentMeta {
-	filename: string;
-	filetype: string;
+	fileName: string;
+	fileType: string;
 	folder: string;
 }
 

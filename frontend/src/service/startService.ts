@@ -1,13 +1,13 @@
 import { StartResponse } from '@src/models/apiResponse';
 
-import { sendRequest } from './backendService';
+import { get } from './backendService';
 import { getChatMessagesFromDTOResponse } from './chatService';
 import { getDefencesFromDTOs } from './defenceService';
 
 const PATH = 'start';
 
 async function start(level: number) {
-	const response = await sendRequest(`${PATH}?level=${level}`);
+	const response = await get(`${PATH}?level=${level}`);
 	const {
 		availableModels,
 		defences,

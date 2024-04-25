@@ -65,8 +65,8 @@ function getDocumentMetas(folder: string) {
 	fs.readdirSync(filepath).forEach((file) => {
 		const fileType = file.split('.').pop() ?? '';
 		documentMetas.push({
-			filename: file,
-			filetype: fileType === 'csv' ? 'text/csv' : fileType,
+			fileName: file,
+			fileType: fileType === 'csv' ? 'text/csv' : fileType,
 			folder,
 		});
 	});

@@ -1,5 +1,5 @@
-import { LEVELS } from '@src/Levels';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
+import { LEVELS } from '@src/levels';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import './LevelMissionInfoBanner.css';

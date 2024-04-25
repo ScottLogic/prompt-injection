@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, JSX } from 'react';
 
-import { DEFAULT_DEFENCES } from '@src/Defences';
 import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
 import ResetProgressOverlay from '@src/components/Overlay/ResetProgress';
+import { DEFAULT_DEFENCES } from '@src/defences';
 import { CHAT_MODEL_ID, ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
