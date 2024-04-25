@@ -158,10 +158,5 @@ export class ApiStack extends Stack {
 			recordName: apiDomainName,
 			target: RecordTarget.fromAlias(new LoadBalancerTarget(loadBalancer)),
 		});
-
-		// TODO
-		// In UI code
-		// - make cognito/amplify auth opt-in via env flag
-		//   https://docs.amplify.aws/javascript/build-a-backend/auth/manage-user-session/#update-your-token-saving-mechanism
 	}
 }
