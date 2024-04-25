@@ -55,11 +55,14 @@ function parseForwardedHeader(request: Request) {
 		?.split(',')
 		.at(0)
 		?.split(';')
-		.reduce((result, proxyProps) => {
-			const [key, value] = proxyProps.split('=');
-			if (key && value) {
-				result[key] = value;
-			}
-			return result;
-		}, {} as Record<string, string>);
+		.reduce(
+			(result, proxyProps) => {
+				const [key, value] = proxyProps.split('=');
+				if (key && value) {
+					result[key] = value;
+				}
+				return result;
+			},
+			{} as Record<string, string>
+		);
 }
