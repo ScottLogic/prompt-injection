@@ -42,23 +42,32 @@ function fetchDocument({
 	signal,
 	fileLoaderComplete,
 }: FileLoaderFuncProps) {
-	void get(documentURI, { signal })
-		.then((response) =>
-			response.blob().then((blob) => {
-				const fileReader = new FileReader();
-				fileReader.addEventListener('loadend', () => {
-					fileLoaderComplete(fileReader);
-				});
-				fileReader.readAsText(blob);
+	/*
+	Do not remove this "prettier-ignore", it prevents a breaking reformat!
+	Using `void` with line-wrapped promise chains breaks in some versions of node,
+	so we need the parentheses around the promise chain.
+	Hands off Prettier, you mug!
+	*/
+	// prettier-ignore
+	void (
+		get(documentURI, { signal })
+			.then((response) =>
+				response.blob().then((blob) => {
+					const fileReader = new FileReader();
+					fileReader.addEventListener('loadend', () => {
+						fileLoaderComplete(fileReader);
+					});
+					fileReader.readAsText(blob);
+				})
+			)
+			.catch((reason: unknown) => {
+				// Aborted requests are OK if using AbortController / AbortSignal
+				if (!(reason instanceof DOMException) || reason.name !== 'AbortError') {
+					// In all other cases release the error, to be handled downstream
+					throw reason;
+				}
 			})
-		)
-		.catch((reason: unknown) => {
-			// Aborted requests are OK if using AbortController / AbortSignal
-			if (!(reason instanceof DOMException) || reason.name !== 'AbortError') {
-				// In all other cases release the error, to be handled downstream
-				throw reason;
-			}
-		});
+	);
 }
 
 export { fetchDocument, getDocumentMetas };
