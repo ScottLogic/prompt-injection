@@ -5,7 +5,7 @@ import {
 import { promptTokensEstimate, stringTokens } from 'openai-chat-tokens';
 
 import { CHAT_MODEL_ID } from '@src/models/chat';
-import { chatGptTools } from '@src/openai';
+import { chatModelTools } from '@src/openai';
 
 // The size of each model's context window in number of tokens. https://platform.openai.com/docs/models
 const chatModelMaxTokens: {
@@ -46,7 +46,7 @@ function countTotalPromptTokens(chatHistory: ChatCompletionMessageParam[]) {
 	return (
 		promptTokensEstimate({
 			messages: chatHistory,
-			functions: chatGptTools.map((tool) => tool.function),
+			functions: chatModelTools.map((tool) => tool.function),
 		}) +
 		countToolCallTokens(chatHistory) +
 		OFFSET_OPENAI_TOKENS
