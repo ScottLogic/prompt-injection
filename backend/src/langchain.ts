@@ -50,9 +50,11 @@ function initQAModel(level: LEVEL_NAMES, Prompt: string) {
 		'QA prompt template'
 	);
 	console.debug(`QA chain initialised with model: ${modelName}`);
-	return RetrievalQAChain.fromLLM(model, documentVectors.asRetriever(), {
-		prompt: promptTemplate,
-	});
+	return RetrievalQAChain.fromLLM(
+		model,
+		documentVectors.asRetriever(documentVectors.memoryVectors.length),
+		{ prompt: promptTemplate }
+	);
 }
 
 function initPromptEvaluationModel(configPromptEvaluationPrompt: string) {

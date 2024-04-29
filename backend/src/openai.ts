@@ -1,3 +1,4 @@
+import { inspect } from 'node:util';
 import { OpenAI } from 'openai';
 import {
 	ChatCompletionMessageParam,
@@ -10,16 +11,15 @@ import { sendEmail } from './email';
 import { queryDocuments } from './langchain';
 import {
 	CHAT_MODEL_ID,
-	ChatGptReply,
 	ChatModel,
-	ChatResponse,
+	ChatModelReply,
 	FunctionCallResponse,
 	ToolCallResponse,
 	chatModelIds,
 } from './models/chat';
 import { ChatMessage } from './models/chatMessage';
 import { QaLlmDefence } from './models/defence';
-import { EmailResponse } from './models/email';
+import { EmailInfo, EmailResponse } from './models/email';
 import { LEVEL_NAMES } from './models/level';
 import {
 	FunctionAskQuestionParams,
@@ -32,8 +32,8 @@ import {
 	filterChatHistoryByMaxTokens,
 } from './utils/token';
 
-// tools available to chatGPT
-const chatGptTools: ChatCompletionTool[] = [
+// tools available to OpenAI models
+const chatModelTools: ChatCompletionTool[] = [
 	{
 		type: 'function',
 		function: {
@@ -135,8 +135,8 @@ function getOpenAI() {
 	return new OpenAI({ apiKey: getOpenAIKey() });
 }
 
-function isChatGptFunction(functionName: string) {
-	return chatGptTools.some((tool) => tool.function.name === functionName);
+function isChatModelFunction(functionName: string) {
+	return chatModelTools.some((tool) => tool.function.name === functionName);
 }
 
 async function handleAskQuestionFunction(
@@ -180,12 +180,12 @@ function handleSendEmailFunction(functionCallArgs: string | undefined) {
 		console.error('No arguments provided to sendEmail function');
 		return {
 			reply: "Reply with 'I don't know what to send'",
-			sendEmails: [],
+			sentEmails: [] as EmailInfo[],
 		};
 	}
 }
 
-async function chatGptCallFunction(
+async function chatModelCallFunction(
 	toolCallId: string,
 	functionCall: ChatCompletionMessageToolCall.Function,
 	// default to sandbox
@@ -197,7 +197,7 @@ async function chatGptCallFunction(
 	const sentEmails = [];
 
 	// check if we know the function
-	if (isChatGptFunction(functionName)) {
+	if (isChatModelFunction(functionName)) {
 		console.debug(`Function call: ${functionName}`);
 		// call the function
 		if (functionName === 'sendEmail') {
@@ -205,9 +205,7 @@ async function chatGptCallFunction(
 				functionCall.arguments
 			);
 			functionReply = emailFunctionOutput.reply;
-			if (emailFunctionOutput.sentEmails) {
-				sentEmails.push(...emailFunctionOutput.sentEmails);
-			}
+			sentEmails.push(...emailFunctionOutput.sentEmails);
 		} else if (functionName === 'askQuestion') {
 			functionReply = await handleAskQuestionFunction(
 				functionCall.arguments,
@@ -229,13 +227,11 @@ async function chatGptCallFunction(
 	};
 }
 
-async function chatGptChatCompletion(
+async function getChatModelCompletion(
 	chatHistory: ChatMessage[],
 	chatModel: ChatModel,
 	openAI: OpenAI
 ) {
-	const updatedChatHistory = [...chatHistory];
-
 	console.debug('Talking to model: ', JSON.stringify(chatModel));
 
 	const startTime = new Date().getTime();
@@ -248,32 +244,26 @@ async function chatGptChatCompletion(
 			top_p: chatModel.configuration.topP,
 			frequency_penalty: chatModel.configuration.frequencyPenalty,
 			presence_penalty: chatModel.configuration.presencePenalty,
-			messages: getChatCompletionsInContextWindow(
-				updatedChatHistory,
-				chatModel.id
-			),
-			tools: chatGptTools,
+			messages: getChatCompletionsInContextWindow(chatHistory, chatModel.id),
+			tools: chatModelTools,
 		});
 		console.debug(
-			'chat_completion=',
-			chat_completion.choices[0].message,
-			' tokens=',
+			'chat_completion =',
+			inspect(chat_completion.choices[0].message, { depth: 4 }),
+			' tokens =',
 			chat_completion.usage
 		);
 		return {
 			completion: chat_completion.choices[0].message,
-			chatHistory: updatedChatHistory,
 			openAIErrorMessage: null,
 		};
-	} catch (error) {
-		let openAIErrorMessage = '';
-		if (error instanceof Error) {
-			console.error('Error calling createChatCompletion: ', error.message);
-			openAIErrorMessage = error.message;
-		}
+	} catch (error: unknown) {
+		const openAIErrorMessage =
+			error instanceof Error ? error.message : '(unknown error)';
+		console.error('Error calling createChatCompletion: ', openAIErrorMessage);
+
 		return {
 			completion: null,
-			chatHistory: updatedChatHistory,
 			openAIErrorMessage,
 		};
 	} finally {
@@ -320,31 +310,29 @@ async function performToolCalls(
 	currentLevel: LEVEL_NAMES,
 	qaLlmDefence?: QaLlmDefence
 ): Promise<ToolCallResponse> {
-	for (const toolCall of toolCalls) {
-		// only tool type supported by openai is function
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (toolCall.type === 'function') {
-			const functionCallReply = await chatGptCallFunction(
+	const toolCallResults = await Promise.all(
+		toolCalls.map((toolCall) =>
+			chatModelCallFunction(
 				toolCall.id,
 				toolCall.function,
 				currentLevel,
 				qaLlmDefence
-			);
-
-			// We assume only one function call in toolCalls, and so we return after getting function reply.
-			return {
-				functionCallReply,
-				chatHistory: pushMessageToHistory(chatHistory, {
-					completion: functionCallReply.completion,
-					chatMessageType: 'FUNCTION_CALL',
-				}),
-			};
+			)
+		)
+	);
+	return toolCallResults.reduce<ToolCallResponse>(
+		(combinedResponse, { completion, sentEmails }) => ({
+			chatHistory: pushMessageToHistory(combinedResponse.chatHistory, {
+				completion,
+				chatMessageType: 'FUNCTION_CALL',
+			}),
+			sentEmails: combinedResponse.sentEmails.concat(...sentEmails),
+		}),
+		{
+			chatHistory,
+			sentEmails: [],
 		}
-	}
-	// if no function called, return original state
-	return {
-		chatHistory,
-	};
+	);
 }
 
 async function getFinalReplyAfterAllToolCalls(
@@ -355,80 +343,74 @@ async function getFinalReplyAfterAllToolCalls(
 ) {
 	let updatedChatHistory = [...chatHistory];
 	const sentEmails = [];
-
-	let gptReply: ChatGptReply | null = null;
 	const openAI = getOpenAI();
+	let modelReply: ChatModelReply | null = null;
+
 	do {
-		gptReply = await chatGptChatCompletion(
+		modelReply = await getChatModelCompletion(
 			updatedChatHistory,
 			chatModel,
 			openAI
 		);
-		updatedChatHistory = gptReply.chatHistory;
 
-		if (gptReply.completion?.tool_calls) {
+		if (modelReply.completion?.tool_calls?.length) {
 			updatedChatHistory = pushMessageToHistory(updatedChatHistory, {
-				completion: gptReply.completion,
+				completion: modelReply.completion,
 				chatMessageType: 'FUNCTION_CALL',
 			});
 
 			const toolCallReply = await performToolCalls(
-				gptReply.completion.tool_calls,
+				modelReply.completion.tool_calls,
 				updatedChatHistory,
 				currentLevel,
 				qaLlmDefence
 			);
 
 			updatedChatHistory = toolCallReply.chatHistory;
-			if (toolCallReply.functionCallReply?.sentEmails) {
-				sentEmails.push(...toolCallReply.functionCallReply.sentEmails);
-			}
+			sentEmails.push(...toolCallReply.sentEmails);
 		}
-	} while (gptReply.completion?.tool_calls);
+	} while (modelReply.completion?.tool_calls);
 
 	return {
-		gptReply,
+		modelReply,
 		chatHistory: updatedChatHistory,
 		sentEmails,
 	};
 }
 
-async function chatGptSendMessage(
-	chatHistory: ChatMessage[],
+async function chatModelSendMessage(
+	priorChatHistory: ChatMessage[],
 	chatModel: ChatModel,
 	currentLevel: LEVEL_NAMES = LEVEL_NAMES.SANDBOX,
 	qaLlmDefence?: QaLlmDefence
 ) {
 	// this method just calls getFinalReplyAfterAllToolCalls then reformats the output. Does it need to exist?
 
-	const finalToolCallResponse = await getFinalReplyAfterAllToolCalls(
-		chatHistory,
+	const {
+		chatHistory: updatedChatHistory,
+		modelReply: chatResponse,
+		sentEmails,
+	} = await getFinalReplyAfterAllToolCalls(
+		priorChatHistory,
 		chatModel,
 		currentLevel,
 		qaLlmDefence
 	);
-
-	const chatResponse: ChatResponse = {
-		completion: finalToolCallResponse.gptReply.completion,
-		openAIErrorMessage: finalToolCallResponse.gptReply.openAIErrorMessage,
-	};
 
 	const successfulReply =
 		chatResponse.completion?.content && !chatResponse.openAIErrorMessage;
 
 	return {
 		chatResponse,
-		chatHistory: successfulReply
-			? finalToolCallResponse.chatHistory
-			: chatHistory,
-		sentEmails: finalToolCallResponse.sentEmails,
+		chatHistory: successfulReply ? updatedChatHistory : priorChatHistory,
+		sentEmails,
 	};
 }
 
 export const getValidOpenAIModels = validOpenAiModels.get;
 export {
-	chatGptTools,
-	chatGptSendMessage,
+	chatModelTools,
+	chatModelSendMessage,
 	getOpenAIKey,
 	getValidModelsFromOpenAI,
 };

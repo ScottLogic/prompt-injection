@@ -24,7 +24,7 @@ import {
 import { DEFENCE_ID, Defence, QaLlmDefence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
-import { chatGptSendMessage } from '@src/openai';
+import { chatModelSendMessage } from '@src/openai';
 import {
 	pushMessageToHistory,
 	setSystemRoleInChatHistory,
@@ -104,7 +104,7 @@ async function handleChatWithoutDefenceDetection(
 		chatHistory
 	);
 
-	const openAiReply = await chatGptSendMessage(
+	const openAiReply = await chatModelSendMessage(
 		updatedChatHistory,
 		chatModel,
 		currentLevel
@@ -151,7 +151,7 @@ async function handleChatWithDefenceDetection(
 		(defence) => defence.id === DEFENCE_ID.QA_LLM
 	) as QaLlmDefence | undefined;
 
-	const openAiReplyPromise = chatGptSendMessage(
+	const openAiReplyPromise = chatModelSendMessage(
 		chatHistoryWithNewUserMessages,
 		chatModel,
 		currentLevel,

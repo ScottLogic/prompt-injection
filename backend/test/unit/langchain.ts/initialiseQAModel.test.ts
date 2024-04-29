@@ -2,6 +2,7 @@ import { afterEach, beforeEach, test, jest, expect } from '@jest/globals';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { ChatOpenAI } from '@langchain/openai';
 import { RetrievalQAChain } from 'langchain/chains';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
 import { getDocumentVectors } from '@src/document';
 import { queryDocuments } from '@src/langchain';
@@ -53,10 +54,20 @@ jest.mock('@src/openai', () => {
 
 jest.mock('@src/document');
 const mockGetDocumentVectors = getDocumentVectors as unknown as jest.Mock<
-	() => { docVector: { asRetriever: () => string } }[]
+	() => {
+		docVector: {
+			asRetriever: (k: number) => string;
+			memoryVectors: MemoryVectorStore['memoryVectors'];
+		};
+	}[]
 >;
 mockGetDocumentVectors.mockReturnValue([
-	{ docVector: { asRetriever: () => 'retriever' } },
+	{
+		docVector: {
+			asRetriever: () => 'retriever',
+			memoryVectors: [],
+		},
+	},
 ]);
 
 beforeEach(() => {

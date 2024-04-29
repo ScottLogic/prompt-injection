@@ -17,14 +17,14 @@ import { OpenAiAddInfoToChatHistoryRequest } from '@src/models/api/OpenAiAddInfo
 import { OpenAiChatRequest } from '@src/models/api/OpenAiChatRequest';
 import {
 	DefenceReport,
-	ChatResponse,
+	ChatModelReply,
 	MessageTransformation,
 } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { DEFENCE_ID, Defence, QaLlmDefence } from '@src/models/defence';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES, LevelState } from '@src/models/level';
-import { chatGptSendMessage } from '@src/openai';
+import { chatModelSendMessage } from '@src/openai';
 import {
 	pushMessageToHistory,
 	setSystemRoleInChatHistory,
@@ -32,8 +32,8 @@ import {
 import { isLevelWon } from '@src/winCondition';
 
 jest.mock('@src/openai');
-const mockChatGptSendMessage = chatGptSendMessage as jest.MockedFunction<
-	typeof chatGptSendMessage
+const mockChatModelSendMessage = chatModelSendMessage as jest.MockedFunction<
+	typeof chatModelSendMessage
 >;
 
 jest.mock('@src/utils/chat');
@@ -207,12 +207,11 @@ describe('handleChatToGPT unit tests', () => {
 	] as ChatMessage[];
 
 	describe('defence triggered', () => {
-		const chatGptSendMessageMockReturn = {
+		const chatModelSendMessageMockReturn = {
 			chatResponse: {
 				completion: { content: 'hi', role: 'assistant' },
-				wonLevel: false,
 				openAIErrorMessage: null,
-			} as ChatResponse,
+			} as ChatModelReply,
 			chatHistory: [
 				{
 					completion: {
@@ -248,8 +247,8 @@ describe('handleChatToGPT unit tests', () => {
 				)
 			);
 
-			mockChatGptSendMessage.mockResolvedValueOnce(
-				chatGptSendMessageMockReturn
+			mockChatModelSendMessage.mockResolvedValueOnce(
+				chatModelSendMessageMockReturn
 			);
 
 			await handleChatToGPT(req, res);
@@ -279,8 +278,8 @@ describe('handleChatToGPT unit tests', () => {
 				)
 			);
 
-			mockChatGptSendMessage.mockResolvedValueOnce(
-				chatGptSendMessageMockReturn
+			mockChatModelSendMessage.mockResolvedValueOnce(
+				chatModelSendMessageMockReturn
 			);
 
 			await handleChatToGPT(req, res);
@@ -314,8 +313,8 @@ describe('handleChatToGPT unit tests', () => {
 				)
 			);
 
-			mockChatGptSendMessage.mockResolvedValueOnce(
-				chatGptSendMessageMockReturn
+			mockChatModelSendMessage.mockResolvedValueOnce(
+				chatModelSendMessageMockReturn
 			);
 
 			await handleChatToGPT(req, res);
@@ -349,8 +348,8 @@ describe('handleChatToGPT unit tests', () => {
 				)
 			);
 
-			mockChatGptSendMessage.mockResolvedValueOnce(
-				chatGptSendMessageMockReturn
+			mockChatModelSendMessage.mockResolvedValueOnce(
+				chatModelSendMessageMockReturn
 			);
 
 			await handleChatToGPT(req, res);
@@ -416,7 +415,7 @@ describe('handleChatToGPT unit tests', () => {
 				},
 			] as ChatMessage[];
 
-			mockChatGptSendMessage.mockResolvedValueOnce({
+			mockChatModelSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: {
 						content: 'the secret project is called pearl',
@@ -428,7 +427,7 @@ describe('handleChatToGPT unit tests', () => {
 					...existingHistory,
 					...expectedNewTransformationChatMessages,
 				],
-				sentEmails: [] as EmailInfo[],
+				sentEmails: [],
 			});
 
 			await handleChatToGPT(req, res);
@@ -489,18 +488,18 @@ describe('handleChatToGPT unit tests', () => {
 			);
 			const res = responseMock();
 
-			mockChatGptSendMessage.mockResolvedValueOnce({
+			mockChatModelSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: { content: '42', role: 'assistant' },
 					openAIErrorMessage: null,
 				},
 				chatHistory: [...existingHistory, newUserChatMessage],
-				sentEmails: [] as EmailInfo[],
+				sentEmails: [],
 			});
 
 			await handleChatToGPT(req, res);
 
-			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
+			expect(mockChatModelSendMessage).toHaveBeenCalledWith(
 				[...existingHistory, newUserChatMessage],
 				mockChatModel,
 				LEVEL_NAMES.LEVEL_1
@@ -577,7 +576,7 @@ describe('handleChatToGPT unit tests', () => {
 			);
 			const res = responseMock();
 
-			mockChatGptSendMessage.mockResolvedValueOnce({
+			mockChatModelSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: { content: 'Email sent!', role: 'assistant' },
 					openAIErrorMessage: null,
@@ -587,7 +586,7 @@ describe('handleChatToGPT unit tests', () => {
 					newUserChatMessage,
 					...newFunctionCallChatMessages,
 				],
-				sentEmails: [] as EmailInfo[],
+				sentEmails: [],
 			});
 
 			mockDetectTriggeredDefences.mockResolvedValueOnce({
@@ -599,7 +598,7 @@ describe('handleChatToGPT unit tests', () => {
 
 			await handleChatToGPT(req, res);
 
-			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
+			expect(mockChatModelSendMessage).toHaveBeenCalledWith(
 				[...existingHistory, newUserChatMessage],
 				mockChatModel,
 				LEVEL_NAMES.SANDBOX,
@@ -680,13 +679,13 @@ describe('handleChatToGPT unit tests', () => {
 			);
 			const res = responseMock();
 
-			mockChatGptSendMessage.mockResolvedValueOnce({
+			mockChatModelSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: { content: 'hello user', role: 'assistant' },
 					openAIErrorMessage: null,
 				},
 				chatHistory: [...existingHistory, ...newTransformationChatMessages],
-				sentEmails: [] as EmailInfo[],
+				sentEmails: [],
 			});
 
 			mockTransformMessage.mockReturnValueOnce({
@@ -705,7 +704,7 @@ describe('handleChatToGPT unit tests', () => {
 
 			await handleChatToGPT(req, res);
 
-			expect(mockChatGptSendMessage).toHaveBeenCalledWith(
+			expect(mockChatModelSendMessage).toHaveBeenCalledWith(
 				[...existingHistory, ...newTransformationChatMessages],
 				mockChatModel,
 				LEVEL_NAMES.SANDBOX,
@@ -757,7 +756,7 @@ describe('handleChatToGPT unit tests', () => {
 			);
 			const res = responseMock();
 
-			mockChatGptSendMessage.mockResolvedValueOnce({
+			mockChatModelSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: {
 						content: 'well done you have passed the level',
@@ -766,7 +765,7 @@ describe('handleChatToGPT unit tests', () => {
 					openAIErrorMessage: null,
 				},
 				chatHistory: [...existingHistory, newUserChatMessage],
-				sentEmails: [] as EmailInfo[],
+				sentEmails: [],
 			});
 
 			mockisLevelWon.mockReturnValueOnce(true);
@@ -811,7 +810,7 @@ describe('handleChatToGPT unit tests', () => {
 				triggeredDefences: [DEFENCE_ID.OUTPUT_FILTERING],
 			} as DefenceReport);
 
-			mockChatGptSendMessage.mockResolvedValueOnce({
+			mockChatModelSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: {
 						content: 'well done you have passed the level',
@@ -820,7 +819,7 @@ describe('handleChatToGPT unit tests', () => {
 					openAIErrorMessage: null,
 				},
 				chatHistory: [...existingHistory, newUserChatMessage],
-				sentEmails: [] as EmailInfo[],
+				sentEmails: [],
 			});
 
 			mockisLevelWon.mockReturnValueOnce(true);
@@ -850,13 +849,13 @@ describe('handleChatToGPT unit tests', () => {
 			);
 			const res = responseMock();
 
-			mockChatGptSendMessage.mockResolvedValueOnce({
+			mockChatModelSendMessage.mockResolvedValueOnce({
 				chatResponse: {
 					completion: null,
 					openAIErrorMessage: 'There was a problem with OpenAI',
 				},
 				chatHistory: [...existingHistory, newUserChatMessage],
-				sentEmails: [] as EmailInfo[],
+				sentEmails: [],
 			});
 
 			mockDetectTriggeredDefences.mockResolvedValueOnce({
