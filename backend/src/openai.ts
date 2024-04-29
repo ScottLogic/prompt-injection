@@ -310,29 +310,28 @@ async function performToolCalls(
 	currentLevel: LEVEL_NAMES,
 	qaLlmDefence?: QaLlmDefence
 ): Promise<ToolCallResponse> {
-	return toolCalls.reduce(
-		async (latestResponseAsync: Promise<ToolCallResponse>, toolCall) => {
-			const [latestResponse, reply] = await Promise.all([
-				latestResponseAsync,
-				chatModelCallFunction(
-					toolCall.id,
-					toolCall.function,
-					currentLevel,
-					qaLlmDefence
-				),
-			]);
-			return {
-				chatHistory: pushMessageToHistory(latestResponse.chatHistory, {
-					completion: reply.completion,
-					chatMessageType: 'FUNCTION_CALL',
-				}),
-				sentEmails: latestResponse.sentEmails.concat(reply.sentEmails),
-			};
-		},
-		Promise.resolve({
+	const toolCallResults = await Promise.all(
+		toolCalls.map((toolCall) =>
+			chatModelCallFunction(
+				toolCall.id,
+				toolCall.function,
+				currentLevel,
+				qaLlmDefence
+			)
+		)
+	);
+	return toolCallResults.reduce<ToolCallResponse>(
+		(combinedResponse, { completion, sentEmails }) => ({
+			chatHistory: pushMessageToHistory(combinedResponse.chatHistory, {
+				completion,
+				chatMessageType: 'FUNCTION_CALL',
+			}),
+			sentEmails: combinedResponse.sentEmails.concat(...sentEmails),
+		}),
+		{
 			chatHistory,
 			sentEmails: [],
-		})
+		}
 	);
 }
 
