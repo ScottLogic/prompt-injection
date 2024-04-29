@@ -53,23 +53,11 @@ interface FunctionCallResponse {
 }
 
 interface ToolCallResponse {
-	functionCallReply?: FunctionCallResponse;
-	chatResponse?: ChatResponse;
 	chatHistory: ChatMessage[];
+	sentEmails: EmailInfo[];
 }
 
-interface ChatMalicious {
-	isMalicious: boolean;
-	reason: string;
-}
-
-type ChatResponse = {
-	completion: ChatCompletionMessageParam | null;
-	openAIErrorMessage: string | null;
-};
-
-type ChatGptReply = {
-	chatHistory: ChatMessage[];
+type ChatModelReply = {
 	completion: ChatCompletionAssistantMessageParam | null;
 	openAIErrorMessage: string | null;
 };
@@ -116,11 +104,9 @@ const defaultChatModel: ChatModel = {
 
 export type {
 	DefenceReport,
-	ChatGptReply,
-	ChatMalicious,
 	ChatModel,
 	ChatModelConfigurations,
-	ChatResponse,
+	ChatModelReply,
 	LevelHandlerResponse,
 	ChatHttpResponse,
 	TransformedChatMessage,

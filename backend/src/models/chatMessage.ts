@@ -62,8 +62,9 @@ type ChatMessage = ChatInfoMessage | ChatCompletionMessage;
 
 export type {
 	ChatMessage,
-	ChatSystemMessage,
+	ChatCompletionMessage,
 	ChatInfoMessage,
+	ChatSystemMessage,
 	CHAT_INFO_MESSAGE_TYPES,
 };
 
