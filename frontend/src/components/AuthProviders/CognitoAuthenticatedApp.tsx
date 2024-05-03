@@ -37,10 +37,10 @@ Amplify.configure({
 		Cognito: {
 			userPoolId: import.meta.env.VITE_COGNITO_USERPOOL_ID,
 			userPoolClientId: import.meta.env.VITE_COGNITO_USERPOOL_CLIENT,
-			userPoolEndpoint: import.meta.env.VITE_COGNITO_USERPOOL_ENDPOINT,
 			loginWith: {
 				oauth: {
 					domain: import.meta.env.VITE_COGNITO_USERPOOL_DOMAIN,
+					providers: [{ custom: 'Azure' }],
 					redirectSignIn: [import.meta.env.VITE_COGNITO_REDIRECT_URL],
 					redirectSignOut: [import.meta.env.VITE_COGNITO_REDIRECT_URL],
 					responseType: 'code',
@@ -157,8 +157,9 @@ function SignInSelector() {
 }
 
 function BasicSignIn() {
-	const { authStatus, error, isPending, submitForm, toForgotPassword } =
-		useAuthenticator((context) => [context.submitForm]);
+	const { error, isPending, submitForm, toForgotPassword } = useAuthenticator(
+		(context) => [context.submitForm]
+	);
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [usernameInvalidReason, setUsernameInvalidReason] = useState('');
@@ -166,10 +167,6 @@ function BasicSignIn() {
 	const [isMounted, setMounted] = useState(false);
 
 	const submitIsDisabled = !username || !password;
-
-	useEffect(() => {
-		console.log(`pending=${isPending} status=${authStatus} error=${error}`);
-	}, [error, isPending]);
 
 	useEffect(() => {
 		if (isMounted) checkUsernameValidity();
@@ -252,7 +249,7 @@ function BasicSignIn() {
 }
 
 function SSOSignIn() {
-	function federatedSignIn() {
+	function signIn() {
 		void signInWithRedirect({
 			provider: {
 				custom: 'Azure',
@@ -271,7 +268,7 @@ function SSOSignIn() {
 				type="button"
 				variation="primary"
 				loadingText="Redirecting"
-				onClick={federatedSignIn}
+				onClick={signIn}
 			>
 				<Flex justifyContent="center">
 					<img className="azure-logo" alt="Azure logo" src={AzureLogo} />
