@@ -16,7 +16,6 @@ type CertificateStackProps = StackProps & {
 
 export class CertificateStack extends Stack {
 	public readonly apiDomainName: string;
-	public readonly authDomainName: string;
 	public readonly cloudFrontCert: ICertificate;
 	public readonly loadBalancerCert: ICertificate;
 
@@ -27,13 +26,11 @@ export class CertificateStack extends Stack {
 		const generateResourceId = resourceId(scope);
 		const validation = CertificateValidation.fromDns(hostedZone);
 		this.apiDomainName = `api.${hostedZone.zoneName}`;
-		this.authDomainName = `auth.${hostedZone.zoneName}`;
 
 		// Yes this is deprecated, but CDK currently gives us no way to use
 		// Permissions Boundaries with cross-region resources, so ...
 		this.cloudFrontCert = new DnsValidatedCertificate(this, generateResourceId('cert-ui'), {
 			domainName: hostedZone.zoneName,
-			subjectAlternativeNames: [this.authDomainName],
 			hostedZone,
 			validation,
 			region: 'us-east-1',
