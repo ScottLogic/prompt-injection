@@ -49,8 +49,6 @@ const authStack = new AuthStack(app, generateStackName('auth'), {
 	description: generateDescription('Auth stack'),
 	env,
 	tags,
-	authDomainName: certificateStack.authDomainName,
-	certificate: certificateStack.cloudFrontCert,
 	hostedZone: hostedZoneStack.hostedZone,
 });
 

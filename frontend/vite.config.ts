@@ -11,6 +11,17 @@ export default defineConfig({
 			'@src': path.resolve(__dirname, './src'),
 		},
 	},
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks: (id) => {
+					if (id.includes('@aws-amplify')) {
+						return 'amplify';
+					}
+				},
+			},
+		},
+	},
 	test: {
 		environment: 'happy-dom',
 		testTimeout: 10000,

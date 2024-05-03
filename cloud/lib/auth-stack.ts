@@ -1,27 +1,21 @@
-import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import {
-	AllowedMethods,
-	CachePolicy,
-	Distribution,
-	OriginRequestPolicy,
-	PriceClass,
-	ResponseHeadersPolicy,
-	ViewerProtocolPolicy,
-} from 'aws-cdk-lib/aws-cloudfront';
-import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { Mfa, OAuthScope, UserPool } from 'aws-cdk-lib/aws-cognito';
-import { ARecord, IHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
-import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
+	Mfa,
+	OAuthScope,
+	ProviderAttribute,
+	UserPool,
+	UserPoolClientIdentityProvider,
+	UserPoolIdentityProviderSaml,
+	UserPoolIdentityProviderSamlMetadata,
+} from 'aws-cdk-lib/aws-cognito';
+import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { CfnOutput, Duration, RemovalPolicy, Stack, StackProps, Tags } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
-import { resourceId, stageName } from './resourceNamingUtils';
+import { appName, resourceId, stageName } from './resourceNamingUtils';
 
 type AuthStackProps = StackProps & {
-	certificate: ICertificate;
 	hostedZone: IHostedZone;
-	authDomainName: string;
 };
 
 export class AuthStack extends Stack {
@@ -36,12 +30,14 @@ export class AuthStack extends Stack {
 		const stage = stageName(scope);
 		const generateResourceId = resourceId(scope);
 
-		const { certificate, env, hostedZone, authDomainName } = props;
+		const { env, hostedZone } = props;
 		if (!env?.region) {
 			throw new Error('Region not defined in stack env, cannot continue!');
 		}
 
-		// Cognito UserPool
+		/*
+		User Pool - including attribute claims and password policy
+		*/
 		const userPool = new UserPool(this, generateResourceId('userpool'), {
 			enableSmsRole: false,
 			mfa: Mfa.OFF,
@@ -69,12 +65,50 @@ export class AuthStack extends Stack {
 			Tags.of(userPool).add(key, value);
 		});
 
-		new CfnOutput(this, 'UserPool.Id', {
-			value: `urn:amazon:cognito:sp:${userPool.userPoolId}`,
+		/*
+		Identity Providers - currently only Cognito itself plus Azure
+		*/
+		const supportedIdentityProviders = [UserPoolClientIdentityProvider.COGNITO];
+
+		if (process.env.IDP_NAME?.toUpperCase() === 'AZURE') {
+			const { AZURE_APPLICATION_ID, AZURE_TENANT_ID } = process.env;
+			if (!AZURE_APPLICATION_ID) throw new Error('Missing env var AZURE_APPLICATION_SECRET');
+			if (!AZURE_TENANT_ID) throw new Error('Missing env var AZURE_TENANT_ID');
+			const idp = new UserPoolIdentityProviderSaml(this, generateResourceId('azure-idp'), {
+				name: 'Azure',
+				userPool,
+				metadata: UserPoolIdentityProviderSamlMetadata.url(
+					`https://login.microsoftonline.com/${AZURE_TENANT_ID}/federationmetadata/2007-06/federationmetadata.xml?appid=${AZURE_APPLICATION_ID}`
+				),
+				attributeMapping: {
+					email: ProviderAttribute.other(
+						'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
+					),
+					familyName: ProviderAttribute.other(
+						'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'
+					),
+					givenName: ProviderAttribute.other(
+						'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'
+					),
+				},
+			});
+			supportedIdentityProviders.push(UserPoolClientIdentityProvider.custom(idp.providerName));
+		}
+
+		/*
+		User Pool Domain - where authentication service is reachable
+		 */
+		const userPoolDomain = userPool.addDomain(generateResourceId('userpool-domain'), {
+			cognitoDomain: {
+				domainPrefix: appName.toLowerCase(),
+			},
 		});
 
+		/*
+		User Pool Client - defines Auth flow and token validity
+		*/
 		const logoutUrls = [`https://${hostedZone.zoneName}`];
-		const callbackUrls = logoutUrls.concat(`https://api.${hostedZone.zoneName}/oauth2/idpresponse`);
+		const replyUrl = `${userPoolDomain.baseUrl()}/saml2/idpresponse`;
 		const userPoolClient = userPool.addClient(generateResourceId('userpool-client'), {
 			authFlows: {
 				userSrp: true,
@@ -84,9 +118,10 @@ export class AuthStack extends Stack {
 					authorizationCodeGrant: true,
 				},
 				scopes: [OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE],
-				callbackUrls,
+				callbackUrls: logoutUrls.concat(replyUrl),
 				logoutUrls,
 			},
+			supportedIdentityProviders,
 			accessTokenValidity: Duration.minutes(60),
 			idTokenValidity: Duration.minutes(60),
 			refreshTokenValidity: Duration.days(14),
@@ -94,45 +129,14 @@ export class AuthStack extends Stack {
 			preventUserExistenceErrors: true,
 		});
 
-		userPool.addDomain(generateResourceId('userpool-domain'), {
-			cognitoDomain: {
-				domainPrefix: generateResourceId('auth'),
-			},
+		new CfnOutput(this, 'UserPool.Id', {
+			value: `urn:amazon:cognito:sp:${userPool.userPoolId}`,
 		});
-
+		new CfnOutput(this, 'UserPool.ReplyURL', {
+			value: replyUrl,
+		});
 		new CfnOutput(this, 'UserPoolClient.Id', {
 			value: userPoolClient.userPoolClientId,
-		});
-
-		/*
-		Use a CloudFront distribution to proxy Cognito.
-
-		Why? Turns out a custom userpool domain won't work due to CORS failures :(
-		Cognito does that by creating a CloudFront distro under the hood, so we're
-		not adding any costs by configuring this manually.
-		*/
-		const cognitoProxyDistribution = new Distribution(this, generateResourceId('cognito-proxy'), {
-			certificate,
-			domainNames: [authDomainName],
-			enableLogging: true,
-			defaultBehavior: {
-				origin: new HttpOrigin(`cognito-idp.${env.region}.amazonaws.com`),
-				allowedMethods: AllowedMethods.ALLOW_ALL,
-				cachePolicy: CachePolicy.CACHING_DISABLED,
-				viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-				originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_AND_CLOUDFRONT_2022,
-				responseHeadersPolicy:
-					ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT_AND_SECURITY_HEADERS,
-			},
-			priceClass: PriceClass.PRICE_CLASS_100,
-		});
-
-		new ARecord(this, generateResourceId('arecord-auth-proxy'), {
-			zone: hostedZone,
-			recordName: authDomainName,
-			target: RecordTarget.fromAlias(new CloudFrontTarget(cognitoProxyDistribution)),
-			deleteExisting: true,
-			comment: 'DNS A Record for Cognito auth proxy',
 		});
 
 		// SSM Parameters accessed in auth edge lambda, as cannot use ENV vars.
