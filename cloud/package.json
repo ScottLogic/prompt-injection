@@ -6,6 +6,7 @@
 	},
 	"scripts": {
 		"cdk:synth": "cdk synth -q \"*\"",
+		"cdk:synth:prod": "cdk synth --context STAGE=prod -q \"*\"",
 		"cdk:diff": "cdk diff --app cdk.out",
 		"cdk:deploy": "cdk deploy --app cdk.out",
 		"cdk:deploy:all": "cdk deploy --app cdk.out --all",

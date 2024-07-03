@@ -32,7 +32,7 @@ const tags = {
 
 /* Stack constructs */
 
-const hostedZoneStack = new HostedZoneStack(app, generateStackName('hosted-zone'), {
+const hostedZoneStack = new HostedZoneStack(app, generateStackName('hostedzone'), {
 	description: generateDescription('Hosted Zone stack'),
 	env,
 	tags,
