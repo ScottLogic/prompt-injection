@@ -19,7 +19,7 @@ export class HostedZoneStack extends Stack {
 			throw new Error('HOSTED_ZONE_ID not found in env vars');
 		}
 
-		this.hostedZone = HostedZone.fromHostedZoneAttributes(this, resourceId(scope)('hosted-zone'), {
+		this.hostedZone = HostedZone.fromHostedZoneAttributes(this, resourceId(scope)('hostedzone'), {
 			hostedZoneId: HOSTED_ZONE_ID,
 			zoneName: DOMAIN_NAME,
 		});
