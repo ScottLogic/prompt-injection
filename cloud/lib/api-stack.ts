@@ -31,7 +31,7 @@ import { RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { join } from 'node:path';
 
-import { appName, resourceId } from './resourceNamingUtils';
+import { appName, resourceId, stageName } from './resourceNamingUtils';
 
 type ApiStackProps = StackProps & {
 	apiDomainName: string;
@@ -46,6 +46,7 @@ export class ApiStack extends Stack {
 		super(scope, id, props);
 
 		const generateResourceId = resourceId(scope);
+		const stage = stageName(scope);
 
 		const {
 			apiDomainName,
@@ -76,7 +77,7 @@ export class ApiStack extends Stack {
 		const apiKeySecret = Secret.fromSecretNameV2(
 			this,
 			generateResourceId('apikey'),
-			'dev/SpyLogic/ApiKey'
+			`${stage}/SpyLogic/ApiKey`
 		);
 
 		/*

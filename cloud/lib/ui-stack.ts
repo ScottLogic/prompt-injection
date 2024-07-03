@@ -23,7 +23,7 @@ import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { join } from 'node:path';
 
-import { appName, resourceId } from './resourceNamingUtils';
+import { appName, resourceId, stackName } from './resourceNamingUtils';
 
 type UiStackProps = StackProps & {
 	apiDomainName: string;
@@ -94,6 +94,7 @@ export class UiStack extends Stack {
 			generateResourceId('api-gatekeeper'),
 			{
 				functionName: 'edge-api-gatekeeper',
+				stackId: stackName(scope)('edge-lambda'),
 				handler: 'index.handler',
 				runtime: Runtime.NODEJS_18_X,
 				code: new TypeScriptCode(join(__dirname, 'lambdas/verifyAuth/index.ts'), {
