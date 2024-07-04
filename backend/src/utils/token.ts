@@ -4,18 +4,7 @@ import {
 } from 'openai/resources/chat/completions';
 import { promptTokensEstimate, stringTokens } from 'openai-chat-tokens';
 
-import { CHAT_MODEL_ID } from '@src/models/chat';
 import { chatModelTools } from '@src/openai';
-
-// The size of each model's context window in number of tokens. https://platform.openai.com/docs/models
-const chatModelMaxTokens: {
-	[key in CHAT_MODEL_ID]: number;
-} = {
-	'gpt-4': 8192,
-	'gpt-4-1106-preview': 128000,
-	'gpt-4-0613': 8192,
-	'gpt-3.5-turbo': 16385,
-};
 
 const TOKENS_PER_TOOL_CALL = 4;
 const OFFSET_OPENAI_TOKENS = 5; // there is an offset of 5 between openai completion prompt_tokens
@@ -53,22 +42,20 @@ function countTotalPromptTokens(chatHistory: ChatCompletionMessageParam[]) {
 	);
 }
 
-function filterChatHistoryByMaxTokens(
+function truncateChatHistoryToContextWindow(
 	chatHistory: ChatCompletionMessageParam[],
-	maxNumTokens: number
+	contextWindowSize: number
 ): ChatCompletionMessageParam[] {
 	if (chatHistory.length === 0) {
 		return chatHistory;
 	}
 	const estimatedTokens = countTotalPromptTokens(chatHistory);
-	if (estimatedTokens <= maxNumTokens) {
+	if (estimatedTokens <= contextWindowSize) {
 		return chatHistory;
 	}
 	console.log(
-		'Filtering chat history to fit inside context window. estimated_tokens= ',
-		estimatedTokens,
-		'maxNumTokens=',
-		maxNumTokens
+		'Truncating chat history to fit inside context window:',
+		`estimated_tokens=${estimatedTokens} context_window=${contextWindowSize}`
 	);
 	const newList: ChatCompletionMessageParam[] = [];
 
@@ -95,7 +82,7 @@ function filterChatHistoryByMaxTokens(
 
 		const currentTokens = countTotalPromptTokens(tempList);
 		// if it fits add it to the list
-		if (currentTokens <= maxNumTokens) {
+		if (currentTokens <= contextWindowSize) {
 			newList.splice(i, 0, message);
 		} else {
 			console.debug('Max tokens reached on completion=', message);
@@ -110,8 +97,4 @@ function filterChatHistoryByMaxTokens(
 	return newList.reverse();
 }
 
-export {
-	chatModelMaxTokens,
-	filterChatHistoryByMaxTokens,
-	countTotalPromptTokens,
-};
+export { truncateChatHistoryToContextWindow, countTotalPromptTokens };

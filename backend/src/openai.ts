@@ -12,6 +12,7 @@ import { queryDocuments } from './langchain';
 import {
 	CHAT_MODEL_ID,
 	ChatModel,
+	chatModelContextWindow,
 	ChatModelReply,
 	FunctionCallResponse,
 	ToolCallResponse,
@@ -27,9 +28,8 @@ import {
 } from './models/openai';
 import { pushMessageToHistory } from './utils/chat';
 import {
-	chatModelMaxTokens,
 	countTotalPromptTokens,
-	filterChatHistoryByMaxTokens,
+	truncateChatHistoryToContextWindow,
 } from './utils/token';
 
 // tools available to OpenAI models
@@ -121,6 +121,9 @@ async function getValidModelsFromOpenAI() {
 			.map((model) => model.id as CHAT_MODEL_ID)
 			.filter((id) => chatModelIds.includes(id))
 			.sort();
+		if (!validModels.length) {
+			throw new Error('No chat models found');
+		}
 
 		validOpenAiModels.set(validModels);
 		console.debug('Valid OpenAI models:', validModels);
@@ -289,8 +292,9 @@ function getChatCompletionsInContextWindow(
 		countTotalPromptTokens(completions)
 	);
 
-	const maxTokens = chatModelMaxTokens[gptModel] * 0.95; // 95% of max tokens to allow for response tokens
-	const reducedCompletions = filterChatHistoryByMaxTokens(
+	// 95% of max tokens to allow for response tokens - bit crude :(
+	const maxTokens = chatModelContextWindow[gptModel] * 0.95;
+	const reducedCompletions = truncateChatHistoryToContextWindow(
 		completions,
 		maxTokens
 	);

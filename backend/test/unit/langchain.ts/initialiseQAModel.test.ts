@@ -123,8 +123,8 @@ test('GIVEN the QA LLM WHEN a question is asked THEN it is initialised AND it an
 	expect(answer).toEqual(expectedAnswer);
 });
 
-test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised THEN it is initialised with GPT-4', async () => {
-	mockValidModels.push('gpt-4', 'gpt-3.5-turbo', 'gpt-3');
+test('GIVEN the users api key supports gpt-4o WHEN the QA model is initialised THEN it is initialised with gpt-4o', async () => {
+	mockValidModels.push('gpt-4o', 'gpt-4-turbo', 'gpt-3.5-turbo', 'gpt-3');
 
 	const level = LEVEL_NAMES.LEVEL_1;
 	const prompt = 'this is a test prompt. ';
@@ -132,13 +132,28 @@ test('GIVEN the users api key supports GPT-4 WHEN the QA model is initialised TH
 	await queryDocuments('some question', prompt, level);
 
 	expect(ChatOpenAI).toHaveBeenCalledWith({
-		modelName: 'gpt-4',
+		modelName: 'gpt-4o',
 		streaming: true,
 		openAIApiKey: 'sk-12345',
 	});
 });
 
-test('GIVEN the users api key does not support GPT-4 WHEN the QA model is initialised THEN it is initialised with gpt-3.5-turbo', async () => {
+test('GIVEN the users api key supports gpt-4-turbo but not gpt-4o WHEN the QA model is initialised THEN it is initialised with gpt-4-turbo', async () => {
+	mockValidModels.push('gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo', 'gpt-3');
+
+	const level = LEVEL_NAMES.LEVEL_1;
+	const prompt = 'this is a test prompt. ';
+
+	await queryDocuments('some question', prompt, level);
+
+	expect(ChatOpenAI).toHaveBeenCalledWith({
+		modelName: 'gpt-4o',
+		streaming: true,
+		openAIApiKey: 'sk-12345',
+	});
+});
+
+test('GIVEN the users api key does not support gpt-4o or gpt-4-turbo WHEN the QA model is initialised THEN it is initialised with gpt-3.5-turbo', async () => {
 	mockValidModels.push('gpt-2', 'gpt-3.5-turbo', 'gpt-3');
 
 	const level = LEVEL_NAMES.LEVEL_1;
