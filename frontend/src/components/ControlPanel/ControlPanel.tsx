@@ -3,7 +3,7 @@ import DefenceBox from '@src/components/DefenceBox/DefenceBox';
 import ModelBox from '@src/components/ModelBox/ModelBox';
 import DetailElement from '@src/components/ThemedButtons/DetailElement';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
-import { CHAT_MODEL_ID, ChatMessage, ChatModel } from '@src/models/chat';
+import { ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -29,7 +29,7 @@ function ControlPanel({
 	currentLevel: LEVEL_NAMES;
 	defences: Defence[];
 	chatModel?: ChatModel;
-	setChatModelId: (modelId: CHAT_MODEL_ID) => void;
+	setChatModelId: (modelId: ChatModel['id']) => void;
 	chatModelOptions: string[];
 	toggleDefence: (defence: Defence) => void;
 	resetDefenceConfiguration: (

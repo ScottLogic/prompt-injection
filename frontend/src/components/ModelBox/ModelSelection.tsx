@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
-import { CHAT_MODEL_ID, ChatMessage, ChatModel } from '@src/models/chat';
+import { ChatMessage, ChatModel } from '@src/models/chat';
 import { chatService } from '@src/service';
 
 import './ModelSelection.css';
@@ -15,14 +15,14 @@ function ModelSelection({
 	addChatMessage,
 }: {
 	chatModel?: ChatModel;
-	setChatModelId: (modelId: CHAT_MODEL_ID) => void;
+	setChatModelId: (modelId: ChatModel['id']) => void;
 	chatModelOptions: string[];
 	addChatMessage: (message: ChatMessage) => void;
 }) {
 	// model currently selected in the dropdown
-	const [selectedModel, setSelectedModel] = useState<CHAT_MODEL_ID | undefined>(
-		undefined
-	);
+	const [selectedModel, setSelectedModel] = useState<
+		ChatModel['id'] | undefined
+	>(chatModel?.id);
 
 	const [errorChangingModel, setErrorChangingModel] = useState(false);
 
@@ -65,7 +65,7 @@ function ModelSelection({
 									aria-label="model-select"
 									value={selectedModel ?? 0} // default to the first model
 									onChange={(e) => {
-										setSelectedModel(e.target.value as CHAT_MODEL_ID);
+										setSelectedModel(e.target.value);
 									}}
 								>
 									{chatModelOptions.map((model) => (

@@ -1,7 +1,7 @@
 import ChatBox from '@src/components/ChatBox/ChatBox';
 import ControlPanel from '@src/components/ControlPanel/ControlPanel';
 import EmailBox from '@src/components/EmailBox/EmailBox';
-import { CHAT_MODEL_ID, ChatMessage, ChatModel } from '@src/models/chat';
+import { ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -36,7 +36,7 @@ function MainBody({
 	emails: EmailInfo[];
 	messages: ChatMessage[];
 	chatModel?: ChatModel;
-	setChatModelId: (modelId: CHAT_MODEL_ID) => void;
+	setChatModelId: (modelId: ChatModel['id']) => void;
 	chatModels: string[];
 	addChatMessage: (message: ChatMessage) => void;
 	addSentEmails: (emails: EmailInfo[]) => void;
