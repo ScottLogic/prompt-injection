@@ -30,7 +30,14 @@ function makePromptTemplate(
 }
 
 function getChatModel(): CHAT_MODEL_ID {
-	return getValidOpenAIModels().includes('gpt-4') ? 'gpt-4' : 'gpt-3.5-turbo';
+	const validModels = getValidOpenAIModels();
+	// GPT-4 is the most expensive model by a long way, avoid at all costs!
+	return (
+		validModels.find((model) => model === 'gpt-4o') ??
+		validModels.find((model) => model === 'gpt-4-turbo') ??
+		validModels.find((model) => model === 'gpt-3.5-turbo') ??
+		validModels[0]
+	);
 }
 
 function initQAModel(level: LEVEL_NAMES, Prompt: string) {

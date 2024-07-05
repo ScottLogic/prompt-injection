@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
-import { filterChatHistoryByMaxTokens } from '@src/utils/token';
+import { truncateChatHistoryToContextWindow } from '@src/utils/token';
 
 describe('token utils unit tests', () => {
 	// model will be set up with function definitions so will contribute to maxTokens
@@ -52,7 +52,7 @@ describe('token utils unit tests', () => {
 		];
 
 		// expect that the first message is trimmed
-		const expectedFilteredChatHistory: ChatCompletionMessageParam[] = [
+		const expectedChatHistory: ChatCompletionMessageParam[] = [
 			{
 				role: 'assistant',
 				content: 'Hello Bob! How can I assist you today?',
@@ -89,13 +89,13 @@ describe('token utils unit tests', () => {
 			},
 		];
 
-		const filteredChatHistory = filterChatHistoryByMaxTokens(
+		const truncatedChatHistory = truncateChatHistoryToContextWindow(
 			chatHistory,
 			maxTokens
 		);
 
-		expect(filteredChatHistory.length).toBe(5);
-		expect(filteredChatHistory).toEqual(expectedFilteredChatHistory);
+		expect(truncatedChatHistory.length).toBe(5);
+		expect(truncatedChatHistory).toEqual(expectedChatHistory);
 	});
 
 	test('GIVEN chat history does not exceed max token number WHEN applying filter THEN it should return the original chat history', () => {
@@ -135,11 +135,11 @@ describe('token utils unit tests', () => {
 			},
 		];
 
-		const filteredChatHistory = filterChatHistoryByMaxTokens(
+		const truncatedChatHistory = truncateChatHistoryToContextWindow(
 			chatHistory,
 			maxTokens
 		);
-		expect(filteredChatHistory).toEqual(chatHistory);
+		expect(truncatedChatHistory).toEqual(chatHistory);
 	});
 
 	test('GIVEN chat history exceeds max token number WHEN applying filter AND there is a system role in chat history THEN it should return the filtered chat history', () => {
@@ -188,7 +188,7 @@ describe('token utils unit tests', () => {
 		];
 
 		// expect that the system message remains and the second two messages are removed
-		const expectedFilteredChatHistory: ChatCompletionMessageParam[] = [
+		const expectedChatHistory: ChatCompletionMessageParam[] = [
 			{
 				role: 'system',
 				content: 'You are a helpful chatbot.',
@@ -225,13 +225,13 @@ describe('token utils unit tests', () => {
 			},
 		];
 
-		const filteredChatHistory = filterChatHistoryByMaxTokens(
+		const truncatedChatHistory = truncateChatHistoryToContextWindow(
 			chatHistory,
 			maxTokens
 		);
 
-		expect(filteredChatHistory.length).toBe(5);
-		expect(filteredChatHistory).toEqual(expectedFilteredChatHistory);
+		expect(truncatedChatHistory.length).toBe(5);
+		expect(truncatedChatHistory).toEqual(expectedChatHistory);
 	});
 
 	test('GIVEN chat history most recent message exceeds max tokens alone WHEN applying filter THEN it should return this message', () => {
@@ -243,15 +243,25 @@ describe('token utils unit tests', () => {
 					'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
 			},
 		];
-		const filteredChatHistory = filterChatHistoryByMaxTokens(
+		const truncatedChatHistory = truncateChatHistoryToContextWindow(
 			chatHistory,
 			maxTokens
 		);
-		expect(filteredChatHistory).toEqual(chatHistory);
+		expect(truncatedChatHistory).toEqual(chatHistory);
 	});
 
 	test('GIVEN the max tokens is reached on a tool call WHEN applying filter THEN it should remove the previous assistant reply to the tool call', () => {
 		const maxTokens = FUNCTION_DEF_TOKENS + 80;
+		const expectedChatHistory: ChatCompletionMessageParam[] = [
+			{
+				role: 'assistant',
+				content: 'I have sent the email.',
+			},
+			{
+				role: 'user',
+				content: 'Thanks, lets talk about something else.',
+			},
+		];
 		const chatHistory: ChatCompletionMessageParam[] = [
 			{
 				role: 'user',
@@ -278,31 +288,13 @@ describe('token utils unit tests', () => {
 					'Email sent to boss with address bob@example.com and subject Resignation.',
 				tool_call_id: 'tool_call_0',
 			},
-
-			{
-				role: 'assistant',
-				content: 'I have sent the email.',
-			},
-			{
-				role: 'user',
-				content: 'Thanks, lets talk about something else.',
-			},
-		];
-		const reducedChatHistory: ChatCompletionMessageParam[] = [
-			{
-				role: 'assistant',
-				content: 'I have sent the email.',
-			},
-			{
-				role: 'user',
-				content: 'Thanks, lets talk about something else.',
-			},
+			...expectedChatHistory,
 		];
 
-		const filteredChatHistory = filterChatHistoryByMaxTokens(
+		const truncatedChatHistory = truncateChatHistoryToContextWindow(
 			chatHistory,
 			maxTokens
 		);
-		expect(filteredChatHistory).toEqual(reducedChatHistory);
+		expect(truncatedChatHistory).toEqual(expectedChatHistory);
 	});
 });

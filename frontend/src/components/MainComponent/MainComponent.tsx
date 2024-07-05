@@ -5,7 +5,7 @@ import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
 import ResetProgressOverlay from '@src/components/Overlay/ResetProgress';
-import { CHAT_MODEL_ID, ChatMessage, ChatModel } from '@src/models/chat';
+import { ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,
@@ -55,7 +55,7 @@ function MainComponent({
 	resetCompletedLevels: () => void;
 	setIsNewUser: (isNewUser: boolean) => void;
 }) {
-	const [MainBodyKey, setMainBodyKey] = useState<number>(0);
+	const [mainBodyKey, setMainBodyKey] = useState<number>(0);
 	const [defences, setDefences] = useState<Defence[]>(DEFAULT_DEFENCES);
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
@@ -184,9 +184,10 @@ function MainComponent({
 
 		setDefences(defences);
 
-		// we will only update the chatModel if it is defined in the backend response. It will only defined for the sandbox level.
+		// Will only update chatModel if included in the backend response
+		// (currently only for sandbox level)
 		setChatModel(chatModel);
-		setMainBodyKey(MainBodyKey + 1);
+		setMainBodyKey((value) => value + 1);
 	}
 
 	function addInfoMessage(message: string) {
@@ -290,7 +291,7 @@ function MainComponent({
 		}
 	}
 
-	function setChatModelId(modelId: CHAT_MODEL_ID) {
+	function setChatModelId(modelId: ChatModel['id']) {
 		if (!chatModel) {
 			console.error(
 				'You are trying to change the id of the chatModel but it has not been loaded yet'
@@ -355,7 +356,7 @@ function MainComponent({
 				/>
 			)}
 			<MainBody
-				key={MainBodyKey}
+				key={mainBodyKey}
 				currentLevel={currentLevel}
 				defences={defences}
 				chatModel={chatModel}

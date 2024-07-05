@@ -7,14 +7,20 @@ import { ChatInfoMessage, ChatMessage } from './chatMessage';
 import { DEFENCE_ID } from './defence';
 import { EmailInfo } from './email';
 
-const chatModelIds = [
-	'gpt-4-1106-preview',
-	'gpt-4',
-	'gpt-4-0613',
-	'gpt-3.5-turbo',
-] as const;
+// Size of each model's context window in number of tokens
+// https://platform.openai.com/docs/models
+const chatModelContextWindow = {
+	'gpt-4o': 128000,
+	'gpt-4-turbo': 128000,
+	'gpt-4': 8192,
+	'gpt-3.5-turbo': 16385,
+} as const;
 
-type CHAT_MODEL_ID = (typeof chatModelIds)[number];
+type CHAT_MODEL_ID = keyof typeof chatModelContextWindow;
+
+const chatModelIds = Object.freeze(
+	Object.keys(chatModelContextWindow)
+) as readonly [CHAT_MODEL_ID];
 
 type ChatModel = {
 	id: CHAT_MODEL_ID;
@@ -103,6 +109,7 @@ const defaultChatModel: ChatModel = {
 };
 
 export type {
+	CHAT_MODEL_ID,
 	DefenceReport,
 	ChatModel,
 	ChatModelConfigurations,
@@ -116,5 +123,9 @@ export type {
 	SingleDefenceReport,
 	MODEL_CONFIG_ID,
 };
-export { defaultChatModel, modelConfigIds, chatModelIds };
-export type { CHAT_MODEL_ID };
+export {
+	defaultChatModel,
+	modelConfigIds,
+	chatModelIds,
+	chatModelContextWindow,
+};

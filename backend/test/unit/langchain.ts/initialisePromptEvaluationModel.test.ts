@@ -60,21 +60,35 @@ test('GIVEN the prompt evaluation model is not initialised WHEN it is asked to e
 	expect(result).toEqual(false);
 });
 
-test('GIVEN the users api key supports GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with GPT-4', async () => {
-	mockValidModels = ['gpt-4', 'gpt-3.5-turbo', 'gpt-3'];
+test('GIVEN the users api key supports gpt-4o WHEN the prompt evaluation model is initialised THEN it is initialised with gpt-4o', async () => {
+	mockValidModels = ['gpt-4o', 'gpt-4-turbo', 'gpt-3.5-turbo', 'gpt-3'];
 
 	const prompt = 'this is a test prompt. ';
 
 	await evaluatePrompt('some input', prompt);
 
 	expect(OpenAI).toHaveBeenCalledWith({
-		modelName: 'gpt-4',
+		modelName: 'gpt-4o',
 		temperature: 0,
 		openAIApiKey: 'sk-12345',
 	});
 });
 
-test('GIVEN the users api key does not support GPT-4 WHEN the prompt evaluation model is initialised THEN it is initialised with gpt-3.5-turbo', async () => {
+test('GIVEN the users api key supports gpt-4-turbo but not gpt-4o WHEN the prompt evaluation model is initialised THEN it is initialised with gpt-4-turbo', async () => {
+	mockValidModels = ['gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo', 'gpt-3'];
+
+	const prompt = 'this is a test prompt. ';
+
+	await evaluatePrompt('some input', prompt);
+
+	expect(OpenAI).toHaveBeenCalledWith({
+		modelName: 'gpt-4-turbo',
+		temperature: 0,
+		openAIApiKey: 'sk-12345',
+	});
+});
+
+test('GIVEN the users api key does not support gpt-4o or gpt-4-turbo WHEN the prompt evaluation model is initialised THEN it is initialised with gpt-3.5-turbo', async () => {
 	mockValidModels = ['gpt-2', 'gpt-3.5-turbo', 'gpt-3'];
 
 	const prompt = 'this is a test prompt. ';
