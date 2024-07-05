@@ -6,7 +6,7 @@ import {
 } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 
-import { LEVELS } from '@src/Levels';
+import { LEVELS } from '@src/levels';
 import { LEVEL_NAMES } from '@src/models/level';
 
 import LevelMissionInfoBanner from './LevelMissionInfoBanner';

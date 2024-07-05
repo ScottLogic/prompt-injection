@@ -1,21 +1,20 @@
 import { DocumentMeta } from '@src/models/document';
 
-import { getBackendUrl, sendRequest } from './backendService';
+import { get, backendUrl } from './backendService';
 
 const PATH = 'documents';
 
-async function getDocumentMetas(signal?: AbortSignal): Promise<DocumentMeta[]> {
-	const response = await sendRequest(PATH, { method: 'GET', signal });
-	let documentMetas = (await response.json()) as DocumentMeta[];
-	documentMetas = documentMetas.map((documentMeta) => {
+async function getDocumentMetas(signal: AbortSignal): Promise<DocumentMeta[]> {
+	const response = await get(`${PATH}/`, { signal });
+	const docs = (await response.json()) as DocumentMeta[];
+	return docs.map((documentMeta) => {
 		return {
 			...documentMeta,
-			uri: `${getBackendUrl()}${PATH}/${documentMeta.folder}/${
+			uri: `${backendUrl()}${PATH}/${documentMeta.folder}/${
 				documentMeta.filename
 			}`,
 		};
 	});
-	return documentMetas;
 }
 
 export { getDocumentMetas };
