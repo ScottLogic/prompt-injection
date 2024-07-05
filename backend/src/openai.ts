@@ -129,7 +129,7 @@ async function getValidModelsFromOpenAI() {
 		console.debug('Valid OpenAI models:', validModels);
 		return validModels;
 	} catch (error) {
-		console.error('Error getting valid models: ', error);
+		console.error('Error getting valid models:', error);
 		throw error;
 	}
 }

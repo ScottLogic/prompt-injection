@@ -52,4 +52,22 @@ describe('getValidModelsFromOpenAI', () => {
 
 		expect(validModels).toEqual(expectedValidModels);
 	});
+
+	test('GIVEN the user has no valid chat models available WHEN getValidModelsFromOpenAI is called THEN an error is thrown', async () => {
+		process.env.OPENAI_API_KEY = 'sk-12345';
+		const mockModelList = [
+			{ id: 'gpt-3' },
+			{ id: 'davinci-001' },
+			{ id: 'davinci-002' },
+			{ id: 'text-moderation-stable' },
+			{ id: 'whisper-1' },
+		];
+		mockListFn.mockResolvedValueOnce({
+			data: mockModelList,
+		} as OpenAI.ModelsPage);
+
+		await expect(getValidModelsFromOpenAI()).rejects.toThrow(
+			'No chat models found'
+		);
+	});
 });
