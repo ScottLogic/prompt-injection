@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { ChatModel } from '@src/models/chat';
 import { ChatMessage } from '@src/models/chatMessage';
 import { Defence } from '@src/models/defence';
+import { DocumentMeta } from '@src/models/document';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 
@@ -16,6 +17,7 @@ export type StartResponse = {
 		systemRole: string;
 	}[];
 	chatModel?: ChatModel;
+	availableDocs?: DocumentMeta[];
 };
 
 export type StartGetRequest = Request<

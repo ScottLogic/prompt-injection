@@ -2,6 +2,7 @@ import {
 	LoadLevelResponse,
 	ChatInfoMessageResponse,
 } from '@src/models/apiResponse';
+import { processDocumentMetadata } from '@src/service/documentService';
 
 import { post } from './backendService';
 import {
@@ -15,14 +16,17 @@ const PATH = 'reset';
 async function resetAllProgress(level: number) {
 	const response = await post(`${PATH}/all?level=${level}`);
 
-	const { defences, emails, chatHistory, chatModel } =
+	const { defences, emails, chatHistory, chatModel, availableDocs } =
 		(await response.json()) as LoadLevelResponse;
+
+	const documents = availableDocs && processDocumentMetadata(availableDocs);
 
 	return {
 		emails,
 		chatHistory: getChatMessagesFromDTOResponse(chatHistory),
 		defences: defences ? getDefencesFromDTOs(defences) : [],
 		chatModel,
+		documents,
 	};
 }
 

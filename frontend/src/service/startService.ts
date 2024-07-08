@@ -3,6 +3,7 @@ import { StartResponse } from '@src/models/apiResponse';
 import { get } from './backendService';
 import { getChatMessagesFromDTOResponse } from './chatService';
 import { getDefencesFromDTOs } from './defenceService';
+import { processDocumentMetadata } from './documentService';
 
 const PATH = 'start';
 
@@ -15,7 +16,10 @@ async function start(level: number) {
 		chatHistory,
 		systemRoles,
 		chatModel,
+		availableDocs,
 	} = (await response.json()) as StartResponse;
+
+	const documents = availableDocs && processDocumentMetadata(availableDocs);
 
 	return {
 		emails,
@@ -24,6 +28,7 @@ async function start(level: number) {
 		availableModels,
 		systemRoles,
 		chatModel,
+		documents,
 	};
 }
 

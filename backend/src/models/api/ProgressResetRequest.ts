@@ -7,12 +7,12 @@ import { DocumentMeta } from '@src/models/document';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 
-export type LevelGetRequest = Request<
+export type ProgressResetRequest = Request<
 	never,
 	{
 		emails: EmailInfo[];
 		chatHistory: ChatMessage[];
-		defences: Defence[];
+		defences?: Defence[];
 		chatModel?: ChatModel;
 		availableDocs?: DocumentMeta[];
 	},
