@@ -1,3 +1,10 @@
+.document-popup-inner {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 85vh;
+}
+
 .document-popup-inner header {
 	border-radius: 0;
 	background-color: var(--accent-background-colour);
@@ -23,13 +30,6 @@
 	outline-color: var(--main-text-colour);
 }
 
-.document-popup-inner {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	height: 85vh;
-}
-
 .view-documents-main {
 	position: relative;
 	display: flex;
@@ -43,11 +43,15 @@
 	color: var(--main-text-colour);
 }
 
-.document-viewer-container {
+.view-documents-main .document-viewer-container {
 	flex-grow: 1;
 	overflow-y: auto;
 	width: 32.5rem;
 	background-color: var(--document-viewer-background-colour);
+}
+
+.view-documents-main .error-message {
+	width: 32.5rem;
 }
 
 @media (width < 87.5rem) {

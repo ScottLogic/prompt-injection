@@ -15,23 +15,31 @@ import {
 import DocumentViewBox from './DocumentViewBox';
 
 interface MockDocument {
-	filename: string;
+	fileName: string;
+	fileType: string;
+	folder: string;
 	content: string;
 }
 
 describe('DocumentViewBox component tests', () => {
-	const URI = 'localhost:1234';
+	const URI = 'http://localhost:1234/';
 	const defaultDocuments: MockDocument[] = [
 		{
-			filename: 'document-1.txt',
+			fileName: 'document-1.txt',
+			fileType: 'text/plain',
+			folder: 'common',
 			content: 'Now displaying document 1',
 		},
 		{
-			filename: 'document-2.txt',
+			fileName: 'document-2.txt',
+			fileType: 'text/plain',
+			folder: 'common',
 			content: 'Now displaying document 2',
 		},
 		{
-			filename: 'document-3.txt',
+			fileName: 'document-3.txt',
+			fileType: 'text/plain',
+			folder: 'common',
 			content: 'Now displaying document 3',
 		},
 	];
@@ -52,7 +60,8 @@ describe('DocumentViewBox component tests', () => {
 			mockDocumentViewer(props);
 			return <div>DocumentViewer</div>;
 		},
-		DocViewerRenderers: vi.fn(),
+		TXTRenderer: vi.fn(),
+		CSVRenderer: vi.fn(),
 	}));
 
 	const realFetch = global.fetch;
@@ -70,9 +79,10 @@ describe('DocumentViewBox component tests', () => {
 	});
 
 	function getMockedDocumentMetas(documents: MockDocument[]) {
-		return documents.map((doc) => ({
-			filename: doc.filename,
-			uri: `${URI}/${doc.filename}`,
+		return documents.map(({ fileName, fileType, folder }) => ({
+			fileName,
+			fileType,
+			folder,
 		}));
 	}
 
@@ -81,11 +91,16 @@ describe('DocumentViewBox component tests', () => {
 		mockGlobalFetch.mockImplementation(
 			(uri: string, { method }: RequestInit) => {
 				if (uri.startsWith(URI)) {
-					const filename = uri.split('/')[1];
-					const document = documents.find((doc) => doc.filename === filename);
+					const filename = uri.substring(uri.lastIndexOf('/') + 1);
+					const document = documents.find((doc) => doc.fileName === filename);
+					if (!document) {
+						return Promise.reject(
+							new Error('Unexpected error in test: document not found')
+						);
+					}
 					const blob =
 						!method || method === 'GET'
-							? () => Promise.resolve(new Blob([document?.content ?? '']))
+							? () => Promise.resolve(new Blob([document.content]))
 							: undefined;
 					return Promise.resolve({
 						status: 200,
@@ -137,7 +152,7 @@ describe('DocumentViewBox component tests', () => {
 			renderDocumentViewBox();
 
 			expect(
-				await screen.findByText(documents[0].filename)
+				await screen.findByText(documents[0].fileName)
 			).toBeInTheDocument();
 			expect(screen.getByText(`1 of ${documents.length}`)).toBeInTheDocument();
 			expect(mockDocumentViewer).toHaveBeenCalledWith(
@@ -148,15 +163,15 @@ describe('DocumentViewBox component tests', () => {
 			);
 		});
 
-		test('WHEN the next button is clicked THEN the next document is shown', async () => {
+		test('WHEN the Next button is clicked THEN the next document is shown', async () => {
 			const { user } = renderDocumentViewBox();
 			// wait for header to load
-			await screen.findByText(documents[0].filename);
+			await screen.findByText(documents[0].fileName);
 
 			await user.click(getNextButton());
 
 			expect(
-				await screen.findByText(documents[1].filename)
+				await screen.findByText(documents[1].fileName)
 			).toBeInTheDocument();
 			expect(screen.getByText(`2 of ${documents.length}`)).toBeInTheDocument();
 			expect(mockDocumentViewer).toHaveBeenCalledWith(
@@ -167,16 +182,16 @@ describe('DocumentViewBox component tests', () => {
 			);
 		});
 
-		test('WHEN the previous button is clicked THEN the previous document is shown', async () => {
+		test('WHEN the Previous button is clicked THEN the previous document is shown', async () => {
 			const { user } = renderDocumentViewBox();
 			// wait for header to load
-			await screen.findByText(documents[0].filename);
+			await screen.findByText(documents[0].fileName);
 
 			await user.click(getNextButton());
 			await user.click(getPreviousButton());
 
 			expect(
-				await screen.findByText(documents[0].filename)
+				await screen.findByText(documents[0].fileName)
 			).toBeInTheDocument();
 			expect(screen.getByText(`1 of ${documents.length}`)).toBeInTheDocument();
 			expect(mockDocumentViewer).toHaveBeenCalledWith(
@@ -190,7 +205,7 @@ describe('DocumentViewBox component tests', () => {
 		test('GIVEN the first document is shown THEN previous button is disabled', async () => {
 			renderDocumentViewBox();
 			// wait for header to load
-			await screen.findByText(documents[0].filename);
+			await screen.findByText(documents[0].fileName);
 
 			const prevButton = getPreviousButton();
 			expect(prevButton).toHaveAttribute('aria-disabled', 'true');
@@ -204,7 +219,7 @@ describe('DocumentViewBox component tests', () => {
 		test('GIVEN a middle document is shown THEN both buttons are enabled', async () => {
 			const { user } = renderDocumentViewBox();
 			// wait for header to load
-			await screen.findByText(documents[0].filename);
+			await screen.findByText(documents[0].fileName);
 
 			const prevButton = getPreviousButton();
 			const nextButton = getNextButton();
@@ -227,7 +242,7 @@ describe('DocumentViewBox component tests', () => {
 		test('GIVEN the last document is shown THEN next button is disabled', async () => {
 			const { user } = renderDocumentViewBox();
 			// wait for header to load
-			await screen.findByText(documents[0].filename);
+			await screen.findByText(documents[0].fileName);
 
 			const prevButton = getPreviousButton();
 			const nextButton = getNextButton();
@@ -250,7 +265,7 @@ describe('DocumentViewBox component tests', () => {
 		test("GIVEN there's only one document THEN both buttons are disabled", async () => {
 			renderDocumentViewBox();
 			// wait for header to load
-			await screen.findByText(documents[0].filename);
+			await screen.findByText(documents[0].fileName);
 
 			const prevButton = getPreviousButton();
 			expect(prevButton).toHaveAttribute('aria-disabled', 'true');
