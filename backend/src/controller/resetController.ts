@@ -1,15 +1,23 @@
 import { Response } from 'express';
 
 import { getSandboxDocumentMetas } from '@src/document';
-import { LevelResetRequest } from '@src/models/api/LevelResetRequest';
-import { ProgressResetRequest } from '@src/models/api/ProgressResetRequest';
+import {
+	LevelResetRequest,
+	LevelResetResponseBody,
+} from '@src/models/api/LevelResetRequest';
+import {
+	ProgressResetRequest,
+	ProgressResetResponseBody,
+} from '@src/models/api/ProgressResetRequest';
 import { defaultChatModel } from '@src/models/chat';
-import { ChatInfoMessage } from '@src/models/chatMessage';
 import { LEVEL_NAMES, getInitialLevelStates } from '@src/models/level';
 
 import { validateLevel } from './requestValidators';
 
-function handleResetProgress(req: ProgressResetRequest, res: Response) {
+function handleResetProgress(
+	req: ProgressResetRequest,
+	res: Response<ProgressResetResponseBody>
+) {
 	const level = validateLevel(res, req.query.level);
 	if (level === null) return;
 
@@ -31,7 +39,10 @@ function handleResetProgress(req: ProgressResetRequest, res: Response) {
 	});
 }
 
-function handleResetLevel(req: LevelResetRequest, res: Response) {
+function handleResetLevel(
+	req: LevelResetRequest,
+	res: Response<LevelResetResponseBody>
+) {
 	const level = validateLevel(res, Number(req.params.level) as LEVEL_NAMES);
 	if (level === null) return;
 
@@ -42,7 +53,7 @@ function handleResetLevel(req: LevelResetRequest, res: Response) {
 		chatInfoMessage: {
 			infoMessage: `Level progress reset`,
 			chatMessageType: 'RESET_LEVEL',
-		} as ChatInfoMessage,
+		},
 	});
 }
 

@@ -2,8 +2,24 @@ import { expect, test, jest, afterEach } from '@jest/globals';
 import { Response } from 'express';
 
 import { handleLoadLevel } from '@src/controller/levelController';
-import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
+import {
+	LevelGetRequest,
+	LevelGetResponseBody,
+} from '@src/models/api/LevelGetRequest';
+import { DocumentMeta } from '@src/models/document';
 import { LEVEL_NAMES } from '@src/models/level';
+
+const mockDocuments = [
+	{
+		fileName: 'any-file.txt',
+		fileType: 'txt',
+		folder: 'anyfolder',
+	} as DocumentMeta,
+];
+
+jest.mock('@src/document', () => ({
+	getSandboxDocumentMetas: () => mockDocuments,
+}));
 
 const mockSend = jest.fn();
 
@@ -11,7 +27,7 @@ function responseMock() {
 	return {
 		send: mockSend,
 		status: jest.fn().mockReturnValue({ send: mockSend }),
-	} as unknown as Response;
+	} as unknown as Response<LevelGetResponseBody>;
 }
 
 afterEach(() => {
@@ -60,6 +76,7 @@ test.each(Object.values(LEVEL_NAMES))(
 			chatHistory: `level ${level + 1} chat history`,
 			defences: `level ${level + 1} defences`,
 			chatModel: level === LEVEL_NAMES.SANDBOX ? 'chat model' : undefined,
+			availableDocs: level === LEVEL_NAMES.SANDBOX ? mockDocuments : undefined,
 		});
 	}
 );

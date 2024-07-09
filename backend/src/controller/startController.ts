@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { getSandboxDocumentMetas } from '@src/document';
 import {
 	StartGetRequest,
-	StartResponse,
+	StartGetResponseBody,
 } from '@src/models/api/StartGetRequest';
 import { LEVEL_NAMES } from '@src/models/level';
 import { getValidOpenAIModels } from '@src/openai';
@@ -15,7 +15,10 @@ import {
 
 import { validateLevel } from './requestValidators';
 
-function handleStart(req: StartGetRequest, res: Response) {
+function handleStart(
+	req: StartGetRequest,
+	res: Response<StartGetResponseBody>
+) {
 	const level = validateLevel(res, req.query.level);
 	if (level === null) return;
 
@@ -37,7 +40,7 @@ function handleStart(req: StartGetRequest, res: Response) {
 		availableDocs,
 		availableModels: getValidOpenAIModels(),
 		systemRoles,
-	} as StartResponse);
+	});
 }
 
 export { handleStart };

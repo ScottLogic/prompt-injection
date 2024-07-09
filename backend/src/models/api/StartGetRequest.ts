@@ -7,10 +7,10 @@ import { DocumentMeta } from '@src/models/document';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 
-export type StartResponse = {
+export type StartGetResponseBody = {
 	emails: EmailInfo[];
 	chatHistory: ChatMessage[];
-	defences: Defence[];
+	defences?: Defence[];
 	availableModels: string[];
 	systemRoles: {
 		level: LEVEL_NAMES;
@@ -22,7 +22,7 @@ export type StartResponse = {
 
 export type StartGetRequest = Request<
 	never,
-	StartResponse,
+	StartGetResponseBody,
 	never,
 	{
 		level?: LEVEL_NAMES;

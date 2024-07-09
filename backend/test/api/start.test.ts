@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it, jest } from '@jest/globals';
 import { OpenAI } from 'openai';
 import request from 'supertest';
 
-import { StartResponse } from '@src/models/api/StartGetRequest';
+import { StartGetResponseBody } from '@src/models/api/StartGetRequest';
 import { LEVEL_NAMES } from '@src/models/level';
 import app from '@src/server/app';
 
@@ -35,7 +35,7 @@ describe('/start endpoints', () => {
 				.expect(200)
 				.expect('Content-Type', /application\/json/)
 				.then((response) => {
-					const { chatHistory, emails } = response.body as StartResponse;
+					const { chatHistory, emails } = response.body as StartGetResponseBody;
 					expect(chatHistory).toEqual([]);
 					expect(emails).toEqual([]);
 				})
