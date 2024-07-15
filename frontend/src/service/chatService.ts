@@ -29,10 +29,12 @@ function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
 		transformedMessage: chatMessageDTO.transformedMessage ?? undefined,
 		message:
 			type === 'USER'
-				? chatMessageDTO.completion?.content ?? chatMessageDTO.infoMessage ?? ''
+				? (chatMessageDTO.completion?.content ??
+					chatMessageDTO.infoMessage ??
+					'')
 				: type === 'BOT' || type === 'USER_TRANSFORMED'
-					? chatMessageDTO.completion?.content ?? ''
-					: chatMessageDTO.infoMessage ?? '',
+					? (chatMessageDTO.completion?.content ?? '')
+					: (chatMessageDTO.infoMessage ?? ''),
 		type,
 	};
 }

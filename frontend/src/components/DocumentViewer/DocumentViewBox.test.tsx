@@ -1,5 +1,4 @@
 import { IDocument } from '@cyntler/react-doc-viewer';
-import { DocViewerProps } from '@cyntler/react-doc-viewer/dist/esm/DocViewer';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
@@ -50,7 +49,7 @@ describe('DocumentViewBox component tests', () => {
 
 	const mockDocumentViewer = vi.hoisted(() => vi.fn());
 	vi.mock('@cyntler/react-doc-viewer', () => ({
-		default: (props: DocViewerProps) => {
+		default: (props: unknown) => {
 			mockDocumentViewer(props);
 			return <div>DocumentViewer</div>;
 		},

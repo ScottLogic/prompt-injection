@@ -60,7 +60,7 @@ function ChatBox({
 		// recall the message from the history. If at current time, clear the chatbox
 		const index = sentMessages.length - recalledMessageReverseIndex;
 		const recalledMessage =
-			index === sentMessages.length ? '' : sentMessages[index]?.message ?? '';
+			index === sentMessages.length ? '' : (sentMessages[index]?.message ?? '');
 
 		setChatInput(recalledMessage);
 	}, [recalledMessageReverseIndex]);
