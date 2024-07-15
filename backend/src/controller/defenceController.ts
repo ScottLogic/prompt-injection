@@ -254,14 +254,16 @@ function handleResetDefenceConfigItem(
 		currentDefences
 	);
 
-	const updatedDefences = req.session.levelState[level].defences;
-	if (updatedDefences === undefined) {
+	const updatedDefence = req.session.levelState[level].defences.find(
+		(defence) => defence.id === defenceId
+	);
+	if (!updatedDefence) {
 		sendErrorResponse(res, 500, 'Something went whacky');
 		return;
 	}
-	const updatedDefenceConfig = updatedDefences
-		.find((defence) => defence.id === defenceId)
-		?.config.find((config) => config.id === configItemId);
+	const updatedDefenceConfig = updatedDefence.config.find(
+		(config) => config.id === configItemId
+	);
 
 	res.send(updatedDefenceConfig);
 }
