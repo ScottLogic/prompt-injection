@@ -1,6 +1,6 @@
 {
 	"name": "prompt-injection-k6",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"type": "module",
 	"scripts": {
 		"format": "prettier --write .",
