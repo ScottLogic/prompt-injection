@@ -1,7 +1,6 @@
 interface DocumentMeta {
-	uri: string;
-	filename: string;
-	filetype: string;
+	fileName: string;
+	fileType: string;
 	folder: string;
 }
 

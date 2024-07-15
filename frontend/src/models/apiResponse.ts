@@ -1,3 +1,5 @@
+import { DocumentMeta } from '@src/models/document';
+
 import { ChatMessageDTO, ChatModel } from './chat';
 import { DefenceDTO } from './defence';
 import { EmailInfo } from './email';
@@ -10,6 +12,7 @@ type StartResponse = {
 	availableModels: string[];
 	systemRoles: LevelSystemRole[];
 	chatModel?: ChatModel;
+	availableDocs?: DocumentMeta[];
 };
 
 type LoadLevelResponse = {
@@ -17,6 +20,7 @@ type LoadLevelResponse = {
 	chatHistory: ChatMessageDTO[];
 	defences?: DefenceDTO[];
 	chatModel?: ChatModel;
+	availableDocs?: DocumentMeta[];
 };
 
 type ChatInfoMessageResponse = {

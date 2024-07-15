@@ -1,10 +1,12 @@
+import { IDocument } from '@cyntler/react-doc-viewer';
 import { useEffect, useRef, useState, JSX } from 'react';
 
-import { DEFAULT_DEFENCES } from '@src/Defences';
+import DocumentViewBox from '@src/components/DocumentViewer/DocumentViewBox';
 import HandbookOverlay from '@src/components/HandbookOverlay/HandbookOverlay';
 import LevelMissionInfoBanner from '@src/components/LevelMissionInfoBanner/LevelMissionInfoBanner';
 import ResetLevelOverlay from '@src/components/Overlay/ResetLevel';
 import ResetProgressOverlay from '@src/components/Overlay/ResetProgress';
+import { DEFAULT_DEFENCES } from '@src/defences';
 import { ChatMessage, ChatModel } from '@src/models/chat';
 import {
 	DEFENCE_ID,
@@ -33,7 +35,6 @@ function MainComponent({
 	numCompletedLevels,
 	closeOverlay,
 	updateNumCompletedLevels,
-	openDocumentViewer,
 	openInformationOverlay,
 	openLevelsCompleteOverlay,
 	openOverlay,
@@ -46,7 +47,6 @@ function MainComponent({
 	numCompletedLevels: number;
 	closeOverlay: () => void;
 	updateNumCompletedLevels: (level: LEVEL_NAMES) => void;
-	openDocumentViewer: () => void;
 	openInformationOverlay: () => void;
 	openLevelsCompleteOverlay: () => void;
 	openOverlay: (overlayComponent: JSX.Element) => void;
@@ -61,8 +61,8 @@ function MainComponent({
 	const [emails, setEmails] = useState<EmailInfo[]>([]);
 	const [chatModels, setChatModels] = useState<string[]>([]);
 	const [systemRoles, setSystemRoles] = useState<LevelSystemRole[]>([]);
-	const [chatModel, setChatModel] = useState<ChatModel | undefined>(undefined);
-
+	const [chatModel, setChatModel] = useState<ChatModel | undefined>();
+	const [documents, setDocuments] = useState<IDocument[] | undefined>();
 	const isFirstRender = useRef(true);
 
 	// facilitate refresh / first render
@@ -85,23 +85,15 @@ function MainComponent({
 
 	async function loadBackendData() {
 		try {
-			const {
-				availableModels,
-				defences,
-				emails,
-				chatHistory,
-				systemRoles,
-				chatModel,
-			} = await startService.start(currentLevel);
+			const { availableModels, systemRoles, ...levelData } =
+				await startService.start(currentLevel);
+
 			setChatModels(availableModels);
 			setSystemRoles(systemRoles);
-			processBackendLevelData(
-				currentLevel,
-				emails,
-				chatHistory,
-				defences,
-				chatModel
-			);
+			processBackendLevelData({
+				level: currentLevel,
+				...levelData,
+			});
 		} catch (err) {
 			console.warn(err);
 			setMessages([
@@ -137,6 +129,12 @@ function MainComponent({
 		);
 	}
 
+	function openDocumentViewer() {
+		openOverlay(
+			<DocumentViewBox documents={documents} closeOverlay={closeOverlay} />
+		);
+	}
+
 	// methods to modify messages
 	function addChatMessage(message: ChatMessage) {
 		setMessages((messages: ChatMessage[]) => [...messages, message]);
@@ -163,18 +161,28 @@ function MainComponent({
 
 	// for going switching level without clearing progress
 	async function setNewLevel(newLevel: LEVEL_NAMES) {
-		const { emails, chatHistory, defences, chatModel } =
-			await levelService.loadLevel(newLevel);
-		processBackendLevelData(newLevel, emails, chatHistory, defences, chatModel);
+		const levelData = await levelService.loadLevel(newLevel);
+		processBackendLevelData({
+			level: newLevel,
+			...levelData,
+		});
 	}
 
-	function processBackendLevelData(
-		level: LEVEL_NAMES,
-		emails: EmailInfo[],
-		chatHistory: ChatMessage[],
-		defences: Defence[],
-		chatModel?: ChatModel
-	) {
+	function processBackendLevelData({
+		level,
+		emails,
+		chatHistory,
+		defences,
+		chatModel,
+		documents,
+	}: {
+		level: LEVEL_NAMES;
+		emails: EmailInfo[];
+		chatHistory: ChatMessage[];
+		defences: Defence[];
+		chatModel?: ChatModel;
+		documents?: IDocument[];
+	}) {
 		setEmails(emails);
 
 		// add welcome message for levels only
@@ -184,9 +192,10 @@ function MainComponent({
 
 		setDefences(defences);
 
-		// Will only update chatModel if included in the backend response
-		// (currently only for sandbox level)
+		// These will only be defined if level is SANDBOX
 		setChatModel(chatModel);
+		setDocuments(documents);
+
 		setMainBodyKey((value) => value + 1);
 	}
 
@@ -303,7 +312,7 @@ function MainComponent({
 
 	// reset whole game progress and start from level 1 or Sandbox
 	async function resetProgress() {
-		const levelState = await resetService.resetAllProgress(currentLevel);
+		const levelData = await resetService.resetAllProgress(currentLevel);
 		resetCompletedLevels();
 
 		if (
@@ -311,14 +320,10 @@ function MainComponent({
 			currentLevel === LEVEL_NAMES.LEVEL_1
 		) {
 			// staying on current level, so just update our state
-			const { emails, chatHistory, defences, chatModel } = levelState;
-			processBackendLevelData(
-				currentLevel,
-				emails,
-				chatHistory,
-				defences,
-				chatModel
-			);
+			processBackendLevelData({
+				level: currentLevel,
+				...levelData,
+			});
 		} else {
 			// new state will be fetched as a result of level change
 			setCurrentLevel(LEVEL_NAMES.LEVEL_1);

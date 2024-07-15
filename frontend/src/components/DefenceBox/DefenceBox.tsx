@@ -1,4 +1,4 @@
-import { PROMPT_ENCLOSURE_DEFENCES } from '@src/Defences';
+import { PROMPT_ENCLOSURE_DEFENCES } from '@src/defences';
 import {
 	DEFENCE_ID,
 	DefenceConfigItem,

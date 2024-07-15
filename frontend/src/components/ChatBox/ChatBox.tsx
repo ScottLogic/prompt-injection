@@ -1,9 +1,9 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 
-import { DEFAULT_DEFENCES } from '@src/Defences';
 import '@src/components/ThemedButtons/ChatButton.css';
 import LoadingButton from '@src/components/ThemedButtons/LoadingButton';
 import ThemedButton from '@src/components/ThemedButtons/ThemedButton';
+import { DEFAULT_DEFENCES } from '@src/defences';
 import useUnitStepper from '@src/hooks/useUnitStepper';
 import { ChatMessage, ChatResponse } from '@src/models/chat';
 import { EmailInfo } from '@src/models/email';

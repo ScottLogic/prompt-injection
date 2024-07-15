@@ -58,19 +58,16 @@ function getSandboxDocumentMetas() {
 	return [...getDocumentMetas('common'), ...getDocumentMetas('sandbox')];
 }
 
-function getDocumentMetas(folder: string) {
+function getDocumentMetas(folder: string): DocumentMeta[] {
 	const filepath = `resources/documents/${folder}`;
-	const documentMetas: DocumentMeta[] = [];
-
-	fs.readdirSync(filepath).forEach((file) => {
+	return fs.readdirSync(filepath).map((file) => {
 		const fileType = file.split('.').pop() ?? '';
-		documentMetas.push({
-			filename: file,
-			filetype: fileType === 'csv' ? 'text/csv' : fileType,
+		return {
+			fileName: file,
+			fileType: fileType === 'csv' ? 'text/csv' : fileType,
 			folder,
-		});
+		};
 	});
-	return documentMetas;
 }
 
 // store vectorised documents for each level as array

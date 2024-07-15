@@ -1,15 +1,14 @@
 import { StartResponse } from '@src/models/apiResponse';
 
-import { sendRequest } from './backendService';
+import { get } from './backendService';
 import { getChatMessagesFromDTOResponse } from './chatService';
 import { getDefencesFromDTOs } from './defenceService';
+import { processDocumentMetadata } from './documentService';
 
 const PATH = 'start';
 
 async function start(level: number) {
-	const response = await sendRequest(`${PATH}?level=${level}`, {
-		method: 'GET',
-	});
+	const response = await get(`${PATH}?level=${level}`);
 	const {
 		availableModels,
 		defences,
@@ -17,7 +16,10 @@ async function start(level: number) {
 		chatHistory,
 		systemRoles,
 		chatModel,
+		availableDocs,
 	} = (await response.json()) as StartResponse;
+
+	const documents = availableDocs && processDocumentMetadata(availableDocs);
 
 	return {
 		emails,
@@ -26,6 +28,7 @@ async function start(level: number) {
 		availableModels,
 		systemRoles,
 		chatModel,
+		documents,
 	};
 }
 

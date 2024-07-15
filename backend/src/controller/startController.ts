@@ -1,10 +1,11 @@
 import { Response } from 'express';
 
+import { getSandboxDocumentMetas } from '@src/document';
 import {
 	StartGetRequest,
-	StartResponse,
+	StartGetResponseBody,
 } from '@src/models/api/StartGetRequest';
-import { LEVEL_NAMES, isValidLevel } from '@src/models/level';
+import { LEVEL_NAMES } from '@src/models/level';
 import { getValidOpenAIModels } from '@src/openai';
 import {
 	systemRoleLevel1,
@@ -12,21 +13,19 @@ import {
 	systemRoleLevel3,
 } from '@src/promptTemplates';
 
-import { sendErrorResponse } from './handleError';
+import { validateLevel } from './requestValidators';
 
-function handleStart(req: StartGetRequest, res: Response) {
-	const { level } = req.query;
+function handleStart(
+	req: StartGetRequest,
+	res: Response<StartGetResponseBody>
+) {
+	const level = validateLevel(res, req.query.level);
+	if (level === null) return;
 
-	if (level === undefined) {
-		sendErrorResponse(res, 400, 'Level not provided');
-		return;
-	}
-
-	if (!isValidLevel(level)) {
-		sendErrorResponse(res, 400, 'Invalid level');
-		return;
-	}
-
+	const chatModel =
+		level === LEVEL_NAMES.SANDBOX ? req.session.chatModel : undefined;
+	const availableDocs =
+		level === LEVEL_NAMES.SANDBOX ? getSandboxDocumentMetas() : undefined;
 	const systemRoles = [
 		{ level: LEVEL_NAMES.LEVEL_1, systemRole: systemRoleLevel1 },
 		{ level: LEVEL_NAMES.LEVEL_2, systemRole: systemRoleLevel2 },
@@ -37,11 +36,11 @@ function handleStart(req: StartGetRequest, res: Response) {
 		emails: req.session.levelState[level].sentEmails,
 		chatHistory: req.session.levelState[level].chatHistory,
 		defences: req.session.levelState[level].defences,
+		chatModel,
+		availableDocs,
 		availableModels: getValidOpenAIModels(),
 		systemRoles,
-		chatModel:
-			level === LEVEL_NAMES.SANDBOX ? req.session.chatModel : undefined,
-	} as StartResponse);
+	});
 }
 
 export { handleStart };

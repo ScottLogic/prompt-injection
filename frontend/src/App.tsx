@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState, JSX } from 'react';
 
-import DocumentViewBox from './components/DocumentViewer/DocumentViewBox';
 import MainComponent from './components/MainComponent/MainComponent';
 import LevelsComplete from './components/Overlay/LevelsComplete';
 import MissionInformation from './components/Overlay/MissionInformation';
@@ -98,9 +97,6 @@ function App() {
 			/>
 		);
 	}
-	function openDocumentViewer() {
-		openOverlay(<DocumentViewBox closeOverlay={closeOverlay} />);
-	}
 
 	// set the start level for a user who clicks beginner/expert
 	function setStartLevel(startLevel: LEVEL_NAMES) {
@@ -123,7 +119,6 @@ function App() {
 				numCompletedLevels={numCompletedLevels}
 				closeOverlay={closeOverlay}
 				updateNumCompletedLevels={updateNumCompletedLevels}
-				openDocumentViewer={openDocumentViewer}
 				openOverlay={openOverlay}
 				openInformationOverlay={openInformationOverlay}
 				openLevelsCompleteOverlay={openLevelsCompleteOverlay}

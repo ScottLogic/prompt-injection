@@ -1,3 +1,4 @@
+import { IDocument } from '@cyntler/react-doc-viewer';
 import { DocViewerProps } from '@cyntler/react-doc-viewer/dist/esm/DocViewer';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -12,39 +13,40 @@ import {
 	vi,
 } from 'vitest';
 
+import { DocumentMeta } from '@src/models/document';
+
 import DocumentViewBox from './DocumentViewBox';
 
-interface MockDocument {
-	filename: string;
-	content: string;
-}
+type MockDocument = Pick<DocumentMeta, 'fileName' | 'fileType'> &
+	Pick<IDocument, 'uri'> & {
+		content: string;
+	};
 
 describe('DocumentViewBox component tests', () => {
-	const URI = 'localhost:1234';
+	const BASE_URL = 'http://localhost:1234/documents';
 	const defaultDocuments: MockDocument[] = [
 		{
-			filename: 'document-1.txt',
-			content: 'Now displaying document 1',
+			fileName: 'document-1.txt',
+			fileType: 'text/plain',
+			uri: `${BASE_URL}/common/document-1.txt`,
+			content: 'This is common document 1',
 		},
 		{
-			filename: 'document-2.txt',
-			content: 'Now displaying document 2',
+			fileName: 'document-2.txt',
+			fileType: 'text/plain',
+			uri: `${BASE_URL}/common/document-2.txt`,
+			content: 'This is common document 2',
 		},
 		{
-			filename: 'document-3.txt',
-			content: 'Now displaying document 3',
+			fileName: 'document-3.txt',
+			fileType: 'text/plain',
+			uri: `${BASE_URL}/sandbox/document-3.txt`,
+			content: 'This is sandbox document 3',
 		},
 	];
 
 	const mockCloseOverlay = vi.fn();
 	const mockGlobalFetch = vi.fn();
-
-	const { mockGetDocumentMetas } = vi.hoisted(() => ({
-		mockGetDocumentMetas: vi.fn(),
-	}));
-	vi.mock('@src/service/documentService', () => ({
-		getDocumentMetas: mockGetDocumentMetas,
-	}));
 
 	const mockDocumentViewer = vi.hoisted(() => vi.fn());
 	vi.mock('@cyntler/react-doc-viewer', () => ({
@@ -52,7 +54,8 @@ describe('DocumentViewBox component tests', () => {
 			mockDocumentViewer(props);
 			return <div>DocumentViewer</div>;
 		},
-		DocViewerRenderers: vi.fn(),
+		TXTRenderer: vi.fn(),
+		CSVRenderer: vi.fn(),
 	}));
 
 	const realFetch = global.fetch;
@@ -69,41 +72,40 @@ describe('DocumentViewBox component tests', () => {
 		global.fetch = realFetch;
 	});
 
-	function getMockedDocumentMetas(documents: MockDocument[]) {
-		return documents.map((doc) => ({
-			filename: doc.filename,
-			uri: `${URI}/${doc.filename}`,
-		}));
-	}
-
 	function setupMocks(documents: MockDocument[]) {
-		mockGetDocumentMetas.mockResolvedValue(getMockedDocumentMetas(documents));
-		mockGlobalFetch.mockImplementation(
-			(uri: string, { method }: RequestInit) => {
-				if (uri.startsWith(URI)) {
-					const filename = uri.split('/')[1];
-					const document = documents.find((doc) => doc.filename === filename);
-					const blob =
-						!method || method === 'GET'
-							? () => Promise.resolve(new Blob([document?.content ?? '']))
-							: undefined;
-					return Promise.resolve({
-						status: 200,
-						ok: true,
-						headers: {
-							get: () => 'text/plain',
-						} as Partial<Headers>,
-						blob,
-					} as Partial<Response>);
+		mockGlobalFetch.mockImplementation((uri: string) => {
+			if (uri.startsWith(BASE_URL)) {
+				const filename = uri.substring(uri.lastIndexOf('/') + 1);
+				const document = documents.find((doc) => doc.fileName === filename);
+				if (!document) {
+					return Promise.reject(
+						new Error('Unexpected error in test: document not found')
+					);
 				}
-				return Promise.reject(new Error('Not found'));
+				return Promise.resolve({
+					status: 200,
+					ok: true,
+					headers: {
+						get: () => document.fileType,
+					} as Partial<Headers>,
+					blob: () => Promise.resolve(new Blob([document.content])),
+				} as Partial<Response>);
 			}
-		);
+			return Promise.reject(new Error('Not found'));
+		});
 	}
 
-	function renderDocumentViewBox() {
+	function renderDocumentViewBox(documents?: MockDocument[]) {
 		const user = userEvent.setup();
-		render(<DocumentViewBox closeOverlay={mockCloseOverlay} />);
+		render(
+			<DocumentViewBox documents={documents} closeOverlay={mockCloseOverlay} />
+		);
+
+		if (documents?.length) {
+			// verify header has loaded
+			screen.getByText(documents[0].fileName);
+		}
+
 		return { user };
 	}
 
@@ -123,7 +125,7 @@ describe('DocumentViewBox component tests', () => {
 		});
 
 		test('WHEN close button clicked THEN closeOverlay called', async () => {
-			const { user } = renderDocumentViewBox();
+			const { user } = renderDocumentViewBox(documents);
 
 			const closeButton = screen.getByRole('button', {
 				name: 'Close',
@@ -133,64 +135,56 @@ describe('DocumentViewBox component tests', () => {
 			expect(mockCloseOverlay).toHaveBeenCalled();
 		});
 
-		test('WHEN the document viewer is rendered THEN document index, name, and number of documents are shown', async () => {
-			renderDocumentViewBox();
+		test('WHEN the document viewer is rendered THEN document index, name, and number of documents are shown', () => {
+			renderDocumentViewBox(documents);
 
-			expect(
-				await screen.findByText(documents[0].filename)
-			).toBeInTheDocument();
+			expect(screen.getByText(documents[0].fileName)).toBeInTheDocument();
 			expect(screen.getByText(`1 of ${documents.length}`)).toBeInTheDocument();
 			expect(mockDocumentViewer).toHaveBeenCalledWith(
 				expect.objectContaining({
-					activeDocument: getMockedDocumentMetas(documents)[0],
-					documents: getMockedDocumentMetas(documents),
+					activeDocument: documents[0],
+					documents,
 				})
 			);
 		});
 
-		test('WHEN the next button is clicked THEN the next document is shown', async () => {
-			const { user } = renderDocumentViewBox();
-			// wait for header to load
-			await screen.findByText(documents[0].filename);
+		test('WHEN the Next button is clicked THEN the next document is shown', async () => {
+			const { user } = renderDocumentViewBox(documents);
 
 			await user.click(getNextButton());
 
 			expect(
-				await screen.findByText(documents[1].filename)
+				await screen.findByText(documents[1].fileName)
 			).toBeInTheDocument();
 			expect(screen.getByText(`2 of ${documents.length}`)).toBeInTheDocument();
 			expect(mockDocumentViewer).toHaveBeenCalledWith(
 				expect.objectContaining({
-					activeDocument: getMockedDocumentMetas(documents)[1],
-					documents: getMockedDocumentMetas(documents),
+					activeDocument: documents[1],
+					documents,
 				})
 			);
 		});
 
-		test('WHEN the previous button is clicked THEN the previous document is shown', async () => {
-			const { user } = renderDocumentViewBox();
-			// wait for header to load
-			await screen.findByText(documents[0].filename);
+		test('WHEN the Previous button is clicked THEN the previous document is shown', async () => {
+			const { user } = renderDocumentViewBox(documents);
 
 			await user.click(getNextButton());
 			await user.click(getPreviousButton());
 
 			expect(
-				await screen.findByText(documents[0].filename)
+				await screen.findByText(documents[0].fileName)
 			).toBeInTheDocument();
 			expect(screen.getByText(`1 of ${documents.length}`)).toBeInTheDocument();
 			expect(mockDocumentViewer).toHaveBeenCalledWith(
 				expect.objectContaining({
-					activeDocument: getMockedDocumentMetas(documents)[0],
-					documents: getMockedDocumentMetas(documents),
+					activeDocument: documents[0],
+					documents,
 				})
 			);
 		});
 
-		test('GIVEN the first document is shown THEN previous button is disabled', async () => {
-			renderDocumentViewBox();
-			// wait for header to load
-			await screen.findByText(documents[0].filename);
+		test('WHEN the first document is shown THEN previous button is disabled', () => {
+			renderDocumentViewBox(documents);
 
 			const prevButton = getPreviousButton();
 			expect(prevButton).toHaveAttribute('aria-disabled', 'true');
@@ -201,10 +195,8 @@ describe('DocumentViewBox component tests', () => {
 			expect(nextButton).toBeEnabled();
 		});
 
-		test('GIVEN a middle document is shown THEN both buttons are enabled', async () => {
-			const { user } = renderDocumentViewBox();
-			// wait for header to load
-			await screen.findByText(documents[0].filename);
+		test('WHEN a document that is not first or last is shown THEN both buttons are enabled', async () => {
+			const { user } = renderDocumentViewBox(documents);
 
 			const prevButton = getPreviousButton();
 			const nextButton = getNextButton();
@@ -225,9 +217,7 @@ describe('DocumentViewBox component tests', () => {
 		});
 
 		test('GIVEN the last document is shown THEN next button is disabled', async () => {
-			const { user } = renderDocumentViewBox();
-			// wait for header to load
-			await screen.findByText(documents[0].filename);
+			const { user } = renderDocumentViewBox(documents);
 
 			const prevButton = getPreviousButton();
 			const nextButton = getNextButton();
@@ -247,10 +237,8 @@ describe('DocumentViewBox component tests', () => {
 			setupMocks(documents);
 		});
 
-		test("GIVEN there's only one document THEN both buttons are disabled", async () => {
-			renderDocumentViewBox();
-			// wait for header to load
-			await screen.findByText(documents[0].filename);
+		test("GIVEN there's only one document THEN both buttons are disabled", () => {
+			renderDocumentViewBox(documents);
 
 			const prevButton = getPreviousButton();
 			expect(prevButton).toHaveAttribute('aria-disabled', 'true');
@@ -269,13 +257,20 @@ describe('DocumentViewBox component tests', () => {
 			setupMocks(documents);
 		});
 
-		test('GIVEN there are zero documents THEN an error message is shown', async () => {
+		test('GIVEN there are zero documents WHEN component renders THEN an error message is shown', () => {
 			const ExpectedErrorText =
 				'Unable to fetch documents. Try opening the document viewer again. If the problem persists, please contact support.';
-			renderDocumentViewBox();
-			const messageElement = await screen.findByText(ExpectedErrorText);
+			renderDocumentViewBox(documents);
+			const messageElement = screen.getByText(ExpectedErrorText);
 
 			expect(messageElement).toBeInTheDocument();
+		});
+	});
+
+	describe('With document metas in flight', () => {
+		test('GIVEN document metadata have not yet arrived WHEN component renders THEN a loading indicator is shown', () => {
+			renderDocumentViewBox();
+			expect(screen.getByRole('progressbar')).toBeInTheDocument();
 		});
 	});
 });

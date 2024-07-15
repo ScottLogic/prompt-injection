@@ -1,27 +1,32 @@
 import { Response } from 'express';
 
-import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
-import { LEVEL_NAMES, isValidLevel } from '@src/models/level';
+import { getSandboxDocumentMetas } from '@src/document';
+import {
+	LevelGetRequest,
+	LevelGetResponseBody,
+} from '@src/models/api/LevelGetRequest';
+import { LEVEL_NAMES } from '@src/models/level';
 
-function handleLoadLevel(req: LevelGetRequest, res: Response) {
-	const { level } = req.query;
+import { validateLevel } from './requestValidators';
 
-	if (level === undefined) {
-		res.status(400).send('Level not provided');
-		return;
-	}
+function handleLoadLevel(
+	req: LevelGetRequest,
+	res: Response<LevelGetResponseBody>
+) {
+	const level = validateLevel(res, req.query.level);
+	if (level === null) return;
 
-	if (!isValidLevel(level)) {
-		res.status(400).send('Invalid level');
-		return;
-	}
+	const chatModel =
+		level === LEVEL_NAMES.SANDBOX ? req.session.chatModel : undefined;
+	const availableDocs =
+		level === LEVEL_NAMES.SANDBOX ? getSandboxDocumentMetas() : undefined;
 
 	res.send({
 		emails: req.session.levelState[level].sentEmails,
 		chatHistory: req.session.levelState[level].chatHistory,
 		defences: req.session.levelState[level].defences,
-		chatModel:
-			level === LEVEL_NAMES.SANDBOX ? req.session.chatModel : undefined,
+		chatModel,
+		availableDocs,
 	});
 }
 
