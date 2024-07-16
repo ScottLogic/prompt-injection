@@ -1,8 +1,19 @@
 {
 	"name": "prompt-injection",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"description": "Game to promote awareness of prompt injection attacks on LLM AI models, and teach defensive measures",
-	"keywords": ["ai", "openai", "llm", "langchain", "chatgpt", "bot", "prompt", "injection", "scottlogic", "spylogic"],
+	"keywords": [
+		"ai",
+		"openai",
+		"llm",
+		"langchain",
+		"chatgpt",
+		"bot",
+		"prompt",
+		"injection",
+		"scottlogic",
+		"spylogic"
+	],
 	"bugs": {
 		"url": "https://github.com/ScottLogic/prompt-injection/issues"
 	},

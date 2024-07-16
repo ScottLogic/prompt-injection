@@ -38,11 +38,11 @@ describe('getValidModelsFromOpenAI', () => {
 			{ id: 'gpt-3.5-turbo' },
 			{ id: 'gpt-3.5-turbo-0613' },
 			{ id: 'gpt-4' },
-			{ id: 'gpt-4-0613' },
+			{ id: 'gpt-4o' },
 			{ id: 'da-vinci-1' },
 			{ id: 'da-vinci-2' },
 		];
-		const expectedValidModels = ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-0613'];
+		const expectedValidModels = ['gpt-3.5-turbo', 'gpt-4', 'gpt-4o'];
 
 		mockListFn.mockResolvedValueOnce({
 			data: mockModelList,
@@ -51,5 +51,23 @@ describe('getValidModelsFromOpenAI', () => {
 		const validModels = await getValidModelsFromOpenAI();
 
 		expect(validModels).toEqual(expectedValidModels);
+	});
+
+	test('GIVEN the user has no valid chat models available WHEN getValidModelsFromOpenAI is called THEN an error is thrown', async () => {
+		process.env.OPENAI_API_KEY = 'sk-12345';
+		const mockModelList = [
+			{ id: 'gpt-3' },
+			{ id: 'davinci-001' },
+			{ id: 'davinci-002' },
+			{ id: 'text-moderation-stable' },
+			{ id: 'whisper-1' },
+		];
+		mockListFn.mockResolvedValueOnce({
+			data: mockModelList,
+		} as OpenAI.ModelsPage);
+
+		await expect(getValidModelsFromOpenAI()).rejects.toThrow(
+			'No chat models found'
+		);
 	});
 });

@@ -8,18 +8,13 @@ import {
 } from '@src/models/chat';
 import { LEVEL_NAMES } from '@src/models/level';
 
-import { sendRequest } from './backendService';
+import { post } from './backendService';
 
-const PATH = 'openai/';
+const PATH = 'openai';
 
 async function sendMessage(message: string, currentLevel: LEVEL_NAMES) {
-	const response = await sendRequest(`${PATH}chat`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ message, currentLevel }),
-	});
-	const data = (await response.json()) as ChatResponse;
-	return data;
+	const response = await post(`${PATH}/chat`, { message, currentLevel });
+	return (await response.json()) as ChatResponse;
 }
 
 function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
@@ -34,10 +29,12 @@ function makeChatMessageFromDTO(chatMessageDTO: ChatMessageDTO): ChatMessage {
 		transformedMessage: chatMessageDTO.transformedMessage ?? undefined,
 		message:
 			type === 'USER'
-				? chatMessageDTO.completion?.content ?? chatMessageDTO.infoMessage ?? ''
+				? (chatMessageDTO.completion?.content ??
+					chatMessageDTO.infoMessage ??
+					'')
 				: type === 'BOT' || type === 'USER_TRANSFORMED'
-					? chatMessageDTO.completion?.content ?? ''
-					: chatMessageDTO.infoMessage ?? '',
+					? (chatMessageDTO.completion?.content ?? '')
+					: (chatMessageDTO.infoMessage ?? ''),
 		type,
 	};
 }
@@ -56,11 +53,7 @@ function getChatMessagesFromDTOResponse(chatMessageDTOs: ChatMessageDTO[]) {
 }
 
 async function setGptModel(model: string): Promise<ChatMessage | null> {
-	const response = await sendRequest(`${PATH}model`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ model }),
-	});
+	const response = await post(`${PATH}/model`, { model });
 
 	if (response.status !== 200) return null;
 
@@ -73,11 +66,7 @@ async function configureGptModel(
 	configId: MODEL_CONFIG_ID,
 	value: number
 ): Promise<ChatMessage | null> {
-	const response = await sendRequest(`${PATH}model/configure`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ configId, value }),
-	});
+	const response = await post(`${PATH}/model/configure`, { configId, value });
 
 	if (response.status !== 200) return null;
 
@@ -91,14 +80,10 @@ async function addInfoMessageToChatHistory(
 	chatMessageType: CHAT_MESSAGE_TYPE,
 	level: number
 ) {
-	const response = await sendRequest(`${PATH}addInfoToHistory`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({
-			infoMessage: message,
-			chatMessageType,
-			level,
-		}),
+	const response = await post(`${PATH}/addInfoToHistory`, {
+		infoMessage: message,
+		chatMessageType,
+		level,
 	});
 	return response.status === 200;
 }

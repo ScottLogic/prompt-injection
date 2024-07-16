@@ -6,18 +6,37 @@ import {
 	handleResetProgress,
 } from '@src/controller/resetController';
 import { defaultDefences } from '@src/defaultDefences';
-import { LevelGetRequest } from '@src/models/api/LevelGetRequest';
-import { LevelResetRequest } from '@src/models/api/LevelResetRequest';
+import {
+	LevelResetRequest,
+	LevelResetResponseBody,
+} from '@src/models/api/LevelResetRequest';
+import {
+	ProgressResetRequest,
+	ProgressResetResponseBody,
+} from '@src/models/api/ProgressResetRequest';
 import { defaultChatModel } from '@src/models/chat';
+import { DocumentMeta } from '@src/models/document';
 import { LEVEL_NAMES } from '@src/models/level';
+
+const mockDocuments = [
+	{
+		fileName: 'any-file.txt',
+		fileType: 'txt',
+		folder: 'anyfolder',
+	} as DocumentMeta,
+];
+
+jest.mock('@src/document', () => ({
+	getSandboxDocumentMetas: () => mockDocuments,
+}));
 
 const mockSend = jest.fn();
 
-function responseMock() {
+function responseMock<ResBody>() {
 	return {
 		send: mockSend,
 		status: jest.fn().mockReturnValue({ send: mockSend }),
-	} as unknown as Response;
+	} as unknown as Response<ResBody>;
 }
 
 afterEach(() => {
@@ -78,8 +97,8 @@ describe('reset progress', () => {
 					],
 					chatModel: 'chat model',
 				},
-			} as unknown as LevelGetRequest;
-			const res = responseMock();
+			} as unknown as ProgressResetRequest;
+			const res = responseMock<ProgressResetResponseBody>();
 
 			mockGetInitialLevelStates.mockReturnValue([
 				{
@@ -114,6 +133,8 @@ describe('reset progress', () => {
 						? undefined
 						: defaultDefences,
 				chatModel: level === LEVEL_NAMES.SANDBOX ? defaultChatModel : undefined,
+				availableDocs:
+					level === LEVEL_NAMES.SANDBOX ? mockDocuments : undefined,
 			});
 		}
 	);
@@ -131,8 +152,8 @@ describe('reset progress', () => {
 					},
 				],
 			},
-		} as unknown as LevelGetRequest;
-		const res = responseMock();
+		} as unknown as ProgressResetRequest;
+		const res = responseMock<ProgressResetResponseBody>();
 
 		handleResetProgress(req, res);
 
@@ -153,8 +174,8 @@ describe('reset progress', () => {
 					},
 				],
 			},
-		} as unknown as LevelGetRequest;
-		const res = responseMock();
+		} as unknown as ProgressResetRequest;
+		const res = responseMock<ProgressResetResponseBody>();
 
 		handleResetProgress(req, res);
 
@@ -197,7 +218,7 @@ describe('reset level', () => {
 					chatModel: 'chat model',
 				},
 			} as unknown as LevelResetRequest;
-			const res = responseMock();
+			const res = responseMock<LevelResetResponseBody>();
 
 			handleResetLevel(req, res);
 
@@ -227,7 +248,7 @@ describe('reset level', () => {
 				],
 			},
 		} as unknown as LevelResetRequest;
-		const res = responseMock();
+		const res = responseMock<LevelResetResponseBody>();
 
 		handleResetLevel(req, res);
 

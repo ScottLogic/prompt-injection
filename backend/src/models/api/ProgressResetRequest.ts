@@ -7,22 +7,17 @@ import { DocumentMeta } from '@src/models/document';
 import { EmailInfo } from '@src/models/email';
 import { LEVEL_NAMES } from '@src/models/level';
 
-export type StartGetResponseBody = {
+export type ProgressResetResponseBody = {
 	emails: EmailInfo[];
 	chatHistory: ChatMessage[];
 	defences?: Defence[];
-	availableModels: string[];
-	systemRoles: {
-		level: LEVEL_NAMES;
-		systemRole: string;
-	}[];
 	chatModel?: ChatModel;
 	availableDocs?: DocumentMeta[];
 };
 
-export type StartGetRequest = Request<
+export type ProgressResetRequest = Request<
 	never,
-	StartGetResponseBody,
+	ProgressResetResponseBody,
 	never,
 	{
 		level?: LEVEL_NAMES;

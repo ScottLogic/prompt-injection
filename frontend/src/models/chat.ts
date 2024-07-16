@@ -15,20 +15,8 @@ type CHAT_MESSAGE_TYPE =
 	| 'ERROR_MSG'
 	| 'RESET_LEVEL';
 
-const chatModelIds = [
-	'gpt-4-1106-preview',
-	'gpt-4',
-	'gpt-4-0613',
-	'gpt-3.5-turbo',
-	'gpt-3.5-turbo-0613',
-	'gpt-3.5-turbo-16k',
-	'gpt-3.5-turbo-16k-0613',
-] as const;
-
-type CHAT_MODEL_ID = (typeof chatModelIds)[number];
-
 type ChatModel = {
-	id: CHAT_MODEL_ID;
+	id: string;
 	configuration: ChatModelConfigurations;
 };
 
@@ -107,5 +95,4 @@ export type {
 	CustomChatModelConfiguration,
 	CHAT_MESSAGE_TYPE,
 	MODEL_CONFIG_ID,
-	CHAT_MODEL_ID,
 };
