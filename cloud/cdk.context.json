@@ -1,8 +1,9 @@
 {
+	"acknowledged-issue-numbers": [29483],
 	"availability-zones:account=992382568770:region=eu-north-1": [
 		"eu-north-1a",
 		"eu-north-1b",
 		"eu-north-1c"
 	],
-	"acknowledged-issue-numbers": [29483]
+	"ami:account=992382568770:filters.image-type.0=machine:filters.name.0=fck-nat-al2023-*-x86_64-ebs:filters.state.0=available:owners.0=568608671756:region=eu-north-1": "ami-0acc1d35233e84277"
 }

@@ -3,8 +3,11 @@ import {
 	InstanceClass,
 	InstanceSize,
 	InstanceType,
+	LookupMachineImage,
 	NatInstanceProviderV2,
+	NatTrafficDirection,
 	Peer,
+	Port,
 	Vpc,
 } from 'aws-cdk-lib/aws-ec2';
 import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
@@ -65,13 +68,33 @@ export class ApiStack extends Stack {
 			directory: join(__dirname, '../../backend/'),
 		});
 
-		// Default AZs is all in region, but for environment-agnostic stack, max is 2!
+		// TODO Look into IPv6 Routing, so no need for NAT Gateway or Instance!
+		// https://www.turbogeek.co.uk/aws-cdk-ipv6-v/
+		// https://docs.aws.amazon.com/vpc/latest/userguide/egress-only-internet-gateway.html
+
+		// AMI courtesy of fck-nat: https://fck-nat.dev/stable/deploying/#cdk
+		const natGatewayProvider = NatInstanceProviderV2.instanceV2({
+			instanceType: InstanceType.of(InstanceClass.T3, InstanceSize.MICRO),
+			machineImage: new LookupMachineImage({
+				name: 'fck-nat-al2023-*-x86_64-ebs',
+				owners: ['568608671756'],
+			}),
+			defaultAllowedTraffic: NatTrafficDirection.NONE,
+		});
+
 		const vpc = new Vpc(this, generateResourceId('vpc'), {
 			maxAzs: 2,
-			natGatewayProvider: NatInstanceProviderV2.instance({
-				instanceType: InstanceType.of(InstanceClass.T3, InstanceSize.MICRO),
-				//machineImage: MachineImage.latestAmazonLinux2({ cachedInContext: true }),
-			}),
+			natGatewayProvider,
+		});
+
+		// Security Group rules for NAT instance: from container to internet
+		natGatewayProvider.connections.allowToAnyIpv4(Port.HTTPS, 'Egress from NAT to internet');
+		vpc.privateSubnets.forEach((subnet) => {
+			natGatewayProvider.connections.allowFrom(
+				Peer.ipv4(subnet.ipv4CidrBlock),
+				Port.HTTPS,
+				`Ingress from private subnet ${subnet.subnetId} to NAT`
+			);
 		});
 
 		const apiKeySecret = Secret.fromSecretNameV2(
