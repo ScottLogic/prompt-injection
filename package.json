@@ -18,7 +18,7 @@
 		"url": "https://github.com/ScottLogic/prompt-injection/issues"
 	},
 	"scripts": {
-		"postinstall": "concurrently \"cd backend && npm ci --no-audit\" \"cd frontend && npm ci --no-audit\"",
+		"postinstall": "concurrently \"cd backend && npm ci --no-audit\" \"cd frontend && npm ci --no-audit\" \"cd cloud && npm ci --no-audit\"",
 		"build": "concurrently \"cd backend && npm run build\" \"cd frontend && npm run build\"",
 		"start": "cd backend && npm start",
 		"docker:start": "docker compose up -d",

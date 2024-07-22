@@ -1,5 +1,6 @@
 node_modules
 build
+reports
 test
 .env*
 .eslintrc.cjs

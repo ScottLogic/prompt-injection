@@ -41,6 +41,7 @@ type ApiStackProps = StackProps & {
 	certificate: ICertificate;
 	customAuthHeaderName: string;
 	customAuthHeaderValue: string;
+	domainName: string;
 	hostedZone: IHostedZone;
 };
 
@@ -56,6 +57,7 @@ export class ApiStack extends Stack {
 			certificate,
 			customAuthHeaderName,
 			customAuthHeaderValue,
+			domainName,
 			env,
 			hostedZone,
 		} = props;
@@ -125,7 +127,7 @@ export class ApiStack extends Stack {
 			environment: {
 				NODE_ENV: 'production',
 				PORT: `${containerPort}`,
-				CORS_ALLOW_ORIGIN: `https://${hostedZone.zoneName}`,
+				CORS_ALLOW_ORIGIN: `https://${domainName}`,
 				COOKIE_NAME: `${appName}.sid`,
 			},
 			secrets: {
@@ -181,6 +183,7 @@ export class ApiStack extends Stack {
 			zone: hostedZone,
 			recordName: apiDomainName,
 			target: RecordTarget.fromAlias(new LoadBalancerTarget(loadBalancer)),
+			comment: `DNS A Record for API (${stage})`,
 		});
 	}
 }

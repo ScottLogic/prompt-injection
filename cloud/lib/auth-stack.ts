@@ -7,7 +7,6 @@ import {
 	UserPoolIdentityProviderSaml,
 	UserPoolIdentityProviderSamlMetadata,
 } from 'aws-cdk-lib/aws-cognito';
-import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { CfnOutput, Duration, RemovalPolicy, Stack, StackProps, Tags } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
@@ -15,7 +14,7 @@ import { Construct } from 'constructs';
 import { appName, resourceId, stageName } from './resourceNamingUtils';
 
 type AuthStackProps = StackProps & {
-	hostedZone: IHostedZone;
+	domainName: string;
 };
 
 export class AuthStack extends Stack {
@@ -23,6 +22,9 @@ export class AuthStack extends Stack {
 	public readonly customAuthHeaderValue = 'todo-generate-uuid-in-pipeline';
 	public readonly parameterNameUserPoolId: string;
 	public readonly parameterNameUserPoolClient: string;
+	public readonly userPoolId: CfnOutput;
+	public readonly userPoolClient: CfnOutput;
+	public readonly userPoolDomain: CfnOutput;
 
 	constructor(scope: Construct, id: string, props: AuthStackProps) {
 		super(scope, id, props);
@@ -30,7 +32,7 @@ export class AuthStack extends Stack {
 		const stage = stageName(scope);
 		const generateResourceId = resourceId(scope);
 
-		const { env, hostedZone } = props;
+		const { domainName, env } = props;
 		if (!env?.region) {
 			throw new Error('Region not defined in stack env, cannot continue!');
 		}
@@ -100,14 +102,15 @@ export class AuthStack extends Stack {
 		 */
 		const userPoolDomain = userPool.addDomain(generateResourceId('userpool-domain'), {
 			cognitoDomain: {
-				domainPrefix: appName.toLowerCase(),
+				domainPrefix:
+					stage === 'prod' ? appName.toLowerCase() : `${stage}-${appName.toLowerCase()}`,
 			},
 		});
 
 		/*
 		User Pool Client - defines Auth flow and token validity
 		*/
-		const logoutUrls = [`https://${hostedZone.zoneName}`];
+		const logoutUrls = [`https://${domainName}`];
 		const replyUrl = `${userPoolDomain.baseUrl()}/saml2/idpresponse`;
 		const userPoolClient = userPool.addClient(generateResourceId('userpool-client'), {
 			authFlows: {
@@ -129,14 +132,21 @@ export class AuthStack extends Stack {
 			preventUserExistenceErrors: true,
 		});
 
-		new CfnOutput(this, 'UserPool.Id', {
-			value: `urn:amazon:cognito:sp:${userPool.userPoolId}`,
+		/*
+		Stack outputs, used in pipeline
+		*/
+		this.userPoolId = new CfnOutput(this, 'UserPool.Id', {
+			value: userPool.userPoolId,
 		});
+		this.userPoolClient = new CfnOutput(this, 'UserPoolClient.Id', {
+			value: userPoolClient.userPoolClientId,
+		});
+		this.userPoolDomain = new CfnOutput(this, 'UserPool.Domain', {
+			value: userPoolDomain.baseUrl().replace('https://', ''),
+		});
+
 		new CfnOutput(this, 'UserPool.ReplyURL', {
 			value: replyUrl,
-		});
-		new CfnOutput(this, 'UserPoolClient.Id', {
-			value: userPoolClient.userPoolClientId,
 		});
 
 		// SSM Parameters accessed in auth edge lambda, as cannot use ENV vars.

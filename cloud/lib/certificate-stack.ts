@@ -11,6 +11,7 @@ import { Construct } from 'constructs';
 import { resourceId } from './resourceNamingUtils';
 
 type CertificateStackProps = StackProps & {
+	domainName: string;
 	hostedZone: IHostedZone;
 };
 
@@ -22,15 +23,15 @@ export class CertificateStack extends Stack {
 	constructor(scope: Construct, id: string, props: CertificateStackProps) {
 		super(scope, id, props);
 
-		const { hostedZone } = props;
+		const { domainName, hostedZone } = props;
 		const generateResourceId = resourceId(scope);
 		const validation = CertificateValidation.fromDns(hostedZone);
-		this.apiDomainName = `api.${hostedZone.zoneName}`;
+		this.apiDomainName = `api.${domainName}`;
 
 		// Yes this is deprecated, but CDK currently gives us no way to use
 		// Permissions Boundaries with cross-region resources, so ...
 		this.cloudFrontCert = new DnsValidatedCertificate(this, generateResourceId('cert-ui'), {
-			domainName: hostedZone.zoneName,
+			domainName,
 			hostedZone,
 			validation,
 			region: 'us-east-1',

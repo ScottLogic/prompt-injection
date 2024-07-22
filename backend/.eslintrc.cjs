@@ -20,7 +20,7 @@ module.exports = {
 	],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
-		project: ['./tsconfig.json', './test/tsconfig.json'],
+		project: ['./tsconfig.json', 'test/tsconfig.json'],
 	},
 	plugins: ['@typescript-eslint', 'jest'],
 	ignorePatterns: ['build', 'coverage', 'node_modules'],

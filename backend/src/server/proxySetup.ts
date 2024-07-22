@@ -29,7 +29,7 @@ export function usingForwardedHeader(app: Express): Express {
 			enumerable: true,
 			get() {
 				const proxies = parseForwardedHeader(this as Request);
-				return proxies?.proto ?? (this as Request).socket.encrypted
+				return (proxies?.proto ?? (this as Request).socket.encrypted)
 					? 'https'
 					: 'http';
 			},
