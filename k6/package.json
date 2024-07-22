@@ -5,14 +5,15 @@
 	"scripts": {
 		"format": "prettier --write .",
 		"lint": "eslint . --fix",
-		"test": "k6 run"
+		"test": "k6 run",
+		"test:dash": "cross-env K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_OPEN=true k6 run"
 	},
-	"dependencies": {},
 	"devDependencies": {
+		"cross-env": "^7.0.3",
 		"eslint": "^8.57.0",
 		"prettier": "^3.3.3",
 		"eslint-plugin-import": "^2.29.1",
-		"@typescript-eslint/eslint-plugin": "^7.16.0",
-		"@typescript-eslint/parser": "^7.16.0"
+		"@typescript-eslint/eslint-plugin": "^7.17.0",
+		"@typescript-eslint/parser": "^7.17.0"
 	}
 }

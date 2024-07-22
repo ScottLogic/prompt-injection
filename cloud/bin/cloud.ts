@@ -7,16 +7,11 @@ import {
 	resourceDescription,
 	stackName,
 	stageName,
-	ApiStack,
-	AuthStack,
-	CertificateStack,
-	HostedZoneStack,
-	UiStack,
+	PipelineAssistUsEast1Stack,
+	PipelineStack,
 } from '../lib';
 
 const app = new App();
-const generateStackName = stackName(app);
-const generateDescription = resourceDescription(app);
 
 /* Common stack resources */
 
@@ -30,48 +25,21 @@ const tags = {
 	stage: stageName(app),
 };
 
-/* Stack constructs */
+/* Pipeline is now responsible for deploying all other Stacks */
 
-const hostedZoneStack = new HostedZoneStack(app, generateStackName('hostedzone'), {
-	description: generateDescription('Hosted Zone stack'),
+const pipelineUsEast1Stack = new PipelineAssistUsEast1Stack(
+	app,
+	stackName(app)('pipeline-useast1'),
+	{
+		description: resourceDescription(app)('Code Pipeline Cross-Region resources stack (us-east-1)'),
+		env,
+		tags,
+	}
+);
+
+new PipelineStack(app, stackName(app)('pipeline'), {
+	description: resourceDescription(app)('Code Pipeline stack'),
 	env,
 	tags,
-});
-
-const certificateStack = new CertificateStack(app, generateStackName('certificate'), {
-	description: generateDescription('Certificate stack'),
-	env,
-	tags,
-	hostedZone: hostedZoneStack.hostedZone,
-});
-
-const authStack = new AuthStack(app, generateStackName('auth'), {
-	description: generateDescription('Auth stack'),
-	env,
-	tags,
-	hostedZone: hostedZoneStack.hostedZone,
-});
-
-new ApiStack(app, generateStackName('api'), {
-	description: generateDescription('API stack'),
-	env,
-	tags,
-	apiDomainName: certificateStack.apiDomainName,
-	certificate: certificateStack.loadBalancerCert,
-	customAuthHeaderName: authStack.customAuthHeaderName,
-	customAuthHeaderValue: authStack.customAuthHeaderValue,
-	hostedZone: hostedZoneStack.hostedZone,
-});
-
-new UiStack(app, generateStackName('ui'), {
-	description: generateDescription('UI stack'),
-	env,
-	tags,
-	apiDomainName: certificateStack.apiDomainName,
-	certificate: certificateStack.cloudFrontCert,
-	customAuthHeaderName: authStack.customAuthHeaderName,
-	customAuthHeaderValue: authStack.customAuthHeaderValue,
-	hostedZone: hostedZoneStack.hostedZone,
-	parameterNameUserPoolClient: authStack.parameterNameUserPoolClient,
-	parameterNameUserPoolId: authStack.parameterNameUserPoolId,
+	usEast1Bucket: pipelineUsEast1Stack.resourceBucket,
 });

@@ -1,4 +1,4 @@
-# prompt-injection-api
+# SpyLogic : API
 
 This is the backend module of the SpyLogic app. We are using [Express](https://expressjs.com/) to serve the API.
 

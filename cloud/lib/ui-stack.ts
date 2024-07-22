@@ -19,34 +19,42 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { AaaaRecord, ARecord, IHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { BlockPublicAccess, Bucket, BucketEncryption } from 'aws-cdk-lib/aws-s3';
-import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib/core';
+import { CfnOutput, Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { join } from 'node:path';
 
-import { appName, resourceId, stackName } from './resourceNamingUtils';
+import { appName, resourceId, stackName, stageName } from './resourceNamingUtils';
 
 type UiStackProps = StackProps & {
 	apiDomainName: string;
 	certificate: ICertificate;
 	customAuthHeaderName: string;
 	customAuthHeaderValue: string;
+	domainName: string;
 	hostedZone: IHostedZone;
+	hostBucketName: string;
 	parameterNameUserPoolClient: string;
 	parameterNameUserPoolId: string;
 };
 
 export class UiStack extends Stack {
+	public readonly cloudFrontDistributionId: CfnOutput;
+
 	constructor(scope: Construct, id: string, props: UiStackProps) {
 		super(scope, id, props);
 
 		const generateResourceId = resourceId(scope);
+		const stage = stageName(scope);
+
 		const {
 			apiDomainName,
 			certificate,
 			customAuthHeaderName,
 			customAuthHeaderValue,
+			domainName,
 			env,
 			hostedZone,
+			hostBucketName,
 			parameterNameUserPoolClient,
 			parameterNameUserPoolId,
 		} = props;
@@ -60,9 +68,8 @@ export class UiStack extends Stack {
 		/*
 		UI Host Bucket
 		*/
-		const bucketName = generateResourceId('host-bucket');
-		const hostBucket = new Bucket(this, bucketName, {
-			bucketName,
+		const hostBucket = new Bucket(this, hostBucketName, {
+			bucketName: hostBucketName,
 			blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
 			encryption: BucketEncryption.S3_MANAGED,
 			versioned: false,
@@ -93,7 +100,6 @@ export class UiStack extends Stack {
 			this,
 			generateResourceId('api-gatekeeper'),
 			{
-				functionName: 'edge-api-gatekeeper',
 				stackId: stackName(scope)('edge-lambda'),
 				handler: 'index.handler',
 				runtime: Runtime.NODEJS_18_X,
@@ -105,7 +111,7 @@ export class UiStack extends Stack {
 						platform: 'node',
 						target: 'node18',
 						define: {
-							'process.env.DOMAIN_NAME': `"${hostedZone.zoneName}"`,
+							'process.env.DOMAIN_NAME': `"${domainName}"`,
 							'process.env.PARAM_USERPOOL_ID': `"${parameterNameUserPoolId}"`,
 							'process.env.PARAM_USERPOOL_CLIENT': `"${parameterNameUserPoolClient}"`,
 						},
@@ -135,7 +141,7 @@ export class UiStack extends Stack {
 		const siteDistribution = new Distribution(this, generateResourceId('site-distribution'), {
 			defaultRootObject: 'index.html',
 			certificate,
-			domainNames: [hostedZone.zoneName],
+			domainNames: [domainName],
 			enableLogging: true,
 			errorResponses: [
 				{
@@ -192,6 +198,10 @@ export class UiStack extends Stack {
 			},
 			priceClass: PriceClass.PRICE_CLASS_100,
 		});
+		this.cloudFrontDistributionId = new CfnOutput(this, 'CloudFrontDistributionId', {
+			value: siteDistribution.distributionId,
+			exportName: `${this.stackName}-CloudFrontDistributionId`,
+		});
 
 		/*
 		DNS Records for Route53
@@ -199,15 +209,17 @@ export class UiStack extends Stack {
 		const websiteTarget = RecordTarget.fromAlias(new CloudFrontTarget(siteDistribution));
 		new ARecord(this, generateResourceId('arecord-cfront'), {
 			zone: hostedZone,
+			recordName: domainName,
 			target: websiteTarget,
 			deleteExisting: true,
-			comment: 'DNS A Record for UI host',
+			comment: `DNS A Record for UI host (${stage})`,
 		});
 		new AaaaRecord(this, generateResourceId('aaaarecord-cfront'), {
 			zone: hostedZone,
+			recordName: domainName,
 			target: websiteTarget,
 			deleteExisting: true,
-			comment: 'DNS AAAA Record for UI host',
+			comment: `DNS AAAA Record for UI host (${stage})`,
 		});
 	}
 }

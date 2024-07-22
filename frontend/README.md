@@ -1,4 +1,4 @@
-# prompt-injection-ui
+# SpyLogic : UI
 
 This is the UI module of the SpyLogic app. It is a React [SPA](https://en.wikipedia.org/wiki/Single-page_application) without routing, and built to be as
 accessible as possible. If you find a problem with keyboard navigation, screen reader usage, colour contrast or any

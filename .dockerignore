@@ -3,7 +3,6 @@
 **/dist/
 **/test/
 **/jest*
-**/tsconfig.test.json
 **/vitest*
 **/.env*
 **/.eslint*
