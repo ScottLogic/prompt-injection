@@ -21,6 +21,20 @@ type SchedulerStackProps = StackProps & {
 	fargateService: FargateService;
 };
 
+/**
+ * Resources to bring the Fargate Service up at start of day, and down at end.
+ * <p>
+ * This saves a few cents, but not much in the scheme of things as it's the VPC,
+ * Load Balancer and NAT Instance that are the largest costs. On balance, we
+ * decided we'd rather have 24-7 availability, so this stack is currently
+ * excluded from deployment.
+ * </p>
+ * <p>
+ * In any case, there are better ways to reduce costs, such as using IPv6 for
+ * container access to the internet instead of NAT, or even moving to a lambda
+ * solution backed by Elasticache / Redis for our API layer.
+ * </p>
+ */
 export class SchedulerStack extends Stack {
 	constructor(scope: Construct, id: string, props: SchedulerStackProps) {
 		super(scope, id, props);

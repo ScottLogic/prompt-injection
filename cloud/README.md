@@ -1,20 +1,46 @@
-# CDK project for Prompt Injection
+# SpyLogic : AWS CDK project
 
-This project uses AWS CDK (using TypeScript) to define CloudFormation templates for remote deployment of all resources
-for the Prompt Injection application.
+This project uses AWS CDK (with TypeScript) to build CloudFormation templates for deployment of all resources for the
+SpyLogic application. The main stack defines a CodePipeline, configured with a single Stage to deploy the application
+stacks on merging into the repo main branch.
 
-The architecture is a typical containerized node-express API managed by AWS Fargate and ECS, with load-balancing (ELB),
-plus an S3-hosted UI served through CloudFront, all secured using Cognito.
+The API layer is a _fairly_ typical containerized Node Express server, managed by AWS Fargate with a load-balancer in
+front. The UI is S3-hosted and served through CloudFront, and Cognito handles AuthN / AuthZ.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+There is some complication arising from the desire to initiate authentication in the UI using AWS Amplify, and then
+authorize users (via Cognito) when accessing the API. This seemingly simple task is not natively supported by AWS
+Application Load Balancer (ALB), which only allows _initiating_ authentication rather than verifying an existing access
+token. The solution is to re-use our CloudFront distribution for the UI to proxy API requests as well, with an Edge
+function to verify the token and, if verified, insert a custom header into the request before passing to the load
+balancer. We then filter requests at the load balancer, and reject any requests without the expected header / value.
+
+This should be much easier, as it is natively supported by API Gateway, but it seems ALB is yet to catch up.
 
 ## Commands
 
-- `npm run cdk:synth` - generates the CloudFormation templates, outputting into `./cdk.out` dir.
-- `npm run cdk:deploy` - deploys the application stacks into the remote DEV stage.  
-  _Caution! This will overwrite existing resources, so ensure the team are notified before running this manually._
+`npm run cdk:synth`  
+Generates the CloudFormation templates for a build pipeline - dev stage.
 
-Note that once the CDK Pipeline is in place, DEV deployment will happen automatically on merging into dev branch.
+`npm run cdk:synth:prod`  
+Generates the CloudFormation templates for a build pipeline - production stage.
+
+`npm run cdk:synth -- --context STAGE={STAGENAME}`  
+Generates the CloudFormation templates for a build pipeline - stage given by `{STAGENAME}`.
+
+`npm run cdk:deploy:all`  
+Deploys the synthesized pipeline to an AWS Environment, as defined by your active AWS config profile.
+
+Note that the pipeline only needs to be deployed once, after which it self-updates whenever it is triggered. It is
+currently configured to run on merging to `main` branch, so adapt to your needs.
+
+`npm run cdk:destroy:all`  
+Destroys the deployed pipeline in your remote AWS Environment.
+
+Destroying the pipeline stack does not destroy the application stacks, so those will need to be deleted manually in the
+AWS Console.
+
+
+Additionally, 
 
 ---
 
