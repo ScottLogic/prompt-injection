@@ -2,7 +2,7 @@
 	"name": "cloud",
 	"version": "1.0.3",
 	"bin": {
-		"cloud": "bin/cloud.js"
+		"cloud": "bin/pipeline.js"
 	},
 	"scripts": {
 		"cdk:synth": "cdk synth -q \"*\"",
@@ -13,6 +13,10 @@
 		"cdk:destroy": "cdk destroy --app cdk.out",
 		"cdk:destroy:all": "cdk destroy --app cdk.out --all",
 		"cdk:clean": "rimraf cdk.out",
+		"cdk:test:synth": "cdk synth -o cdk.test.out -a \"npx ts-node --prefer-ts-exts -r dotenv/config bin/application.ts\"",
+		"cdk:test:deploy": "cdk deploy --app cdk.test.out --all",
+		"cdk:test:destroy": "cdk destroy --app cdk.test.out --all",
+		"cdk:test:clean": "rimraf cdk.test.out",
 		"codecheck": "concurrently \"npm run lint:check\" \"npm run format:check\"",
 		"format": "prettier . --write",
 		"format:check": "prettier . --check",
