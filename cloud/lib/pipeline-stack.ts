@@ -25,14 +25,9 @@ export class PipelineStack extends Stack {
 		const generateResourceId = resourceId(scope);
 		const stage = stageName(scope);
 
-		const sourceCode = CodePipelineSource.connection(
-			'ScottLogic/prompt-injection',
-			// FIXME Change branch to 'main' once tested:
-			'feature/aws-cloud-infrastructure',
-			{
-				connectionArn: `arn:aws:codestar-connections:${env.region}:${env.account}:connection/05c0f0a4-2233-4269-a697-33a339f8a6bc`,
-			}
-		);
+		const sourceCode = CodePipelineSource.connection('ScottLogic/prompt-injection', 'main', {
+			connectionArn: `arn:aws:codestar-connections:${env.region}:${env.account}:connection/05c0f0a4-2233-4269-a697-33a339f8a6bc`,
+		});
 
 		const hostBucketName = generateResourceId('host-bucket');
 
@@ -40,7 +35,6 @@ export class PipelineStack extends Stack {
 			synth: new ShellStep('Synth', {
 				input: sourceCode,
 				installCommands: ['npm ci'],
-				// FIXME Change to cdk:synth:prod once tested:
 				commands: ['cd cloud', `npm run cdk:synth -- --context STAGE=${stage}`],
 				primaryOutputDirectory: 'cloud/cdk.out',
 			}),
