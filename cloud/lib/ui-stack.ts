@@ -96,29 +96,28 @@ export class UiStack extends Stack {
 		If so, we might be able to switch to a CloudFront Function instead of Edge,
 		and use CloudFront KeyValueStore to hold our jwks value as JSON.
 		*/
-		const verifierEdgeFunction = new experimental.EdgeFunction(
-			this,
-			generateResourceId('api-gatekeeper'),
-			{
-				stackId: stackName(scope)('edge-lambda'),
-				handler: 'index.handler',
-				runtime: Runtime.NODEJS_18_X,
-				code: new TypeScriptCode(join(__dirname, 'lambdas/verifyAuth/index.ts'), {
-					buildOptions: {
-						bundle: true,
-						external: ['@aws-sdk/client-ssm'],
-						minify: false,
-						platform: 'node',
-						target: 'node18',
-						define: {
-							'process.env.DOMAIN_NAME': `"${domainName}"`,
-							'process.env.PARAM_USERPOOL_ID': `"${parameterNameUserPoolId}"`,
-							'process.env.PARAM_USERPOOL_CLIENT': `"${parameterNameUserPoolClient}"`,
-						},
+		const edgeFunctionName = generateResourceId('api-gatekeeper');
+		const verifierEdgeFunction = new experimental.EdgeFunction(this, edgeFunctionName, {
+			stackId: stackName(scope)('edge-lambda'),
+			functionName: edgeFunctionName,
+			handler: 'index.handler',
+			runtime: Runtime.NODEJS_20_X,
+			code: new TypeScriptCode(join(__dirname, 'lambdas/verifyAuth/index.ts'), {
+				buildOptions: {
+					bundle: true,
+					external: ['@aws-sdk/client-ssm'],
+					minify: false,
+					platform: 'node',
+					target: 'node20',
+					define: {
+						'process.env.DOMAIN_NAME': `"${domainName}"`,
+						'process.env.AWS_REGION': `"${env.region}"`,
+						'process.env.PARAM_USERPOOL_ID': `"${parameterNameUserPoolId}"`,
+						'process.env.PARAM_USERPOOL_CLIENT': `"${parameterNameUserPoolClient}"`,
 					},
-				}),
-			}
-		);
+				},
+			}),
+		});
 		verifierEdgeFunction.addToRolePolicy(
 			new PolicyStatement({
 				effect: Effect.ALLOW,

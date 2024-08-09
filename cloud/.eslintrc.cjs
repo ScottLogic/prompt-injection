@@ -16,7 +16,7 @@ module.exports = {
 	},
 	plugins: ['@typescript-eslint'],
 	root: true,
-	ignorePatterns: ['node_modules', 'cdk.out'],
+	ignorePatterns: ['node_modules', 'cdk*.out'],
 	rules: {
 		eqeqeq: 'error',
 		'func-style': ['error', 'expression', { allowArrowFunctions: true }],

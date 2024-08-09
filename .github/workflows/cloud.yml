@@ -15,7 +15,7 @@ defaults:
     working-directory: ./cloud
 
 jobs:
-  code-checks:
+  lint-format:
     runs-on: ubuntu-latest
     strategy:
       matrix:

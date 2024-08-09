@@ -6,12 +6,14 @@ import type {
 	CognitoVerifyProperties,
 	CognitoJwtVerifierSingleUserPool,
 } from 'aws-jwt-verify/cognito-verifier';
+import type { CognitoAccessTokenPayload } from 'aws-jwt-verify/jwt-model';
 import type { CloudFrontRequestEvent, CloudFrontResponse } from 'aws-lambda';
 
 // Leave these alone! They are replaced verbatim by esbuild, see ui-stack
 const domainName = process.env.DOMAIN_NAME;
 const paramUserPoolId = process.env.PARAM_USERPOOL_ID;
 const paramClientId = process.env.PARAM_USERPOOL_CLIENT;
+const region = process.env.AWS_REGION;
 
 const inFlightResponse = {
 	status: '200',
@@ -51,9 +53,7 @@ const retrieveParameters = async () => {
 		throw new Error('Userpool param names not found in ENV!');
 	}
 
-	const { Parameters: params } = await new SSMClient({
-		region: 'eu-north-1',
-	}).send(
+	const { Parameters: params } = await new SSMClient({ region }).send(
 		new GetParametersCommand({
 			Names: [paramUserPoolId, paramClientId],
 		})
@@ -98,9 +98,16 @@ export const handler = async (event: CloudFrontRequestEvent) => {
 	}
 
 	try {
-		// Maybe change to using cookie for tokens?
-		const accessToken = request.headers.authorization[0].value;
-		await verifier.verify(accessToken, {} as CognitoVerifyProperties);
+		const accessToken = request.headers.authorization[0]?.value;
+		if (!accessToken) return unauthorizedResponse;
+
+		const jwt = (await verifier.verify(accessToken, {
+			tokenUse: 'access',
+		} as CognitoVerifyProperties)) as CognitoAccessTokenPayload;
+		// Maybe insert custom header for username? We could then log that at ALB,
+		// and generate metrics for user access.
+		console.log(`Access verified for [${jwt.username}]`);
+
 		return request;
 	} catch (err: unknown) {
 		console.log('Unable to verify access token', err);

@@ -10,6 +10,7 @@ import {
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { CfnOutput, Duration, RemovalPolicy, Stack, StackProps, Tags } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
+import { randomUUID } from 'node:crypto';
 
 import { appName, resourceId, stageName } from './resourceNamingUtils';
 
@@ -19,7 +20,7 @@ type AuthStackProps = StackProps & {
 
 export class AuthStack extends Stack {
 	public readonly customAuthHeaderName = 'X-Origin-Verified';
-	public readonly customAuthHeaderValue = 'todo-generate-uuid-in-pipeline';
+	public readonly customAuthHeaderValue: string;
 	public readonly parameterNameUserPoolId: string;
 	public readonly parameterNameUserPoolClient: string;
 	public readonly userPoolId: CfnOutput;
@@ -36,6 +37,9 @@ export class AuthStack extends Stack {
 		if (!env?.region) {
 			throw new Error('Region not defined in stack env, cannot continue!');
 		}
+
+		// Regenerated each time we deploy the stacks:
+		this.customAuthHeaderValue = randomUUID();
 
 		/*
 		User Pool - including attribute claims and password policy

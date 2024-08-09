@@ -70,9 +70,11 @@ export class ApiStack extends Stack {
 			directory: join(__dirname, '../../backend/'),
 		});
 
-		// TODO Look into IPv6 Routing, so no need for NAT Gateway or Instance!
+		// Look into IPv6 Routing, so no need for NAT Instance:
 		// https://www.turbogeek.co.uk/aws-cdk-ipv6-v/
 		// https://docs.aws.amazon.com/vpc/latest/userguide/egress-only-internet-gateway.html
+		// NOTE: api.openai.com does not have an IPv6 address yet :(
+		// https://community.openai.com/t/ipv6-address-for-api-openai-com/339025
 
 		// AMI courtesy of fck-nat: https://fck-nat.dev/stable/deploying/#cdk
 		const natGatewayProvider = NatInstanceProviderV2.instanceV2({
@@ -175,7 +177,11 @@ export class ApiStack extends Stack {
 			priority: 1,
 		});
 		listener.connections.allowDefaultPortFrom(
-			Peer.prefixList('pl-fab65393'),
+			Peer.prefixList(
+				this.node.tryGetContext(
+					`cloudfront-prefix-list:account=${env.account}:region=${region}`
+				) as string
+			),
 			'Allow incoming traffic only from CloudFront'
 		);
 

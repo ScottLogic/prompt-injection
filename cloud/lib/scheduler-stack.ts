@@ -49,7 +49,7 @@ export class SchedulerStack extends Stack {
 			generateResourceId('fargate-switch'),
 			{
 				description: generateResourceDescription('Fargate Service start/stop function'),
-				runtime: Runtime.NODEJS_18_X,
+				runtime: Runtime.NODEJS_20_X,
 				handler: 'handler',
 				entry: join(__dirname, 'lambdas/startStopService.ts'),
 				bundling: {
