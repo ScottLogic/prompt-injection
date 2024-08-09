@@ -1,11 +1,10 @@
 {
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
-		"target": "ES2022",
-		"module": "ES2022",
-		"moduleResolution": "node",
-		"isolatedModules": true,
-		"noEmit": true
+		"noEmit": true,
+		"paths": {
+			"@src/*": ["../src/*"]
+		}
 	},
 	"include": ["./**/*.ts", "../typings", "../jest.config.ts"]
 }

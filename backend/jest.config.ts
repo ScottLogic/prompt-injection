@@ -5,19 +5,22 @@ const jestConfig: JestConfigWithTsJest = {
 		'^@src/(.*)': '<rootDir>/src/$1',
 		importMetaUtils$: '<rootDir>/test/importMetaUtils.mock.ts',
 	},
-	modulePathIgnorePatterns: ['build', 'coverage', 'node_modules'],
 	testEnvironment: 'node',
 	transform: {
 		'^.+\\.ts$': [
 			'ts-jest',
 			{
-				tsconfig: './test/tsconfig.json',
+				tsconfig: '<rootDir>/test/tsconfig.json',
 				useESM: true,
 			},
 		],
 	},
 	silent: true,
-	setupFiles: ['./test/setupEnvVars.ts'],
+	setupFiles: ['<rootDir>/test/setupEnvVars.ts'],
+	reporters:
+		process.env.CI === 'true'
+			? ['default', ['jest-junit', { outputDirectory: 'reports' }]]
+			: ['default'],
 };
 
 export default jestConfig;

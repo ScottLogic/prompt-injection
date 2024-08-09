@@ -1,14 +1,17 @@
 import { useCallback, useEffect, useRef, useState, JSX } from 'react';
 
-import MainComponent from './components/MainComponent/MainComponent';
-import LevelsComplete from './components/Overlay/LevelsComplete';
-import MissionInformation from './components/Overlay/MissionInformation';
-import OverlayWelcome from './components/Overlay/OverlayWelcome';
-import useLocalStorage from './hooks/useLocalStorage';
-import { LEVEL_NAMES } from './models/level';
+import useLocalStorage from '@src/hooks/useLocalStorage';
+import { LEVEL_NAMES } from '@src/models/level';
+
+import MainComponent from './MainComponent/MainComponent';
+import LevelsComplete from './Overlay/LevelsComplete';
+import MissionInformation from './Overlay/MissionInformation';
+import OverlayWelcome from './Overlay/OverlayWelcome';
 
 import './App.css';
-import './Theme.css';
+
+// eslint-disable-next-line import/order
+import '@src/styles/Theme.css';
 
 function App() {
 	const dialogRef = useRef<HTMLDialogElement>(null);
