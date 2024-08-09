@@ -100,7 +100,8 @@ export const handler = async (event: CloudFrontRequestEvent) => {
 	try {
 		// Maybe change to using cookie for tokens?
 		const accessToken = request.headers.authorization[0].value;
-		await verifier.verify(accessToken, {} as CognitoVerifyProperties);
+		const jwt = await verifier.verify(accessToken, {} as CognitoVerifyProperties);
+		console.log(`Access verified for [${jwt['username']}]`);
 		return request;
 	} catch (err: unknown) {
 		console.log('Unable to verify access token', err);
