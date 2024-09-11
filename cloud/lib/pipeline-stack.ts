@@ -1,4 +1,8 @@
-import { BuildEnvironmentVariableType, BuildSpec } from 'aws-cdk-lib/aws-codebuild';
+import {
+	BuildEnvironmentVariable,
+	BuildEnvironmentVariableType,
+	BuildSpec,
+} from 'aws-cdk-lib/aws-codebuild';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { IBucket } from 'aws-cdk-lib/aws-s3';
 import { Stack, StackProps } from 'aws-cdk-lib/core';
@@ -31,30 +35,21 @@ export class PipelineStack extends Stack {
 		const generateResourceId = resourceId(scope);
 		const stage = stageName(scope);
 
-		const sourceCode = CodePipelineSource.connection('ScottLogic/prompt-injection', 'main', {
-			connectionArn: `arn:aws:codestar-connections:${env.region}:${env.account}:connection/05c0f0a4-2233-4269-a697-33a339f8a6bc`,
-		});
+		// FIXME Reset branch to 'main' !!!
+		const sourceCode = CodePipelineSource.connection(
+			'ScottLogic/prompt-injection',
+			'feature/aws-cloud-infrastructure',
+			{
+				//connectionArn: `arn:aws:codestar-connections:${env.region}:${env.account}:connection/05c0f0a4-2233-4269-a697-33a339f8a6bc`,
+				connectionArn: `arn:aws:codestar-connections:eu-north-1:${env.account}:connection/05c0f0a4-2233-4269-a697-33a339f8a6bc`,
+			}
+		);
 
 		const hostBucketName = generateResourceId('host-bucket');
 
-		const pipeline = new CodePipeline(this, generateResourceId('pipeline'), {
-			synth: new ShellStep('Synth', {
-				input: sourceCode,
-				installCommands: ['npm ci', 'cd cloud', 'npm ci --no-audit', 'cd ..'],
-				commands: ['cd cloud', `npm run cdk:synth -- --context STAGE=${stage}`],
-				primaryOutputDirectory: 'cloud/cdk.out',
-			}),
-			synthCodeBuildDefaults: {
-				buildEnvironment: {
-					environmentVariables: {
-						DOMAIN_NAME: {
-							type: BuildEnvironmentVariableType.PARAMETER_STORE,
-							value: 'DOMAIN_NAME',
-						},
-						HOSTED_ZONE_ID: {
-							type: BuildEnvironmentVariableType.PARAMETER_STORE,
-							value: 'HOSTED_ZONE_ID',
-						},
+		const identityProviderEnv: Record<string, BuildEnvironmentVariable> =
+			process.env.IDP_NAME?.toUpperCase() === 'AZURE'
+				? {
 						IDP_NAME: {
 							type: BuildEnvironmentVariableType.PLAINTEXT,
 							value: 'AZURE',
@@ -67,6 +62,30 @@ export class PipelineStack extends Stack {
 							type: BuildEnvironmentVariableType.PARAMETER_STORE,
 							value: 'AZURE_TENANT_ID',
 						},
+					}
+				: {};
+
+		const pipeline = new CodePipeline(this, generateResourceId('pipeline'), {
+			synth: new ShellStep('Synth', {
+				input: sourceCode,
+				installCommands: ['npm ci', 'cd cloud', 'npm ci --no-audit', 'cd ..'],
+				// FIXME Revert this to `npm run cdk:synth -- --context STAGE=${stage}`
+				commands: ['cd cloud', 'npm run cdk:dev:synth'],
+				// FIXME Revert this to 'cloud/cdk.out'
+				primaryOutputDirectory: 'cloud/cdk.dev.out',
+			}),
+			synthCodeBuildDefaults: {
+				buildEnvironment: {
+					environmentVariables: {
+						DOMAIN_NAME: {
+							type: BuildEnvironmentVariableType.PARAMETER_STORE,
+							value: 'DOMAIN_NAME',
+						},
+						HOSTED_ZONE_ID: {
+							type: BuildEnvironmentVariableType.PARAMETER_STORE,
+							value: 'HOSTED_ZONE_ID',
+						},
+						...identityProviderEnv,
 					},
 				},
 			},
@@ -80,6 +99,8 @@ export class PipelineStack extends Stack {
 
 		// Pre-deployment quality checks
 		deployment.addPre(
+			// TODO Add a ConfirmPermissionsBroadening step:
+			// new ConfirmPermissionsBroadening('Check Permissions', { stage: appStage }),
 			new CodeBuildStep('API-CodeChecks', {
 				input: sourceCode,
 				commands: [

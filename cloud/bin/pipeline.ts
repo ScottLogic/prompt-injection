@@ -25,20 +25,23 @@ const tags = {
 	stage: stageName(app),
 };
 
+const generateStackName = stackName(app);
+const generateDescription = resourceDescription(app);
+
 /* Pipeline is now responsible for deploying all other Stacks */
 
-const pipelineUsEast1Stack = new PipelineAssistUsEast1Stack(
-	app,
-	stackName(app)('pipeline-useast1'),
-	{
-		description: resourceDescription(app)('Code Pipeline Cross-Region resources stack (us-east-1)'),
-		env,
-		tags,
-	}
-);
+const pipelineUsEast1StackName = generateStackName('pipeline-useast1');
+const pipelineUsEast1Stack = new PipelineAssistUsEast1Stack(app, pipelineUsEast1StackName, {
+	stackName: pipelineUsEast1StackName,
+	description: generateDescription('Code Pipeline Cross-Region resources stack (us-east-1)'),
+	env,
+	tags,
+});
 
-new PipelineStack(app, stackName(app)('pipeline'), {
-	description: resourceDescription(app)('Code Pipeline stack'),
+const pipelineStackName = generateStackName('pipeline');
+new PipelineStack(app, pipelineStackName, {
+	stackName: pipelineStackName,
+	description: generateDescription('Code Pipeline stack'),
 	env,
 	tags,
 	usEast1Bucket: pipelineUsEast1Stack.resourceBucket,

@@ -1,0 +1,37 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "Cognito",
+			"Effect": "Allow",
+			"Action": [
+				"cognito-idp:CreateUserPool*",
+				"cognito-idp:CreateIdentityProvider",
+				"cognito-idp:DeleteUserPool*",
+				"cognito-idp:DeleteIdentityProvider",
+				"cognito-idp:Describe*",
+				"cognito-idp:List*",
+				"cognito-idp:TagResource",
+				"cognito-idp:UntagResource",
+				"cognito-idp:UpdateUserPool*",
+				"cognito-idp:UpdateIdentityProvider"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "SSMWrite",
+			"Effect": "Allow",
+			"Action": [
+				"ssm:PutParameter",
+				"ssm:GetParameter",
+				"ssm:DeleteParameter",
+				"ssm:AddTagsToResource",
+				"ssm:RemoveTagsFromResource"
+			],
+			"Resource": [
+				"arn:aws:ssm:*:*:parameter/*/userpool-id",
+				"arn:aws:ssm:*:*:parameter/*/userpool-client"
+			]
+		}
+	]
+}

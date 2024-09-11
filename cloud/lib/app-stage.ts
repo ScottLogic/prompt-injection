@@ -30,13 +30,17 @@ export class AppStage extends Stage {
 		const generateDescription = resourceDescription(scope);
 		const generateStackName = stackName(scope);
 
-		const hostedZoneStack = new HostedZoneStack(this, generateStackName('hostedzone'), {
+		const hostedZoneStackName = generateStackName('hostedzone');
+		const hostedZoneStack = new HostedZoneStack(this, hostedZoneStackName, {
+			stackName: hostedZoneStackName,
 			description: generateDescription('Hosted Zone stack'),
 			env,
 			tags,
 		});
 
-		const certificateStack = new CertificateStack(this, generateStackName('certificate'), {
+		const certificateStackName = generateStackName('certificate');
+		const certificateStack = new CertificateStack(this, certificateStackName, {
+			stackName: certificateStackName,
 			description: generateDescription('Certificate stack'),
 			env,
 			tags,
@@ -44,14 +48,18 @@ export class AppStage extends Stage {
 			hostedZone: hostedZoneStack.hostedZone,
 		});
 
-		const authStack = new AuthStack(this, generateStackName('auth'), {
+		const authStackName = generateStackName('auth');
+		const authStack = new AuthStack(this, authStackName, {
+			stackName: authStackName,
 			description: generateDescription('Auth stack'),
 			env,
 			tags,
 			domainName: hostedZoneStack.topLevelDomain.value as string,
 		});
 
-		new ApiStack(this, generateStackName('api'), {
+		const apiStackName = generateStackName('api');
+		new ApiStack(this, apiStackName, {
+			stackName: apiStackName,
 			description: generateDescription('API stack'),
 			env,
 			tags,
@@ -63,7 +71,9 @@ export class AppStage extends Stage {
 			hostedZone: hostedZoneStack.hostedZone,
 		});
 
-		const uiStack = new UiStack(this, generateStackName('ui'), {
+		const uiStackName = generateStackName('ui');
+		const uiStack = new UiStack(this, uiStackName, {
+			stackName: uiStackName,
 			description: generateDescription('UI stack'),
 			env,
 			tags,
