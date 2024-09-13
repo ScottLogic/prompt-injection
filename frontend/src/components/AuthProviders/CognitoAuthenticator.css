@@ -151,7 +151,9 @@
 	display: block;
 }
 
-[data-amplify-authenticator] [data-amplify-form].basic-login-form {
+[data-amplify-authenticator]
+	.amplify-tabs__panel
+	[data-amplify-form].basic-login-form {
 	padding-bottom: 0;
 }
 
@@ -392,8 +394,12 @@
 }
 
 [data-amplify-authenticator] .form-header,
-[data-amplify-authenticator] [data-amplify-form].basic-login-form,
-[data-amplify-authenticator] [data-amplify-form].sso-login-form {
+[data-amplify-authenticator]
+	.amplify-tabs__panel
+	[data-amplify-form].basic-login-form,
+[data-amplify-authenticator]
+	.amplify-tabs__panel
+	[data-amplify-form].sso-login-form {
 	margin: 0 -2rem;
 }
 
@@ -416,8 +422,12 @@
 	}
 
 	[data-amplify-authenticator] .form-header,
-	[data-amplify-authenticator] [data-amplify-form].basic-login-form,
-	[data-amplify-authenticator] [data-amplify-form].sso-login-form {
+	[data-amplify-authenticator]
+		.amplify-tabs__panel
+		[data-amplify-form].basic-login-form,
+	[data-amplify-authenticator]
+		.amplify-tabs__panel
+		[data-amplify-form].sso-login-form {
 		margin: 0 -1.5rem;
 	}
 }
@@ -454,8 +464,12 @@
 	}
 
 	[data-amplify-authenticator] .form-header,
-	[data-amplify-authenticator] [data-amplify-form].basic-login-form,
-	[data-amplify-authenticator] [data-amplify-form].sso-login-form {
+	[data-amplify-authenticator]
+		.amplify-tabs__panel
+		[data-amplify-form].basic-login-form,
+	[data-amplify-authenticator]
+		.amplify-tabs__panel
+		[data-amplify-form].sso-login-form {
 		margin: 0 -1rem;
 	}
 }

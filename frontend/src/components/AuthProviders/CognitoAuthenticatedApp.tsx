@@ -32,6 +32,8 @@ const usernameFormField = {
 	},
 };
 
+const ssoProvider = import.meta.env.VITE_COGNITO_IDP;
+
 Amplify.configure({
 	Auth: {
 		Cognito: {
@@ -40,7 +42,7 @@ Amplify.configure({
 			loginWith: {
 				oauth: {
 					domain: import.meta.env.VITE_COGNITO_USERPOOL_DOMAIN,
-					providers: [{ custom: 'Azure' }],
+					providers: ssoProvider ? [{ custom: ssoProvider }] : undefined,
 					redirectSignIn: [import.meta.env.VITE_COGNITO_REDIRECT_URL],
 					redirectSignOut: [import.meta.env.VITE_COGNITO_REDIRECT_URL],
 					responseType: 'code',
@@ -114,7 +116,7 @@ function WelcomeHeader() {
 	return (
 		<>
 			<CustomHeader className="welcome-header" heading="Welcome to SpyLogic" />
-			<SignInSelector />
+			{ssoProvider ? <SignInSelector /> : <BasicSignIn />}
 		</>
 	);
 }
@@ -142,6 +144,7 @@ function CustomHeader({
 	);
 }
 
+// NOTE: Currently only Azure SSO is supported
 function SignInSelector() {
 	return (
 		<Tabs
@@ -157,7 +160,7 @@ function SignInSelector() {
 				{
 					label: 'Single Sign On (SSO)',
 					value: 'sso',
-					content: <SSOSignIn />,
+					content: <AzureSignIn />,
 				},
 			]}
 		/>
@@ -256,11 +259,11 @@ function BasicSignIn() {
 	);
 }
 
-function SSOSignIn() {
+function AzureSignIn() {
 	function signIn() {
 		void signInWithRedirect({
 			provider: {
-				custom: 'Azure',
+				custom: 'AZURE',
 			},
 		});
 		// TODO Catch login errors, e.g. someone without SL SSO access tries their luck

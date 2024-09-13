@@ -7,6 +7,7 @@ interface ImportMetaEnv {
 	readonly VITE_COGNITO_USERPOOL_CLIENT: string;
 	readonly VITE_COGNITO_USERPOOL_DOMAIN: string;
 	readonly VITE_COGNITO_REDIRECT_URL: string;
+	readonly VITE_COGNITO_IDP: string;
 }
 
 interface ImportMeta {

@@ -1,8 +1,4 @@
-import {
-	BuildEnvironmentVariable,
-	BuildEnvironmentVariableType,
-	BuildSpec,
-} from 'aws-cdk-lib/aws-codebuild';
+import { BuildEnvironmentVariableType, BuildSpec } from 'aws-cdk-lib/aws-codebuild';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { IBucket } from 'aws-cdk-lib/aws-s3';
 import { Stack, StackProps } from 'aws-cdk-lib/core';
@@ -47,7 +43,7 @@ export class PipelineStack extends Stack {
 
 		const hostBucketName = generateResourceId('host-bucket');
 
-		const identityProviderEnv: Record<string, BuildEnvironmentVariable> =
+		const identityProviderEnv =
 			process.env.IDP_NAME?.toUpperCase() === 'AZURE'
 				? {
 						IDP_NAME: {
@@ -63,7 +59,7 @@ export class PipelineStack extends Stack {
 							value: 'AZURE_TENANT_ID',
 						},
 					}
-				: {};
+				: undefined;
 
 		const pipeline = new CodePipeline(this, generateResourceId('pipeline'), {
 			synth: new ShellStep('Synth', {
@@ -144,7 +140,8 @@ export class PipelineStack extends Stack {
 			env: {
 				CI: 'true',
 				VITE_AUTH_PROVIDER: 'cognito',
-			},
+				VITE_COGNITO_IDP: identityProviderEnv?.IDP_NAME.value,
+			} as Record<string, string>,
 			envFromCfnOutputs: {
 				VITE_UI_DOMAIN: appStage.domainName,
 				VITE_BACKEND_URL: appStage.backendUrl,

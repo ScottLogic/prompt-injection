@@ -81,7 +81,7 @@ export class AuthStack extends Stack {
 			if (!AZURE_APPLICATION_ID) throw new Error('Missing env var AZURE_APPLICATION_SECRET');
 			if (!AZURE_TENANT_ID) throw new Error('Missing env var AZURE_TENANT_ID');
 			const idp = new UserPoolIdentityProviderSaml(this, generateResourceId('azure-idp'), {
-				name: 'Azure',
+				name: 'AZURE',
 				userPool,
 				metadata: UserPoolIdentityProviderSamlMetadata.url(
 					`https://login.microsoftonline.com/${AZURE_TENANT_ID}/federationmetadata/2007-06/federationmetadata.xml?appid=${AZURE_APPLICATION_ID}`
