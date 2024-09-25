@@ -6,6 +6,7 @@ import {
 	CodeBuildStep,
 	CodePipeline,
 	CodePipelineSource,
+	ConfirmPermissionsBroadening,
 	ShellStep,
 	Step,
 } from 'aws-cdk-lib/pipelines';
@@ -95,8 +96,7 @@ export class PipelineStack extends Stack {
 
 		// Pre-deployment quality checks
 		deployment.addPre(
-			// TODO Add a ConfirmPermissionsBroadening step:
-			// new ConfirmPermissionsBroadening('Check Permissions', { stage: appStage }),
+			new ConfirmPermissionsBroadening('Check Permissions', { stage: appStage }),
 			new CodeBuildStep('API-CodeChecks', {
 				input: sourceCode,
 				commands: [
