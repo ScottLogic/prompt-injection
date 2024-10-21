@@ -32,15 +32,11 @@ export class PipelineStack extends Stack {
 		const generateResourceId = resourceId(scope);
 		const stage = stageName(scope);
 
-		// FIXME Reset branch to 'main' !!!
-		const sourceCode = CodePipelineSource.connection(
-			'ScottLogic/prompt-injection',
-			'feature/aws-cloud-infrastructure',
-			{
-				//connectionArn: `arn:aws:codestar-connections:${env.region}:${env.account}:connection/05c0f0a4-2233-4269-a697-33a339f8a6bc`,
-				connectionArn: `arn:aws:codestar-connections:eu-north-1:${env.account}:connection/05c0f0a4-2233-4269-a697-33a339f8a6bc`,
-			}
-		);
+		const sourceCode = CodePipelineSource.connection('ScottLogic/prompt-injection', 'main', {
+			// Connection ID below is for ScottLogic repo; if you are developing on your own
+			// fork, you'll need to set up a CodeSuite connection in AWS Console.
+			connectionArn: `arn:aws:codestar-connections:${env.region}:${env.account}:connection/05c0f0a4-2233-4269-a697-33a339f8a6bc`,
+		});
 
 		const hostBucketName = generateResourceId('host-bucket');
 
@@ -66,10 +62,8 @@ export class PipelineStack extends Stack {
 			synth: new ShellStep('Synth', {
 				input: sourceCode,
 				installCommands: ['npm ci', 'cd cloud', 'npm ci --no-audit', 'cd ..'],
-				// FIXME Revert this to `npm run cdk:synth -- --context STAGE=${stage}`
-				commands: ['cd cloud', 'npm run cdk:dev:synth'],
-				// FIXME Revert this to 'cloud/cdk.out'
-				primaryOutputDirectory: 'cloud/cdk.dev.out',
+				commands: ['cd cloud', `npm run cdk:synth -- --context STAGE=${stage}`],
+				primaryOutputDirectory: 'cloud/cdk.out',
 			}),
 			synthCodeBuildDefaults: {
 				buildEnvironment: {
