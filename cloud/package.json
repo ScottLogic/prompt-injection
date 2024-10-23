@@ -5,7 +5,7 @@
 		"cloud": "bin/pipeline.js"
 	},
 	"scripts": {
-		"cdk:synth": "cdk synth -q \"*\"",
+		"cdk:synth": "cdk synth",
 		"cdk:synth:prod": "cdk synth --context STAGE=prod",
 		"cdk:diff": "cdk diff --app cdk.out",
 		"cdk:deploy": "cdk deploy --app cdk.out",
@@ -30,32 +30,32 @@
 		"lint:check": "eslint . --ext .ts"
 	},
 	"devDependencies": {
-		"@types/aws-lambda": "^8.10.142",
-		"@types/node": "^18.19.42",
+		"@types/aws-lambda": "^8.10.145",
+		"@types/node": "^20.16.15",
 		"@types/source-map-support": "^0.5.10",
-		"@typescript-eslint/eslint-plugin": "^7.17.0",
-		"@typescript-eslint/parser": "^7.17.0",
-		"aws-cdk": "^2.150.0",
-		"concurrently": "^8.2.2",
-		"eslint": "^8.57.0",
+		"@typescript-eslint/eslint-plugin": "^7.18.0",
+		"@typescript-eslint/parser": "^7.18.0",
+		"aws-cdk": "^2.163.1",
+		"concurrently": "^9.0.1",
+		"eslint": "^8.57.1",
 		"eslint-config-prettier": "^9.1.0",
-		"eslint-plugin-import": "^2.29.1",
+		"eslint-plugin-import": "^2.31.0",
 		"prettier": "^3.3.3",
 		"rimraf": "^6.0.1",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.5.4"
+		"typescript": "^5.6.3"
 	},
 	"dependencies": {
-		"@aws-cdk/aws-scheduler-alpha": "^2.150.0-alpha.0",
-		"@aws-cdk/aws-scheduler-targets-alpha": "^2.150.0-alpha.0",
-		"@aws-sdk/client-ecs": "^3.616.0",
-		"@aws-sdk/client-ssm": "^3.616.0",
-		"@mrgrain/cdk-esbuild": "^5.2.4",
-		"aws-cdk-lib": "^2.150.0",
+		"@aws-cdk/aws-scheduler-alpha": "^2.163.1-alpha.0",
+		"@aws-cdk/aws-scheduler-targets-alpha": "^2.163.1-alpha.0",
+		"@aws-sdk/client-ecs": "^3.677.0",
+		"@aws-sdk/client-ssm": "^3.677.0",
+		"@mrgrain/cdk-esbuild": "^5.2.7",
+		"aws-cdk-lib": "^2.163.1",
 		"aws-jwt-verify": "^4.0.1",
-		"constructs": "^10.3.0",
+		"constructs": "^10.4.2",
 		"dotenv": "^16.4.5",
-		"esbuild": "^0.23.0",
+		"esbuild": "^0.24.0",
 		"source-map-support": "^0.5.21"
 	}
 }
