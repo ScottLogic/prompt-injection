@@ -7,14 +7,13 @@ import {
 	Distribution,
 	experimental,
 	LambdaEdgeEventType,
-	OriginAccessIdentity,
 	OriginRequestPolicy,
 	PriceClass,
 	ResponseHeadersPolicy,
 	ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
-import { HttpOrigin, S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { CanonicalUserPrincipal, Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { HttpOrigin, S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { AaaaRecord, ARecord, IHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
@@ -63,8 +62,6 @@ export class UiStack extends Stack {
 			throw new Error('Region not defined in stack env, cannot continue!');
 		}
 
-		const cloudfrontOAI = new OriginAccessIdentity(this, generateResourceId('cloudfront-OAI'));
-
 		/*
 		UI Host Bucket
 		*/
@@ -76,15 +73,6 @@ export class UiStack extends Stack {
 			removalPolicy: RemovalPolicy.DESTROY,
 			autoDeleteObjects: true,
 		});
-		hostBucket.addToResourcePolicy(
-			new PolicyStatement({
-				actions: ['s3:GetObject'],
-				resources: [hostBucket.arnForObjects('*')],
-				principals: [
-					new CanonicalUserPrincipal(cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId),
-				],
-			})
-		);
 
 		/*
 		Edge lambda as JWT token verifier, to check request has access token
@@ -151,10 +139,9 @@ export class UiStack extends Stack {
 				},
 			],
 			defaultBehavior: {
-				origin: new S3Origin(hostBucket, {
-					originAccessIdentity: cloudfrontOAI,
-				}),
+				origin: S3BucketOrigin.withOriginAccessControl(hostBucket),
 				cachePolicy: new CachePolicy(this, generateResourceId('site-cache-policy'), {
+					// TODO Try removing this: cookie should only be needed on backend calls
 					cookieBehavior: CacheCookieBehavior.allowList(`${appName}.sid`),
 				}),
 				compress: true,
