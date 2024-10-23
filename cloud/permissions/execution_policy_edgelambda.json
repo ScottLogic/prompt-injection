@@ -1,0 +1,17 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "EdgeLambda",
+			"Effect": "Allow",
+			"Action": ["lambda:PublishVersion"],
+			"Resource": "arn:aws:lambda:us-east-1:*:function:*spylogic*"
+		},
+		{
+			"Sid": "SSMParameters",
+			"Effect": "Allow",
+			"Action": ["ssm:PutParameter", "ssm:DeleteParameter"],
+			"Resource": "arn:aws:ssm:us-east-1:*:parameter/cdk/EdgeFunctionArn/*"
+		}
+	]
+}

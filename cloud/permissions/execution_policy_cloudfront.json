@@ -1,0 +1,49 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "S3",
+			"Effect": "Allow",
+			"Action": [
+				"s3:GetBucketAcl",
+				"s3:PutBucketAcl",
+				"s3:PutBucketOwnershipControls",
+				"s3:PutBucketPublicAccessBlock",
+				"s3:PutEncryptionConfiguration"
+			],
+			"Resource": "arn:aws:s3:::*spylogic*"
+		},
+		{
+			"Sid": "Cloudfront",
+			"Effect": "Allow",
+			"Action": [
+				"cloudfront:Get*",
+				"cloudfront:List*",
+				"cloudfront:AssociateAlias",
+				"cloudfront:CreateCachePolicy",
+				"cloudfront:UpdateCachePolicy",
+				"cloudfront:DeleteCachePolicy",
+				"cloudfront:CreateCloudFrontOriginAccessIdentity",
+				"cloudfront:UpdateCloudFrontOriginAccessIdentity",
+				"cloudfront:DeleteCloudFrontOriginAccessIdentity",
+				"cloudfront:CreateDistribution",
+				"cloudfront:UpdateDistribution",
+				"cloudfront:DeleteDistribution",
+				"cloudfront:CreateInvalidation",
+				"cloudfront:TagResource",
+				"cloudfront:UntagResource"
+			],
+			"Resource": [
+				"arn:aws:cloudfront::*:distribution/*",
+				"arn:aws:cloudfront::*:cache-policy/*",
+				"arn:aws:cloudfront::*:origin-access-identity/*"
+			]
+		},
+		{
+			"Sid": "EdgeLambda",
+			"Effect": "Allow",
+			"Action": ["lambda:GetFunction", "lambda:EnableReplication*", "lambda:DisableReplication*"],
+			"Resource": "arn:aws:lambda:us-east-1:*:function:*spylogic*:*"
+		}
+	]
+}

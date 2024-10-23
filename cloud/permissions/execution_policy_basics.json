@@ -1,0 +1,69 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "IAMRole",
+			"Effect": "Allow",
+			"Action": [
+				"iam:Get*",
+				"iam:List*",
+				"iam:CreateRole",
+				"iam:DeleteRole",
+				"iam:TagRole",
+				"iam:AttachRolePolicy",
+				"iam:DeleteRolePolicy",
+				"iam:DetachRolePolicy",
+				"iam:PutRolePolicy"
+			],
+			"Resource": "arn:aws:iam::*:role/*spylogic*"
+		},
+		{
+			"Sid": "IAMPassRole",
+			"Effect": "Allow",
+			"Action": "iam:PassRole",
+			"Resource": ["arn:aws:iam::*:role/*spylogic*"]
+		},
+		{
+			"Sid": "S3Read",
+			"Effect": "Allow",
+			"Action": "s3:GetObject",
+			"Resource": "*"
+		},
+		{
+			"Sid": "S3Write",
+			"Effect": "Allow",
+			"Action": [
+				"s3:CreateBucket",
+				"s3:DeleteBucket",
+				"s3:PutObject",
+				"s3:DeleteObject",
+				"s3:PutBucketPolicy",
+				"s3:DeleteBucketPolicy",
+				"s3:PutBucketTagging"
+			],
+			"Resource": "arn:aws:s3:::*spylogic*"
+		},
+		{
+			"Sid": "SSMRead",
+			"Effect": "Allow",
+			"Action": "ssm:GetParameters",
+			"Resource": "arn:aws:ssm:*:*:parameter/cdk-bootstrap/*/version"
+		},
+		{
+			"Sid": "Lambdas",
+			"Effect": "Allow",
+			"Action": [
+				"lambda:Get*",
+				"lambda:List*",
+				"lambda:CreateFunction",
+				"lambda:UpdateFunctionCode",
+				"lambda:UpdateFunctionConfiguration",
+				"lambda:DeleteFunction",
+				"lambda:InvokeFunction",
+				"lambda:TagResource",
+				"lambda:UntagResource"
+			],
+			"Resource": "arn:aws:lambda:*:*:function:*spylogic*"
+		}
+	]
+}
