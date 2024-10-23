@@ -142,7 +142,7 @@ export class AuthStack extends Stack {
 		this.userPoolId = new CfnOutput(this, 'UserPool.Id', {
 			value: userPool.userPoolId,
 		});
-		this.userPoolClient = new CfnOutput(this, 'UserPoolClient.Id', {
+		this.userPoolClient = new CfnOutput(this, 'UserPool.Client', {
 			value: userPoolClient.userPoolClientId,
 		});
 		this.userPoolDomain = new CfnOutput(this, 'UserPool.Domain', {
