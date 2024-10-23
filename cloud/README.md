@@ -2,7 +2,7 @@
 
 This project uses AWS CDK (with TypeScript) to build CloudFormation templates for deployment of all resources for the
 SpyLogic application. The main stack defines a CodePipeline, configured with a single Stage to deploy the application
-stacks on merging into the repo main branch.
+stacks on merging into the repo `main` branch.
 
 The API layer is a _fairly_ typical containerized Node Express server, managed by AWS Fargate with a load-balancer in
 front. The UI is S3-hosted and served through CloudFront, and Cognito handles AuthN / AuthZ.
@@ -12,7 +12,8 @@ authorize users (via Cognito) when accessing the API. This seemingly simple task
 Application Load Balancer (ALB), which only allows _initiating_ authentication rather than verifying an existing access
 token. The solution is to re-use our CloudFront distribution for the UI to proxy API requests as well, with an Edge
 function to verify the token and, if verified, insert a custom header into the request before passing to the load
-balancer. We then filter requests at the load balancer, and reject any requests without the expected header / value.
+balancer. We then filter requests at the load balancer, and reject any requests without the expected header and value,
+to prevent attempts to bypass auth.
 
 This should be much easier, as it is natively supported by API Gateway, but it seems ALB is yet to catch up.
 
@@ -44,22 +45,58 @@ need to be deleted manually in the AWS Console.
 As the pipeline deploys the application stacks, it is wise to test any changes to those stacks before committing them.
 You can do this by synthesizing just the application stacks locally, and deploying to AWS as `dev` stage.
 
-There is one small task to complete before you begin. In AWS Secrets Manager, you will find a secret storing API key and
-secret values for the `prod` stage, which the server needs for successful startup. You must create a new secret for the
-dev stage, with the same OPENAI_API_KEY value and any random string for SESSION_SECRET. Once that is in place, you can
-synthesize and deploy the stacks for testing. Once you have finished, please delete the secret to avoid unnecessary
-costs.
+Before you begin, ensure you have added [your API key](#server-secrets) into AWS Secrets Manager, for the dev stage.
+Once you have finished testing, we recommend deleting the secret to avoid unnecessary costs.
 
-`npm run cdk:test:synth` - synthesizes just the application stacks (i.e. not the pipeline)
+```shell
+# synthesize the application stacks (no pipeline)
+npm run cdk:test:synth
 
-`npm run cdk:test:deploy` - deploys these stacks to AWS as "dev" stage
+# deploy resources to AWS as "dev" stage
+npm run cdk:test:deploy
+```
 
-All being successful, you should see the application login screen at `https://dev.spylogic.ai`. Log into the AWS Console
-to add a user to the dev Cognito userpool, then log into the UI to test app deployment was successful.
+Once this is complete, you will need to set some environment vars for the UI build. Copy the following stack outputs
+from the above deployment command into file `frontend/.env`, using [.env.example](../frontend/.env.example) as a
+template:
 
-`npm run cdk:test:destroy` - Remember to destroy the stacks after testing, else you will rack up costs!
+- from dev-spylogic-auth-stack,
+  copy UserPoolId, UserPoolClient and UserPoolDomain into corresponding properties
+- from dev-spylogic-hostedzone-stack,
+  copy `HostUrl` into VITE_COGNITO_REDIRECT_URL, and `BackendUrl` into VITE_BACKEND_URL
 
----
+Also uncomment VITE_AUTH_PROVIDER. Once that is done, run the following commands:
+
+```shell
+# Build the UI
+cd ../frontend
+npm run build
+
+# Deploy to S3
+aws s3 sync dist s3://dev-spylogic-host-bucket
+```
+
+All being successful, you should see the login screen when you navigate to the `HostUrl` (see above).
+Before you can sign in, you'll need to add a user to the dev userpool in Cognito, in AWS Console. After that, log into
+the application UI and check everything works as expected - including authenticated calls to the API, and session
+persistence via the SpyLogic.sid secure cookie.
+
+Finally, remember to destroy the stacks after testing, else you will rack up costs:
+
+```shell
+# Tear down all deployed resources
+npm run cdk:test:destroy
+```
+
+## Troubleshooting
+
+- `SSOTokenProviderFailure: SSO Token refresh failed. Please log in using "aws sso login"` - Go on, try it!
+- Deployment of the spylogic-api-stack fails with "docker authorization token expired" error. Try this:
+  [docker login for AWS](https://stackoverflow.com/a/66919813)
+- AccessDenied page when accessing UI. If deploying manually for testing the stacks, did you forget to deploy the UI to
+  the host bucket? If deployed via the pipeline, check CodePipeline in AWS Console to see if the task failed.
+- UI seems stuck on old version even after merging to main. Is the pipeline awaiting manual approval? This can happen
+  if changes made to a stack broaden any required permissions.
 
 ## A note on costs
 
