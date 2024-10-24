@@ -1,0 +1,224 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "IAMInstance",
+			"Effect": "Allow",
+			"Action": [
+				"iam:CreateInstanceProfile",
+				"iam:DeleteInstanceProfile",
+				"iam:AddRoleToInstanceProfile",
+				"iam:RemoveRoleFromInstanceProfile"
+			],
+			"Resource": [
+				"arn:aws:iam::*:instance-profile/*spylogicvpc*",
+				"arn:aws:iam::*:role/*spylogicvpc*"
+			]
+		},
+		{
+			"Sid": "IAMPassRole",
+			"Effect": "Allow",
+			"Action": "iam:PassRole",
+			"Resource": "arn:aws:iam::*:instance-profile/*spylogicvpc*"
+		},
+		{
+			"Sid": "SecretsRead",
+			"Effect": "Allow",
+			"Action": ["secretsmanager:DescribeSecret", "secretsmanager:GetSecretValue"],
+			"Resource": ["arn:aws:secretsmanager:::secret:*/SpyLogic/ApiKey*"]
+		},
+		{
+			"Sid": "ECSRead",
+			"Effect": "Allow",
+			"Action": ["ecs:Describe*", "ecs:List*"],
+			"Resource": "*"
+		},
+		{
+			"Sid": "ECSFargate",
+			"Effect": "Allow",
+			"Action": [
+				"ecs:TagResource",
+				"ecs:UntagResource",
+				"ecs:CreateCluster",
+				"ecs:UpdateCluster",
+				"ecs:DeleteCluster",
+				"ecs:CreateService",
+				"ecs:UpdateService",
+				"ecs:DeleteService",
+				"ecs:DeleteTaskDefinitions",
+				"ecs:RunTask",
+				"ecs:StartTask",
+				"ecs:StopTask"
+			],
+			"Resource": [
+				"arn:aws:ecs:*:*:cluster/*spylogic*",
+				"arn:aws:ecs:*:*:service/*spylogic*",
+				"arn:aws:ecs:*:*:task-definition/*spylogic*",
+				"arn:aws:ecs:*:*:task/*spylogic*"
+			]
+		},
+		{
+			"Sid": "ECSResourceUnspecified",
+			"Effect": "Allow",
+			"Action": ["ecs:RegisterTaskDefinition", "ecs:DeregisterTaskDefinition"],
+			"Resource": "*"
+		},
+		{
+			"Sid": "LoadBalancerRead",
+			"Effect": "Allow",
+			"Action": ["elasticloadbalancing:Describe*", "elasticloadbalancing:Get*"],
+			"Resource": "*"
+		},
+		{
+			"Sid": "LoadBalancerWrite",
+			"Effect": "Allow",
+			"Action": [
+				"elasticloadbalancing:CreateLoadBalancer",
+				"elasticloadbalancing:ModifyLoadBalancerAttributes",
+				"elasticloadbalancing:SetSecurityGroups",
+				"elasticloadbalancing:SetSubnets",
+				"elasticloadbalancing:DeleteLoadBalancer",
+				"elasticloadbalancing:CreateListener",
+				"elasticloadbalancing:ModifyListener",
+				"elasticloadbalancing:ModifyListenerAttributes",
+				"elasticloadbalancing:AddListenerCertificates",
+				"elasticloadbalancing:RemoveListenerCertificates",
+				"elasticloadbalancing:DeleteListener",
+				"elasticloadbalancing:CreateRule",
+				"elasticloadbalancing:ModifyRule",
+				"elasticloadbalancing:SetRulePriorities",
+				"elasticloadbalancing:DeleteRule",
+				"elasticloadbalancing:CreateTargetGroup",
+				"elasticloadbalancing:ModifyTargetGroup",
+				"elasticloadbalancing:ModifyTargetGroupAttributes",
+				"elasticloadbalancing:RegisterTargets",
+				"elasticloadbalancing:DeregisterTargets",
+				"elasticloadbalancing:DeleteTargetGroup",
+				"elasticloadbalancing:AddTags",
+				"elasticloadbalancing:RemoveTags"
+			],
+			"Resource": [
+				"arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*",
+				"arn:aws:elasticloadbalancing:*:*:listener/app/*",
+				"arn:aws:elasticloadbalancing:*:*:listener-rule/app/*",
+				"arn:aws:elasticloadbalancing:*:*:targetgroup/*"
+			]
+		},
+		{
+			"Sid": "EC2Read",
+			"Effect": "Allow",
+			"Action": ["ec2:Describe*", "ec2:List*"],
+			"Resource": "*"
+		},
+		{
+			"Sid": "VPCNetwork",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:CreateVpc",
+				"ec2:ModifyVpcAttribute",
+				"ec2:DeleteVpc",
+				"ec2:CreateRoute",
+				"ec2:ReplaceRoute",
+				"ec2:DeleteRoute",
+				"ec2:CreateRouteTable",
+				"ec2:AssociateRouteTable",
+				"ec2:ReplaceRouteTableAssociation",
+				"ec2:DisassociateRouteTable",
+				"ec2:DeleteRouteTable",
+				"ec2:AssociateVpcCidrBlock",
+				"ec2:DisassociateVpcCidrBlock",
+				"ec2:CreateSubnet",
+				"ec2:ModifySubnetAttribute",
+				"ec2:CreateSubnetCidrReservation",
+				"ec2:AssociateSubnetCidrBlock",
+				"ec2:DisassociateSubnetCidrBlock",
+				"ec2:DeleteSubnetCidrReservation",
+				"ec2:DeleteSubnet",
+				"ec2:CreateInternetGateway",
+				"ec2:AttachInternetGateway",
+				"ec2:DetachInternetGateway",
+				"ec2:DeleteInternetGateway",
+				"ec2:CreateNetworkAcl",
+				"ec2:DeleteNetworkAcl",
+				"ec2:CreateNetworkAclEntry",
+				"ec2:ReplaceNetworkAclEntry",
+				"ec2:DeleteNetworkAclEntry",
+				"ec2:CreateNetworkInterface",
+				"ec2:AttachNetworkInterface",
+				"ec2:DetachNetworkInterface",
+				"ec2:DeleteNetworkInterface"
+			],
+			"Resource": [
+				"arn:aws:ec2:*:*:image/*",
+				"arn:aws:ec2:*:*:internet-gateway/*",
+				"arn:aws:ec2:*:*:network-acl/*",
+				"arn:aws:ec2:*:*:network-interface/*",
+				"arn:aws:ec2:*:*:route-table/*",
+				"arn:aws:ec2:*:*:subnet/*",
+				"arn:aws:ec2:*:*:volume/*",
+				"arn:aws:ec2:*:*:vpc/*"
+			]
+		},
+		{
+			"Sid": "EC2Instances",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:RunInstances",
+				"ec2:StartInstances",
+				"ec2:RebootInstances",
+				"ec2:StopInstances",
+				"ec2:TerminateInstances",
+				"ec2:MonitorInstances",
+				"ec2:UnmonitorInstances",
+				"ec2:ModifyInstanceAttribute",
+				"ec2:ResetInstanceAttribute"
+			],
+			"Resource": [
+				"arn:aws:ec2:*:*:image/*",
+				"arn:aws:ec2:*:*:instance/*",
+				"arn:aws:ec2:*:*:network-interface/*",
+				"arn:aws:ec2:*:*:security-group/*",
+				"arn:aws:ec2:*:*:subnet/*",
+				"arn:aws:ec2:*:*:volume/*"
+			]
+		},
+		{
+			"Sid": "SecurityGroups",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:CreateSecurityGroup",
+				"ec2:DeleteSecurityGroup",
+				"ec2:ModifySecurityGroupRules",
+				"ec2:AuthorizeSecurityGroupEgress",
+				"ec2:AuthorizeSecurityGroupIngress",
+				"ec2:RevokeSecurityGroupEgress",
+				"ec2:RevokeSecurityGroupIngress",
+				"ec2:UpdateSecurityGroupRuleDescriptionsEgress",
+				"ec2:UpdateSecurityGroupRuleDescriptionsIngress"
+			],
+			"Resource": [
+				"arn:aws:ec2:*:*:security-group/*",
+				"arn:aws:ec2:*:*:security-group-rule/*",
+				"arn:aws:ec2:*:*:vpc/*"
+			]
+		},
+		{
+			"Sid": "EC2Tagging",
+			"Effect": "Allow",
+			"Action": ["ec2:CreateTags", "ec2:DeleteTags"],
+			"Resource": [
+				"arn:aws:ec2:*:*:image/*",
+				"arn:aws:ec2:*:*:instance/*",
+				"arn:aws:ec2:*:*:internet-gateway/*",
+				"arn:aws:ec2:*:*:network-acl/*",
+				"arn:aws:ec2:*:*:network-interface/*",
+				"arn:aws:ec2:*:*:route-table/*",
+				"arn:aws:ec2:*:*:security-group/*",
+				"arn:aws:ec2:*:*:security-group-rule/*",
+				"arn:aws:ec2:*:*:subnet/*",
+				"arn:aws:ec2:*:*:volume/*",
+				"arn:aws:ec2:*:*:vpc/*"
+			]
+		}
+	]
+}

@@ -7,10 +7,15 @@ import { useState } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
 
 import OverlayHeader from '@src/components/Overlay/OverlayHeader';
+import { documentService } from '@src/service';
 
 import DocumentViewBoxNav from './DocumentViewBoxNav';
 
 import './DocumentViewBox.css';
+
+// Use our own loader that handles auth
+TXTRenderer.fileLoader = documentService.fetchDocument;
+CSVRenderer.fileLoader = documentService.fetchDocument;
 
 function DocumentViewBox({
 	documents,

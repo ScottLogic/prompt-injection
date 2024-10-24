@@ -109,7 +109,7 @@ router.post('/openai/model/configure', handleConfigureModel);
 router.post('/reset/all', handleResetProgress);
 router.post('/reset/:level', handleResetLevel);
 
-// Testing endpoints
+// Load testing endpoints
 router.post('/test/load', handleTest);
 
 export default router;

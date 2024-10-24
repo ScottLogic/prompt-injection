@@ -1,0 +1,73 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "IAMPolicy",
+			"Effect": "Allow",
+			"Action": [
+				"iam:CreatePolicy",
+				"iam:TagPolicy",
+				"iam:UntagPolicy",
+				"iam:DeletePolicy",
+				"iam:CreatePolicyVersion",
+				"iam:SetDefaultPolicyVersion",
+				"iam:DeletePolicyVersion",
+				"iam:UpdateAssumeRolePolicy"
+			],
+			"Resource": ["arn:aws:iam::*:role/*spylogic*", "arn:aws:iam::*:policy/*spylogic*"]
+		},
+		{
+			"Sid": "IAMPassRole",
+			"Effect": "Allow",
+			"Action": "iam:PassRole",
+			"Resource": [
+				"arn:aws:iam::*:role/cdk-hnb659fds-deploy-role-*",
+				"arn:aws:iam::*:role/cdk-hnb659fds-cfn-exec-role-*"
+			]
+		},
+		{
+			"Sid": "S3Write",
+			"Effect": "Allow",
+			"Action": ["s3:PutBucketPublicAccessBlock", "s3:PutEncryptionConfiguration"],
+			"Resource": "arn:aws:s3:::*spylogic*"
+		},
+		{
+			"Sid": "CodePipelineRead",
+			"Effect": "Allow",
+			"Action": ["codepipeline:Get*", "codepipeline:List*"],
+			"Resource": "*"
+		},
+		{
+			"Sid": "CodePipelineWrite",
+			"Effect": "Allow",
+			"Action": [
+				"codepipeline:CreatePipeline",
+				"codepipeline:UpdatePipeline",
+				"codepipeline:DeletePipeline",
+				"codepipeline:PutActionRevision",
+				"codepipeline:StartPipelineExecution",
+				"codepipeline:StopPipelineExecution",
+				"codepipeline:TagResource",
+				"codepipeline:UntagResource"
+			],
+			"Resource": "arn:aws:codepipeline:*:*:*spylogic*"
+		},
+		{
+			"Sid": "CodeBuild",
+			"Effect": "Allow",
+			"Action": [
+				"codebuild:BatchGetProjects",
+				"codebuild:CreateProject",
+				"codebuild:UpdateProject",
+				"codebuild:DeleteProject"
+			],
+			"Resource": "arn:aws:codebuild:*:*:project/*spylogic*"
+		},
+		{
+			"Sid": "CodeStar",
+			"Effect": "Allow",
+			"Action": ["codestar-connections:PassConnection", "codestar-connections:UseConnection"],
+			"Resource": "arn:aws:codestar-connections:*:*:connection/*"
+		}
+	]
+}

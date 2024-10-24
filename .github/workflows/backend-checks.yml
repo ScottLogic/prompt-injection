@@ -7,6 +7,7 @@ on:
     branches:
       - main
       - dev
+      - 'feature/**'
     paths:
       - 'backend/**'
 
@@ -20,7 +21,6 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,19 +30,21 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: "./backend/package-lock.json"
+          cache: 'npm'
+          cache-dependency-path: './backend/package-lock.json'
+      - name: Install dependencies
+        run: |
+          npm ci --no-audit
       - name: Run job
         run: |
-          npm ci
           npx eslint .
           npx prettier . --check
+
   build-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [ 18.x ]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -52,10 +54,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: "./backend/package-lock.json"
+          cache: 'npm'
+          cache-dependency-path: './backend/package-lock.json'
+      - name: Install dependencies
+        run: |
+          npm ci --no-audit
       - name: Run job
         run: |
-          npm ci
           npm run build
           npm test

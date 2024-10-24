@@ -1,0 +1,57 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "ACMAllowAll",
+			"Effect": "Allow",
+			"Action": "acm:*",
+			"Resource": "*"
+		},
+		{
+			"Sid": "ACMThenDenyThese",
+			"Effect": "Deny",
+			"Action": [
+				"acm:ExportCertificate",
+				"acm:ImportCertificate",
+				"acm:PutAccountConfiguration",
+				"acm:ResendValidationEmail"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "ACMAddServiceLinkedRole",
+			"Effect": "Allow",
+			"Action": "iam:CreateServiceLinkedRole",
+			"Resource": "arn:aws:iam::*:role/aws-service-role/acm.amazonaws.com/AWSServiceRoleForCertificateManager*",
+			"Condition": {
+				"StringEquals": {
+					"iam:AWSServiceName": "acm.amazonaws.com"
+				}
+			}
+		},
+		{
+			"Sid": "ACMRemoveServiceLinkedRole",
+			"Effect": "Allow",
+			"Action": [
+				"iam:DeleteServiceLinkedRole",
+				"iam:GetServiceLinkedRoleDeletionStatus",
+				"iam:GetRole"
+			],
+			"Resource": "arn:aws:iam::*:role/aws-service-role/acm.amazonaws.com/AWSServiceRoleForCertificateManager*"
+		},
+		{
+			"Sid": "Route53RecordSets",
+			"Effect": "Allow",
+			"Action": [
+				"route53:Get*",
+				"route53:List*",
+				"route53:TestDNSAnswer",
+				"route53:ChangeResourceRecordSets",
+				"route53:ChangeTagsForResource",
+				"cloudfront:ListDistributions",
+				"elasticloadbalancing:DescribeLoadBalancers"
+			],
+			"Resource": ["arn:aws:route53:::change/*", "arn:aws:route53:::hostedzone/*"]
+		}
+	]
+}

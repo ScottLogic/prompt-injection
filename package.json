@@ -1,6 +1,6 @@
 {
 	"name": "prompt-injection",
-	"version": "1.0.3",
+	"version": "1.1.0",
 	"description": "Game to promote awareness of prompt injection attacks on LLM AI models, and teach defensive measures",
 	"keywords": [
 		"ai",
@@ -26,6 +26,6 @@
 		"docker:stop": "docker compose down"
 	},
 	"devDependencies": {
-		"concurrently": "^8.2.2"
+		"concurrently": "^9.0.1"
 	}
 }
