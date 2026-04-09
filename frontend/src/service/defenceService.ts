@@ -76,18 +76,21 @@ async function resetDefenceConfigItem(
 	configItemId: DEFENCE_CONFIG_ITEM_ID,
 	level: LEVEL_NAMES
 ): Promise<DefenceResetResponse | null> {
-	return post(`${PATH}/resetConfig`, {
-		defenceId,
-		configItemId,
-		level,
-	}).then(
-		async (response) => {
-			return (await response.json()) as DefenceResetResponse;
-		},
-		() => {
+	try {
+		const response = await post(`${PATH}/resetConfig`, {
+			defenceId,
+			configItemId,
+			level,
+		});
+		if (!response.ok) {
+			console.warn(await response.text());
 			return null;
 		}
-	);
+		return await response.json() as DefenceResetResponse;
+	} catch (err: unknown) {
+		// Server was unreachable
+		return null;
+	}
 }
 
 function validatePositiveNumberConfig(value: string) {
